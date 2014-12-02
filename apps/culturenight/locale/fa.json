@@ -1,0 +1,17 @@
+{
+   "conf":
+           {
+              "dir": "rtl",
+              "name": "Farsi"
+           },
+   "strings":
+           {
+              "Events": "رویداد ها",
+              "Event": "رویداد",
+              "Add Event": "ثبت رویداد",
+              "Clubs & Discos": "کلاب و دیسکو ها",
+              "Restaurant": "رستوران ها",
+              "Shops": "فروشگا ها",
+              "Cultural": "فرهنگی"
+           }
+}

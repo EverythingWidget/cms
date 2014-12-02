@@ -1,0 +1,19 @@
+RewriteEngine On
+
+RewriteCond %{HTTP_HOST} ^www\.(.*) [NC]
+RewriteRule (.*) http://%1/$1 [R=302,L]
+
+#RewriteCond %{REQUEST_URI} !(/$|\.) 
+#RewriteRule (.*) %{REQUEST_URI}/ [R=301,L]
+
+# 3: when I ask for any file except php (js, css, png and so on), I should get the real file and should not be redirected
+RewriteCond %{REQUEST_URI} \.(.{2,4})$
+RewriteCond %{REQUEST_URI} !\.(php)$
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^(.*)$ $1 [L]
+
+# 2: when I go to www.mysite.com/dir_name/, I should see apps/index.php?_app_name=dir_name
+RewriteRule ^$ apps/ [L]
+RewriteRule (.*) apps/$1 [L]
+
+
