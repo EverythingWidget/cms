@@ -479,7 +479,7 @@ if ($secId)
             {
                $("#component-chooser-btn").remove();
             }
-            $("#sidebar a, .side-bar a").each(function ()
+            $("#sidebar a, .sidebar a").each(function ()
             {
                var a = $(this);
                if (a.attr("rel") === "ajax")
@@ -602,7 +602,7 @@ if ($secId)
             });
             $("#sidebar").on("mouseleave", function ()
             {
-               $("#sidebar.in").stop().animate({className: "side-bar"}, 300, "Power3.easeOut");
+               $("#sidebar.in").stop().animate({className: "sidebar"}, 300, "Power3.easeOut");
                //$("#sidebar").stop().fadeOut(300);
             });
             $("#sidebar").on("click", function (e)
@@ -614,7 +614,7 @@ if ($secId)
             $("#side-bar-btn").on("click mouseenter", function (event)
             {
                //event.preventDefault();
-               $("#sidebar:not(.in)").stop().animate({className: "side-bar in"}, 300, "Power4.easeOut");
+               $("#sidebar:not(.in)").stop().animate({className: "sidebar in"}, 300, "Power4.easeOut");
                //$("#sidebar").stop().fadeIn(300);
                //alert($("#sidebar").html());
                event.stopPropagation();
@@ -804,7 +804,7 @@ if ($secId)
                      </div>
                   </div>
                   <div  class="row bar">
-                     <button class="btn side-bar comp-btn" id="side-bar-btn" >  
+                     <button class="btn sidebar comp-btn" id="side-bar-btn" >  
                      </button>   
                      <!--<a id="title-big" class="title hidden-xs" href="./app-admin/?compId=<?php echo $compId ?>">
 

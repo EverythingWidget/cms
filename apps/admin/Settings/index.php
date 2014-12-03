@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 ?>
-<div id="sidebar" class="side-bar">
+<div id="sidebar" class="sidebar">
    <div class="row">
 
       <ul>

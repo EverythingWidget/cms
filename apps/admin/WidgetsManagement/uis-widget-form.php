@@ -72,11 +72,9 @@ function get_size_layout_form()
    return ob_get_clean();
 }
 
-EWCore::register_form("uis-widget-form", "widget-cp", "Widget CP", $WM->get_widget_cp($widget_type));
-
-EWCore::register_form("uis-widget-form", "size-layout", "Size & Layout", get_size_layout_form());
-
-EWCore::register_form("uis-widget-form", "properties", "Properties", get_properties_form());
+EWCore::register_form("uis-widget-form", "widget-cp", ["title" => "Widget CP","content"=> $WM->get_widget_cp($widget_type)]);
+EWCore::register_form("uis-widget-form", "size-layout", ["title" => "Size & Layout", "content"=>get_size_layout_form()]);
+EWCore::register_form("uis-widget-form", "properties", ["title" => "Properties", "content"=>get_properties_form()]);
 
 $tabs = EWCore::read_registry("uis-widget-form");
 ?>

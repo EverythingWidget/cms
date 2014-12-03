@@ -60,10 +60,10 @@ function get_ew_album_properties_form()
                EW.lock(media.currentTopPane, "Saving...");
                $.post('<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/update_album', {
                   id: media.itemId,
-                  title: $('#title').val()}, function (data) {                  
-                     media.listMedia();
-                     $("body").EW().notify(data).show();
-                     EW.unlock(media.currentTopPane);                  
+                  title: $('#title').val()}, function (data) {
+                  media.listMedia();
+                  $("body").EW().notify(data).show();
+                  EW.unlock(media.currentTopPane);
                }, "json");
             }
             return false;
@@ -147,8 +147,8 @@ function get_editor()
    return ob_get_clean();
 }
 
-EWCore::register_form("ew-album-form-default", "ew-ne-album-main-form", "Properties", get_ew_album_properties_form());
-EWCore::register_form("ew-album-form-default", "album-content", "Content", get_editor());
+EWCore::register_form("ew-album-form-default", "ew-ne-album-main-form", ["title" => "Properties", "content" => get_ew_album_properties_form()]);
+EWCore::register_form("ew-album-form-default", "album-content", ["title" => "Content", "content" => get_editor()]);
 $tabsDefault = EWCore::read_registry("ew-album-form-default");
 $tabs = EWCore::read_registry("ew-album-form");
 ?>

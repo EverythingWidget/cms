@@ -150,7 +150,7 @@ function get_properties($form_config, $form_id)
 //EWCore::register_form("ew-article-form-default", "article-properties", "Properties", get_ew_article_properties_form());
 //EWCore::register_form("ew-article-form-default", "article-content", "Content", get_editor());
 $tabsDefault = EWCore::read_registry("ew-article-form-default");
-$tabs = EWCore::read_registry("ew-article-form");
+$tabs = EWCore::read_registry("ew-article-form-tab");
 ?>
 <form id="<?php echo $form_id ?>"  action="#" method="POST">
    <div class="header-pane tabs-bar row">

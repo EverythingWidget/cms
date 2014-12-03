@@ -22,8 +22,8 @@ class WidgetsManagement extends Section
    public function init_plugin()
    {
       //global $EW;
-      $this->register_form("ew-article-form", "uis_tab", ["title" => "UI"]);
-      $this->register_form("ew-category-form", "uis_tab", ["title" => "UI"]);
+      $this->register_form("ew-article-form-tab", "uis_tab", ["title" => "UI"]);
+      $this->register_form("ew-category-form-tab", "uis_tab", ["title" => "UI"]);
 
       //EWCore::register_action("ew-category-action-add", "WidgetsManagement.category_action_add", "category_action_update", $this);
       //EWCore::register_action("ew-category-action-update", "WidgetsManagement.category_action_update", "category_action_update", $this);

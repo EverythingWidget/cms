@@ -34,7 +34,7 @@ if (preg_match("/^(.{2,3})$/", $elements[$parameter_index], $match))
    $language = $match[0];
    $parameter_index++;
 }
-$_REQUEST["_lang"] = $language;
+$_REQUEST["_language"] = $language;
 
 // Check the app parameter
 $app_name = "webroot";
@@ -161,24 +161,24 @@ else if ($app_name && $section_name && $_file)
 }
 else if ($app_name)
 {
-   $pages_feeders = EWCore::read_registry("ew-widget-feeder");
+   //$pages_feeders = EWCore::read_registry("ew-widget-feeder");
    // when page  is a page widget feeder
-   if (array_key_exists("page:$_file", $pages_feeders))
-   {
+   //if (array_key_exists("page:$_file", $pages_feeders))
+   //{
 
       // ob_start();
       //include_once EW_APPS_DIR . '/' . $app_name . '/index.php';
       //$RESULT_CONTENT = ob_get_clean(); 
-      $path = EW_APPS_DIR . '/' . $app_name . '/index.php';
-   }
-   else
-   {
+    //  $path = EW_APPS_DIR . '/' . $app_name . '/index.php';
+   //}
+   //else
+   //{
       if (!$_file)
       {
          $_file = "index.php";
       }
       $path = EW_APPS_DIR . '/' . $app_name . '/' . $_file;
-   }
+   //}
 }
 else
 {

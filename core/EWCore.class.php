@@ -120,17 +120,27 @@ class EWCore
             $class_exist = true;
          }
 
+         $pages_feeders = EWCore::read_registry("ew-widget-feeder");
          if ($class_exist)
          {
             //echo "::hh:::".$function_name;
             $RESULT_CONTENT = $obj->process_request($function_name, $parameters);
          }
+         elseif (array_key_exists("page:$section_name", $pages_feeders))
+         {            
+            // ob_start();
+            //include_once EW_APPS_DIR . '/' . $app_name . '/index.php';
+            //$RESULT_CONTENT = ob_get_clean(); 
+            $path = EW_APPS_DIR . '/' . $app_name . '/index.php';
+         }
          else
          {
+            //echo $function_name;
             $path = EW_APPS_DIR . '/' . $app_name . '/' . $section_name . '/' . $function_name;
          }
       }
-      
+
+
       if ($path && file_exists($path))
       {
          ob_start();
@@ -139,7 +149,7 @@ class EWCore
       }
       else if ($path)
       {
-         $RESULT_CONTENT = EWCore::log_error(404, "<h4>{$path}</h4><p>FILE NOT FOUND</p>");
+         $RESULT_CONTENT = EWCore::log_error(404, "<h4>{$path}</h4><p>ffffFILE NOT FOUND</p>");
       }
       // Call ew command listeners
       $actions = EWCore::read_registry("ew_command_listener");
@@ -157,7 +167,7 @@ class EWCore
                $functions_arguments = array();
                foreach ($params as $param)
                {
-                  $temp = null;  
+                  $temp = null;
                   if ($param->getName() === "_data")
                   {
                      if ($RESULT_CONTENT["data"])
@@ -719,9 +729,9 @@ class EWCore
       return ($numHits > 0) ? ($slug . '-' . $numHits) : $slug;
    }
 
-   public static function register_form($name, $id, $title, $content, $function = null)
+   public static function register_form($name, $id, $conf)
    {
-      EWCore::register_object($name, $id, array("title" => $title, "content" => $content, "function" => $function));
+      EWCore::register_object($name, $id, $conf);
    }
 
    public static function register_permission($app_name, $class_name, $id, $app_title, $section_title, $description, $permissions = array())

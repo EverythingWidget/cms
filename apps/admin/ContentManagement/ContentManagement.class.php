@@ -58,6 +58,7 @@ class ContentManagement extends \Section
           "album-form.php:tr{New Album}"));
       $this->register_content_label("document", ["title" => "Document", "description" => "Attach this content to other content", "type" => "data_url", "value" => "app-admin/ContentManagement/get_articles_llist"]);
       $this->register_content_label("language", ["title" => "Language", "description" => "Language of the content"]);
+      $this->register_widget_feeder("page", "article", "article");
       /* $this->register_activity("article-form", array("form" => "article-form.php", "title" => "New Article"));
         $this->register_activity("article-form", array("form" => "article-form.php?see", "title" => "See Article"));
         $this->register_activity("category-form", array("form" => "category-form.php", "title" => "New Folder")); */
@@ -266,13 +267,13 @@ class ContentManagement extends \Section
          }
          else
          {
-            $file = EW_APPS_DIR. "/admin/ContentManagement/no-image.png";
+            $file = EW_APPS_DIR . "/admin/ContentManagement/no-image.png";
             /* $apps_dir = opendir("/is/htdocs/wp1067381_3GN1OJU4CE/www/culturenights/app/webroot/img/logos/");
               while ($app_root = readdir($apps_dir))
               {
               echo $app_root . "<br>";
               } */
-            
+
             //echo "404 NOT FOUND ".$file;
             //return;
          }
@@ -379,6 +380,7 @@ class ContentManagement extends \Section
 
    public static function get_content_with_label($content_id, $key, $value = '%')
    {
+      
       $db = EWCore::get_db_connection();
       if (!$content_id)
          return json_encode([]);
@@ -395,10 +397,12 @@ class ContentManagement extends \Section
 
       //$out = array();
       $rows = array();
-
+//echo $content_id;
       while ($r = $result->fetch_assoc())
       {
+         
          $rows[] = $r;
+         //print_r($r);
       }
       //$MYSQLI->close();
       //$out = array("totalRows" => $totalRows['COUNT(*)'], "result" => $rows);
@@ -540,8 +544,19 @@ class ContentManagement extends \Section
       return \EWCore::log_error(400, "tr{Something went wrong, content has not been added}");
    }
 
+   public function ew_page_feeder_article($id, $language)
+   {
+      $articles = json_decode($this->get_content_with_label($id, "admin_ContentManagement_language", $language), true);
+      $result["html"] = "WIDGET_DATA_MODEL";      
+      $result["title"] = $articles[0]['title'];
+      $result["content"] = $articles[0]['content'];
+      //print_r($result);
+      return json_encode($result);
+   }
+
    public function get_article($articleId)
    {
+      //echo "ssssssssssss".$articleId;
       //global $EW;
       $MYSQLI = get_db_connection();
       //$articleId = $MYSQLI->real_escape_string($_REQUEST["articleId"]);

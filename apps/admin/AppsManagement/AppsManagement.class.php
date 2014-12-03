@@ -114,6 +114,20 @@ class AppsManagement extends Section
       //EWCore::add_app_locale_to_translator($_REQUEST["appDir"]);
       return json_encode($sections);
    }
+   
+    /**
+    * 
+    * @param array $form_config [optional] <p>An array that contains content form configurations.<br/>
+    * the keys are: <b>title</b>, <b>saveActivity</b>, <b>updateActivity</b>, <b>data</b>
+    * </p>
+    * @return string
+    */
+   public static function create_app_main_form($form_config = null)
+   {
+      ob_start();
+      include 'app-main-form.php';
+      return ob_get_clean();
+   }
 
    public function get_description()
    {
