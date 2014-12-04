@@ -127,7 +127,7 @@ class EWCore
             $RESULT_CONTENT = $obj->process_request($function_name, $parameters);
          }
          elseif (array_key_exists("page:$section_name", $pages_feeders))
-         {            
+         {
             // ob_start();
             //include_once EW_APPS_DIR . '/' . $app_name . '/index.php';
             //$RESULT_CONTENT = ob_get_clean(); 
@@ -295,11 +295,11 @@ class EWCore
                $app_object = new $app_class_name();
                if ($type == "all")
                {
-                  $apps[] = $app_object->get_plugin_details();
+                  $apps[] = $app_object->get_app_details();
                }
                else if ($app_object->get_type() == $type)
                {
-                  $apps[] = $app_object->get_plugin_details();
+                  $apps[] = $app_object->get_app_details();
                }
             }
          }
@@ -357,11 +357,44 @@ class EWCore
             //echo EW_APPS_DIR . "/" . $app_dir . "/" . $file;
             $app_object = new $app_class_name();
 
-            return json_encode($app_object->get_plugin_details());
+            return json_encode($app_object->get_app_details());
          }
       }
 
       //$apps);
+   }
+
+   public function save_setting($key = null, $value = null)
+   {
+      $MYSQLI = EWCore::get_db_connection();
+
+      $setting = $MYSQLI->query("SELECT * FROM ew_settings WHERE `key` = '$key' ") or die($MYSQLI->error);
+      if ($user_info = $setting->fetch_assoc())
+      {
+         $MYSQLI->query("UPDATE ew_settings SET value = '$value' WHERE `key` = '$key' ") or die($MYSQLI->error);
+         return TRUE;
+      }
+      else
+      {
+         $MYSQLI->query("INSERT INTO ew_settings(`key`, `value`) VALUES('$key','$value')") or die($MYSQLI->error);
+         return TRUE;
+      }
+      return FALSE;
+   }
+
+   public function save_settings($params)
+   {
+      //$MYSQLI = get_db_connection();
+//echo $params;
+      $params = json_decode(stripslashes($params), TRUE);
+      foreach ($params as $key => $value)
+      {
+         //echo $key . " " . $value;
+         if (!$this->save_setting("ew/" . $key, $value))
+            return json_encode(array(status => "error", message => "Configurations has NOT been saved, Please try again"));
+      }
+
+      return json_encode(array(status => "success", message => "Configurations has been saved succesfully"));
    }
 
    public function get_sections()
@@ -402,7 +435,6 @@ class EWCore
 
    public static function init_sections_plugins()
    {
-//echo EW_APPS_DIR.'/';
       if (!self::$loaders_installed)
       {
          spl_autoload_register(array(self, 'autoload_sections'));
@@ -418,72 +450,101 @@ class EWCore
       }
       //return;
       //print_r(get_declared_classes());
-      $apps_dir = opendir(EW_APPS_DIR);
-      while ($app_root = readdir($apps_dir))
+      /* $apps_dir = opendir(EW_APPS_DIR);
+        while ($app_root = readdir($apps_dir))
+        {
+        if (strpos($app_root, '.') === 0)
+        {
+        continue;
+        }
+
+        //echo $app_root;
+
+        $path = EW_APPS_DIR . '/' . $app_root . '/';
+
+        $section_dirs = opendir($path);
+        $sections = array();
+
+        while ($section_dir = readdir($section_dirs))
+        {
+        if (strpos($section_dir, '.') === 0)
+        continue;
+        //echo $path.$section_dir."\n";
+        $section_dir = opendir($path . $section_dir);
+
+        while ($file = readdir($section_dir))
+        {
+        $i = strpos($file, '.class.php');
+        if (strpos($file, '.') === 0 || !$i)
+        continue;
+
+        $section_class_name = substr($file, 0, $i);
+        $real_class_name = "$app_root\\$section_class_name";
+        ///* if (self::$existed_classes[$real_class_name])
+        //  continue;
+        //   if (self::$existed_classes[$section_class_name])
+        // continue;
+
+        if (class_exists($real_class_name))
+        {
+        //self::$existed_classes[$real_class_name] = true;
+        //echo $real_class_name;
+        $sc = new $real_class_name(EWCore::get_app_instance($app_root));
+        if (method_exists($sc, "init_plugin"))
+        {
+        //echo "new - $section_class_name ";
+        try
+        {
+        call_user_func(array($sc, "init_plugin"));
+        }
+        catch (Exception $e)
+        {
+        echo $e;
+        }
+        }
+        }
+        else if (class_exists($section_class_name) && get_parent_class($section_class_name) == 'Section')
+        {
+        //self::$existed_classes[$section_class_name] = true;
+        //echo "old - $section_class_name ";
+        $sc = new $section_class_name(EWCore::get_app_instance($app_root));
+        if (method_exists($sc, "init_plugin"))
+        call_user_func(array($sc, "init_plugin"));
+        }
+        }
+        }
+        } */
+
+      $apps_dirs = opendir(EW_APPS_DIR);
+      $apps = array();
+      while ($app_dir = readdir($apps_dirs))
       {
-         if (strpos($app_root, '.') === 0)
-         {
+         if (strpos($app_dir, '.') === 0)
             continue;
-         }
 
-         //echo $app_root;
+         $app_dir_content = opendir($path . $app_dir);
 
-         $path = EW_APPS_DIR . '/' . $app_root . '/';
-
-         $section_dirs = opendir($path);
-         $sections = array();
-
-         while ($section_dir = readdir($section_dirs))
+         while ($file = readdir($app_dir_content))
          {
-            if (strpos($section_dir, '.') === 0)
+
+            if (strpos($file, '.') === 0)
                continue;
-            //echo $path.$section_dir."\n";
-            $section_dir = opendir($path . $section_dir);
+            //$i = strpos($file, '.ini');
 
-            while ($file = readdir($section_dir))
+            if (strpos($file, ".app.php") != 0)
             {
-               $i = strpos($file, '.class.php');
-               if (strpos($file, '.') === 0 || !$i)
-                  continue;
-
-               $section_class_name = substr($file, 0, $i);
-               $real_class_name = "$app_root\\$section_class_name";
-               /* if (self::$existed_classes[$real_class_name])
-                 continue;
-                 if (self::$existed_classes[$section_class_name])
-                 continue; */
-
-               if (class_exists($real_class_name))
-               {
-                  //self::$existed_classes[$real_class_name] = true;
-                  //echo $real_class_name;
-                  $sc = new $real_class_name(EWCore::get_app_instance($app_root));
-                  if (method_exists($sc, "init_plugin"))
-                  {
-                     //echo "new - $section_class_name ";
-                     try
-                     {
-                        call_user_func(array($sc, "init_plugin"));
-                     }
-                     catch (Exception $e)
-                     {
-                        echo $e;
-                     }
-                  }
-               }
-               else if (class_exists($section_class_name) && get_parent_class($section_class_name) == 'Section')
-               {
-                  //self::$existed_classes[$section_class_name] = true;
-                  //echo "old - $section_class_name ";
-                  $sc = new $section_class_name(EWCore::get_app_instance($app_root));
-                  if (method_exists($sc, "init_plugin"))
-                     call_user_func(array($sc, "init_plugin"));
-               }
+               require_once EW_APPS_DIR . "/" . $app_dir . "/" . $file;
+               //echo EW_APPS_DIR . "/" . $app_dir . "/" . $file."=";
+               $app_class_name = $app_dir . "\\" . substr($file, 0, strpos($file, "."));
+               //echo EW_APPS_DIR . "/" . $app_dir . "/" . $file;
+               //echo class_exists($app_class_name,false) ? "sdsd" : "no";
+               $app_object = new $app_class_name();
+               $app_object->init_app();
             }
          }
+         // Optimization tip
+         self::$plugins_initialized = true;
       }
-      // Optimization tip
-      self::$plugins_initialized = true;
    }
 
    public static function is_url_exist($url)
