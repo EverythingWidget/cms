@@ -189,7 +189,7 @@ body.Admin{background-image:none;}
 .header-pane .nav-pills > li > a{line-height:18px;}
 .header-pane .nav-pills > li{margin:2px 5px 0px 0px}
 .top-pane .form-content{background-color:#fff;padding:0px;top:50px;bottom:51px;position:absolute;overflow:auto;overflow-x:hidden;left:0px;right:0px;margin:0px;}
-.top-pane .form-content > .row{margin:0px;}
+//.top-pane .form-content > .row{margin:0px;}
 .form-content.no-footer{bottom:4px;border-bottom:0px solid #ddd;}
 .form-content.tabs-bar{top:105px;}
 .form-content .tab-content{position:absolute;width:100%;top:55px;right:0px;bottom:0px;left:0px;}
