@@ -6,8 +6,6 @@ if (!$_SESSION['login'])
    return;
 }
 ?>
-<!DOCTYPE html>
-
 <div  class="row">
    <div class="col-xs-12" >
       <div id="folders-list" class="box box-white">
@@ -22,8 +20,6 @@ if (!$_SESSION['login'])
       </div>
    </div>
 </div>
-
-
 <script  type="text/javascript">
    function Media()
    {

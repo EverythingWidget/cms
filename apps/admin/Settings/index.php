@@ -3,43 +3,45 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-?>
-<div id="sidebar" class="sidebar">
-   <div class="row">
 
-      <ul>
-         <li>
-            <a rel="ajax" data-ew-nav="general" href="<?php echo EW_ROOT_URL; ?>app-admin/Settings/general.php">General</a>
-         </li>     
+function sidebar()
+{
+   ob_start();
+   ?>
+   <ul>
+      <li>
+         <a rel="ajax" data-ew-nav="general" href="<?php echo EW_ROOT_URL; ?>app-admin/Settings/general.php">General</a>
+      </li>     
+      <li>
+         <a rel="ajax" data-ew-nav="apps-plugins" href="<?php echo EW_ROOT_URL; ?>app-admin/Settings/apps-plugins.php">Apps & Plugins</a>
+      </li>     
+      <li>
+         <a rel="ajax" data-ew-nav="preference" href="<?php echo EW_ROOT_URL; ?>app-admin/Settings/perference.php">Preference</a>
+      </li>     
+   </ul>
+   <?php
+   return ob_get_clean();
+}
 
-         <li>
-            <a rel="ajax" data-ew-nav="apps-plugins" href="<?php echo EW_ROOT_URL; ?>app-admin/Settings/apps-plugins.php">Apps & Plugins</a>
-         </li>     
-
-         <li>
-            <a rel="ajax" data-ew-nav="preference" href="<?php echo EW_ROOT_URL; ?>app-admin/Settings/perference.php">Preference</a>
-         </li>     
-      </ul>
-   </div>
-</div>
-<div id="main-content" class="col-xs-12" role="main">
-
-</div>
-<script  type="text/javascript">
+function script()
+{
+   ob_start();
+   ?>
+   <script  type="text/javascript">
 
 
-   /*Settings.prototype.readConfig = function ()
-   {
-      /*$.post('<?php echo EW_ROOT_URL; ?>app-admin/Settings/read_settings', function(data)
+      /*Settings.prototype.readConfig = function ()
+       {
+       /*$.post('<?php echo EW_ROOT_URL; ?>app-admin/Settings/read_settings', function(data)
        {
        EW.setFormData("#settings-form", data);
        }, "json");
-   };
-
-   Settings.prototype.saveConfig = function ()
-   {
-
-      /*d = $("#settings-form").serializeJSON();
+       };
+          
+       Settings.prototype.saveConfig = function ()
+       {
+          
+       /*d = $("#settings-form").serializeJSON();
        $.post('<?php echo EW_ROOT_URL; ?>app-admin/Settings/save_settings', {
        params: d
        },
@@ -47,10 +49,20 @@
        {
        $("body").EW().notify(data);
        }, "json");
-   };
+       };
+          
+       var settings = new Settings();*/
+      //settings.readConfig();
+      $(document).ready(function () {
+         if (!EW.getHashParameter("nav"))
+            EW.setHashParameter("nav", "general");
+      });
+   </script>
+   <?php
+   return ob_get_clean();
+}
 
-   var settings = new Settings();*/
-   //settings.readConfig();
-   if (!EW.getHashParameter("nav"))
-      EW.setHashParameter("nav", "general");
-</script>
+EWCore::register_form("ew-app-main-form", "sidebar", ["content" => sidebar()]);
+//EWCore::register_form("ew-app-main-form", "content", ["content" => content()]);
+echo admin\AppsManagement::create_app_main_form(["script" => script()]);
+

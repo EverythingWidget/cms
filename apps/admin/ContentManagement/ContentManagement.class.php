@@ -1398,7 +1398,7 @@ class ContentManagement extends \Section
     * </p>
     * @return string
     */
-   public static function get_content_form($form_config = null)
+   public static function create_content_form($form_config = null)
    {
       ob_start();
       include 'content-form.php';
