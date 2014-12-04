@@ -20,13 +20,18 @@ $defaultKeywords = $currentAppConf["web-keywords"];
 
 $_SESSION['ROOT_DIR'] = EW_ROOT_DIR;
 $_REQUEST['cmdResult'] = '';
-
+// if template.js exist, then include it in HTML_SCRIPTS
+if (file_exists(EW_ROOT_DIR . $_REQUEST["_uis_template"] . '/template.js'))
+{
+   \admin\WidgetsManagement::add_html_script($_REQUEST["_uis_template"] . '/template.js', $script);
+}
 $WM = new admin\WidgetsManagement("WidgetsManagement", $_REQUEST);
 $HTML_BODY = admin\WidgetsManagement::generate_view($_REQUEST["_uis"]);
 $HTML_TITLE = (admin\WidgetsManagement::get_html_title()) ? admin\WidgetsManagement::get_html_title() . " - " . $website_title : $website_title;
 $HTML_KEYWORDS = admin\WidgetsManagement::get_html_keywords();
 $HTML_SCRIPTS = admin\WidgetsManagement::get_html_scripts();
 $HTML_STYLES = admin\WidgetsManagement::get_html_styles();
+
 
 //$apps = json_decode(EWCore::get_apps(), true);
 ?>

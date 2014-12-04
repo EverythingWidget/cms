@@ -58,11 +58,11 @@
           {
           $.EW("getParentDialog", $("#city-form")).trigger("close");
           $(document).trigger("cities-list.refresh");
-          $("body").EW().notify(data).show();
+          $("body").EW().notify(data);
           }
           else
           {
-          $("body").EW().notify(data).show();
+          $("body").EW().notify(data);
           }
           EW.unlock($("#city-form"));
           }, "json");
@@ -77,7 +77,7 @@
          EW.lock($("#city-form"), "Saving...");
          $.post('<?php echo EW_ROOT_URL; ?>app-admin/Settings/update_language', formParams, function (data) {
 
-            $("body").EW().notify(data).show();
+            $("body").EW().notify(data);
 
          }, "json");
 

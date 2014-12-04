@@ -132,7 +132,7 @@ if (!$_SESSION['login'])
          $.post('<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/add_category', params, function (data) {
             //if (data.status === "success")
             //{
-            EW.$("body").EW().notify(data).show();
+            EW.$("body").EW().notify(data);
             documents.listCategories();
             documents.currentTopPane.dispose();
             //}
@@ -150,7 +150,7 @@ if (!$_SESSION['login'])
             // if (data.status === "success")
             //{
             documents.listCategories();
-            $("body").EW().notify(data).show();
+            $("body").EW().notify(data);
             EW.unlock(documents.currentTopPane);
             //}
 
@@ -181,14 +181,14 @@ if (!$_SESSION['login'])
                           else if (data.status === "success")
                           {
                              EW.setHashParameter("categoryId", null);
-                             $("body").EW().notify(data).show();
+                             $("body").EW().notify(data);
                              documents.listCategories();
                              documents.currentTopPane.dispose();
                           }
                           else
                           {
                              EW.unlock(documents.currentTopPane);
-                             $("body").EW().notify(data).show();
+                             $("body").EW().notify(data);
                           }
                        }, "json");
                        $(this).dialog("close");
@@ -214,14 +214,14 @@ if (!$_SESSION['login'])
             if (data.status === "success")
             {
                EW.setHashParameter("article", null);
-               $("body").EW().notify(data).show();
+               $("body").EW().notify(data);
                documents.listCategories();
                documents.currentTopPane.dispose();
             }
             else
             {
                EW.unlock(documents.currentTopPane);
-               $("body").EW().notify(data).show();
+               $("body").EW().notify(data);
             }
          }, "json");
       }

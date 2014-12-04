@@ -213,7 +213,7 @@ $venue_info = EWCore::process_command("culturenight", "Venues", "get_venue", arr
       params["logo"] = $("#logo_image").attr("data-filename") + ".640,440." + $("#logo_image").attr("data-file-extension");
       //alert($("#logo_image").attr("src"));
       $.post('<?php echo EW_ROOT_URL; ?>app-culturenight/Venues/update_venue', params, function (data) {
-         $("body").EW().notify(data).show();
+         $("body").EW().notify(data);
          $(document).trigger("venues-list.refresh");
       }, "json");
    };
@@ -225,7 +225,7 @@ $venue_info = EWCore::process_command("culturenight", "Venues", "get_venue", arr
       $.post('<?php echo EW_ROOT_URL; ?>app-culturenight/Venues/add_venue', params, function (data) {
 
          //listCategories();
-         $("body").EW().notify(data).show();
+         $("body").EW().notify(data);
          // when the venue has been added successfully, added event will be triggered
          if (data.status === "success")
          {

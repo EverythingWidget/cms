@@ -1939,7 +1939,8 @@ function EWNotification(element, options)
       $this.closeNotification();
    });
    this.$note.prepend(link);
-
+   // Show notification
+   this.show();
    return this;
 }
 
@@ -1982,7 +1983,7 @@ EWNotification.prototype.show = function () {
       left: left
    });
    var $this = this;
-   this.$note.animate({
+   this.$note.stop().animate({
       marginLeft: "-=25",
       opacity: "1"
    },

@@ -174,7 +174,7 @@
          },
          onDone: function (data)
          {
-            $("body").EW().notify(data).show();
+            $("body").EW().notify(data);
             $(document).trigger("events-list.refresh");
             $.EW("getParentDialog", $("#event-form")).trigger("close");
          }}).hide();
@@ -195,7 +195,7 @@
          onDone: function (data)
          {
             EW.unlock($.EW("getParentDialog", $("#event-form")));
-            $("body").EW().notify(data).show();
+            $("body").EW().notify(data);
             $(document).trigger("events-list.refresh");
          }}).hide();
       $("#start_date").datepicker({
@@ -267,7 +267,7 @@
          return;
       }
       $.post('<?php echo EW_ROOT_URL; ?>app-culturenight/Events/update_event', params, function (data) {
-         $("body").EW().notify(data).show();
+         $("body").EW().notify(data);
          //EW.unlock($("#event-form"));
          $(document).trigger("events-list.refresh");
       }, "json");
@@ -284,7 +284,7 @@
       }
       EW.lock($.EW("getParentDialog", $("#event-form")));
       $.post('<?php echo EW_ROOT_URL; ?>app-culturenight/Events/add_event', params, function (data) {
-         $("body").EW().notify(data).show();
+         $("body").EW().notify(data);
          $(document).trigger("events-list.refresh");
          $.EW("getParentDialog", $("#event-form")).trigger("close");
       }, "json");

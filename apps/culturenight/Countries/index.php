@@ -64,7 +64,7 @@ if (!$_SESSION['login'])
         };
       EW.lock(self.table);
       $.post("<?php echo EW_ROOT_URL; ?>app-culturenight/Countries/delete_country", data, function(data) {
-        $("body").EW().notify(data).show();
+        $("body").EW().notify(data);
         $(document).trigger("countries-list.refresh");
       },"json");
     }

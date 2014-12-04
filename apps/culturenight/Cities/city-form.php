@@ -72,11 +72,11 @@ if ($_REQUEST["cityId"])
           {
             $.EW("getParentDialog", $("#city-form")).trigger("close");
             $(document).trigger("cities-list.refresh");
-            $("body").EW().notify(data).show();
+            $("body").EW().notify(data);
           }
           else
           {
-            $("body").EW().notify(data).show();
+            $("body").EW().notify(data);
           }
           EW.unlock($("#city-form"));
         }, "json");
@@ -94,11 +94,11 @@ if ($_REQUEST["cityId"])
           if (data.status === "success")
           {
             $(document).trigger("cities-list.refresh");
-            $("body").EW().notify(data).show();
+            $("body").EW().notify(data);
           }
           else
           {
-            $("body").EW().notify(data).show();
+            $("body").EW().notify(data);
           }
           EW.unlock($("#city-form"));
         }, "json");

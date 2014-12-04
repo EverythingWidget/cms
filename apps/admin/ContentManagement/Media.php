@@ -67,7 +67,7 @@ if (!$_SESSION['login'])
             $.post('<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/' + action, {id: media.itemId}, function (data) {
                if (data.status_code === 1)
                {
-                  $("body").EW().notify(data).show();
+                  $("body").EW().notify(data);
                   EW.setHashParameter("title", null, "Media");
                   self.listMedia();
                   if (self.currentTopPane)
@@ -76,7 +76,7 @@ if (!$_SESSION['login'])
                }
                else
                {
-                  $("body").EW().notify(data).show();
+                  $("body").EW().notify(data);
                }
             }, "json");
          }
@@ -206,14 +206,14 @@ if (!$_SESSION['login'])
                           else if (data.status === "success")
                           {
                              EW.setHashParameter("categoryId", null, "Media");
-                             $("body").EW().notify(data).show();
+                             $("body").EW().notify(data);
                              media.listCategories();
                              media.currentTopPane.dispose();
                           }
                           else
                           {
                              EW.unlock(media.currentTopPane);
-                             $("body").EW().notify(data).show();
+                             $("body").EW().notify(data);
                           }
                        }, "json");
                        $(this).dialog("close");

@@ -1,6 +1,6 @@
 <?php
 
-namespace facebook;
+namespace connected_accounts;
 
 use Section;
 use EWCore;

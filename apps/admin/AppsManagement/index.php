@@ -40,9 +40,7 @@ function content()
       <ul id="app-sections" class="nav nav-pills xs-nav-tabs col-xs-12">    
       </ul>
    </div>
-   <div class="form-content  tabs-bar no-footer row" >
-      <div id="app-section-content" class="tab-content col-xs-12" >
-      </div>
+   <div id="app-section-content" class="form-content tab-content tabs-bar no-footer row" >
    </div>
    <?php
    return ob_get_clean();
@@ -246,4 +244,4 @@ function script()
 EWCore::register_form("ew-app-main-form", "sidebar", ["content" => sidebar()]);
 EWCore::register_form("ew-app-main-form", "content", ["content" => content()]);
 echo admin\AppsManagement::create_app_main_form(["script" => script()]);
-?>
+

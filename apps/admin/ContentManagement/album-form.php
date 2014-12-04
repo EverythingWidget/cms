@@ -45,7 +45,7 @@ function get_ew_album_properties_form()
                   title: $('#title').val(),
                   parentId: media.parentId}, function (data) {
                   media.listMedia();
-                  $("body").EW().notify(data).show();
+                  $("body").EW().notify(data);
                   media.currentTopPane.dispose();
                }, "json");
             }
@@ -62,7 +62,7 @@ function get_ew_album_properties_form()
                   id: media.itemId,
                   title: $('#title').val()}, function (data) {
                   media.listMedia();
-                  $("body").EW().notify(data).show();
+                  $("body").EW().notify(data);
                   EW.unlock(media.currentTopPane);
                }, "json");
             }

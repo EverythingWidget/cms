@@ -43,11 +43,11 @@
           {
             $.EW("getParentDialog", $("#country-form")).trigger("close");
             $(document).trigger("countries-list.refresh");
-            $("body").EW().notify(data).show();
+            $("body").EW().notify(data);
           }
           else
           {
-            $("body").EW().notify(data).show();
+            $("body").EW().notify(data);
           }
           EW.unlock($("#country-form"));
         }, "json");
@@ -65,11 +65,11 @@
           if (data.status === "success")
           {
             $(document).trigger("countries-list.refresh");
-            $("body").EW().notify(data).show();
+            $("body").EW().notify(data);
           }
           else
           {
-            $("body").EW().notify(data).show();
+            $("body").EW().notify(data);
           }
           EW.unlock($("#country-form"));
         }, "json");

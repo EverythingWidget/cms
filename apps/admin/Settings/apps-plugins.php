@@ -8,7 +8,7 @@
 <form name="apps-plugins-form" id="general-form" >
    <div class="row">
       <?php
-      $apps = json_decode(EWCore::get_apps("all"), true);
+      /*$apps = json_decode(EWCore::get_apps("all"), true);
       $i = 0;
       foreach ($apps as $app)
       {
@@ -55,7 +55,7 @@
             echo '<div class="row-separator hidden-xs hidden-sm hidden-lg"></div>';
          if (($i % 2) == 0)
             echo '<div class="row-separator hidden-xs hidden-md hidden-lg"></div>';
-      }
+      }*/
       ?>
 
    </div>

@@ -32,7 +32,7 @@ class Settings extends Section
          $value = $MYSQLI->real_escape_string($_REQUEST["value"]);
 
       $setting = $MYSQLI->query("SELECT * FROM ew_settings WHERE `key` = '$key' ") or die($MYSQLI->error);
-      if ($user_info = $setting->fetch_assoc())
+      if ($setting = $setting->fetch_assoc())
       {
          $MYSQLI->query("UPDATE ew_settings SET value = '$value' WHERE `key` = '$key' ") or die($MYSQLI->error);
          return TRUE;

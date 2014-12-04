@@ -37,7 +37,7 @@
       },
       function(data)
       {
-        $("body").EW().notify(data).show();
+        $("body").EW().notify(data);
       }, "json");
     };
 
