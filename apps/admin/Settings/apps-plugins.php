@@ -8,7 +8,7 @@
 <form name="apps-plugins-form" id="general-form" >
    <div class="row">
       <?php
-      /*$apps = json_decode(EWCore::get_apps("all"), true);
+      $apps = json_decode(EWCore::get_apps("all"), true);
       $i = 0;
       foreach ($apps as $app)
       {
@@ -19,9 +19,15 @@
             <div class="box box-white">
                <div class="row">
                   <div class="col-xs-12">
-                     <h2><?php echo $app["name"] ?>
-                        <label class="small">version: <?php echo $app["version"] ?></label>
-                     </h2>                  
+                     <h2><?php echo $app["name"] ?></h2>                  
+                  </div>
+                  <div class="col-xs-8 mar-bot">
+                     <h3>App Root</h3>
+                     <label class="value" name="appDir" id="appDir"><?php echo $app["root"] ?></label>
+                  </div>
+                  <div class="col-xs-4 mar-bot">
+                     <h3>Version</h3>
+                     <label class="value" name="appDir" id="appDir"><?php echo $app["version"] ?></label>
                   </div>
                </div>
                <div class="row">
@@ -29,6 +35,7 @@
                      <h3>Languages</h3>
                   </div>       
                </div>
+
                <div class="row">
                   <div class="col-xs-12" >
                      <ul class="list indent">
@@ -55,7 +62,7 @@
             echo '<div class="row-separator hidden-xs hidden-sm hidden-lg"></div>';
          if (($i % 2) == 0)
             echo '<div class="row-separator hidden-xs hidden-md hidden-lg"></div>';
-      }*/
+      }
       ?>
 
    </div>

@@ -15,6 +15,11 @@ ob_end_clean();
 if (ob_get_level())
    ob_end_clean();
 
+error_reporting(E_ERROR);
+ini_set('display_errors', '1');
+
+EWCore::set_default_locale("admin");
+EWCore::set_db_connection(get_db_connection());
 
 $path = ltrim($_SERVER['REQUEST_URI'], '/');    // Trim leading slash(es)
 if (strpos($path, '?'))
@@ -29,6 +34,12 @@ $parameter_index = 1;
 
 // Check the language parameter
 $language = "en";
+$default_language = EWCore::read_setting("ew/language");
+//echo $default_language;
+if ($default_language)
+{
+   $language = $default_language;
+}
 if (preg_match("/^(.{2,3})$/", $elements[$parameter_index], $match))
 {
    $language = $match[0];
@@ -61,11 +72,11 @@ if (isset($elements[$parameter_index]) && preg_match("/^([^\.]*)$/", $elements[$
    $section_name = $elements[$parameter_index];
    $_REQUEST["_section_name"] = $section_name;
 
-   /*$rest_of_elements = array_slice($elements, $parameter_index);
-   $file_uri = implode('/', $rest_of_elements);
+   /* $rest_of_elements = array_slice($elements, $parameter_index);
+     $file_uri = implode('/', $rest_of_elements);
 
-   $_file = $file_uri;
-   $_REQUEST["_file"] = $_file;*/
+     $_file = $file_uri;
+     $_REQUEST["_file"] = $_file; */
 
    $parameter_index++;
 }
@@ -80,7 +91,7 @@ if (isset($elements[$parameter_index]))
    $rest_of_elements = array_slice($elements, $parameter_index);
    $file_uri = implode('/', $rest_of_elements);
    //if (strpos($file_uri, '?'))
-      //$file_uri = substr($file_uri, 0, strpos($file_uri, '?'));
+   //$file_uri = substr($file_uri, 0, strpos($file_uri, '?'));
    $_file = $file_uri;
    $_REQUEST["_file"] = $_file;
 
@@ -89,13 +100,7 @@ if (isset($elements[$parameter_index]))
 
 //print_r($_REQUEST);
 //print_r($_SERVER);
-
 // Set error reporting
-error_reporting(E_ERROR);
-ini_set('display_errors', '1');
-
-EWCore::set_default_locale("admin");
-EWCore::set_db_connection(get_db_connection());
 //print_r($_REQUEST);
 //echo $_language;
 // Add slash at the end of URL
@@ -148,74 +153,48 @@ $RESULT_CONTENT = "RESULT_CONTENT: EMPTY";
 
 $real_class_name = $app_name . '\\' . $section_name;
 
-$path = null;
+//$path = null;
+//if ($app_name)
+//{
+$RESULT_CONTENT = EWCore::process_command($app_name, $section_name, $function_name, $_REQUEST);
 
-if ($app_name && $section_name && isset($function_name))
-{
-   $RESULT_CONTENT = EWCore::process_command($app_name, $section_name, $function_name, $_REQUEST);
-}
-else if ($app_name && $section_name && $_file)
-{
-   echo "not this place";
-   //include_once $_SERVER['DOCUMENT_ROOT'] . '/apps/' . $app_name . '/' . $section_name . '/' . $_file;
-}
-else if ($app_name)
-{
-   //$pages_feeders = EWCore::read_registry("ew-widget-feeder");
-   // when page  is a page widget feeder
-   //if (array_key_exists("page:$_file", $pages_feeders))
-   //{
+//}
+//else
+//{
+//  $RESULT_CONTENT = "EW INDEX: Request is invalid";
+//}
+/* if ($path)
+  {
+  if (file_exists($path))
+  {
+  ob_start();
+  include $path;
+  $RESULT_CONTENT = ob_get_clean();
+  }
+  else
+  {
+  $RESULT_CONTENT = EWCore::log_error(404, "<h4>{$path}</h4><p>Check EW: FILE NOT FOUND</p>");
+  }
+  }
+  $vars = get_defined_vars();
+  $callback = function($match) use ($vars) {
+  //print_r($vars);
+  $varname = $match[1];
+  if ($vars[$varname])
+  {
+  return $vars[$varname]; // or htmlspecialchars($vars[$varname]);
+  }
+  else
+  {
+  return $match[2];
+  }
+  };
 
-      // ob_start();
-      //include_once EW_APPS_DIR . '/' . $app_name . '/index.php';
-      //$RESULT_CONTENT = ob_get_clean(); 
-    //  $path = EW_APPS_DIR . '/' . $app_name . '/index.php';
-   //}
-   //else
-   //{
-      if (!$_file)
-      {
-         $_file = "index.php";
-      }
-      $path = EW_APPS_DIR . '/' . $app_name . '/' . $_file;
-   //}
-}
-else
-{
-   $RESULT_CONTENT = "EW INDEX: Request is invalid";
-}
-if ($path)
-{
-   if (file_exists($path))
-   {
-      ob_start();
-      include $path;
-      $RESULT_CONTENT = ob_get_clean();
-   }
-   else
-   {
-      $RESULT_CONTENT = EWCore::log_error(404, "<h4>{$path}</h4><p>Check EW: FILE NOT FOUND</p>");
-   }
-}
-$vars = get_defined_vars();
-$callback = function($match) use ($vars) {
-   //print_r($vars);
-   $varname = $match[1];
-   if ($vars[$varname])
-   {
-      return $vars[$varname]; // or htmlspecialchars($vars[$varname]);
-   }
-   else
-   {
-      return $match[2];
-   }
-};
-
-function evaluate_string_codes($match)
-{
-   $vars = get_defined_vars();
-   return $vars[$match[1]];
-}
+  function evaluate_string_codes($match)
+  {
+  $vars = get_defined_vars();
+  return $vars[$match[1]];
+  } */
 
 function translate($match)
 {

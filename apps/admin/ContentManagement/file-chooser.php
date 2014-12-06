@@ -139,7 +139,7 @@ function custom_widget_feeder_tab()
    return ob_get_clean();
 }
 
-global $EW;
+//global $EW;
 EWCore::register_form("ew-file-chooser-form-default", "contents-list", ["title" => "Contents", "content" => get_contents_list()]);
 EWCore::register_form("ew-file-chooser-form-default", "media-list", ["title" => "Media", "content" => "Coming Soon..."]);
 EWCore::register_form("ew-file-chooser-form-default", "apps-pages-list", ["title" => "Apps", "content" => "Coming Soon ... "]);
@@ -168,26 +168,23 @@ $tabs = EWCore::read_registry("ew-file-chooser-form");
       ?>
    </ul>
 </div>
-<div class="form-content  tabs-bar no-footer row">
-   <form id="link-chooser"  action="#" method="POST">
+<form id="link-chooser"  action="#" method="POST">
+   <div class="form-content tab-content tabs-bar no-footer row">
 
-      <div class="tab-content col-xs-12">
-         <?php
-         foreach ($tabsDefault as $id => $tab)
-         {
-            if ($id == "contents-list")
-               echo "<div class='tab-pane active' id='{$id}'>{$tab["content"]}</div>";
-            else
-               echo "<div class='tab-pane' id='{$id}'>{$tab["content"]}</div>";
-         }
-         foreach ($tabs as $id => $tab)
-         {
+      <?php
+      foreach ($tabsDefault as $id => $tab)
+      {
+         if ($id == "contents-list")
+            echo "<div class='tab-pane active' id='{$id}'>{$tab["content"]}</div>";
+         else
             echo "<div class='tab-pane' id='{$id}'>{$tab["content"]}</div>";
-         }
-         ?>
-      </div>
-
-   </form>
-</div>
+      }
+      foreach ($tabs as $id => $tab)
+      {
+         echo "<div class='tab-pane' id='{$id}'>{$tab["content"]}</div>";
+      }
+      ?>
+   </div>
+</form>
 <!--<div class="footer-pane row actions-bar action-bar-items">
 </div>-->

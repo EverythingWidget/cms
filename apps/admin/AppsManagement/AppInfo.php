@@ -50,12 +50,12 @@ if ($_REQUEST["appDir"])
                <div class="col-xs-12">
                   <h2><?php echo $app["name"] ?></h2>                  
                </div>
-               <div class="col-xs-6 mar-bot">
-                  <label>App Root</label>
+               <div class="col-xs-8 mar-bot">
+                  <h3>App Root</h3>
                   <label class="value" name="appDir" id="appDir"><?php echo $app["root"] ?></label>
                </div>
-               <div class="col-xs-6 mar-bot">
-                  <label>Version</label>
+               <div class="col-xs-4 mar-bot">
+                  <h3>Version</h3>
                   <label class="value" name="appDir" id="appDir"><?php echo $app["version"] ?></label>
                </div>
             </div>

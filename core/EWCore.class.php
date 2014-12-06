@@ -85,7 +85,7 @@ class EWCore
     */
    public static function process_command($app_name, $section_name, $function_name, $parameters)
    {
-      if (!$app_name || !$section_name || !$function_name)
+      if (!$app_name /* || !$section_name || !$function_name */)
       {
          $RESULT_CONTENT = EWCore::log_error(400, "Wrong command");
       }
@@ -126,12 +126,18 @@ class EWCore
             //echo "::hh:::".$function_name;
             $RESULT_CONTENT = $obj->process_request($function_name, $parameters);
          }
-         elseif (array_key_exists("page:$section_name", $pages_feeders))
+         else if (EWCore::is_widget_feeder("page", $section_name))
          {
-            // ob_start();
-            //include_once EW_APPS_DIR . '/' . $app_name . '/index.php';
-            //$RESULT_CONTENT = ob_get_clean(); 
             $path = EW_APPS_DIR . '/' . $app_name . '/index.php';
+         }
+         else if (!$section_name)
+         {
+            // show index.php of app
+            if (!$function_name)
+            {
+               $function_name = "index.php";
+            }
+            $path = EW_APPS_DIR . '/' . $app_name . '/' . $function_name;
          }
          else
          {
@@ -139,7 +145,6 @@ class EWCore
             $path = EW_APPS_DIR . '/' . $app_name . '/' . $section_name . '/' . $function_name;
          }
       }
-
 
       if ($path && file_exists($path))
       {
@@ -149,12 +154,18 @@ class EWCore
       }
       else if ($path)
       {
-         $RESULT_CONTENT = EWCore::log_error(404, "<h4>{$path}</h4><p>ffffFILE NOT FOUND</p>");
+         $RESULT_CONTENT = EWCore::log_error(404, "<h4>{$path}</h4><p>FILE NOT FOUND</p>");
       }
       // Call ew command listeners
       $actions = EWCore::read_registry("ew_command_listener");
       if (isset($actions) && !is_array($RESULT_CONTENT))
-         $RESULT_CONTENT = json_decode($RESULT_CONTENT, true);
+      {
+         $temp = json_decode($RESULT_CONTENT, true);
+         if ($temp)
+         {
+            $RESULT_CONTENT = $temp;
+         }
+      }
       try
       {
          // Call the listeners with the same data as the command data
@@ -364,7 +375,7 @@ class EWCore
       //$apps);
    }
 
-   public function save_setting($key = null, $value = null)
+   private function save_setting($key = null, $value = null)
    {
       $MYSQLI = EWCore::get_db_connection();
 
@@ -395,6 +406,43 @@ class EWCore
       }
 
       return json_encode(array(status => "success", message => "Configurations has been saved succesfully"));
+   }
+
+   public static function read_settings($app)
+   {
+      $MYSQLI = get_db_connection();
+      if ($app)
+         $app .='/%';
+
+      $setting = $MYSQLI->query("SELECT * FROM ew_settings WHERE `key` LIKE '$app'") or die($MYSQLI->error);
+      //$MYSQLI = get_db_connection();
+      $rows = array();
+      while ($r = $setting->fetch_assoc())
+      {
+         // Remove the 'app/' part from the key
+         $key = substr($r["key"], strlen($app) - 1);
+         $rows[$key] = $r["value"];
+      }
+      $MYSQLI->close();
+      //$out = array("totalRows" => $setting->num_rows, "result" => $rows);
+      return json_encode($rows);
+   }
+
+   public static function read_setting($key)
+   {
+      $MYSQLI = EWCore::get_db_connection();
+      if (!$key)
+         $key = $MYSQLI->real_escape_string($_REQUEST["key"]);
+      $setting = $MYSQLI->query("SELECT * FROM ew_settings WHERE `key` = '$key'") or die($MYSQLI->error);
+      //$MYSQLI = get_db_connection();
+      //$rows = array();
+      while ($r = $setting->fetch_assoc())
+      {
+         return $r["value"];
+      }
+
+      //$out = array("totalRows" => $setting->num_rows, "result" => $rows);
+      return FALSE;
    }
 
    public function get_sections()
@@ -830,24 +878,24 @@ class EWCore
       EWCore::register_object("ew-category", $id, $categories);
    }
 
-   public static function registare_widget_feeder($type, $id, $function)
+   public static function register_widget_feeder($type, $id, $function)
    {
       EWCore::register_object("ew-widget-feeder", "$type:$id", $function);
    }
 
-   public static function is_widget_feeder($name, $id)
+   public static function is_widget_feeder($type, $id)
    {
       $func = null;
-      if (array_key_exists("$name:$id", EWCore::read_registry("ew-widget-feeder")))
+      if (array_key_exists("$type:$id", EWCore::read_registry("ew-widget-feeder")))
       {
          $func = EWCore::read_registry("ew-widget-feeder");
-         $func = $func["$name:$id"];
+         $func = $func["$type:$id"];
       }
 
-      if (!$func)
-         return FALSE;
-      else
+      if ($func)
          return TRUE;
+      else
+         return FALSE;
    }
 
    /**

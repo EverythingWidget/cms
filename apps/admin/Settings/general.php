@@ -4,7 +4,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-$app_config = EWCore::get_app_config("admin");
+$app_config = EWCore::read_settings("ew");
 ?>
 <form name="general-form" id="general-form" class="row">
    <div class="col-lg-6 col-md-6 col-lg-offset-3 col-md-offset-3 margin-bottom" >

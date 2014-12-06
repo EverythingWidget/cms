@@ -368,7 +368,7 @@ ul.errors-list li{display:block;padding-top:5px}
 .row label{display:block;float:none;}
 .row h1, .row h2, .row h3, .row h4{margin:10px 0px 15px;}
 .Label,label{line-height:18px;padding:0px;font-size:14px;font-weight:bold;cursor:default;overflow:hidden;}
-label.value{color:#000;font-weight:300;font-size:22px;line-height:26px;padding:0px;}
+label.value{color:#000;font-weight:300;font-size:22px;line-height:24px;padding:0px;}
 label.label-float{line-height:20px;min-height:20px;padding:0px;font-size:13px;font-weight:bold;color:#999;background-color:transparent;padding:0px;border-radius:0px;margin:5px 8px;-webkit-transition:margin 300ms ease;-moz-transition:margin 300ms ease;-ms-transition:margin 300ms ease;-o-transition:margin 300ms ease;transition:margin 300ms ease;z-index:3;}
 label.label-float.focused{/*background-color:#333;*/color:#000;text-shadow:none;margin-top:-20px;margin-left:0px;}
 .label-float.valued{/*background-color:#b0b0b0;*/;margin-top:-20px;}
