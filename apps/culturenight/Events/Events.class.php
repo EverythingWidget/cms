@@ -25,8 +25,8 @@ class Events extends Section
 
       EWCore::register_widget_feeder("news", "latest-events", array($this, "feeder_latest_events"));
       EWCore::register_widget_feeder("calender-events", "events-list", array($this, "event_items_list"));
-      EWCore::register_widget_feeder("items", "events-list", array($this, "event_items_list"));
-      EWCore::register_widget_feeder("items", "events-with-tag", array($this, "event_with_tag"));
+      EWCore::register_widget_feeder("list", "events-list", array($this, "event_items_list"));
+      EWCore::register_widget_feeder("list", "events-with-tag", array($this, "event_with_tag"));
       EWCore::register_widget_feeder("menu", "events-styles", array($this, "feeder_event_sub_menus"));
       EWCore::register_widget_feeder("menu", "events-locations", array($this, "feeder_location_sub_menus"));
       // new event form

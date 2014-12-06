@@ -301,7 +301,7 @@ class WidgetsManagement extends Section
          }
          $stm->close();
          $MYSQLI->close();
-         echo json_encode(array(status => "success","message"=>"tr{The layout has been saved successfully}", "data"=>[title => $name]));
+         echo json_encode(array(status => "success", "message" => "tr{The layout has been saved successfully}", "data" => [title => $name]));
       }
       else
       {
@@ -550,7 +550,7 @@ class WidgetsManagement extends Section
       if ($style_id)
          $WIDGET_STYLE_ID = "id='$style_id'";
       $widget_parameters = json_decode(($params), TRUE);
-
+      $widget_title = WidgetsManagement::get_widget_details($widget_type)["title"];
       // Include widget content
       ob_start();
       include EW_WIDGETS_DIR . '/' . $widget_type . '/index.php';
@@ -561,7 +561,7 @@ class WidgetsManagement extends Section
       $WIDGET_STYLE_CLASS = self::get_widget_style_class();
 
       $result_html.= "<div class='widget-container $style_class' >";
-      $result_html.= "<div class='widget $WIDGET_STYLE_CLASS' $WIDGET_STYLE_ID data-widget-id='$widget_id' data-widget-parameters='" . ($params) . "' data-widget-type='$widget_type'>";
+      $result_html.= "<div class='widget $WIDGET_STYLE_CLASS' $WIDGET_STYLE_ID data-widget-id='$widget_id' data-widget-parameters='" . ($params) . "' data-widget-type='$widget_type' data-widget-title='$widget_title'>";
       $result_html.= $widget_content;
       self::$widget_style_class = "";
       return $result_html;
@@ -660,17 +660,30 @@ class WidgetsManagement extends Section
          if (strpos($widget_dir, '.') === 0)
             continue;
 
-         $title = null;
+         /*$title = null;
          $description = "";
          //print_r($tokens);
          $title = EWCore::get_comment_parameter("title", $path . $widget_dir . '/admin.php');
-         $description = EWCore::get_comment_parameter("description", $path . $widget_dir . '/admin.php');
+         $description = EWCore::get_comment_parameter("description", $path . $widget_dir . '/admin.php');*/
 
          $count++;
-         $apps[] = array("name" => $widget_dir, "path" => $widget_dir, "title" => ($title) ? $title : $widget_dir, "description" => $description);
+         $apps[] = WidgetsManagement::get_widget_details($widget_dir);
       }
       $out = array("totalRows" => $count, "result" => $apps);
       return json_encode($out);
+   }
+
+   public static function get_widget_details($widget_type)
+   {
+      $path = EW_WIDGETS_DIR . '/' . $widget_type . '/admin.php';
+
+      $title = "";
+      $description = "";
+      //print_r($tokens);
+      $title = EWCore::get_comment_parameter("title", $path);
+      $description = EWCore::get_comment_parameter("description", $path);
+
+      return array("name" => $widget_type, "path" => $widget_type, "title" => $title, "description" => $description);
    }
 
    function get_widget_cp($widgetName = null)

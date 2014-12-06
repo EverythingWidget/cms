@@ -33,7 +33,7 @@ html,body{margin:0px;height:100%;font-family:Roboto,arial,sans-serif;}
 .widget-container.clearfix{float:none;margin:0px auto;}
 .widget.login-form{padding:15px;background-color:#fff;display:block;margin:20px auto;border-radius:6px;}
 .widget.login-form input{display:block;width:100%;margin-bottom:10px;}
-#balloon-poster-modal {position:absolute;width:400px;height:100px;padding:0px 10px;left:50%;margin:0px;background-color:#eee;overflow:hidden;z-index:10;transition-property:box-shadow;/*-webkit-transition-property:box-shadow;transition-duration:.5s;-webkit-transition-duration:.5s;*/}
+#balloon-poster-modal {position:absolute;width:400px;height:100px;padding:0px 10px;margin:0px;background-color:#eee;overflow:hidden;z-index:10;transition-property:box-shadow;/*-webkit-transition-property:box-shadow;transition-duration:.5s;-webkit-transition-duration:.5s;*/}
 #balloon-poster-modal .content{display:block;margin:0px;}
 #balloon-poster-modal .options{height:45px;width:100%;display:block;margin:0px 0px;border:none;background-color:rgba(0,0,0,.05);}
 #balloon-poster-modal .people{height:45px;width:100%;display:block;margin:10px 0px;border:none;background-color:rgba(0,0,0,.05);display:none;}

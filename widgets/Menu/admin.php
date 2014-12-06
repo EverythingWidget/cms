@@ -1,7 +1,7 @@
 <?php
 /*
- * title: Menu Bar
- * description: Create custom menu or load your contents as menu items
+ * title: Menu
+ * description: Create a menu or select a menu feeder
  */
 ?>
 <div class="row">
