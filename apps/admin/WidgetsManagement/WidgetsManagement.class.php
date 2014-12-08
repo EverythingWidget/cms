@@ -1,5 +1,4 @@
 <?php
-
 namespace admin;
 
 use Section;
@@ -21,6 +20,12 @@ class WidgetsManagement extends Section
 
    public function init_plugin()
    {
+      $this->register_permission("view", "User can view the widgets section", array($this->get_index(), "get_uis",
+          "get_uis_list",
+          "get_widgets_types",
+          "get_all_pages_uis_list",
+          "get_path_uis",
+          $this->get_index()));
       //global $EW;
       $this->register_form("ew-article-form-tab", "uis_tab", ["title" => "UI"]);
       $this->register_form("ew-category-form-tab", "uis_tab", ["title" => "UI"]);
@@ -660,11 +665,11 @@ class WidgetsManagement extends Section
          if (strpos($widget_dir, '.') === 0)
             continue;
 
-         /*$title = null;
-         $description = "";
-         //print_r($tokens);
-         $title = EWCore::get_comment_parameter("title", $path . $widget_dir . '/admin.php');
-         $description = EWCore::get_comment_parameter("description", $path . $widget_dir . '/admin.php');*/
+         /* $title = null;
+           $description = "";
+           //print_r($tokens);
+           $title = EWCore::get_comment_parameter("title", $path . $widget_dir . '/admin.php');
+           $description = EWCore::get_comment_parameter("description", $path . $widget_dir . '/admin.php'); */
 
          $count++;
          $apps[] = WidgetsManagement::get_widget_details($widget_dir);

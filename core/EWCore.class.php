@@ -1401,10 +1401,13 @@ class EWCore
     * @param array $reason An array that contains the reason(s) that cause error 
     * @return type
     */
-   public static function log_error($header_code = 400, $message, $reason = NULL)
+   public static function log_error($header_code = 400, $message, $reason = NULL, $send_header = TRUE)
    {
-      http_response_code($header_code);
-      header('Content-Type: application/json');
+      if ($send_header)
+      {
+         http_response_code($header_code);
+         header('Content-Type: application/json');
+      }
       //self::$error_occuered = $header_code;
       //header("Status: $header_code");
       /* $field;
@@ -1415,7 +1418,7 @@ class EWCore
 
         }
         } */
-      $error_content = array("url" => $_REQUEST["_app_name"] . "/" . $_REQUEST["_section_name"] . "/" . $_REQUEST["_function_name"],
+      $error_content = array("statusCode" => $header_code, "url" => $_REQUEST["_app_name"] . "/" . $_REQUEST["_section_name"] . "/" . $_REQUEST["_function_name"],
           "message" => $message,
           "reason" => $reason);
       return json_encode($error_content);

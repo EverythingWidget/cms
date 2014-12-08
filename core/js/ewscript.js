@@ -575,6 +575,14 @@ EverythingWidgets.prototype.newOverPane = function (onClose)
 
 EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler)
 {
+   if (jsonData && jsonData["statusCode"] != 200 && jsonData["message"])
+   {
+      jsonData["status"] = "error";
+      jsonData["delay"] = "stay";
+      $(formId).html("<div class='box box-error'><label class='value'>"+jsonData["message"]+"</label></div>");
+      //$(formId).EW().notify(jsonData);      
+      return;
+   }
    var setInputData = function (key, val)
    {
       if (handler)
@@ -1536,7 +1544,8 @@ EWTable.prototype.read = function (customURLData)
           self.dynamicHeader = self.headers.clone();
           self.dynamicHeader.addClass("dynamic-header");
           self.table.prepend(self.dynamicHeader);*/
-         self.pageInfo.html(o.responseJSON.message);
+         //self.pageInfo.html(o.responseJSON.message);
+         self.container.replaceWith("<div class='box box-error'><label class='value'>"+o.responseJSON.message+"</label></div>");
          EW.customAjaxErrorHandler = true;
          /*if (data.status == 403)
           {
@@ -1965,6 +1974,7 @@ EWNotification.prototype.show = function () {
    this.$note.css("opacity", "0");
    //alert(v.length + "   " + this.$note.outerWidth());
    this.$element.append(this.$note);
+
    if (v.length > 0)
    {
       if (position == "ne" || position == "nw" || position == "n")
@@ -1972,6 +1982,11 @@ EWNotification.prototype.show = function () {
 
       if (position == "se" || position == "sw")
          top = v.offset().top - note.outerHeight(true);
+   }
+   else
+   {
+      top = this.$element.offset().top;
+      left = ((this.$element.outerWidth() - this.$note.outerWidth()) / 2) + this.$element.offset().left;
    }
    if (position == "n")
    {
