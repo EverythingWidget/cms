@@ -47,7 +47,9 @@ if (class_exists($app_name . "\\" . $compId))
 {
    $ccc = $app_name . "\\" . $compId;
    $sc = new $ccc($ccc, $_REQUEST);
-   $compPage = EW_APPS_DIR . '/admin/' . $compId . '/' . $sc->get_index();
+   //$compPage = EW_APPS_DIR . '/admin/' . $compId . '/' . $sc->get_index();
+   //echo "inja";
+   $compPage = EWCore::process_command("admin", $compId,null);
    $pageTitle = "tr{" . $sc->get_title() . "}";
 }
 
@@ -822,7 +824,7 @@ if ($secId)
 
                </div>
                <?php
-               include($compPage);
+               echo ($compPage);
                ?>
             </div>
             <?php

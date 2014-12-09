@@ -88,11 +88,19 @@ class EWCore
       if (!$app_name /* || !$section_name || !$function_name */)
       {
          $RESULT_CONTENT = EWCore::log_error(400, "Wrong command");
+         return $RESULT_CONTENT;
       }
+      //echo " $app_name  $section_name  $function_name";
       $real_class_name = $app_name . '\\' . $section_name;
       $parameters["_app_name"] = $app_name;
       $parameters["_section_name"] = $section_name;
       $parameters['_function_name'] = $function_name;
+
+      // show index.php of app
+      if (!$function_name)
+      {
+         $function_name = "index.php";
+      }
 
       /* if ($_REQUEST["ew_actionBase"])
         print_r($_REQUEST["ew_actionBase"]); */
@@ -123,7 +131,6 @@ class EWCore
          $pages_feeders = EWCore::read_registry("ew-widget-feeder");
          if ($class_exist)
          {
-            //echo "::hh:::".$function_name;
             $RESULT_CONTENT = $obj->process_request($function_name, $parameters);
          }
          else if (EWCore::is_widget_feeder("page", $section_name))
@@ -132,16 +139,12 @@ class EWCore
          }
          else if (!$section_name)
          {
-            // show index.php of app
-            if (!$function_name)
-            {
-               $function_name = "index.php";
-            }
+            // Refer to app index
             $path = EW_APPS_DIR . '/' . $app_name . '/' . $function_name;
          }
          else
          {
-            //echo $function_name;
+            // Refer to app section index
             $path = EW_APPS_DIR . '/' . $app_name . '/' . $section_name . '/' . $function_name;
          }
       }

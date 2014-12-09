@@ -579,7 +579,7 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler)
    {
       jsonData["status"] = "error";
       jsonData["delay"] = "stay";
-      $(formId).html("<div class='box box-error'><label class='value'>"+jsonData["message"]+"</label></div>");
+      $(formId).html("<div class='box box-error'><label class='value'>" + jsonData["message"] + "</label></div>");
       //$(formId).EW().notify(jsonData);      
       return;
    }
@@ -697,6 +697,10 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
             top: parseInt(modalPane.css("top")) + 10
          });
          xButton.show();
+      },
+      html: function (data)
+      {
+
       }};
    var settings = {
       class: "center",
@@ -728,6 +732,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
          class: "center"
       };
 
+   //var animationDuration = 600;
    this.isOpen = false;
    var modalPane = $(document.createElement("div"));
 
@@ -752,6 +757,11 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
    modalPane.on("beforeClose", function ()
    {
       return true;
+   });
+   modalPane.on("destroy", function ()
+   {
+      settings.closeAction = null;
+      modalPane.trigger("close");
    });
    // Close event
    modalPane.on("close", function ()
@@ -797,9 +807,15 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
             else
             {
                animationDiv.css("textShadow", "");
-               animationDiv.animate({top: originElement.offset().top, left: originElement.offset().left, width: originElement.outerWidth(), height: originElement.outerHeight(), lineHeight: originElement.outerHeight() + "px", fontSize: originElement.css("fontSize")}, 360, "Power3.easeOut", function () {
+               animationDiv.animate({top: originElement.offset().top,
+                  left: originElement.offset().left,
+                  width: originElement.outerWidth(),
+                  height: originElement.outerHeight(),
+                  lineHeight: originElement.outerHeight() + "px",
+                  fontSize: originElement.css("fontSize"),
+                  borderRadius: originElement.css("border-radius")}, 360, "Power3.easeOut", function () {
                   originElement.css("visibility", "");
-                  animationDiv.fadeOut(120, function () {
+                  animationDiv.fadeOut(10, function () {
                      animationDiv.remove();
                   });
                });
@@ -840,21 +856,27 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
             animationDiv.css({width: originElement.outerWidth(), height: originElement.outerHeight()});
             //tempDiv.animate({top: modalPane.offset().top + modalPane.outerHeight() / 6, left: modalPane.offset().left + modalPane.outerWidth() / 6, width: modalPane.outerWidth() / 1.5, height: modalPane.outerHeight() / 1.5}, {duration:420,queue:false});
             animationDiv.animate({top: modalPane.offset().top, left: modalPane.offset().left, width: modalPane.outerWidth(), height: modalPane.outerHeight(), lineHeight: modalPane.outerHeight() + "px"}, 360, "Power3.easeOut", function () {
+               modalPane.isOpen = true;
                modalPane.delay((!loadingLabel) ? 0 : 120).animate({opacity: "1"}, 240, function () {
                   methods.setCloseButton();
-                  animationDiv.remove();
+                  animationDiv.remove()
                });
             });
+            //animationDuration = 360;
          }
          else
          {
-            modalPane.animate({right: "-=15%"}, 0);
-            modalPane.animate({opacity: "1", right: "0px"}, 420, "Power3.easeOut", methods.setCloseButton);
+            modalPane.animate({left: "+=10%"}, 0);
+            modalPane.animate({opacity: "1", left: "-=10%"}, 420, "Power3.easeOut", function () {
+               methods.setCloseButton();
+               modalPane.isOpen = true;
+            });
+            //animationDuration = 252;
          }
          //xButton.show();
 
          //modalPane.removeClass("scale-out transparent");
-         modalPane.isOpen = true;
+
          if (settings.onOpen)
          {
             settings.onOpen.apply(modalPane, null);
@@ -887,6 +909,21 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
    {
       modalPane.trigger("open");
    }
+   var htmlFunction = function (data)
+   {
+      // Set default jquery html() function
+      modalPane.html = modalPane.__proto__.html;
+      var int = setInterval(function () {
+         if (!modalPane.isOpen)
+            return;
+         modalPane.html(data);
+         modalPane.html = htmlFunction;
+         window.clearInterval(int);
+      }, 20);
+   };
+   // Overwrite the default jquery html() function behavior
+   modalPane.html = htmlFunction;
+
    return modalPane;
 };
 
@@ -1545,7 +1582,7 @@ EWTable.prototype.read = function (customURLData)
           self.dynamicHeader.addClass("dynamic-header");
           self.table.prepend(self.dynamicHeader);*/
          //self.pageInfo.html(o.responseJSON.message);
-         self.container.replaceWith("<div class='box box-error'><label class='value'>"+o.responseJSON.message+"</label></div>");
+         self.container.replaceWith("<div class='box box-error'><label class='value'>" + o.responseJSON.message + "</label></div>");
          EW.customAjaxErrorHandler = true;
          /*if (data.status == 403)
           {
