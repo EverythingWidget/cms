@@ -2020,7 +2020,7 @@ EWNotification.prototype.show = function () {
       if (position == "se" || position == "sw")
          top = v.offset().top - note.outerHeight(true);
    }
-   else
+   if (!this.$element.is("body"))
    {
       top = this.$element.offset().top;
       left = ((this.$element.outerWidth() - this.$note.outerWidth()) / 2) + this.$element.offset().left;

@@ -67,8 +67,22 @@ $WM = new admin\WidgetsManagement();
       this.setData = true;
       this.getWidgetParameters = null;
       this.widgetParameters = {};
+      if (this.widgetId)
+      {
+         $("#cmd").val("edit");
+         $("#uis-widget-title").html("Edit Widget");
+         $("#widget-control-panel").fadeIn(300);
+         $("#widgets-list-form").hide();
+         this.bAdd.comeOut(200);
+         this.bApply.comeIn(300);
 
-      //$("#widget-control-panel").css({width: $("#uis-widget").width()});
+         var widget = neuis.getEditorItem(this.widgetId);
+         this.showWidgetControlPanel(widget.attr("data-widget-type"));
+      }
+      else
+      {
+         this.showWidgetControlPanel(this.widgetType);
+      }
    }
 
    UISWidget.prototype.autoSetData = function (flag)
@@ -119,11 +133,6 @@ $WM = new admin\WidgetsManagement();
       neuis.currentDialog.dispose();
    };
 
-   UISWidget.prototype.addToPanelForm = function ()
-   {
-      $("#widgets-list").fadeIn(300);
-   };
-
    UISWidget.prototype.applyToWidget = function ()
    {
       var base = this;
@@ -170,51 +179,38 @@ $WM = new admin\WidgetsManagement();
        neuis.updateUIS(true);
        }*/
    };
-   var oldType;
-   UISWidget.prototype.editWidgetForm = function ()
-   {
-      $("#cmd").val("edit");
-      $("#uis-widget-title").html("Edit Widget");
-      $("#widget-control-panel").fadeIn(300);
-      $("#widgets-list-form").hide();
-      uisWidget.bAdd.comeOut(200);
-      uisWidget.bApply.comeIn(300);
 
-      var widget = neuis.getEditorItem(this.widgetId);
-      oldType = widget.attr("data-widget-type");
-      uisWidget.showWidgetControlPanel(widget.attr("data-widget-type"));
-   };
 
    UISWidget.prototype.showWidgetControlPanel = function (widgetType)
    {
-      var $this = this;
+      var self = this;
       var widget;
-      $this.widgetType = widgetType;
+      self.widgetType = widgetType;
       // if widgetId exist, get the corresponding widget
-      if ($this.widgetId != "")
+      if (self.widgetId != "")
       {
-         widget = neuis.getEditorItem($this.widgetId);
+         widget = neuis.getEditorItem(self.widgetId);
          var widgetParams = (widget.attr("data-widget-parameters")) ? $.parseJSON(widget.attr("data-widget-parameters")) : {};
-         $this.widgetParameters = widgetParams;
+         self.widgetParameters = widgetParams;
       }
 
-      $this.bCC.comeOut(200);
+      self.bCC.comeOut(200);
       //$this.bCW.comeIn(300);
       $('#uis-widget-form').html("");
       $('#uis-widget-form').show();
       $("#widgets-list-form").hide();
       EW.lock($('#uis-widget-form'));
-      $.post('<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/uis-widget-form.php', {widgetType: widgetType, template: uisWidget.template, widgetParameters: JSON.stringify($this.widgetParameters)},
+      $.post('<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/uis-widget-form.php', {widgetType: widgetType, template: self.template, widgetParameters: JSON.stringify(self.widgetParameters)},
       function (data) {
          $('#uis-widget-form').stop().hide();
          $('#uis-widget-form').html(data);
          // If widgetId exist, set data for widget control panel
-         if ($this.widgetId != "")
+         if (self.widgetId != "")
          {
             $("#used-classes").text(widget.data("container").prop("class"));
             $("#style_class").val(widget.prop("class"));
             // If true, set values for the fields of widget control panel form
-            if ($this.setData === true)
+            if (self.setData === true)
             {
                var widgetParams = (widget.attr("data-widget-parameters")) ? $.parseJSON(widget.attr("data-widget-parameters")) : {};
                EW.setFormData("#uis-widget", widgetParams);
@@ -223,10 +219,10 @@ $WM = new admin\WidgetsManagement();
          }
          // If widgetId is empty show add button
          else
-            $this.bAdd.comeIn(300);
+            self.bAdd.comeIn(300);
          $('#uis-widget-form').fadeIn(300);
 
-         $this.readClasses();
+         self.readClasses();
       });
    };
 
@@ -252,11 +248,7 @@ $WM = new admin\WidgetsManagement();
 
    UISWidget.prototype.readClasses = function ()
    {
-      //$("#available-classes").html("");
-
-      //$.getJSON("index.php", {className: "EWCore", cmd: "parse_css", path: $("#template").val()}, function(data)
-      //{
-      var widgetClasses = $("#style_class").val();
+      var widgetClasses = ($("#style_class").val()) ? $("#style_class").val() : "";
       widgetClasses = widgetClasses.split(" ");
       var classes = $("#used-classes").text();
       classes = classes.split(" ");
@@ -356,4 +348,3 @@ $WM = new admin\WidgetsManagement();
 // Load widget control panel scripts
 if (function_exists("get_script"))
    echo get_script();
-?>

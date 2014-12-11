@@ -1395,6 +1395,20 @@ class EWCore
 
       return $match[2];
    }
+   private static $rtl_languages = ["fa","ar"];
+   public static function get_language_dir($language)
+   {
+      //echo "----".$language."-----";
+      //print_r(static::$rtl_languages);
+      if(array_search($language, static::$rtl_languages) == false)
+      {
+         return "rtl";   
+      }
+      else
+      {
+         return "ltr";   
+      }
+   }
 
    //public static $error_occuered = false;
    /**

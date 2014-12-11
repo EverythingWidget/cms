@@ -49,7 +49,7 @@ if (class_exists($app_name . "\\" . $compId))
    $sc = new $ccc($ccc, $_REQUEST);
    //$compPage = EW_APPS_DIR . '/admin/' . $compId . '/' . $sc->get_index();
    //echo "inja";
-   $compPage = EWCore::process_command("admin", $compId,null);
+   $compPage = EWCore::process_command("admin", $compId, null);
    $pageTitle = "tr{" . $sc->get_title() . "}";
 }
 
@@ -261,7 +261,7 @@ if ($secId)
                      }
                      linkChooserDialog.open();
                   }
-               });    
+               });
             }
             return this.each(function () {
                //alert($.data(this, "ew-plugin-link-chooser"));
@@ -391,7 +391,10 @@ if ($secId)
 
          function initPlugins(element)
          {
+
             var $element = $(element);
+            // set input and textarea dir to auto
+            $element.find("input, textarea").attr("dir", "auto");
 
             // EW Plugins
             // Begin
@@ -587,7 +590,7 @@ if ($secId)
                   EW.customAjaxErrorHandler = false;
                   return;
                }
-              //console.log(data);
+               //console.log(data);
                $("body").EW().notify({
                   "message": {
                      html: (!data.responseJSON) ? "---ERROR---" : data.responseJSON.message
@@ -762,7 +765,7 @@ if ($secId)
 
       </script>
    </head>
-   <body class="Admin" onload="">
+   <body class="Admin <?php echo EWCore::get_language_dir($_REQUEST["_language"]) ?>" onload="">
 
       <div id="components-pane" class="col-xs-12" >
          <ul class="component row">

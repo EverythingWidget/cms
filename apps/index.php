@@ -27,9 +27,12 @@ if (strpos($path, '?'))
 $elements = explode('/', $path);
 //print_r($elements);
 //echo '<br/><h3>Request parameters</h3>';
-
-$root_dir = $elements[0];
-$parameter_index = 1;
+$parameter_index = 0;
+if (strpos(EW_DIR, $elements[0]))
+{
+   $root_dir = $elements[0];
+   $parameter_index = 1;
+}
 
 
 // Check the language parameter
@@ -129,11 +132,14 @@ if ($app_name == "asset")
 }
 
 $r_uri = strtok($_SERVER["REQUEST_URI"], "?");
+// If root dir is same with the uri then refer to the base url
+if ($root_dir == str_replace("/", "", $r_uri))
+   $r_uri = "/";
 // Check if UI structure is specified
 if (!isset($_REQUEST["_uis"]))
 {
    if ($_file)
-      $r_uri = "/" . $_REQUEST["_file"];
+      $r_uri = "/" . $_file;
    $uis_data = EWCore::get_url_uis($r_uri);
    $_REQUEST["_uis"] = $uis_data["uis_id"];
    $_REQUEST["_uis_template"] = $uis_data["uis_template"];

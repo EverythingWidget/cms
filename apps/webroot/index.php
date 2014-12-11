@@ -87,7 +87,7 @@ $HTML_STYLES = admin\WidgetsManagement::get_html_styles();
       <?php echo $HTML_SCRIPTS ?>
    </head>
 
-   <body>
+   <body class="<?php echo EWCore::get_language_dir($_REQUEST["_language"]) ?>">
       <div id="base-content-pane" class="container">
          <?php
          echo $HTML_BODY;
