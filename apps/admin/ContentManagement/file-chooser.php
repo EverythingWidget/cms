@@ -116,7 +116,7 @@ function custom_widget_feeder_tab()
    ob_start();
    ?>  
    <script>
-      var feedersList = EW.createTable({name: "feeders-list", headers: {Name: {}, Type: {}}, rowCount: true, url: "<?php echo EW_ROOT_URL; ?>app-admin/EWCore/get_widget_feeders", pageSize: 30
+      var feedersList = EW.createTable({name: "feeders-list", headers: {Name: {}, Type: {}}, rowCount: true, url: "<?php echo EW_ROOT_URL; ?>app-admin/EWCore/get_widget_feeders", urlData: {type: "all"}, pageSize: 30
          , buttons: {"Select": function (rowId) {
    <?php
 //Call the function which has been attached to the function reference element
@@ -141,7 +141,7 @@ function custom_widget_feeder_tab()
 
 //global $EW;
 EWCore::register_form("ew-file-chooser-form-default", "contents-list", ["title" => "Contents", "content" => get_contents_list()]);
-EWCore::register_form("ew-file-chooser-form-default", "media-list", ["title" => "Media", "content" => "Coming Soon..."]);
+//EWCore::register_form("ew-file-chooser-form-default", "media-list", ["title" => "Media", "content" => "Coming Soon..."]);
 //EWCore::register_form("ew-file-chooser-form-default", "apps-pages-list", ["title" => "Apps", "content" => "Coming Soon ... "]);
 EWCore::register_form("ew-file-chooser-form-default", "widgets-feeders-list", ["title" => "Widgets Feeders", "content" => custom_widget_feeder_tab()]);
 EWCore::register_form("ew-file-chooser-form-default", "custom-url", ["title" => "URL", "content" => custom_url_tab()]);

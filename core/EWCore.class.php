@@ -948,22 +948,14 @@ class EWCore
    public static function get_widget_feeders($type = "all")
    {
 
-      /* if (array_key_exists($id, EWCore::read_registry("ew-widget-feeder-$name")))
-        {
-        $func = EWCore::read_registry("ew-widget-feeder-$name");
-        $func = $func[$id];
-        } */
-      //echo $type;
-      if (!$type)
+      $list = array("totalRows" => count(EWCore::read_registry("ew-widget-feeder")), "result" => array());
+      foreach (EWCore::read_registry("ew-widget-feeder") as $wf => $wfc)
       {
-         $list = array("totalRows" => count(EWCore::read_registry("ew-widget-feeder")), "result" => array());
-         foreach (EWCore::read_registry("ew-widget-feeder") as $wf => $wfc)
-         {
-            $parts = explode(":", $wf);
+         $parts = explode(":", $wf);
+         if (!$type || $type == "all" || $type == $parts[0])
             $list["result"][] = array("name" => $parts[1], "type" => $parts[0]);
-         }
-         return json_encode($list);
       }
+      return json_encode($list);
    }
 
    public static function register_resource($id, $function)
@@ -1395,18 +1387,20 @@ class EWCore
 
       return $match[2];
    }
-   private static $rtl_languages = ["fa","ar"];
+
+   private static $rtl_languages = ["fa", "ar"];
+
    public static function get_language_dir($language)
    {
       //echo "----".$language."-----";
       //print_r(static::$rtl_languages);
-      if(array_search($language, static::$rtl_languages) == false)
+      if (array_search($language, static::$rtl_languages) == false)
       {
-         return "rtl";   
+         return "rtl";
       }
       else
       {
-         return "ltr";   
+         return "ltr";
       }
    }
 

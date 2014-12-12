@@ -368,7 +368,7 @@ ul.errors-list li{display:block;padding-top:5px}
 .row label{display:block;float:none;}
 .row h1, .row h2, .row h3, .row h4{margin:10px 0px 15px;}
 .Label,label{line-height:18px;padding:0px;font-size:14px;font-weight:bold;cursor:default;overflow:hidden;}
-label.value{color:#000;font-weight:300;font-size:22px;line-height:24px;padding:0px;}
+label.value{color:#000;font-weight:300;font-size:22px;line-height:26px;padding:0px;}
 label.label-float{line-height:20px;min-height:20px;padding:0px;font-size:13px;font-weight:bold;color:#999;background-color:transparent;padding:0px;border-radius:0px;margin:5px 8px;-webkit-transition:margin 300ms ease;-moz-transition:margin 300ms ease;-ms-transition:margin 300ms ease;-o-transition:margin 300ms ease;transition:margin 300ms ease;z-index:3;}
 label.label-float.focused{/*background-color:#333;*/color:#000;text-shadow:none;margin-top:-20px;margin-left:0px;}
 .label-float.valued{/*background-color:#b0b0b0;*/;margin-top:-20px;}
@@ -483,7 +483,7 @@ table.contents td{padding:5px;vertical-align:top;max-width: 100px;min-width: 100
 .icon.incorrect{background-image:url('incorrect-small-icon.png')}
 .close-icon:hover{opacity:.9}
 .x-icon{background-image:url('cross16.png');}
-.btn i{width:20px;height:20px;cursor:pointer;background-position:center center;background-repeat:no-repeat;display:block;}
+.btn i{width:20px;height:20px;cursor:pointer;background-position:center center;background-repeat:no-repeat;display:block;margin:0px -4px}
 .uis-icon{background-image:url('uis-icon.png');}
 .link-icon{background-image:url('link-icon.png');}
 div.notification{min-height:40px;line-height:20px;margin:5px 0px 0px 5px;background-color:#ddd;display:block;padding:10px 40px 10px 10px;border-radius:4px;box-shadow:0px 1px 2px 0px rgba(0,0,0,.2);}
@@ -528,7 +528,7 @@ body.dragging, body.dragging * {
    cursor: move !important;
 }
 .buttons-panel{bottom:4px;}
-.buttons-panel .btn{margin-left:2px;padding:3px;}
+.buttons-panel .btn{margin-left:2px;padding:0px 4px;}
 .text-icon{display:block;margin:1px;padding:10px 5px;border:0px solid #eee;background-color:#eee;cursor:default;min-height:40px;}
 .text-icon:hover{background-color:#ddd;border-color:#5cf;}
 .text-icon h1, .text-icon h2, .text-icon h3, .text-icon h4, .text-icon h5,.text-icon h6{padding:0px;margin:0px;margin-left:50px;display:block;}

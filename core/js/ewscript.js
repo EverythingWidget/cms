@@ -1301,11 +1301,10 @@ EverythingWidgets.prototype.createHeadersRow = function (headers)
    return tr;
 };
 
-function EWTable()
+function EWTable(config)
 {
    var $base = this;
-   this.config = {
-   };
+   this.config = $.extend({pageSize: 10, urlData: {}}, config);
    this.container = $("<div class='report row'></div>");
    this.tableHeaderDiv = $("<div class='table-header' ></div>");
    this.tableBodyDiv = $("<div class='table-body'></div>");
@@ -1314,10 +1313,11 @@ function EWTable()
    this.controls = $("<div class='controls'></div>");
    this.dynamicHeader = $();
    this.token = 0;
-   this.pageSize = 10;
-   this.url;
+   this.pageSize = this.config.pageSize;
+   this.url = this.config.url;
+   this.urlData = this.config.urlData;
    this.cmd;
-   this.data;
+   this.data = this.config.data;
    this.next;
    this.previous;
    this.pageInfo;
@@ -1530,8 +1530,7 @@ EWTable.prototype.read = function (customURLData)
 {
    var self = this;
    $.EW("lock", self.table);
-   var urlData = $.extend({
-   }, {
+   var urlData = $.extend(self.urlData, {
       token: self.token,
       size: self.pageSize
    },
@@ -1635,11 +1634,8 @@ EWTable.prototype.removeRow = function (dataId)
 
 EverythingWidgets.prototype.createTable = function (conf)
 {
-   var ewTable = new EWTable();
-   ewTable.config = conf;
-   ewTable.pageSize = conf.pageSize;
-   ewTable.url = conf.url;
-   ewTable.data = conf.data;
+   var ewTable = new EWTable(conf);
+
    // create a div element with 'table-container' class which contains the table element
    var bodyTable = $(document.createElement("table"));
    bodyTable.addClass("data");
