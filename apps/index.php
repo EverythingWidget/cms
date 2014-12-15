@@ -148,7 +148,8 @@ else
 {
    $r_uri = $_REQUEST["_uis"];
    $dbc = EWCore::get_db_connection();
-   $uis = $dbc->query("SELECT * FROM ew_ui_structures WHERE id =  '$r_uri' ") or die("no UIS");
+
+   $uis = $dbc->query("SELECT * FROM ew_ui_structures WHERE id =  '$r_uri' ")/* or die($dbc->error) */;
    if ($row = $uis->fetch_assoc())
    {
       $_REQUEST["_uis_template"] = $row["template"];
@@ -159,48 +160,7 @@ $RESULT_CONTENT = "RESULT_CONTENT: EMPTY";
 
 $real_class_name = $app_name . '\\' . $section_name;
 
-//$path = null;
-//if ($app_name)
-//{
 $RESULT_CONTENT = EWCore::process_command($app_name, $section_name, $function_name, $_REQUEST);
-
-//}
-//else
-//{
-//  $RESULT_CONTENT = "EW INDEX: Request is invalid";
-//}
-/* if ($path)
-  {
-  if (file_exists($path))
-  {
-  ob_start();
-  include $path;
-  $RESULT_CONTENT = ob_get_clean();
-  }
-  else
-  {
-  $RESULT_CONTENT = EWCore::log_error(404, "<h4>{$path}</h4><p>Check EW: FILE NOT FOUND</p>");
-  }
-  }
-  $vars = get_defined_vars();
-  $callback = function($match) use ($vars) {
-  //print_r($vars);
-  $varname = $match[1];
-  if ($vars[$varname])
-  {
-  return $vars[$varname]; // or htmlspecialchars($vars[$varname]);
-  }
-  else
-  {
-  return $match[2];
-  }
-  };
-
-  function evaluate_string_codes($match)
-  {
-  $vars = get_defined_vars();
-  return $vars[$match[1]];
-  } */
 
 function translate($match)
 {

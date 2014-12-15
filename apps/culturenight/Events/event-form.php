@@ -320,7 +320,7 @@ if ($_REQUEST["eventId"])
       //delete(data.tags);
       EW.setFormData("#event-form", data);
       $("#form-title").html("<span>tr:culturenight{Edit Event}</span>" + data.name);
-      $("#logo").prop("src", "<?php echo EW_ROOT_URL ?>res/images/" + data.logo);
+      $("#logo").prop("src", "<?php echo EW_ROOT_URL ?>asset/images/" + data.logo);
        /*$("#logo_image").attr("data-file-extension",/[^.]+$/.exec(data.logo));
        $("#logo_image").attr("data-filename",/^[^.]+/.exec(data.logo));*/
       //alert(/[^.]+$/.exec(data.logo)+" "+/^[^.]+/.exec(data.logo)+" "+data.logo);

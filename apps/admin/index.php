@@ -308,7 +308,7 @@ if ($secId)
                // If the plugin has been called for the first time
                else
                {
-                  image.attr("src", "templates/default/no-image.png")
+                  image.attr("src", "asset/images/no-image.png")
                   image.css({
                      border: "none",
                      outline: "none",
@@ -333,10 +333,10 @@ if ($secId)
 
                imageChooserBtn.click(function ()
                {
-                  if (!imageChooserDialog)
+                  //if (!imageChooserDialog)
                   {
                      imageChooserDialog = EW.createModal({
-                        closeAction: "hide",
+                        //closeAction: "hide",
                         autoOpen: false,
                         class: "center-big"
                      });

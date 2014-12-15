@@ -16,18 +16,18 @@ use EWCore;
 class ContentManagement extends \Section
 {
 
-   private $file_types;
-   private $images_resources = array("/is/htdocs/wp1067381_3GN1OJU4CE/www/culturenights/app/webroot/img/logos/");
-
-   public function init_plugin()
-   {
-      $this->file_types = array("jpeg" => "image",
+   private $file_types= array("jpeg" => "image",
           "jpg" => "image",
           "png" => "image",
           "gif" => "image",
           "txt" => "text",
           "mp3" => "sound",
           "mp4" => "video");
+   private $images_resources = array("/is/htdocs/wp1067381_3GN1OJU4CE/www/culturenights/app/webroot/img/logos/");
+
+   public function init_plugin()
+   {
+     // $this->file_types 
       EWCore::register_resource("images", array($this, "image_loader"));
       $this->register_permission("see-content", "User can see the contents", array($this->get_index(), "get_content",
           "get_category",
@@ -1096,19 +1096,20 @@ class ContentManagement extends \Section
             $file_info = pathinfo($file_path);
 
             // create thumb for image if doesn't exist
-            $tumbURL = 'media' . $path . $file_info["filename"] . ".thumb." . $file_info["extension"];
+            $tumbURL = 'asset/images' . $path . $file_info["filename"] . ".thumb." . $file_info["extension"];
 
             list($width, $height) = getimagesize($file_path);
             if (!file_exists($root . $path . $file_info["filename"] . ".thumb." . $file_info["extension"]) && $width > 140)
             {
                $this->create_image_thumb($file_path, 140);
-               $tumbURL = 'media' . $path . $file_info["filename"] . ".thumb." . $file_info["extension"];
+               $tumbURL = 'asset/images' . $path . $file_info["filename"] . ".thumb." . $file_info["extension"];
             }
             else if ($width <= 140)
             {
-               $tumbURL = 'media' . $path . $file;
+               $tumbURL = 'asset/images' . $path . $file;
             }
-
+//echo $file_info["extension"]." ".$this->file_types["jpg"];
+//print_r($this->file_types);
             $files[] = array("id" => $r["content_id"], title => $r["title"], "parentId" => $container_id,
                 type => $this->file_types[$file_info["extension"]] ? $this->file_types[$file_info["extension"]] : "unknown",
                 size => round(filesize($file_path) / 1024), ext => $file_info["extension"],

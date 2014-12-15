@@ -122,8 +122,11 @@ if (!$_SESSION['login'])
 
    Media.prototype.seeImage = function (url, fn)
    {
-      tp = EW.newTopPane();
-      tp.addClass("full");
+      tp = EW.createModal({onClose: function ()
+         {
+            EW.setHashParameter("cmd", null, "Media");
+            //contentManagement.showActions();
+         }, class: "full"});
 
       this.currentTopPane = tp;
       var img = $("<img>");
@@ -131,12 +134,7 @@ if (!$_SESSION['login'])
 
       tp.append("<h1>Preview</h1>");
       //tp.append("<div class='row'><label>File Name</label><label>"++"</label></div>");
-      tp.append(img);
-      tp.onClosed = function ()
-      {
-         EW.setHashParameter("cmd", null, "Media");
-         //contentManagement.showActions();
-      };
+      tp.append($("<div class='form-content no-footer'>").append(img));
 
    };
 
