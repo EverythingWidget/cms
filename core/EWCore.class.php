@@ -157,7 +157,7 @@ class EWCore
       }
       else if ($path)
       {
-         $RESULT_CONTENT = EWCore::log_error(404, "<h4>{$path}</h4><p>FILE NOT FOUND</p>");
+         $RESULT_CONTENT = EWCore::log_error(404, "<h4>{$path}</h4><p>FILE NOT ggggFOUND</p>");
       }
       // Call ew command listeners
       $actions = EWCore::read_registry("ew_command_listener");

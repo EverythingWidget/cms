@@ -49,7 +49,15 @@ if (class_exists($app_name . "\\" . $compId))
    $sc = new $ccc($ccc, $_REQUEST);
    //$compPage = EW_APPS_DIR . '/admin/' . $compId . '/' . $sc->get_index();
    //echo "inja";
+
    $compPage = EWCore::process_command("admin", $compId, null);
+   $temp = json_decode($compPage, true);
+   if ($temp["statusCode"] == "404")
+   {
+      http_response_code(200);
+      header('Content-Type: text/html');
+      $compPage = "<div class='box box-error'><label class='value'>" . $temp["message"] . "</label></div>";
+   }
    $pageTitle = "tr{" . $sc->get_title() . "}";
 }
 
@@ -245,17 +253,17 @@ if ($secId)
                   {
                      //if (!linkChooserDialog)
                      //{
-                        linkChooserDialog = EW.createModal();
-                        $.post("<?php echo EW_DIR ?>app-admin/ContentManagement/file-chooser.php", {
-                           callback: settings.callbackName
-                        },
-                        function (data) {
-                           var functionRefrence = $("<div style='display:none;' id='function-reference'></div>");
-                           functionRefrence.data("callback", settings.callback);                           
-                           e = $(data);
-                           e.append(functionRefrence);
-                           linkChooserDialog.html(e);
-                        });
+                     linkChooserDialog = EW.createModal();
+                     $.post("<?php echo EW_DIR ?>app-admin/ContentManagement/file-chooser.php", {
+                        callback: settings.callbackName
+                     },
+                     function (data) {
+                        var functionRefrence = $("<div style='display:none;' id='function-reference'></div>");
+                        functionRefrence.data("callback", settings.callback);
+                        e = $(data);
+                        e.append(functionRefrence);
+                        linkChooserDialog.html(e);
+                     });
                      //}
                      //linkChooserDialog.open();
                   }

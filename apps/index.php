@@ -51,8 +51,9 @@ if (preg_match("/^(.{2,3})$/", $elements[$parameter_index], $match))
    $parameter_index++;
 }
 $_REQUEST["_language"] = $language;
+$url_language =  ($language == "en") ? '' : $language . '/' ;
 // Set the language for the root url
-define('EW_ROOT_URL', 'http://' . $_SERVER['SERVER_NAME'] . EW_DIR_URL . $language . '/');
+define('EW_ROOT_URL', 'http://' . $_SERVER['SERVER_NAME'] . EW_DIR_URL .$url_language);
 
 // Check the app parameter
 $app_name = "webroot";
