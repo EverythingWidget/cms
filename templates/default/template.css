@@ -298,7 +298,7 @@ div.sidebar li a label{float:left;padding:0px;margin:0px;}
 div.sidebar li a:hover{background-color:rgba(0,0,0,.4);}
 div.sidebar li a:active{background-color:rgba(0,0,0,.5);}
 div.sidebar li a:focus{background-color:rgba(0,0,0,.4);outline:none;}
-div.sidebar li a.selected{background-color:rgba(0,0,0,.4);border-left:6px solid #3cf;text-shadow:0px 0px 3px rgba(255,255,255,.3);}
+div.sidebar li a.selected{background-color:rgba(0,0,0,.4);border-left:6px solid #3cf;text-shadow:0px 0px 3px rgba(255,255,255,.3);cursor:default;}
 .texture{background-image:url('side-bar-bg.png');}
 .texture.dark{background-color:#c0cacf;}
 .texture.squre{background-color:#fff;background-image:url('squre-texture.png');}

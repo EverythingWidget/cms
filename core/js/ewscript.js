@@ -761,6 +761,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
    modalPane.on("destroy", function ()
    {
       settings.closeAction = null;
+      modalPane.isOpen = true;
       modalPane.trigger("close");
    });
    // Close event

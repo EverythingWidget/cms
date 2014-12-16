@@ -253,10 +253,11 @@ if ($secId)
                            callback: settings.callbackName
                         },
                         function (data) {
-                           linkChooserDialog.html(data);
                            var functionRefrence = $("<div style='display:none;' id='function-reference'></div>");
-                           functionRefrence.data("callback", settings.callback);
-                           linkChooserDialog.find("#link-chooser").append(functionRefrence);
+                           functionRefrence.data("callback", settings.callback);                           
+                           e = $(data);
+                           e.append(functionRefrence);
+                           linkChooserDialog.html(e);
                         });
                      }
                      linkChooserDialog.open();

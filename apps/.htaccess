@@ -1,14 +1,13 @@
 RewriteEngine On
 
+RewriteCond %{REQUEST_URI} \.(.{2,4})$
+RewriteCond %{REQUEST_URI} !\.(php)$
+RewriteRule ^(.{2,3})?/(.*) /EverythingWidget/$2 [L]
 
-#RewriteCond %{REQUEST_URI} \.(.{2,4})$
-#RewriteCond %{REQUEST_URI} !\.(php)$
-#RewriteRule ^(.{2,3})?/(.*) /EverythingWidget/$2 [L]
-
-#RewriteCond %{REQUEST_URI} \.(.{2,4})$
-#RewriteCond %{REQUEST_URI} !\.(php)$
+RewriteCond %{REQUEST_URI} \.(.{2,4})$
+RewriteCond %{REQUEST_URI} !\.(php)$
 ##RewriteCond %{REQUEST_FILENAME} -f
-#RewriteRule ^(app-)?(.*) $2 [L]
+RewriteRule ^(app-)?(.*) $2 [L]
 
 FallbackResource /EverythingWidget/index.php
 

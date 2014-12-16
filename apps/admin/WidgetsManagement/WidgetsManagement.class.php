@@ -302,7 +302,7 @@ class WidgetsManagement extends Section
          }
          if ($_REQUEST['homeUIS'] == "true")
          {
-            $this->set_uis("@DEFAULT", $uisId);
+            $this->set_uis("@HOME_PAGE", $uisId);
          }
          $stm->close();
          $MYSQLI->close();

@@ -22,6 +22,8 @@ EWCore::set_default_locale("admin");
 EWCore::set_db_connection(get_db_connection());
 
 $path = ltrim($_SERVER['REQUEST_URI'], '/');    // Trim leading slash(es)
+// Decode url to a normal string
+$path = urldecode($path);
 if (strpos($path, '?'))
    $path = substr($path, 0, strpos($path, '?'));
 $elements = explode('/', $path);
@@ -49,6 +51,8 @@ if (preg_match("/^(.{2,3})$/", $elements[$parameter_index], $match))
    $parameter_index++;
 }
 $_REQUEST["_language"] = $language;
+// Set the language for the root url
+define('EW_ROOT_URL', 'http://' . $_SERVER['SERVER_NAME'] . EW_DIR_URL . $language . '/');
 
 // Check the app parameter
 $app_name = "webroot";

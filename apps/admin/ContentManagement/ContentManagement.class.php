@@ -16,18 +16,18 @@ use EWCore;
 class ContentManagement extends \Section
 {
 
-   private $file_types= array("jpeg" => "image",
-          "jpg" => "image",
-          "png" => "image",
-          "gif" => "image",
-          "txt" => "text",
-          "mp3" => "sound",
-          "mp4" => "video");
+   private $file_types = array("jpeg" => "image",
+       "jpg" => "image",
+       "png" => "image",
+       "gif" => "image",
+       "txt" => "text",
+       "mp3" => "sound",
+       "mp4" => "video");
    private $images_resources = array("/is/htdocs/wp1067381_3GN1OJU4CE/www/culturenights/app/webroot/img/logos/");
 
    public function init_plugin()
    {
-     // $this->file_types 
+      // $this->file_types 
       EWCore::register_resource("images", array($this, "image_loader"));
       $this->register_permission("see-content", "User can see the contents", array($this->get_index(), "get_content",
           "get_category",
@@ -225,9 +225,8 @@ class ContentManagement extends \Section
    }
 
    public function image_loader($file)
-   {
-
-      preg_match('/(.*)\.(\d*),(\d*)\.([^\.]\w*)/', $file, $match);
+   {      
+      preg_match('/(.*)\.?(\d*)?,?(\d*)?\.([^\.]\w*)/', $file, $match);
 //print_r($match);
 //return;
       //print_r($match);
@@ -256,9 +255,10 @@ class ContentManagement extends \Section
 
          //$file = EW_MEDIA_DIR . "/" . $match[1] . "." . $match[4];
       }
-      // If the resized file still does not exist, then the original file will be send
+      // If the resized file still does not exist, then the no-image will be sent
       if (!file_exists($file))
       {
+         //echo urldecode($file);
          //echo $this->images_resources[0] . $match[1] . "." . $match[4];
          if (file_exists($this->images_resources[0] . $match[1] . "." . $match[4]))
          {
@@ -380,7 +380,7 @@ class ContentManagement extends \Section
 
    public static function get_content_with_label($content_id, $key, $value = '%')
    {
-      
+
       $db = EWCore::get_db_connection();
       if (!$content_id)
          return json_encode([]);
@@ -400,7 +400,7 @@ class ContentManagement extends \Section
 //echo $content_id;
       while ($r = $result->fetch_assoc())
       {
-         
+
          $rows[] = $r;
          //print_r($r);
       }
@@ -547,7 +547,7 @@ class ContentManagement extends \Section
    public function ew_page_feeder_article($id, $language)
    {
       $articles = json_decode($this->get_content_with_label($id, "admin_ContentManagement_language", $language), true);
-      $result["html"] = "WIDGET_DATA_MODEL";      
+      $result["html"] = "WIDGET_DATA_MODEL";
       $result["title"] = $articles[0]['title'];
       $result["content"] = $articles[0]['content'];
       //print_r($result);
