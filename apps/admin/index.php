@@ -228,7 +228,7 @@ if ($secId)
                defaults.callback = function (link)
                {
                   $element.val(link).change();
-                  linkChooserDialog.dispose();
+                  linkChooserDialog.trigger("close");
                };
                this.$element = $(element);
                var settings = $.extend({
@@ -243,12 +243,9 @@ if ($secId)
                   title: '<i class="link-icon"></i>',
                   onClick: function (e)
                   {
-                     if (!linkChooserDialog)
-                     {
-                        linkChooserDialog = EW.createModal({
-                           closeAction: "hide",
-                           autoOpen: false
-                        });
+                     //if (!linkChooserDialog)
+                     //{
+                        linkChooserDialog = EW.createModal();
                         $.post("<?php echo EW_DIR ?>app-admin/ContentManagement/file-chooser.php", {
                            callback: settings.callbackName
                         },
@@ -259,8 +256,8 @@ if ($secId)
                            e.append(functionRefrence);
                            linkChooserDialog.html(e);
                         });
-                     }
-                     linkChooserDialog.open();
+                     //}
+                     //linkChooserDialog.open();
                   }
                });
             }
