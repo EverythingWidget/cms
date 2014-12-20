@@ -264,9 +264,10 @@ ul.list.arrangeable li span{display:block;min-height:20px;line-height:20px;}
 ul.list li h1,ul.list li h2,ul.list li h3,ul.list li h4,ul.list li h5{margin:0px;}
 ul.list li ul{display:block;padding:0px;padding-left:10px;margin:5px 0px 15px;}
 ul.list.tree li{margin-bottom:10px;}
-ul.list.tree li li {margin-left:5px;margin-bottom:2px;}
-ul.list.tree li li li{margin:0px  0px 0px 10px;}
-ul.list.tree > li > ul{font-size:13px;padding:0px;margin:0px;}
+ul.list.tree > li > ul > li {padding-left:5px;margin-bottom:1px;overflow:hidden}
+ul.list.tree > li > ul > li:nth-of-type(even) {float:right;}
+ul.list.tree li li li{margin:0px  0px 0px 10px;float:none;}
+ul.list.tree > li > ul{font-size:13px;padding:0px;margin:0px;overflow:hidden;}
 ul.list.tree ul{font-size:13px;padding:0px;margin:0px;}
 ul.list.tree label{border-left-width:1px;margin:-1px 0px;border-radius:0px;font-size:13px;position:relative;padding:10px;color:#444;border:none;text-shadow:none;}
 ul.list.tree label:hover{z-index:1;background-color:#b0dcf0;}

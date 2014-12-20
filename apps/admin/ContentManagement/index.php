@@ -3,19 +3,12 @@ session_start();
 
 function sidebar()
 {
-   ob_start();
-   ?>
-   <label>      tr{Libraries}    </label>
-   <ul>     
-      <li>     
-         <a rel="ajax" href="lib=documents">tr{Documents}</a>   
-      </li>  
-      <li>   
-         <a rel="ajax" href="lib=media">tr{Media}</a>  
-      </li>  
-   </ul> 
-   <?php
-   return ob_get_clean();
+   // ew-contents-main-form, sidebar
+   $html = '<label>tr{Libraries}</label><ul>'
+           . '<li><a rel="ajax" href="lib=documents">tr{Documents}</a></li>'
+           . '<li><a rel="ajax" href="lib=media">tr{Media}</a></li></ul>';
+
+   return $html;
 }
 
 function script()

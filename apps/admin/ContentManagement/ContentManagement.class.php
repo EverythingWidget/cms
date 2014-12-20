@@ -225,7 +225,7 @@ class ContentManagement extends \Section
    }
 
    public function image_loader($file)
-   {      
+   {
       preg_match('/(.*)\.?(\d*)?,?(\d*)?\.([^\.]\w*)/', $file, $match);
 //print_r($match);
 //return;
@@ -444,9 +444,9 @@ class ContentManagement extends \Section
       //if (!$order)
       //  $order = 0;
 
-      $stm = $db->prepare("INSERT INTO ew_contents (type, title , keywords , description , parent_id , content , featured_image , date_created, date_modified) 
-            VALUES (? , ? , ? , ? , ? , ? , ? , ? , ?)") or die($db->error);
-      $stm->bind_param("sssssssss", $type, $title, $keywords, $description, $parent_id, $content, $featured_image, $date_created, $date_modified) or die($db->error);
+      $stm = $db->prepare("INSERT INTO ew_contents (author_id, type, title , keywords , description , parent_id , content , featured_image , date_created, date_modified) 
+            VALUES (? , ? , ? , ? , ? , ? , ? , ? , ? , ?)") or die($db->error);
+      $stm->bind_param("ssssssssss", $_SESSION['EW.USER_ID'], $type, $title, $keywords, $description, $parent_id, $content, $featured_image, $date_created, $date_modified) or die($db->error);
       if ($stm->execute())
       {
          $res = array("status" => "success", "id" => $stm->insert_id);
@@ -484,6 +484,7 @@ class ContentManagement extends \Section
       $date_modified = date('Y-m-d H:i:s');
       $stm = $db->prepare("UPDATE ew_contents 
             SET title = ? 
+            , author_id = ?
             , slug = ? 
             , type = ?
             , keywords = ? 
@@ -491,7 +492,7 @@ class ContentManagement extends \Section
             , parent_id = ? 
             , content = ? 
             , date_modified = ? WHERE id = ?");
-      $stm->bind_param("sssssssss", $title, EWCore::to_slug($title, 'ew_contents'), $type, $keywords, $description, $parent_id, $content, $date_modified, $id);
+      $stm->bind_param("ssssssssss", $title, $_SESSION['EW.USER_ID'], EWCore::to_slug($title, 'ew_contents'), $type, $keywords, $description, $parent_id, $content, $date_modified, $id);
 
       if ($stm->execute())
       {
