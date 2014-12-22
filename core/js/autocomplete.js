@@ -563,7 +563,7 @@
                }, 120);
             }
             input.triggerHandler("itemSelected.autocomplete", [$.data(active[0], "originalObject"), active]);
-            input.val(opt.insertText($.data(active[0], "originalObject")));
+            input.val(opt.insertText($.data(active[0], "originalObject"))).change();
          }
          else
          {

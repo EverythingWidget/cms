@@ -176,7 +176,6 @@ $tabs = EWCore::read_registry("ew-article-form-tab");
       </ul>
    </div>
    <div class="form-content  tabs-bar">
-
       <div class="tab-content col-xs-12">
          <div class="tab-pane active" id="content-properties">
             <?php echo get_properties($form_config, $form_id); ?>
@@ -199,8 +198,6 @@ $tabs = EWCore::read_registry("ew-article-form-tab");
          }
          ?>
       </div>
-
-
    </div>
    <div class="footer-pane row actions-bar action-bar-items">
    </div>

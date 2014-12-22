@@ -303,7 +303,7 @@ div.sidebar li a.selected{background-color:rgba(0,0,0,.4);border-left:6px solid 
 .texture{background-image:url('side-bar-bg.png');}
 .texture.dark{background-color:#c0cacf;}
 .texture.squre{background-color:#fff;background-image:url('squre-texture.png');}
-ul.items{margin:2px 0px;padding:10px 0px;font-size:13px;font-weight:bold;list-style:none;overflow:hidden;display:block;position:relative;}
+ul.items{margin:0px 0px;padding:0px 0px;font-size:13px;font-weight:bold;list-style:none;overflow:hidden;display:block;position:relative;}
 ul.items li{padding:0px;margin:5px 0px 0px 0px;display:block;overflow:hidden;min-height:34px;}
 ul.items li.highlight{box-shadow:inset 0px 0px 2px 1px rgba(0,0,0,.3);}
 ul.items li a{}
@@ -541,3 +541,8 @@ a.link:hover{background-color:#0074b4;text-decoration:none;}
 a.link:active{background-color:#00669c;text-decoration:none;}
 a.link.active,.active > a.link{cursor:default;background-color:#00669c;text-decoration:none;}
 .btn.btn-hide{width:0px;padding-left:0px;padding-right:0px;margin:0px;opacity:0;}
+.list-modal{overflow:hidden;position:absolute;top:0px;bottom:0px;}
+.list-modal > h1{overflow:hidden;position:absolute;top:0px;height:30px;font-size:14px;padding:0px 10px;line-height:30px;margin:0px;width:100%;}
+.list-modal > div{overflow:auto;position:absolute;top:30px;bottom:0px;padding-bottom:5px;}
+.tab-content.fix{position:absolute;top:0px;bottom:0px;}
+.nav-sm li a{padding:4px 8px;margin-top:12px;font-size:13px;}
