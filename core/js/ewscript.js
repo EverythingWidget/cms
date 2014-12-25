@@ -914,12 +914,22 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
    {
       // Set default jquery html() function
       modalPane.html = modalPane.__proto__.html;
-      var int = setInterval(function () {
-         if (!modalPane.isOpen)
-            return;
-         modalPane.html(data);
-         modalPane.html = htmlFunction;
-         window.clearInterval(int);
+      var int = setInterval(function ()
+      {
+         try
+         {
+            if (!modalPane.isOpen)
+               return;
+            modalPane.html(data);
+            modalPane.html = htmlFunction;
+            window.clearInterval(int);
+         }
+         catch (e)
+         {
+            console.log(e);
+            window.clearInterval(int);
+         }
+
       }, 20);
    };
    // Overwrite the default jquery html() function behavior
@@ -2166,16 +2176,17 @@ function EWFormValidator(element, options)
 }
 
 
-function ExtendableList(element, options)
+function ExtendableList(element, cSettings)
 {
    var base = this;
    this.$element = $(element);
+   var settings = $.extend({value: []}, cSettings);
    //this.$element.find("li:first-child").prepend('<div class="handle"></div>');
 
    this.firstItemClone = this.$element.find("li:first-child").clone();
    this.addNewRow = $("<button type='button' class='button'>Add</button>");
    this.addNewRow.on("click", function () {
-      base.addNewRow.before(base.createItem());
+      base.$element.append(base.createItem());
    });
    var lastRow = $("<div data-add-item-row='true' class='row'><div class='col-xs-12'></div></div>");
    lastRow.children().append(this.addNewRow);
@@ -2191,7 +2202,7 @@ function ExtendableList(element, options)
    var oneValue = false;
    var items = new Array();
    var ci = null;
-   $.each(options.value, function (k, v)
+   $.each(settings.value, function (k, v)
    {
       //alert(typeof (k)+" "+typeof (v));
       if (typeof (v) != "object")
@@ -2243,7 +2254,7 @@ function ExtendableList(element, options)
    base.$element.append(items);
    //if (!init)
    //base.createItem();
-   base.$element.append(lastRow);
+   base.$element.after(lastRow);
    base.$element.sortable({
       handle: ".handle"
    });
@@ -2269,7 +2280,7 @@ ExtendableList.prototype.createItem = function ()
 
    //alert(this.$element.children().length);
    //cRow.children().append(removeBtn);
-   originalModelClone.append(controlRow);
+   originalModelClone.prepend(controlRow);
    //temp.append(cRow);
    return originalModelClone;
    //this.$element.append(cRow);
@@ -2314,17 +2325,18 @@ ew_plugins = {
       var methods = {
          getJSON: function ()
          {
-            var itemsJSON = {};
-            var items = $(this).children("li");
-            var i = 0;
-            $.each(items, function (k, v) {
-               itemsJSON[i++] = $(v).find("input").serializeJSON();
-            });
+            /*var itemsJSON = {};
+             var items = $(this).children("li");
+             console.log(items);
+             var i = 0;
+             $.each(items, function (k, v) {
+             itemsJSON[i++] = $(v).find("input").serializeJSON();
+             });*/
             //alert(JSON.stringify(itemsJSON));
+            return $(this).find("input").serializeJSON();
          }
       };
-      var defaults = {};
-
+      var defaults = {};     
       if (methods[options]) {
          return methods[options].apply(this, Array.prototype.slice.call(arguments, 1));
       }

@@ -252,38 +252,41 @@ $WM = new admin\WidgetsManagement();
       widgetClasses = widgetClasses.split(" ");
       var classes = $("#used-classes").text();
       classes = classes.split(" ");
-      $.each($("#available-classes").find("label"), function (k, v) {
+      $.each($("#available-classes").find("label"), function (k, classBtn) {
          var a = $("<input type='checkbox'>");
-         a.val($(v).text().substring(8));
-         $(v).text($(v).text().substring(8));
+         classBtn = $(classBtn);
+         a.val(classBtn.text().substring(8));
+         classBtn.text(classBtn.text().substring(8));
 
          a.change(function (event) {
-            if ($(this).is(":checked")) {
-               $("#widget-classes").append($(v));
+            if ($(this).is(":checked"))
+            {
+               classBtn.removeClass("btn-default");
+               classBtn.addClass("btn-success");
+               $("#widget-classes").append($(classBtn));
             }
             else
             {
-               $("#available-classes").append($(v));
+               classBtn.removeClass("btn-success");
+               classBtn.addClass("btn-default");
+               $("#available-classes").append($(classBtn));
             }
             uisWidget.setClasses();
             //event.preventDefault()
          });
-
+ 
+         classBtn.prepend(a);
+         classBtn.addClass("btn btn-default btn-xs");
          $.each(widgetClasses, function (i, c) {
             if (a.val() === (c))
             {
+               classBtn.removeClass("btn-default");
+               classBtn.addClass("btn-success active");
                a.prop('checked', true);
-               $("#widget-classes").append($(v));
+               $("#widget-classes").append($(classBtn));
                widgetClasses[i] = null;
             }
          });
-         //var l = $("<label></label>");
-
-         $(v).css({float: "left", margin: "0px 5px 5px 0px"});
-         $(v).prepend(a);
-         $(v).addClass("button white");
-         //l.append($(v));
-         //$("#available-classes").append(l);
       });
 
       $.each($("#size-layout").find("input:radio,input:checkbox"), function (k, v) {

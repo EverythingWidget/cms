@@ -25,6 +25,8 @@ if (file_exists(EW_ROOT_DIR . $_REQUEST["_uis_template"] . '/template.js'))
 {
    \admin\WidgetsManagement::add_html_script($_REQUEST["_uis_template"] . '/template.js', $script);
 }
+
+//echo $_REQUEST["_uis_template"];
 $WM = new admin\WidgetsManagement("WidgetsManagement", $_REQUEST);
 $HTML_BODY = admin\WidgetsManagement::generate_view($_REQUEST["_uis"]);
 $HTML_TITLE = (admin\WidgetsManagement::get_html_title()) ? admin\WidgetsManagement::get_html_title() . " - " . $website_title : $website_title;
@@ -32,6 +34,15 @@ $HTML_KEYWORDS = admin\WidgetsManagement::get_html_keywords();
 $HTML_SCRIPTS = admin\WidgetsManagement::get_html_scripts();
 $HTML_STYLES = admin\WidgetsManagement::get_html_styles();
 
+if (file_exists(EW_ROOT_DIR . $_REQUEST["_uis_template"] . '/template.php'))
+{
+   
+   require_once EW_ROOT_DIR . $_REQUEST["_uis_template"] . '/template.php';
+   //echo "ssdfsdf";
+   $template = new \template();
+   
+   $HTML_BODY = $template->get_html_body($HTML_BODY);
+}
 
 //$apps = json_decode(EWCore::get_apps(), true);
 ?>

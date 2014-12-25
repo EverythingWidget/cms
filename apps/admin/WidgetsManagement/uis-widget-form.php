@@ -22,45 +22,43 @@ function get_properties_form()
    ob_start();
    //echo $EW;
    ?>
-   <div class="row margin-bottom">
+   <div class="row">
       <div class="col-xs-12">
          <input data-label="ID" class="text-field" value="<?php echo $widget_info["style_id"] ?>" name="style_id" id="style_id" >
       </div>      
+   </div>
+   <div class="row">
       <div class="col-xs-12">
          <input data-label="Class" id="style_class" name="style_class" class="text-field" >
          <label class="small" id="used-classes"></label>
       </div>
-
-      <div class="col-xs-12 col-lg-6" >
-         <div class="dashed-box">
-            <div class="col-xs-12">
-               <h2>Used</h2>
-            </div>
-            <div class="col-xs-12 margin-bottom" id="widget-classes">
-            </div>
-         </div>
-      </div>
-      <div class="col-xs-12 col-lg-6"  >
-         <div class="dashed-box">
-            <div class="col-xs-12">
-               <h2>Classes</h2>
-            </div>
-            <div class="col-xs-12 margin-bottom" id="available-classes">
-               <?php
-               global $EW;
-               $templates = json_decode(EWCore::parse_css($_REQUEST["template"] . '/template.css', "widget"), true);
-
-               foreach ($templates as $t)
-               {
-                  ?>
-                  <label><?php echo $t ?></label>
-                  <?php
-               }
-               ?>
-            </div>
+   </div>
+   <div class="row">
+      <div class="col-xs-12" >
+         <h3>Used</h3>
+         <div class="col-xs-12 options-panel" id="widget-classes" data-toggle="buttons">
          </div>
       </div>
    </div>
+   <div class="row">
+      <div class="col-xs-12"  >
+         <h3>Classes</h3>
+         <div class="col-xs-12 options-panel" id="available-classes" data-toggle="buttons">
+            <?php
+            global $EW;
+            $templates = json_decode(EWCore::parse_css($_REQUEST["template"] . '/template.css', "widget"), true);
+
+            foreach ($templates as $t)
+            {
+               ?>
+               <label><?php echo $t ?></label>
+               <?php
+            }
+            ?>
+         </div>
+      </div>
+   </div>
+
    <?php
    return ob_get_clean();
 }
@@ -72,9 +70,9 @@ function get_size_layout_form()
    return ob_get_clean();
 }
 
-EWCore::register_form("uis-widget-form", "widget-cp", ["title" => "Widget CP","content"=> $WM->get_widget_cp($widget_type)]);
-EWCore::register_form("uis-widget-form", "size-layout", ["title" => "Size & Layout", "content"=>get_size_layout_form()]);
-EWCore::register_form("uis-widget-form", "properties", ["title" => "Properties", "content"=>get_properties_form()]);
+EWCore::register_form("uis-widget-form", "widget-cp", ["title" => "Widget CP", "content" => $WM->get_widget_cp($widget_type)]);
+EWCore::register_form("uis-widget-form", "size-layout", ["title" => "Size & Layout", "content" => get_size_layout_form()]);
+EWCore::register_form("uis-widget-form", "properties", ["title" => "Properties", "content" => get_properties_form()]);
 
 $tabs = EWCore::read_registry("uis-widget-form");
 ?>

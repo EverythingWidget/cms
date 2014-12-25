@@ -224,7 +224,7 @@ button{padding:0px;margin:0px;border:none;background-color:transparent;white-spa
 /*button:hover span{border-color:rgba(0,0,0,.5);}*/
 /*button:active span{background-color:#222;color:#fff;}*/
 .Dialog .Title{float:none;display:block;height:50px;line-height:50px;margin:0px;font-size:21px;color:#3c3c3c;direction:rtl;padding:0px;text-align:center;font-weight:normal;}
-#header-pane{height:96px;border-bottom:0px solid #ddd;background-color:#fff;background-image:url('header-pane-bg.png');width:100%;padding:0px;z-index:1;box-shadow:0px 0px 3px rgba(0,0,0,.12)}
+#header-pane{height:96px;border-bottom:0px solid #ddd;/*background-color:#fff;background-image:url('header-pane-bg.png');*/width:100%;padding:0px;z-index:1;/*box-shadow:0px 0px 3px rgba(0,0,0,.12)*/}
 #header-pane a.tab{height:20px;line-height:20px;padding:10px;float:left;margin:5px;font-family:arial;font-size:13px;color:#333;text-decoration:none;text-transform:uppercase;}
 #header-pane a.tab:hover{color:#0be;}
 #header-pane a.tab.selected{background-color:#3cf;color:#fff;box-shadow:0px 0px 5px 0px #eee;}
@@ -234,10 +234,10 @@ button{padding:0px;margin:0px;border:none;background-color:transparent;white-spa
 #header-pane > .bar .comp-btn:hover{background-color:rgba(0,0,0,.1);}
 #header-pane > .bar .comp-btn:active{background-color:rgba(0,0,0,.3);}
 #header-pane .bar .comp-btn:focus{outline:1px dotted rgba(0,0,0,.3);}
-#header-pane > .bar:first-child{background-color:#eee;border-bottom:0px solid #ddd;height:46px;z-index:1;}
+#header-pane > .bar:first-child{border-bottom:1px dashed #ddd;height:46px;z-index:1;}
 #header-pane > .bar:last-child{background-color:transparent;}
 #header-pane > .bar:first-child .comp-btn{font-weight:bold;border-radius:0px;font-size:18px;line-height:45px;}
-#header-pane > .bar:last-child .comp-btn{height:40px;margin:4px 0px;border:1px solid rgba(0,0,0,.2);border-radius:4px;}
+#header-pane > .bar:last-child .comp-btn{height:40px;margin:4px 0px;border:0px solid rgba(0,0,0,.2);border-radius:4px;border-bottom-left-radius:0px;border-top-left-radius:0px;background-color:#4f5f6f;color:#fff;}
 #header-pane > .bar:last-child .comp-btn:focus{background-color:rgba(0,0,0,.1);}
 .actions-bar{height:50px;padding:8px;display:block;overflow:auto;}
 ul.actions-bar {height:34px;margin:0px;padding:8px;display:block;list-style:none;}
@@ -256,6 +256,7 @@ ul.list.indent {margin:5px 0px;}
 ul.list.indent li{margin:0px;padding:2px 5px;overflow:hidden;}
 ul.list.box li{margin:0px;margin-bottom:5px;padding-bottom:5px;background-color:#eee;border-top-right-radius:8px;}
 ul.list.box li .close-icon{position:absolute;}
+ul.list.arrangeable li.dragged .handle{visibility:hidden;}
 ul.list.arrangeable li.placeholder{min-height:30px;background-color:#0099cc;border-radius:2px;}
 ul.list.arrangeable li .handle{width:20px;position:absolute;background-color:#ccc;top:0px;left:0px;bottom:0px;z-index:2;}
 ul.list.arrangeable li .handle:hover{background-color:#aaa;cursor:move;}
@@ -282,15 +283,19 @@ ul.links li p{margin:2px 0px;display:block;font-weight:normal;}
 .btn.sidebar{background-image:url("side-bar-btn.png");background-repeat:no-repeat;background-position:10px center;height:34px;text-decoration:none;padding:0px;}
 .btn h3{line-height:20px;}
 div#components-pane{background-color:#fff;position:absolute;max-width:580px;height:100%;overflow: auto;z-index: 9999;padding:0px;display: none;border:0px solid #eaeaea;}
-div.sidebar .button{margin:6px 8px;border:1px solid #666;background-color:rgba(0,0,0,.5);box-shadow:0px 0px 3px 1px #000;float:none;display:block;line-height:28px;width:38px;padding:5px;}
+div.sidebar .button{margin:6px 8px;border:1px solid #666;background-color:rgba(0,0,0,.5);box-shadow:0px 0px 3px 1px #000;float:none;display:block;line-height:28px;width:38px;padding:5px;font-family:Roboto}
 div.sidebar .button:hover{background-color:rgba(0,0,0,.8)}
 div.sidebar .button:active{background-color:rgba(30,50,70,.8)}
-div.sidebar{background-color:#4f5f6f;position:absolute;top:45px;left:-200px;width:200px;bottom:0px;overflow-y:auto;overflow-x:hidden;font-size:13px;margin:0px;z-index:10;/*-webkit-transition:all 300ms ease;-moz-transition:all 300ms ease;-ms-transition:all 300ms ease;-o-transition:all 300ms ease;transition:all 300ms ease;*/}
-.sidebar.in{left:0px;}
+div.sidebar{background-color:#4f5f6f;position:absolute;top:49px;left:10px;width:auto;height:40px;border-radius:4px;overflow:hidden;font-size:13px;margin:0px 0px;z-index:10;box-shadow:0px 1px 3px rgba(0,0,0,.3)/*-webkit-transition:all 300ms ease;-moz-transition:all 300ms ease;-ms-transition:all 300ms ease;-o-transition:all 300ms ease;transition:all 300ms ease;*/}
+div.sidebar > label,div.sidebar > *{display:none;}
+div.sidebar.in > *{display:inherit;}
+div.sidebar .comp-btn{height:40px;color:#fff;padding:0px 15px;padding-left:46px;font-size:15px;float:left;display:inline;}
+div.sidebar.in{left:5px;top:44px;height:auto;bottom:25px;width:200px;border-radius:2px;}
+div.sidebar.in .comp-btn{display:none;}
 div.sidebar.small{min-width:54px;width:54px;}
 div.sidebar.small img{float:none; margin:0px auto;display:block;padding:0px;}
 div.sidebar .row{padding:5px 0px 5px 0px;margin:0px;}
-div.sidebar label{min-width:200px;line-height:20px;font-size:16px;padding:10px;overflow:hidden;border-left-width:0px;color:#7fcfff;}
+div.sidebar label{min-width:200px;line-height:20px;font-size:18px;font-weight:300;padding:10px;overflow:hidden;border-left-width:0px;color:#7fcfff;}
 div.sidebar ul{list-style:none;padding:0px 0px 5px 0px;margin:0px 0px;min-width:200px;}
 div.sidebar li{padding:0px;display:block;overflow:hidden;}
 div.sidebar li a{background-position:right center;background-repeat:no-repeat;color:#eee;text-decoration:none;padding:10px;display:block;line-height:20px;min-height:40px;vertical-align:middle;}
@@ -335,7 +340,7 @@ ul.items li.active{}
 ul.items ul{padding:0px 0px 10px 10px;overflow:hidden;margin-right:-1px;}
 .dragged {
    position: absolute;
-   opacity: 0.5;
+   opacity: 0.75;
    z-index: 2000;
 }
 ul.items li.placeholder {
@@ -545,4 +550,7 @@ a.link.active,.active > a.link{cursor:default;background-color:#00669c;text-deco
 .list-modal > h1{overflow:hidden;position:absolute;top:0px;height:30px;font-size:14px;padding:0px 10px;line-height:30px;margin:0px;width:100%;}
 .list-modal > div{overflow:auto;position:absolute;top:30px;bottom:0px;padding-bottom:5px;}
 .tab-content.fix{position:absolute;top:0px;bottom:0px;}
+.tab-content.fix .tab-pane .row > div{padding:0px 22px;}
+
 .nav-sm li a{padding:4px 8px;margin-top:12px;font-size:13px;}
+.options-panel .btn{margin:1px 2px;float:left;}

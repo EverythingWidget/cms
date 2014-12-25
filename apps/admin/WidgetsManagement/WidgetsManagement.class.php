@@ -1,4 +1,5 @@
 <?php
+
 namespace admin;
 
 use Section;
@@ -167,7 +168,7 @@ class WidgetsManagement extends Section
       return json_encode(array("totalRows" => $result->num_rows, "result" => $rows));
    }
 
-   public function add_uis($name = null, $template = null, $structure = null)
+   public function add_uis($name = null, $template = null, $template_settings = null, $structure = null)
    {
       $MYSQLI = get_db_connection();
 
@@ -177,8 +178,8 @@ class WidgetsManagement extends Section
          $MYSQLI->close();
          return json_encode($res);
       }
-      $stm = $MYSQLI->prepare("INSERT INTO ew_ui_structures(name,template,structure) VALUES (?,?,?)");
-      $stm->bind_param("sss", $name, $template, $structure);
+      $stm = $MYSQLI->prepare("INSERT INTO ew_ui_structures(name,template,template_settings,structure) VALUES (?,?,?,?)");
+      $stm->bind_param("ssss", $name, $template, $template_settings, $structure);
       $stm->execute();
       if ($_REQUEST['defaultUIS'] == "true")
       {
@@ -281,7 +282,7 @@ class WidgetsManagement extends Section
       return $res;
    }
 
-   public function update_uis($uisId = null, $name = null, $template = null, $perview_url = null, $structure = null)
+   public function update_uis($uisId = null, $name = null, $template = null, $template_settings = null, $perview_url = null, $structure = null)
    {
       $MYSQLI = get_db_connection();
 
@@ -291,8 +292,8 @@ class WidgetsManagement extends Section
          $MYSQLI->close();
          return json_encode($res);
       }
-      $stm = $MYSQLI->prepare("UPDATE ew_ui_structures SET name = ?, template= ?, perview_url = ?, structure = ? WHERE id = ?") or die($MYSQLI->error);
-      $stm->bind_param("sssss", $name, $template, $perview_url, $structure, $uisId);
+      $stm = $MYSQLI->prepare("UPDATE ew_ui_structures SET name = ?, template= ?, template_settings= ?, perview_url = ?, structure = ? WHERE id = ?") or die($MYSQLI->error);
+      $stm->bind_param("ssssss", $name, $template, $template_settings, $perview_url, $structure, $uisId);
       $error = $MYSQLI->errno;
       if ($stm->execute())
       {
@@ -467,7 +468,7 @@ class WidgetsManagement extends Section
       }
 //if ($row)
 //$default_class = "row";
-      $result_html.= "<div class='panel $style_class'  $style_id_text  data-panel-id='$panel_id'  data-container-id='$container_id'  style='$style' data-panel-parameters='" . stripcslashes($param_json) . "' data-block-name='$block_name'><div class='row'>";
+      $result_html.= "<div class='panel $style_class'  $style_id_text  data-panel-id='$panel_id'  data-container-id='$container_id'  style='$style' data-panel-parameters='" . stripcslashes($param_json) . "' data-panel='true'><div class='row'>";
 
 //echo '<div class="wrapper">';
 
@@ -509,7 +510,7 @@ class WidgetsManagement extends Section
          require_once EW_TEMPLATES_DIR . "/blocks/" . $block_name . ".php";
          $block_name::initiate();
       }
-      $result_html.= "<div class='panel $style_class'  $style_id_text  data-panel-id='$panel_id'  data-container-id='$container_id'  style='$style' data-panel-parameters='" . stripcslashes($param_json) . "' data-block-name='$block_name'>";
+      $result_html.= "<div class='panel $style_class'  $style_id_text  data-panel-id='$panel_id'  data-container-id='$container_id'  style='$style' data-panel-parameters='" . stripcslashes($param_json) . "' data-block='true'>";
       /* if ($parameters["title"] && $parameters["title"] != "none")
         {
         $result_html.= "<div class='col-xs-12 panel-header'><{$parameters["title"]}>" . $parameters["title-text"] . "</{$parameters["title"]}></div>";
@@ -565,7 +566,7 @@ class WidgetsManagement extends Section
       self::set_widget_style_class($widget_style_class);
       $WIDGET_STYLE_CLASS = self::get_widget_style_class();
 
-      $result_html.= "<div class='widget-container $style_class' >";
+      $result_html.= "<div class='widget-container $style_class' data-widget-container='true'>";
       $result_html.= "<div class='widget $WIDGET_STYLE_CLASS' $WIDGET_STYLE_ID data-widget-id='$widget_id' data-widget-parameters='" . ($params) . "' data-widget-type='$widget_type' data-widget-title='$widget_title'>";
       $result_html.= $widget_content;
       self::$widget_style_class = "";
@@ -628,30 +629,42 @@ class WidgetsManagement extends Section
       return json_encode($res);
    }
 
-   public function get_blocks()
+   function get_template_cp($path)
    {
-      $path = EW_TEMPLATES_DIR . '/blocks/';
-
-      $apps_dirs = opendir($path);
-      $apps = array();
-      $count = 0;
-      while ($block_files = readdir($apps_dirs))
+      if (file_exists(EW_ROOT_DIR . $path . '/template.php'))
       {
-         if (strpos($block_files, '.') === 0)
-            continue;
-
-         $title = null;
-         $description = "";
-
-         $title = EWCore::get_comment_parameter("title", $path . $block_files);
-         $description = EWCore::get_comment_parameter("description", $path . $block_files);
-
-         $count++;
-         $apps[] = array("name" => substr($block_files, 0, stripos($block_files, ".")), "path" => $block_files, "title" => ($title) ? $title : $block_files, "description" => $description);
+         require_once EW_ROOT_DIR . $path . '/template.php';
+         $template = new \template();
+         return $template->get_template_cp();
       }
-      $out = array("totalRows" => $count, "result" => $apps);
-      return json_encode($out);
+      else
+         return "tr{Nothing to configure}";
    }
+
+   /* public function get_blocks()
+     {
+     $path = EW_TEMPLATES_DIR . '/blocks/';
+
+     $apps_dirs = opendir($path);
+     $apps = array();
+     $count = 0;
+     while ($block_files = readdir($apps_dirs))
+     {
+     if (strpos($block_files, '.') === 0)
+     continue;
+
+     $title = null;
+     $description = "";
+
+     $title = EWCore::get_comment_parameter("title", $path . $block_files);
+     $description = EWCore::get_comment_parameter("description", $path . $block_files);
+
+     $count++;
+     $apps[] = array("name" => substr($block_files, 0, stripos($block_files, ".")), "path" => $block_files, "title" => ($title) ? $title : $block_files, "description" => $description);
+     }
+     $out = array("totalRows" => $count, "result" => $apps);
+     return json_encode($out);
+     } */
 
    public function get_widgets_types()
    {

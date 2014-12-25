@@ -27,32 +27,26 @@ $name = $_REQUEST["name"];
                </div>
             </div>
             <div class="row">
-               <div class="col-xs-12 col-lg-6" >
-                  <div class="dashed-box">
-                     <div class="col-xs-12">
-                        <h2>Used</h2>
-                     </div>
-                     <div class="col-xs-12" id="panel-classes" >
-                     </div>
+               <div class="col-xs-12" >                     
+                  <h3>Used</h3>                     
+                  <div class="col-xs-12 options-panel" id="panel-classes" data-toggle="buttons">
                   </div>
                </div>
-               <div class="col-xs-12 col-lg-6"  >
-                  <div class="dashed-box">
-                     <div class="col-xs-12">
-                        <h2>Classes</h2>
-                     </div>
-                     <div class="col-xs-12" id="available-classes" >
-                        <?php
-                        global $EW;
-                        $templates = json_decode(EWCore::parse_css($_REQUEST["template"] . '/template.css', "block"), true);
-                        foreach ($templates as $t)
-                        {
-                           ?>
-                           <label><?php echo $t ?></label>
-                           <?php
-                        }
+            </div>
+            <div class="row">
+               <div class="col-xs-12"  >
+                  <h3>Classes</h3>
+                  <div class="col-xs-12 options-panel" id="available-classes" data-toggle="buttons">
+                     <?php
+                     global $EW;
+                     $templates = json_decode(EWCore::parse_css($_REQUEST["template"] . '/template.css', "block"), true);
+                     foreach ($templates as $t)
+                     {
                         ?>
-                     </div>
+                        <label ><?php echo $t ?></label>
+                        <?php
+                     }
+                     ?>
                   </div>
                </div>
             </div>
@@ -87,7 +81,7 @@ $name = $_REQUEST["name"];
          this.panelId = "<?php echo $panel_id ?>";
          //this.containerId = "<?php echo $container_id ?>";
          //this.blockHTML = $("<?php echo str_replace("\"", "'", trim(preg_replace('/\s+/', ' ', $block_html))) ?>");
-         this.blockHTML = $("<div></div>");
+         this.blockHTML = $("<div data-block='true'></div>");
          $("#used-classes").text(this.blockHTML.prop("class"));
          if (this.panelId)
          {
@@ -125,33 +119,42 @@ $name = $_REQUEST["name"];
          var $this = this;
          var classes = $("#used-classes").text();
          classes = classes.split(" ");
-         $.each($("#available-classes").find("label"), function (k, v) {
+         $.each($("#available-classes").find("label"), function (k, classBtn) {
+            classBtn = $(classBtn);
             var a = $("<input type='checkbox'>");
-            a.val($(v).text().substring(7));
-            $(v).text($(v).text().substring(7));
+            a.val(classBtn.text().substring(7));
+            classBtn.text($(classBtn).text().substring(7));
             a.change(function (event) {
                if ($(this).is(":checked")) {
-                  $("#panel-classes").append($(v));
+                  classBtn.removeClass("btn-default");
+                  classBtn.addClass("btn-success");
+                  $("#panel-classes").append(classBtn);
                }
                else
                {
-                  $("#available-classes").append($(v));
+                  classBtn.removeClass("btn-success");
+                  classBtn.addClass("btn-default");
+                  $("#available-classes").append(classBtn);
                }
+
                $this.setClasses();
                //event.preventDefault()
             });
+            classBtn.addClass("btn btn-default btn-xs");
+            classBtn.prepend(a);
             $.each(classes, function (i, c) {
                if (a.val() === (c))
                {
+                  classBtn.removeClass("btn-default");
+                  classBtn.addClass("btn-success active");
                   a.prop('checked', true);
-                  $("#panel-classes").append($(v));
+                  $("#panel-classes").append(classBtn);
                   classes[i] = null;
                }
             });
             //var l = $("<label></label>");
-            $(v).css({float: "left", margin: "0px 5px 5px 0px"});
-            $(v).prepend(a);
-            $(v).addClass("button white");
+
+
          });
 
          this.setClasses();
