@@ -32,24 +32,20 @@ if ($_REQUEST["appDir"])
       </ul>
    </div>
    <div class="tab-pane-xs tab-pane-sm form-content tabs-bar no-footer tab-content row">
-      
+
       <div id="app_settings" class="tab-pane active col-lg-8 col-md-6 col-xs-12" >
          <div class="box box-white">
-            <div class="col-xs-12">
-               <h2><span class="header-label">App Settings</span><?php echo $app["name"] ?></h2>
-            </div>
+            <h2><span class="header-label">App Settings</span><?php echo $app["name"] ?></h2>
             <!--<input type="hidden" name="appName" value="<?php echo $class ?>"/>-->
             <?php echo $config ?>
          </div>
       </div>
-      
+
       <div id="app_properties" class="tab-pane col-lg-4 col-md-6 col-xs-12" >
 
          <div class="box box-white">
-            <div class="row">
-               <div class="col-xs-12">
-                  <h2><?php echo $app["name"] ?></h2>                  
-               </div>
+            <h2><?php echo $app["name"] ?></h2>
+            <div class="row">                                    
                <div class="col-xs-8 mar-bot">
                   <h3>App Root</h3>
                   <label class="value" name="appDir" id="appDir"><?php echo $app["root"] ?></label>

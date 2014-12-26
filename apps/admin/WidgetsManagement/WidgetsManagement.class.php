@@ -502,6 +502,9 @@ class WidgetsManagement extends Section
       // Check if padding has been set and add value to the style
       $style .= $parameters["padding-opt"] ? "padding:" . $parameters["padding"] . ";" : "";
 
+      $style = $style ? "style='$style'" : "";
+      $container_id = $container_id ? "data-container-id='$container_id'" : "";
+
       if ($style_id)
          $style_id_text = "id='$style_id'";
 
@@ -510,7 +513,7 @@ class WidgetsManagement extends Section
          require_once EW_TEMPLATES_DIR . "/blocks/" . $block_name . ".php";
          $block_name::initiate();
       }
-      $result_html.= "<div class='panel $style_class'  $style_id_text  data-panel-id='$panel_id'  data-container-id='$container_id'  style='$style' data-panel-parameters='" . stripcslashes($param_json) . "' data-block='true'>";
+      $result_html.= "<div class='panel $style_class'  $style_id_text  data-panel-id='$panel_id'  $container_id  $style data-panel-parameters='" . stripcslashes($param_json) . "' data-block='true'>";
       /* if ($parameters["title"] && $parameters["title"] != "none")
         {
         $result_html.= "<div class='col-xs-12 panel-header'><{$parameters["title"]}>" . $parameters["title-text"] . "</{$parameters["title"]}></div>";
@@ -799,9 +802,10 @@ class WidgetsManagement extends Section
       $MYSQLI = \EWCore::get_db_connection();
 
       $panels = $MYSQLI->query("SELECT * FROM ew_ui_structures WHERE id = '$uisId' ") or die($MYSQLI->error);
-
-      self::$panel_index = 0;
-      self::$widget_index = 0;
+      // Create unigue set of ID's
+      $timestamp = time();
+      self::$panel_index = $timestamp;
+      self::$widget_index = $timestamp;
       while ($rows = $panels->fetch_assoc())
       {
          $res = json_decode(stripcslashes($rows["structure"]), true);

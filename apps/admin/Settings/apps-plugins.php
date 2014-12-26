@@ -17,10 +17,8 @@
          ?>
          <div class="col-lg-3 col-md-4 col-sm-6 margin-bottom">
             <div class="box box-white">
-               <div class="row">
-                  <div class="col-xs-12">
-                     <h2><?php echo $app["name"] ?></h2>                  
-                  </div>
+               <h2><?php echo $app["name"] ?></h2>
+               <div class="row">                                                                           
                   <div class="col-xs-8 mar-bot">
                      <h3>App Root</h3>
                      <label class="value" name="appDir" id="appDir"><?php echo $app["root"] ?></label>
