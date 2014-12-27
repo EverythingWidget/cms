@@ -45,7 +45,10 @@ class template extends TemplateControl
 
          $("#template_settings_form").on("refresh", function (e, data)
          {
-            $("#website_pages").EW().dynamicList({value: $.parseJSON(data.pages)});
+            if (data.pages)
+               $("#website_pages").EW().dynamicList({value: $.parseJSON(data.pages)});
+            else
+               $("#website_pages").EW().dynamicList();
          });
          $("#template_settings_form").on("get_data", function (e)
          {

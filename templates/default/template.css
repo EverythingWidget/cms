@@ -291,7 +291,7 @@ div.sidebar{background-color:#4f5f6f;position:absolute;top:49px;left:10px;width:
 div.sidebar > label,div.sidebar > *{display:none;}
 div.sidebar.in > *{display:inherit;}
 div.sidebar .comp-btn{height:40px;color:#fff;padding:0px 15px;padding-left:46px;font-size:15px;float:left;display:inline;font-weight:300;}
-div.sidebar.in{left:5px;top:44px;height:auto;bottom:25px;width:200px;border-radius:4px;}
+div.sidebar.in{left:5px;top:44px;height:auto;width:200px;border-radius:4px;padding-bottom:10px;}
 div.sidebar.in .comp-btn{display:none;}
 div.sidebar.small{min-width:54px;width:54px;}
 div.sidebar.small img{float:none; margin:0px auto;display:block;padding:0px;}
@@ -453,7 +453,7 @@ table.data tr .btn.delete:active{background-position: 0px -28px;}
 table.data tr .btn.edit{background-image:url('edit.png');background-position: 0px 0px;width:32px;height:32px;margin-top:0px;}
 table.data tr .btn.edit:active{background-position: 0px -28px;}
 table.data tr:nth-of-type(even){background-color:rgba(0,150,240,.03);}
-.row-block{background-color:#eee;text-align:center;}
+table.data tr .row-block{background-color:#eee;text-align:center;border-left:none;overflow:hidden;}
 table.data tr .row-block span{float:left;padding:0px 10px;font-weight:bold;}
 table.data tr .row-block .btn{float:left;visibility:visible;margin:0px 10px;}
 /*table.data thead{}

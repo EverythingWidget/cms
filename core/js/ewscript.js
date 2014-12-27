@@ -1423,13 +1423,15 @@ EWTable.prototype.createRow = function (val, rc)
       {
          tableRow.confirm = function (text, delFunction)
          {
-            var oldCells = tableRow.children().detach();
-            var div = $("<td class=row-block>").hide();
-            div.attr("colspan", oldCells.length);
-            div.append("<span>" + text + "</span>");
+            var oldCells = null;
+            var messageRow = $("<td class=row-block>");
+            //messageRow.attr("colspan", tableRow.children().length);
+            messageRow.append("<span>" + text + "</span>");
+            tableRow.css({position: "relative"});
+            messageRow.css({position: "absolute", right: "0px", width: "100%", zIndex: 1, opacity: 0});
 
             var delBtn = $("<button type=button class='btn btn-danger'>Delete</button>");
-            div.append(delBtn);
+            messageRow.append(delBtn);
             delBtn.on("click", function () {
 
                if (delFunction.apply(tableRow, new Array(tableRow.data("field-id"))))
@@ -1439,13 +1441,17 @@ EWTable.prototype.createRow = function (val, rc)
             });
 
             var cancelBtn = $("<button type=button class='btn btn-white' style='float:right'>Cancel</button>");
-            div.append(cancelBtn);
+            messageRow.append(cancelBtn);
             cancelBtn.on("click", function () {
-               tableRow.html(oldCells);
+               //tableRow.html(oldCells);
+               tableRow.css({position: ""});
+               messageRow.remove();
             });
-
-            tableRow.html(div);
-            div.fadeIn(300);
+            //oldCells = tableRow.children().detach();
+            tableRow.append(messageRow);
+            messageRow.animate({paddingLeft: "+=100px"}, 1);
+            messageRow.animate({paddingLeft: "-=100px", opacity: 1}, 300, "Power3.easeOut");
+            //messageRow.fadeIn(300);
          };
          if (ewTable.config.onDelete.apply(tableRow, new Array(tableRow.data("field-id"))))
             tableRow.removeRow(tableRow.data("field-id"));
@@ -2336,7 +2342,7 @@ ew_plugins = {
             return $(this).find("input").serializeJSON();
          }
       };
-      var defaults = {};     
+      var defaults = {};
       if (methods[options]) {
          return methods[options].apply(this, Array.prototype.slice.call(arguments, 1));
       }
