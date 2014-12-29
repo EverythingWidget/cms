@@ -16,9 +16,19 @@ use TemplateControl;
 class template extends TemplateControl
 {
 
-   public function get_html_body($html_body)
+   public function get_html_body($html_body, $template_settings)
    {
+      //echo $template_settings;
+      $settings = json_decode($template_settings, TRUE);
+      //print_r($settings);
+      $pages = json_decode($settings["pages"], true);
+
       $new_body = "<div class='page-slide'>" . $html_body . "</div>";
+      foreach ($pages as $page)
+      {
+         $html = admin\WidgetsManagement::generate_view(115);
+         $new_body.="<div class='page-slide' data-not-editable=true>" . $html . "</div>";
+      }
       return $new_body;
    }
 
@@ -42,7 +52,6 @@ class template extends TemplateControl
          </div>
       </div>
       <script>
-
          $("#template_settings_form").on("refresh", function (e, data)
          {
             if (data.pages)
@@ -50,8 +59,9 @@ class template extends TemplateControl
             else
                $("#website_pages").EW().dynamicList();
          });
-         $("#template_settings_form").on("get_data", function (e)
+         $("#template_settings_form").on("getData", function (e)
          {
+            //alert($("#website_pages").EW().dynamicList("getJSON"));
             //alert($("#website_pages").EW().dynamicList("getJSON"));
             uisForm.setTemplateSettings({pages: $("#website_pages").EW().dynamicList("getJSON")})
          });

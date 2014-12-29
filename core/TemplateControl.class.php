@@ -13,21 +13,21 @@
  */
 class TemplateControl
 {
+
    //put your code here
    public function get_template_cp()
    {
       return "<h3>tr{Nothing to configure}</h3>";
    }
-   
-   
-   public function get_html_body($html_body)
+
+   public function get_html_body($html_body, $template_settings)
    {
       return $html_body;
    }
-   
-   
+
    protected function create_widget()
    {
       
    }
+
 }

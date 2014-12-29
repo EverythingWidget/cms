@@ -15,6 +15,12 @@ $.fn.serializeJSON = function ()
       }
    });
    //alert(JSON.stringify(o));
+   //alert(o);
+   //console.log(o);
+   if ($.isEmptyObject(o))
+   {
+      return null;
+   }
    return JSON.stringify(o);
 };
 
@@ -359,6 +365,7 @@ function EverythingWidgets()
          {
             if (self.activities[activity])
             {
+               // Trigger activityName.call event
                $(document).trigger(activity + ".call", self.activities[activity]);
                var postData = self.getHashParameters("FORMLESS_ACTIVITY");
                // Manage post data if it is set
@@ -368,18 +375,24 @@ function EverythingWidgets()
                   // Call postData if it is a function
                   if (typeof self.activities[activity].postData == 'function')
                   {
-                     postData = self.activities[activity].postData();
+                     postData = self.activities[activity].postData.apply(self.activities[activity]);
                   }
                   else
                      postData = self.activities[activity].postData;
                }
+               // Do not proceed further if postData is null
                if (!postData)
+               {
+                  // set hash ew_activity to null
+                  self.setHashParameters({ew_activity: null}, "FORMLESS_ACTIVITY");
                   return;
+               }
                $.post(self.activities[activity].url, postData, function (data) {
                   if (self.activities[activity].onDone)
                   {
-                     self.activities[activity].onDone(data);
+                     self.activities[activity].onDone.apply(self.activities[activity], [data]);
                   }
+                  // Trigger activityName.done event
                   $(document).trigger(activity + ".done", data);
                }, "json");
             }
@@ -434,10 +447,13 @@ EverythingWidgets.prototype.getActivity = function (conf)
       }
 
       $.extend(hashParameters, hash);
+
+      // if the activity contains a form then set a main hash parameter
       if (self.activities[settings.activity].form)
       {
          self.setHashParameters(hashParameters);
       }
+      // if the activity does not contains any form then set a formless hash parameter
       else
       {
          //console.log(hashParameters);
@@ -718,7 +734,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
       // If hash is set, change default behaviors
       if (onClose.hash)
       {
-         settings.closeAction = "hide";
+         settings.closeAction = "hash";
          settings.autoOpen = false;
       }
       $.extend(settings, onClose);
@@ -783,6 +799,12 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
             if (settings.closeAction === "hide")
             {
                modalPane.hide();
+               xButton.detach();
+            }
+            // if hash is set then detach the modal instead of remove to keep the url listener alive
+            else if (settings.closeAction === "hash")
+            {
+               modalPane.detach();
                xButton.detach();
             }
             else
@@ -898,10 +920,13 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
       self.addURLHandler(function () {
          if (self.getHashParameter(settings.hash.key, settings.hash.name) === settings.hash.value)
          {
+            //alert("ddddd");
             modalPane.trigger("open");
          }
          else
          {
+            //settings.autoOpen=true;
+            //modalPane=EW.createModal(settings);
             modalPane.trigger("close");
          }
       });
@@ -916,19 +941,19 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
       modalPane.html = modalPane.__proto__.html;
       var int = setInterval(function ()
       {
-         try
-         {
-            if (!modalPane.isOpen)
-               return;
-            modalPane.html(data);
-            modalPane.html = htmlFunction;
-            window.clearInterval(int);
-         }
-         catch (e)
-         {
-            console.log(e);
-            window.clearInterval(int);
-         }
+      try
+      {
+         if (!modalPane.isOpen)
+            return;
+         modalPane.html(data);
+         modalPane.html = htmlFunction;
+         window.clearInterval(int);
+      }
+      catch (e)
+      {
+         console.log(e);
+          window.clearInterval(int);
+      }
 
       }, 20);
    };
@@ -2192,7 +2217,10 @@ function ExtendableList(element, cSettings)
    this.firstItemClone = this.$element.find("li:first-child").clone();
    this.addNewRow = $("<button type='button' class='button'>Add</button>");
    this.addNewRow.on("click", function () {
-      base.$element.append(base.createItem());
+      var ni = base.createItem();
+      ni.hide();
+      base.$element.append(ni);
+      ni.fadeIn(200);
    });
    var lastRow = $("<div data-add-item-row='true' class='row'><div class='col-xs-12'></div></div>");
    lastRow.children().append(this.addNewRow);
@@ -2257,6 +2285,7 @@ function ExtendableList(element, cSettings)
           });*/
       }
    });
+   //items.hide();
    base.$element.append(items);
    //if (!init)
    //base.createItem();
@@ -2280,7 +2309,10 @@ ExtendableList.prototype.createItem = function ()
    //removeBtn.css({position:"absolute",right:"15px",top:"0px",zIndex:1});
    removeBtn.click(function ()
    {
-      originalModelClone.remove();
+      originalModelClone.animate({opacity: 0}, 200);
+      originalModelClone.animate({height: "toggle"}, 300, "Power2.easeOut", function () {
+         originalModelClone.remove()
+      });
    });
    controlRow.append(removeBtn);
 

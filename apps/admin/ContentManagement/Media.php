@@ -8,14 +8,14 @@ if (!$_SESSION['login'])
 ?>
 <div  class="row">
    <div class="col-xs-12" >
-      <div id="folders-list" class="box box-white">
+      <div id="folders-list" class="box">
 
       </div>
    </div>
 </div>
 <div  class="row">
    <div class="col-xs-12" >
-      <div id="files-list" class="box box-white">
+      <div id="files-list" class="box">
 
       </div>
    </div>
@@ -243,9 +243,9 @@ if (!$_SESSION['login'])
       var self = this;
       var albums = $("<div class='row box-content'></div>");
       var images = $("<div class='row box-content'></div>");
-      $("#folders-list").html("<div class='row'><div class='col-xs-12 box-title'><h2>Loading Albums</h2><span class='loader center'></span></div></div>");
+      $("#folders-list").html("<h2>Loading Albums</h2>");
       $("#folders-list").append(albums);
-      $("#files-list").html("<div class='row'><div class='col-xs-12 box-title'><h2>Loading Images</h2><span class='loader center'></span></div></div>");
+      $("#files-list").html("<h2>Loading Images</h2>");
       $("#files-list").append(images);
       $.post('<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/get_media_list', {parent_id: self.parentId}, function (data)
       {
@@ -254,8 +254,8 @@ if (!$_SESSION['login'])
           EW.setHashParameter("itemId", null, "Media");
           //media.selectItem($("div[data-item-id='" + EW.getHashParameter("title") + "']"));
           }*/
-         $("#folders-list .box-title").html("<h2>tr{Albums}</h2>");
-         $("#files-list .box-title").html("<h2>tr{Images}</h2>");
+         $("#folders-list > h2").html("tr{Albums}");
+         $("#files-list > h2").html("tr{Images}");
          var pId = 0;
          var flag = false;
          $.each(data, function (index, element)

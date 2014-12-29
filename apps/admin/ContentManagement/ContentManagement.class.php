@@ -64,7 +64,7 @@ class ContentManagement extends \Section
         $this->register_activity("category-form", array("form" => "category-form.php", "title" => "New Folder")); */
    }
 
-   private function ew_label_document($key, $value, $data, $form_id)
+   public function ew_label_document($key, $value, $data, $form_id)
    {
       //print_r($data);
       /* if ($value)
@@ -148,7 +148,7 @@ class ContentManagement extends \Section
       return json_encode(["html" => $html]);
    }
 
-   private function ew_label_language($key, $value, $data, $form_id)
+   public function ew_label_language($key, $value, $data, $form_id)
    {
       if (!$value)
          $value = "en";
@@ -190,6 +190,8 @@ class ContentManagement extends \Section
             //init
             if (!ContentForm.getLabel("admin_ContentManagement_language"))
             {
+               // Active language label as default for the new article
+               ContentForm.activeLabel("admin_ContentManagement_language", true);
                $("#<?php echo $key ?>_select").change();
             }
             $.post("<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/get_content_with_label", {content_id: documentId, key: "<?php echo $key ?>"}, function (data) {
@@ -551,7 +553,7 @@ class ContentManagement extends \Section
       $result["html"] = "WIDGET_DATA_MODEL";
       $result["title"] = $articles[0]['title'];
       $result["content"] = $articles[0]['content'];
-      //print_r($result);
+      //print_r($language);
       return json_encode($result);
    }
 

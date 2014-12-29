@@ -210,11 +210,28 @@ $tabs = EWCore::read_registry("ew-article-form-tab");
          if (labels)
             $.each(labels, function (i, el)
             {
-
                $("#" + el.key + "_control_button:not(:checked)").click();
                $("#" + el.key + "_control_button").prop("checked", true);
-
             });
+      },
+      /**
+       * Active specified label
+       * @param {string} label Name of the label
+       * @param {boolean} flag If true then active the label only for the new content. Default is false
+       */
+      activeLabel: function (label, flag)
+      {
+         if (!flag)
+         {
+            $("#" + label + "_control_button:not(:checked)").click();
+            $("#" + label + "_control_button").prop("checked", true);
+            return;
+         }
+         if (!this.getFormData().id)
+         {
+            $("#" + label + "_control_button:not(:checked)").click();
+            $("#" + label + "_control_button").prop("checked", true);
+         }
       },
       /**
        * Get content label as json object
@@ -284,10 +301,10 @@ $tabs = EWCore::read_registry("ew-article-form-tab");
       {
          if (data && data.labels)
          {
-            var labels = $.parseJSON(data.labels);            
-            ContentForm.setLabels(labels);            
+            var labels = $.parseJSON(data.labels);
+            ContentForm.setLabels(labels);
             ContentForm.initLabels(labels);
-            
+
          }
          EW.setFormData("#<?php echo $form_id ?>", data);
          $("#content").change();

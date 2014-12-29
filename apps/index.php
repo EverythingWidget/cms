@@ -1,5 +1,4 @@
 <?php
-
 session_start();
 // 05 November, 2013
 // Do NOT touch this file unless you are expert in Everything Widget CMS

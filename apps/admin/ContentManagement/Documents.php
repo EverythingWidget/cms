@@ -10,14 +10,14 @@ if (!$_SESSION['login'])
 
 <div  class="row">
    <div class="col-xs-12" >
-      <div id="categories-list"  class="box box-white">
+      <div id="categories-list"  class="box">
 
       </div>
    </div>
 </div>
 <div class="row">
    <div class="col-xs-12" >
-      <div class="box box-white"  id="articles-list">
+      <div class="box"  id="articles-list">
 
       </div>
    </div>
@@ -50,9 +50,9 @@ if (!$_SESSION['login'])
          self.listCategories();
       });
       /*$(document).off("category-list");
-      $(document).on("category-list.refresh", function () {
-         self.listCategories();
-      });*/
+       $(document).on("category-list.refresh", function () {
+       self.listCategories();
+       });*/
    }
 
    Documents.prototype.preCategory = function ()
@@ -247,9 +247,10 @@ if (!$_SESSION['login'])
       $("#categories-list").html("<div class='col-xs-12'><h2 >Loading Folders</h2></div>");
       $.post('<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/get_categories_list', {parent_id: documents.parentId}, function (data)
       {
-         $("#categories-list").html("<div class='col-xs-12'><h2 id='cate-title'>tr{Folders}</h2></div>");
+         $("#categories-list").html("<h2 id='cate-title'>tr{Folders}</h2><div class='row box-content'></div>");
          //$("#cate-title").loadingText();
          var cId = EW.getHashParameter("categoryId");
+         var foldersPane = $("#categories-list .box-content");
          $.each(data.result, function (index, element)
          {
             pId = element.pre_parent_id;
@@ -260,7 +261,7 @@ if (!$_SESSION['login'])
                temp.addClass("selected");
                documents.oldItem = temp;
             }
-            $("#categories-list").append(temp);
+            foldersPane.append(temp);
          });
          if (hasNode)
          {
@@ -270,8 +271,9 @@ if (!$_SESSION['login'])
       $("#articles-list").html("<div class='col-xs-12'><h2>Loading Article</h2></div>");
       $.post('<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/get_articles_list', {parent_id: documents.parentId}, function (data)
       {
-         $("#articles-list").html("<div class='col-xs-12'><h2>tr{Articles}</h2></div>");
+         $("#articles-list").html("<h2>tr{Articles}</h2><div class='row box-content'></div>");
          var aId = EW.getHashParameter("articleId");
+         var articlesPane = $("#articles-list .box-content");
          $.each(data.result, function (index, element)
          {
             pId = element.pre_parent_id;
@@ -282,7 +284,7 @@ if (!$_SESSION['login'])
                temp.addClass("selected");
                documents.oldItem = temp;
             }
-            $("#articles-list").append(temp);
+            articlesPane.append(temp);
          });
          if (hasNode)
          {

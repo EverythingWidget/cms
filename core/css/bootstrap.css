@@ -1872,7 +1872,8 @@ input[type="button"].btn-block {
 .nav > li > a:hover,
 .nav > li > a:focus {
    text-decoration: none;
-   background-color: #eeeeee;
+   background-color: #eaeaea;
+   color:#428bca;
 }
 .nav > li.disabled > a {
    color: #999999;
@@ -1919,7 +1920,7 @@ input[type="button"].btn-block {
    border-radius: 4px 4px 0 0;
 }
 .nav-tabs > li > a:hover {
-   border-color: #eeeeee #eeeeee #dddddd;
+   //border-color: #eeeeee #eeeeee #dddddd;
 }
 .nav-tabs > li.active > a,
 .nav-tabs > li.active > a:hover,
@@ -1976,9 +1977,12 @@ input[type="button"].btn-block {
 }
 .nav-pills > li {
    float: left;
+   border-bottom:2px solid #428bca;
 }
 .nav-pills > li > a {
-   border-radius: 4px;
+   border-radius: 6px;
+   border-bottom-left-radius:0px;
+   border-bottom-right-radius:0px;
 }
 .nav-pills > li + li {
    margin-left: 2px;

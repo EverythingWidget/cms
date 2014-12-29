@@ -19,11 +19,13 @@
             <div class="col-xs-12">
                <ul id="menu" class="list box">
                   <li>
-                     <div class="col-xs-6">
-                        <input class="text-field" data-label="id" name="id" />
-                     </div>
-                     <div class="col-xs-6">
-                        <input class="text-field" data-label="text" name="text" />
+                     <div class="wrapper">
+                        <div class="col-xs-6">
+                           <input class="text-field" data-label="id" name="id" />
+                        </div>
+                        <div class="col-xs-6">
+                           <input class="text-field" data-label="text" name="text" />
+                        </div>
                      </div>
                   </li>
                </ul>

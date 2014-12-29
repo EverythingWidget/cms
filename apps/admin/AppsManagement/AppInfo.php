@@ -80,3 +80,19 @@ if ($_REQUEST["appDir"])
       </div>
    </div>
 </form>
+<script>
+   EW.createModal({hash: {key: "form", value: "lang-editor"}, onOpen: function () {
+         EW.lock(this);
+         var modal = this;
+         var lang = EW.getHashParameter("lang");
+         var app = EW.getHashParameter("app");
+
+         $.post("<?php echo EW_ROOT_URL; ?>app-admin/Settings/lanuage-editor-form.php", {app: app, lang: lang}, function (data) {
+            modal.html(data);
+         });
+      },
+      onClose: function () {
+         EW.setHashParameter("form", null);
+         EW.setHashParameter("lang", null);
+      }});
+</script>

@@ -197,7 +197,7 @@ h2 > span.header-label{line-height:40px;}
 .header-pane .nav-tabs,.header-pane .nav-pills{margin:5px 0px 0px;}
 .header-pane .nav-tabs > li > a {height:50px;}
 .header-pane .nav-pills > li > a{line-height:18px;}
-.header-pane .nav-pills > li{margin:2px 5px 0px 0px}
+.header-pane .nav-pills > li{margin:2px 0px;padding:0px 5px;}
 .top-pane .form-content{background-color:#fff;padding:0px;top:50px;bottom:51px;position:absolute;overflow:auto;overflow-x:hidden;left:0px;right:0px;margin:0px;}
 //.top-pane .form-content > .row{margin:0px;}
 .form-content.no-footer{bottom:4px;border-bottom:0px solid #ddd;}
@@ -251,17 +251,19 @@ ul.actions-bar li label{padding:0px;height:34px;line-height:34px;}
 .actions-bar span.loader:before{width:34px;height:34px;float:left;border-width:2px;border-color:inherit;border-top-color:transparent;z-index:1;-webkit-animation: spin 2s linear  infinite;animation: spin 2s linear  infinite;}
 ul.list{list-style:none;padding:0px;}
 ul.list li{display:block;padding:0px;margin:0px;margin-bottom:5px;position:relative;}
-ul.list li .close-icon{position:absolute;right:0px;top:0px;z-index:1;}
+ul.list li .wrapper{overflow:hidden;}
+ul.list li .close-icon{position:absolute;right:1px;top:2px;z-index:1;}
 ul.list li .control{position:static;width:100%;top:0px;margin: 0px;}
 ul.list.indent {margin:5px 0px;}
 ul.list.indent li{margin:0px;padding:2px 5px;overflow:hidden;}
-ul.list.box li{margin:0px;margin-bottom:5px;padding-bottom:5px;background-color:#eee;border-top-right-radius:8px;}
+ul.list.box li{margin:0px;margin-bottom:1px;padding:15px 0px;background-color:#eaeaea;}
 ul.list.box li .close-icon{position:absolute;}
+ul.list.arrangeable li{margin-bottom:1px;}
 ul.list.arrangeable li.dragged .handle{visibility:hidden;}
 ul.list.arrangeable li.placeholder{min-height:30px;background-color:#0099cc;border-radius:2px;}
-ul.list.arrangeable li .handle{width:20px;position:absolute;background-color:rgba(0,0,0,.12);top:0px;left:0px;bottom:0px;z-index:2;}
+ul.list.arrangeable li .handle{width:20px;position:absolute;background-color:rgba(0,0,0,.06);top:0px;left:0px;bottom:0px;z-index:2;}
 ul.list.arrangeable li .handle:hover{background-color:rgba(0,0,0,.2);cursor:move;}
-ul.list.arrangeable li .wrapper{padding:5px;padding-left:25px;border-radius:2px;background-color:#e0e0e0;overflow: hidden;}
+ul.list.arrangeable li .wrapper{padding:15px 5px;padding-left:25px;border-radius:0px;background-color:#eaeaea;overflow: hidden;}
 ul.list.arrangeable li span{display:block;min-height:20px;line-height:20px;}
 ul.list li h1,ul.list li h2,ul.list li h3,ul.list li h4,ul.list li h5{margin:0px;}
 ul.list li ul{display:block;padding:0px;padding-left:10px;margin:5px 0px 15px;}
@@ -291,7 +293,7 @@ div.sidebar{background-color:#4f5f6f;position:absolute;top:49px;left:10px;width:
 div.sidebar > label,div.sidebar > *{display:none;}
 div.sidebar.in > *{display:inherit;}
 div.sidebar .comp-btn{height:40px;color:#fff;padding:0px 15px;padding-left:46px;font-size:15px;float:left;display:inline;font-weight:300;}
-div.sidebar.in{left:5px;top:44px;height:auto;width:200px;border-radius:4px;padding-bottom:10px;}
+div.sidebar.in{left:5px;top:44px;height:auto;width:210px;border-radius:4px;padding-bottom:10px;}
 div.sidebar.in .comp-btn{display:none;}
 div.sidebar.small{min-width:54px;width:54px;}
 div.sidebar.small img{float:none; margin:0px auto;display:block;padding:0px;}
@@ -551,8 +553,8 @@ a.link.active,.active > a.link{cursor:default;background-color:#00669c;text-deco
 .list-modal{overflow:hidden;position:absolute;top:0px;bottom:0px;}
 .list-modal > h1{overflow:hidden;position:absolute;top:0px;height:30px;font-size:14px;padding:0px 10px;line-height:30px;margin:0px;width:100%;}
 .list-modal > div{overflow:auto;position:absolute;top:30px;bottom:0px;padding-bottom:5px;}
-.tab-content.fix{position:absolute;top:0px;bottom:0px;}
-.tab-content.fix .tab-pane .row > div{padding:0px 22px;}
-
+.tab-content.fix{position:absolute;top:0px;bottom:0px;overflow-y:auto;}
+.tab-content.fix .tab-pane .row{margin-left:0px;margin-right:0px;}
+.tab-content.fix .tab-pane .row > div{padding:0px 5px;}
 .nav-sm li a{padding:4px 8px;margin-top:12px;font-size:13px;}
 .options-panel .btn{margin:1px 2px;float:left;}

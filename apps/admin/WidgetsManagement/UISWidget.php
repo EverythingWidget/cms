@@ -67,6 +67,7 @@ $WM = new admin\WidgetsManagement();
       this.setData = true;
       this.getWidgetParameters = null;
       this.widgetParameters = {};
+      
       if (this.widgetId)
       {
          $("#cmd").val("edit");
@@ -76,7 +77,7 @@ $WM = new admin\WidgetsManagement();
          this.bAdd.comeOut(200);
          this.bApply.comeIn(300);
 
-         var widget = neuis.getEditorItem(this.widgetId);
+         var widget = uisForm.getEditorItem(this.widgetId);         
          this.showWidgetControlPanel(widget.attr("data-widget-type"));
       }
       else
@@ -130,14 +131,14 @@ $WM = new admin\WidgetsManagement();
 
 
       //neuis.updateUIS(true);
-      neuis.currentDialog.dispose();
+      //neuis.currentDialog.dispose();
    };
 
    UISWidget.prototype.applyToWidget = function ()
    {
       var base = this;
       $.EW("lock", $.EW("getParentDialog", $("#uis-widget-form")));
-      var widget = neuis.getEditorItem(this.widgetId);
+      var widget = uisForm.getEditorItem(this.widgetId);
       var wp = $("#uis-widget").serializeJSON();
       if (this.getWidgetParameters)
          wp = this.getWidgetParameters.apply(null, null);
@@ -189,7 +190,7 @@ $WM = new admin\WidgetsManagement();
       // if widgetId exist, get the corresponding widget
       if (self.widgetId != "")
       {
-         widget = neuis.getEditorItem(self.widgetId);
+         widget = uisForm.getEditorItem(self.widgetId);
          var widgetParams = (widget.attr("data-widget-parameters")) ? $.parseJSON(widget.attr("data-widget-parameters")) : {};
          self.widgetParameters = widgetParams;
       }

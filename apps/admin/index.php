@@ -629,7 +629,7 @@ if ($secId)
             {
                //event.preventDefault();
                sidebar.css({maxHeight: $(window).height() - 100});
-               $("#sidebar:not(.in)").stop().animate({className: "sidebar in", width: "200px"}, 360, "Power4.easeOut", function () {
+               $("#sidebar:not(.in)").stop().animate({className: "sidebar in", width: "210px"}, 360, "Power4.easeOut", function () {
                   sidebar.stop().css({overflowY: "auto"});
                });
                //$("#sidebar").stop().fadeIn(300);

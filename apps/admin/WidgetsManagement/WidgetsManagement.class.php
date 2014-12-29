@@ -15,6 +15,8 @@ class WidgetsManagement extends Section
 
    private static $panel_index = 0;
    private static $widget_index = 0;
+   private static $ui_index = 0;
+   private static $current_timestamp = 0;
    private static $title = "";
    private static $html_scripts = array();
    private static $html_keywords;
@@ -315,15 +317,15 @@ class WidgetsManagement extends Section
       }
    }
 
-   public function get_uis($uisId = null)
+   public static function get_uis($uisId = null)
    {
       $MYSQLI = get_db_connection();
 
       if (!$uisId)
          return;
       $result = $MYSQLI->query("SELECT * FROM ew_ui_structures WHERE id = '$uisId'") or die(null);
-      $default_uis = json_decode($this->get_path_uis("@DEFAULT"), true);
-      $home_uis = json_decode($this->get_path_uis("@HOME_PAGE"), true);
+      $default_uis = json_decode(WidgetsManagement::get_path_uis("@DEFAULT"), true);
+      $home_uis = json_decode(WidgetsManagement::get_path_uis("@HOME_PAGE"), true);
 
       if ($rows = $result->fetch_assoc())
       {
@@ -331,6 +333,8 @@ class WidgetsManagement extends Section
             $rows["uis-default"] = "true";
          if ($home_uis["id"] == $uisId)
             $rows["uis-home-page"] = "true";
+
+         //$rows["template_settings"] = stripslashes($rows["template_settings"]);
 //$rows["structure"] = stripslashes($rows["structure"]);
          $MYSQLI->close();
          return json_encode($rows);
@@ -426,14 +430,14 @@ class WidgetsManagement extends Section
          {
 //echo $value["type"] . " - " . $value["class"] . "<br>";
             self::$panel_index++;
-            $result_html.=self::open_panel("panel-" . self::$panel_index, $container_id, $value["class"], $value["id"], $value["panelParameters"], FALSE);
-            $result_html.=self::create_panel_content($value["children"], "panel-" . self::$panel_index);
+            $result_html.=self::open_panel("panel-" . self::$current_timestamp . '-' . self::$ui_index . '-' . self::$panel_index, $container_id, $value["class"], $value["id"], $value["panelParameters"], FALSE);
+            $result_html.=self::create_panel_content($value["children"], "panel-" . self::$ui_index . '-' . self::$panel_index);
             $result_html.=self::close_panel();
          }
          else
          {
             self::$widget_index++;
-            $result_html.=self::open_widget("widget-" . self::$widget_index, $value["widgetType"], $value["class"], $value["widgetClass"], $value["id"], $value["widgetParameters"]);
+            $result_html.=self::open_widget("widget-" . self::$current_timestamp . '-' . self::$ui_index . '-' . self::$widget_index, $value["widgetType"], $value["class"], $value["widgetClass"], $value["id"], $value["widgetParameters"]);
             $result_html.=self::close_widget();
 
 //echo $value["type"] . " - " . $value["class"] . "<br>";
@@ -796,16 +800,26 @@ class WidgetsManagement extends Section
       return json_encode($res);
    }
 
-   public static function generate_view($uisId)
+   public static function generate_view($uisId, $index = 0)
    {
       $RESULT_HTML = '';
       $MYSQLI = \EWCore::get_db_connection();
 
       $panels = $MYSQLI->query("SELECT * FROM ew_ui_structures WHERE id = '$uisId' ") or die($MYSQLI->error);
-      // Create unigue set of ID's
+      // Create unigue set of ID's every time when generate_view is called
       $timestamp = time();
-      self::$panel_index = $timestamp;
-      self::$widget_index = $timestamp;
+      if ($_SESSION["_ew_gw_ts"] == $timestamp)
+      {
+         self::$ui_index++;
+      }
+      else
+      {
+         $_SESSION["_ew_gw_ts"] = $timestamp;
+         self::$current_timestamp = $timestamp;
+      }
+      self::$panel_index = 0;
+      self::$widget_index = 0;
+
       while ($rows = $panels->fetch_assoc())
       {
          $res = json_decode(stripcslashes($rows["structure"]), true);
@@ -813,8 +827,8 @@ class WidgetsManagement extends Section
       //ob_start();
       foreach ($res as $key => $value)
       {
-         $RESULT_HTML.=self::open_block("panel-" . self::$panel_index, "", "block " . $value["class"], $value["id"], $value["panelParameters"], FALSE, $value["blockName"]);
-         $RESULT_HTML.=self::create_panel_content($value["children"], "panel-" . self::$panel_index);
+         $RESULT_HTML.=self::open_block("panel-" . self::$current_timestamp . '-' . self::$ui_index . '-' . self::$panel_index, "", "block " . $value["class"], $value["id"], $value["panelParameters"], FALSE, $value["blockName"]);
+         $RESULT_HTML.=self::create_panel_content($value["children"], "panel-" . self::$current_timestamp . '-' . self::$ui_index . '-' . self::$panel_index);
          $RESULT_HTML.=self::close_block();
          self::$panel_index++;
       }
@@ -925,7 +939,7 @@ class WidgetsManagement extends Section
       return json_encode($res);
    }
 
-   public function get_path_uis($path = null)
+   public static function get_path_uis($path = null)
    {
       $path = ($path) ? $path : $_REQUEST["path"];
       $MYSQLI = get_db_connection();
@@ -939,6 +953,19 @@ class WidgetsManagement extends Section
       {
          return null;
       }
+   }
+
+   public static function get_layout($uisId, $template, $template_settings)
+   {
+      $HTML_BODY = WidgetsManagement::generate_view($uisId);
+      if (file_exists(EW_ROOT_DIR . $template . '/template.php'))
+      {
+         require_once EW_ROOT_DIR . $template . '/template.php';
+         $template = new \template();
+         $template_settings = json_decode(stripslashes($template_settings), true);
+         $HTML_BODY = $template->get_html_body($HTML_BODY, $template_settings);
+      }
+      return $HTML_BODY;
    }
 
    public function get_title()
