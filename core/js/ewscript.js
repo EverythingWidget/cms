@@ -36,7 +36,7 @@ function EverythingWidgets()
    var oldSize = "";
    $(document).mousedown(function (event) {
       //console.log("clicked: " + $(event.target).text());
-      EverythingWidgets.prototype.activeElement = $(event.target);
+      self.activeElement = $(event.target);
    });
    $(window).resize(function () {
 
@@ -821,7 +821,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
             if (!originElement || !$.contains(document, originElement[0]))
             {
                animationDiv.text("");
-               animationDiv.delay(30).animate({top: "+=50px", left: "+=50px", width: "-=100px", height: "-=100px", opacity: 0 /*, lineHeight: ce.outerHeight() + "px"*/}, 360, "Power1.easeOut", function () {
+               animationDiv.delay(30).animate({top: "+=6%", left: "+=6%", width: "-=12%", height: "-=12%", opacity: 0 /*, lineHeight: ce.outerHeight() + "px"*/}, 360, "Power1.easeInOut", function () {
                   if (originElement)
                      originElement.css("visibility", "");
                   animationDiv.remove();
@@ -836,9 +836,9 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
                   height: originElement.outerHeight(),
                   lineHeight: originElement.outerHeight() + "px",
                   fontSize: originElement.css("fontSize"),
-                  borderRadius: originElement.css("border-radius")}, 360, "Power3.easeOut", function () {
+                  borderRadius: originElement.css("border-radius")}, 360, "Power2.easeOut", function () {
                   originElement.css("visibility", "");
-                  animationDiv.fadeOut(10, function () {
+                  animationDiv.fadeOut(120, function () {
                      animationDiv.remove();
                   });
                });
@@ -871,14 +871,18 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
             // Get current element background color
             originElement.css("visibility", "hidden");
             var bgColor = originElement.css("backgroundColor");
+            if (originElement.is("tr"))
+               bgColor = "#78909C";
+            //if (originElement.is("a"))
+            //bgColor = "#26C6DA";
             var loadingLabel = originElement.data("label");
             bgColor = (bgColor == "rgba(0, 0, 0, 0)" || bgColor == "transparent") ? "#aaa" : bgColor;
-            animationDiv = $("<div class='s-to-d-scale-anim'>").css({overflow: "hidden", whiteSpace: "nowrap", textShadow: "-1px -1px 1px rgba(0,0,0,.3)", color: "#fff", textAlign: "center", fontSize: "3em", top: originElement.offset().top, left: originElement.offset().left, position: "absolute", backgroundColor: bgColor, zIndex: modalPane.css("z-index")});
+            animationDiv = $("<div class='s-to-d-scale-anim'>").css({overflow: "hidden", whiteSpace: "nowrap", color: "#fff", textAlign: "center", lineHeight: originElement.outerHeight(), fontWeight: "300", fontSize: originElement.css("font-size"), top: originElement.offset().top, left: originElement.offset().left, position: "absolute", backgroundColor: bgColor, zIndex: modalPane.css("z-index")});
             animationDiv.text(loadingLabel);
             modalPane.before(animationDiv);
             animationDiv.css({width: originElement.outerWidth(), height: originElement.outerHeight()});
             //tempDiv.animate({top: modalPane.offset().top + modalPane.outerHeight() / 6, left: modalPane.offset().left + modalPane.outerWidth() / 6, width: modalPane.outerWidth() / 1.5, height: modalPane.outerHeight() / 1.5}, {duration:420,queue:false});
-            animationDiv.animate({top: modalPane.offset().top, left: modalPane.offset().left, width: modalPane.outerWidth(), height: modalPane.outerHeight(), lineHeight: modalPane.outerHeight() + "px"}, 360, "Power3.easeOut", function () {
+            animationDiv.animate({top: modalPane.offset().top, left: modalPane.offset().left, width: modalPane.outerWidth(), height: modalPane.outerHeight(), lineHeight: modalPane.outerHeight() + "px", fontSize: "4em"}, 460, "Power3.easeInOut", function () {
                modalPane.isOpen = true;
                modalPane.delay((!loadingLabel) ? 0 : 120).animate({opacity: "1"}, 240, function () {
                   methods.setCloseButton();
@@ -941,19 +945,19 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
       modalPane.html = modalPane.__proto__.html;
       var int = setInterval(function ()
       {
-      try
-      {
-         if (!modalPane.isOpen)
-            return;
-         modalPane.html(data);
-         modalPane.html = htmlFunction;
-         window.clearInterval(int);
-      }
-      catch (e)
-      {
-         console.log(e);
-          window.clearInterval(int);
-      }
+         try
+         {
+            if (!modalPane.isOpen)
+               return;
+            modalPane.html(data);
+            modalPane.html = htmlFunction;
+            window.clearInterval(int);
+         }
+         catch (e)
+         {
+            console.log(e);
+            window.clearInterval(int);
+         }
 
       }, 20);
    };
@@ -1435,6 +1439,8 @@ EWTable.prototype.createRow = function (val, rc)
       edit.addClass("btn edit");
       edit.click(function ()
       {
+         EW.activeElement = tableRow;
+         //EW.activeElement.attr("data-label", tableRow.data("row-title"));
          ewTable.config.onEdit.apply(tableRow, new Array(tableRow.data("field-id")));
       });
       actionsCell.append(edit);
@@ -1449,13 +1455,14 @@ EWTable.prototype.createRow = function (val, rc)
          tableRow.confirm = function (text, delFunction)
          {
             var oldCells = null;
-            var messageRow = $("<td class=row-block>");
+            var messageRow = $("<div class='row-block btn-danger'>");
             //messageRow.attr("colspan", tableRow.children().length);
             messageRow.append("<span>" + text + "</span>");
             tableRow.css({position: "relative"});
-            messageRow.css({position: "absolute", right: "0px", width: "100%", zIndex: 1, opacity: 0});
+            // CSS properties are in the template
+            messageRow.css({position: "absolute", width: del.outerWidth(), left: del.position().left});
 
-            var delBtn = $("<button type=button class='btn btn-danger'>Delete</button>");
+            var delBtn = $("<button type=button class='btn btn-white'>Delete</button>");
             messageRow.append(delBtn);
             delBtn.on("click", function () {
 
@@ -1465,18 +1472,17 @@ EWTable.prototype.createRow = function (val, rc)
                }
             });
 
-            var cancelBtn = $("<button type=button class='btn btn-white' style='float:right'>Cancel</button>");
+            var cancelBtn = $("<button type=button class='btn btn-danger' style='float:right'>Cancel</button>");
             messageRow.append(cancelBtn);
             cancelBtn.on("click", function () {
-               //tableRow.html(oldCells);
                tableRow.css({position: ""});
-               messageRow.remove();
+               messageRow.empty();
+               messageRow.animate({width: del.outerWidth(), left: del.position().left}, 300, "Power3.easeOut").fadeOut(120, function () {
+                  messageRow.remove()
+               });
             });
-            //oldCells = tableRow.children().detach();
             tableRow.append(messageRow);
-            messageRow.animate({paddingLeft: "+=100px"}, 1);
-            messageRow.animate({paddingLeft: "-=100px", opacity: 1}, 300, "Power3.easeOut");
-            //messageRow.fadeIn(300);
+            messageRow.animate({width: "100%", left: "0px"}, 300, "Power3.easeOut");
          };
          if (ewTable.config.onDelete.apply(tableRow, new Array(tableRow.data("field-id"))))
             tableRow.removeRow(tableRow.data("field-id"));
@@ -1503,25 +1509,39 @@ EWTable.prototype.createRow = function (val, rc)
    }
    delete val.id;
    var index = rc;
-   if (ewTable.config.rowCount)
-   {
 
-   }
+   // Set the row label 
+   if (ewTable.config.rowLabel)
+      var rt = ewTable.config.rowLabel.replace(/{(\w+)}/g, function (a, p)
+      {
+         return val[p];
+      });
+
+   tableRow.data("label", rt);
    // When user spacify columns attribute 
    if (ewTable.config.columns)
    {
-      $.each(ewTable.config.columns, function (k, v) {
-
-         $.each(val, function (k, v) {
-            tableRow.data("field-" + k, v);
-         });
-         $('<td>' + val[v] + '</td>').appendTo(tableRow);
-
-         index++;
+      var columnString = ewTable.config.columns.join(" ");
+      var row = columnString.replace(/(\w+)/g, function (a, p)
+      {
+         //alert(p);
+         return '<td>' + val[p] + '</td>';
       });
+      /*$.each(ewTable.config.columns, function (k, v) {
+       
+       $.each(val, function (k, v) {
+       tableRow.data("field-" + k, v);
+       if (ewTable.config.rowLabel == k)
+       tableRow.data("label", v);
+       });*/
+      $(row).appendTo(tableRow);
+//alert(row);
+      //index++;
+      //});
    }
    else
    {
+
       $.each(val, function (k, v) {
 
          if (ewTable.headers.children().eq(index).css("display") !== "none")
@@ -1555,7 +1575,7 @@ EWTable.prototype.listRows = function ()
          rc++;
       });
    }
-   // Withour row number
+   // Without row number
    else
    {
       $.each(self.data.result, function (k, v) {
@@ -2215,7 +2235,7 @@ function ExtendableList(element, cSettings)
    //this.$element.find("li:first-child").prepend('<div class="handle"></div>');
 
    this.firstItemClone = this.$element.find("li:first-child").clone();
-   this.addNewRow = $("<button type='button' class='button'>Add</button>");
+   this.addNewRow = $("<button type='button' class='btn btn-primary btn-sm'>Add</button>");
    this.addNewRow.on("click", function () {
       var ni = base.createItem();
       ni.hide();
@@ -2224,13 +2244,6 @@ function ExtendableList(element, cSettings)
    });
    var lastRow = $("<div data-add-item-row='true' class='row'><div class='col-xs-12'></div></div>");
    lastRow.children().append(this.addNewRow);
-
-
-   /*var ar=options.value[0].split(',');
-    if(ar.length>0)
-    {
-    alert(ar[0]);
-    }*/
    base.$element.empty();
    var init = false;
    var oneValue = false;
@@ -2256,33 +2269,21 @@ function ExtendableList(element, cSettings)
       {
          if (!init)
          {
-            for (var i = 0;
-                    i < v.length;
-                    i++)
+            for (var i = 0; i < v.length; i++)
             {
                ci = base.createItem();
                ci.find("input[name='" + k + "']").val(v[i]).change();
                items.push(ci);
                init = true;
             }
-
          }
          else
          {
-            for (var i = 0;
-                    i < v.length;
-                    i++)
+            for (var i = 0; i < v.length; i++)
             {
-               //alert(k);
                items[i].find("input[name='" + k + "']").val(v[i]).change();
             }
          }
-         /*$.each(v, function (kk, vv)
-          {
-          console.log(k+"  "+v);
-          $(items).find("input[name='" + k + "']").eq(kk).val(vv).change();
-          //alert(vv + " " + kk + " " + k);
-          });*/
       }
    });
    //items.hide();
@@ -2297,31 +2298,20 @@ function ExtendableList(element, cSettings)
 
 ExtendableList.prototype.createItem = function ()
 {
-   //this.addNewRow.detach();
-   //this.$element.find("[data-add-item-row]").remove();
    var originalModelClone = this.firstItemClone.clone();
-   //var cRow = $("<div data-add-item-row='true' class='row'><div class='col-xs-12'></div></div>");
-   //cRow.children().append(this.addNewRow);
-
    var controlRow = $("<div class='row control'></div>");
-
    var removeBtn = $("<button type='button' class='close-icon' ></button>");
-   //removeBtn.css({position:"absolute",right:"15px",top:"0px",zIndex:1});
+
    removeBtn.click(function ()
    {
       originalModelClone.animate({opacity: 0}, 200);
       originalModelClone.animate({height: "toggle"}, 300, "Power2.easeOut", function () {
-         originalModelClone.remove()
+         originalModelClone.remove();
       });
    });
    controlRow.append(removeBtn);
-
-   //alert(this.$element.children().length);
-   //cRow.children().append(removeBtn);
    originalModelClone.prepend(controlRow);
-   //temp.append(cRow);
    return originalModelClone;
-   //this.$element.append(cRow);
 };
 
 var ew_plugins;
@@ -2425,6 +2415,7 @@ ew_plugins = {
             {
                exist.click(function ()
                {
+                  EW.activeElement = exist;
                   settings.onClick($element);
                });
                return;
@@ -2451,6 +2442,8 @@ ew_plugins = {
                 bottom: $element.css("padding-bottom")*/
                float: "right"
             });
+            if (settings.label)
+               inputBtn.attr("data-label", settings.label);
             buttonsPanel.prepend(inputBtn);
             wrapper.prepend(buttonsPanel);
             buttonsPanel.css({
@@ -2464,6 +2457,7 @@ ew_plugins = {
          //alert("ha");
          inputBtn.click(function ()
          {
+            EW.activeElement = inputBtn;
             settings.onClick($element);
          });
       }
@@ -2474,3 +2468,19 @@ ew_plugins = {
       });
    },
 };
+EverythingWidgets.prototype.initPlugins = function ($element)
+{
+   // set input and textarea dir to auto
+   $element.find("input, textarea").attr("dir", "auto");
+
+   // EW Plugins
+   // Begin
+   $element.find('input[data-ew-plugin="link-chooser"], textarea[data-ew-plugin="link-chooser"]').EW().linkChooser();
+
+   // Input floatable labels
+   $element.find('input[data-label], textarea[data-label], select[data-label]').floatlabel();
+
+   $element.find('[data-ew-plugin="image-chooser"]').EW().imageChooser();
+   $element.find('[data-slider]').simpleSlider();
+   // End
+}

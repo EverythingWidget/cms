@@ -1,4 +1,5 @@
 <?php
+
 session_start();
 // 05 November, 2013
 // Do NOT touch this file unless you are expert in Everything Widget CMS
@@ -50,9 +51,9 @@ if (preg_match("/^(.{2,3})$/", $elements[$parameter_index], $match))
    $parameter_index++;
 }
 $_REQUEST["_language"] = $language;
-$url_language =  ($language == "en") ? '' : $language . '/' ;
+$url_language = ($language == "en") ? '' : $language . '/';
 // Set the language for the root url
-define('EW_ROOT_URL', 'http://' . $_SERVER['SERVER_NAME'] . EW_DIR_URL .$url_language);
+define('EW_ROOT_URL', 'http://' . $_SERVER['SERVER_NAME'] . EW_DIR_URL . $url_language);
 
 // Check the app parameter
 $app_name = "webroot";
@@ -147,6 +148,8 @@ if (!isset($_REQUEST["_uis"]))
    $uis_data = EWCore::get_url_uis($r_uri);
    $_REQUEST["_uis"] = $uis_data["uis_id"];
    $_REQUEST["_uis_template"] = $uis_data["uis_template"];
+   if (!$_REQUEST["_uis_template_settings"])
+      $_REQUEST["_uis_template_settings"] = $uis_data["uis_template_settings"];
 }
 else
 {
@@ -157,6 +160,8 @@ else
    if ($row = $uis->fetch_assoc())
    {
       $_REQUEST["_uis_template"] = $row["template"];
+      if (!$_REQUEST["_uis_template_settings"])
+         $_REQUEST["_uis_template_settings"] = $row["template_settings"];
    }
 }
 $GLOBALS["page_parameters"] = explode("/", $_REQUEST["_parameters"]);

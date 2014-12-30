@@ -150,7 +150,7 @@ $tabs = EWCore::read_registry("ew-file-chooser-form");
 ?>
 <div class="header-pane tabs-bar row">
    <h1 id="form-title" class="col-xs-12">
-      File Chooser
+      tr{Link Chooser}
    </h1>  
    <ul class="nav nav-tabs xs-nav-tabs">    
       <?php

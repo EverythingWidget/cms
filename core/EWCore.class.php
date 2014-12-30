@@ -1454,7 +1454,7 @@ class EWCore
          $uis = $dbc->query("SELECT * FROM ew_pages_ui_structures,ew_ui_structures WHERE ew_ui_structures.id = ew_pages_ui_structures.ui_structure_id AND path =  '@DEFAULT' ") or die("no UIS");
          $row = $uis->fetch_assoc();
       }
-      return array("uis_id" => $row["ui_structure_id"], "uis_template" => $row["template"]);
+      return array("uis_id" => $row["ui_structure_id"], "uis_template" => $row["template"], "uis_template_settings" => $row["template_settings"]);
    }
 
 }

@@ -854,7 +854,7 @@ class WidgetsManagement extends Section
          if ($script["src"])
             $result.="<script src='{$script["src"]}'>{$script["script"]}</script>";
          else if ($script["script"])
-            $result.=$script["script"];
+            $result.="<script>{$script["script"]}</script>";
       }
       return $result;
    }
@@ -957,15 +957,16 @@ class WidgetsManagement extends Section
 
    public static function get_layout($uisId, $template, $template_settings)
    {
-      $HTML_BODY = WidgetsManagement::generate_view($uisId);
+      $template_body = WidgetsManagement::generate_view($uisId);
       if (file_exists(EW_ROOT_DIR . $template . '/template.php'))
       {
          require_once EW_ROOT_DIR . $template . '/template.php';
          $template = new \template();
-         $template_settings = json_decode(stripslashes($template_settings), true);
-         $HTML_BODY = $template->get_html_body($HTML_BODY, $template_settings);
+         //$template_settings = json_decode(stripslashes($template_settings), true);
+         $template_body = $template->get_template_body($template_body, stripslashes($template_settings));
+         $template_script.= $template->get_template_script(stripslashes($template_settings));
       }
-      return $HTML_BODY;
+      return ["template_body" => $template_body, "template_script" => $template_script];
    }
 
    public function get_title()

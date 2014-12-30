@@ -249,6 +249,7 @@ if ($secId)
 
                $element.EW().inputButton({
                   title: '<i class="link-icon"></i>',
+                  label: 'tr{Link Chooser}',
                   onClick: function (e)
                   {
                      //if (!linkChooserDialog)
@@ -397,21 +398,8 @@ if ($secId)
 
          function initPlugins(element)
          {
-
             var $element = $(element);
-            // set input and textarea dir to auto
-            $element.find("input, textarea").attr("dir", "auto");
-
-            // EW Plugins
-            // Begin
-            $element.find('input[data-ew-plugin="link-chooser"], textarea[data-ew-plugin="link-chooser"]').EW().linkChooser();
-
-            // Input floatable labels
-            $element.find('input[data-label], textarea[data-label], select[data-label]').floatlabel();
-
-            $element.find('[data-ew-plugin="image-chooser"]').EW().imageChooser();
-            $element.find('[data-slider]').simpleSlider();
-            // End
+            EW.initPlugins($element);
 
             // Bootstraps Plugins
             // Begin
@@ -426,12 +414,6 @@ if ($secId)
                   a.click(function (event)
                   {
                      event.preventDefault();
-                     /*if (a.attr("data-ew-nav"))
-                      {
-                      EW.setHashParameter("nav", a.attr("data-ew-nav"));
-                      }
-                      else
-                      {*/
                      var params = a.attr("href").split(",");
                      $.each(params, function (k, v) {
                         if (v)
@@ -440,9 +422,6 @@ if ($secId)
                            EW.setHashParameter(kv[0], kv[1]);
                         }
                      });
-
-                     // }
-
                   });
                }
             });
@@ -629,7 +608,7 @@ if ($secId)
             {
                //event.preventDefault();
                sidebar.css({maxHeight: $(window).height() - 100});
-               $("#sidebar:not(.in)").stop().animate({className: "sidebar in", width: "210px"}, 360, "Power4.easeOut", function () {
+               $("#sidebar:not(.in)").stop().animate({className: "sidebar in", width: "220px"}, 360, "Power4.easeOut", function () {
                   sidebar.stop().css({overflowY: "auto"});
                });
                //$("#sidebar").stop().fadeIn(300);

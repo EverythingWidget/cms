@@ -20,9 +20,14 @@ class TemplateControl
       return "<h3>tr{Nothing to configure}</h3>";
    }
 
-   public function get_html_body($html_body, $template_settings)
+   public function get_template_body($html_body, $template_settings)
    {
       return $html_body;
+   }
+   
+   public function get_template_script($template_settings)
+   {
+      return "";
    }
 
    protected function create_widget()
