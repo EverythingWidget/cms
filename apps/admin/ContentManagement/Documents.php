@@ -6,8 +6,6 @@ if (!$_SESSION['login'])
    return;
 }
 ?>
-<!DOCTYPE html>
-
 <div  class="row">
    <div class="col-xs-12" >
       <div id="categories-list"  class="box">
@@ -255,7 +253,7 @@ if (!$_SESSION['login'])
          {
             pId = element.pre_parent_id;
             hasNode = true;
-            var temp = documents.createFolder(element.title, element.round_date_created, element.id);
+            var temp = documents.createFolder(element.title, element.round_date_created, element.id, element);
             if (element.id == cId)
             {
                temp.addClass("selected");
@@ -278,7 +276,7 @@ if (!$_SESSION['login'])
          {
             pId = element.pre_parent_id;
             hasNode = true;
-            var temp = documents.createFile(element.title, element.round_date_created, element.id);
+            var temp = documents.createFile(element.title, element.round_date_created, element.id,element);
             if (element.id == aId)
             {
                temp.addClass("selected");
@@ -294,43 +292,27 @@ if (!$_SESSION['login'])
 
    };
 
-   Documents.prototype.createFolder = function (title, dateCreated, id)
+   Documents.prototype.createFolder = function (title, dateCreated, id, model)
    {
-      var div = $(document.createElement("div"));
-      div.addClass("content-item folder");
-      div.append("<span></span>");
-      div.append("<p>" + title + "</p>");
-      div.append("<p class='date'>" + dateCreated + "</p>");
-      div.attr("data-category-id", id);
+      var div = $("<div class='content-item folder' data-category-id='{id}'><span></span><p>{title}</p><p class='date'>{round_date_created}</p></div>").EW().createView(model);
       div.click(function () {
          EW.setHashParameters({"articleId": null, "categoryId": id});
-         //contentManagement.selectCategory(div, id);
       });
       div.dblclick(function () {
-         //EW.setHashParameter("preCategoryId", documents.parentId);
-         //alert(id + " " + documents.preParentId);
          EW.setHashParameter("parent", id);
-         //contentManagement.selectCategory(div, id);
       });
       return div;
    };
 
-   Documents.prototype.createFile = function (title, dateCreated, id)
+   Documents.prototype.createFile = function (title, dateCreated, id,model)
    {
       var self = this;
-      var div = $(document.createElement("div"));
-      div.addClass("content-item article");
-      div.append("<span></span>");
-      div.append("<p>" + title + "</p>");
-      div.append("<p class='date'>" + dateCreated + "</p>");
-      div.attr("data-article-id", id);
+      var div = $("<div class='content-item article' data-article-id='{id}'><span></span><p>{title}</p><p class='date'>{round_date_created}</p></div>").EW().createView(model);
       div.click(function () {
          EW.setHashParameters({categoryId: null, articleId: id});
       });
       div.dblclick(function () {
-         //EW.setHashParameter("preCategoryId", contentManagement.parentId);
          self.seeArticleActivity({articleId: id});
-         //contentManagement.selectCategory(div, id);
       });
       return div;
    };

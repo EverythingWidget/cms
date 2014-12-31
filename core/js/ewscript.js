@@ -1327,20 +1327,6 @@ EverythingWidgets.prototype.unlock = function (obj)
    });
 };
 
-
-EverythingWidgets.prototype.createHeadersRow = function (headers)
-{
-   var tr = $(document.createElement("tr"));
-   $.each(headers, function (k, v) {
-      var th = $(document.createElement("th"));
-      th.css("width", v.width);
-      th.css("display", v.display);
-      th.html(k);
-      tr.append(th);
-   });
-   return tr;
-};
-
 function EWTable(config)
 {
    var $base = this;
@@ -1410,6 +1396,19 @@ function EWTable(config)
       });
    }
 }
+
+EWTable.prototype.createHeadersRow = function (headers)
+{
+   var tr = $(document.createElement("tr"));
+   $.each(headers, function (k, v) {
+      var th = $(document.createElement("th"));
+      th.css("width", v.width);
+      th.css("display", v.display);
+      th.html(k);
+      tr.append(th);
+   });
+   return tr;
+};
 
 EWTable.prototype.createRow = function (val, rc)
 {
@@ -1568,7 +1567,8 @@ EWTable.prototype.listRows = function ()
    var rows = new Array();
    if (self.config.rowCount)
    {
-      $.each(self.data.result, function (k, v) {
+      $.each(self.data.result, function (k, v)
+      {
          var row = self.createRow(v, 1);
          row.prepend("<td>" + rc + "</td>");
          rows.push(row);
@@ -1578,10 +1578,10 @@ EWTable.prototype.listRows = function ()
    // Without row number
    else
    {
-      $.each(self.data.result, function (k, v) {
+      $.each(self.data.result, function (k, v)
+      {
          var row = self.createRow(v, 0);
          rows.push(row);
-
       });
    }
    self.table.empty();
@@ -1592,19 +1592,18 @@ EWTable.prototype.read = function (customURLData)
 {
    var self = this;
    $.EW("lock", self.table);
-   var urlData = $.extend(self.urlData, {
+   var urlData = $.extend(self.urlData, 
+   {
       token: self.token,
       size: self.pageSize
    },
    customURLData);
-   //alert(JSON.stringify(urlData));
    $.ajax({type: "POST",
       url: self.url,
       data: urlData,
       dataType: "json",
-      success: function (data) {
-         //console.log(data);
-
+      success: function (data) 
+      {
          var tillRow = (self.token + self.pageSize);
          if (self.token + self.pageSize > data.totalRows)
          {
@@ -1628,60 +1627,20 @@ EWTable.prototype.read = function (customURLData)
          self.dynamicHeader = self.headers.clone();
          self.dynamicHeader.addClass("dynamic-header");
          self.table.prepend(self.dynamicHeader);
-
          self.pageInfo.text(self.token + "-" + tillRow + " of " + data.totalRows);
-
       },
-      error: function (o) {
+      error: function (o) 
+      {
          //console.log(o);
          self.data = {result: []};
          self.table.empty();
          self.next.css('visibility', 'hidden');
          self.previous.css('visibility', 'hidden');
-         /*self.listRows();
-          self.dynamicHeader = self.headers.clone();
-          self.dynamicHeader.addClass("dynamic-header");
-          self.table.prepend(self.dynamicHeader);*/
-         //self.pageInfo.html(o.responseJSON.message);
          self.container.replaceWith("<div class='box box-error'><label class='value'>" + o.responseJSON.message + "</label></div>");
          EW.customAjaxErrorHandler = true;
-         /*if (data.status == 403)
-          {
-          
-          data.result = {"message": "You dont have access"};
-          }*/
+    
       }
    });
-   /*$.post(self.url, urlData, function (data) {
-    //console.log(data);
-    
-    var tillRow = (self.token + self.pageSize);
-    if (self.token + self.pageSize > data.totalRows)
-    {
-    self.next.css('visibility', 'hidden');
-    tillRow = data.totalRows;
-    }
-    else
-    {
-    self.next.css('visibility', 'visible');
-    }
-    if (self.token <= 0)
-    {
-    self.previous.css('visibility', 'hidden');
-    } else
-    {
-    self.previous.css('visibility', 'visible');
-    }
-    self.data = data;
-    self.table.empty();
-    self.listRows();
-    self.dynamicHeader = self.headers.clone();
-    self.dynamicHeader.addClass("dynamic-header");
-    self.table.prepend(self.dynamicHeader);
-    
-    self.pageInfo.text(self.token + "-" + tillRow + " of " + data.totalRows);
-    
-    }, "json");*/
 };
 
 EWTable.prototype.refresh = function (data)
@@ -1728,7 +1687,7 @@ EverythingWidgets.prototype.createTable = function (conf)
    ewTable.controls.append(pageInfo);
    ewTable.pageInfo = pageInfo;
    ewTable.previous = previous;
-   var hr = EW.createHeadersRow(conf.headers);
+   var hr = ewTable.createHeadersRow(conf.headers);
    if (conf.rowCount)
    {
       hr.prepend("<th class='no'></th>");
@@ -1770,10 +1729,11 @@ EverythingWidgets.prototype.addURLHandler = function (handler, hashName)
    }
    else
    {
-      //var exist = false;
-      for (var i = 0; i < handlers.length; i++) {
-         //alert(handlers[i] + " " + handler);
-         if (" " + handlers[i] == " " + handler) {
+
+      for (var i = 0; i < handlers.length; i++) 
+      {
+         if (" " + handlers[i] == " " + handler) 
+         {
             handlers[i] = null;
             handlers[i] = handler;
             return;
@@ -1782,17 +1742,6 @@ EverythingWidgets.prototype.addURLHandler = function (handler, hashName)
       handlers.push(handler);
       this.urlHandlers = handlers;
    }
-   /*for (var i = 0; i < handlers.length; i++)
-    {
-    // alert(' ' + EW.urlHandlers[i] + ' ' + handler);
-    if (' ' + handlers[i] === ' ' + handler)
-    return;
-    }*/
-
-   //this.removeURLHandler(handler, hashName);
-   //alert(hashName);
-
-   //handlers.push(handler);
    if (hashName)
    {
       customHashes[hashName].newHandler = true;
@@ -1824,30 +1773,19 @@ EverythingWidgets.prototype.removeURLHandler = function (handler, hashName)
    }
 };
 
-
-
 function hashHandler()
 {
    this.oldHash = window.location.hash;
    this.Check;
-   //var that = this;
 
-//$("#component-chooser").html(window.location.hash);
-   var detect = function () {
-      //$("#component-chooser").html(hashDetection.oldHash+' '+window.location.hash);
+   var detect = function () 
+   {
       if (this.oldHash !== window.location.hash || EW.newHandler)
       {
          EW.newHandler = false;
          this.oldHash = window.location.hash;
-         /*if (EW.customFunction !== null)
-          {
-          if (EW.customFunction())
-          {
-          }
-          }*/
-         for (var i = 0;
-                 i < EW.urlHandlers.length;
-                 i++)
+
+         for (var i = 0; i < EW.urlHandlers.length; i++)
          {
             EW.urlHandlers[i].call();
          }
@@ -1859,9 +1797,6 @@ function hashHandler()
       detect();
    }, 50);
 }
-
-
-
 
 EverythingWidgets.prototype.createForm = function (json)
 {
@@ -1978,24 +1913,25 @@ EverythingWidgets.prototype.createForm = function (json)
    return form;
 };
 
-var notify_defaults = {
-   type: 'success',
-   closable: true,
-   transition: 'fade',
-   fadeOut: {
-      enabled: true,
-      delay: 20000
-   },
-   delay: 5000,
-   message: "Done Successfully",
-   onClose: function () {
-   },
-   onClosed: function () {
-   },
-   position: "nw"
-};
+
 function EWNotification(element, options)
 {
+   var notify_defaults = {
+      type: 'success',
+      closable: true,
+      transition: 'fade',
+      fadeOut: {
+         enabled: true,
+         delay: 20000
+      },
+      delay: 5000,
+      message: "Done Successfully",
+      onClose: function () {
+      },
+      onClosed: function () {
+      },
+      position: "nw"
+   };
 // Element collection
    console.log(options);
    this.$element = $(element);
@@ -2033,7 +1969,6 @@ function EWNotification(element, options)
       }
 
    }
-
    var $this = this;
    if (this.options.closable)
       var link = $('<a class="close close-icon" href="#"></a>');
@@ -2048,15 +1983,16 @@ function EWNotification(element, options)
    return this;
 }
 
-EWNotification.prototype.closeNotification = function () {
-
+EWNotification.prototype.closeNotification = function ()
+{
    this.options.onClose();
    $(this.$note).remove();
    this.options.onClosed();
    return false;
 };
 
-EWNotification.prototype.show = function () {
+EWNotification.prototype.show = function ()
+{
    //if (this.options.fadeOut.enabled)
    //var $to = this;  
    var top = 0;
@@ -2103,7 +2039,8 @@ EWNotification.prototype.show = function () {
    });
 };
 
-EWNotification.prototype.hide = function () {
+EWNotification.prototype.hide = function ()
+{
    //if (this.options.fadeOut.enabled)
    //var $to = this;
    this.$note.delay(this.options.delay || 3000).fadeOut('slow', $.proxy(this.closeNotification, this));
@@ -2226,7 +2163,6 @@ function EWFormValidator(element, options)
    return true;
 }
 
-
 function ExtendableList(element, cSettings)
 {
    var base = this;
@@ -2337,6 +2273,16 @@ $.fn.EW = function (methodOrOptions)
 
 
 ew_plugins = {
+   createView: function (model)
+   {
+      var view = $(this).clone();
+      view.wrap("<div>");
+      var viewElement = view.parent().html().replace(/{(\w+)}/g, function (a, p)
+      {
+         return model[p];
+      });
+      return $(viewElement);
+   },
    notify: function (options) {
       return new EWNotification(this, options);
    },

@@ -27,6 +27,10 @@ class ContentManagement extends \Section
 
    public function init_plugin()
    {
+      ob_start();
+      include 'link-chooser-document.php';
+      $lcd = ob_get_clean();
+      EWCore::register_form("ew-link-chooser-form-default", "contents-list", ["title" => "Contents", "content" => $lcd]);
       // $this->file_types 
       EWCore::register_resource("images", array($this, "image_loader"));
       $this->register_permission("see-content", "User can see the contents", array($this->get_index(), "get_content",

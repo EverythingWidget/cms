@@ -4,79 +4,6 @@
  * and open the template in the editor.
  */
 
-// {@tr:(.*)}
-function get_contents_list()
-{
-   ob_start();
-   ?>
-
-   <script>
-      var parentId = new Array();
-      var oldParentId = 0;
-      var table = EW.createTable({name: "articles-list-table", columns: ["title", "round_date_created"], headers: {Name: {}, "Date Created": {}}, rowCount: true, url: "<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/get_articles_list", pageSize: 30
-         , buttons: {"Select": function (rowId) {
-   <?php
-//Call the function which has been attached to the function reference element
-   if ($_REQUEST["callback"] == "function-reference")
-   {
-      ?>
-                  var doc = {type: "article", id: rowId.data("field-id")};
-                  var func = $("#link-chooser #function-reference").data("callback")(JSON.stringify(doc));
-      <?php
-   }
-   else
-      echo $_REQUEST["callback"] . '(rowId);'
-      ?>
-
-            }}});
-      var categoriesTable = EW.createTable({name: "categories-list-table", columns: ["title", "round_date_created"], headers: {Name: {}, "Date Created": {}}, rowCount: true, url: "<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/get_categories_list", pageSize: 30
-         , buttons: {"Select": function (rowId) {
-   <?php
-//Call the function which has been attached to the function reference element
-   if ($_REQUEST["callback"] == "function-reference")
-   {
-      ?>
-                  var doc = {type: "category", id: rowId.data("field-id")};
-                  var func = $("#link-chooser #function-reference").data("callback")(JSON.stringify(doc));
-      <?php
-   }
-   else
-      echo $_REQUEST["callback"] . '(rowId);'
-      ?>
-
-            }, "Browse": function (row)
-            {
-               //oldParentId = parentId;
-               table.refresh({parentId: row.data("field-id")});
-               categoriesTable.refresh({parentId: row.data("field-id")});
-               $("#documents-up-btn").comeIn();
-               if (parentId.length == 0)
-               {
-                  parentId.push(0);
-                  parentId.push(row.data("field-id"));
-               }
-               else
-               {
-                  parentId.push(row.data("field-id"));
-               }
-            }}});
-      categoriesTable.container.css({position: "relative", "height": "500px"});
-      table.container.css({position: "relative", height: "500px"});
-      $("#contents-list").append($("<div class=col-xs-12><h2><button class='button' id='documents-up-btn' type='button' style='display:none;float:right;'>UP</button>Folders</h2></div>").append(categoriesTable.container));
-      $("#contents-list").append($("<div class='col-xs-12 mar-bot'><h2>Files</h2></div>").append(table.container));
-      $("#documents-up-btn").click(function () {
-         var index = parentId.length - 2;
-         table.refresh({parentId: parentId[index]});
-         categoriesTable.refresh({parentId: parentId[index]});
-         parentId.splice(index, 2);
-         //parentId = oldParentId;
-         if (parentId.length == 0)
-            $("#documents-up-btn").comeOut();
-      });</script>
-   <?php
-   return ob_get_clean();
-}
-
 function custom_url_tab()
 {
    ob_start();
@@ -140,13 +67,13 @@ function custom_widget_feeder_tab()
 }
 
 //global $EW;
-EWCore::register_form("ew-file-chooser-form-default", "contents-list", ["title" => "Contents", "content" => get_contents_list()]);
+//EWCore::register_form("ew-file-chooser-form-default", "contents-list", ["title" => "Contents", "content" => get_contents_list()]);
 //EWCore::register_form("ew-file-chooser-form-default", "media-list", ["title" => "Media", "content" => "Coming Soon..."]);
 //EWCore::register_form("ew-file-chooser-form-default", "apps-pages-list", ["title" => "Apps", "content" => "Coming Soon ... "]);
-EWCore::register_form("ew-file-chooser-form-default", "widgets-feeders-list", ["title" => "Widgets Feeders", "content" => custom_widget_feeder_tab()]);
-EWCore::register_form("ew-file-chooser-form-default", "custom-url", ["title" => "URL", "content" => custom_url_tab()]);
-$tabsDefault = EWCore::read_registry("ew-file-chooser-form-default");
-$tabs = EWCore::read_registry("ew-file-chooser-form");
+EWCore::register_form("ew-link-chooser-form-default", "widgets-feeders-list", ["title" => "Widgets Feeders", "content" => custom_widget_feeder_tab()]);
+EWCore::register_form("ew-link-chooser-form-default", "custom-url", ["title" => "URL", "content" => custom_url_tab()]);
+$tabsDefault = EWCore::read_registry("ew-link-chooser-form-default");
+$tabs = EWCore::read_registry("ew-link-chooser-form");
 ?>
 <div class="header-pane tabs-bar row">
    <h1 id="form-title" class="col-xs-12">
