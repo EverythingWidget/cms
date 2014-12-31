@@ -268,6 +268,7 @@ ul.list.indent li{margin:0px;padding:2px 5px;overflow:hidden;}
 ul.list.box li{margin:0px;margin-bottom:1px;padding:15px 0px;background-color:#eaeaea;}
 ul.list.box li .close-icon{position:absolute;}
 ul.list.arrangeable li{margin-bottom:1px;}
+ul.list.arrangeable .row-buttons{padding-top:5px;}
 ul.list.arrangeable li.dragged .handle{visibility:hidden;}
 ul.list.arrangeable li.placeholder{min-height:30px;background-color:#0099cc;border-radius:2px;}
 ul.list.arrangeable li .handle{width:20px;position:absolute;background-color:rgba(0,0,0,.06);top:0px;left:0px;bottom:0px;z-index:2;}
@@ -298,7 +299,7 @@ div#components-pane{background-color:#fff;position:absolute;max-width:580px;heig
 div.sidebar .button{margin:6px 8px;border:1px solid #666;background-color:rgba(0,0,0,.5);box-shadow:0px 0px 3px 1px #000;float:none;display:block;line-height:28px;width:38px;padding:5px;font-family:Roboto}
 div.sidebar .button:hover{background-color:rgba(0,0,0,.8)}
 div.sidebar .button:active{background-color:rgba(30,50,70,.8)}
-div.sidebar{background-color:#4f5f6f;position:absolute;top:49px;left:10px;width:auto;height:40px;border-radius:10px;overflow:hidden;font-size:13px;margin:0px 0px;z-index:1;box-shadow:0px 1px 5px -1px rgba(0,0,0,.4)/*-webkit-transition:all 300ms ease;-moz-transition:all 300ms ease;-ms-transition:all 300ms ease;-o-transition:all 300ms ease;transition:all 300ms ease;*/}
+div.sidebar{background-color:#4f5f6f;position:absolute;top:49px;left:10px;width:auto;height:40px;border-radius:5px;overflow:hidden;font-size:13px;margin:0px 0px;z-index:1;box-shadow:0px 1px 5px -1px rgba(0,0,0,.4)/*-webkit-transition:all 300ms ease;-moz-transition:all 300ms ease;-ms-transition:all 300ms ease;-o-transition:all 300ms ease;transition:all 300ms ease;*/}
 div.sidebar > label,div.sidebar > *{display:none;}
 div.sidebar.in > *{display:inherit;}
 div.sidebar .comp-btn{height:40px;color:#fff;padding:0px 15px;padding-left:46px;font-size:15px;float:left;display:inline;font-weight:300;}
@@ -399,7 +400,7 @@ textarea.text-field{line-height:20px;height:82px}
 .text-field.Radio span{width:auto;min-height:28px;line-height:28px;float:right;direction:rtl;font-family:Tahoma;font-size:12px;cursor:pointer;}
 .text-field.Radio input{width:30px;height:28px;line-height:28px;padding:0px;padding-right:4px;padding-left:4px;margin:0px;margin-right:10px;outline:none;float:left;cursor:pointer;}
 .text-field:focus,select:focus,select.active,.text-field.active{border-color:#000;box-shadow:0px 0px 3px 0px rgba(0,0,0,.0);}
-.text-field:disabled{background-color:#fafafa;border:1px solid #ddd;box-shadow:none;}
+.text-field:disabled{background-color:rgba(0,0,0,.04);border-color:transparent;box-shadow:none;}
 .label-float-input{margin-top:40px;}
 .text-field > select{width:inherit;display:block;background:none;background-color:#fff;height:22px;line-height:22px;padding:0px;border:none;outline:none;font-family:Tahoma;font-size:14px;}
 .button,a.button{width:auto;font-size:16px;background-color:#0be;float:left;border-radius:3px;;min-width:8px;line-height:30px;padding:0px 8px 0px 8px;text-align:center;color:#fff;overflow:hidden;border:2px solid transparent;outline:none;cursor:pointer;text-decoration:none;-webkit-user-select:none;-khtml-user-select:none;-moz-user-select:none;-ms-user-select:none;-o-user-select:none;user-select:none;}
@@ -564,7 +565,8 @@ a.link.active,.active > a.link{cursor:default;background-color:#00669c;text-deco
 .list-modal > h1{overflow:hidden;position:absolute;top:0px;height:30px;font-size:14px;padding:0px 10px;line-height:30px;margin:0px;width:100%;}
 .list-modal > div{overflow:auto;position:absolute;top:30px;bottom:0px;padding-bottom:5px;}
 .tab-content.fix{position:absolute;top:0px;bottom:0px;overflow-y:auto;}
-.tab-content.fix .tab-pane .row{margin-left:0px;margin-right:0px;}
-.tab-content.fix .tab-pane .row > div{padding:0px 5px;}
+//.tab-content.fix .tab-pane .row{margin-left:0px;margin-right:0px;}
+//.tab-content.fix .tab-pane .row > div{padding:0px 5px;}
+//.tab-content.fix .tab-pane .row > div > div{padding:0px;}
 .nav-sm li a{padding:4px 8px;margin-top:12px;font-size:13px;}
 .options-panel .btn{margin:1px 2px;float:left;}

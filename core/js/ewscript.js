@@ -2171,15 +2171,16 @@ function ExtendableList(element, cSettings)
    //this.$element.find("li:first-child").prepend('<div class="handle"></div>');
 
    this.firstItemClone = this.$element.find("li:first-child").clone();
-   this.addNewRow = $("<button type='button' class='btn btn-primary btn-sm'>Add</button>");
+   this.lastRow = $("<div data-add-item-row='true' class='row row-buttons'><div class='col-xs-12'></div></div>");
+   this.addNewRow = $("<button type='button' class='btn btn-text btn-primary pull-right'>Add</button>");
    this.addNewRow.on("click", function () {
       var ni = base.createItem();
       ni.hide();
-      base.$element.append(ni);
+      base.lastRow.before(ni);
       ni.fadeIn(200);
    });
-   var lastRow = $("<div data-add-item-row='true' class='row'><div class='col-xs-12'></div></div>");
-   lastRow.children().append(this.addNewRow);
+   
+   this.lastRow.children().append(this.addNewRow);
    base.$element.empty();
    var init = false;
    var oneValue = false;
@@ -2226,7 +2227,7 @@ function ExtendableList(element, cSettings)
    base.$element.append(items);
    //if (!init)
    //base.createItem();
-   base.$element.after(lastRow);
+   base.$element.append(this.lastRow);
    base.$element.sortable({
       handle: ".handle"
    });

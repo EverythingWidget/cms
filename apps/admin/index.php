@@ -1,7 +1,7 @@
 <?php
 session_start();
 require EW_ROOT_DIR . 'core/database_config.php';
-
+//echo "asdasdasd";
 $EW = new EWCore("admin/", $_REQUEST);
 //EWCore::set_default_locale("admin");
 
@@ -12,8 +12,10 @@ $EW = new EWCore("admin/", $_REQUEST);
 if (!isset($_SESSION['login']))
 {
    include "Login.php";
-   if (!isset($_SESSION['login']))
+   //if (!isset($_SESSION['login']))
+   //{
       return;
+   //}
 }
 
 $compId = $_REQUEST['compId'];
@@ -794,7 +796,7 @@ if ($secId)
                         if ($_SESSION['login'])
                         {
                            ?>
-                           <a class="ExitBtn" href="logout.php" ></a>    
+                           <a class="ExitBtn" href="./app-admin/logout.php" ></a>    
                            <?php
                         }
                         ?>

@@ -1086,7 +1086,7 @@ pre code {
    background-image: none;
    border: 2px solid transparent;
    white-space: nowrap;
-   padding: 6px 12px;
+   padding: 6px 16px;
    font-size: 14px;
    line-height: 18px;
    border-radius: 3px;
@@ -1144,8 +1144,8 @@ fieldset[disabled] .btn {
    box-shadow: none;
 }
 
-.btn-text{background-color:transparent;font-weight:500;font-size:17px;padding:8px 12px;border:none;}
-.btn-text:hover{box-shadow:none;}
+.btn.btn-text{background-color:transparent;font-weight:500;font-size:1.15em;padding:8px 12px;border:none;}
+.btn.btn-text:hover{box-shadow:none;}
 .btn-file {
    position: relative;
    overflow: hidden;
@@ -1215,8 +1215,7 @@ fieldset[disabled] .btn-default.active {
 }
 .btn-primary {
    color: #ffffff !important;
-   background-color: #0be;
-
+   background-color: #03A9F4;
 }
 .btn-text.btn-primary{color: #0be !important;background-color:transparent;}
 .btn-text.btn-primary:hover,.btn-text.btn-primary:focus{background-color:#d4eaef}
@@ -1287,8 +1286,8 @@ fieldset[disabled] .btn-warning.active {
 }
 .btn-danger {
    color: #ffffff;
-   background-color:#ff4f30;
-   border-color:#ff4f30;
+   background-color:#F44336;
+   border-color:#F44336;
 }
 .btn-danger:hover,
 .btn-danger:focus,
@@ -1323,8 +1322,8 @@ fieldset[disabled] .btn-danger.active {
 }
 .btn-success {
    color: #ffffff;
-   background-color:yellowgreen;
-   border-color: yellowgreen;
+   background-color:#6CAF40;
+   border-color: #6CAF40;
 }
 .btn-success:hover,
 .btn-success:focus,

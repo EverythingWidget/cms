@@ -86,24 +86,30 @@ class template extends TemplateControl
          <div class="col-xs-12 mar-top" data-toggle="buttons">
             <label id="spw" type="button" class="btn btn-primary col-xs-12" ><input type="checkbox" name="spw" value="true">Single Page Website</label>
          </div>
-         <div class="col-xs-12 mar-top">
-            <label>tr{Specify your pages}</label>
-         </div>
-         <div class="col-xs-12">
-            <ul id="website_pages" class="list arrangeable">
-               <li class="" style="">
-                  <div class="wrapper">
-                     <div class="handle"></div>                         
-                     <input class="text-field test" data-label='Page' data-ew-plugin="link-chooser" name="link"/>
-                  </div>
-               </li>
-            </ul>
+         <div id="spw-cp">
+            <div  class="col-xs-12 mar-top">
+               <label>tr{Specify your pages}</label>
+            </div>
+            <div class="col-xs-12">
+               <ul id="website_pages" class="list arrangeable">
+                  <li class="" style="">
+                     <div class="wrapper">
+                        <div class="handle"></div>                         
+                        <input class="text-field test" data-label='Page' data-ew-plugin="link-chooser" name="link"/>
+                     </div>
+                  </li>
+               </ul>
+            </div>
          </div>
       </div>
       <script>
-
          $("#template_settings_form").on("refresh", function (e, data)
          {
+            if (!$("#spw input").is(":checked"))
+            {
+               $("#spw-cp :input").attr('disabled', true);
+               $("#spw-cp").hide();
+            }
             if (data.pages)
                $("#website_pages").EW().dynamicList({value: $.parseJSON(data.pages)});
             else
@@ -112,6 +118,18 @@ class template extends TemplateControl
             $("#spw").off("change");
             $("#spw").on("change", function ()
             {
+               if ($("#spw input").is(":checked"))
+               {
+                  $("#spw-cp :input").attr('disabled', false);
+                  $("#spw-cp").stop().animate({height: "toggle"}, 400, "Power2.easeOut");
+               }
+               else
+               {
+
+                  $("#spw-cp").stop().fadeOut(200, function () {
+                     $("#spw-cp :input").attr('disabled', true);
+                  });
+               }
                uisForm.updateTemplateBody();
             });
          });

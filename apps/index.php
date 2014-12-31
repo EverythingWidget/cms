@@ -154,15 +154,15 @@ if (!isset($_REQUEST["_uis"]))
 else
 {
    $r_uri = $_REQUEST["_uis"];
-   $dbc = EWCore::get_db_connection();
-
-   $uis = $dbc->query("SELECT * FROM ew_ui_structures WHERE id =  '$r_uri' ")/* or die($dbc->error) */;
-   if ($row = $uis->fetch_assoc())
-   {
-      $_REQUEST["_uis_template"] = $row["template"];
-      if (!$_REQUEST["_uis_template_settings"])
-         $_REQUEST["_uis_template_settings"] = $row["template_settings"];
-   }
+   //$dbc = EWCore::get_db_connection();
+   $uis_data = json_decode(admin\WidgetsManagement::get_uis($r_uri), true);
+   //$uis = $dbc->query("SELECT * FROM ew_ui_structures WHERE id =  '$r_uri' ");
+   //if ($row = $uis->fetch_assoc())
+   //{
+   $_REQUEST["_uis_template"] = $uis_data["template"];
+   if (!$_REQUEST["_uis_template_settings"])
+      $_REQUEST["_uis_template_settings"] = $uis_data["template_settings"];
+   //}
 }
 $GLOBALS["page_parameters"] = explode("/", $_REQUEST["_parameters"]);
 $RESULT_CONTENT = "RESULT_CONTENT: EMPTY";
@@ -181,7 +181,8 @@ function translate($match)
 if ($RESULT_CONTENT)
 {
    //$RESULT_CONTENT = preg_replace_callback("/\{\{([^\|]*)\|?([^\|]*)\}\}/", $callback, $RESULT_CONTENT);
-   // Show translated result   
+   // Show translated result  
+
    echo preg_replace_callback("/tr(\:\w*)?\{(.*?)\}/", "translate", $RESULT_CONTENT);
 }
 

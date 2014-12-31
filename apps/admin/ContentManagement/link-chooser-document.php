@@ -1,10 +1,5 @@
 <?php
-session_start();
-if (!$_SESSION['login'])
-{
-   header('Location: Login.php');
-   return;
-}
+
 ?>
 <div  class="row">
    <div class="col-xs-12" >            
@@ -37,27 +32,7 @@ if (!$_SESSION['login'])
          $("#documents-up-btn").click($.proxy(this.preCategory, this));
          this.bUp = EW.addAction("tr{Up}", $.proxy(this.preCategory, this), {float: "right"}).hide();
          this.bSelect = EW.addAction("tr{Select}", $.proxy(this.selectContent, this)).addClass("btn-success").hide();
-         //this.bUp.css("float", "right");
-         /*this.bNewFolder = EW.addActivity({title: "tr{New Folder}", activity: "app-admin/ContentManagement/category-form.php", parent: "action-bar-items", hash: {categoryId: null}}).hide();
-          this.bNewFile = EW.addActivity({title: "tr{New Article}", activity: "app-admin/ContentManagement/article-form.php", parent: "action-bar-items", hash: {articleId: null}}).hide().comeIn(300);
-          
-          this.seeFolderActivity = EW.getActivity({activity: "app-admin/ContentManagement/category-form.php_see"});
-          this.seeArticleActivity = EW.getActivity({activity: "app-admin/ContentManagement/article-form.php_see"});
-          if (this.seeArticleActivity || this.seeFolderActivity)
-          this.bSee = EW.addAction("tr{See}", $.proxy(this.seeDetails, this), null, "action-bar-items").hide();
-          else
-          this.bSee = $();*/
-         var oldCn = 0;
-         /*$(document).off("article-list");
-          $(document).on("article-list.refresh", function () {
-          self.listCategories();
-          });*/
-         /*$(document).off("category-list");
-          $(document).on("category-list.refresh", function () {
-          self.listCategories();
-          });*/
          this.listCategories(this.parentId);
-
       }
 
       LinkChooserDocuments.prototype.preCategory = function ()

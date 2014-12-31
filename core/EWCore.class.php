@@ -233,6 +233,8 @@ class EWCore
     */
    public static function get_db_connection()
    {
+      if (!self::$db_connection->host_info)
+         self::$db_connection = get_db_connection();
       return self::$db_connection;
    }
 
@@ -1439,19 +1441,22 @@ class EWCore
    {
       $dbc = EWCore::get_db_connection();
       // if the url is the root, the default uis will be sat
+      //if(!$dbc->)
+      //echo "sdasdasd";
       if ($url == "/")
       {
          $url = "@HOME_PAGE";
       }
       //echo $r_uri."ssss";
-      $uis = $dbc->query("SELECT * FROM ew_pages_ui_structures,ew_ui_structures WHERE ew_ui_structures.id = ew_pages_ui_structures.ui_structure_id AND path =  '$url' ") or die("no UIS");
+      $uis = $dbc->query("SELECT * FROM ew_pages_ui_structures,ew_ui_structures WHERE ew_ui_structures.id = ew_pages_ui_structures.ui_structure_id AND path =  '$url'") or die(print_r($dbc));
       if ($row = $uis->fetch_assoc())
       {
-         
+         //$dbc->close();
+         //print_r($dbc);
       }
       else
       {
-         $uis = $dbc->query("SELECT * FROM ew_pages_ui_structures,ew_ui_structures WHERE ew_ui_structures.id = ew_pages_ui_structures.ui_structure_id AND path =  '@DEFAULT' ") or die("no UIS");
+         $uis = $dbc->query("SELECT * FROM ew_pages_ui_structures,ew_ui_structures WHERE ew_ui_structures.id = ew_pages_ui_structures.ui_structure_id AND path =  '@DEFAULT' ") or die("haaaa");
          $row = $uis->fetch_assoc();
       }
       return array("uis_id" => $row["ui_structure_id"], "uis_template" => $row["template"], "uis_template_settings" => $row["template_settings"]);
