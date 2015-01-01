@@ -86,7 +86,8 @@ $name = $_REQUEST["name"];
          if (this.panelId)
          {
             var panel = $("#fr").contents().find("body #base-content-pane div[data-panel-id='" + this.panelId + "']");
-            EW.setFormData("#appearance-conf", $.parseJSON(panel.attr("data-panel-parameters")));
+            var blockParams = (panel.attr("data-panel-parameters")) ? $.parseJSON(panel.attr("data-panel-parameters")) : {};
+            EW.setFormData("#appearance-conf", blockParams);
             $("#uis-block-title").html("Edit Block");
             $("#used-classes").text(panel.prop("class"));
             this.bAdd.comeOut(200);

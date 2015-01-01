@@ -23,7 +23,8 @@
 !function ($) {
 
    var defaults = {
-      sectionContainer: "section",
+      sections: "section",
+      sectionsContainer: null,
       easing: "ease",
       animationTime: 1000,
       pagination: true,
@@ -85,31 +86,32 @@
       });
    };
    /*var getPosition = function (i)
-   {
-      var next = $(settings.sectionContainer + "[data-index='" + (i + 1) + "']");
-      if (next.length < 1)
-      {
-         if (settings.loop == true)
-         {
-            pos = 0;
-            next = $(settings.sectionContainer + "[data-index='1']");
-         }
-         else 
-         {
-            return
-         }
-
-      } else {
-         pos = (i * 100) * -1;
-      }
-      return pos;
-   }*/
+    {
+    var next = $(settings.sectionContainer + "[data-index='" + (i + 1) + "']");
+    if (next.length < 1)
+    {
+    if (settings.loop == true)
+    {
+    pos = 0;
+    next = $(settings.sectionContainer + "[data-index='1']");
+    }
+    else 
+    {
+    return
+    }
+    
+    } else {
+    pos = (i * 100) * -1;
+    }
+    return pos;
+    }*/
 
    $.fn.onepage_scroll = function (options) {
       var settings = $.extend({}, defaults, options),
               el = $(this),
-              sections = $(settings.sectionContainer)
-      total = sections.length,
+              sections = $(settings.sections),
+              sectionsContainer = $(settings.sectionsContainer),
+              total = sections.length,
               status = "off",
               topPos = 0,
               leftPos = 0,
@@ -151,13 +153,13 @@
 
       $.fn.moveDown = function () {
          var el = $(this)
-         index = $(settings.sectionContainer + ".active").data("index");
-         current = $(settings.sectionContainer + "[data-index='" + index + "']");
-         next = $(settings.sectionContainer + "[data-index='" + (index + 1) + "']");
+         index = $(settings.sections + ".active").data("index");
+         current = $(settings.sections + "[data-index='" + index + "']");
+         next = $(settings.sections + "[data-index='" + (index + 1) + "']");
          if (next.length < 1) {
             if (settings.loop == true) {
                pos = 0;
-               next = $(settings.sectionContainer + "[data-index='1']");
+               next = $(settings.sections + "[data-index='1']");
             } else {
                return
             }
@@ -182,20 +184,22 @@
             var href = window.location.href.substr(0, window.location.href.indexOf('#')) + "#" + (index + 1);
             history.pushState({}, document.title, href);
          }
+         /*current.transformPage(settings, -100, next.data("index"));
+          next.transformPage(settings, 0, next.data("index"));*/
          el.transformPage(settings, pos, next.data("index"));
       }
 
       $.fn.moveUp = function ()
       {
          var el = $(this)
-         index = $(settings.sectionContainer + ".active").data("index");
-         current = $(settings.sectionContainer + "[data-index='" + index + "']");
-         next = $(settings.sectionContainer + "[data-index='" + (index - 1) + "']");
+         index = $(settings.sections + ".active").data("index");
+         current = $(settings.sections + "[data-index='" + index + "']");
+         next = $(settings.sections + "[data-index='" + (index - 1) + "']");
 
          if (next.length < 1) {
             if (settings.loop == true) {
                pos = ((total - 1) * 100) * -1;
-               next = $(settings.sectionContainer + "[data-index='" + total + "']");
+               next = $(settings.sections + "[data-index='" + total + "']");
             }
             else {
                return
@@ -219,13 +223,15 @@
             var href = window.location.href.substr(0, window.location.href.indexOf('#')) + "#" + (index - 1);
             history.pushState({}, document.title, href);
          }
+         //current.transformPage(settings, 100, next.data("index"));
+         //next.transformPage(settings, 0, next.data("index"));
          el.transformPage(settings, pos, next.data("index"));
       }
 
       $.fn.moveTo = function (page_index)
       {
-         current = $(settings.sectionContainer + ".active");
-         next = $(settings.sectionContainer + "[data-index='" + (page_index) + "']");
+         current = $(settings.sections + ".active");
+         next = $(settings.sections + "[data-index='" + (page_index) + "']");
          if (next.length > 0) {
             if (typeof settings.beforeMove == 'function')
                settings.beforeMove(next.data("index"));
@@ -289,11 +295,11 @@
                el.moveDown();
             });
 
-            $(document).bind('mousewheel DOMMouseScroll MozMousePixelScroll', function (event) {
-               event.preventDefault();
-               var delta = event.originalEvent.wheelDelta || -event.originalEvent.detail;
-               init_scroll(event, delta);
-            });
+            /*$(document).bind('mousewheel DOMMouseScroll MozMousePixelScroll', function (event) {
+             event.preventDefault();
+             var delta = event.originalEvent.wheelDelta || -event.originalEvent.detail;
+             //init_scroll(event, delta);
+             });*/
          }
       }
 
@@ -316,8 +322,12 @@
       }
 
       // Prepare everything before binding wheel scroll
-
-      el.addClass("onepage-wrapper").css("position", "relative");
+      if (settings.sectionsContainer)
+      {
+         sectionsContainer.addClass("onepage-wrapper").css("position", "relative");
+      }
+      else
+         el.addClass("onepage-wrapper").css("position", "relative");
       $.each(sections, function (i) {
          $(this).css({
             position: "absolute",
@@ -375,12 +385,12 @@
          init_index = window.location.hash.replace("#", "")
 
          if (parseInt(init_index) <= total && parseInt(init_index) > 0) {
-            $(settings.sectionContainer + "[data-index='" + init_index + "']").addClass("active")
+            $(settings.sections + "[data-index='" + init_index + "']").addClass("active")
             $("body").addClass("viewing-page-" + init_index)
             if (settings.pagination == true)
                $(".onepage-pagination li a" + "[data-index='" + init_index + "']").addClass("active");
 
-            next = $(settings.sectionContainer + "[data-index='" + (init_index) + "']");
+            next = $(settings.sections + "[data-index='" + (init_index) + "']");
             if (next) {
                next.addClass("active")
                if (settings.pagination == true)
@@ -395,13 +405,13 @@
             pos = ((init_index - 1) * 100) * -1;
             el.transformPage(settings, pos, init_index);
          } else {
-            $(settings.sectionContainer + "[data-index='1']").addClass("active")
+            $(settings.sections + "[data-index='1']").addClass("active")
             $("body").addClass("viewing-page-1")
             if (settings.pagination == true)
                $(".onepage-pagination li a" + "[data-index='1']").addClass("active");
          }
       } else {
-         $(settings.sectionContainer + "[data-index='1']").addClass("active")
+         $(settings.sections + "[data-index='1']").addClass("active")
          $("body").addClass("viewing-page-1")
          if (settings.pagination == true)
             $(".onepage-pagination li a" + "[data-index='1']").addClass("active");
@@ -413,14 +423,14 @@
             el.moveTo(page_index);
          });
       }
+      //$(document).click($.proxy(el.moveDown, el));
 
-
-      $(document).bind('mousewheel DOMMouseScroll MozMousePixelScroll', function (event) {
-         event.preventDefault();
-         var delta = event.originalEvent.wheelDelta || -event.originalEvent.detail;
-         if (!$("body").hasClass("disabled-onepage-scroll"))
-            init_scroll(event, delta);
-      });
+      /*$(document).bind('mousewheel DOMMouseScroll MozMousePixelScroll', function (event) {
+       event.preventDefault();
+       var delta = event.originalEvent.wheelDelta || -event.originalEvent.detail;
+       //if (!$("body").hasClass("disabled-onepage-scroll"))
+       //init_scroll(event, delta);
+       });*/
 
 
       if (settings.responsiveFallback != false) {
@@ -432,7 +442,8 @@
       }
 
       if (settings.keyboard == true) {
-         $(document).keydown(function (e) {
+         $(document).off("keydown.onepage-scroll");
+         $(document).on("keydown.onepage-scroll", function (e) {
             var tag = e.target.tagName.toLowerCase();
 
             if (!$("body").hasClass("disabled-onepage-scroll")) {

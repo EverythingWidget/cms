@@ -943,23 +943,23 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
    {
       // Set default jquery html() function
       modalPane.html = modalPane.__proto__.html;
-      var int = setInterval(function ()
-      {
-         try
+      //var int = setInterval(function ()
+      //{
+      //   try
          {
-            if (!modalPane.isOpen)
-               return;
+         //   if (!modalPane.isOpen)
+         //      return;
             modalPane.html(data);
             modalPane.html = htmlFunction;
-            window.clearInterval(int);
+        //    window.clearInterval(int);
          }
-         catch (e)
+       //  catch (e)
          {
-            console.log(e);
-            window.clearInterval(int);
+        //    console.log(e);
+         //   window.clearInterval(int);
          }
 
-      }, 20);
+      //}, 20);
    };
    // Overwrite the default jquery html() function behavior
    modalPane.html = htmlFunction;
@@ -1435,7 +1435,7 @@ EWTable.prototype.createRow = function (val, rc)
       var edit = $(document.createElement("button"));
       edit.attr("type", "button");
       edit.attr("data-label", "Edit");
-      edit.addClass("btn edit");
+      edit.addClass("btn btn-text edit");
       edit.click(function ()
       {
          EW.activeElement = tableRow;
@@ -1448,7 +1448,7 @@ EWTable.prototype.createRow = function (val, rc)
    {
       var del = $(document.createElement("button"));
       del.attr("type", "button");
-      del.addClass("btn delete");
+      del.addClass("btn btn-text delete");
       del.click(function ()
       {
          tableRow.confirm = function (text, delFunction)
@@ -1495,7 +1495,7 @@ EWTable.prototype.createRow = function (val, rc)
       {
          var action = $(document.createElement("button"));
          action.attr("type", "button");
-         action.addClass("btn btn-primary");
+         action.addClass("btn btn-text btn-primary");
          action.text(k);
          if (v)
          {
@@ -1592,17 +1592,17 @@ EWTable.prototype.read = function (customURLData)
 {
    var self = this;
    $.EW("lock", self.table);
-   var urlData = $.extend(self.urlData, 
-   {
-      token: self.token,
-      size: self.pageSize
-   },
+   var urlData = $.extend(self.urlData,
+           {
+              token: self.token,
+              size: self.pageSize
+           },
    customURLData);
    $.ajax({type: "POST",
       url: self.url,
       data: urlData,
       dataType: "json",
-      success: function (data) 
+      success: function (data)
       {
          var tillRow = (self.token + self.pageSize);
          if (self.token + self.pageSize > data.totalRows)
@@ -1629,7 +1629,7 @@ EWTable.prototype.read = function (customURLData)
          self.table.prepend(self.dynamicHeader);
          self.pageInfo.text(self.token + "-" + tillRow + " of " + data.totalRows);
       },
-      error: function (o) 
+      error: function (o)
       {
          //console.log(o);
          self.data = {result: []};
@@ -1638,7 +1638,7 @@ EWTable.prototype.read = function (customURLData)
          self.previous.css('visibility', 'hidden');
          self.container.replaceWith("<div class='box box-error'><label class='value'>" + o.responseJSON.message + "</label></div>");
          EW.customAjaxErrorHandler = true;
-    
+
       }
    });
 };
@@ -1730,9 +1730,9 @@ EverythingWidgets.prototype.addURLHandler = function (handler, hashName)
    else
    {
 
-      for (var i = 0; i < handlers.length; i++) 
+      for (var i = 0; i < handlers.length; i++)
       {
-         if (" " + handlers[i] == " " + handler) 
+         if (" " + handlers[i] == " " + handler)
          {
             handlers[i] = null;
             handlers[i] = handler;
@@ -1778,7 +1778,7 @@ function hashHandler()
    this.oldHash = window.location.hash;
    this.Check;
 
-   var detect = function () 
+   var detect = function ()
    {
       if (this.oldHash !== window.location.hash || EW.newHandler)
       {
@@ -2167,7 +2167,7 @@ function ExtendableList(element, cSettings)
 {
    var base = this;
    this.$element = $(element);
-   var settings = $.extend({value: []}, cSettings);
+   this.settings = $.extend({value: []}, cSettings);
    //this.$element.find("li:first-child").prepend('<div class="handle"></div>');
 
    this.firstItemClone = this.$element.find("li:first-child").clone();
@@ -2179,14 +2179,14 @@ function ExtendableList(element, cSettings)
       base.lastRow.before(ni);
       ni.fadeIn(200);
    });
-   
+
    this.lastRow.children().append(this.addNewRow);
    base.$element.empty();
    var init = false;
    var oneValue = false;
    var items = new Array();
    var ci = null;
-   $.each(settings.value, function (k, v)
+   $.each(this.settings.value, function (k, v)
    {
       //alert(typeof (k)+" "+typeof (v));
       if (typeof (v) != "object")
@@ -2248,6 +2248,8 @@ ExtendableList.prototype.createItem = function ()
    });
    controlRow.append(removeBtn);
    originalModelClone.prepend(controlRow);
+   if (this.settings.onNewItem)
+      this.settings.onNewItem.apply(this, [originalModelClone]);
    return originalModelClone;
 };
 

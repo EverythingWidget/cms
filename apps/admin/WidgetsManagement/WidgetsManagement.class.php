@@ -23,6 +23,10 @@ class WidgetsManagement extends Section
 
    public function init_plugin()
    {
+      ob_start();
+      include 'link-chooser-uis.php';
+      $lcd = ob_get_clean();
+      EWCore::register_form("ew-link-chooser-form-default", "link-chooser-uis-list", ["title" => "UI Structures", "content" => $lcd]);
       $this->register_permission("view", "User can view the widgets section", array($this->get_index(), "get_uis",
           "get_uis_list",
           "get_widgets_types",
@@ -472,7 +476,7 @@ class WidgetsManagement extends Section
       }
 //if ($row)
 //$default_class = "row";
-      $result_html.= "<div class='panel $style_class'  $style_id_text  data-panel-id='$panel_id'  data-container-id='$container_id'  style='$style' data-panel-parameters='" . stripcslashes($param_json) . "' data-panel='true'><div class='row'>";
+      $result_html.= "<div class='panel $style_class'  $style_id_text  data-panel-id=\"$panel_id\"  data-container-id=\"$container_id\"  style='$style' data-panel-parameters='" . stripcslashes($param_json) . "' data-panel='true'><div class='row'>";
 
 //echo '<div class="wrapper">';
 
@@ -517,7 +521,7 @@ class WidgetsManagement extends Section
          require_once EW_TEMPLATES_DIR . "/blocks/" . $block_name . ".php";
          $block_name::initiate();
       }
-      $result_html.= "<div class='panel $style_class'  $style_id_text  data-panel-id='$panel_id'  $container_id  $style data-panel-parameters='" . stripcslashes($param_json) . "' data-block='true'>";
+      $result_html.= "<div class='panel $style_class'  $style_id_text  data-panel-id=\"$panel_id\"  $container_id  $style data-panel-parameters='" . stripcslashes($param_json) . "' data-block='true'>";
       /* if ($parameters["title"] && $parameters["title"] != "none")
         {
         $result_html.= "<div class='col-xs-12 panel-header'><{$parameters["title"]}>" . $parameters["title-text"] . "</{$parameters["title"]}></div>";
@@ -574,7 +578,7 @@ class WidgetsManagement extends Section
       $WIDGET_STYLE_CLASS = self::get_widget_style_class();
 
       $result_html.= "<div class='widget-container $style_class' data-widget-container='true'>";
-      $result_html.= "<div class='widget $WIDGET_STYLE_CLASS' $WIDGET_STYLE_ID data-widget-id='$widget_id' data-widget-parameters='" . ($params) . "' data-widget-type='$widget_type' data-widget-title='$widget_title'>";
+      $result_html.= "<div class='widget $WIDGET_STYLE_CLASS' $WIDGET_STYLE_ID data-widget-id=\"$widget_id\" data-widget-parameters='" . ($params) . "' data-widget-type='$widget_type' data-widget-title='$widget_title'>";
       $result_html.= $widget_content;
       self::$widget_style_class = "";
       return $result_html;
@@ -815,8 +819,8 @@ class WidgetsManagement extends Section
       else
       {
          $_SESSION["_ew_gw_ts"] = $timestamp;
-         self::$current_timestamp = $timestamp;
       }
+      self::$current_timestamp = strval($timestamp);
       self::$panel_index = 0;
       self::$widget_index = 0;
 
@@ -827,7 +831,7 @@ class WidgetsManagement extends Section
       //ob_start();
       foreach ($res as $key => $value)
       {
-         $RESULT_HTML.=self::open_block("panel-" . self::$current_timestamp . '-' . self::$ui_index . '-' . self::$panel_index, "", "block " . $value["class"], $value["id"], $value["panelParameters"], FALSE, $value["blockName"]);
+         $RESULT_HTML.=self::open_block("panel-" . self::$current_timestamp . "-" . self::$ui_index . "-" . self::$panel_index, "", "block " . $value["class"], $value["id"], $value["panelParameters"], FALSE, $value["blockName"]);
          $RESULT_HTML.=self::create_panel_content($value["children"], "panel-" . self::$current_timestamp . '-' . self::$ui_index . '-' . self::$panel_index);
          $RESULT_HTML.=self::close_block();
          self::$panel_index++;
@@ -964,7 +968,7 @@ class WidgetsManagement extends Section
          $template = new \template();
          //$template_settings = json_decode(stripslashes($template_settings), true);
          $template_body = $template->get_template_body($template_body, stripslashes($template_settings));
-         $template_script.= $template->get_template_script(stripslashes($template_settings));
+         $template_script = $template->get_template_script(stripslashes($template_settings));
       }
       return ["template_body" => $template_body, "template_script" => $template_script];
    }

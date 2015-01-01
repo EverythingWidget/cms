@@ -28,11 +28,27 @@ class template extends TemplateControl
       $new_body = "<div class='page-slide'>" . $html_body . "</div>";
       if ($settings["spw"] == "true")
       {
+         if (is_array($pages["link"]))
+         {
+            $pages = $pages["link"];
+         }
+         //print_r($pages);
          foreach ($pages as $page)
          {
-            $html = admin\WidgetsManagement::generate_view(115);
-            $new_body.="<div class='page-slide' data-not-editable=true>" . $html . "</div>";
+            //echo $i++;
+            $page = json_decode($page, TRUE);
+            if ($page["type"] == "uis")
+            {
+               $html = admin\WidgetsManagement::generate_view($page["id"]);
+               $new_body.="$i<div class='page-slide' data-not-editable=true>" . $html . "</div>";
+            }
+            else
+               $new_body.="<div class='page-slide' data-not-editable=true>$i Not supported</div>";
          }
+      }
+      else
+      {
+         $new_body = $html_body;
       }
 
       return $new_body;
@@ -52,8 +68,8 @@ class template extends TemplateControl
             $(document).ready(function ()
             {
                //alert($("body").html());
-               $("#base-content-pane").onepage_scroll({
-                  sectionContainer: "div.page-slide", // sectionContainer accepts any kind of selector in case you don't want to use section
+               $("body").onepage_scroll({
+                  sections: "div.page-slide", // sectionContainer accepts any kind of selector in case you don't want to use section
                   easing: "Power2.easeOut", // Easing options accepts the CSS3 easing animation such "ease", "linear", "ease-in",
                   // "ease-out", "ease-in-out", or even cubic bezier value such as "cubic-bezier(0.175, 0.885, 0.420, 1.310)"
                   animationTime: 1000, // AnimationTime let you define how long each section takes to animate
@@ -103,6 +119,10 @@ class template extends TemplateControl
          </div>
       </div>
       <script>
+         var onNewItem = function (ni)
+         {
+            ni.find(":input").attr('disabled', false);
+         };
          $("#template_settings_form").on("refresh", function (e, data)
          {
             if (!$("#spw input").is(":checked"))
@@ -111,9 +131,9 @@ class template extends TemplateControl
                $("#spw-cp").hide();
             }
             if (data.pages)
-               $("#website_pages").EW().dynamicList({value: $.parseJSON(data.pages)});
+               $("#website_pages").EW().dynamicList({value: $.parseJSON(data.pages), onNewItem: onNewItem});
             else
-               $("#website_pages").EW().dynamicList();
+               $("#website_pages").EW().dynamicList({onNewItem: onNewItem});
 
             $("#spw").off("change");
             $("#spw").on("change", function ()

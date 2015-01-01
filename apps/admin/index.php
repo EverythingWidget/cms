@@ -786,7 +786,7 @@ if ($secId)
 
                <div id="header-pane" class="col-xs-12">
                   <div  class="row bar">
-                     <button type="button" id="component-chooser-btn" class="btn component-chooser comp-btn" id="" onclick="EW.showAllComponents();" >
+                     <button type="button" id="component-chooser-btn" class="btn btn-text component-chooser comp-btn" id="" onclick="EW.showAllComponents();" >
                         <?php
                         echo $pageTitle;
                         ?>
