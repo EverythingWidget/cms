@@ -943,23 +943,23 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
    {
       // Set default jquery html() function
       modalPane.html = modalPane.__proto__.html;
-      //var int = setInterval(function ()
-      //{
-      //   try
+      var int = setInterval(function ()
+      {
+         try
          {
-         //   if (!modalPane.isOpen)
-         //      return;
+            if (!modalPane.isOpen)
+               return;
             modalPane.html(data);
             modalPane.html = htmlFunction;
-        //    window.clearInterval(int);
+            window.clearInterval(int);
          }
-       //  catch (e)
+         catch (e)
          {
-        //    console.log(e);
-         //   window.clearInterval(int);
+            console.log(e);
+            window.clearInterval(int);
          }
 
-      //}, 20);
+      }, 20);
    };
    // Overwrite the default jquery html() function behavior
    modalPane.html = htmlFunction;
