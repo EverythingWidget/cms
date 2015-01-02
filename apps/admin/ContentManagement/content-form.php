@@ -71,8 +71,8 @@ function get_properties($form_config, $form_id)
       <div id="properties-form" class="col-lg-8 col-md-8 col-sm-12 col-xs-12" >
          <input type="hidden" id="id" name="id" value="">
          <input type="hidden" id="type" name="type" value="<?php echo $form_config["contentType"] ?>">
-         <div class="row">
-            <div class="col-xs-12 col-md-12 col-lg-12 mar-top">
+         <div class="row mar-top">
+            <div class="col-xs-12 col-md-12 col-lg-12">
 
                <input class="text-field" data-label="tr{Title}" value="" id="title" name="title" data-validate="r"/>
             </div>
@@ -207,6 +207,9 @@ $tabs = EWCore::read_registry("ew-article-form-tab");
    var ContentForm = {
       initLabels: function (labels)
       {
+         //alert(JSON.stringify(labels));
+         $(".content-label .label-control-button:checked").click();
+         $(".content-label .label-control-button").prop("checked", false);
          if (labels)
             $.each(labels, function (i, el)
             {
@@ -302,9 +305,8 @@ $tabs = EWCore::read_registry("ew-article-form-tab");
          if (data && data.labels)
          {
             var labels = $.parseJSON(data.labels);
-            ContentForm.setLabels(labels);
             ContentForm.initLabels(labels);
-
+            ContentForm.setLabels(labels);
          }
          EW.setFormData("#<?php echo $form_id ?>", data);
          $("#content").change();

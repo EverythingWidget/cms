@@ -25,7 +25,7 @@ class template extends TemplateControl
       /* print_r($settings);
         print_r($pages);
         echo $settings["spw"]; */
-      $new_body = "<div class='page-slide'>" . $html_body . "</div>";
+      $new_body = "<div class='onepage-scroll'><div class='page-slide' base-content-pane=true>" . $html_body . "</div>";
       if ($settings["spw"] == "true")
       {
          if (is_array($pages["link"]))
@@ -45,6 +45,7 @@ class template extends TemplateControl
             else
                $new_body.="<div class='page-slide' data-not-editable=true>$i Not supported</div>";
          }
+         $new_body.="</div>";
       }
       else
       {
@@ -68,7 +69,7 @@ class template extends TemplateControl
             $(document).ready(function ()
             {
                //alert($("body").html());
-               $("body").onepage_scroll({
+               $(".onepage-scroll").onepage_scroll({
                   sections: "div.page-slide", // sectionContainer accepts any kind of selector in case you don't want to use section
                   easing: "Power2.easeOut", // Easing options accepts the CSS3 easing animation such "ease", "linear", "ease-in",
                   // "ease-out", "ease-in-out", or even cubic bezier value such as "cubic-bezier(0.175, 0.885, 0.420, 1.310)"
@@ -86,6 +87,13 @@ class template extends TemplateControl
                   // the browser's width is less than 600, the fallback will kick in.
                   direction: "horizontal"            // You can now define the direction of the One Page Scroll animation. Options available are "vertical" and "horizontal". The default value is "vertical".  
                });
+
+         <?php
+         if ($settings["menu-id"])
+         {
+            echo "$('#base-content-pane').prepend($('#{$settings["menu-id"]}').detach())";
+         }
+         ?>
             });
          </script>
          <?php
@@ -94,7 +102,7 @@ class template extends TemplateControl
       return;
    }
 
-   public function get_template_cp()
+   public function get_template_settings_form()
    {
       ob_start();
       ?>
@@ -102,10 +110,27 @@ class template extends TemplateControl
          <div class="col-xs-12 mar-top" data-toggle="buttons">
             <label id="spw" type="button" class="btn btn-primary col-xs-12" ><input type="checkbox" name="spw" value="true">Single Page Website</label>
          </div>
-         <div id="spw-cp">
+      </div>
+
+      <div id="spw-cp">
+         <div class="row">
+            <div  class="col-xs-12 mar-top mar-bot">
+               <label>tr{Specify Main Menu}</label>
+            </div>
+         </div>
+         <div class="row">
+            <div class="col-xs-12">
+               <select class="text-field" id="menu-id" name="menu-id" data-label="Main Menu ID">
+                  <option value=''></option>
+               </select>
+            </div>
+         </div>
+         <div class="row">
             <div  class="col-xs-12 mar-top">
                <label>tr{Specify your pages}</label>
             </div>
+         </div>
+         <div class="row">
             <div class="col-xs-12">
                <ul id="website_pages" class="list arrangeable">
                   <li class="" style="">
@@ -115,14 +140,39 @@ class template extends TemplateControl
                      </div>
                   </li>
                </ul>
-            </div>
+            </div> 
          </div>
       </div>
+
+
       <script>
          var onNewItem = function (ni)
          {
             ni.find(":input").attr('disabled', false);
          };
+
+         function initMenuId(value)
+         {
+            $("#menu-id").empty();
+            $("#menu-id").append("<option value=''></option>");
+            $.each(uisForm.getLayoutBlocks(), function (i, e)
+            {
+               var e = $(e);
+               if (e.attr("id"))
+               {
+                  var selected = (value == e.attr("id")) ? "selected=true" : "";
+                  $("#menu-id").append("<option value='" + e.attr("id") + "' " + selected + ">" + e.attr("id") + "</option>");
+               }
+            });
+         }
+
+         $("#inspector-editor").off("refresh.template");
+         $("#inspector-editor").on("refresh.template", function (e, data)
+         {
+            //var ts = uisForm.templateSettings;
+            var currentValue = $("#menu-id").val();
+            initMenuId(currentValue);
+         });
          $("#template_settings_form").on("refresh", function (e, data)
          {
             if (!$("#spw input").is(":checked"))
@@ -130,6 +180,11 @@ class template extends TemplateControl
                $("#spw-cp :input").attr('disabled', true);
                $("#spw-cp").hide();
             }
+
+            // Init menu id list
+            initMenuId(data["menu-id"]);
+
+            // Init pages
             if (data.pages)
                $("#website_pages").EW().dynamicList({value: $.parseJSON(data.pages), onNewItem: onNewItem});
             else

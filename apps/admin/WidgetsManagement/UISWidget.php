@@ -171,7 +171,7 @@ $WM = new admin\WidgetsManagement();
          //$("#fr").contents().find("body").find("div[data-widget-id='" + base.widgetId + "']").parent().remove();
          //$("#fr").contents().find("body #base-content-pane div[data-panel-id='<?php echo $panelId ?>']").append(data);
          $.EW("getParentDialog", $("#uis-widget-form")).trigger("close");
-         //$("#inspector-editor").trigger("refresh");         
+         $("#inspector-editor").trigger("refresh");         
       });
 
 

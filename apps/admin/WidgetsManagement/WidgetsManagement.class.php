@@ -640,13 +640,13 @@ class WidgetsManagement extends Section
       return json_encode($res);
    }
 
-   function get_template_cp($path)
+   function get_template_settings_form($path)
    {
       if (file_exists(EW_ROOT_DIR . $path . '/template.php'))
       {
          require_once EW_ROOT_DIR . $path . '/template.php';
          $template = new \template();
-         return $template->get_template_cp();
+         return $template->get_template_settings_form();
       }
       else
          return "tr{Nothing to configure}";

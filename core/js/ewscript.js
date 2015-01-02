@@ -821,7 +821,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
             if (!originElement || !$.contains(document, originElement[0]))
             {
                animationDiv.text("");
-               animationDiv.delay(30).animate({top: "+=6%", left: "+=6%", width: "-=12%", height: "-=12%", opacity: 0 /*, lineHeight: ce.outerHeight() + "px"*/}, 360, "Power1.easeInOut", function () {
+               animationDiv.delay(30).animate({top: "+=10%", left: "+=10%", width: "-=20%", height: "-=20%", opacity: 0 /*, lineHeight: ce.outerHeight() + "px"*/}, 360, "Power2.easeOut", function () {
                   if (originElement)
                      originElement.css("visibility", "");
                   animationDiv.remove();
@@ -864,7 +864,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
          }
          originElement = self.activeElement;
 
-         if (settings.initElement && originElement)
+         if (settings.initElement && originElement && originElement.parent().length != 0)
          {
             if (originElement.is("p,h1,h2,h3,h4,h5,h6,span"))
                originElement = originElement.parent();
@@ -893,8 +893,8 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
          }
          else
          {
-            modalPane.animate({left: "+=10%"}, 0);
-            modalPane.animate({opacity: "1", left: "-=10%"}, 420, "Power3.easeOut", function () {
+            modalPane.animate({left: "-=10%"}, 1);
+            modalPane.animate({opacity: "1", left: "+=10%"}, 420, "Power3.easeOut", function () {
                methods.setCloseButton();
                modalPane.isOpen = true;
             });

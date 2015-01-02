@@ -327,23 +327,30 @@
          sectionsContainer.addClass("onepage-wrapper").css("position", "relative");
       }
       else
+      {
          el.addClass("onepage-wrapper").css("position", "relative");
+         el.css("height", $(document).height());
+      }
       $.each(sections, function (i) {
          $(this).css({
             position: "absolute",
             top: topPos + "%"
          }).addClass("section").attr("data-index", i + 1);
 
-
-         $(this).css({
-            position: "absolute",
-            left: (settings.direction == 'horizontal')
-                    ? leftPos + "%"
-                    : 0,
-            top: (settings.direction == 'vertical' || settings.direction != 'horizontal')
-                    ? topPos + "%"
-                    : 0
-         });
+         if (settings.direction == 'horizontal')
+         {
+            $(this).css({
+               position: "absolute",
+               left: leftPos + "%"
+            });
+         }
+         else if (settings.direction == 'vertical')
+         {
+            $(this).css({
+               position: "absolute",
+               top: leftPos + "%"
+            });
+         }
 
          if (settings.direction == 'horizontal')
             leftPos = leftPos + 100;
@@ -449,11 +456,19 @@
             if (!$("body").hasClass("disabled-onepage-scroll")) {
                switch (e.which) {
                   case 38:
-                     if (tag != 'input' && tag != 'textarea')
+                     if (tag != 'input' && tag != 'textarea' && settings.direction == "vertical")
                         el.moveUp()
                      break;
                   case 40:
-                     if (tag != 'input' && tag != 'textarea')
+                     if (tag != 'input' && tag != 'textarea' && settings.direction == "vertical")
+                        el.moveDown()
+                     break;
+                  case 37: // left
+                     if (tag != 'input' && tag != 'textarea' && settings.direction == "horizontal")
+                        el.moveUp()
+                     break;
+                  case 39: // right
+                     if (tag != 'input' && tag != 'textarea' && settings.direction == "horizontal")
                         el.moveDown()
                      break;
                   case 32: //spacebar

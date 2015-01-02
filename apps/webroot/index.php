@@ -67,7 +67,7 @@ $HTML_STYLES = admin\WidgetsManagement::get_html_styles();
       <script src="core/js/gsap/TweenLite.min.js"></script>
       <script src="core/js/gsap/jquery.gsap.min.js"></script>
 
-      <?php      
+      <?php
       // Add registered scripts
       echo $HTML_SCRIPTS;
       // Add template main script if existed
@@ -84,7 +84,7 @@ $HTML_STYLES = admin\WidgetsManagement::get_html_styles();
                $elementJustAdded.find('input[data-label], textarea[data-label], select[data-label]').floatlabel();
             }
          });
-
+         var EW={};
       </script>
 
    </head>

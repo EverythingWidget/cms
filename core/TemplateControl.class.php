@@ -15,7 +15,7 @@ class TemplateControl
 {
 
    //put your code here
-   public function get_template_cp()
+   public function get_template_settings_form()
    {
       return "<h3>tr{Nothing to configure}</h3>";
    }

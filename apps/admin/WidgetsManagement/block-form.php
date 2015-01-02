@@ -88,6 +88,7 @@ $name = $_REQUEST["name"];
             var panel = $("#fr").contents().find("body #base-content-pane div[data-panel-id='" + this.panelId + "']");
             var blockParams = (panel.attr("data-panel-parameters")) ? $.parseJSON(panel.attr("data-panel-parameters")) : {};
             EW.setFormData("#appearance-conf", blockParams);
+            $("#style_id").val(panel.prop("id")).change();
             $("#uis-block-title").html("Edit Block");
             $("#used-classes").text(panel.prop("class"));
             this.bAdd.comeOut(200);
@@ -187,8 +188,10 @@ $name = $_REQUEST["name"];
          this.blockHTML.attr("data-panel-parameters", params);
          this.blockHTML.attr("data-block-name", "<?php echo $block_class_name; ?>");
          this.blockHTML.prop("class", "panel block row " + $("#used-classes").text());
-
-         $("#fr").contents().find("body #base-content-pane").append(this.blockHTML);
+         if ($("#fr").contents().find("body [base-content-pane]").length)
+            $("#fr").contents().find("body [base-content-pane]").append(this.blockHTML);
+         else
+            $("#fr").contents().find("body #base-content-pane").append(this.blockHTML);
          $("#inspector-editor").trigger("refresh");
 
          $.EW("getParentDialog", $("#block-form")).trigger("close");
@@ -199,7 +202,7 @@ $name = $_REQUEST["name"];
          var params = $("#block-configuration").serializeJSON();
          var div = $("#fr").contents().find("body #base-content-pane div[data-panel-id='" + this.panelId + "']");
          var oldParameters = div.attr("data-panel-parameters");
-         div.prop("id", $("#style_id").val());
+         div.attr("id", $("#style_id").val());
          div.attr("data-panel-parameters", params);
 
          div.prop("class", "panel block row " + $("#used-classes").text());
