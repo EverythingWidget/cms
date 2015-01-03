@@ -40,16 +40,16 @@ html,body{margin:0px;height:100%;font-family:'Dosis',arial,sans-serif;}
 .block.content-row{display:block;width:100%;top:0px;bottom:0px;background-color:#ddd;font-size:24px;font-weight:300;}
 .block.footer-row{display:block;width:100%;height:100px;background-color:#eee;}
 .block.menu-container{display:block;min-height:60px;background-color:rgba(0,0,0,.5);position:fixed;width:100%;z-index:10;margin:0px;}
-.block.section{display:block;padding:15px 20px;margin:0px;}
+.block.section{display:block;padding:15px 20px;margin:0px;background-color:#eee;}
 .block.section h3{font-size:1.8em;}
 .block.section h2{font-size:2.3em;}
 .block.section h1{font-size:3em;}
 .block.section p{font-size:1.6em;font-weight:400;}
-.widget.menu-bar > ul{font-size:1.2em;color:#fff;list-style:none;margin:0px;overflow:hidden;}
-.widget.menu-bar > ul  li{float:left;width:100px;text-align:center;}
-.widget.menu-bar > ul li a{display:block;color:#fff;padding:15px 10px;line-height:30px;}
+.widget.menu-bar > ul{font-size:1.3em;color:#fff;list-style:none;margin:0px;overflow:hidden;}
+.widget.menu-bar > ul  li{float:left;width:110px;text-align:center;}
+.widget.menu-bar > ul li a{display:block;color:#fff;padding:15px 10px;line-height:30px;font-weight:600;}
 .widget.menu-bar > ul li a:hover{background-color:rgba(0,0,0,.2)}
-.widget.menu-bar > ul li.active a{background-color:rgba(0,0,0,.3);font-weight:bold;}
+.widget.menu-bar > ul li.active a{background-color:rgba(0,0,0,.3);color:#ddd;}
 .widget-container.clearfix{float:none;margin:0px auto;}
 .widget.login-form{padding:15px;background-color:#fff;display:block;margin:20px auto;border-radius:6px;}
 .widget.login-form input{display:block;width:100%;margin-bottom:10px;}

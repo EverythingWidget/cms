@@ -76,6 +76,10 @@
       "Article": "مطلب",
       "Folder": "پوشه",
       "New Album": "آلبوم جدید",
-      "The language file has been updated successfully": "فایل زبان با موفقیت به روز شد"
+      "The language file has been updated successfully": "فایل زبان با موفقیت به روز شد",
+      "None":"هیچ",
+      "none":"هیچ",
+      "Template":"قالب",
+      "Structure":"ساختار"
    }
 }

@@ -572,6 +572,7 @@ class WidgetsManagement extends Section
       ob_start();
       include EW_WIDGETS_DIR . '/' . $widget_type . '/index.php';
       $widget_content = ob_get_clean();
+      $widget_content = preg_replace('/\{\$widget_id\}/', $widget_id,$widget_content);
 
       // Add widget style class which specified with UIS editor to the widget
       self::set_widget_style_class($widget_style_class);

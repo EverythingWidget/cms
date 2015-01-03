@@ -323,7 +323,7 @@ div.sidebar li a.selected{background-color:rgba(0,0,0,.4);border-left:6px solid 
 .texture.squre{background-color:#fff;background-image:url('squre-texture.png');}
 ul.items{margin:0px 0px;padding:0px 0px;font-size:13px;font-weight:bold;list-style:none;overflow:hidden;display:block;position:relative;}
 ul.items li{padding:0px;margin:5px 0px 0px 0px;display:block;overflow:hidden;min-height:34px;}
-ul.items li.highlight{box-shadow:inset 0px 0px 2px 1px rgba(0,0,0,.3);}
+ul.items li.highlight{box-shadow:0px 2px 12px -2px rgba(0,0,0,.4);}
 ul.items li a{}
 ul.items li.block{padding:0px 0px;margin:10px 0px 10px 0px;display:block;overflow:hidden;min-height:34px;border:0px solid #aaa;border-radius:0px;background-color:#eee;}
 ul.items li a.item-label{text-decoration:none;color:#1190cf;padding:6px;float:left;line-height:22px;cursor:pointer;overflow:hidden;}
@@ -336,17 +336,17 @@ ul.items li.panel{border:0px dashed #b0b0b0;border-radius:0px;margin-right:0px;}
 ul.items li.panel > a.item-label{}
 ul.items li.panel > a.item-label:hover{}
 ul.items li.widget{border:none;padding:0px;}
-ul.items li.widget div > a.item-label{background-color:#3399cf;border-radius:2px;color:#fff;float:none;display:block;margin-right:4px;}
-ul.items li.widget div > a.item-label:hover{background-color:#0080bb;}
-ul.items li.widget .close-icon{right:10px;}
-ul.items li.widget .close-icon:hover{right:10px;}
+ul.items li.widget div > a.item-label{background-color:#3399cf;border-radius:2px;color:#fff;float:none;display:block;margin-right:4px;box-shadow:0px 1px 3px -1px rgba(0,0,0,.3);}
+ul.items li.widget div > a.item-label:hover{background-color:#0080bb;box-shadow:0px 2px 6px -2px rgba(0,0,0,.5);}
+ul.items li.widget .close-icon{right:15px;}
+
 ul.items li a img{width:28px;height:28px;float:left;margin:-3px;margin-right:5px;}
 ul.items .button{font-size:13px;line-height:20px;padding:0px 5px;float:left;margin:5px;margin-right:0px;}
-ul.items li > div{overflow:hidden;top:0px;display:block;position:relative;}
+ul.items li > div{overflow:hidden;top:0px;display:block;position:relative;padding:5px;}
 //ul.items li > div:hover{}
 ul.items li a.btn{padding:0px 5px;line-height:18px;color:#fff;margin:6px 10px;font-size:13px;border-radius:2px;display:none;float:left;}
-ul.items li .close-icon{position:absolute;background-color:transparent;right:5px;top:7px;float:right;}
-ul.items li .close-icon:hover{background-color:transparent;right:5px;top:7px;}
+ul.items li .close-icon{position:absolute;background-color:transparent;right:10px;top:12px;float:right;}
+ul.items li .close-icon:hover{background-color:transparent;}
 img.handle{cursor:move}
 ul.active{background-color: #ffcccc;}
 ul.items li.active{}

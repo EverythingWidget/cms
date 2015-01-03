@@ -7,23 +7,25 @@ if (!$_SESSION['login'])
 }
 ?>
 <div id="sidebar" class="sidebar">
-   <ul>        
-      <li>      
-         <a rel="ajax" data-ew-nav="uis-list" href="<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/uis-list.php">      
-            UI Structures        
-         </a>     
-      </li>   
-      <li>       
-         <a rel="ajax" data-ew-nav="pages-uis" href="<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/pages-uis.php">        
-            Pages and UIS         
-         </a>        
-      </li>    
-      <li>         
-         <a rel="ajax" data-ew-nav="widgets" href="<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/widgets.php">         
-            Widgets Types     
-         </a>      
-      </li>   
-   </ul> 
+   <div class="row">
+      <ul>        
+         <li>      
+            <a rel="ajax" data-ew-nav="uis-list" href="<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/uis-list.php">      
+               UI Structures        
+            </a>     
+         </li>   
+         <li>       
+            <a rel="ajax" data-ew-nav="pages-uis" href="<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/pages-uis.php">        
+               Pages and UIS         
+            </a>        
+         </li>    
+         <li>         
+            <a rel="ajax" data-ew-nav="widgets" href="<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/widgets.php">         
+               Widgets Types     
+            </a>      
+         </li>   
+      </ul> 
+   </div>
 </div>
 
 <div id="main-content" class="" role="main"></div>
@@ -66,10 +68,10 @@ if (!$_SESSION['login'])
          $('#main-content').html(data);
       });
    };
-   
+
    WidgetsManagement.prototype.onBackToWM = function () {
    };
-   
+
    WidgetsManagement.prototype.backToWM = function () {
       EW.setHashParameter('section', null);
    }
