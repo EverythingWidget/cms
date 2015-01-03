@@ -21,11 +21,16 @@ if (file_exists(EW_ROOT_DIR . $_REQUEST["_uis_template"] . '/template.php'))
    require_once EW_ROOT_DIR . $_REQUEST["_uis_template"] . '/template.php';
    $template = new \template();
    //$uis_data = json_decode(admin\WidgetsManagement::get_uis($_REQUEST["_uis"]), true);
+   $template_settings = json_decode($_REQUEST["_uis_template_settings"], true);
+   if (json_last_error() != JSON_ERROR_NONE)
+   {
+      $template_settings = json_decode(stripslashes($_REQUEST["_uis_template_settings"]), true);
+   }
 
-   $HTML_BODY = $template->get_template_body($HTML_BODY, stripslashes($_REQUEST["_uis_template_settings"]));
+   $HTML_BODY = $template->get_template_body($HTML_BODY, $template_settings);
    //$template.=new DOMElement$template->get_template_script(stripslashes($_REQUEST["_uis_template_settings"]));
    $DOM = new DOMDocument;
-   $DOM->loadHTML($template->get_template_script(stripslashes($_REQUEST["_uis_template_settings"])));
+   $DOM->loadHTML($template->get_template_script($template_settings));
    $script_tasg = $DOM->getElementsByTagName("script");
    // Retrive template main js script
    $template_script = $script_tasg->item(0)->nodeValue;
@@ -84,7 +89,7 @@ $HTML_STYLES = admin\WidgetsManagement::get_html_styles();
                $elementJustAdded.find('input[data-label], textarea[data-label], select[data-label]').floatlabel();
             }
          });
-         var EW={};
+         var EW = {};
       </script>
 
    </head>

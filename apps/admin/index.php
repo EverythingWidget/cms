@@ -258,7 +258,8 @@ if ($secId)
                      //{
                      linkChooserDialog = EW.createModal();
                      $.post("<?php echo EW_DIR ?>app-admin/ContentManagement/file-chooser.php", {
-                        callback: settings.callbackName
+                        callback: settings.callbackName,
+                        data:$element.val()
                      },
                      function (data) {
                         var functionRefrence = $("<div style='display:none;' id='function-reference'></div>");

@@ -2186,9 +2186,10 @@ function ExtendableList(element, cSettings)
    var oneValue = false;
    var items = new Array();
    var ci = null;
+   //alert(JSON.stringify(this.settings.value));
    $.each(this.settings.value, function (k, v)
    {
-      //alert(typeof (k)+" "+typeof (v));
+//      alert(k+" "+typeof (v));
       if (typeof (v) != "object")
       {
          if (!oneValue)
@@ -2206,19 +2207,21 @@ function ExtendableList(element, cSettings)
       {
          if (!init)
          {
+            // Create the list and set the value for the first key
             for (var i = 0; i < v.length; i++)
             {
-               ci = base.createItem();
-               ci.find("input[name='" + k + "']").val(v[i]).change();
+               ci = base.createItem();               
+               ci.find(":input[name='" + k + "']").val(v[i]).change();
                items.push(ci);
                init = true;
             }
          }
          else
          {
+            // Set the value for the other keys
             for (var i = 0; i < v.length; i++)
             {
-               items[i].find("input[name='" + k + "']").val(v[i]).change();
+               items[i].find(":input[name='" + k + "']").val(v[i]).change();
             }
          }
       }
@@ -2310,7 +2313,7 @@ ew_plugins = {
              itemsJSON[i++] = $(v).find("input").serializeJSON();
              });*/
             //alert(JSON.stringify(itemsJSON));
-            return $(this).find("input").serializeJSON();
+            return $(this).find(":input").serializeJSON();
          }
       };
       var defaults = {};

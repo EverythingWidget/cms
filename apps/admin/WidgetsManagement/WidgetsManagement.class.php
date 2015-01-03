@@ -185,7 +185,7 @@ class WidgetsManagement extends Section
          return json_encode($res);
       }
       $stm = $MYSQLI->prepare("INSERT INTO ew_ui_structures(name,template,template_settings,structure) VALUES (?,?,?,?)");
-      $stm->bind_param("ssss", $name, $template, $template_settings, $structure);
+      $stm->bind_param("ssss", $name, $template, stripslashes($template_settings), stripslashes($structure));
       $stm->execute();
       if ($_REQUEST['defaultUIS'] == "true")
       {
@@ -299,7 +299,7 @@ class WidgetsManagement extends Section
          return json_encode($res);
       }
       $stm = $MYSQLI->prepare("UPDATE ew_ui_structures SET name = ?, template= ?, template_settings= ?, perview_url = ?, structure = ? WHERE id = ?") or die($MYSQLI->error);
-      $stm->bind_param("ssssss", $name, $template, $template_settings, $perview_url, $structure, $uisId);
+      $stm->bind_param("ssssss", $name, $template, stripslashes($template_settings), $perview_url, stripslashes($structure), $uisId);
       $error = $MYSQLI->errno;
       if ($stm->execute())
       {
@@ -323,7 +323,7 @@ class WidgetsManagement extends Section
 
    public static function get_uis($uisId = null)
    {
-      $MYSQLI = get_db_connection();
+      $MYSQLI = \EWCore::get_db_connection();
 
       if (!$uisId)
          return;
@@ -340,7 +340,7 @@ class WidgetsManagement extends Section
 
          //$rows["template_settings"] = stripslashes($rows["template_settings"]);
 //$rows["structure"] = stripslashes($rows["structure"]);
-         $MYSQLI->close();
+         //$MYSQLI->close();
          return json_encode($rows);
       }
       else
@@ -826,7 +826,11 @@ class WidgetsManagement extends Section
 
       while ($rows = $panels->fetch_assoc())
       {
-         $res = json_decode(stripcslashes($rows["structure"]), true);
+         $res = json_decode(($rows["structure"]), true);
+         if(json_last_error() != JSON_ERROR_NONE)
+         {
+            $res = json_decode(stripslashes($rows["structure"]), true);
+         }
       }
       //ob_start();
       foreach ($res as $key => $value)
@@ -966,9 +970,16 @@ class WidgetsManagement extends Section
       {
          require_once EW_ROOT_DIR . $template . '/template.php';
          $template = new \template();
+         //echo $template_settings;
+ 
+         $settings = json_decode($template_settings,true);
+         if(json_last_error() != JSON_ERROR_NONE)
+         {            
+            $settings = json_decode(stripslashes($template_settings),true);
+         }
          //$template_settings = json_decode(stripslashes($template_settings), true);
-         $template_body = $template->get_template_body($template_body, stripslashes($template_settings));
-         $template_script = $template->get_template_script(stripslashes($template_settings));
+         $template_body = $template->get_template_body($template_body, $settings);
+         $template_script = $template->get_template_script($settings);
       }
       return ["template_body" => $template_body, "template_script" => $template_script];
    }

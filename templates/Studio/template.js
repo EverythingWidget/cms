@@ -118,6 +118,7 @@
               lastAnimation = 0,
               quietPeriod = 500,
               paginationList = "";
+      var mainMenu;
 
       $.fn.transformPage = function (settings, pos, index) {
          if (typeof settings.beforeMove == 'function')
@@ -211,7 +212,8 @@
             settings.beforeMove(next.data("index"));
          current.removeClass("active")
          next.addClass("active")
-         if (settings.pagination == true) {
+         if (settings.pagination == true)
+         {
             $(".onepage-pagination li a" + "[data-index='" + index + "']").removeClass("active");
             $(".onepage-pagination li a" + "[data-index='" + next.data("index") + "']").addClass("active");
          }
@@ -228,28 +230,50 @@
          el.transformPage(settings, pos, next.data("index"));
       }
 
-      $.fn.moveTo = function (page_index)
+      $.fn.moveTo = function (id, inst)
       {
+         //alert("dsf");
          current = $(settings.sections + ".active");
-         next = $(settings.sections + "[data-index='" + (page_index) + "']");
-         if (next.length > 0) {
+         //next = $(settings.sections + "[data-index='" + (page_index) + "']");
+         next = $(settings.sections + "[data-menu-id='" + id + "']");
+         var page_index = next.data("index");
+
+         if (next.length > 0)
+         {
+            //alert(settings.sections + "[data-menu-id='"+id+"']");
+            //alert(page_index);
             if (typeof settings.beforeMove == 'function')
                settings.beforeMove(next.data("index"));
             current.removeClass("active")
             next.addClass("active")
-            $(".onepage-pagination li a" + ".active").removeClass("active");
-            $(".onepage-pagination li a" + "[data-index='" + (page_index) + "']").addClass("active");
+            if (mainMenu)
+            {
+               mainMenu.find("li.active").removeClass("active");
+               mainMenu.find("li a[href='" + (id) + "']").parent().addClass("active");
+            }
             //$("body")[0].className = $("body")[0].className.replace(/\bviewing-page-\d.*?\b/g, '');
             $("body").removeClass("viewing-page-" + current.data("index"));
             $("body").addClass("viewing-page-" + next.data("index"))
 
             pos = ((page_index - 1) * 100) * -1;
 
-            if (history.replaceState && settings.updateURL == true) {
+            if (history.replaceState && settings.updateURL == true)
+            {
                var href = window.location.href.substr(0, window.location.href.indexOf('#')) + "#" + (page_index - 1);
                history.pushState({}, document.title, href);
             }
-            el.transformPage(settings, pos, page_index);
+            if (inst)
+            {
+               if (settings.direction == 'horizontal') {
+                  var toppos = (el.width() / 100) * pos;
+                  $(this).css({left: toppos + 'px'});
+               } else {
+                  var toppos = (el.height() / 100) * pos;
+                  $(this).css({top: toppos + 'px'});
+               }
+            }
+            else
+               el.transformPage(settings, pos, page_index);
          }
       }
 
@@ -384,50 +408,69 @@
          } else {
             posTop = (el.find(".onepage-pagination").height() / 2) * -1;
             el.find(".onepage-pagination").css("margin-top", posTop);
+            mainMenu = el.find(".onepage-pagination");
          }
          $('ul.onepage-pagination').html(paginationList);
       }
 
-      if (window.location.hash != "" && window.location.hash != "#1") {
+      if (settings.mainMenu)
+      {
+         mainMenu = $(settings.mainMenu);
+      }
+
+      if (window.location.hash != "" && window.location.hash != "#1")
+      {
          init_index = window.location.hash.replace("#", "")
 
-         if (parseInt(init_index) <= total && parseInt(init_index) > 0) {
-            $(settings.sections + "[data-index='" + init_index + "']").addClass("active")
-            $("body").addClass("viewing-page-" + init_index)
-            if (settings.pagination == true)
-               $(".onepage-pagination li a" + "[data-index='" + init_index + "']").addClass("active");
-
-            next = $(settings.sections + "[data-index='" + (init_index) + "']");
-            if (next) {
-               next.addClass("active")
-               if (settings.pagination == true)
-                  $(".onepage-pagination li a" + "[data-index='" + (init_index) + "']").addClass("active");
-               $("body")[0].className = $("body")[0].className.replace(/\bviewing-page-\d.*?\b/g, '');
-               $("body").addClass("viewing-page-" + next.data("index"))
-               if (history.replaceState && settings.updateURL == true) {
-                  var href = window.location.href.substr(0, window.location.href.indexOf('#')) + "#" + (init_index);
-                  history.pushState({}, document.title, href);
-               }
-            }
-            pos = ((init_index - 1) * 100) * -1;
-            el.transformPage(settings, pos, init_index);
-         } else {
+         //if (parseInt(init_index) <= total && parseInt(init_index) > 0)
+         var next = $(settings.sections + "[data-menu-id='#" + init_index + "']")
+         if (next.length > 0)
+         {
+            /*$(settings.sections + "[data-index='" + init_index + "']").addClass("active")
+             $("body").addClass("viewing-page-" + init_index)
+             if (settings.pagination == true)
+             $(".onepage-pagination li a" + "[data-index='" + init_index + "']").addClass("active");
+             
+             next = $(settings.sections + "[data-index='" + (init_index) + "']");
+             if (next) {
+             next.addClass("active")
+             if (settings.pagination == true)
+             $(".onepage-pagination li a" + "[data-index='" + (init_index) + "']").addClass("active");
+             $("body")[0].className = $("body")[0].className.replace(/\bviewing-page-\d.*?\b/g, '');
+             $("body").addClass("viewing-page-" + next.data("index"))
+             if (history.replaceState && settings.updateURL == true) {
+             var href = window.location.href.substr(0, window.location.href.indexOf('#')) + "#" + (init_index);
+             history.pushState({}, document.title, href);
+             }
+             }*/
+            //pos = ((next.data("index") - 1) * 100) * -1;
+            //el.transformPage(settings, pos, next.data("index"));
+            el.moveTo(window.location.hash, true);
+         }
+         else
+         {
             $(settings.sections + "[data-index='1']").addClass("active")
             $("body").addClass("viewing-page-1")
             if (settings.pagination == true)
                $(".onepage-pagination li a" + "[data-index='1']").addClass("active");
          }
-      } else {
+      }
+      else
+      {
          $(settings.sections + "[data-index='1']").addClass("active")
          $("body").addClass("viewing-page-1")
          if (settings.pagination == true)
             $(".onepage-pagination li a" + "[data-index='1']").addClass("active");
       }
 
-      if (settings.pagination == true) {
-         $(".onepage-pagination li a").click(function () {
+      if (mainMenu)
+      {
+         mainMenu.find("li a").click(function (e)
+         {
             var page_index = $(this).data("index");
-            el.moveTo(page_index);
+            //alert("d");
+            el.moveTo($(this).attr("href"));
+            //e.preventDefault();
          });
       }
       //$(document).click($.proxy(el.moveDown, el));

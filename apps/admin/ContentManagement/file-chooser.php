@@ -8,13 +8,16 @@ function custom_url_tab()
 {
    ob_start();
    ?>  
-   <div class="col-xs-12">
-      <input class="text-field" data-label="URL link" name="url_link" id="url_link"/>
+   <div class="row mar-top">
+      <div class="col-xs-12">
+         <input class="text-field" data-label="URL link" name="url_link" id="url_link"/>
+      </div>
    </div>
-   <div class="col-xs-12 mar-top">
-      <button type="button" class="btn btn-primary" onclick="url_done();">Done</button>
+   <div class="row mar-top">
+      <div class="col-xs-12 ">
+         <button type="button" class="btn btn-primary" onclick="url_done();">Done</button>
+      </div>
    </div>
-
    <script>
       function url_done()
       {
@@ -32,7 +35,11 @@ function custom_url_tab()
       ?>
 
       }
-
+      $("#link-chooser").on("refresh.url", function (e, data)
+      {
+         if (data.type == "link")
+            $("#link-chooser #url_link").val(data.url).change();
+      });
    </script>
    <?php
    return ob_get_clean();
@@ -113,5 +120,14 @@ $tabs = EWCore::read_registry("ew-link-chooser-form");
       ?>
    </div>
 </form>
+<script>
+<?php
+$data = $_REQUEST["data"];
+if ($_REQUEST["data"])
+{
+   echo "EW.setFormData('#link-chooser',$data)";
+}
+?>
+</script>
 <!--<div class="footer-pane row actions-bar action-bar-items">
 </div>-->

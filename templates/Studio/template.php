@@ -18,32 +18,34 @@ class template extends TemplateControl
 
    public function get_template_body($html_body, $template_settings)
    {
-      //echo $template_settings;
-      $settings = json_decode($template_settings, TRUE);
-
-      $pages = json_decode($settings["pages"], true);
-      /* print_r($settings);
-        print_r($pages);
+      $new_= ob_get_clean();
+      $pages = json_decode($template_settings["pages"], true);
+      /* print_r($pages);
         echo $settings["spw"]; */
-      $new_body = "<div class='onepage-scroll'><div class='page-slide' base-content-pane=true>" . $html_body . "</div>";
-      if ($settings["spw"] == "true")
+      $new_body = "<div class='onepage-scroll'><div class='page-slide' data-menu-id='#home' base-content-pane=true>" . $html_body . "</div>";
+      if ($template_settings["spw"] == "true")
       {
+         //print_r($pages);
          if (is_array($pages["link"]))
          {
-            $pages = $pages["link"];
+            $pages = array_combine($pages["link"], $pages["menu-link"]);
          }
          //print_r($pages);
-         foreach ($pages as $page)
+         foreach ($pages as $page => $link)
          {
             //echo $i++;
             $page = json_decode($page, TRUE);
             if ($page["type"] == "uis")
             {
+               
                $html = admin\WidgetsManagement::generate_view($page["id"]);
-               $new_body.="$i<div class='page-slide' data-not-editable=true>" . $html . "</div>";
+               //if ($link)
+                  //$link = substr($link, 1);
+               //echo $html;
+               $new_body.="<div class='page-slide' data-menu-id='$link' data-not-editable=true>" . $html . "</div>";
             }
             else
-               $new_body.="<div class='page-slide' data-not-editable=true>$i Not supported</div>";
+               $new_body.="<div class='page-slide' data-not-editable=true>Not supported</div>";
          }
          $new_body.="</div>";
       }
@@ -57,15 +59,22 @@ class template extends TemplateControl
 
    public function get_template_script($template_settings)
    {
-      $settings = json_decode($template_settings, TRUE);
+      //$settings = json_decode($template_settings, TRUE);
       //$settings = json_decode($settings, TRUE);
       //echo json_last_error_msg();
       //print_r($settings);
-      if ($settings["spw"] == "true")
+      if ($template_settings["spw"] == "true")
       {
          ob_start();
          ?>
          <script>
+            var mainManuId = null;
+         <?php
+         if ($template_settings["menu-id"])
+         {
+            echo "mainManuId = '#{$template_settings["menu-id"]}';";
+         }
+         ?>
             $(document).ready(function ()
             {
                //alert($("body").html());
@@ -85,15 +94,11 @@ class template extends TemplateControl
                   responsiveFallback: false, // You can fallback to normal page scroll by defining the width of the browser in which
                   // you want the responsive fallback to be triggered. For example, set this to 600 and whenever
                   // the browser's width is less than 600, the fallback will kick in.
-                  direction: "horizontal"            // You can now define the direction of the One Page Scroll animation. Options available are "vertical" and "horizontal". The default value is "vertical".  
+                  direction: "horizontal", // You can now define the direction of the One Page Scroll animation. Options available are "vertical" and "horizontal". The default value is "vertical".  
+                  mainMenu: mainManuId
                });
-
-         <?php
-         if ($settings["menu-id"])
-         {
-            echo "$('#base-content-pane').prepend($('#{$settings["menu-id"]}').detach())";
-         }
-         ?>
+               if (mainManuId)
+                  $('#base-content-pane').prepend($(mainManuId).detach())
             });
          </script>
          <?php
@@ -135,20 +140,36 @@ class template extends TemplateControl
                <ul id="website_pages" class="list arrangeable">
                   <li class="" style="">
                      <div class="wrapper">
-                        <div class="handle"></div>                         
-                        <input class="text-field test" data-label='Page' data-ew-plugin="link-chooser" name="link"/>
+                        <div class="handle"></div>
+                        <div class="row">
+                           <div class="col-xs-12">
+                              <input class="text-field test" data-label='Page' data-ew-plugin="link-chooser" name="link"/>
+                           </div>
+                        </div>
+                        <div class="row">
+                           <div class="col-xs-12">
+                              <select class="text-field" id="menu-link" name="menu-link" data-label="Menu">
+                                 <option value=''></option>
+                              </select>
+                           </div>
+                        </div>
                      </div>
                   </li>
                </ul>
             </div> 
          </div>
       </div>
-
-
       <script>
          var onNewItem = function (ni)
          {
             ni.find(":input").attr('disabled', false);
+            var ml = ni.find("#menu-link");
+            var editor = uisForm.getEditor();
+            //alert($("#"+$("#menu-id").val()).html());
+            $.each(editor.find("#" + $("#menu-id").val() + " ul li a"), function (i, a)
+            {
+               ml.append("<option value='" + $(a).attr("href") + "'>" + $(a).attr("href") + "</option>");
+            });
          };
 
          function initMenuId(value)
