@@ -11,17 +11,17 @@ if (!$_SESSION['login'])
       <ul>        
          <li>      
             <a rel="ajax" data-ew-nav="uis-list" href="<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/uis-list.php">      
-               UI Structures        
+               tr{UI Structures}   
             </a>     
          </li>   
          <li>       
             <a rel="ajax" data-ew-nav="pages-uis" href="<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/pages-uis.php">        
-               Pages and UIS         
+               tr{Pages and UIS}        
             </a>        
          </li>    
          <li>         
             <a rel="ajax" data-ew-nav="widgets" href="<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/widgets.php">         
-               Widgets Types     
+               tr{Widgets Types}   
             </a>      
          </li>   
       </ul> 

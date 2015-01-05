@@ -128,8 +128,23 @@
          // an top animate so IE8 users can also use this script.
          //if ($('html').hasClass('ie8')) {
          if (settings.direction == 'horizontal') {
-            var toppos = (el.width() / 100) * pos;
-            $(this).animate({left: toppos + 'px'}, settings.animationTime, settings.easing);
+            //var s = $(settings.sections + "[data-index='" + index + "']");
+            //var toppos = ($(window).outerWidth() / 100) * pos;
+            //alert(el.position().left);
+            var s = $(this);
+            s.show();
+            s.css("position", "absolute");
+            $(this).animate({left: pos + '%'}, settings.animationTime, settings.easing, function ()
+            {
+               if (!s.hasClass("active"))
+               {
+                  s.hide();
+               }
+               else
+               {
+                  s.css("position", "relative");
+               }
+            });
          } else {
             var toppos = (el.height() / 100) * pos;
             $(this).animate({top: toppos + 'px'}, settings.animationTime, settings.easing);
@@ -187,7 +202,10 @@
          }
          /*current.transformPage(settings, -100, next.data("index"));
           next.transformPage(settings, 0, next.data("index"));*/
-         el.transformPage(settings, pos, next.data("index"));
+         //el.transformPage(settings, pos, next.data("index"));
+         current.transformPage(settings, -100, next.data("index"));
+         next.css({left: '100%'});
+         next.transformPage(settings, 0, next.data("index"));
       }
 
       $.fn.moveUp = function ()
@@ -227,7 +245,10 @@
          }
          //current.transformPage(settings, 100, next.data("index"));
          //next.transformPage(settings, 0, next.data("index"));
-         el.transformPage(settings, pos, next.data("index"));
+         //el.transformPage(settings, pos, next.data("index"));
+         current.transformPage(settings, 100, next.data("index"));
+         next.css({left: '-100%'});
+         next.transformPage(settings, 0, next.data("index"));
       }
 
       $.fn.moveTo = function (id, inst)
@@ -236,6 +257,7 @@
          current = $(settings.sections + ".active");
          //next = $(settings.sections + "[data-index='" + (page_index) + "']");
          next = $(settings.sections + "[data-menu-id='" + id + "']");
+         //alert(next.data("index") + "  " + current.data("index"));
          var page_index = next.data("index");
 
          if (next.length > 0)
@@ -264,16 +286,33 @@
             }
             if (inst)
             {
-               if (settings.direction == 'horizontal') {
+               if (settings.direction == 'horizontal')
+               {
                   var toppos = (el.width() / 100) * pos;
-                  $(this).css({left: toppos + 'px'});
-               } else {
+                  $(this).css({left: toppos + 'px', display: "",position:"relative"});
+               }
+               else
+               {
                   var toppos = (el.height() / 100) * pos;
                   $(this).css({top: toppos + 'px'});
                }
             }
             else
-               el.transformPage(settings, pos, page_index);
+            {
+               if (next.data("index") > current.data("index"))
+               {
+                  current.transformPage(settings, -100, next.data("index"));
+                  next.css({left: '100%'});
+                  next.transformPage(settings, 0, next.data("index"));
+               }
+               else
+               {
+                  current.transformPage(settings, 100, next.data("index"));
+                  next.css({left: '-100%'});
+                  next.transformPage(settings, 0, next.data("index"));
+               }
+               //el.transformPage(settings, pos, page_index);
+            }
          }
       }
 
@@ -353,7 +392,8 @@
       else
       {
          el.addClass("onepage-wrapper").css("position", "relative");
-         el.css("height", $(document).height());
+         el.css("min-height", $(window).height());
+         //el.css("height", $(document).height());
       }
       $.each(sections, function (i) {
          $(this).css({
@@ -364,20 +404,19 @@
          if (settings.direction == 'horizontal')
          {
             $(this).css({
-               position: "absolute",
-               left: leftPos + "%"
+               left: "100%",
+               display: "none"
             });
          }
          else if (settings.direction == 'vertical')
          {
             $(this).css({
-               position: "absolute",
-               top: leftPos + "%"
+               top: topPos + "%"
             });
          }
 
          if (settings.direction == 'horizontal')
-            leftPos = leftPos + 100;
+            leftPos = leftPos + $(this).outerWidth();
          else
             topPos = topPos + 100;
 
@@ -386,7 +425,7 @@
             paginationList += "<li><a data-index='" + (i + 1) + "' href='#" + (i + 1) + "'></a></li>"
          }
       });
-
+//el.width();
       el.swipeEvents().bind("swipeDown", function (event) {
          if (!$("body").hasClass("disabled-onepage-scroll"))
             event.preventDefault();
@@ -445,20 +484,22 @@
              }*/
             //pos = ((next.data("index") - 1) * 100) * -1;
             //el.transformPage(settings, pos, next.data("index"));
-            el.moveTo(window.location.hash, true);
+            next.moveTo(window.location.hash, true);
          }
          else
          {
-            $(settings.sections + "[data-index='1']").addClass("active")
-            $("body").addClass("viewing-page-1")
+            $(settings.sections + "[data-index='1']").addClass("active");
+            $(settings.sections + "[data-index='1']").css({left: "0px", display: "",position:"relative"});
+            $("body").addClass("viewing-page-1");
             if (settings.pagination == true)
                $(".onepage-pagination li a" + "[data-index='1']").addClass("active");
          }
       }
       else
       {
-         $(settings.sections + "[data-index='1']").addClass("active")
-         $("body").addClass("viewing-page-1")
+         $(settings.sections + "[data-index='1']").addClass("active");
+         $(settings.sections + "[data-index='1']").css({left: "0px", display: "",position:"relative"});         
+         $("body").addClass("viewing-page-1");
          if (settings.pagination == true)
             $(".onepage-pagination li a" + "[data-index='1']").addClass("active");
       }

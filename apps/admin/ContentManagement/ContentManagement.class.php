@@ -149,7 +149,7 @@ class ContentManagement extends \Section
 
       <?php
       $html = ob_get_clean();
-      return json_encode(["html" => $html]);
+      return (["html" => $html]);
    }
 
    public function ew_label_language($key, $value, $data, $form_id)
@@ -227,7 +227,7 @@ class ContentManagement extends \Section
 
       <?php
       $html = ob_get_clean();
-      return json_encode(["html" => $html]);
+      return (["html" => $html]);
    }
 
    public function image_loader($file)
@@ -599,7 +599,7 @@ class ContentManagement extends \Section
 
            } */
 
-         return json_encode($rows);
+         return ($rows);
       }
    }
 

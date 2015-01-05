@@ -210,6 +210,7 @@ $WM = new admin\WidgetsManagement();
          {
             $("#used-classes").text(widget.data("container").prop("class"));
             $("#style_class").val(widget.prop("class"));
+            $("#style_id").val(widget.prop("id")).change();
             // If true, set values for the fields of widget control panel form
             if (self.setData === true)
             {

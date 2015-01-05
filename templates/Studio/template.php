@@ -18,43 +18,43 @@ class template extends TemplateControl
 
    public function get_template_body($html_body, $template_settings)
    {
-      $new_= ob_get_clean();
-      $pages = json_decode($template_settings["pages"], true);
-      /* print_r($pages);
-        echo $settings["spw"]; */
-      $new_body = "<div class='onepage-scroll'><div class='page-slide' data-menu-id='#home' base-content-pane=true>" . $html_body . "</div>";
-      if ($template_settings["spw"] == "true")
-      {
-         //print_r($pages);
-         if (is_array($pages["link"]))
-         {
-            $pages = array_combine($pages["link"], $pages["menu-link"]);
-         }
-         //print_r($pages);
-         foreach ($pages as $page => $link)
-         {
-            //echo $i++;
-            $page = json_decode($page, TRUE);
-            if ($page["type"] == "uis")
-            {
-               
-               $html = admin\WidgetsManagement::generate_view($page["id"]);
-               //if ($link)
-                  //$link = substr($link, 1);
-               //echo $html;
-               $new_body.="<div class='page-slide' data-menu-id='$link' data-not-editable=true>" . $html . "</div>";
-            }
-            else
-               $new_body.="<div class='page-slide' data-not-editable=true>Not supported</div>";
-         }
-         $new_body.="</div>";
-      }
-      else
-      {
-         $new_body = $html_body;
-      }
+      /* $new_= ob_get_clean();
+        $pages = json_decode($template_settings["pages"], true);
+        // print_r($pages);
+        //echo $settings["spw"];
+        $new_body = "<div class='onepage-scroll'><div class='page-slide' data-menu-id='#home' base-content-pane=true>" . $html_body . "</div>";
+        if ($template_settings["spw"] == "true")
+        {
+        //print_r($pages);
+        if (is_array($pages["link"]))
+        {
+        $pages = array_combine($pages["link"], $pages["menu-link"]);
+        }
+        //print_r($pages);
+        foreach ($pages as $page => $link)
+        {
+        //echo $i++;
+        $page = json_decode($page, TRUE);
+        if ($page["type"] == "uis")
+        {
 
-      return $new_body;
+        $html = admin\WidgetsManagement::generate_view($page["id"]);
+        //if ($link)
+        //$link = substr($link, 1);
+        //echo $html;
+        $new_body.="<div class='page-slide' data-menu-id='$link' data-not-editable=true>" . $html . "</div>";
+        }
+        else
+        $new_body.="<div class='page-slide' data-not-editable=true>Not supported</div>";
+        }
+        $new_body.="</div>";
+        }
+        else
+        {
+        $new_body = $html_body;
+        } */
+
+      return $html_body;
    }
 
    public function get_template_script($template_settings)
@@ -69,36 +69,42 @@ class template extends TemplateControl
          ?>
          <script>
             var mainManuId = null;
+            var onePageScrollId = null;
          <?php
          if ($template_settings["menu-id"])
          {
             echo "mainManuId = '#{$template_settings["menu-id"]}';";
          }
+         if ($template_settings["page-slider"])
+         {
+            echo "onePageScrollId = '#{$template_settings["page-slider"]}';";
+         }
          ?>
             $(document).ready(function ()
             {
                //alert($("body").html());
-               $(".onepage-scroll").onepage_scroll({
-                  sections: "div.page-slide", // sectionContainer accepts any kind of selector in case you don't want to use section
-                  easing: "Power2.easeOut", // Easing options accepts the CSS3 easing animation such "ease", "linear", "ease-in",
-                  // "ease-out", "ease-in-out", or even cubic bezier value such as "cubic-bezier(0.175, 0.885, 0.420, 1.310)"
-                  animationTime: 1000, // AnimationTime let you define how long each section takes to animate
-                  pagination: false, // You can either show or hide the pagination. Toggle true for show, false for hide.
-                  updateURL: false, // Toggle this true if you want the URL to be updated automatically when the user scroll to each page.
-                  beforeMove: function (index) {
-                  }, // This option accepts a callback function. The function will be called before the page moves.
-                  afterMove: function (index) {
-                  }, // This option accepts a callback function. The function will be called after the page moves.
-                  loop: false, // You can have the page loop back to the top/bottom when the user navigates at up/down on the first/last page.
-                  keyboard: true, // You can activate the keyboard controls
-                  responsiveFallback: false, // You can fallback to normal page scroll by defining the width of the browser in which
-                  // you want the responsive fallback to be triggered. For example, set this to 600 and whenever
-                  // the browser's width is less than 600, the fallback will kick in.
-                  direction: "horizontal", // You can now define the direction of the One Page Scroll animation. Options available are "vertical" and "horizontal". The default value is "vertical".  
-                  mainMenu: mainManuId
-               });
-               if (mainManuId)
-                  $('#base-content-pane').prepend($(mainManuId).detach())
+               if (onePageScrollId)
+                  $(onePageScrollId).onepage_scroll({
+                     sections: "div.page-slide", // sectionContainer accepts any kind of selector in case you don't want to use section
+                     easing: "Power2.easeOut", // Easing options accepts the CSS3 easing animation such "ease", "linear", "ease-in",
+                     // "ease-out", "ease-in-out", or even cubic bezier value such as "cubic-bezier(0.175, 0.885, 0.420, 1.310)"
+                     animationTime: 1000, // AnimationTime let you define how long each section takes to animate
+                     pagination: false, // You can either show or hide the pagination. Toggle true for show, false for hide.
+                     updateURL: false, // Toggle this true if you want the URL to be updated automatically when the user scroll to each page.
+                     beforeMove: function (index) {
+                     }, // This option accepts a callback function. The function will be called before the page moves.
+                     afterMove: function (index) {
+                     }, // This option accepts a callback function. The function will be called after the page moves.
+                     loop: false, // You can have the page loop back to the top/bottom when the user navigates at up/down on the first/last page.
+                     keyboard: true, // You can activate the keyboard controls
+                     responsiveFallback: false, // You can fallback to normal page scroll by defining the width of the browser in which
+                     // you want the responsive fallback to be triggered. For example, set this to 600 and whenever
+                     // the browser's width is less than 600, the fallback will kick in.
+                     direction: "horizontal", // You can now define the direction of the One Page Scroll animation. Options available are "vertical" and "horizontal". The default value is "vertical".  
+                     mainMenu: mainManuId
+                  });
+               //if (mainManuId)
+               //$('#base-content-pane').prepend($(mainManuId).detach())
             });
          </script>
          <?php
@@ -116,7 +122,6 @@ class template extends TemplateControl
             <label id="spw" type="button" class="btn btn-primary col-xs-12" ><input type="checkbox" name="spw" value="true">Single Page Website</label>
          </div>
       </div>
-
       <div id="spw-cp">
          <div class="row">
             <div  class="col-xs-12 mar-top mar-bot">
@@ -128,6 +133,16 @@ class template extends TemplateControl
                <select class="text-field" id="menu-id" name="menu-id" data-label="Main Menu ID">
                   <option value=''></option>
                </select>
+            </div>
+         </div>
+         <div class="row">
+            <div  class="col-xs-12 mar-top mar-bot">
+               <label>tr{Page Slider}</label>
+            </div>
+         </div>
+         <div class="row">
+            <div class="col-xs-12">
+               <input class="text-field" id="page-slider" name="page-slider" data-label="Page Slider" />                  
             </div>
          </div>
          <div class="row">

@@ -140,7 +140,7 @@ class WidgetsManagement extends Section
       }
       $MYSQLI->close();
       $out = array("totalRows" => $totalRows['COUNT(*)'], "result" => $rows);
-      return json_encode($out);
+      return ($out);
    }
 
    public function get_path_uis_list()
@@ -424,7 +424,7 @@ class WidgetsManagement extends Section
       return json_encode($res);
    }
 
-   public static function create_panel_content($panel = array(), $container_id)
+   public static function create_panel_content($panel = array(), $container_id, $no_data)
    {
       $result_html = '';
       foreach ($panel as $key => $value)
@@ -441,7 +441,7 @@ class WidgetsManagement extends Section
          else
          {
             self::$widget_index++;
-            $result_html.=self::open_widget("widget-" . self::$current_timestamp . '-' . self::$ui_index . '-' . self::$widget_index, $value["widgetType"], $value["class"], $value["widgetClass"], $value["id"], $value["widgetParameters"]);
+            $result_html.=self::open_widget("widget-" . self::$current_timestamp . '-' . self::$ui_index . '-' . self::$widget_index, $value["widgetType"], $value["class"], $value["widgetClass"], $value["id"], $value["widgetParameters"], $no_data);
             $result_html.=self::close_widget();
 
 //echo $value["type"] . " - " . $value["class"] . "<br>";
@@ -561,7 +561,7 @@ class WidgetsManagement extends Section
     * @param string  $style_id widget style id
     * @param json $params widget parameters
     */
-   public static function open_widget($widget_id, $widget_type, $style_class, $widget_style_class, $style_id, $params)
+   public static function open_widget($widget_id, $widget_type, $style_class, $widget_style_class, $style_id, $params, $no_data = false)
    {
       $result_html = '';
       if ($style_id)
@@ -572,14 +572,20 @@ class WidgetsManagement extends Section
       ob_start();
       include EW_WIDGETS_DIR . '/' . $widget_type . '/index.php';
       $widget_content = ob_get_clean();
-      $widget_content = preg_replace('/\{\$widget_id\}/', $widget_id,$widget_content);
+      $widget_content = preg_replace('/\{\$widget_id\}/', $widget_id, $widget_content);
 
       // Add widget style class which specified with UIS editor to the widget
       self::set_widget_style_class($widget_style_class);
       $WIDGET_STYLE_CLASS = self::get_widget_style_class();
 
+      //if ($no_data)
+      //{
+      $parameters_string = "data-widget-parameters='$params'";
+      $widget_type_string = "data-widget-type='$widget_type'";
+      $widget_title_string = "data-widget-title='$widget_title'";
+      //}
       $result_html.= "<div class='widget-container $style_class' data-widget-container='true'>";
-      $result_html.= "<div class='widget $WIDGET_STYLE_CLASS' $WIDGET_STYLE_ID data-widget-id=\"$widget_id\" data-widget-parameters='" . ($params) . "' data-widget-type='$widget_type' data-widget-title='$widget_title'>";
+      $result_html.= "<div class='widget $WIDGET_STYLE_CLASS' $WIDGET_STYLE_ID data-widget-id='$widget_id' $parameters_string $widget_type_string $widget_title_string>";
       $result_html.= $widget_content;
       self::$widget_style_class = "";
       return $result_html;
@@ -805,10 +811,14 @@ class WidgetsManagement extends Section
       return json_encode($res);
    }
 
-   public static function generate_view($uisId, $index = 0)
+   public static function generate_view($uisId, $index = 0, $no_data = false)
    {
       $RESULT_HTML = '';
       $MYSQLI = \EWCore::get_db_connection();
+      if (!$no_data)
+      {
+         $no_data = false;
+      }
 
       $panels = $MYSQLI->query("SELECT * FROM ew_ui_structures WHERE id = '$uisId' ") or die($MYSQLI->error);
       // Create unigue set of ID's every time when generate_view is called
@@ -828,7 +838,7 @@ class WidgetsManagement extends Section
       while ($rows = $panels->fetch_assoc())
       {
          $res = json_decode(($rows["structure"]), true);
-         if(json_last_error() != JSON_ERROR_NONE)
+         if (json_last_error() != JSON_ERROR_NONE)
          {
             $res = json_decode(stripslashes($rows["structure"]), true);
          }
@@ -837,7 +847,7 @@ class WidgetsManagement extends Section
       foreach ($res as $key => $value)
       {
          $RESULT_HTML.=self::open_block("panel-" . self::$current_timestamp . "-" . self::$ui_index . "-" . self::$panel_index, "", "block " . $value["class"], $value["id"], $value["panelParameters"], FALSE, $value["blockName"]);
-         $RESULT_HTML.=self::create_panel_content($value["children"], "panel-" . self::$current_timestamp . '-' . self::$ui_index . '-' . self::$panel_index);
+         $RESULT_HTML.=self::create_panel_content($value["children"], "panel-" . self::$current_timestamp . '-' . self::$ui_index . '-' . self::$panel_index, $no_data);
          $RESULT_HTML.=self::close_block();
          self::$panel_index++;
       }
@@ -964,24 +974,31 @@ class WidgetsManagement extends Section
       }
    }
 
-   public static function get_layout($uisId, $template, $template_settings)
+   public static function get_layout($uisId, $template = null, $template_settings = null)
    {
       $template_body = WidgetsManagement::generate_view($uisId);
+      if (!$template)
+      {
+         $uis_info = json_decode(WidgetsManagement::get_uis($uisId),true);
+         $template = $uis_info["template"];
+         $template_settings = $uis_info["template_settings"];
+      }
       if (file_exists(EW_ROOT_DIR . $template . '/template.php'))
       {
          require_once EW_ROOT_DIR . $template . '/template.php';
          $template = new \template();
          //echo $template_settings;
- 
-         $settings = json_decode($template_settings,true);
-         if(json_last_error() != JSON_ERROR_NONE)
-         {            
-            $settings = json_decode(stripslashes($template_settings),true);
+
+         $settings = json_decode($template_settings, true);
+         if (json_last_error() != JSON_ERROR_NONE)
+         {
+            $settings = json_decode(stripslashes($template_settings), true);
          }
          //$template_settings = json_decode(stripslashes($template_settings), true);
          $template_body = $template->get_template_body($template_body, $settings);
          $template_script = $template->get_template_script($settings);
       }
+
       return ["template_body" => $template_body, "template_script" => $template_script];
    }
 

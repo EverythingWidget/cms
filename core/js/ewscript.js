@@ -607,7 +607,7 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler)
       }
       else
       {
-         var elm = $(formId + " input[name='" + key + "'][value='" + val + "']");
+         var elm = $(formId + " :input[name='" + key + "'][value='" + val + "']");
          if (elm.length == 0)
          {
             elm = $(formId + " [id='" + key + "']");
@@ -620,16 +620,16 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler)
                   elm.click();
                   elm.prop("checked", true);
                }
-         }
-         if (elm.is("input") || elm.is("select") || elm.is("textarea"))
-         {
-            elm.val(val).change();
-         }
-         else if (elm.is("img"))
+         }         
+         if (elm.is("img"))
          {
             elm.prop("src", "/res/images/" + val);
             elm.attr("data-file-extension", /[^.]+$/.exec(val));
             elm.attr("data-filename", /^[^.]+/.exec(val));
+         }
+         else if (elm.is(":input"))
+         {
+            elm.val(val).change();
          }
          else
             elm.text(val);

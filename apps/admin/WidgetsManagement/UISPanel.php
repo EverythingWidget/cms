@@ -98,9 +98,9 @@ $container_id = $_REQUEST["containerId"];
    {
       this.bAdd = EW.addAction("tr{Add}", this.addPanel, {display: "none"}, "uis-panel-actions");
       this.bEdit = EW.addAction("tr{Save}", this.updatePanel, {display: "none"}, "uis-panel-actions");
-      $("#appearance-conf input:radio").change(function () {
+      $("#appearance-conf input[name='title']").change(function () {
 
-         if ($(this).val() == "no")
+         if ($(this).val() == "")
          {
             $("#title-text").prop("disabled", true);
          }

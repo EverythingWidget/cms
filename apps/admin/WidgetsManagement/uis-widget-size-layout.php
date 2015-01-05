@@ -1,9 +1,9 @@
 <div id="size-and-layout" class="row">
 
    <div class="col-xs-12 mar-bot mar-top" >
-      <label class="aln-center" >
+      <h4 >
          Read from template/Custom
-      </label>
+      </h4>
       <div class="btn-group btn-group-justified" data-toggle="buttons">
          <label class="btn btn-default " >
             <input type="checkbox" name="custom-template" id="custom-template" value="no-size-layout"  > Disable Size & Layout
@@ -15,9 +15,9 @@
    </div>
 
    <div class="col-xs-12 mar-bot mar-top" >
-      <label class="aln-center" >
+      <h4  >
          Does not show on
-      </label>
+      </h4>
       <div id="hiddenOnScreens" class="btn-group btn-group-justified" data-toggle="buttons">
          <label class="btn btn-default ">
             <input type="checkbox" name="hidden-on" id="hidden-on" value="hidden-xs" > Mobile
@@ -34,9 +34,9 @@
       </div>
    </div>
    <div class="col-xs-12" >
-      <label class="aln-center" >
+      <h4 >
          Float
-      </label>
+      </h4>
       <div class="btn-group btn-group-justified" data-toggle="buttons">
          <label class="btn btn-default active">
             <input type="radio" name="float" id="float" value="pull-left" checked="true"> Left

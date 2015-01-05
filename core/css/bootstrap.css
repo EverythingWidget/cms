@@ -1203,10 +1203,10 @@ fieldset[disabled] .btn-default:active,
 .btn-default.disabled.active,
 .btn-default[disabled].active,
 fieldset[disabled] .btn-default.active {
-   background-color: #ffffff;
-   border-color: #cccccc;
+   //background-color: #ffffff;
+   //border-color: #cccccc;
    text-shadow:none;
-   color:#ccc;
+   //color:#ccc;
 }
 .btn-primary {
    color: #ffffff;

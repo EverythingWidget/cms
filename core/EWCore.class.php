@@ -160,6 +160,7 @@ class EWCore
          $RESULT_CONTENT = EWCore::log_error(404, "<h4>{$path}</h4><p>EWCore: FILE NOT FOUND</p>");
       }
       // Call ew command listeners
+      //echo is_array($RESULT_CONTENT);
       $actions = EWCore::read_registry("ew_command_listener");
       if (isset($actions) && !is_array($RESULT_CONTENT))
       {
@@ -174,6 +175,7 @@ class EWCore
          // Call the listeners with the same data as the command data
          foreach ($actions as $id => $data)
          {
+            
             if (method_exists($data["object"], $data["function"]))
             {
                $listener_method_object = new ReflectionMethod($data["object"], $data["function"]);
@@ -217,6 +219,8 @@ class EWCore
          
       }
       // End of calling ew command listeners
+      //echo $RESULT_CONTENT;
+      //print_r($RESULT_CONTENT)
       return $RESULT_CONTENT;
    }
 
