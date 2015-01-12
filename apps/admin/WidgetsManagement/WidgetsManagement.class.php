@@ -585,7 +585,7 @@ class WidgetsManagement extends Section
       $widget_title_string = "data-widget-title='$widget_title'";
       //}
       $result_html.= "<div class='widget-container $style_class' data-widget-container='true'>";
-      $result_html.= "<div class='widget $WIDGET_STYLE_CLASS' $WIDGET_STYLE_ID data-widget-id='$widget_id' $parameters_string $widget_type_string $widget_title_string>";
+      $result_html.= "<div class='widget $WIDGET_STYLE_CLASS' $WIDGET_STYLE_ID data-widget-id='$widget_id' $parameters_string $widget_type_string $widget_title_string data-widget='true'>";
       $result_html.= $widget_content;
       self::$widget_style_class = "";
       return $result_html;

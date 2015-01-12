@@ -105,6 +105,11 @@ class template extends TemplateControl
                   });
                //if (mainManuId)
                //$('#base-content-pane').prepend($(mainManuId).detach())
+               $(window).resize(function ()
+               {
+                  $(".section.background").css("min-height", $(window).height());
+               });
+               $(".section.background").css("min-height", $(window).height());
             });
          </script>
          <?php
@@ -142,10 +147,12 @@ class template extends TemplateControl
          </div>
          <div class="row">
             <div class="col-xs-12">
-               <input class="text-field" id="page-slider" name="page-slider" data-label="Page Slider" />                  
+               <select class="text-field" id="page-slider" name="page-slider" data-label="Page Slider ID">
+                  <option value=''></option>
+               </select>      
             </div>
          </div>
-         <div class="row">
+         <!--<div class="row">
             <div  class="col-xs-12 mar-top">
                <label>tr{Specify your pages}</label>
             </div>
@@ -172,7 +179,7 @@ class template extends TemplateControl
                   </li>
                </ul>
             </div> 
-         </div>
+         </div>-->
       </div>
       <script>
          var onNewItem = function (ni)
@@ -187,17 +194,18 @@ class template extends TemplateControl
             });
          };
 
-         function initMenuId(value)
+         function initSelect(select, value)
          {
-            $("#menu-id").empty();
-            $("#menu-id").append("<option value=''></option>");
-            $.each(uisForm.getLayoutBlocks(), function (i, e)
+            $(select).empty();
+            $(select).append("<option value=''></option>");
+            console.log(uisForm.getLayoutWidgets());
+            $.each(uisForm.getLayoutWidgets(), function (i, e)
             {
                var e = $(e);
                if (e.attr("id"))
                {
                   var selected = (value == e.attr("id")) ? "selected=true" : "";
-                  $("#menu-id").append("<option value='" + e.attr("id") + "' " + selected + ">" + e.attr("id") + "</option>");
+                  $(select).append("<option value='" + e.attr("id") + "' " + selected + ">" + e.attr("id") + "</option>");
                }
             });
          }
@@ -207,7 +215,9 @@ class template extends TemplateControl
          {
             //var ts = uisForm.templateSettings;
             var currentValue = $("#menu-id").val();
-            initMenuId(currentValue);
+            var currentValueSlider = $("#page-slider").val();
+            initSelect("#menu-id", currentValue);
+            initSelect("#page-slider", currentValueSlider);
          });
          $("#template_settings_form").on("refresh", function (e, data)
          {
@@ -218,13 +228,14 @@ class template extends TemplateControl
             }
 
             // Init menu id list
-            initMenuId(data["menu-id"]);
+            initSelect("#menu-id", data["menu-id"]);
+            initSelect("#page-slider", data["page-slider"]);
 
             // Init pages
-            if (data.pages)
-               $("#website_pages").EW().dynamicList({value: $.parseJSON(data.pages), onNewItem: onNewItem});
-            else
-               $("#website_pages").EW().dynamicList({onNewItem: onNewItem});
+            // if (data.pages)
+            //    $("#website_pages").EW().dynamicList({value: $.parseJSON(data.pages), onNewItem: onNewItem});
+            //else
+      //               $("#website_pages").EW().dynamicList({onNewItem: onNewItem});
 
             $("#spw").off("change");
             $("#spw").on("change", function ()
@@ -247,8 +258,8 @@ class template extends TemplateControl
          $("#template_settings_form").on("getData", function (e)
          {
             var data = $.parseJSON($("#template_settings_form").serializeJSON());
-            if (data)
-               data.pages = $("#website_pages").EW().dynamicList("getJSON");
+            //if (data)
+            //  data.pages = $("#website_pages").EW().dynamicList("getJSON");
             uisForm.setTemplateSettings(data);
          });
       </script>

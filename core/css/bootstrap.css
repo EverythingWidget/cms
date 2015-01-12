@@ -1867,6 +1867,7 @@ input[type="button"].btn-block {
    position: relative;
    display: block;
    padding: 10px 15px;
+   font-weight:500;
 }
 .nav > li > a:hover,
 .nav > li > a:focus {

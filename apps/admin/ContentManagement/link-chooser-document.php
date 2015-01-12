@@ -32,16 +32,16 @@
          $("#documents-up-btn").click($.proxy(this.preCategory, this));
          this.bUp = EW.addAction("tr{Up}", $.proxy(this.preCategory, this), {float: "right"}).hide();
          this.bSelect = EW.addAction("tr{Select}", $.proxy(this.selectContent, this)).addClass("btn-success").hide();
-         this.listCategories(this.parentId);
+         this.listFilesAndFolders(this.parentId);
       }
 
       LinkChooserDocuments.prototype.preCategory = function ()
       {
-         this.listCategories(this.preParentId);
+         this.listFilesAndFolders(this.preParentId);
          //EW.setHashParameter("parent", this.preParentId);
       };
 
-      LinkChooserDocuments.prototype.listCategories = function (parentId)
+      LinkChooserDocuments.prototype.listFilesAndFolders = function (parentId)
       {
          var self = this;
          var pId = 0;
@@ -105,12 +105,12 @@
          var self = this;
          var div = $("<div class='content-item folder' data-category-id='{id}'><span></span><p>{title}</p><p class='date'>{round_date_created}</p></div>").EW().createView(model);
          div.click(function () {
-            self.document = {type: "category", id: model.id};
+            self.document = {type: "folder", id: model.id};
             self.highlightContent(div);
             //EW.setHashParameters({"articleId": null, "categoryId": model.id});
          });
          div.dblclick(function () {
-            self.listCategories(model.id)
+            self.listFilesAndFolders(model.id)
          });
          return div;
       };

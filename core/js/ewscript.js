@@ -620,7 +620,7 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler)
                   elm.click();
                   elm.prop("checked", true);
                }
-         }         
+         }
          if (elm.is("img"))
          {
             elm.prop("src", "/res/images/" + val);
@@ -728,7 +728,6 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
       //closeAction: "hide",
       autoOpen: true
    };
-
    if (typeof (onClose) == "object")
    {
       // If hash is set, change default behaviors
@@ -747,11 +746,9 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
          initElement: true,
          class: "center"
       };
-
    //var animationDuration = 600;
    this.isOpen = false;
    var modalPane = $(document.createElement("div"));
-
    modalPane.addClass("top-pane col-xs-12");
    modalPane.addClass(settings.class);
    xButton = $("<a class='close-button x-icon'>");
@@ -764,12 +761,10 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
    {
       modalPane.trigger("close");
    });
-
    $(window).resize(function ()
    {
       methods.setCloseButton();
    });
-
    modalPane.on("beforeClose", function ()
    {
       return true;
@@ -785,16 +780,16 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
    {
       if (modalPane.triggerHandler("beforeClose"))
       {
-
          // Close the modal if it is open
          if (modalPane.isOpen)
          {
+            //$("#header-pane").off("mouseenter.ew mouseleave.ew");
             if (!animationDiv)
                animationDiv = $("<div class='s-to-d-scale-anim'>").css({width: modalPane.outerWidth(), height: modalPane.outerHeight(), top: modalPane.offset().top, left: modalPane.offset().left, position: "absolute", backgroundColor: "#aaa", zIndex: modalPane.css("z-index")});
             modalPane.before(animationDiv);
             //animationDiv.text("");
-
-            self.unlock($("body"));
+            if (settings.class != "full")
+               self.unlock($("body"));
             // Detach the modal if close action is hide
             if (settings.closeAction === "hide")
             {
@@ -817,7 +812,6 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
                settings.onClose.apply(modalPane, null);
             }
             modalPane.isOpen = false;
-
             if (!originElement || !$.contains(document, originElement[0]))
             {
                animationDiv.text("");
@@ -852,7 +846,11 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
       // Open the modal if it is not open
       if (!modalPane.isOpen)
       {
-         self.lock($("body"), " ");
+         if (settings.class != "full")
+         {
+            self.lock($("body"), " ");
+         }
+
          modalPane.show();
          modalPane.css({opacity: "0"});
          //xButton.hide();
@@ -863,7 +861,6 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
             $("body").append(xButton);
          }
          originElement = self.activeElement;
-
          if (settings.initElement && originElement && originElement.parent().length != 0)
          {
             if (originElement.is("p,h1,h2,h3,h4,h5,h6,span"))
@@ -886,7 +883,20 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
                modalPane.isOpen = true;
                modalPane.delay((!loadingLabel) ? 0 : 120).animate({opacity: "1"}, 240, function () {
                   methods.setCloseButton();
-                  animationDiv.remove()
+                  animationDiv.remove();
+                  if (settings.class == "full")
+                  {
+                     $("#header-pane").off("mouseenter.ew mouseleave.ew");
+                     $("#header-pane").on("mouseleave.ew", function () {
+                        modalPane.stop().animate({top: "10px", bottom: "0px"}, 200, "Power3,easeOut");
+                        xButton.show();
+
+                     });
+                     $("#header-pane").on("mouseenter.ew", function () {
+                        modalPane.stop().animate({top: "45px", bottom: "-45px"}, 200, "Power3,easeOut");
+                        xButton.hide();
+                     });
+                  }
                });
             });
             //animationDuration = 360;
@@ -897,6 +907,19 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
             modalPane.animate({opacity: "1", left: "+=10%"}, 420, "Power3.easeOut", function () {
                methods.setCloseButton();
                modalPane.isOpen = true;
+               if (settings.class == "full")
+               {
+                  $("#header-pane").off("mouseenter.ew mouseleave.ew");
+                  $("#header-pane").on("mouseleave.ew", function () {
+                     modalPane.stop().animate({top: "10px", bottom: "0px"}, 200, "Power3,easeOut");
+                     xButton.show();
+
+                  });
+                  $("#header-pane").on("mouseenter.ew", function () {
+                     modalPane.stop().animate({top: "45px", bottom: "-45px"}, 200, "Power3,easeOut");
+                     xButton.hide();
+                  });
+               }
             });
             //animationDuration = 252;
          }
@@ -918,7 +941,6 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
    {
       modalPane.trigger("open");
    };
-
    if (settings.hash)
    {
       self.addURLHandler(function () {
@@ -963,10 +985,8 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
    };
    // Overwrite the default jquery html() function behavior
    modalPane.html = htmlFunction;
-
    return modalPane;
 };
-
 EverythingWidgets.prototype.setWidgetParam = function (field, key, val)
 {
    var obj = $(field).val();
@@ -986,7 +1006,6 @@ EverythingWidgets.prototype.getWidgetParam = function (field, key)
       return obj[key];
    return null;
 };
-
 JSON.stringify = JSON.stringify || function (obj) {
    var t = typeof (obj);
    if (t != "object" || obj === null) {
@@ -1010,7 +1029,6 @@ JSON.stringify = JSON.stringify || function (obj) {
       return (arr ? "[" : "{") + String(json) + (arr ? "]" : "}");
    }
 };
-
 function HashListener(name)
 {
    this.name = name;
@@ -1019,30 +1037,39 @@ function HashListener(name)
    this.hash = "#";
    this.newHandler = false;
    this.Check;
-   var thisHL = this;
-
+   var self = this;
    var detect = function () {
-      if (thisHL.oldHash !== customHashes[name].hash || thisHL.newHandler)
+      if (self.oldHash !== customHashes[name].hash || self.newHandler)
       {
-         thisHL.newHandler = false;
-         thisHL.oldHash = customHashes[name].hash;
-         $(window).trigger(name);
-         /*for (var i = 0; i < thisHL.handlers.length; i++)
-          {
-          thisHL.handlers[i].call();
-          }*/
+         self.newHandler = false;
+         self.oldHash = customHashes[name].hash;
+         //$(window).trigger(name);
+         for (var i = 0; i < self.handlers.length; i++)
+         {
+            self.handlers[i].call();
+         }
       }
    };
-
    this.Check = setInterval(function ()
    {
       detect();
    }, 50);
-
    this.addHandler = function (handlerName, handlerFunction)
    {
-      $(window).off(name + "." + handlerName);
-      $(window).on(name + "." + handlerName, handlerFunction);
+      //alert(name + " " + handlerName);
+      for (var i = 0; i < self.handlers.length; i++)
+      {
+         if (" " + self.handlers[i] == " " + handlerFunction)
+         {
+            self.handlers[i] = null;
+            self.handlers[i] = handlerFunction;
+            return;
+         }
+      }
+      self.handlers.push(handlerFunction);
+      /*this.urlHandlers = handlers;
+       $(window).off(name + "." + handlerName);
+       $(window).on(name + "." + handlerName, handlerFunction);*/
    };
 }
 
@@ -1063,7 +1090,6 @@ EverythingWidgets.prototype.setHashParameter = function (key, value, hashName)
       data[key] = value;
    }
    this.setHashParameters(data, hashName);
-
    /*var hashValue = window.location.hash;
     
     if (hashName)
@@ -1138,11 +1164,9 @@ EverythingWidgets.prototype.setHashParameter = function (key, value, hashName)
     window.location.hash = newHash;*/
 
 };
-
 EverythingWidgets.prototype.setHashParameters = function (parameters, hashName)
 {
    var hashValue = window.location.hash;
-
    if (hashName)
    {
       // create new hash listener if new hash name has been passed
@@ -1165,8 +1189,6 @@ EverythingWidgets.prototype.setHashParameters = function (parameters, hashName)
    var pairs = hashValue.split("&");
    var newHash = "#";
    var and = false;
-
-
    /*if (hashValue.indexOf(key) == -1 && value == null)
     {
     return;
@@ -1177,7 +1199,6 @@ EverythingWidgets.prototype.setHashParameters = function (parameters, hashName)
    {
       var keyAndValue = v.split("=");
       var keyExisted = false;
-
       // set new value for existed key
       if (parameters[keyAndValue[0]] != null)
       {
@@ -1203,7 +1224,6 @@ EverythingWidgets.prototype.setHashParameters = function (parameters, hashName)
       }
       //alert(newHash);
    });
-
    // New keys
    $.each(parameters, function (key, value)
    {
@@ -1227,13 +1247,9 @@ EverythingWidgets.prototype.setHashParameters = function (parameters, hashName)
    else
       window.location.hash = newHash;
 };
-
-
 EverythingWidgets.prototype.getHashParameter = function (key, hashName)
 {
    var hashValue = window.location.hash;
-
-
    if (customHashes[hashName])
    {
       hashValue = customHashes[hashName].hash;
@@ -1257,14 +1273,12 @@ EverythingWidgets.prototype.getHashParameter = function (key, hashName)
    }
    return null;
 };
-
 EverythingWidgets.prototype.loadMainContent = function (url)
 {
    $.post(url, function (data) {
       $("#main-content").html(data);
    });
 };
-
 EverythingWidgets.prototype.setCurrentTab = function (obj)
 {
    if (obj)
@@ -1275,7 +1289,6 @@ EverythingWidgets.prototype.setCurrentTab = function (obj)
    obj.addClass("selected");
    this.currentTab = obj;
 };
-
 EverythingWidgets.prototype.lock = function (obj, string)
 {
    var self = this;
@@ -1305,16 +1318,13 @@ EverythingWidgets.prototype.lock = function (obj, string)
    else
       glass.html("<span>" + string + "</span>");
    $(obj).append(glass);
-
    var height = $(obj).outerHeight(true) === 0 ? "100%" : $(obj).outerHeight(true) - 20;
-
    glass.animate({
       opacity: 1
    },
    0);
    return glass;
 };
-
 EverythingWidgets.prototype.unlock = function (obj)
 {
    var ll = $(obj).children(".glass-pane-lock:not(.unlock)").last();
@@ -1326,7 +1336,6 @@ EverythingWidgets.prototype.unlock = function (obj)
       $(this).remove();
    });
 };
-
 function EWTable(config)
 {
    var $base = this;
@@ -1347,13 +1356,10 @@ function EWTable(config)
    this.next;
    this.previous;
    this.pageInfo;
-
    this.tableContainer.append(this.tableHeaderDiv);
    this.tableContainer.append(this.tableBodyDiv);
-
    this.container.append(this.controls);
    this.container.append(this.tableContainer);
-
    this.tableHeaderDiv.css({
       position: "absolute",
       display: "none",
@@ -1409,7 +1415,6 @@ EWTable.prototype.createHeadersRow = function (headers)
    });
    return tr;
 };
-
 EWTable.prototype.createRow = function (val, rc)
 {
    var ewTable = this;
@@ -1460,7 +1465,6 @@ EWTable.prototype.createRow = function (val, rc)
             tableRow.css({position: "relative"});
             // CSS properties are in the template
             messageRow.css({position: "absolute", width: del.outerWidth(), left: del.position().left});
-
             var delBtn = $("<button type=button class='btn btn-white'>Delete</button>");
             messageRow.append(delBtn);
             delBtn.on("click", function () {
@@ -1470,7 +1474,6 @@ EWTable.prototype.createRow = function (val, rc)
                   ewTable.removeRow(tableRow.data("field-id"));
                }
             });
-
             var cancelBtn = $("<button type=button class='btn btn-danger' style='float:right'>Cancel</button>");
             messageRow.append(cancelBtn);
             cancelBtn.on("click", function () {
@@ -1508,14 +1511,12 @@ EWTable.prototype.createRow = function (val, rc)
    }
    delete val.id;
    var index = rc;
-
    // Set the row label 
    if (ewTable.config.rowLabel)
       var rt = ewTable.config.rowLabel.replace(/{(\w+)}/g, function (a, p)
       {
          return val[p];
       });
-
    tableRow.data("label", rt);
    // When user spacify columns attribute 
    if (ewTable.config.columns)
@@ -1558,7 +1559,6 @@ EWTable.prototype.createRow = function (val, rc)
    }
    return tableRow;
 };
-
 EWTable.prototype.listRows = function ()
 {
    var self = this;
@@ -1638,25 +1638,20 @@ EWTable.prototype.read = function (customURLData)
          self.previous.css('visibility', 'hidden');
          self.container.replaceWith("<div class='box box-error'><label class='value'>" + o.responseJSON.message + "</label></div>");
          EW.customAjaxErrorHandler = true;
-
       }
    });
 };
-
 EWTable.prototype.refresh = function (data)
 {
    this.read(data);
 };
-
 EWTable.prototype.removeRow = function (dataId)
 {
    this.table.find("tr[data-field-id='" + dataId + "']").remove();
 };
-
 EverythingWidgets.prototype.createTable = function (conf)
 {
    var ewTable = new EWTable(conf);
-
    // create a div element with 'table-container' class which contains the table element
    var bodyTable = $(document.createElement("table"));
    bodyTable.addClass("data");
@@ -1703,12 +1698,9 @@ EverythingWidgets.prototype.createTable = function (conf)
    ewTable.headers = hr;
    ewTable.tableHeaderDiv.append(headerTable);
    ewTable.tableBodyDiv.append(bodyTable);
-
    ewTable.read();
    return ewTable;
 };
-
-
 EverythingWidgets.prototype.addURLHandler = function (handler, hashName)
 {
    var handlers = this.urlHandlers;
@@ -1717,19 +1709,12 @@ EverythingWidgets.prototype.addURLHandler = function (handler, hashName)
    {
       // create new hash listener if new hash name has been passed
       if (!customHashes[hashName])
-      {
          customHashes[hashName] = new HashListener(hashName);
-         //handlers = customHashes[hashName].handlers;
-      }
-      else
-      {
-         //handlers = customHashes[hashName].handlers;
-      }
+
       customHashes[hashName].addHandler(hashName, handler);
    }
    else
    {
-
       for (var i = 0; i < handlers.length; i++)
       {
          if (" " + handlers[i] == " " + handler)
@@ -1753,17 +1738,15 @@ EverythingWidgets.prototype.addURLHandler = function (handler, hashName)
 };
 EverythingWidgets.prototype.removeURLHandler = function (handler, hashName)
 {
+   // Get primary URL handlers
    var handlers = this.urlHandlers;
-   //var newAdded = EW.newHandler;
    if (customHashes[hashName])
    {
+      // If hashName is specified then get hashname handlers
       handlers = customHashes[hashName].handlers;
    }
-   for (var i = 0;
-           i < handlers.length;
-           i++)
+   for (var i = 0; i < handlers.length; i++)
    {
-
       if (' ' + handlers[i] === ' ' + handler)
       {
          handlers.splice(i, 1);
@@ -1777,21 +1760,18 @@ function hashHandler()
 {
    this.oldHash = window.location.hash;
    this.Check;
-
    var detect = function ()
    {
       if (this.oldHash !== window.location.hash || EW.newHandler)
       {
          EW.newHandler = false;
          this.oldHash = window.location.hash;
-
          for (var i = 0; i < EW.urlHandlers.length; i++)
          {
             EW.urlHandlers[i].call();
          }
       }
    };
-
    this.Check = setInterval(function ()
    {
       detect();
@@ -1912,8 +1892,6 @@ EverythingWidgets.prototype.createForm = function (json)
    }
    return form;
 };
-
-
 function EWNotification(element, options)
 {
    var notify_defaults = {
@@ -1943,15 +1921,12 @@ function EWNotification(element, options)
    });
    this.$note.attr("data-alert", "true");
    this.$note.attr("data-position", this.options.position);
-
    if (this.options.position == "ne")
       this.$note.css("right", "0px");
-
    if (this.options.status)
       this.$note.addClass('alert-' + this.options.status);
    else
       this.$note.addClass('alert-success');
-
    if (!this.options.message && this.$element.data("message") !== '') // dom text
       this.$note.html(this.$element.data("message"));
    else
@@ -1990,7 +1965,6 @@ EWNotification.prototype.closeNotification = function ()
    this.options.onClosed();
    return false;
 };
-
 EWNotification.prototype.show = function ()
 {
    //if (this.options.fadeOut.enabled)
@@ -1999,18 +1973,15 @@ EWNotification.prototype.show = function ()
    var left = 0;
    var position = this.options.position;
    var note = this.$note;
-
    var v = this.$element.find("div[data-alert][data-position='" + this.options.position + "']").last();
    //alert(v.length);
    this.$note.css("opacity", "0");
    //alert(v.length + "   " + this.$note.outerWidth());
    this.$element.append(this.$note);
-
    if (v.length > 0)
    {
       if (position == "ne" || position == "nw" || position == "n")
          top = v.outerHeight(true) + v.offset().top;
-
       if (position == "se" || position == "sw")
          top = v.offset().top - note.outerHeight(true);
    }
@@ -2038,7 +2009,6 @@ EWNotification.prototype.show = function ()
          $this.$note.delay($this.options.delay || 3000).fadeOut('slow', $.proxy($this.closeNotification, $this));
    });
 };
-
 EWNotification.prototype.hide = function ()
 {
    //if (this.options.fadeOut.enabled)
@@ -2047,7 +2017,6 @@ EWNotification.prototype.hide = function ()
    //else
    //onClose.call(this);
 };
-
 function EWFormValidator(element, options)
 {
    var self = this;
@@ -2128,13 +2097,11 @@ function EWFormValidator(element, options)
       //alert(rule);
       return true;
    };
-
    $form.find(".errors-list").remove();
    var inputs = $form.find("input, textarea, select");
    var errorPanel;
    $.each(inputs, function (i, elm) {
       var $currentElement = $(elm);
-
       if ($currentElement.data("validate"))
       {
          var rules = $currentElement.data("validate").split(",");
@@ -2179,7 +2146,6 @@ function ExtendableList(element, cSettings)
       base.lastRow.before(ni);
       ni.fadeIn(200);
    });
-
    this.lastRow.children().append(this.addNewRow);
    base.$element.empty();
    var init = false;
@@ -2210,7 +2176,7 @@ function ExtendableList(element, cSettings)
             // Create the list and set the value for the first key
             for (var i = 0; i < v.length; i++)
             {
-               ci = base.createItem();               
+               ci = base.createItem();
                ci.find(":input[name='" + k + "']").val(v[i]).change();
                items.push(ci);
                init = true;
@@ -2241,7 +2207,6 @@ ExtendableList.prototype.createItem = function ()
    var originalModelClone = this.firstItemClone.clone();
    var controlRow = $("<div class='row control'></div>");
    var removeBtn = $("<button type='button' class='close-icon' ></button>");
-
    removeBtn.click(function ()
    {
       originalModelClone.animate({opacity: 0}, 200);
@@ -2255,7 +2220,6 @@ ExtendableList.prototype.createItem = function ()
       this.settings.onNewItem.apply(this, [originalModelClone]);
    return originalModelClone;
 };
-
 var ew_plugins;
 $.EW = function ()
 {
@@ -2267,7 +2231,6 @@ $.EW = function ()
       return EW[method].apply(EverythingWidgets.prototype, args);
    }
 };
-
 var globalOptions = {
 };
 $.fn.EW = function (methodOrOptions)
@@ -2276,8 +2239,6 @@ $.fn.EW = function (methodOrOptions)
    $.extend(this, ew_plugins);
    return this;
 };
-
-
 ew_plugins = {
    createView: function (model)
    {
@@ -2347,7 +2308,6 @@ ew_plugins = {
          }
          var settings = $.extend({
          }, defaults, options);
-
          if (!$element.parent().attr("data-element-wrapper"))
             $element.EW().putInWrapper();
          var wrapper = $element.parent();
@@ -2401,7 +2361,6 @@ ew_plugins = {
             buttonsPanel.css({
                right: $element.css("padding-right")
             });
-
             $element.attr("data-active-plugin-input-button", true);
             //alert();
             $element.css("padding-right", buttonsPanel.outerWidth() + (parseInt($element.css("padding-right")) * 2));
@@ -2424,14 +2383,11 @@ EverythingWidgets.prototype.initPlugins = function ($element)
 {
    // set input and textarea dir to auto
    $element.find("input, textarea").attr("dir", "auto");
-
    // EW Plugins
    // Begin
    $element.find('input[data-ew-plugin="link-chooser"], textarea[data-ew-plugin="link-chooser"]').EW().linkChooser();
-
    // Input floatable labels
    $element.find('input[data-label], textarea[data-label], select[data-label]').floatlabel();
-
    $element.find('[data-ew-plugin="image-chooser"]').EW().imageChooser();
    $element.find('[data-slider]').simpleSlider();
    // End

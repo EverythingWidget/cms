@@ -30,6 +30,7 @@ function get_editor($form_config, $form_id)
       tinymce.EditorManager.execCommand('mceRemoveEditor', false, "content");
       setTimeout(function () {
          tinymce.EditorManager.init({
+            forced_root_block : false,
             mode: "exact",
             elements: 'content',
             relative_urls: false,
@@ -39,13 +40,19 @@ function get_editor($form_config, $form_id)
             apply_source_formatting: true,
             height: 340,
             ew_media_url: "<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/Media.php",
+            visualblocks_default_state: true,
+            image_class_list: [
+               {title: 'None', value: ''},
+               {title: 'Image', value: 'image'},
+               {title: 'Cover', value: 'cover'}
+            ],
             //content_css: "admin/styles/template.css",
             plugins: [
-               "advlist autolink lists link image ewimage charmap print preview anchor",
+               "advlist autolink lists link image ewimage charmap print preview anchor textcolor",
                "searchreplace visualblocks code fullscreen",
                "insertdatetime table contextmenu paste"
             ],
-            toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | ewimage"
+            toolbar: "insertfile undo redo | styleselect | forecolor backcolor bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent layer | link image | ewimage"
                     // Example content CSS (should be your site CSS)
 
          });
@@ -54,9 +61,7 @@ function get_editor($form_config, $form_id)
          {
             $(tinymce.get('content').getBody()).html(formData["content"]);
          });
-      }, 300);
-
-   </script>
+      }, 300);</script>
    <?php
    return ob_get_clean();
 }

@@ -1,1 +1,1 @@
-<?php/* * title: Image * description: Show an image */
+<?php/* * title: Image * description: Add an image */

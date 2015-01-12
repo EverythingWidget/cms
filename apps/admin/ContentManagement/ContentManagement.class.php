@@ -63,6 +63,7 @@ class ContentManagement extends \Section
       $this->register_content_label("document", ["title" => "Document", "description" => "Attach this content to other content", "type" => "data_url", "value" => "app-admin/ContentManagement/get_articles_llist"]);
       $this->register_content_label("language", ["title" => "Language", "description" => "Language of the content"]);
       $this->register_widget_feeder("page", "article", "article");
+      $this->register_widget_feeder("list", "folder", "folder");
       /* $this->register_activity("article-form", array("form" => "article-form.php", "title" => "New Article"));
         $this->register_activity("article-form", array("form" => "article-form.php?see", "title" => "See Article"));
         $this->register_activity("category-form", array("form" => "category-form.php", "title" => "New Folder")); */
@@ -440,25 +441,28 @@ class ContentManagement extends \Section
       {
          $date_modified = date('Y-m-d H:i:s');
       }
-      $content = stripcslashes($content);
+      $parsed_content = stripcslashes($content);
 
       if (!$type)
       {
          $res = array("status" => "error", "error_message" => "type is required");
       }
+      $labels = json_decode(stripslashes($labels), true);
 
       //if (!$order)
       //  $order = 0;
 
       $stm = $db->prepare("INSERT INTO ew_contents (author_id, type, title , keywords , description , parent_id , content , featured_image , date_created, date_modified) 
             VALUES (? , ? , ? , ? , ? , ? , ? , ? , ? , ?)") or die($db->error);
-      $stm->bind_param("ssssssssss", $_SESSION['EW.USER_ID'], $type, $title, $keywords, $description, $parent_id, $content, $featured_image, $date_created, $date_modified) or die($db->error);
+      $stm->bind_param("ssssssssss", $_SESSION['EW.USER_ID'], $type, $title, $keywords, $description, $parent_id, $parsed_content, $featured_image, $date_created, $date_modified) or die($db->error);
       if ($stm->execute())
       {
          $res = array("status" => "success", "id" => $stm->insert_id);
-         foreach ($labels as $label)
+         $id = $stm->insert_id;
+         foreach ($labels as $key => $value)
          {
-            
+            //echo $key . ': ' . $value;
+            $this->update_label($id, $key, $value);
          }
 
          //$MYSQLI->close();
@@ -518,29 +522,24 @@ class ContentManagement extends \Section
       }
    }
 
-   public function add_article($labels)
+   public function add_article($title, $parent_id, $keywords, $description, $labels)
    {
       $MYSQLI = get_db_connection();
-      $title = $MYSQLI->real_escape_string($_REQUEST['title']);
-      $parentId = $MYSQLI->real_escape_string($_REQUEST['parent_id']);
-      if (!$parentId)
-         $parentId = 0;
-      $keywords = $MYSQLI->real_escape_string($_REQUEST['keywords']);
-      $description = $MYSQLI->real_escape_string($_REQUEST['description']);
+      if (!$parent_id)
+         $parent_id = 0;
+
       //$sourcePageAddress = $MYSQLI->real_escape_string($_REQUEST['source_page_address']);
       //$htmlContent = html_entity_decode($_REQUEST['content']);
       $htmlContent = $_REQUEST['content'];
-      $order = $MYSQLI->real_escape_string($_REQUEST['order']);
+      //$order = $MYSQLI->real_escape_string($_REQUEST['order']);
       //$createdDate = $MYSQLI->real_escape_string($_REQUEST['date_created']);
       $this->get_current_command_args();
       if (!$title)
       {
          $res = array("status" => "error", message => "The Tile and Date fields are required");
       }
-      if (!$order)
-         $order = 0;
 
-      $result = $this->add_content("article", $title, $parentId, $keywords, $description, $htmlContent, $labels);
+      $result = $this->add_content("article", $title, $parent_id, $keywords, $description, $htmlContent, "", $labels);
       $result = json_decode($result, true);
 
       if ($result["id"])
@@ -557,6 +556,26 @@ class ContentManagement extends \Section
       $result["html"] = "WIDGET_DATA_MODEL";
       $result["title"] = $articles[0]['title'];
       $result["content"] = $articles[0]['content'];
+      //print_r($language);
+      return json_encode($result);
+   }
+
+   public function ew_list_feeder_folder($id, $token = 0, $size)
+   {
+      if (!$token)
+         $token = 0;
+      if (!$size)
+         $size = 30;
+      $articles = $this->get_articles_list($id, $token, $size);
+      //$result["html"] = "WIDGET_DATA_MODEL";
+      //$result["title"] = $articles[0]['title'];
+      //$result["content"] = $articles[0]['content'];
+      //$result["html"] = "<h3></h3><p></p>";
+      $result["num_rows"] = $articles["totalRows"];
+      foreach ($articles["result"] as $article)
+      {
+         $result["items"][] = ["html" => "{$article["content"]}"];
+      }
       //print_r($language);
       return json_encode($result);
    }
@@ -715,7 +734,7 @@ class ContentManagement extends \Section
       }
       $MYSQLI->close();
       $out = array("totalRows" => $result->num_rows, "result" => $rows);
-      return json_encode($out);
+      return $out;
    }
 
    public function get_content($id)
@@ -763,7 +782,7 @@ class ContentManagement extends \Section
       return json_encode($out);
    }
 
-   public function add_category($title, $parent_id, $keywords, $description, $html_content, $labels)
+   public function add_category($title, $parent_id, $keywords, $description, $labels)
    {
       $MYSQLI = \EWCore::get_db_connection();
 
@@ -772,7 +791,7 @@ class ContentManagement extends \Section
 
       $html_content = $_REQUEST['content'];
 
-      $result = $this->add_content("folder", $title, $parent_id, $keywords, $description, $html_content, $labels);
+      $result = $this->add_content("folder", $title, $parent_id, $keywords, $description, $html_content, "", $labels);
       $result = json_decode($result, true);
 
       /* $stm = $MYSQLI->prepare("INSERT INTO content_categories (title , parent_id , date_created , content_categories.order) VALUES (? , ? , NOW() , '0')");
@@ -1151,7 +1170,7 @@ class ContentManagement extends \Section
       }
    }
 
-   public function add_album($title = null)
+   public function add_album($title = null, $labels)
    {
       $MYSQLI = get_db_connection();
       if (!$title)
@@ -1164,7 +1183,7 @@ class ContentManagement extends \Section
       $description = $MYSQLI->real_escape_string($_REQUEST['description']);
       $htmlContent = stripcslashes($_REQUEST['html_content']);
 
-      $result = $this->add_content("album", $title, 0, $keywords, $description, $htmlContent);
+      $result = $this->add_content("album", $title, 0, $keywords, $description, $htmlContent, "", $labels);
       $result = json_decode($result, true);
       $res = array(status => "success", message => "The directory {" . $title . "} hase been created succesfuly");
 
@@ -1353,6 +1372,7 @@ class ContentManagement extends \Section
       }
       foreach ($files as $file)
       {
+         //print_r($file);
          $foo = new \upload($file);
          if ($foo->uploaded)
          {
@@ -1361,12 +1381,12 @@ class ContentManagement extends \Section
             $foo->Process($root);
             if ($foo->processed)
             {
-               $result = $this->add_content("image", $foo->file_dst_name_body, $parent_id, "", "", "");
+               $result = $this->add_content("image", $foo->file_dst_name_body, $parent_id, "", "", "", "", "");
                $result = json_decode($result, true);
                //print_r($result);
-               /* $stm = $MYSQLI->prepare("INSERT INTO ew_contents (title , keywords , description , parent_id , source_page_address , html_content , ew_contents.order , date_created,type) 
-                 VALUES (? , ? , ? , ? , ? , ? , ? , ?,'article')") or die($MYSQLI->error);
-                 $stm->bind_param("ssssssss", $title, $keywords, $description, $categoryId, $sourcePageAddress, $htmlContent, $order, $createdDate) or die($MYSQLI->error); */
+               // $stm = $MYSQLI->prepare("INSERT INTO ew_contents (title , keywords , description , parent_id , source_page_address , html_content , ew_contents.order , date_created,type) 
+               //  VALUES (? , ? , ? , ? , ? , ? , ? , ?,'article')") or die($MYSQLI->error);
+               //  $stm->bind_param("ssssssss", $title, $keywords, $description, $categoryId, $sourcePageAddress, $htmlContent, $order, $createdDate) or die($MYSQLI->error); 
                if ($result["id"])
                {
                   $content_id = $result["id"];
@@ -1377,8 +1397,8 @@ class ContentManagement extends \Section
                   if ($stm->execute())
                   {
                      $res = array("status" => "success", "id" => $stm->insert_id);
-                     $stm->close();
-                     $MYSQLI->close();
+                     //$stm->close();
+                     //$MYSQLI->close();
                   }
                }
 
@@ -1395,7 +1415,8 @@ class ContentManagement extends \Section
             $error+=2;
          }
       }
-
+      $stm->close();
+      $MYSQLI->close();
       return json_encode(array(status => "success", message => "Uploaded: " . $succeed . " Error: " . $error));
    }
 

@@ -81,7 +81,7 @@ if (!$_SESSION['login'])
             }, "json");
          }
       }, {display: "none"});
-      this.bDel.addClass("orange");
+      this.bDel.addClass("btn-danger");
       this.bDel.css("margin-left", "20px");
       var oldCn = 0;
 
@@ -342,7 +342,8 @@ if (!$_SESSION['login'])
 
 
    var media = new Media();
-   media.handler = function ()
+
+   EW.addURLHandler(function ()
    {
       var parent = EW.getHashParameter("parentId", "Media");
       var preParentId = EW.getHashParameter("preParentId", "Media");
@@ -425,8 +426,7 @@ if (!$_SESSION['login'])
          media.bUploadFile.comeIn(300);
       }
       return "MediaHandler";
-   };
-   EW.addURLHandler(media.handler, "Media");
+   }, "Media");
    /*media.dispose = function()
     {
     EW.removeURLHandler(media.handler, "Media");
