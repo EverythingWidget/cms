@@ -543,12 +543,14 @@ class WidgetsManagement extends Section
     */
    public static function set_widget_style_class($class)
    {
+      if(!$class)
+         return;
       self::$widget_style_class.="$class ";
    }
 
    public static function get_widget_style_class()
    {
-      return self::$widget_style_class;
+      return trim(self::$widget_style_class);
    }
 
    /**
@@ -563,6 +565,8 @@ class WidgetsManagement extends Section
     */
    public static function open_widget($widget_id, $widget_type, $style_class, $widget_style_class, $style_id, $params, $no_data = false)
    {
+      // Empty widget style class when creating a widget
+      self::$widget_style_class = "widget ";
       $result_html = '';
       if ($style_id)
          $WIDGET_STYLE_ID = "id='$style_id'";
@@ -585,7 +589,7 @@ class WidgetsManagement extends Section
       $widget_title_string = "data-widget-title='$widget_title'";
       //}
       $result_html.= "<div class='widget-container $style_class' data-widget-container='true'>";
-      $result_html.= "<div class='widget $WIDGET_STYLE_CLASS' $WIDGET_STYLE_ID data-widget-id='$widget_id' $parameters_string $widget_type_string $widget_title_string data-widget='true'>";
+      $result_html.= "<div class='$WIDGET_STYLE_CLASS' $WIDGET_STYLE_ID data-widget-id='$widget_id' $parameters_string $widget_type_string $widget_title_string data-widget='true'>";
       $result_html.= $widget_content;
       self::$widget_style_class = "";
       return $result_html;
