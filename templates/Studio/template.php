@@ -198,7 +198,7 @@ class template extends TemplateControl
          {
             $(select).empty();
             $(select).append("<option value=''></option>");
-            console.log(uisForm.getLayoutWidgets());
+            //console.log(uisForm.getLayoutWidgets());
             $.each(uisForm.getLayoutWidgets(), function (i, e)
             {
                var e = $(e);
