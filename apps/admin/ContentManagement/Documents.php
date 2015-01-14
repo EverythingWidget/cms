@@ -44,8 +44,15 @@ if (!$_SESSION['login'])
          this.bSee = $();
       var oldCn = 0;
       $(document).off("article-list");
-      $(document).on("article-list.refresh", function () {
+      $(document).on("article-list.refresh", function (e, eventData) {
          self.listCategories();
+         if (eventData)
+         {            
+            if (eventData.data.type == "article")
+               EW.setHashParameters({categoryId: null, articleId: eventData.data.id});
+            if (eventData.data.type == "folder")
+               EW.setHashParameters({categoryId: eventData.data.id, articleId: null});
+         }
       });
       /*$(document).off("category-list");
        $(document).on("category-list.refresh", function () {
@@ -276,7 +283,7 @@ if (!$_SESSION['login'])
          {
             pId = element.pre_parent_id;
             hasNode = true;
-            var temp = documents.createFile(element.title, element.round_date_created, element.id,element);
+            var temp = documents.createFile(element.title, element.round_date_created, element.id, element);
             if (element.id == aId)
             {
                temp.addClass("selected");
@@ -304,7 +311,7 @@ if (!$_SESSION['login'])
       return div;
    };
 
-   Documents.prototype.createFile = function (title, dateCreated, id,model)
+   Documents.prototype.createFile = function (title, dateCreated, id, model)
    {
       var self = this;
       var div = $("<div class='content-item article' data-article-id='{id}'><span></span><p>{title}</p><p class='date'>{round_date_created}</p></div>").EW().createView(model);

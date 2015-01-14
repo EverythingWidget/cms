@@ -544,7 +544,7 @@ class ContentManagement extends \Section
 
       if ($result["id"])
       {
-         return json_encode(["status" => "success", "categoryId" => $result["id"], "title" => $title, "message" => "tr{The new article has been added succesfully}", "data" => ["id" => $result["id"]]]);
+         return json_encode(["status" => "success", "categoryId" => $result["id"], "title" => $title, "message" => "tr{The new article has been added succesfully}", "data" => ["id" => $result["id"], "type" => "article"]]);
          // End of plugins actions call
       }
       return \EWCore::log_error(400, "tr{Something went wrong, content has not been added}");
@@ -800,7 +800,7 @@ class ContentManagement extends \Section
       if ($result["id"])
       {
          $content_id = $result["id"];
-         $res = array("status" => "success", "message" => "Folder has been added successfully", "data" => ["id" => $content_id]);
+         $res = array("status" => "success", "message" => "Folder has been added successfully", "data" => ["id" => $content_id, "type" => "folder"]);
          return json_encode($res);
       }
    }

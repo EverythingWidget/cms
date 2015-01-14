@@ -23,14 +23,23 @@ function get_editor($form_config, $form_id)
       <div class="col-lg-12 mar-top">         
          <textarea id="content" name="content" style="padding:0px 2px; width:100%;min-height:500px;" ></textarea>
       </div>
+      <div class="col-lg-12">      
+         <label>Press SHIFT + ENTER to add a new paragraph</label>
+      </div>
    </div>
-   <script src="<?php echo EW_ROOT_URL ?>app-admin/Tools/tinymce/tinymce.min.js">
-   </script>
+   <script src="<?php echo EW_ROOT_URL ?>app-admin/Tools/tinymce/tinymce.min.js"></script>
+   <!-- <script src="<?php echo EW_ROOT_URL ?>app-admin/Tools/ckeditor/ckeditor.js"></script>-->
    <script>
+      /*$(document).ready(function () {
+       setTimeout(function () {
+       CKEDITOR.replace('content', {height: "500px"});
+       //alert("asdasd");
+       }, 500);
+       });*/
       tinymce.EditorManager.execCommand('mceRemoveEditor', false, "content");
       setTimeout(function () {
          tinymce.EditorManager.init({
-            forced_root_block : false,
+            forced_root_block: false,
             mode: "exact",
             elements: 'content',
             relative_urls: false,
@@ -46,22 +55,25 @@ function get_editor($form_config, $form_id)
                {title: 'Image', value: 'image'},
                {title: 'Cover', value: 'cover'}
             ],
+            menubar: "file edit view format",
             //content_css: "admin/styles/template.css",
             plugins: [
                "advlist autolink lists link image ewimage charmap print preview anchor textcolor",
                "searchreplace visualblocks code fullscreen",
                "insertdatetime table contextmenu paste"
             ],
-            toolbar: "insertfile undo redo | styleselect | forecolor backcolor bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent layer | link image | ewimage"
+            toolbar: "insertfile undo redo | styleselect | forecolor backcolor bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image table charmap insertdatetime | ewimage | code"
                     // Example content CSS (should be your site CSS)
 
          });
+
 
          $("#<?php echo $form_id ?>").on("refresh", function (e, formData)
          {
             $(tinymce.get('content').getBody()).html(formData["content"]);
          });
-      }, 300);</script>
+      }, 300);
+   </script>
    <?php
    return ob_get_clean();
 }
@@ -228,7 +240,7 @@ $tabs = EWCore::read_registry("ew-article-form-tab");
        * @param {boolean} flag If true then active the label only for the new content. Default is false
        */
       activeLabel: function (label, flag)
-      {
+      {   
          if (!flag)
          {
             $("#" + label + "_control_button:not(:checked)").click();
@@ -240,6 +252,7 @@ $tabs = EWCore::read_registry("ew-article-form-tab");
             $("#" + label + "_control_button:not(:checked)").click();
             $("#" + label + "_control_button").prop("checked", true);
          }
+
       },
       /**
        * Get content label as json object
@@ -261,7 +274,6 @@ $tabs = EWCore::read_registry("ew-article-form-tab");
                labels[el.find("input[name='key']").val()] = el.find("[name='value']").val();
             }
          });
-
          return JSON.stringify(labels);
       },
       /**
@@ -303,6 +315,9 @@ $tabs = EWCore::read_registry("ew-article-form-tab");
          delete formData.key;
          delete formData.value;
          formData['labels'] = this.getLabels();
+         //formData["content"] = CKEDITOR.instances.content.getData();
+         if (tinymce && tinymce.activeEditor)
+            formData["content"] = tinymce.activeEditor.getContent();
          return formData;
       },
       setData: function (data)
@@ -345,15 +360,12 @@ $tabs = EWCore::read_registry("ew-article-form-tab");
          }
       });
    });
-
    //ContentForm.init();
    $("#<?php echo $form_id ?>").on("refresh", function (e, formData)
    {
       //alert(formData);
       //ContentForm.init();
-   });
-
-</script>
+   });</script>
 <?php echo $form_config["script"] ?>
 <script>
    // Set form data when the form is completely loaded

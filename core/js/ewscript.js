@@ -536,59 +536,6 @@ EverythingWidgets.prototype.getHashParameters = function (hashName)
    return result;
 };
 
-EverythingWidgets.prototype.newOverPane = function (onClose)
-{
-   var self = this;
-   var topPane = $(document.createElement("div"));
-   var content = $(document.createElement("div"));
-   content.addClass("content");
-   topPane.append(content);
-   topPane.content = content;
-   topPane.next().addClass("top-pane right");
-   topPane.css({
-      display: "none"
-   });
-   topPane.onClosed = function () {
-   };
-   if (onClose)
-   {
-      topPane.onClosed = onClose;
-   }
-   topPane.dispose = function ()
-   {
-      this.fadeOut(300, function ()
-      {
-         topPane.remove();
-      });
-      xButton.remove();
-      topPane.onClosed();
-   };
-   topPane.html = function (data)
-   {
-      if (!data)
-         return topPane.content.html();
-      topPane.content.html(data);
-   };
-
-   var xButton = $(document.createElement("a"));
-   xButton.css({
-      position: "fixed",
-      top: "10px",
-      right: "10px"
-   });
-   xButton.addClass("close-button");
-   xButton.text("");
-   xButton.click(function ()
-   {
-      topPane.dispose();
-   });
-   topPane.append(xButton);
-   topPane.fadeIn(300);
-
-   $("body").append(topPane);
-   return topPane;
-};
-
 EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler)
 {
    if (jsonData && jsonData["statusCode"] != 200 && jsonData["message"])
@@ -719,7 +666,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
 
       }};
    var settings = {
-      class: "center",
+      class: "full",
       initElement: true,
       beforeClose: function ()
       {
@@ -773,6 +720,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
    {
       settings.closeAction = null;
       modalPane.isOpen = true;
+      originElement = null;
       modalPane.trigger("close");
    });
    // Close event
@@ -1895,7 +1843,7 @@ EverythingWidgets.prototype.createForm = function (json)
 function EWNotification(element, options)
 {
    var notify_defaults = {
-      type: 'success',
+      status: 'success',
       closable: true,
       transition: 'fade',
       fadeOut: {
@@ -2113,17 +2061,21 @@ function EWFormValidator(element, options)
          if (wrapper.find(".errors-panel").length == 0)
             wrapper.append("<ul class='errors-list'>");
          errorPanel = $currentElement.parent().find(".errors-list");
+         var notifyErrors = $();
          $.each(rules, function (i, val) {
             if (!validateField($currentElement, val, errorPanel))
             {
+               //notifyErrors.append($currentElement.attr("data-label")+": ")
                errors++;
             }
          });
          //alert($currentElement.data("validate"));
       }
    });
+   
    if (errors > 0)
    {
+      $("body").EW().notify({status: "error", message: "You have errors in your from, Please check your data"});
       return false;
    }
    errorPanel.remove();

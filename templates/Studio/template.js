@@ -132,9 +132,9 @@
             //var toppos = ($(window).outerWidth() / 100) * pos;
             //alert(el.position().left);
             var s = $(this);
-            s.show();
+            s.css("display","");
             s.css("position", "absolute");
-            $(this).animate({left: pos + '%'}, settings.animationTime, settings.easing, function ()
+            $(this).stop().animate({left: pos + '%'}, settings.animationTime, settings.easing, function ()
             {
                if (!s.hasClass("active"))
                {
