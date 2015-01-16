@@ -14,7 +14,7 @@ if (!isset($_SESSION['login']))
    include "Login.php";
    //if (!isset($_SESSION['login']))
    //{
-      return;
+   return;
    //}
 }
 
@@ -103,7 +103,7 @@ if ($secId)
       <script src="<?php echo EW_ROOT_URL ?>core/js/gsap/jquery.gsap.min.js"></script>
       <!--<script type="text/javascript" src="<?php echo EW_ROOT_URL ?>core/js/jquery/jquery-ui-1.10.3.custom.js"></script>-->
       <script>
-         var EW = new EverythingWidgets();
+         //var EW = new EverythingWidgets();
          EverythingWidgets.prototype.loadSections = function ()
          {
             $.post('<?php echo EW_ROOT_URL; ?>app-admin/AppsManagement/get_app_sections', {appDir: "admin"}, function (data)
@@ -259,7 +259,7 @@ if ($secId)
                      linkChooserDialog = EW.createModal();
                      $.post("<?php echo EW_DIR ?>app-admin/ContentManagement/file-chooser.php", {
                         callback: settings.callbackName,
-                        data:$element.val()
+                        data: $element.val()
                      },
                      function (data) {
                         var functionRefrence = $("<div style='display:none;' id='function-reference'></div>");
@@ -443,6 +443,7 @@ if ($secId)
                }
                if (element)
                {
+                  
                   if (element !== this.currentTab)
                   {
                      $("#side-bar-btn").text(element.text());
@@ -489,6 +490,7 @@ if ($secId)
                      {
                         EW.setHashParameter(kv[0], kv[1]);
                      }
+                     
                      base.setCurrentTab(a);
                   });
                   var currentNav = EW.getHashParameter("nav");
@@ -517,7 +519,6 @@ if ($secId)
                   base.setCurrentTab($("a[data-ew-nav='" + EW.getHashParameter("nav") + "']"));
                }
             });
-
          }
 
          // Plugins which initilize when document is ready
@@ -540,34 +541,11 @@ if ($secId)
             {
                if (event.target.activeElement)
                {
-                  /*var e = $(event.target.activeElement);
-                   var ep = $(event.target.activeElement).parent();
-                   if (e.is("button") && ep.hasClass("actions-bar"))
-                   {
-                   //console.log(event.target.activeElement);
-                   currentButton = ep;
-                   currentBtnForm = $(event.target.activeElement).closest("form");
-                   EW.lock(currentBtnForm, {class: "trans"});
-                   var loader = $("<span class='loader'></span>").css({borderColor: e.css("backgroundColor"), position: "relative", zIndex: 3});
-                   var label = $("<label></label>").text(e.html()).css({color: e.css("backgroundColor"), position: "relative", zIndex: 3});
-                   
-                   buttons = ep.children().detach();
-                   ep.append(loader).append(label);
-                   }*/
                }
             });
 
             $(document).ajaxComplete(function (event, data)
             {
-               /*if (buttons)
-                {
-                if (currentBtnForm)
-                EW.unlock(currentBtnForm);
-                currentButton.html(buttons);
-                buttons = null;
-                currentButton = null;
-                currentBtnForm = null;
-                }*/
             });
 
             // Notify error if an ajax request fail
@@ -625,138 +603,121 @@ if ($secId)
                });
             });
             $("#sidebar").prepend($("#side-bar-btn").detach());
+
+            document.addEventListener("DOMNodeInserted", function (event)
+            {
+               //var $elementJustAdded = $(event.target);
+               if (event.target)
+               {
+                  initPlugins(event.target);
+                  /*$elementJustAdded.find("select").selectpicker({
+                   container: "body"
+                   });*/
+               }
+
+               $(".nav.xs-nav-tabs").data("xs-nav-bar-active", function (e) {
+                  if ($(e).hasClass("xs-nav-tabs-active"))
+                     return;
+                  $(e).addClass("xs-nav-tabs-active");
+                  var items = $(e).children("li");
+                  $(e).data("element-id", $(e).attr("id"));
+
+                  items = $(e).children("li").detach();
+                  $(e).prop("id", "xs-nav-" + $(e).data("element-id"));
+                  $(e).empty();
+
+                  var dropDown = $("<li></li>").addClass("dropdown active");
+                  var a = $("<a id='tabs-btn' data-toggle='tab' href='#'></a>");
+                  dropDown.append(a);
+                  var ul = $("<ul class='nav nav-pills nav-stacked'></ul>");
+                  items.appendTo(ul);
+                  ul.hide();
+                  dropDown.append(ul);
+                  ul.prop("id", $(e).data("element-id"));
+                  $(e).append(dropDown);
+
+                  a.popover({
+                     animation: false,
+                     container: 'body',
+                     placement: "bottom",
+                     html: true,
+                     //trigger: "manual",
+                     content: function () {
+                        ul.show();
+                        a.data("items", ul);
+                        return ul;
+                     }
+                  });
+
+                  a.on('hide.bs.popover', function () {
+                     ul.hide();
+                     dropDown.append(ul.detach());
+                     ul.unbind("click");
+                     //ul = a.data("items");
+                  });
+
+                  a.on('shown.bs.popover', function () {
+                     ul.bind("click", function () {
+                        a.popover("toggle");
+                        ul.unbind("click");
+                     });
+                     a.data("items", ul);
+                  });
+               });
+               $(".nav.xs-nav-tabs").data("xs-nav-bar-deactive", function (e) {
+                  if ($(e).hasClass("xs-nav-tabs-active"))
+                  {
+                     $(e).removeClass("xs-nav-tabs-active");
+                     $(e).addClass($(e).data("removed-class"));
+                     $(e).prop("id", $(e).data("element-id"));
+                     $(e).find("#tabs-btn").popover("destroy");
+                     var items = $(e).find("ul.nav-pills").children("li").detach();
+                     //var items = $(e).find("#tabs-btn").data("items");
+                     $(e).empty();
+                     $(e).append(items);
+
+                     $(".popover-content:empty").parent().remove();
+                  }
+               });
+              /* if ($(window).width() < 768)
+               {
+                  $(window).trigger("ew.screen.xs");
+               }
+               else if ($(window).width() >= 768 && $(window).width() < 992)
+               {
+                  $(window).trigger("ew.screen.sm");
+               }
+               else if ($(window).width() >= 992 && $(window).width() < 1360)
+               {
+                  $(window).trigger("ew.screen.md");
+               }
+               else if ($(window).width() >= 1360)
+               {
+                  $(window).trigger("ew.screen.lg");
+               }*/
+               //$(window).resize();
+               //alert("ass");
+            });
          });
 
-         $(window).on("resize", function () {
-
-         });
-
-
-         $(window).on("ew.screen.xs", function () {
+         $(window).on("ew.screen.xs", function ()
+         {
             $(".nav.xs-nav-tabs:not(.xs-nav-tabs-active)").each(function (i) {
                $(this).data("xs-nav-bar-active")(this);
             });
 
          });
-         $(window).on("ew.screen.sm ew.screen.md ew.screen.lg", function () {
+         $(window).on("ew.screen.sm ew.screen.md ew.screen.lg", function ()
+         {
             $(".nav.xs-nav-tabs-active").each(function (i) {
                $(this).data("xs-nav-bar-deactive")(this);
             });
-            /*$(".tab-pane-xs:not(.active)").each(function(i)
-             {
-             //alert($(this).html());
-             //alert($(this).attr("href"));
-             //$(this).addClass("active");
-             $(this).find("a").each(function(){
-             
-             var id = $(this).attr("href");
-             //alert(id);
-             $(".tab-content").has(id).removeClass("tab-content form-content");
-             $(id+":not(.tab-pane-dis)").addClass("tab-pane-dis").removeClass("tab-pane");
-             //alert($(id).html());
-             });
-             
-             });*/
             $(".tab-pane-xs.tab-pane").each(function (i)
             {
-               //$(i).removeClass("tab-pane");
             });
          });
 
-         document.addEventListener("DOMNodeInserted", function (event)
-         {
-            //var $elementJustAdded = $(event.target);
-            if (event.target)
-            {
-               initPlugins(event.target);
-               /*$elementJustAdded.find("select").selectpicker({
-                container: "body"
-                });*/
-            }
 
-            $(".nav.xs-nav-tabs").data("xs-nav-bar-active", function (e) {
-               if ($(e).hasClass("xs-nav-tabs-active"))
-                  return;
-               $(e).addClass("xs-nav-tabs-active");
-               var items = $(e).children("li");
-               $(e).data("element-id", $(e).attr("id"));
-
-               items = $(e).children("li").detach();
-               $(e).prop("id", "xs-nav-" + $(e).data("element-id"));
-               $(e).empty();
-
-               var dropDown = $("<li></li>").addClass("dropdown active");
-               var a = $("<a id='tabs-btn' data-toggle='tab' href='#'></a>");
-               dropDown.append(a);
-               var ul = $("<ul class='nav nav-pills nav-stacked'></ul>");
-               items.appendTo(ul);
-               ul.hide();
-               dropDown.append(ul);
-               ul.prop("id", $(e).data("element-id"));
-               $(e).append(dropDown);
-
-               a.popover({
-                  animation: false,
-                  container: 'body',
-                  placement: "bottom",
-                  html: true,
-                  //trigger: "manual",
-                  content: function () {
-                     ul.show();
-                     a.data("items", ul);
-                     return ul;
-                  }
-               });
-
-               a.on('hide.bs.popover', function () {
-                  ul.hide();
-                  dropDown.append(ul.detach());
-                  ul.unbind("click");
-                  //ul = a.data("items");
-               });
-
-               a.on('shown.bs.popover', function () {
-                  ul.bind("click", function () {
-                     a.popover("toggle");
-                     ul.unbind("click");
-                  });
-                  a.data("items", ul);
-               });
-            });
-            $(".nav.xs-nav-tabs").data("xs-nav-bar-deactive", function (e) {
-               if ($(e).hasClass("xs-nav-tabs-active"))
-               {
-                  $(e).removeClass("xs-nav-tabs-active");
-                  $(e).addClass($(e).data("removed-class"));
-                  $(e).prop("id", $(e).data("element-id"));
-                  $(e).find("#tabs-btn").popover("destroy");
-                  var items = $(e).find("ul.nav-pills").children("li").detach();
-                  //var items = $(e).find("#tabs-btn").data("items");
-                  $(e).empty();
-                  $(e).append(items);
-
-                  $(".popover-content:empty").parent().remove();
-               }
-            });
-            if ($(window).width() < 768)
-            {
-               $(window).trigger("ew.screen.xs");
-            }
-            else if ($(window).width() >= 768 && $(window).width() < 992)
-            {
-               $(window).trigger("ew.screen.sm");
-            }
-            else if ($(window).width() >= 992 && $(window).width() < 1360)
-            {
-               $(window).trigger("ew.screen.md");
-            }
-            else if ($(window).width() >= 1360)
-            {
-               $(window).trigger("ew.screen.lg");
-            }
-            //$(window).resize();
-            //alert("ass");
-         });
 
       </script>
    </head>

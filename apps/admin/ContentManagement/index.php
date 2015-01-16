@@ -5,7 +5,7 @@ function sidebar()
 {
    // ew-contents-main-form, sidebar
    $html = '<label>tr{Libraries}</label><ul>'
-           . '<li><a rel="ajax" href="lib=documents">tr{Documents}</a></li>'
+           . '<li><a rel="ajax" data-default="true" href="lib=documents">tr{Documents}</a></li>'
            . '<li><a rel="ajax" href="lib=media">tr{Media}</a></li></ul>';
 
    return $html;
@@ -33,38 +33,38 @@ function script()
       {
       };
       var oldLib = "";
-      var contentManagement = new ContentManagement();
-      EW.addURLHandler(function () {
-         var lib = EW.getHashParameter("lib");
-         if (contentManagement.oldLib !== lib) {
-            if (contentManagement.currentLib) {
-               if (contentManagement.currentLib.dispose) {
-                  contentManagement.currentLib.dispose();
+      $(document).ready(function () {
+         var contentManagement = new ContentManagement();
+         EW.addURLHandler(function () {
+            var lib = EW.getHashParameter("lib");
+            if (contentManagement.oldLib !== lib) {
+               if (contentManagement.currentLib) {
+                  if (contentManagement.currentLib.dispose) {
+                     contentManagement.currentLib.dispose();
+                  }
+                  $("#action-bar-items").find("button").remove();
                }
-               $("#action-bar-items").find("button").remove();
+               if (lib == "documents") {
+                  EW.lock($("#main-content"), "");
+                  $.post('<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/Documents.php', function (data) {
+                     EW.unlock($("#main-content"));
+                     $("#main-content").html(data);
+                     contentManagement.currentLib = documents;
+                  });
+                  contentManagement.oldLib = "documents";
+               } else {
+                  EW.lock($("#main-content"), "");
+                  $.post('<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/Media.php', function (data) {
+                     EW.unlock($("#main-content"));
+                     $("#main-content").html(data);
+                     contentManagement.currentLib = media;
+                  });
+                  contentManagement.oldLib = "media";
+               }
             }
-            if (lib == "documents") {
-               EW.lock($("#main-content"), "");
-               $.post('<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/Documents.php', function (data) {
-                  EW.unlock($("#main-content"));
-                  $("#main-content").html(data);
-                  contentManagement.currentLib = documents;
-               });
-               contentManagement.oldLib = "documents";
-            } else {
-               EW.lock($("#main-content"), "");
-               $.post('<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/Media.php', function (data) {
-                  EW.unlock($("#main-content"));
-                  $("#main-content").html(data);
-                  contentManagement.currentLib = media;
-               });
-               contentManagement.oldLib = "media";
-            }
-         }
-         return "ContentManagementHandler";
+            return "ContentManagementHandler";
+         });
       });
-      if (!EW.getHashParameter("lib"))
-         EW.setHashParameter("lib", "documents");
    </script>
    <?php
    return ob_get_clean();

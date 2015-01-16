@@ -34,6 +34,7 @@ var __slice = [].slice,
             highlight: false,
             labels: true
          };
+         //alert(input.html());
          this.settings = $.extend({}, this.defaultOptions, options);
          if (this.settings.theme) {
             this.settings.classSuffix = "-" + this.settings.theme;
@@ -438,6 +439,8 @@ var __slice = [].slice,
                   settings.animate = $el.data("slider-animate");
                }
             }
+            if ($(this).data("slider-object"))
+               return $(this).data("slider-object");
             return $(this).data("slider-object", new SimpleSlider($(this), settings));
          }
       });

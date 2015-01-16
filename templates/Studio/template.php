@@ -127,22 +127,12 @@ class template extends TemplateControl
             <label id="spw" type="button" class="btn btn-primary col-xs-12" ><input type="checkbox" name="spw" value="true">Single Page Website</label>
          </div>
       </div>
-      <div id="spw-cp">
-         <div class="row">
-            <div  class="col-xs-12 mar-top mar-bot">
-               <label>tr{Specify Main Menu}</label>
-            </div>
-         </div>
-         <div class="row">
+      <div id="spw-cp">         
+         <div class="row mar-top">
             <div class="col-xs-12">
                <select class="text-field" id="menu-id" name="menu-id" data-label="Main Menu ID">
                   <option value=''></option>
                </select>
-            </div>
-         </div>
-         <div class="row">
-            <div  class="col-xs-12 mar-top mar-bot">
-               <label>tr{Page Slider}</label>
             </div>
          </div>
          <div class="row">

@@ -7,7 +7,7 @@ function sidebar()
    ?>
    <ul>  
       <li>   
-         <a rel="ajax" data-ew-nav="users" href="<?php echo EW_ROOT_URL; ?>app-admin/UsersManagement/users.php">tr{Users}</a> 
+         <a rel="ajax" data-default="true" data-ew-nav="users" href="<?php echo EW_ROOT_URL; ?>app-admin/UsersManagement/users.php">tr{Users}</a> 
       </li>     
       <li>      
          <a rel="ajax" data-ew-nav="users_groups" href="<?php echo EW_ROOT_URL; ?>app-admin/UsersManagement/users-groups.php">tr{Users Groups}</a>       
@@ -33,12 +33,11 @@ function script()
          });
          //loadPage('UsersManagement/UsersList.php', 'UsersList', 'cmd=UsersList');          
       };
-      var userManagement = new UserManagement();
+      var userManagement;
       ////userManagement.listUsers();   
       $(document).ready(function ()
       {
-         if (!EW.getHashParameter("nav"))
-            EW.setHashParameter("nav", "users");
+         userManagement = new UserManagement();
       });
    </script>
    <?php

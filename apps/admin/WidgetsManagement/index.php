@@ -10,7 +10,7 @@ if (!$_SESSION['login'])
    <div class="row">
       <ul>        
          <li>      
-            <a rel="ajax" data-ew-nav="uis-list" href="<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/uis-list.php">      
+            <a rel="ajax" data-default="true" data-ew-nav="uis-list" href="<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/uis-list.php">      
                tr{UI Structures}   
             </a>     
          </li>   
@@ -29,7 +29,8 @@ if (!$_SESSION['login'])
 </div>
 
 <div id="main-content" class="" role="main"></div>
-<script  type="text/javascript">   var oldSection;
+<script>
+   var oldSection;
    function WidgetsManagement() {
       this.sections = $('#sections').html();
       this.oldRow;
@@ -93,7 +94,8 @@ if (!$_SESSION['login'])
    };
    WidgetsManagement.prototype.onCommand = function () {
    };
-   var widgetsManagement = new WidgetsManagement();
-   if (!EW.getHashParameter("nav"))
-      EW.setHashParameter("nav", "uis-list");
+   var widgetsManagement;
+   $(document).ready(function () {
+      widgetsManagement = new WidgetsManagement();
+   });
 </script>

@@ -3330,8 +3330,8 @@ td.visible-print {
 .label-info[href]:hover,.label-info[href]:focus {background-color: #31b0d5;}
 .label-warning {background-color: #f0ad4e;}
 .label-warning[href]:hover,.label-warning[href]:focus {background-color: #ec971f;}
-.label-danger {background-color: #d9534f;}
-.label-danger[href]:hover,.label-danger[href]:focus {background-color: #c9302c;}
+.label-danger {background-color: #F44336;}
+.label-danger[href]:hover,.label-danger[href]:focus {background-color: #E53935;}
 
 /* TagsInput CSS */
 .tagsinput {background-color: #fff;border: 1px solid #ccc;display: inline-block;padding: 4px 6px;margin-bottom: 10px;color: #555;vertical-align: middle;border-radius: 1px;max-width: 100%;line-height: 22px;overflow:hidden;}
