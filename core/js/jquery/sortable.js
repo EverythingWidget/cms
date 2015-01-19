@@ -69,6 +69,10 @@
       // Executed before onDrop if placeholder is detached.
       // This happens if pullPlaceholder is set to false and the drop occurs outside a container.
       onCancel: function ($item, container, _super) {
+         $item.css({position: ""});
+         $item.removeClass("dragged").removeAttr("style")
+         $("body").removeClass("dragging")
+         container.append($item)
       },
       // Executed at the beginning of a mouse move event.
       // The Placeholder has not been moved yet.
