@@ -28,7 +28,7 @@ class Balloon extends Section
    
    public function init_plugin()
    {
-      \EWCore::register_widget_feeder("page", "balloon-poster-form", EW_ROOT_DIR . "apps/balloon_up/Balloon/balloon-poster-form.php");
+      $this->register_widget_feeder("page", "balloon-poster-form", EW_ROOT_DIR . "apps/balloon_up/Balloon/balloon-poster-form.php");
    }
 
    /**

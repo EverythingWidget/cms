@@ -133,7 +133,7 @@ class EWCore
          {
             $RESULT_CONTENT = $obj->process_request($function_name, $parameters);
          }
-         else if (EWCore::is_widget_feeder("page", $section_name))
+         else if (EWCore::is_widget_feeder("page", "admin", $section_name))
          {
             $path = EW_APPS_DIR . '/' . $app_name . '/index.php';
          }
@@ -175,7 +175,7 @@ class EWCore
          // Call the listeners with the same data as the command data
          foreach ($actions as $id => $data)
          {
-            
+
             if (method_exists($data["object"], $data["function"]))
             {
                $listener_method_object = new ReflectionMethod($data["object"], $data["function"]);
@@ -887,18 +887,30 @@ class EWCore
       EWCore::register_object("ew-category", $id, $categories);
    }
 
-   public static function register_widget_feeder($type, $id, $function)
+   public static function register_widget_feeder($type, $app, $id, $function)
    {
-      EWCore::register_object("ew-widget-feeder", "$type:$id", $function);
+      //EWCore::register_object("ew-widget-feeder", "$type:$id", $function);
+      if (!is_array(self::$registry["ew-widget-feeder"][$app]))
+         self::$registry["ew-widget-feeder"][$app] = array();
+
+      if (!is_array(self::$registry["ew-widget-feeder"][$app][$type]))
+         self::$registry["ew-widget-feeder"][$app][$type] = array();
+
+      self::$registry["ew-widget-feeder"][$app][$type][$id] = $function;
+
+      EWCore::register_object("ew-widget-feeder", $app, self::$registry["ew-widget-feeder"][$app]);
    }
 
-   public static function is_widget_feeder($type, $id)
+   public static function is_widget_feeder($type, $app, $id)
    {
       $func = null;
-      if (array_key_exists("$type:$id", EWCore::read_registry("ew-widget-feeder")))
+      if (!$app)
+         $app = 'EW Admin';
+      //if (array_key_exists("$type:$id", EWCore::read_registry("ew-widget-feeder")))
+      if (EWCore::read_registry("ew-widget-feeder")[$app][$type][$id])
       {
          $func = EWCore::read_registry("ew-widget-feeder");
-         $func = $func["$type:$id"];
+         $func = $func[$app][$type][$id];
       }
 
       if ($func)
@@ -914,14 +926,17 @@ class EWCore
     * @param mixed $arg argument which should be passed to the feeder function
     * @return mixed
     */
-   public static function get_widget_feeder($type, $id, $arg)
+   public static function get_widget_feeder($type, $app, $id, $arg)
    {
       $func = null;
+      if (!$app)
+         $app = 'EW Admin';
+      //if (!strpos($id, '/'))
+      //$id = "admin/$id";
 
-      if (array_key_exists("$type:$id", EWCore::read_registry("ew-widget-feeder")))
+      if (EWCore::read_registry("ew-widget-feeder")[$app] && EWCore::read_registry("ew-widget-feeder")[$app][$type] && EWCore::read_registry("ew-widget-feeder")[$app][$type][$id])
       {
-
-         $func = EWCore::read_registry("ew-widget-feeder")["$type:$id"];
+         $func = EWCore::read_registry("ew-widget-feeder")[$app][$type][$id];
 
          //$func = $func["$type:$id"];
       }
@@ -955,11 +970,20 @@ class EWCore
    {
 
       $list = array("totalRows" => count(EWCore::read_registry("ew-widget-feeder")), "result" => array());
-      foreach (EWCore::read_registry("ew-widget-feeder") as $wf => $wfc)
+//      print_r(EWCore::read_registry("ew-widget-feeder"));
+      foreach (EWCore::read_registry("ew-widget-feeder") as $app_name => $feeder_type)
       {
-         $parts = explode(":", $wf);
-         if (!$type || $type == "all" || $type == $parts[0])
-            $list["result"][] = array("name" => $parts[1], "type" => $parts[0]);
+         //$parts = explode(":", $wf);
+         //if (!$type || $type == "all" || $type == $parts[0])
+         //print_r($wf);
+
+         foreach ($feeder_type as $feeder_type_name => $id)
+         {
+            //print_r($id);
+            //echo $id[0];
+            if (!$type || $type == "all" || $type == $feeder_type_name)
+               $list["result"][] = array("name" => array_keys($id)[0], "type" => $feeder_type_name, "app" => $app_name);
+         }
       }
       return json_encode($list);
    }

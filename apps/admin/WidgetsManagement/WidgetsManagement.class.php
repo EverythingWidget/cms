@@ -728,8 +728,9 @@ class WidgetsManagement extends Section
       //print_r($tokens);
       $title = EWCore::get_comment_parameter("title", $path);
       $description = EWCore::get_comment_parameter("description", $path);
+      $feeder_type = EWCore::get_comment_parameter("feeder_type", $path);
 
-      return array("name" => $widget_type, "path" => $widget_type, "title" => $title, "description" => $description);
+      return array("name" => $widget_type, "path" => $widget_type, "title" => $title, "description" => $description,"feeder_type"=>$feeder_type);
    }
 
    function get_widget_cp($widgetName = null)

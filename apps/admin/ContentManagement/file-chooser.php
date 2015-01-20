@@ -57,7 +57,7 @@ function custom_widget_feeder_tab()
    if ($_REQUEST["callback"] == "function-reference")
    {
       ?>
-                  var doc = {type: "widget-feeder", feederType: rowId.data("field-type"), feederName: rowId.data("field-name")};
+                  var doc = {type: "widget-feeder", feederType: rowId.data("field-type"), feederApp: rowId.data("field-app"), feederName: rowId.data("field-name")};
                   var func = $("#link-chooser #function-reference").data("callback")(JSON.stringify(doc));
       <?php
    }

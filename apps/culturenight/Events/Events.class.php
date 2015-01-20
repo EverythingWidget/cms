@@ -23,20 +23,20 @@ class Events extends Section
    public function init_plugin()
    {
 
-      EWCore::register_widget_feeder("news", "latest-events", array($this, "feeder_latest_events"));
+      /*EWCore::register_widget_feeder("news", "latest-events", array($this, "feeder_latest_events"));
       EWCore::register_widget_feeder("calender-events", "events-list", array($this, "event_items_list"));
       EWCore::register_widget_feeder("list", "events-list", array($this, "event_items_list"));
       EWCore::register_widget_feeder("list", "events-with-tag", array($this, "event_with_tag"));
       EWCore::register_widget_feeder("menu", "events-styles", array($this, "feeder_event_sub_menus"));
-      EWCore::register_widget_feeder("menu", "events-locations", array($this, "feeder_location_sub_menus"));
+      EWCore::register_widget_feeder("menu", "events-locations", array($this, "feeder_location_sub_menus"));*/
       // new event form
-      EWCore::register_widget_feeder("page", "event-form", EW_ROOT_DIR . "apps/culturenight/sections/Events/event-form.php");
+      //EWCore::register_widget_feeder("page", "event-form", EW_ROOT_DIR . "apps/culturenight/sections/Events/event-form.php");
 
-      EWCore::register_widget_feeder("page", "event-info", array($this, "feeder_event_info"));
-      EWCore::register_widget_feeder("page", "event-search-form", array($this, "event_search_form"));
-      EWCore::register_widget_feeder("page", "events-list", array($this, "event_items_list"));
-      EWCore::register_widget_feeder("page", "events-with-tag", array($this, "event_with_tag"));
-      EWCore::register_widget_feeder("page", "login", EW_ROOT_DIR . "apps/culturenight/Events/login-register-form.php");
+      $this->register_widget_feeder("page", "event-info",  "event_info");
+      $this->register_widget_feeder("page", "event-search-form", "event_search_form");
+      //EWCore::register_widget_feeder("page", "events-list", array($this, "event_items_list"));
+      //EWCore::register_widget_feeder("page", "events-with-tag", array($this, "event_with_tag"));
+      //EWCore::register_widget_feeder("page", "login", EW_ROOT_DIR . "apps/culturenight/Events/login-register-form.php");
       // Events permissions
       $this->register_permission("see-event", "User can see the events", array("get_event", "get_event_by_slug", "get_events_list", "event-form.php_see", $this->get_index()));
       $this->register_permission("manipulate-event", "User can add and edit events", array("add_event", "update_event", "event-form.php: tr:culturenight{Add Event}", $this->get_index()));
@@ -382,7 +382,7 @@ class Events extends Section
       return json_encode(array("html" => $html));
    }
 
-   public function feeder_event_info()
+   public function ew_page_feeder_event_info()
    {
       $event_id = $_REQUEST["_parameters"];
       if (is_numeric($event_id))
@@ -489,7 +489,7 @@ class Events extends Section
       return json_encode($feed);
    }
 
-   public function event_search_form()
+   public function ew_page_feeder_event_search_form()
    {
       if ($GLOBALS["page_parameters"][0])
          $type = $GLOBALS["page_parameters"][0];

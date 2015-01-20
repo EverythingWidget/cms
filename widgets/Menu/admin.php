@@ -15,7 +15,7 @@
                      <input class="text-field floatlabel" data-label='Menu Tile' name="title"/>  
                   </div>
                   <div class="col-xs-12 col-md-6" >
-                     <input class="text-field test" data-label='Link' data-ew-plugin="link-chooser" name="link"/>
+                     <input class="text-field test" data-label='Link' data-ew-plugin="link-chooser" name="feeder"/>
                   </div>
                </div>      
                <div class="row">

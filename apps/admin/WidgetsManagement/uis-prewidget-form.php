@@ -8,11 +8,12 @@ include_once 'WidgetsManagementCore.php';
 $uiStructureId = $_REQUEST['uisId'];
 $widgetId = $_REQUEST['widgetId'];
 $widget_type = $_REQUEST['widgetType'];
+$feeder_type = $_REQUEST['feederType'];
 $panelId = $_REQUEST['panelId'];
-$position = mysql_real_escape_string($_POST['position']);
-$order = mysql_real_escape_string($_POST['order']);
-$class = mysql_real_escape_string($_POST['class']);
-$parameters = mysql_real_escape_string($_POST['parameters']);
+/* $position = mysql_real_escape_string($_POST['position']);
+  $order = mysql_real_escape_string($_POST['order']);
+  $class = mysql_real_escape_string($_POST['class']);
+  $parameters = mysql_real_escape_string($_POST['parameters']); */
 $WM = new admin\WidgetsManagement();
 /* if ($_REQUEST["widgetId"])
   {
@@ -28,25 +29,42 @@ $WM = new admin\WidgetsManagement();
       </h1>
    </div>
    <div id="widgets-list" class="form-content row" >
-      <?php
-      $wm = new admin\WidgetsManagement();
-      $widgets_types_list = json_decode($wm->get_widgets_types(), true);
-      $widgets_types_list = $widgets_types_list["result"];
-      $rowNum = 0;
-      foreach ($widgets_types_list as $row)
-      {
-         ?>		
-         <div class="text-icon" onclick="uisWidget.showWidgetControlPanel('<?php echo $row["path"] ?>')">                        
+      <div class="col-xs-12 mar-bot">
+         <div class="text-icon" onclick="uisWidget.showWidgetControlPanel('<?php echo$widget_type ?>')">                        
             <h4>
-               <?php echo $row["title"] ?>
+               tr{Custom Widget}
             </h4>
             <p>
-               <?php echo $row["description"] ?>
+               tr{Create a widget with custom configuration}
             </p>
          </div>
+         <h4>tr{App's Widgets}</h4>
          <?php
-      }
-      ?>
+         $wm = new admin\WidgetsManagement();
+         //$widgets_types_list = json_decode($wm->get_widgets_types(), true);
+         $widgets_types_list = json_decode(EWCore::get_widget_feeders($feeder_type), true);
+         $widgets_types_list = $widgets_types_list["result"];
+         $rowNum = 0;
+         $oldApp = "";
+         foreach ($widgets_types_list as $row)
+         {
+            if ($oldApp != $row["app"])
+            {
+               $oldApp = $row["app"];
+               echo "<h2>$oldApp</h2>";
+            }
+            $prewidget_data = json_encode(["feeder" => "{feederType:\"$widget_type\", feederApp: \"$oldApp\", feederName: \"{$row["name"]}\"}"]);
+            ?> 
+            <div class="text-icon" onclick="uisWidget.showWidgetControlPanel('<?php echo $widget_type ?>',<?php echo htmlentities($prewidget_data) ?>)">
+               <?php
+               echo '<h4>' . $row["name"] . '</h4>'
+               . '<p>' . $row["type"] . '</p>';
+               ?>
+            </div>
+            <?php
+         }
+         ?>
+      </div>
    </div>
 </div>
 <div id="uis-widget-form" class="">
@@ -67,7 +85,7 @@ $WM = new admin\WidgetsManagement();
       this.setData = true;
       this.getWidgetParameters = null;
       this.widgetParameters = {};
-      
+
       if (this.widgetId)
       {
          $("#cmd").val("edit");
@@ -77,12 +95,12 @@ $WM = new admin\WidgetsManagement();
          this.bAdd.comeOut(200);
          this.bApply.comeIn(300);
 
-         var widget = uisForm.getEditorItem(this.widgetId);         
+         var widget = uisForm.getEditorItem(this.widgetId);
          this.showWidgetControlPanel(widget.attr("data-widget-type"));
       }
       else
       {
-         this.showWidgetControlPanel(this.widgetType);
+         //this.showWidgetControlPanel(this.widgetType);
       }
    }
 
@@ -171,7 +189,7 @@ $WM = new admin\WidgetsManagement();
          //$("#fr").contents().find("body").find("div[data-widget-id='" + base.widgetId + "']").parent().remove();
          //$("#fr").contents().find("body #base-content-pane div[data-panel-id='<?php echo $panelId ?>']").append(data);
          $.EW("getParentDialog", $("#uis-widget-form")).trigger("close");
-         $("#inspector-editor").trigger("refresh");         
+         $("#inspector-editor").trigger("refresh");
       });
 
 
@@ -182,7 +200,7 @@ $WM = new admin\WidgetsManagement();
    };
 
 
-   UISWidget.prototype.showWidgetControlPanel = function (widgetType)
+   UISWidget.prototype.showWidgetControlPanel = function (widgetType, widgetParams)
    {
       var self = this;
       var widget;
@@ -191,7 +209,7 @@ $WM = new admin\WidgetsManagement();
       if (self.widgetId != "")
       {
          widget = uisForm.getEditorItem(self.widgetId);
-         var widgetParams = (widget.attr("data-widget-parameters")) ? $.parseJSON(widget.attr("data-widget-parameters")) : {};
+         widgetParams = (widget.attr("data-widget-parameters")) ? $.parseJSON(widget.attr("data-widget-parameters")) : {};
          self.widgetParameters = widgetParams;
       }
 
@@ -214,7 +232,7 @@ $WM = new admin\WidgetsManagement();
             // If true, set values for the fields of widget control panel form
             if (self.setData === true)
             {
-               var widgetParams = (widget.attr("data-widget-parameters")) ? $.parseJSON(widget.attr("data-widget-parameters")) : {};
+               //widgetParams = (widget.attr("data-widget-parameters")) ? $.parseJSON(widget.attr("data-widget-parameters")) : {};
                EW.setFormData("#uis-widget", widgetParams);
                $("#style_class").keyup(this.setClasses);
             }
@@ -222,6 +240,9 @@ $WM = new admin\WidgetsManagement();
          // If widgetId is empty show add button
          else
             self.bAdd.comeIn(300);
+
+         if (widgetParams)
+            EW.setFormData("#uis-widget", widgetParams);
          $('#uis-widget-form').fadeIn(300);
 
          self.readClasses();
@@ -276,7 +297,7 @@ $WM = new admin\WidgetsManagement();
             uisWidget.setClasses();
             //event.preventDefault()
          });
- 
+
          classBtn.prepend(a);
          classBtn.addClass("btn btn-default btn-xs");
          $.each(widgetClasses, function (i, c) {
