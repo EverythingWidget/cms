@@ -12,7 +12,7 @@
                <div class="handle"></div>
                <div class="row">
                   <div class="col-xs-12" >
-                     <input class="text-field test" data-label='Page URL, Layout or Content' data-ew-plugin="link-chooser" name="link"/>
+                     <input class="text-field test" data-label='Page URL, Layout or Content' data-ew-plugin="link-chooser" name="feeder"/>
                   </div>
                </div>      
                <div class="row">

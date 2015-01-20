@@ -527,7 +527,7 @@ class WidgetsManagement extends Section
          require_once EW_TEMPLATES_DIR . "/blocks/" . $block_name . ".php";
          $block_name::initiate();
       }
-      $result_html.= "<div class='panel $style_class'  $style_id_text  data-panel-id=\"$panel_id\"  $container_id  $style data-panel-parameters='" . stripcslashes($param_json) . "' data-block='true'>";
+      $result_html.= "<div class='panel block $style_class'  $style_id_text  data-panel-id=\"$panel_id\"  $container_id  $style data-panel-parameters='" . stripcslashes($param_json) . "' data-block='true'>";
       /* if ($parameters["title"] && $parameters["title"] != "none")
         {
         $result_html.= "<div class='col-xs-12 panel-header'><{$parameters["title"]}>" . $parameters["title-text"] . "</{$parameters["title"]}></div>";
@@ -550,7 +550,7 @@ class WidgetsManagement extends Section
    public static function set_widget_style_class($class)
    {
       if (!$class)
-         return;
+         return false;
       self::$widget_style_class.="$class ";
    }
 
@@ -572,7 +572,6 @@ class WidgetsManagement extends Section
    public static function open_widget($widget_id, $widget_type, $style_class, $widget_style_class, $style_id, $params, $no_data = false)
    {
       // Empty widget style class when creating a widget
-      self::$widget_style_class = "widget ";
       $result_html = '';
       if ($style_id)
          $WIDGET_STYLE_ID = "id='$style_id'";
@@ -595,7 +594,7 @@ class WidgetsManagement extends Section
       $widget_title_string = "data-widget-title='$widget_title'";
       //}
       $result_html.= "<div class='widget-container $style_class' data-widget-container='true'>";
-      $result_html.= "<div class='$WIDGET_STYLE_CLASS' $WIDGET_STYLE_ID data-widget-id='$widget_id' $parameters_string $widget_type_string $widget_title_string data-widget='true'>";
+      $result_html.= "<div class='widget $WIDGET_STYLE_CLASS' $WIDGET_STYLE_ID data-widget-id='$widget_id' $parameters_string $widget_type_string $widget_title_string data-widget='true'>";
       $result_html.= $widget_content;
       self::$widget_style_class = "";
       return $result_html;
@@ -857,7 +856,7 @@ class WidgetsManagement extends Section
       //ob_start();
       foreach ($res as $key => $value)
       {
-         $RESULT_HTML.=self::open_block("panel-" . self::$current_timestamp . "-" . self::$ui_index . "-" . self::$panel_index, "", "block " . $value["class"], $value["id"], $value["panelParameters"], FALSE, $value["blockName"]);
+         $RESULT_HTML.=self::open_block("panel-" . self::$current_timestamp . "-" . self::$ui_index . "-" . self::$panel_index, "", $value["class"], $value["id"], $value["panelParameters"], FALSE, $value["blockName"]);
          $RESULT_HTML.=self::create_panel_content($value["children"], "panel-" . self::$current_timestamp . '-' . self::$ui_index . '-' . self::$panel_index, $no_data);
          $RESULT_HTML.=self::close_block();
          self::$panel_index++;
