@@ -213,8 +213,8 @@ class WidgetsManagement extends Section
          $MYSQLI->close();
          return json_encode($res);
       }
-      $stm = $MYSQLI->prepare("INSERT INTO ew_ui_structures(name,template,structure) VALUES (?,?,?)");
-      $stm->bind_param("sss", $fileContent["name"], $fileContent["template"], $fileContent["structure"]);
+      $stm = $MYSQLI->prepare("INSERT INTO ew_ui_structures(name,template, template_settings,structure) VALUES (?,?,?,?)");
+      $stm->bind_param("ssss", $fileContent["name"], $fileContent["template"], $fileContent["template_settings"], $fileContent["structure"]);
       $stm->execute();
       /* if ($_REQUEST['defaultUIS'] == "true")
         {
@@ -234,14 +234,20 @@ class WidgetsManagement extends Section
    {
       $MYSQLI = get_db_connection();
       $table = "ew_ui_structures";
+      if (!$uis_id)
+         return \EWCore::log_error(400, "Please specify layout ID");
 
       // load the original record into an array
       $result = $MYSQLI->query("SELECT * FROM {$table} WHERE id={$uis_id}");
+      if (!$result)
+         return \EWCore::log_error(400, "Layout not found");
+
       $original_record = $result->fetch_assoc();
       $name = $original_record["name"] . "-exported-" . date('Y-m-d H:i');
       $template = $original_record["template"];
       $structure = $original_record["structure"];
-      $user_interface_structure = array("name" => $name, "template" => $template, "structure" => $structure);
+      $template_settings = $original_record["template_settings"];
+      $user_interface_structure = array("name" => $name, "template" => $template, "template_settings" => $template_settings, "structure" => $structure);
       $file = json_encode($user_interface_structure);
       //fwrite($file, $user_interface_structure);
       //fclose($file);
@@ -543,7 +549,7 @@ class WidgetsManagement extends Section
     */
    public static function set_widget_style_class($class)
    {
-      if(!$class)
+      if (!$class)
          return;
       self::$widget_style_class.="$class ";
    }
@@ -983,7 +989,7 @@ class WidgetsManagement extends Section
       $template_body = WidgetsManagement::generate_view($uisId);
       if (!$template)
       {
-         $uis_info = json_decode(WidgetsManagement::get_uis($uisId),true);
+         $uis_info = json_decode(WidgetsManagement::get_uis($uisId), true);
          $template = $uis_info["template"];
          $template_settings = $uis_info["template_settings"];
       }
