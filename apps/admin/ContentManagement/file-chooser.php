@@ -13,7 +13,7 @@ function custom_url_tab()
          <input class="text-field" data-label="URL link" name="url_link" id="url_link"/>
       </div>
    </div>
-   <div class="row mar-top">
+   <div class="row">
       <div class="col-xs-12 ">
          <button type="button" class="btn btn-primary" onclick="url_done();">Done</button>
       </div>
