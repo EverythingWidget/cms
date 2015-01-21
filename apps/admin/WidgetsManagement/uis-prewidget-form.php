@@ -119,20 +119,11 @@ $WM = new admin\WidgetsManagement();
       var styleId = $("#style_id").val();
       var styleClass = $("#used-classes").text();
       var widgetStyleClass = $("#style_class").val();
-      //$("#add").hide();
-      //$("#cancel").hide();
 
-      /*var widgetContainer = $("<div class='widget-container col-xs-12'><div class='widget'></div></div>");
-       var widget = widgetContainer.children(".widget");
-       
-       widget.prop("id", styleId);
-       widget.attr("class", "widget " + widgetStyleClass);
-       widget.attr("data-widget-parameters", wp);
-       widget.attr("data-widget-type", uisWidget.widgetType);
-       widgetContainer.prop("class", "widget-container " + styleClass);*/
       $.post('<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/create_widget', {widget_type: uisWidget.widgetType, style_class: styleClass,
          widget_style_class: widgetStyleClass, style_id: styleId, widget_parameters: wp},
       function (data) {
+         EW.lock($.EW("getParentDialog", $("#uis-widget-form")));
          var containerElement = $("#fr").contents().find("body #base-content-pane div[data-panel-id='<?php echo $panelId ?>']");
          if (containerElement.hasClass("block"))
          {
@@ -177,6 +168,7 @@ $WM = new admin\WidgetsManagement();
       $.post('<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/create_widget', {widget_id: this.widgetId, widget_type: uisWidget.widgetType, style_class: styleClass,
          widget_style_class: widgetStyleClass, style_id: styleId, widget_parameters: wp},
       function (data) {
+         EW.lock($.EW("getParentDialog", $("#uis-widget-form")));
          //alert(styleClass);
          var w = $.parseHTML(data, $("#fr")[0].contentWindow.document, true);
          //w.context = $("#fr")[0].contentWindow.document;

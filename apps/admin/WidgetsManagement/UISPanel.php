@@ -59,10 +59,10 @@ $container_id = $_REQUEST["containerId"];
                      <div class="col-xs-12" id="available-classes" >
                         <?php
                         //global $EW;
-                        $css_class = "panel";
+                        /*$css_class = "panel";
                         if (!$container_id)
-                           $css_class = "block";
-                        $templates = json_decode(EWCore::parse_css($_REQUEST["template"] . '/template.css', $css_class), true);
+                           $css_class = "block";*/
+                        $templates = json_decode(EWCore::parse_css($_REQUEST["template"] . '/template.css', "panel"), true);
                         foreach ($templates as $t)
                         {
                            ?>
