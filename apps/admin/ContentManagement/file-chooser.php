@@ -77,7 +77,7 @@ function custom_widget_feeder_tab()
 //EWCore::register_form("ew-file-chooser-form-default", "contents-list", ["title" => "Contents", "content" => get_contents_list()]);
 //EWCore::register_form("ew-file-chooser-form-default", "media-list", ["title" => "Media", "content" => "Coming Soon..."]);
 //EWCore::register_form("ew-file-chooser-form-default", "apps-pages-list", ["title" => "Apps", "content" => "Coming Soon ... "]);
-EWCore::register_form("ew-link-chooser-form-default", "widgets-feeders-list", ["title" => "Widgets Feeders", "content" => custom_widget_feeder_tab()]);
+//EWCore::register_form("ew-link-chooser-form-default", "widgets-feeders-list", ["title" => "Widgets Feeders", "content" => custom_widget_feeder_tab()]);
 EWCore::register_form("ew-link-chooser-form-default", "custom-url", ["title" => "URL", "content" => custom_url_tab()]);
 $tabsDefault = EWCore::read_registry("ew-link-chooser-form-default");
 $tabs = EWCore::read_registry("ew-link-chooser-form");

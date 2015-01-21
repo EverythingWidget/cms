@@ -2,6 +2,7 @@
 /*
  * title: Menu
  * description: Create a menu or select a menu feeder
+ * feeder_type: menu
  */
 ?>
 <div class="row">
