@@ -25,7 +25,7 @@
                <label for="">
                   Logo
                </label>
-               <img id="logo" alt="Event Logo" data-ew-plugin="image-chooser" style="max-height:400px;">
+               <input id="logo" name="logo" alt="Event Logo" data-ew-plugin="image-chooser" style="max-height:400px;">
 
             </div>
          </div> 
@@ -320,7 +320,7 @@ if ($_REQUEST["eventId"])
       //delete(data.tags);
       EW.setFormData("#event-form", data);
       $("#form-title").html("<span>tr:culturenight{Edit Event}</span>" + data.name);
-      $("#logo").prop("src", "<?php echo EW_ROOT_URL ?>asset/images/" + data.logo);
+      $("#logo").val("src", "<?php echo EW_ROOT_URL ?>asset/images/" + data.logo).change();
        /*$("#logo_image").attr("data-file-extension",/[^.]+$/.exec(data.logo));
        $("#logo_image").attr("data-filename",/^[^.]+/.exec(data.logo));*/
       //alert(/[^.]+$/.exec(data.logo)+" "+/^[^.]+/.exec(data.logo)+" "+data.logo);

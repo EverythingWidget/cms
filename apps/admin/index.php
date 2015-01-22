@@ -397,9 +397,9 @@ if ($secId)
                               imageChooserDialog.dispose();
                               //if (EW.getHashParameter("url", "Media"))
                               $element.val(EW.getHashParameter("absUrl", "Media")).change();
-                              /*$element.attr("data-filename", EW.getHashParameter("filename", "Media"));
+                              $element.attr("data-filename", EW.getHashParameter("filename", "Media"));
                               $element.attr("data-file-extension", EW.getHashParameter("fileExtension", "Media"));
-                              $element.attr("data-url", EW.getHashParameter("url", "Media"));*/
+                              $element.attr("data-url", EW.getHashParameter("url", "Media"));
                            }
                         };
                         EW.addURLHandler(EWhandler, "Media.ImageChooser");
