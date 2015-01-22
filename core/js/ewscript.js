@@ -417,6 +417,10 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler)
          var elm = $(formId + " :input[name='" + key + "'][value='" + val + "']");
          if (elm.length == 0)
          {
+            elm = $(formId + " :input[name='" + key + "']");
+         }
+         if (elm.length == 0)
+         {
             elm = $(formId + " [id='" + key + "']");
          }
          else
@@ -430,7 +434,7 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler)
          }
          if (elm.is("img"))
          {
-            elm.prop("src", "/res/images/" + val);
+            elm.prop("src", val);
             elm.attr("data-file-extension", /[^.]+$/.exec(val));
             elm.attr("data-filename", /^[^.]+/.exec(val));
          }
@@ -886,11 +890,11 @@ function HashListener(name)
       {
          self.newHandler = false;
          self.oldHash = customHashes[name].hash;
-         //$(window).trigger(name);
-         for (var i = 0; i < self.handlers.length; i++)
-         {
-            self.handlers[i].call();
-         }
+         $(window).trigger(name);
+         /*for (var i = 0; i < self.handlers.length; i++)
+          {
+          self.handlers[i].call();
+          }*/
       }
    };
    this.Check = setInterval(function ()
@@ -904,15 +908,17 @@ function HashListener(name)
       {
          if (" " + self.handlers[i] == " " + handlerFunction)
          {
+            $(window).off(handlerName, null, self.handlers[i]);
             self.handlers[i] = null;
             self.handlers[i] = handlerFunction;
+            $(window).on(handlerName, handlerFunction);
             return;
          }
       }
       self.handlers.push(handlerFunction);
-      /*this.urlHandlers = handlers;
-       $(window).off(name + "." + handlerName);
-       $(window).on(name + "." + handlerName, handlerFunction);*/
+      /*this.urlHandlers = handlers;*/
+
+      $(window).on(handlerName, handlerFunction);
    };
 }
 

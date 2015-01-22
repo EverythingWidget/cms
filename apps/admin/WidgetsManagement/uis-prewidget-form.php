@@ -77,13 +77,14 @@ $WM = new admin\WidgetsManagement();
    {
       this.widgetId = "<?php echo $widgetId ?>";
       this.widgetType = "<?php echo $widget_type ?>";
+      this.feederType = "<?php echo $feeder_type ?>";
       this.template = "<?php echo $_REQUEST["template"] ?>";
-      this.bAdd = EW.addAction("Add", this.addWidgetToPanel, {display: "none"}).addClass("btn-success");
+      this.bAdd = EW.addAction("Add", $.proxy(this.addWidgetToPanel, this), {display: "none"}).addClass("btn-success");
       this.bApply = EW.addAction("Apply", $.proxy(this.applyToWidget, this), {display: "none"}).addClass("btn-success");
       //this.bCW = EW.addAction("Change Widget", this.showWidgetList, {display: "none"});
       this.bCC = EW.addAction("Cancel Changing", this.cancel, {display: "none"});
       this.setData = true;
-      this.getWidgetParameters = null;
+      this.getWidgetData;
       this.widgetParameters = {};
 
       if (this.widgetId)
@@ -98,9 +99,9 @@ $WM = new admin\WidgetsManagement();
          var widget = uisForm.getEditorItem(this.widgetId);
          this.showWidgetControlPanel(widget.attr("data-widget-type"));
       }
-      else
+      else if (!this.feederType)
       {
-         //this.showWidgetControlPanel(this.widgetType);
+         this.showWidgetControlPanel(this.widgetType);
       }
    }
 
@@ -111,10 +112,11 @@ $WM = new admin\WidgetsManagement();
 
    UISWidget.prototype.addWidgetToPanel = function ()
    {
+      var self = this;
       $.EW("lock", $.EW("getParentDialog", $("#uis-widget-form")));
       var wp = $("#uis-widget").serializeJSON();
-      if (this.getWidgetParameters)
-         wp = this.getWidgetParameters.apply(null, null);
+      if (self.getWidgetData)
+         wp = JSON.stringify($.extend($.parseJSON(wp), self.getWidgetData.apply(null, null)));
       //var param = $("#parameters").val();
       var styleId = $("#style_id").val();
       var styleClass = $("#used-classes").text();
@@ -149,8 +151,8 @@ $WM = new admin\WidgetsManagement();
       $.EW("lock", $.EW("getParentDialog", $("#uis-widget-form")));
       var widget = uisForm.getEditorItem(this.widgetId);
       var wp = $("#uis-widget").serializeJSON();
-      if (this.getWidgetParameters)
-         wp = this.getWidgetParameters.apply(null, null);
+      if (self.getWidgetData)
+         wp = JSON.stringify($.extend($.parseJSON(wp), self.getWidgetData.apply(null, null)));
       //var oldParameters = widget.attr("data-widget-parameters");
       //var param = $("#parameters").val();
       var styleId = $("#style_id").val();

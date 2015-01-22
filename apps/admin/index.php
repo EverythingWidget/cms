@@ -293,10 +293,15 @@ if ($secId)
             {
                var base = this;
                var $element = $(element);
+               $element.off("change.image-chooser");
+               $element.on("change.image-chooser", function ()
+               {
+                  image.attr("src", $element.val() || "asset/images/no-image.png");
+               });
                defaults.callback = function (link)
                {
                   //alert($element.html());
-                  $element.val(link).change();
+                  //$element.val(link).change();
                   imageChooserDialog.dispose();
                };
                //this.$element = $(element);
@@ -304,13 +309,23 @@ if ($secId)
                }, defaults, options);
 
                if (!$element.parent().attr("data-element-wrapper"))
-                  $element.wrap('<div class="element-wrapper" style="position:relative;padding-bottom:30px;" data-element-wrapper="true"><div style="border:1px dashed #ddd;background-color:#eee;display:block;overflow:hidden;"></div></div>');
+                  $element.wrap('<div class="element-wrapper" style="position:relative;padding-bottom:30px;" data-element-wrapper="true"><div style="border:1px dashed #ddd;background-color:#eee;display:block;overflow:hidden;" data-element-wrapper="true"></div></div>');
+               $element.attr("type","hidden");
+
                var wrapper = $element.parent().parent();
                if (imageChooserDialog)
                   imageChooserDialog.remove();
                var image = wrapper.find("img");
+
+               if (image.length <= 0)
+               {
+                  image = $("<img>");
+                  console.log(image);
+                  wrapper.find("div").append(image);
+               }
+               image.css("max-height", $element.css("max-height"));
                var imageChooserBtn;
-               // if the plugin has been called after again on same element
+               // if the plugin has been called later again on same element
                if ($element.attr(ACTIVE_PLUGIN_ATTR))
                {
                   imageChooserBtn = wrapper.find("button.btn-image-chooser");
@@ -318,25 +333,26 @@ if ($secId)
                // If the plugin has been called for the first time
                else
                {
-                  image.attr("src", "asset/images/no-image.png")
+                  image.attr("src", $element.val() || "asset/images/no-image.png");
                   image.css({
                      border: "none",
                      outline: "none",
-                     minHeght: "128px"
-                  });
-                  //dashed = $("<div style='border:2px dashed #aaa;display:block;overflow:hidden;'></div>");
-                  $element.css({
+                     minHeght: "128px",
                      display: "block",
                      float: "",
                      margin: "2px auto 2px auto"
                   });
+                  //dashed = $("<div style='border:2px dashed #aaa;display:block;overflow:hidden;'></div>");
+
                   imageChooserBtn = $("<button type='button' class='btn btn-xs btn-link btn-link-chooser' >Choose Image</button>");
                   imageChooserBtn.css({
                      position: "absolute",
                      right: "2px",
                      bottom: "2px"
                   });
-                  wrapper.prepend(imageChooserBtn);
+
+                  wrapper.append(imageChooserBtn);
+
                   //wrapper.append(dashed);
                   $element.attr(ACTIVE_PLUGIN_ATTR, true);
                }
@@ -356,7 +372,6 @@ if ($secId)
                         callback: settings.callbackName
                      },
                      function (data) {
-
                         imageChooserDialog.find(".form-content:first").append(data);
                         imageChooserDialog.prepend("<h1>Media</h1>");
                         /*var functionRefrence = $("<div style='display:none;' id='function-reference'></div>");
@@ -381,9 +396,10 @@ if ($secId)
                               EW.setHashParameter("select-photo", null, "Media");
                               imageChooserDialog.dispose();
                               //if (EW.getHashParameter("url", "Media"))
-                              $element.attr("src", EW.getHashParameter("absUrl", "Media"));
-                              $element.attr("data-filename", EW.getHashParameter("filename", "Media"));
+                              $element.val(EW.getHashParameter("absUrl", "Media")).change();
+                              /*$element.attr("data-filename", EW.getHashParameter("filename", "Media"));
                               $element.attr("data-file-extension", EW.getHashParameter("fileExtension", "Media"));
+                              $element.attr("data-url", EW.getHashParameter("url", "Media"));*/
                            }
                         };
                         EW.addURLHandler(EWhandler, "Media.ImageChooser");
@@ -443,7 +459,7 @@ if ($secId)
                }
                if (element)
                {
-                  
+
                   if (element !== this.currentTab)
                   {
                      $("#side-bar-btn").text(element.text());
@@ -490,7 +506,7 @@ if ($secId)
                      {
                         EW.setHashParameter(kv[0], kv[1]);
                      }
-                     
+
                      base.setCurrentTab(a);
                   });
                   var currentNav = EW.getHashParameter("nav");
@@ -679,22 +695,22 @@ if ($secId)
                      $(".popover-content:empty").parent().remove();
                   }
                });
-              /* if ($(window).width() < 768)
-               {
-                  $(window).trigger("ew.screen.xs");
-               }
-               else if ($(window).width() >= 768 && $(window).width() < 992)
-               {
-                  $(window).trigger("ew.screen.sm");
-               }
-               else if ($(window).width() >= 992 && $(window).width() < 1360)
-               {
-                  $(window).trigger("ew.screen.md");
-               }
-               else if ($(window).width() >= 1360)
-               {
-                  $(window).trigger("ew.screen.lg");
-               }*/
+               /* if ($(window).width() < 768)
+                {
+                $(window).trigger("ew.screen.xs");
+                }
+                else if ($(window).width() >= 768 && $(window).width() < 992)
+                {
+                $(window).trigger("ew.screen.sm");
+                }
+                else if ($(window).width() >= 992 && $(window).width() < 1360)
+                {
+                $(window).trigger("ew.screen.md");
+                }
+                else if ($(window).width() >= 1360)
+                {
+                $(window).trigger("ew.screen.lg");
+                }*/
                //$(window).resize();
                //alert("ass");
             });

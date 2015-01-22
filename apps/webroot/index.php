@@ -68,7 +68,6 @@ $HTML_STYLES = admin\WidgetsManagement::get_html_styles();
       <link href="<?php echo $_REQUEST["_uis_template"] . '/template.css' ?>" rel="stylesheet" type="text/css"/>
 
       <script src="core/js/jquery/jquery-2.1.1.min.js"></script>        
-      <script src="core/js/jquery/jquery-ui-1.10.3.custom.min.js" ></script>
       <script src="core/js/ewscript.js"></script> 
       <script src="core/js/floatlabels.min.js"></script>
       <script src="core/js/gsap/plugins/CSSPlugin.min.js"></script>
@@ -84,13 +83,13 @@ $HTML_STYLES = admin\WidgetsManagement::get_html_styles();
       if ($template_script)
          echo '<script id="template-script">' . $template_script . '</script>';
       ?>
+      
       <script id="widget-data">
          $(document).ready(function () {
-<?php
-echo $WIDGET_DATA
-?>
+<?php echo $WIDGET_DATA; ?>
          });
       </script>
+
       <script>
          $(document).ready(function () {
             document.addEventListener("DOMNodeInserted", function (event)
@@ -101,8 +100,6 @@ echo $WIDGET_DATA
                   $elementJustAdded.find('input[data-label], textarea[data-label], select[data-label]').floatlabel();
                }
             });
-
-
          });
       </script>
 
