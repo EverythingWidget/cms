@@ -5,7 +5,7 @@ session_start();
    function Events()
    {
       var self = this;
-      this.bAddActivity = EW.addActivity({title: "tr:culturenight{Add Event}", activity: "app-culturenight/Events/event-form.php", parent: "action-bar-items", hash: {eventId: null}}).hide().comeIn(300);
+      this.bAddActivity = EW.addActivity({title: "tr:culturenight{Add Event}", activity: "app-culturenight/Events/event-form.php", parent: "action-bar-items", modal: {class: "center"}, hash: {eventId: null}}).hide().comeIn(300);
       //this.editActivity = EW.getActivity({activity: "app-culturenight/Events/event-form.php_see"});
       this.table = EW.createTable({
          name: "events-list",
@@ -28,10 +28,10 @@ session_start();
          url: "<?php echo EW_ROOT_URL; ?>app-culturenight/Events/get_events_list",
          pageSize: 30,
          onEdit: ((editActivity = EW.getActivity({activity: "app-culturenight/Events/event-form.php_see", onDone: function (hash) {
-            hash["eventId"] = null;
-         }})) ? function (id) {
-         editActivity({eventId: id});
-      } : null)
+               hash["eventId"] = null;
+            }})) ? function (id) {
+            editActivity({eventId: id});
+         } : null)
       });
       /*$(document).off("culturenight/Events/event-form.php_see");
        $(document).on("culturenight/Events/event-form.php_see.call", function (e, data) {

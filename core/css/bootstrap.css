@@ -1975,23 +1975,27 @@ input[type="button"].btn-block {
       border-bottom-color: #ffffff;
    }
 }
+.nav-pills{background-color:#B0BEC5;margin:0px;}
 .nav-pills > li {
    float: left;
-   border-bottom:2px solid #428bca;
+   
 }
 .nav-pills > li > a {
-   border-radius: 6px;
-   border-bottom-left-radius:0px;
-   border-bottom-right-radius:0px;
+   color:#000;
+   padding:10px 25px;
+}
+.nav-pills > li > a:hover {
+   color:#000;
+   background-color: #90A4AE;
 }
 .nav-pills > li + li {
-   margin-left: 2px;
+
 }
 .nav-pills > li.active > a,
 .nav-pills > li.active > a:hover,
 .nav-pills > li.active > a:focus {
    color: #ffffff;
-   background-color: #428bca;
+   background-color: #607D8B;
 }
 .nav-pills > li.active > a .caret,
 .nav-pills > li.active > a:hover .caret,

@@ -68,35 +68,35 @@ function EverythingWidgets()
 
 EverythingWidgets.prototype.showAllComponents = function ()
 {
-   var ew = this;
-   $("#components-pane").show();
+   var self = this;
+   //$("#components-pane").show();
    $("#components-pane").css({
-      top: "-100px",
-      left: "-100px",
-      opacity: 0
+      //top: "-100px",
+      left: "-100%",
+      //opacity: 0
    });
 
    $("#components-pane").stop().animate({
-      top: "0px",
+      //top: "0px",
       left: "0px",
-      opacity: 1,
+      //opacity: 1,
       display: "block"
    },
-   500, "Power3.easeOut");
+   500, "Power3.easeOut").addClass("in");
    this.lock("body", " ");
    $(".glass-pane-lock").bind("click", function (e) {
-      if (parseInt($('#components-pane').css('top')) === 0)
+      if ($('#components-pane').hasClass('in'))
       {
          $("#components-pane").stop().animate({
-            top: "-100px",
-            left: "-100px",
-            opacity: 0,
+            //top: "-100px",
+            left: -$("#components-pane").outerWidth(),
+            //opacity: 0,
             display: "none"
          },
          500, "Power3.easeOut", function () {
             //$("#components-pane").hide(0);
-         });
-         ew.unlock("body");
+         }).removeClass("in");
+         self.unlock("body");
          //$("#components-pane").animate({top: -200}, 300);
          $(".glass-pane-lock").unbind("click");
       }
@@ -565,7 +565,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
 
       }};
    var settings = {
-      class: "full",
+      class: "center",
       initElement: true,
       beforeClose: function ()
       {
