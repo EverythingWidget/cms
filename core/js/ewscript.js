@@ -556,7 +556,8 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
          xButton.css({
             left: modalPane.offset().left + modalPane.width() - 10,
             //right:"10px",
-            top: parseInt(modalPane.css("top")) + 10
+            top: parseInt(modalPane.css("top")) + 10,
+            zIndex: modalPane.css("z-index")
          });
          xButton.show();
       },
@@ -600,8 +601,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
    xButton = $("<a class='close-button x-icon'>");
    xButton.css({
       position: "absolute",
-      display: "none",
-      zIndex: 2
+      display: "none"
    });
    xButton.click(function ()
    {
