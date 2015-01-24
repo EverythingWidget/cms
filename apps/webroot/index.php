@@ -62,10 +62,10 @@ $HTML_STYLES = admin\WidgetsManagement::get_html_styles();
       <meta name="viewport" content="width=device-width, initial-scale=1" />
 
       <base href="<?php echo EW_ROOT_URL ?>">
-      <link href="<?php echo $_REQUEST["_uis_template"] . '/favicon.ico' ?>" rel="shortcut icon" />                    
+      <!--<link href="<?php echo $_REQUEST["_uis_template"] . '/favicon.ico' ?>" rel="shortcut icon" /> -->
       <link href="core/css/custom-theme/jquery-ui-1.8.21.custom.css" rel="Stylesheet" type="text/css"/>	
       <link href="core/css/bootstrap.css" rel="stylesheet" type="text/css"/>  
-      <link href="<?php echo $_REQUEST["_uis_template"] . '/template.css' ?>" rel="stylesheet" type="text/css"/>
+      <link id="template-css" href="<?php echo $_REQUEST["_uis_template"] . '/template.css' ?>" rel="stylesheet" type="text/css"/>
 
       <script src="core/js/jquery/jquery-2.1.1.min.js"></script>        
       <script src="core/js/ewscript.js"></script> 
