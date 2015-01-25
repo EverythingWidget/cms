@@ -1344,16 +1344,18 @@ EWTable.prototype.createRow = function (val, rc)
    {
       $.each(ewTable.config.buttons, function (k, v)
       {
+         if (!v)
+            return;
+         var btnAction = v.action || v;
          var action = $(document.createElement("button"));
          action.attr("type", "button");
          action.addClass("btn btn-text btn-primary");
-         action.text(k);
-         if (v)
-         {
-            action.click(function () {
-               v.apply(ewTable, new Array(tableRow));
-            });
-         }
+         action.text(v.title || k);
+
+         action.click(function () {
+            btnAction.apply(ewTable, new Array(tableRow));
+         });
+
          actionsCell.append(action);
       });
    }

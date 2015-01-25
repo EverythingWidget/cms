@@ -111,7 +111,7 @@ if ($secId)
                var items = [];
                $.each(data, function (key, val) {
                   var selected = ("<?php echo ($compId) ?>" == val['className']) ? "selected" : "";
-                  items.push('<li class="col-xs-6 col-sm-6 ' + selected + '"><a href="<?php echo EW_ROOT_URL; ?>app-admin/index.php?compId=' + val['className'] + '"><label>' + val['title'] + '</label><p class="hidden-xs">' + val['description'] + '</p></a></li>');
+                  items.push('<li class="col-xs-12 col-sm-6 ' + selected + '"><a href="<?php echo EW_ROOT_URL; ?>app-admin/index.php?compId=' + val['className'] + '"><label>' + val['title'] + '</label><p>' + val['description'] + '</p></a></li>');
                });
                $(items.join('')).appendTo("#components-pane ul");
                //alert($(items.join('')).html());
