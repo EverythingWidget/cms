@@ -31,6 +31,7 @@ function EverythingWidgets()
    this.urlHandlers = new Array();
    this.mainContent = $("#main-content");
    this.currentTab = null;
+   this.widget_data = [];
    $("#components-pane").hide();
    var oldSize = "";
    $(document).mousedown(function (event) {
@@ -67,35 +68,35 @@ function EverythingWidgets()
 
 EverythingWidgets.prototype.showAllComponents = function ()
 {
-   var ew = this;
-   $("#components-pane").show();
+   var self = this;
+   //$("#components-pane").show();
    $("#components-pane").css({
-      top: "-100px",
-      left: "-100px",
-      opacity: 0
+      //top: "-100px",
+      left: "-100%",
+      //opacity: 0
    });
 
    $("#components-pane").stop().animate({
-      top: "0px",
+      //top: "0px",
       left: "0px",
-      opacity: 1,
+      //opacity: 1,
       display: "block"
    },
-   500, "Power3.easeOut");
+   500, "Power3.easeOut").addClass("in");
    this.lock("body", " ");
    $(".glass-pane-lock").bind("click", function (e) {
-      if (parseInt($('#components-pane').css('top')) === 0)
+      if ($('#components-pane').hasClass('in'))
       {
          $("#components-pane").stop().animate({
-            top: "-100px",
-            left: "-100px",
-            opacity: 0,
+            //top: "-100px",
+            left: -$("#components-pane").outerWidth(),
+            //opacity: 0,
             display: "none"
          },
          500, "Power3.easeOut", function () {
             //$("#components-pane").hide(0);
-         });
-         ew.unlock("body");
+         }).removeClass("in");
+         self.unlock("body");
          //$("#components-pane").animate({top: -200}, 300);
          $(".glass-pane-lock").unbind("click");
       }
@@ -416,6 +417,10 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler)
          var elm = $(formId + " :input[name='" + key + "'][value='" + val + "']");
          if (elm.length == 0)
          {
+            elm = $(formId + " :input[name='" + key + "']");
+         }
+         if (elm.length == 0)
+         {
             elm = $(formId + " [id='" + key + "']");
          }
          else
@@ -429,7 +434,7 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler)
          }
          if (elm.is("img"))
          {
-            elm.prop("src", "/res/images/" + val);
+            elm.prop("src", val);
             elm.attr("data-file-extension", /[^.]+$/.exec(val));
             elm.attr("data-filename", /^[^.]+/.exec(val));
          }
@@ -560,7 +565,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
 
       }};
    var settings = {
-      class: "full",
+      class: "center",
       initElement: true,
       beforeClose: function ()
       {
@@ -807,23 +812,23 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
    {
       // Set default jquery html() function
       modalPane.html = modalPane.__proto__.html;
-      //var int = setInterval(function ()
-      //{
-         /*try
-         {*/
-           // if (!modalPane.isOpen)
-           //    return;
+      var int = setInterval(function ()
+      {
+         try
+         {
+            if (!modalPane.isOpen)
+               return;
             modalPane.html(data);
             modalPane.html = htmlFunction;
-          //  window.clearInterval(int);
-         /*}
+            window.clearInterval(int);
+         }
          catch (e)
          {
             console.log(e);
             window.clearInterval(int);
-         }*/
+         }
 
-      //}, 20);
+      }, 20);
    };
    // Overwrite the default jquery html() function behavior
    modalPane.html = htmlFunction;
@@ -885,11 +890,11 @@ function HashListener(name)
       {
          self.newHandler = false;
          self.oldHash = customHashes[name].hash;
-         //$(window).trigger(name);
-         for (var i = 0; i < self.handlers.length; i++)
-         {
-            self.handlers[i].call();
-         }
+         $(window).trigger(name);
+         /*for (var i = 0; i < self.handlers.length; i++)
+          {
+          self.handlers[i].call();
+          }*/
       }
    };
    this.Check = setInterval(function ()
@@ -903,15 +908,17 @@ function HashListener(name)
       {
          if (" " + self.handlers[i] == " " + handlerFunction)
          {
+            $(window).off(handlerName, null, self.handlers[i]);
             self.handlers[i] = null;
             self.handlers[i] = handlerFunction;
+            $(window).on(handlerName, handlerFunction);
             return;
          }
       }
       self.handlers.push(handlerFunction);
-      /*this.urlHandlers = handlers;
-       $(window).off(name + "." + handlerName);
-       $(window).on(name + "." + handlerName, handlerFunction);*/
+      /*this.urlHandlers = handlers;*/
+
+      $(window).on(handlerName, handlerFunction);
    };
 }
 

@@ -55,7 +55,8 @@ if (!$_SESSION['login'])
          else
             EW.setHashParameter("cmd", "see", "Media");
       }, {display: "none"});
-      this.bDel = EW.addAction("Delete", function () {
+      this.bDel = $();
+      /*this.bDel = EW.addAction("Delete", function () {
          if (confirm("tr{Are you sure you want to delete this item?}"))
          {
             var action = "delete_content_by_id";
@@ -80,9 +81,9 @@ if (!$_SESSION['login'])
                }
             }, "json");
          }
-      }, {display: "none"});
+      }, {float: "right", display: "none"});
       this.bDel.addClass("btn-danger");
-      this.bDel.css("margin-left", "20px");
+      this.bDel.css("margin-left", "20px");*/
       var oldCn = 0;
 
       $(window).resize(function ()
@@ -122,6 +123,7 @@ if (!$_SESSION['login'])
 
    Media.prototype.seeImage = function (url, fn)
    {
+      EW.activeElement = this.currentItem;
       tp = EW.createModal({onClose: function ()
          {
             EW.setHashParameter("cmd", null, "Media");

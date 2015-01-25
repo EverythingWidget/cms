@@ -13,7 +13,10 @@ $_SESSION['ROOT_DIR'] = EW_ROOT_DIR;
 $_REQUEST['cmdResult'] = '';
 
 //$WM = new admin\WidgetsManagement("WidgetsManagement", $_REQUEST);
-$HTML_BODY = admin\WidgetsManagement::generate_view($_REQUEST["_uis"]);
+//$HTML_BODY = admin\WidgetsManagement::generate_view($_REQUEST["_uis"]);
+$VIEW = admin\WidgetsManagement::generate_view($_REQUEST["_uis"]);
+$HTML_BODY = $VIEW["body_html"];
+$WIDGET_DATA = $VIEW["widget_data"];
 
 // If template has a 'template.php' then include it
 if (file_exists(EW_ROOT_DIR . $_REQUEST["_uis_template"] . '/template.php'))
@@ -65,7 +68,6 @@ $HTML_STYLES = admin\WidgetsManagement::get_html_styles();
       <link href="<?php echo $_REQUEST["_uis_template"] . '/template.css' ?>" rel="stylesheet" type="text/css"/>
 
       <script src="core/js/jquery/jquery-2.1.1.min.js"></script>        
-      <script src="core/js/jquery/jquery-ui-1.10.3.custom.min.js" ></script>
       <script src="core/js/ewscript.js"></script> 
       <script src="core/js/floatlabels.min.js"></script>
       <script src="core/js/gsap/plugins/CSSPlugin.min.js"></script>
@@ -73,23 +75,32 @@ $HTML_STYLES = admin\WidgetsManagement::get_html_styles();
       <script src="core/js/gsap/jquery.gsap.min.js"></script>
 
       <?php
+      // Widget's datas
+      //echo '<script id="widget-data">' . $template_script . '</script>';
       // Add registered scripts
       echo $HTML_SCRIPTS;
       // Add template main script if existed
       if ($template_script)
          echo '<script id="template-script">' . $template_script . '</script>';
       ?>
+      
+      <script id="widget-data">
+         $(document).ready(function () {
+<?php echo $WIDGET_DATA; ?>
+         });
+      </script>
 
       <script>
-         document.addEventListener("DOMNodeInserted", function (event)
-         {
-            var $elementJustAdded = $(event.target);
-            if ($elementJustAdded)
+         $(document).ready(function () {
+            document.addEventListener("DOMNodeInserted", function (event)
             {
-               $elementJustAdded.find('input[data-label], textarea[data-label], select[data-label]').floatlabel();
-            }
+               var $elementJustAdded = $(event.target);
+               if ($elementJustAdded)
+               {
+                  $elementJustAdded.find('input[data-label], textarea[data-label], select[data-label]').floatlabel();
+               }
+            });
          });
-         var EW = {};
       </script>
 
    </head>

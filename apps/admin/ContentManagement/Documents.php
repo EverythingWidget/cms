@@ -30,7 +30,7 @@ if (!$_SESSION['login'])
       this.categoryId = 0;
       this.articleId = 0;
       this.preParentId = -1;
-      this.oldItem;
+      this.currentItem;
       this.bUp = EW.addAction("tr{Up}", $.proxy(this.preCategory, this), {display: "none"});
       this.bUp.css("float", "right");
       this.bNewFolder = EW.addActivity({title: "tr{New Folder}", activity: "app-admin/ContentManagement/category-form.php", parent: "action-bar-items", hash: {categoryId: null}}).hide();
@@ -69,6 +69,7 @@ if (!$_SESSION['login'])
    {
       var categoryId = EW.getHashParameter("categoryId");
       var articleId = EW.getHashParameter("articleId");
+      EW.activeElement = documents.currentItem;
       if (categoryId)
       {
          this.categoryId = categoryId;
@@ -234,9 +235,9 @@ if (!$_SESSION['login'])
 
    Documents.prototype.selectCategory = function (rowElm, cId)
    {
-      $(documents.oldItem).removeClass("selected");
+      $(documents.currentItem).removeClass("selected");
       $(rowElm).addClass("selected");
-      documents.oldItem = rowElm;
+      documents.currentItem = rowElm;
    };
 
    Documents.prototype.seeSubCategories = function () {
@@ -264,7 +265,7 @@ if (!$_SESSION['login'])
             if (element.id == cId)
             {
                temp.addClass("selected");
-               documents.oldItem = temp;
+               documents.currentItem = temp;
             }
             foldersPane.append(temp);
          });
@@ -287,7 +288,7 @@ if (!$_SESSION['login'])
             if (element.id == aId)
             {
                temp.addClass("selected");
-               documents.oldItem = temp;
+               documents.currentItem = temp;
             }
             articlesPane.append(temp);
          });
@@ -340,7 +341,7 @@ if (!$_SESSION['login'])
 
       if (!cId && !aId) {
          documents.bSee.comeOut(200);
-         $(documents.oldItem).removeClass("selected");
+         $(documents.currentItem).removeClass("selected");
       }
       if (cId)
       {

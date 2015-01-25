@@ -77,13 +77,14 @@ $WM = new admin\WidgetsManagement();
    {
       this.widgetId = "<?php echo $widgetId ?>";
       this.widgetType = "<?php echo $widget_type ?>";
+      this.feederType = "<?php echo $feeder_type ?>";
       this.template = "<?php echo $_REQUEST["template"] ?>";
-      this.bAdd = EW.addAction("Add", this.addWidgetToPanel, {display: "none"}).addClass("btn-success");
+      this.bAdd = EW.addAction("Add", $.proxy(this.addWidgetToPanel, this), {display: "none"}).addClass("btn-success");
       this.bApply = EW.addAction("Apply", $.proxy(this.applyToWidget, this), {display: "none"}).addClass("btn-success");
       //this.bCW = EW.addAction("Change Widget", this.showWidgetList, {display: "none"});
       this.bCC = EW.addAction("Cancel Changing", this.cancel, {display: "none"});
       this.setData = true;
-      this.getWidgetParameters = null;
+      this.getWidgetData;
       this.widgetParameters = {};
 
       if (this.widgetId)
@@ -98,9 +99,9 @@ $WM = new admin\WidgetsManagement();
          var widget = uisForm.getEditorItem(this.widgetId);
          this.showWidgetControlPanel(widget.attr("data-widget-type"));
       }
-      else
+      else if (!this.feederType)
       {
-         //this.showWidgetControlPanel(this.widgetType);
+         this.showWidgetControlPanel(this.widgetType);
       }
    }
 
@@ -111,55 +112,47 @@ $WM = new admin\WidgetsManagement();
 
    UISWidget.prototype.addWidgetToPanel = function ()
    {
+      var self = this;
       $.EW("lock", $.EW("getParentDialog", $("#uis-widget-form")));
       var wp = $("#uis-widget").serializeJSON();
-      if (this.getWidgetParameters)
-         wp = this.getWidgetParameters.apply(null, null);
+      if (self.getWidgetData)
+         wp = JSON.stringify($.extend($.parseJSON(wp), self.getWidgetData.apply(null, null)));
       //var param = $("#parameters").val();
       var styleId = $("#style_id").val();
       var styleClass = $("#used-classes").text();
       var widgetStyleClass = $("#style_class").val();
-      //$("#add").hide();
-      //$("#cancel").hide();
 
-      /*var widgetContainer = $("<div class='widget-container col-xs-12'><div class='widget'></div></div>");
-       var widget = widgetContainer.children(".widget");
-       
-       widget.prop("id", styleId);
-       widget.attr("class", "widget " + widgetStyleClass);
-       widget.attr("data-widget-parameters", wp);
-       widget.attr("data-widget-type", uisWidget.widgetType);
-       widgetContainer.prop("class", "widget-container " + styleClass);*/
       $.post('<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/create_widget', {widget_type: uisWidget.widgetType, style_class: styleClass,
          widget_style_class: widgetStyleClass, style_id: styleId, widget_parameters: wp},
       function (data) {
+         EW.lock($.EW("getParentDialog", $("#uis-widget-form")));
          var containerElement = $("#fr").contents().find("body #base-content-pane div[data-panel-id='<?php echo $panelId ?>']");
          if (containerElement.hasClass("block"))
          {
-            containerElement.append(data);
+            containerElement.append(data["widget_html"]);
          }
          else
          {
-            containerElement.children(".row").append(data);
+            containerElement.children(".row").append(data["widget_html"]);
          }
+         if (data["widget_data"])
+            uisForm.editor.EW.widget_data[data["widget_id"]] = $.parseJSON(data["widget_data"]);
          //$("#fr").contents().find("body #base-content-pane div[data-panel-id='<?php echo $panelId ?>']").append(data);
          $("#inspector-editor").trigger("refresh");
          $.EW("getParentDialog", $("#uis-widget-form")).trigger("close");
-      });
-
-
+      }, "json");
       //neuis.updateUIS(true);
       //neuis.currentDialog.dispose();
    };
 
    UISWidget.prototype.applyToWidget = function ()
    {
-      var base = this;
+      var self = this;
       $.EW("lock", $.EW("getParentDialog", $("#uis-widget-form")));
       var widget = uisForm.getEditorItem(this.widgetId);
       var wp = $("#uis-widget").serializeJSON();
-      if (this.getWidgetParameters)
-         wp = this.getWidgetParameters.apply(null, null);
+      if (self.getWidgetData)
+         wp = JSON.stringify($.extend($.parseJSON(wp), self.getWidgetData.apply(null, null)));
       //var oldParameters = widget.attr("data-widget-parameters");
       //var param = $("#parameters").val();
       var styleId = $("#style_id").val();
@@ -177,20 +170,15 @@ $WM = new admin\WidgetsManagement();
       $.post('<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/create_widget', {widget_id: this.widgetId, widget_type: uisWidget.widgetType, style_class: styleClass,
          widget_style_class: widgetStyleClass, style_id: styleId, widget_parameters: wp},
       function (data) {
-         //alert(styleClass);
-         var w = $.parseHTML(data, $("#fr")[0].contentWindow.document, true);
-         //w.context = $("#fr")[0].contentWindow.document;
-         //console.log(w);
-         //var 
+         EW.lock($.EW("getParentDialog", $("#uis-widget-form")));
+         var w = $.parseHTML(data["widget_html"], $("#fr")[0].contentWindow.document, true);
          widget.parent().replaceWith(w);
-         //widget.parent()[0].appendChild(w[0]);
-         //w.append();
-         //$("#fr").contents().find("body").find("div[data-widget-id='" + base.widgetId + "']").after(data);
-         //$("#fr").contents().find("body").find("div[data-widget-id='" + base.widgetId + "']").parent().remove();
-         //$("#fr").contents().find("body #base-content-pane div[data-panel-id='<?php echo $panelId ?>']").append(data);
+         if (data["widget_data"])
+            uisForm.editor.EW.widget_data[data["widget_id"]] = $.parseJSON(data["widget_data"]);
+
          $.EW("getParentDialog", $("#uis-widget-form")).trigger("close");
          $("#inspector-editor").trigger("refresh");
-      });
+      }, "json");
 
 
       /*if (oldParameters != wp || oldType != uisWidget.widgetType)
@@ -209,7 +197,8 @@ $WM = new admin\WidgetsManagement();
       if (self.widgetId != "")
       {
          widget = uisForm.getEditorItem(self.widgetId);
-         widgetParams = (widget.attr("data-widget-parameters")) ? $.parseJSON(widget.attr("data-widget-parameters")) : {};
+         //widgetParams = (widget.attr("data-widget-parameters")) ? $.parseJSON(widget.attr("data-widget-parameters")) : {};
+         widgetParams = uisForm.editor.EW.widget_data[self.widgetId];
          self.widgetParameters = widgetParams;
       }
 

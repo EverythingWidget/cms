@@ -1139,10 +1139,11 @@ class ContentManagement extends \Section
             $files[] = array("id" => $r["content_id"], title => $r["title"], "parentId" => $container_id,
                 type => $this->file_types[$file_info["extension"]] ? $this->file_types[$file_info["extension"]] : "unknown",
                 size => round(filesize($file_path) / 1024), ext => $file_info["extension"],
-                url => $file,
+                url => 'asset/images' . $path . $file,
+                absUrl => EW_ROOT_URL . "asset/images/$file",
+                originalUrl => EW_ROOT_URL . "media/$file",
                 filename => $file_info["filename"],
                 fileExtension => $file_info["extension"],
-                absUrl => EW_ROOT_URL . "media/$file",
                 thumbURL => EW_DIR . $tumbURL,
                 path => $file_path);
          }

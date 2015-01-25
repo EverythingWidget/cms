@@ -571,6 +571,7 @@ class WidgetsManagement extends Section
     */
    public static function open_widget($widget_id, $widget_type, $style_class, $widget_style_class, $style_id, $params, $no_data = false)
    {
+
       // Empty widget style class when creating a widget
       $result_html = '';
       if ($style_id)
@@ -594,9 +595,10 @@ class WidgetsManagement extends Section
       $widget_title_string = "data-widget-title='$widget_title'";
       //}
       $result_html.= "<div class='widget-container $style_class' data-widget-container='true'>";
-      $result_html.= "<div class='widget $WIDGET_STYLE_CLASS' $WIDGET_STYLE_ID data-widget-id='$widget_id' $parameters_string $widget_type_string $widget_title_string data-widget='true'>";
+      $result_html.= "<div class='widget $WIDGET_STYLE_CLASS' $WIDGET_STYLE_ID data-widget-id='$widget_id' $widget_type_string $widget_title_string data-widget='true'>";
       $result_html.= $widget_content;
       self::$widget_style_class = "";
+      self::add_widget_data($widget_id, $params);
       return $result_html;
    }
 
@@ -605,14 +607,29 @@ class WidgetsManagement extends Section
       return '</div></div>';
    }
 
-   public function create_widget($widget_id, $widget_type, $style_class, $widget_style_class, $style_id, $widget_parameters)
+   public function create_widget($widget_type, $style_class, $widget_style_class, $style_id, $widget_parameters)
    {
       //echo (stripcslashes($widget_parameters));
       //$widget_parameters = html_entity_decode($widget_parameters);
+      $timestamp = time();
+      if ($_SESSION["_ew_gw_ts"] == $timestamp)
+      {
+         self::$ui_index++;
+      }
+      else
+      {
+         $_SESSION["_ew_gw_ts"] = $timestamp;
+      }
+      self::$current_timestamp = strval($timestamp);
+      $widget_id = "widget-" . self::$current_timestamp . '-' . self::$ui_index . '-' . self::$widget_index;
       $widget_html = '';
       $widget_html .=self::open_widget($widget_id, $widget_type, $style_class, $widget_style_class, $style_id, stripcslashes($widget_parameters));
       $widget_html .=self::close_widget();
-      return $widget_html;
+      if (self::get_widget_data_object())
+      {
+         $widget_data = reset(self::get_widget_data_object());
+      }
+      return ["widget_html" => $widget_html, "widget_data" => $widget_data, "widget_id" => $widget_id];
    }
 
    public function get_widget($widgetId)
@@ -729,7 +746,7 @@ class WidgetsManagement extends Section
       $description = EWCore::get_comment_parameter("description", $path);
       $feeder_type = EWCore::get_comment_parameter("feeder_type", $path);
 
-      return array("name" => $widget_type, "path" => $widget_type, "title" => $title, "description" => $description,"feeder_type"=>$feeder_type);
+      return array("name" => $widget_type, "path" => $widget_type, "title" => $title, "description" => $description, "feeder_type" => $feeder_type);
    }
 
    function get_widget_cp($widgetName = null)
@@ -821,6 +838,28 @@ class WidgetsManagement extends Section
       return json_encode($res);
    }
 
+   private static $widget_data = array();
+
+   private static function add_widget_data($widget_id, $data)
+   {
+      self::$widget_data[$widget_id] = $data;
+   }
+
+   private static function get_widget_data()
+   {
+      foreach (self::$widget_data as $wi => $data)
+      {
+         $data = ($data) ? $data : "{}";
+         $data_string.="EW.widget_data['$wi'] = $data;\n";
+      }
+      return $data_string;
+   }
+
+   private static function get_widget_data_object()
+   {
+      return self::$widget_data;
+   }
+
    public static function generate_view($uisId, $index = 0, $no_data = false)
    {
       $RESULT_HTML = '';
@@ -862,7 +901,7 @@ class WidgetsManagement extends Section
          self::$panel_index++;
       }
       //$html = ob_get_clean();
-      return $RESULT_HTML;
+      return ["body_html" => $RESULT_HTML, "widget_data" => self::get_widget_data()];
    }
 
    public static function get_html_styles()
@@ -986,7 +1025,9 @@ class WidgetsManagement extends Section
 
    public static function get_layout($uisId, $template = null, $template_settings = null)
    {
-      $template_body = WidgetsManagement::generate_view($uisId);
+      $layout = WidgetsManagement::generate_view($uisId);
+      $template_body = $layout["body_html"];
+      $widget_data = $layout["widget_data"];
       if (!$template)
       {
          $uis_info = json_decode(WidgetsManagement::get_uis($uisId), true);
@@ -1009,7 +1050,7 @@ class WidgetsManagement extends Section
          $template_script = $template->get_template_script($settings);
       }
 
-      return ["template_body" => $template_body, "template_script" => $template_script];
+      return ["template_body" => $template_body, "template_script" => $template_script, "widget_data" => $widget_data];
    }
 
    public function get_title()
