@@ -310,7 +310,7 @@ if ($secId)
 
                if (!$element.parent().attr("data-element-wrapper"))
                   $element.wrap('<div class="element-wrapper" style="position:relative;padding-bottom:30px;" data-element-wrapper="true"><div style="border:1px dashed #ddd;background-color:#eee;display:block;overflow:hidden;" data-element-wrapper="true"></div></div>');
-               $element.attr("type","hidden");
+               $element.attr("type", "hidden");
 
                var wrapper = $element.parent().parent();
                if (imageChooserDialog)
@@ -632,74 +632,67 @@ if ($secId)
                }
 
                $(".nav.xs-nav-tabs").data("xs-nav-bar-active", function (e) {
-                  if ($(e).hasClass("xs-nav-tabs-active"))
+                  if ($(e).hasClass("xs-nav-tabs-active") || $(e).data("nav-xs-btn"))
                      return;
-                  $(e).addClass("xs-nav-tabs-active");
-                  var items = $(e).children("li");
-                  $(e).data("element-id", $(e).attr("id"));
-
-                  items = $(e).children("li").detach();
-                  $(e).prop("id", "xs-nav-" + $(e).data("element-id"));
-                  $(e).empty();
-
-                  var dropDown = $("<li></li>").addClass("dropdown active");
-                  var a = $("<a id='tabs-btn' data-toggle='tab' href='#'></a>");
-                  dropDown.append(a);
-                  var ul = $("<ul class='nav nav-pills nav-stacked'></ul>");
-                  items.appendTo(ul);
-                  ul.hide();
-                  dropDown.append(ul);
-                  ul.prop("id", $(e).data("element-id"));
-                  $(e).append(dropDown);
-
-                  a.popover({
-                     animation: false,
-                     container: 'body',
-                     placement: "bottom",
-                     html: true,
-                     //trigger: "manual",
-                     content: function () {
-                        ul.show();
-                        a.data("items", ul);
-                        return ul;
+                  var nav = $(e);
+                  // Show default nav style when the window is wide enough
+                  $(window).one("ew.screen.sm ew.screen.md ew.screen.lg", function ()
+                  {
+                     if ($(e).hasClass("xs-nav-tabs-active"))
+                     {
+                        nav.unbind('mouseenter mouseleave')
+                        nav.data("button").after(nav.data("menu"));
+                        nav.data("menu").show();
+                        nav.data("button").remove();
+                        nav.attr("class", $(e).data("oldClass"));
+                        nav.find(".dropdown").remove();
+                        nav.css({top: ""});
+                        nav.data("nav-xs-btn", null);
                      }
                   });
 
-                  a.on('hide.bs.popover', function () {
-                     ul.hide();
-                     dropDown.append(ul.detach());
-                     ul.unbind("click");
-                     //ul = a.data("items");
-                  });
+                  nav.data("oldClass", nav.attr("class"));
+                  nav.data("nav-xs-btn", true);
+                  nav.data("menu", nav);
+                  //alert(nav.html());
+                  $(e).prop("class", "nav nav-pills xs-nav-tabs-active nav-stacked dropdown col-xs-10");
+                  //nav.hide();
+                  $(e).data("element-id", $(e).attr("id"));
 
-                  a.on('shown.bs.popover', function () {
-                     ul.bind("click", function () {
-                        a.popover("toggle");
-                        ul.unbind("click");
-                     });
-                     a.data("items", ul);
+                  var xsNavbar = $("<ul class='nav nav-pills'><li class='dropdown'><a id='tabs-btn' data-toggle='tab' href='#'></a></li></ul>");
+                  xsNavbar.data("nav-xs-btn", true);
+                  nav.before(xsNavbar);
+                  nav.data("button", xsNavbar);
+                  
+                  var dropdownNavBtn = $("<li class='dropdown'><a id='tabs-btn' data-toggle='tab' href='#'></a></li>")
+                  nav.prepend(dropdownNavBtn);                  
+
+                  var xsNavBarBtn = xsNavbar.find("li");
+                  nav.css({top: xsNavBarBtn.offset().top});
+                  nav.hide();
+
+                  xsNavBarBtn.hover(function () {
+                     nav.show();
+                     nav = nav.detach();
+                     $("body").append(nav);
                   });
-               });
-               $(".nav.xs-nav-tabs").data("xs-nav-bar-deactive", function (e) {
-                  if ($(e).hasClass("xs-nav-tabs-active"))
+                  nav.hover(function (e)
+                  {    
+                     nav.stop().animate({className: "nav nav-pills xs-nav-tabs-active nav-stacked dropdown in"}, 300, "Power3.easeOut");
+                     e.preventDefault();
+                  }, 
+                  function ()
                   {
-                     $(e).removeClass("xs-nav-tabs-active");
-                     $(e).addClass($(e).data("removed-class"));
-                     $(e).prop("id", $(e).data("element-id"));
-                     $(e).find("#tabs-btn").popover("destroy");
-                     var items = $(e).find("ul.nav-pills").children("li").detach();
-                     //var items = $(e).find("#tabs-btn").data("items");
-                     $(e).empty();
-                     $(e).append(items);
-
-                     $(".popover-content:empty").parent().remove();
-                  }
+                     nav.stop().animate({className: "nav nav-pills xs-nav-tabs-active nav-stacked dropdown"}, 300, "Power3.easeOut", function () {
+                        nav = nav.detach();
+                     });
+                  });
                });
-               /* if ($(window).width() < 768)
-                {
-                $(window).trigger("ew.screen.xs");
-                }
-                else if ($(window).width() >= 768 && $(window).width() < 992)
+               if ($(window).width() < 768)
+               {
+                  $(window).trigger("ew.screen.xs");
+               }
+               /*else if ($(window).width() >= 768 && $(window).width() < 992)
                 {
                 $(window).trigger("ew.screen.sm");
                 }
@@ -721,19 +714,7 @@ if ($secId)
             $(".nav.xs-nav-tabs:not(.xs-nav-tabs-active)").each(function (i) {
                $(this).data("xs-nav-bar-active")(this);
             });
-
          });
-         $(window).on("ew.screen.sm ew.screen.md ew.screen.lg", function ()
-         {
-            $(".nav.xs-nav-tabs-active").each(function (i) {
-               $(this).data("xs-nav-bar-deactive")(this);
-            });
-            $(".tab-pane-xs.tab-pane").each(function (i)
-            {
-            });
-         });
-
-
 
       </script>
    </head>

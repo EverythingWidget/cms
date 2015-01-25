@@ -4,30 +4,29 @@ function sidebar()
 {
    ob_start();
    ?>
-   <div class="row">
-      <ul>
-         <li>
-            <a rel="ajax" href="app=dashboard"   data-default="true">
-               Dashboard
-            </a>
-         </li>
-      </ul>
-   </div>
-   <div class="row">
-      <label>Apps</label>
-      <ul id="apps">
-         <?php         
-         $apps = json_decode(EWCore::get_apps(), true);
-         foreach ($apps as $app)
-         {
-            //if()
-            ?>
-            <li><a rel="ajax" href="app=<?php echo $app["root"]; ?>"   ><?php echo $app["name"]; ?></a></li>
-            <?php
-         }
+
+   <ul>
+      <li>
+         <a rel="ajax" href="app=dashboard"   data-default="true">
+            Dashboard
+         </a>
+      </li>
+   </ul>
+
+   <label>Apps</label>
+   <ul id="apps">
+      <?php
+      $apps = json_decode(EWCore::get_apps(), true);
+      foreach ($apps as $app)
+      {
+         //if()
          ?>
-      </ul>
-   </div>
+         <li><a rel="ajax" href="app=<?php echo $app["root"]; ?>"   ><?php echo $app["name"]; ?></a></li>
+         <?php
+      }
+      ?>
+   </ul>
+
    <?php
    return ob_get_clean();
 }

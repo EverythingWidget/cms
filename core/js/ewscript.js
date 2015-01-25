@@ -752,6 +752,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
          {
             modalPane.animate({left: "-=10%"}, 1);
             modalPane.animate({opacity: "1", left: "+=10%"}, 420, "Power3.easeOut", function () {
+               modalPane.css("left", "");
                methods.setCloseButton();
                modalPane.isOpen = true;
                if (settings.class == "full")

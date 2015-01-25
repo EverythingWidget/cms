@@ -85,7 +85,7 @@ root{display:block;}
 {
    /*#component-chooser{width:300px;}*/
    #header-pane .action-pane{margin:0px 0px 0px 320px;}
-   .top-pane.center{position:absolute;top:0px;bottom:0px;right:0px;max-width:100%;width:100%;min-width:320px;min-height:400px;overflow:hidden;}
+   .top-pane.center{position:absolute;left:0%;margin-left:0px;top:0px;bottom:0px;right:0px;max-width:100%;width:100%;min-width:320px;min-height:400px;overflow:hidden;}
    div#components-pane{max-width:580px;}
    ul.component li {margin:10px;float:left;width:250px;padding:0px 10px}  
    .tabs-bar.tab-pane-sm{display:block !important;}
@@ -102,7 +102,7 @@ root{display:block;}
 {
    /*#component-chooser{width:300px;}*/
    #header-pane .action-pane{margin:0px 0px 0px 320px;}
-   .top-pane.center{position:absolute;top:5px;bottom:5px;right:0px;max-width:1200px;width:100%;min-width:320px;min-height:400px;overflow:hidden;}
+   .top-pane.center{position:absolute;top:10px;bottom:14px;right:0px;max-width:992px;width:100%;min-width:320px;min-height:400px;overflow:hidden;left:50%;margin-left:-496px;}
    div#components-pane{max-width:580px;}
    ul.component li {margin:10px;float:left;width:250px;padding:0px 10px}
    .tabs-bar.tab-pane-md{display:block !important;}
@@ -119,7 +119,7 @@ root{display:block;}
 {
    /*#component-chooser{width:300px;}*/
    #header-pane .action-pane{margin:0px 0px 0px 320px;}
-   .top-pane.center{position:absolute;top:14px;bottom:18px;right:0px;left:50%;margin-left:-620px;width:1240px;min-width:320px;min-height:400px;overflow:hidden;}
+   .top-pane.center{position:absolute;top:14px;bottom:18px;right:0px;left:50%;margin-left:-640px;width:1280px;min-width:320px;min-height:400px;overflow:hidden;}
    div#components-pane{max-width:580px;}
    ul.component li {margin:10px;float:left;width:250px;padding:0px 10px}
    .tabs-bar.tab-pane-lg{display:block !important;}
@@ -322,13 +322,15 @@ div.sidebar{background-color:#4f5f6f;position:absolute;top:49px;left:10px;width:
 div.sidebar > label,div.sidebar > *{display:none;}
 div.sidebar.in > *{display:inherit;}
 div.sidebar .comp-btn{height:40px;color:#fff;padding:0px 15px;padding-left:46px;font-size:15px;float:left;display:inline;font-weight:300;}
-div.sidebar.in{left:5px;top:44px;height:auto;width:220px;border-radius:2px;padding-bottom:10px;box-shadow:0px 6px 20px -4px rgba(0,0,0,.5)}
+div.sidebar.in{left:5px;top:44px;height:auto;width:220px;border-radius:2px;box-shadow:0px 6px 20px -4px rgba(0,0,0,.5)}
 div.sidebar.in .comp-btn{display:none;}
 div.sidebar.small{min-width:54px;width:54px;}
 div.sidebar.small img{float:none; margin:0px auto;display:block;padding:0px;}
 div.sidebar .row{padding:5px 0px 5px 0px;margin:0px;}
 div.sidebar label{min-width:200px;line-height:20px;font-size:18px;font-weight:300;padding:10px;overflow:hidden;border-left-width:0px;color:#7fcfff;}
-div.sidebar ul{list-style:none;padding:0px 0px 5px 0px;margin:0px 0px;min-width:200px;}
+div.sidebar ul{list-style:none;padding:0px;margin:0px 0px;min-width:200px;}
+div.sidebar ul + ul{list-style:none;padding:0px;margin:5px 0px 0px;min-width:200px;}
+div.sidebar ul + label{margin-top:5px;}
 div.sidebar li{padding:0px;display:block;overflow:hidden;}
 div.sidebar li a{background-position:right center;background-repeat:no-repeat;color:#eee;text-decoration:none;padding:10px;display:block;line-height:20px;min-height:40px;vertical-align:middle;}
 div.sidebar li a img{max-height:28px;float:left;margin:0px}
@@ -557,8 +559,8 @@ div.notification .close{margin:-10px 0px;position:absolute;right:0px;height:40px
 .aln-center{text-align:center;}
 .row-separator{float:left;width:100%;padding:0px;margin:0px;}
 .different-screens{background-image:url('different-screens.png');background-repeat:no-repeat;background-position:center center;height:413px;width:836px;display:block;float:none;margin:10px auto;}
-.xs-nav-tabs-active > li.dropdown{width:60px;margin-left:auto;margin-right:auto;float:none;}
-.xs-nav-tabs-active > li.dropdown > a{background-image:url("side-bar-btn.png");background-repeat:no-repeat;background-position:center center;height:38px;}
+.nav-pills > li.dropdown{width:60px;margin-left:auto;margin-right:auto;float:none;}
+.nav-pills > li.dropdown > a{background-image:url("side-bar-btn.png");background-repeat:no-repeat;background-position:center center;height:38px;}
 .nav-tabs{padding:0px 10px;position:relative;z-index:2;}
 .btn-refresh{width:14px;height:14px;background-color:#666;border-radius:7px;float:right;cursor:pointer}
 .btn-refresh:hover{background-color:#0080f0;}
