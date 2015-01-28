@@ -131,34 +131,34 @@ $WM = new admin\WidgetsManagement();
 
          // Add widget data to the widget-data script tag
          if (data["widget_data"])
-            uisForm.editor.EW.widget_data[data["widget_id"]] = $.parseJSON(data["widget_data"]);
+            uisForm.setWidgetData(data["widget_id"], data["widget_data"]);
 
          // Add widget script with the widget id into the head tag
          //if (data["widget_script"])
-            //uisForm.getEditor().find("head").append(data["widget_script"]);
- /*if (data["widget_script"])
-         {
-            var div = uisForm.editor.document.createElement('div');
-            div.innerHTML = data["widget_script"];
-            var elements = div.childNodes;
-            for (el in elements)
-            {               
-               if (typeof(elements[el]) == "object")
-               {
-                  uisForm.editor.document.head.appendChild(elements[el]);
-               }
-            }
-         }*/
+         //uisForm.getEditor().find("head").append(data["widget_script"]);
+         /*if (data["widget_script"])
+          {
+          var div = uisForm.editor.document.createElement('div');
+          div.innerHTML = data["widget_script"];
+          var elements = div.childNodes;
+          for (el in elements)
+          {               
+          if (typeof(elements[el]) == "object")
+          {
+          uisForm.editor.document.head.appendChild(elements[el]);
+          }
+          }
+          }*/
          var containerElement = $("#fr").contents().find("body #base-content-pane div[data-panel-id='<?php echo $panelId ?>']");
          if (containerElement.hasClass("block"))
          {
             //containerElement.append(data["widget_html"]);
-            uisForm.addWidget(data["widget_html"],containerElement[0]);
+            uisForm.addWidget(data["widget_html"], containerElement[0]);
          }
          else
          {
             //containerElement.children(".row").append(data["widget_html"]);
-            uisForm.addWidget(data["widget_html"],containerElement.children(".row")[0]);
+            uisForm.addWidget(data["widget_html"], containerElement.children(".row")[0]);
          }
 
          //$("#fr").contents().find("body #base-content-pane div[data-panel-id='<?php echo $panelId ?>']").append(data);
@@ -188,14 +188,14 @@ $WM = new admin\WidgetsManagement();
 
          // Add widget data to the widget-data script tag
          if (data["widget_data"])
-            uisForm.editor.EW.widget_data[data["widget_id"]] = $.parseJSON(data["widget_data"]);
+            uisForm.setWidgetData(data["widget_id"], data["widget_data"]);
 
          // Add widget script with the widget id into the head tag
          //if (data["widget_script"])
-            //uisForm.getEditor().find("head").append(data["widget_script"]);
+         //uisForm.getEditor().find("head").append(data["widget_script"]);
 
          //widget.parent().replaceWith(data["widget_html"]);
-         uisForm.replaceWidget(data["widget_html"],widget.parent()[0]);
+         uisForm.replaceWidget(data["widget_html"], widget.parent()[0]);
 
          $.EW("getParentDialog", $("#uis-widget-form")).trigger("close");
          $("#inspector-editor").trigger("refresh");
