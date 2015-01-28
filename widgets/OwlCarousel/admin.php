@@ -66,5 +66,11 @@
       <label class="btn btn-primary" >
          <input type="checkbox" name="center" id="center" value="true" > tr{Center}
       </label>
+      <label class="btn btn-primary" >
+         <input type="checkbox" name="slide-indicator" value="true" > tr{Slide Indicator}
+      </label>
+      <label class="btn btn-primary" >
+         <input type="checkbox" name="nav" value="true" > tr{Navigation}
+      </label>
    </div>
 </div>

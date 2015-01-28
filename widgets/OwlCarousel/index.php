@@ -30,6 +30,14 @@ if ($widget_parameters["loop"])
 $center = 'false';
 if ($widget_parameters["center"])
    $center = $widget_parameters["center"];
+
+$slide_indicator = 'false';
+if ($widget_parameters["slide-indicator"])
+   $slide_indicator = $widget_parameters["slide-indicator"];
+
+$nav = 'false';
+if ($widget_parameters["nav"])
+   $nav = $widget_parameters["nav"];
 //$list = json_decode($widget_parameters["list"], TRUE);
 
 if ($widget_parameters["default-content"] == "yes")
@@ -73,6 +81,8 @@ $page = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
             autoHeight:<?php echo $auto_height ?>,
             loop:<?php echo $loop ?>,
             center:<?php echo $center ?>,
+            dots:<?php echo $slide_indicator ?>,
+            nav:<?php echo $nav ?>,
             responsive: {
                0: {
                   items: <?php echo $item_per_slide_xs ?>

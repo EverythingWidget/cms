@@ -48,16 +48,18 @@ class Settings extends Section
    public function save_settings($params)
    {
       //$MYSQLI = get_db_connection();
+      //print_r($params);
       if (!$params)
          $params = $_REQUEST["params"];
-      $params = json_decode($params, TRUE);
+      $params = json_decode(stripslashes($params), TRUE);
+      
       foreach ($params as $key => $value)
       {
          //echo $key . " " . $value;
-         if (!$this->save_setting($key, $value))
+         if (!self::save_setting($key, $value))
             return json_encode(array(status => "error", message => "App configurations has NOT been saved, Please try again"));
       }
-
+//echo "asdasd";
       return json_encode(array(status => "success", message => "App configurations has been saved succesfully"));
    }
 
@@ -121,7 +123,7 @@ class Settings extends Section
          $lang_file = json_decode(file_get_contents($path), true);
 
          $lang_file["strings"] = array_combine($id, $text);
-         $fp = file_put_contents($path, json_encode($lang_file, JSON_UNESCAPED_UNICODE));         
+         $fp = file_put_contents($path, json_encode($lang_file, JSON_UNESCAPED_UNICODE));
 
          return json_encode(array(status => "success", message => "tr{The language file has been updated successfully}"));
       }
