@@ -20,6 +20,7 @@ root{display:block;}
 @font-face {
    font-family: 'Roboto';
    src: local('Cabin Regular'), local('Regular'), url('Roboto-Regular.ttf');
+   font-weight: 400;
    font-style: normal;
 }
 @font-face {
@@ -322,7 +323,7 @@ div.sidebar{background-color:#4f5f6f;position:absolute;top:49px;left:10px;width:
 div.sidebar > label,div.sidebar > *{display:none;}
 div.sidebar.in > *{display:inherit;}
 div.sidebar .comp-btn{height:40px;color:#fff;padding:0px 15px;padding-left:46px;font-size:15px;float:left;display:inline;font-weight:300;}
-div.sidebar.in{left:5px;top:44px;height:auto;width:220px;border-radius:2px;box-shadow:0px 6px 20px -4px rgba(0,0,0,.5)}
+div.sidebar.in{left:5px;top:44px;height:auto;width:220px;border-radius:2px;box-shadow:0px 6px 20px -4px rgba(0,0,0,.5);}
 div.sidebar.in .comp-btn{display:none;}
 div.sidebar.small{min-width:54px;width:54px;}
 div.sidebar.small img{float:none; margin:0px auto;display:block;padding:0px;}
@@ -330,7 +331,7 @@ div.sidebar .row{padding:5px 0px 5px 0px;margin:0px;}
 div.sidebar label{min-width:200px;line-height:20px;font-size:18px;font-weight:300;padding:10px;overflow:hidden;border-left-width:0px;color:#7fcfff;}
 div.sidebar ul{list-style:none;padding:0px;margin:0px 0px;min-width:200px;}
 div.sidebar ul + ul{list-style:none;padding:0px;margin:5px 0px 0px;min-width:200px;}
-div.sidebar ul + label{margin-top:5px;}
+div.sidebar ul + label{margin-top:8px;}
 div.sidebar li{padding:0px;display:block;overflow:hidden;}
 div.sidebar li a{background-position:right center;background-repeat:no-repeat;color:#eee;text-decoration:none;padding:10px;display:block;line-height:20px;min-height:40px;vertical-align:middle;}
 div.sidebar li a img{max-height:28px;float:left;margin:0px}
@@ -418,7 +419,7 @@ label.label-float.focused{color:#039BE5;text-shadow:none;margin-top:-16px;}
 //.label-float-input.valued,.label-float-input:focus{padding-top:12px;}
 label.small{line-height:18px;padding:0px 1px;font-weight:normal;}
 textarea.text-field{line-height:20px;height:82px}
-.text-field,select{width:100%;min-height:28px;line-height:20px;padding:5px 0px;border:0px solid rgba(0,0,0,.1);border-bottom-width:2px;margin:0px;outline:none;display:block;font-family:Roboto,Homa,Tahoma;font-size:1.3em;font-weight:normal;background-color:transparent;border-radius:0px;transition-property:border-color;transition-duration:300ms;}
+.text-field,select{width:100%;min-height:28px;line-height:26px;padding:5px 0px;border:0px solid rgba(0,0,0,.1);border-bottom-width:2px;margin:0px;outline:none;display:block;font-family:Roboto,Homa,Tahoma;font-size:1.3em;font-weight:400;background-color:transparent;border-radius:0px;transition-property:border-color;transition-duration:300ms;}
 .text-field.Radio{background-color:#fff;width:auto;height:auto;min-height:28px;line-height:28px;border:1px solid #ccc;padding:0px;padding-right:4px;padding-left:4px;outline:none;float:right;direction:rtl;margin-left:3px;font-family:Tahoma;font-size:12px;cursor:pointer;-webkit-user-select:none;-khtml-user-select:none;-moz-user-select:none;-ms-user-select:none;-o-user-select:none;user-select:none;}
 .text-field.Radio span{width:auto;min-height:28px;line-height:28px;float:right;direction:rtl;font-family:Tahoma;font-size:12px;cursor:pointer;}
 .text-field.Radio input{width:30px;height:28px;line-height:28px;padding:0px;padding-right:4px;padding-left:4px;margin:0px;margin-right:10px;outline:none;float:left;cursor:pointer;}

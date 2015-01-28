@@ -629,7 +629,8 @@ class WidgetsManagement extends Section
       {
          $widget_data = reset(self::get_widget_data_object());
       }
-      return ["widget_html" => $widget_html, "widget_data" => $widget_data, "widget_id" => $widget_id];
+      $widget_script = self::get_html_scripts($widget_id);
+      return ["widget_html" => $widget_html, "widget_data" => $widget_data, "widget_id" => $widget_id, "widget_script" => $widget_script, "widget_style" => ""];
    }
 
    public function get_widget($widgetId)
@@ -914,15 +915,15 @@ class WidgetsManagement extends Section
       self::$html_scripts[] = array("src" => $src, "script" => $script);
    }
 
-   public static function get_html_scripts()
+   public static function get_html_scripts($element_id)
    {
       $result = "";
       foreach (self::$html_scripts as $script)
       {
          if ($script["src"])
-            $result.="<script src='{$script["src"]}'>{$script["script"]}</script>";
+            $result.="<script id='$element_id' src='{$script["src"]}'>{$script["script"]}</script>";
          else if ($script["script"])
-            $result.="<script>{$script["script"]}</script>";
+            $result.="<script id='$element_id'>{$script["script"]}</script>";
       }
       return $result;
    }

@@ -126,23 +126,45 @@ $WM = new admin\WidgetsManagement();
          widget_style_class: widgetStyleClass, style_id: styleId, widget_parameters: wp},
       function (data) {
          EW.lock($.EW("getParentDialog", $("#uis-widget-form")));
+         // Remove the old widget script
+         //uisForm.getEditor().find("head #" + self.widgetId).remove();
+
+         // Add widget data to the widget-data script tag
+         if (data["widget_data"])
+            uisForm.editor.EW.widget_data[data["widget_id"]] = $.parseJSON(data["widget_data"]);
+
+         // Add widget script with the widget id into the head tag
+         //if (data["widget_script"])
+            //uisForm.getEditor().find("head").append(data["widget_script"]);
+ /*if (data["widget_script"])
+         {
+            var div = uisForm.editor.document.createElement('div');
+            div.innerHTML = data["widget_script"];
+            var elements = div.childNodes;
+            for (el in elements)
+            {               
+               if (typeof(elements[el]) == "object")
+               {
+                  uisForm.editor.document.head.appendChild(elements[el]);
+               }
+            }
+         }*/
          var containerElement = $("#fr").contents().find("body #base-content-pane div[data-panel-id='<?php echo $panelId ?>']");
          if (containerElement.hasClass("block"))
          {
-            containerElement.append(data["widget_html"]);
+            //containerElement.append(data["widget_html"]);
+            uisForm.addWidget(data["widget_html"],containerElement[0]);
          }
          else
          {
-            containerElement.children(".row").append(data["widget_html"]);
+            //containerElement.children(".row").append(data["widget_html"]);
+            uisForm.addWidget(data["widget_html"],containerElement.children(".row")[0]);
          }
-         if (data["widget_data"])
-            uisForm.editor.EW.widget_data[data["widget_id"]] = $.parseJSON(data["widget_data"]);
+
          //$("#fr").contents().find("body #base-content-pane div[data-panel-id='<?php echo $panelId ?>']").append(data);
          $("#inspector-editor").trigger("refresh");
          $.EW("getParentDialog", $("#uis-widget-form")).trigger("close");
       }, "json");
-      //neuis.updateUIS(true);
-      //neuis.currentDialog.dispose();
    };
 
    UISWidget.prototype.applyToWidget = function ()
@@ -153,38 +175,31 @@ $WM = new admin\WidgetsManagement();
       var wp = $("#uis-widget").serializeJSON();
       if (self.getWidgetData)
          wp = JSON.stringify($.extend($.parseJSON(wp), self.getWidgetData.apply(null, null)));
-      //var oldParameters = widget.attr("data-widget-parameters");
-      //var param = $("#parameters").val();
       var styleId = $("#style_id").val();
       var styleClass = $("#used-classes").text();
       var widgetStyleClass = $("#style_class").val();
-      //$("#add").hide();
-      //$("#cancel").hide();*/
-
-      /*widget.prop("id", styleId);
-       widget.attr("data-widget-parameters", wp);
-       widget.attr("class", "widget " + widgetStyleClass);
-       widget.attr("data-widget-type", uisWidget.widgetType);
-       widget.data("container").prop("class", "widget-container " + styleClass);*/
 
       $.post('<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/create_widget', {widget_id: this.widgetId, widget_type: uisWidget.widgetType, style_class: styleClass,
          widget_style_class: widgetStyleClass, style_id: styleId, widget_parameters: wp},
       function (data) {
          EW.lock($.EW("getParentDialog", $("#uis-widget-form")));
-         var w = $.parseHTML(data["widget_html"], $("#fr")[0].contentWindow.document, true);
-         widget.parent().replaceWith(w);
+         // Remove the old widget script
+         uisForm.getEditor().find("head #" + self.widgetId).remove();
+
+         // Add widget data to the widget-data script tag
          if (data["widget_data"])
             uisForm.editor.EW.widget_data[data["widget_id"]] = $.parseJSON(data["widget_data"]);
+
+         // Add widget script with the widget id into the head tag
+         //if (data["widget_script"])
+            //uisForm.getEditor().find("head").append(data["widget_script"]);
+
+         //widget.parent().replaceWith(data["widget_html"]);
+         uisForm.replaceWidget(data["widget_html"],widget.parent()[0]);
 
          $.EW("getParentDialog", $("#uis-widget-form")).trigger("close");
          $("#inspector-editor").trigger("refresh");
       }, "json");
-
-
-      /*if (oldParameters != wp || oldType != uisWidget.widgetType)
-       {
-       neuis.updateUIS(true);
-       }*/
    };
 
 

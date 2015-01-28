@@ -450,6 +450,7 @@ if ($secId)
          {
             this.currentTab = null;
             var oldHref = null
+            var oldRequest = null
             this.setCurrentTab = function (element)
             {
                if (this.currentTab)
@@ -465,13 +466,16 @@ if ($secId)
                      $("#side-bar-btn").text(element.text());
                      if (element.attr("data-ew-nav") && element.attr("href") != oldHref)
                      {
-                        //alert("aaaaaaa");
-                        $("#action-bar-items").find("button").remove();
+                        //alert(element.prop("href"));
+                        $("#action-bar-items").find("button,div").remove();
                         $("#main-content").empty();
                         EW.lock($("#main-content"), "");
-                        $.post(element.prop("href"), function (data) {
+                        if(oldRequest)
+                           oldRequest.abort();
+                        oldRequest = $.post(element.prop("href"), function (data) {
                            //$("#action-bar-items").find("button").remove();
                            //EW.unlock($("#main-content"));
+                           $("#action-bar-items").find("button,div").remove();
                            $("#main-content").html(data);
                         });
                      }
@@ -638,7 +642,7 @@ if ($secId)
                   // Show default nav style when the window is wide enough
                   $(window).one("ew.screen.sm ew.screen.md ew.screen.lg", function ()
                   {
-                     if ($(e).hasClass("xs-nav-tabs-active"))
+                     if (nav && nav.hasClass("xs-nav-tabs-active"))
                      {
                         nav.unbind('mouseenter mouseleave')
                         nav.data("button").after(nav.data("menu"));
