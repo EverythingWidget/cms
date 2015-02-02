@@ -32,6 +32,7 @@ function EverythingWidgets()
    this.mainContent = $("#main-content");
    this.currentTab = null;
    this.widget_data = [];
+   this.activityCounter = [];
    $("#components-pane").hide();
    var oldSize = "";
    $(document).mousedown(function (event) {
@@ -276,30 +277,33 @@ EverythingWidgets.prototype.getActivity = function (conf)
    var self = this;
    var settings = {title: "", defaultClass: "btn-primary", activity: null};
    $.extend(settings, conf);
+   var ac = 1;
    if (!self.activities[settings.activity])
    {
       console.log("activity does not exist: " + settings.activity);
       return null;
    }
-   if (self.activities[settings.activity].modalObject && settings.modal && settings.modal.class)
+   var activityId = settings.activity;
+   // create new activity from the original activity in the case where there is more than one action for one activity
+   if (self.activityCounter[settings.activity])
    {
-
-      self.activities[settings.activity].modalObject.animate({className: "top-pane col-xs-12 " + settings.modal.class}, 300);
+      ac = self.activityCounter[settings.activity];
+      ac++;
+      activityId = settings.activity + "-" + ac;
    }
-   /*if (conf.postData)
-    {
-    self.activities[settings.activity].postData = conf.postData;
-    }
-    if (conf.onDone)
-    {
-    self.activities[settings.activity].onDone = conf.onDone;
-    }*/
-   $.extend(self.activities[settings.activity], conf);
-   //self.activities[settings.activity].modalSetting = conf.modalSetting;
 
+   self.activityCounter[settings.activity] = ac;
+   
+   self.activities[activityId] = $.extend(true, {}, self.activities[settings.activity]);
+
+   if (self.activities[activityId].modalObject && settings.modal && settings.modal.class)
+   {
+      self.activities[activityId].modalObject.animate({className: "top-pane col-xs-12 " + settings.modal.class}, 300);
+   }
+   
+   $.extend(self.activities[activityId], conf);
    var activityCaller = function (hash) {
-      var hashParameters = {ew_activity: settings.activity};
-
+      var hashParameters = {ew_activity: activityId};
       // Call hash if it is a function
       if (typeof hash == 'function')
       {
@@ -309,7 +313,7 @@ EverythingWidgets.prototype.getActivity = function (conf)
       $.extend(hashParameters, hash);
 
       // if the activity contains a form then set a main hash parameter
-      if (self.activities[settings.activity].form)
+      if (self.activities[activityId].form)
       {
          self.setHashParameters(hashParameters);
       }

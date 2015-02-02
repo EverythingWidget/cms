@@ -132,7 +132,7 @@
             //var toppos = ($(window).outerWidth() / 100) * pos;
             //alert(el.position().left);
             var s = $(this);
-            s.css("display","");
+            s.css("display", "");
             s.css("position", "absolute");
             $(this).stop().animate({left: pos + '%'}, settings.animationTime, settings.easing, function ()
             {
@@ -191,18 +191,19 @@
             $(".onepage-pagination li a" + "[data-index='" + index + "']").removeClass("active");
             $(".onepage-pagination li a" + "[data-index='" + next.data("index") + "']").addClass("active");
          }
-
-         //$("body")[0].className = $("body")[0].className.replace(/\bviewing-page-\d.*?\b/g, '');
          $("body").removeClass("viewing-page-" + current.data("index"));
-         $("body").addClass("viewing-page-" + next.data("index"))
+         $("body").addClass("viewing-page-" + next.data("index"));
+         if (mainMenu)
+         {
+            mainMenu.find("li.active").removeClass("active");
+            mainMenu.find("li a[href='#" + (next.attr("data-container-id")) + "']").parent().addClass("active");
+         }
 
-         if (history.replaceState && settings.updateURL == true) {
+         if (history.replaceState && settings.updateURL == true) 
+         {
             var href = window.location.href.substr(0, window.location.href.indexOf('#')) + "#" + (index + 1);
             history.pushState({}, document.title, href);
          }
-         /*current.transformPage(settings, -100, next.data("index"));
-          next.transformPage(settings, 0, next.data("index"));*/
-         //el.transformPage(settings, pos, next.data("index"));
          current.transformPage(settings, -100, next.data("index"));
          next.css({left: '100%'});
          next.transformPage(settings, 0, next.data("index"));
@@ -235,17 +236,20 @@
             $(".onepage-pagination li a" + "[data-index='" + index + "']").removeClass("active");
             $(".onepage-pagination li a" + "[data-index='" + next.data("index") + "']").addClass("active");
          }
-         //$("body")[0].className = $("body")[0].className.replace(/\bviewing-page-\d.*?\b/g, '');
+         
+         if (mainMenu)
+         {
+            mainMenu.find("li.active").removeClass("active");
+            mainMenu.find("li a[href='#" + (next.attr("data-container-id")) + "']").parent().addClass("active");
+         }
          $("body").removeClass("viewing-page-" + current.data("index"));
          $("body").addClass("viewing-page-" + next.data("index"))
 
-         if (history.replaceState && settings.updateURL == true) {
+         if (history.replaceState && settings.updateURL == true)
+         {
             var href = window.location.href.substr(0, window.location.href.indexOf('#')) + "#" + (index - 1);
             history.pushState({}, document.title, href);
          }
-         //current.transformPage(settings, 100, next.data("index"));
-         //next.transformPage(settings, 0, next.data("index"));
-         //el.transformPage(settings, pos, next.data("index"));
          current.transformPage(settings, 100, next.data("index"));
          next.css({left: '-100%'});
          next.transformPage(settings, 0, next.data("index"));

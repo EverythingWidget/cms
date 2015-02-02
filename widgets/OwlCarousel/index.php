@@ -38,6 +38,18 @@ if ($widget_parameters["slide-indicator"])
 $nav = 'false';
 if ($widget_parameters["nav"])
    $nav = $widget_parameters["nav"];
+
+$auto_play = 'false';
+if ($widget_parameters["auto-play"])
+   $auto_play = $widget_parameters["auto-play"];
+
+$autoPlayPause = 'false';
+if ($widget_parameters["auto-play-pause"])
+   $autoPlayPause = $widget_parameters["auto-play-pause"];
+
+$slide_timeout = 'false';
+if ($widget_parameters["slide-timeout"])
+   $slide_timeout = $widget_parameters["slide-timeout"];
 //$list = json_decode($widget_parameters["list"], TRUE);
 
 if ($widget_parameters["default-content"] == "yes")
@@ -83,6 +95,9 @@ $page = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
             center:<?php echo $center ?>,
             dots:<?php echo $slide_indicator ?>,
             nav:<?php echo $nav ?>,
+            autoplay:<?php echo $auto_play ?>,
+            autoplayTimeout: <?php echo $slide_timeout ?>,
+            autoplayHoverPause:<?php echo $autoPlayPause ?>,
             responsive: {
                0: {
                   items: <?php echo $item_per_slide_xs ?>

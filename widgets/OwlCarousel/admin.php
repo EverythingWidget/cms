@@ -42,7 +42,7 @@
          <input class="col-xs-12" type="text" name="items-per-slide-sm" id="items-per-slide-sm" value="1" data-slider="true" data-slider-range="1,12" data-slider-snap="true" data-slider-highlight="true" data-slider-step="1" >
       </div>
    </div>   
-   
+
    <div class="col-lg-6 col-xs-12">
       <div class="row">
          <h4>
@@ -73,4 +73,20 @@
          <input type="checkbox" name="nav" value="true" > tr{Navigation}
       </label>
    </div>
+</div>
+<div class="row">
+   <div class="btn-group btn-group-justified  col-xs-12 mar-top" data-toggle="buttons">
+      <label class="btn btn-primary" >
+         <input type="checkbox" name="auto-play" id="auto-play" value="true" > tr{Auto Play}
+      </label>
+      <label class="btn btn-primary" >
+         <input type="checkbox" name="auto-play-pause" id="auto-play-pause" value="true" > tr{Pause On Hover}
+      </label>     
+   </div>
+</div>
+<div class="row">
+   <h4>
+      tr{Slide Timeout}
+   </h4>        
+   <input class="col-xs-12" type="text" name="slide-timeout" id="slide-timeout" value="1000" data-slider="true" data-slider-range="1000,10000" data-slider-snap="true" data-slider-highlight="true" data-slider-step="200" >
 </div>
