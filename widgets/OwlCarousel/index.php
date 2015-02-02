@@ -47,7 +47,7 @@ $autoPlayPause = 'false';
 if ($widget_parameters["auto-play-pause"])
    $autoPlayPause = $widget_parameters["auto-play-pause"];
 
-$slide_timeout = 'false';
+$slide_timeout = '1000';
 if ($widget_parameters["slide-timeout"])
    $slide_timeout = $widget_parameters["slide-timeout"];
 //$list = json_decode($widget_parameters["list"], TRUE);
