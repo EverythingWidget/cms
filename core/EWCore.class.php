@@ -905,7 +905,7 @@ class EWCore
    {
       $func = null;
       if (!$app)
-         $app = 'EW Admin';
+         $app = 'admin';
       //if (array_key_exists("$type:$id", EWCore::read_registry("ew-widget-feeder")))
       if (EWCore::read_registry("ew-widget-feeder")[$app][$type][$id])
       {
@@ -930,7 +930,7 @@ class EWCore
    {
       $func = null;
       if (!$app)
-         $app = 'EW Admin';
+         $app = 'admin';
       //if (!strpos($id, '/'))
       //$id = "admin/$id";
 
