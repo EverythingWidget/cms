@@ -22,7 +22,7 @@ function get_properties_form()
    ob_start();
    //echo $EW;
    ?>
-   <div class="row">
+   <div class="row mar-top">
       <div class="col-xs-12">
          <input data-label="ID" class="text-field" value="<?php echo $widget_info["style_id"] ?>" name="style_id" id="style_id" >
       </div>      

@@ -808,8 +808,8 @@ fieldset[disabled] .btn {
 }
 
 .btn.btn-text{background-color:transparent;font-weight:500;font-size:1.15em;padding:8px 12px;border-color:transparent;box-shadow:none;}
-.btn.btn-text:hover{box-shadow:none;background-color:#E5E5E5;}
-.btn.btn-text:active{box-shadow:none;background-color:#424242;}
+.btn.btn-text:hover{box-shadow:none;background-color: rgba(0,0,0,.12);}
+.btn.btn-text:active{box-shadow:none;background-color:rgba(0,0,0,.62);}
 .btn-file {
    position: relative;
    overflow: hidden;

@@ -293,14 +293,14 @@ EverythingWidgets.prototype.getActivity = function (conf)
    }
 
    self.activityCounter[settings.activity] = ac;
-   
+
    self.activities[activityId] = $.extend(true, {}, self.activities[settings.activity]);
 
    if (self.activities[activityId].modalObject && settings.modal && settings.modal.class)
    {
       self.activities[activityId].modalObject.animate({className: "top-pane col-xs-12 " + settings.modal.class}, 300);
    }
-   
+
    $.extend(self.activities[activityId], conf);
    var activityCaller = function (hash) {
       var hashParameters = {ew_activity: activityId};
@@ -1327,7 +1327,7 @@ EWTable.prototype.createRow = function (val, rc)
                   ewTable.removeRow(tableRow.data("field-id"));
                }
             });
-            var cancelBtn = $("<button type=button class='btn btn-danger' style='float:right'>Cancel</button>");
+            var cancelBtn = $("<button type=button class='btn btn-default btn-text' style='float:right'>Cancel</button>");
             messageRow.append(cancelBtn);
             cancelBtn.on("click", function () {
                tableRow.css({position: ""});
@@ -1335,6 +1335,12 @@ EWTable.prototype.createRow = function (val, rc)
                messageRow.animate({width: del.outerWidth(), left: del.position().left}, 300, "Power3.easeOut").fadeOut(120, function () {
                   messageRow.remove()
                });
+            });
+            $(document).one("keydown", function (e)
+            {
+               if (e.keyCode == 27) {
+                  cancelBtn.click();
+               }   // esc
             });
             tableRow.append(messageRow);
             messageRow.animate({width: "100%", left: "0px"}, 300, "Power3.easeOut");
@@ -1380,6 +1386,7 @@ EWTable.prototype.createRow = function (val, rc)
       var row = columnString.replace(/(\w+)/g, function (a, p)
       {
          //alert(p);
+         tableRow.data("field-" + a, val[p]);
          return '<td>' + val[p] + '</td>';
       });
       /*$.each(ewTable.config.columns, function (k, v) {
