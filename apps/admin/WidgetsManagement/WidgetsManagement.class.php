@@ -625,12 +625,12 @@ class WidgetsManagement extends Section
       $widget_html = '';
       $widget_html .=self::open_widget($widget_id, $widget_type, $style_class, $widget_style_class, $style_id, stripcslashes($widget_parameters));
       $widget_html .=self::close_widget();
-      if (self::get_widget_data_object())
+      /*if (self::get_widget_data_object())
       {
          $widget_data = reset(self::get_widget_data_object());
-      }
+      }*/
       $widget_script = self::get_html_scripts($widget_id);
-      return ["widget_html" => $widget_html, "widget_data" => $widget_data, "widget_id" => $widget_id, "widget_script" => $widget_script, "widget_style" => ""];
+      return ["widget_html" => $widget_html, "widget_data" => stripcslashes($widget_parameters), "widget_id" => $widget_id, "widget_script" => $widget_script, "widget_style" => ""];
    }
 
    public function get_widget($widgetId)

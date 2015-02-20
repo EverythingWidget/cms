@@ -188,7 +188,10 @@ $WM = new admin\WidgetsManagement();
 
          // Add widget data to the widget-data script tag
          if (data["widget_data"])
+         {
+            //alert(self.widgetId+"  "+data["widget_id"]+"  "+JSON.stringify(data["widget_data"]));
             uisForm.setWidgetData(data["widget_id"], data["widget_data"]);
+         }
 
          // Add widget script with the widget id into the head tag
          //if (data["widget_script"])
