@@ -133,8 +133,9 @@ class EWCore
          {
             $RESULT_CONTENT = $obj->process_request($function_name, $parameters);
          }
-         else if (EWCore::is_widget_feeder("page", "admin", $section_name))
+         else if (EWCore::is_widget_feeder("page", "*", $section_name))
          {
+            // Show index if the URL contains a page feeder
             $path = EW_APPS_DIR . '/' . $app_name . '/index.php';
          }
          else if (!$section_name)
@@ -900,10 +901,27 @@ class EWCore
 
       EWCore::register_object("ew-widget-feeder", $app, self::$registry["ew-widget-feeder"][$app]);
    }
-
+/**
+ * Check whether widget feeder exists
+ * @param type $type
+ * @param string $app
+ * @param type $id
+ * @return boolean returns app name if the $app parameter is set to * or true if the app name is specefied and false in other cases
+ */
    public static function is_widget_feeder($type, $app, $id)
    {
       $func = null;
+      // Check all thge apps for specified feeder
+      if ($app == "*")
+      {
+         $all_feeders = EWCore::read_registry("ew-widget-feeder");
+         foreach ($all_feeders as $feeder => $p)
+         {
+            if ($p[$type][$id])
+               return $feeder;
+         }
+         return FALSE;
+      }
       if (!$app)
          $app = 'admin';
       //if (array_key_exists("$type:$id", EWCore::read_registry("ew-widget-feeder")))
@@ -1468,15 +1486,13 @@ class EWCore
    public static function get_url_uis($url)
    {
       $dbc = EWCore::get_db_connection();
-      // if the url is the root, the default uis will be sat
-      //if(!$dbc->)
-      //echo "sdasdasd";
+      // if the url is the root, the home layout will be set
       if ($url == "/")
       {
          $url = "@HOME_PAGE";
       }
       //echo $r_uri."ssss";
-      $uis = $dbc->query("SELECT * FROM ew_pages_ui_structures,ew_ui_structures WHERE ew_ui_structures.id = ew_pages_ui_structures.ui_structure_id AND path =  '$url'") or die(print_r($dbc));
+      $uis = $dbc->query("SELECT * FROM ew_pages_ui_structures,ew_ui_structures WHERE ew_ui_structures.id = ew_pages_ui_structures.ui_structure_id AND path LIKE  '$url%'") or die(print_r($dbc));
       if ($row = $uis->fetch_assoc())
       {
          //$dbc->close();

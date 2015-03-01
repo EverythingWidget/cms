@@ -40,7 +40,7 @@ $WM = new admin\WidgetsManagement();
          </div>
          <h4>tr{App's Widgets}</h4>
          <?php
-         $wm = new admin\WidgetsManagement();
+         //$wm = new admin\WidgetsManagement();
          //$widgets_types_list = json_decode($wm->get_widgets_types(), true);
          $widgets_types_list = json_decode(EWCore::get_widget_feeders($feeder_type), true);
          $widgets_types_list = $widgets_types_list["result"];
@@ -53,7 +53,7 @@ $WM = new admin\WidgetsManagement();
                $oldApp = $row["app"];
                echo "<h2>$oldApp</h2>";
             }
-            $prewidget_data = json_encode(["feeder" => "{feederType:\"$widget_type\", feederApp: \"$oldApp\", feederName: \"{$row["name"]}\"}"]);
+            $prewidget_data = json_encode(["feeder" => "{\"type\":\"widget-feeder\",\"feederType\":\"$widget_type\", \"feederApp\": \"$oldApp\", \"feederName\": \"{$row["name"]}\"}"]);
             ?> 
             <div class="text-icon" onclick="uisWidget.showWidgetControlPanel('<?php echo $widget_type ?>',<?php echo htmlentities($prewidget_data) ?>)">
                <?php

@@ -343,10 +343,6 @@ class WidgetsManagement extends Section
             $rows["uis-default"] = "true";
          if ($home_uis["id"] == $uisId)
             $rows["uis-home-page"] = "true";
-
-         //$rows["template_settings"] = stripslashes($rows["template_settings"]);
-//$rows["structure"] = stripslashes($rows["structure"]);
-         //$MYSQLI->close();
          return json_encode($rows);
       }
       else
@@ -1015,7 +1011,7 @@ class WidgetsManagement extends Section
       $result = $MYSQLI->query("SELECT ew_ui_structures.id AS id,name,template,path FROM ew_pages_ui_structures,ew_ui_structures WHERE ew_pages_ui_structures.ui_structure_id = ew_ui_structures.id AND path = '$path'") or die($MYSQLI->error);
       if ($rows = $result->fetch_assoc())
       {
-         $MYSQLI->close();
+         //$MYSQLI->close();
          return json_encode($rows);
       }
       else

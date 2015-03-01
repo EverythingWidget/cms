@@ -145,6 +145,10 @@ if (!isset($_REQUEST["_uis"]))
 {
    if ($_file)
       $r_uri = "/" . $_file;
+   $r_uri = str_replace('/' . $root_dir, "", $r_uri);
+   // Remove last /
+   if (substr($r_uri, -1) == "/")
+      $r_uri = substr($r_uri, 0, strlen($r_uri) - 1);
    $uis_data = EWCore::get_url_uis($r_uri);
    $_REQUEST["_uis"] = $uis_data["uis_id"];
    $_REQUEST["_uis_template"] = $uis_data["uis_template"];
@@ -153,16 +157,10 @@ if (!isset($_REQUEST["_uis"]))
 }
 else
 {
-   $r_uri = $_REQUEST["_uis"];
-   //$dbc = EWCore::get_db_connection();
-   $uis_data = json_decode(admin\WidgetsManagement::get_uis($r_uri), true);
-   //$uis = $dbc->query("SELECT * FROM ew_ui_structures WHERE id =  '$r_uri' ");
-   //if ($row = $uis->fetch_assoc())
-   //{
+   $uis_data = json_decode(admin\WidgetsManagement::get_uis($_REQUEST["_uis"]), true);
    $_REQUEST["_uis_template"] = $uis_data["template"];
    if (!$_REQUEST["_uis_template_settings"])
       $_REQUEST["_uis_template_settings"] = $uis_data["template_settings"];
-   //}
 }
 $GLOBALS["page_parameters"] = explode("/", $_REQUEST["_parameters"]);
 $RESULT_CONTENT = "RESULT_CONTENT: EMPTY";
