@@ -117,21 +117,21 @@ class EWCore
          if (class_exists($real_class_name))
          {
             // Create an instance of section with its parent App
-            $obj = new $real_class_name(EWCore::get_app_instance($app_name));
+            $app_section_object = new $real_class_name(EWCore::get_app_instance($app_name));
             $class_exist = true;
          }
          // If class has no namespace
          else if (class_exists($section_name))
          {
             // Create an instance of section with its parent App
-            $obj = new $section_name(EWCore::get_app_instance($app_name));
+            $app_section_object = new $section_name(EWCore::get_app_instance($app_name));
             $class_exist = true;
          }
 
          $pages_feeders = EWCore::read_registry("ew-widget-feeder");
          if ($class_exist)
          {
-            $RESULT_CONTENT = $obj->process_request($function_name, $parameters);
+            $RESULT_CONTENT = $app_section_object->process_request($function_name, $parameters);
          }
          else if (EWCore::is_widget_feeder("page", "*", $section_name))
          {

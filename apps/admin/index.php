@@ -24,37 +24,22 @@ $className = $_REQUEST['className'];
 $cmd = $_REQUEST['cmd'];
 $compPage = null;
 $pageTitle = 'Administration';
-/* if (isset($className) && class_exists($className))
-  {
-  if ($className == "EWCore")
-  {
-  echo $EW->processRequest();
-  return;
-  }
-  $obj = new $className($className, $_REQUEST);
-  if (isset($cmd))
-  {
-  echo $obj->processRequest();
-  return;
-  }
-  } */
-//echo $_app_name;
+
 $sectionTitle = '';
 if (!$compId)
 {
    $compId = "AppsManagement";
 }
-//echo EW_APPS_DIR . '/admin/' . $compId . '/' ;
 if (class_exists($app_name . "\\" . $compId))
 {
    $ccc = $app_name . "\\" . $compId;
    $sc = new $ccc($ccc, $_REQUEST);
-   //$compPage = EW_APPS_DIR . '/admin/' . $compId . '/' . $sc->get_index();
-   //echo "inja";
 
+   // Load current component content
    $compPage = EWCore::process_command("admin", $compId, null);
    $temp = json_decode($compPage, true);
-   if ($temp["statusCode"] == "404")
+   // If the statusCode is not 200 then show the error
+   if ($temp["statusCode"] && $temp["statusCode"] != 200)
    {
       http_response_code(200);
       header('Content-Type: text/html');
