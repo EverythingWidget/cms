@@ -145,6 +145,7 @@ class EWCore
          }
          else
          {
+            
             // Refer to app section index
             $path = EW_APPS_DIR . '/' . $app_name . '/' . $section_name . '/' . $function_name;
          }
