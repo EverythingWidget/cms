@@ -556,7 +556,7 @@ class ContentManagement extends \Section
       $result["html"] = "WIDGET_DATA_MODEL";
       $result["title"] = $articles[0]['title'];
       $result["content"] = $articles[0]['content'];
-      //print_r($language);
+      //print_r($articles);
       return json_encode($result);
    }
 

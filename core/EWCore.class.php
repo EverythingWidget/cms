@@ -924,6 +924,7 @@ class EWCore
       }
       if (!$app)
          $app = 'admin';
+      
       //if (array_key_exists("$type:$id", EWCore::read_registry("ew-widget-feeder")))
       if (EWCore::read_registry("ew-widget-feeder")[$app][$type][$id])
       {
