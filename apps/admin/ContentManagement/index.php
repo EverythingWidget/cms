@@ -1,6 +1,5 @@
 <?php
 session_start();
-
 function sidebar()
 {
    // ew-contents-main-form, sidebar

@@ -572,7 +572,16 @@ class WidgetsManagement extends Section
       $result_html = '';
       if ($style_id)
          $WIDGET_STYLE_ID = "id='$style_id'";
-      $widget_parameters = json_decode(($params), TRUE);
+      //echo $params;
+
+      if (is_array($params))
+      {
+         $widget_parameters = $params;
+         $params = json_encode($params);
+      }
+      else if ($params)
+         $widget_parameters = json_decode($params, true);
+      //$widget_parameters = json_encode($params);
       $widget_title = WidgetsManagement::get_widget_details($widget_type)["title"];
       // Include widget content
       ob_start();
@@ -586,7 +595,7 @@ class WidgetsManagement extends Section
 
       //if ($no_data)
       //{
-      $parameters_string = "data-widget-parameters='$params'";
+      $parameters_string = "data-widget-parameters='$widget_parameters'";
       $widget_type_string = "data-widget-type='$widget_type'";
       $widget_title_string = "data-widget-title='$widget_title'";
       //}
@@ -619,14 +628,14 @@ class WidgetsManagement extends Section
       self::$current_timestamp = strval($timestamp);
       $widget_id = "widget-" . self::$current_timestamp . '-' . self::$ui_index . '-' . self::$widget_index;
       $widget_html = '';
-      $widget_html .=self::open_widget($widget_id, $widget_type, $style_class, $widget_style_class, $style_id, stripcslashes($widget_parameters));
+      $widget_html .=self::open_widget($widget_id, $widget_type, $style_class, $widget_style_class, $style_id, stripslashes($widget_parameters));
       $widget_html .=self::close_widget();
-      /*if (self::get_widget_data_object())
-      {
-         $widget_data = reset(self::get_widget_data_object());
-      }*/
+      /* if (self::get_widget_data_object())
+        {
+        $widget_data = reset(self::get_widget_data_object());
+        } */
       $widget_script = self::get_html_scripts($widget_id);
-      return ["widget_html" => $widget_html, "widget_data" => stripcslashes($widget_parameters), "widget_id" => $widget_id, "widget_script" => $widget_script, "widget_style" => ""];
+      return ["widget_html" => $widget_html, "widget_data" => stripslashes($widget_parameters), "widget_id" => $widget_id, "widget_script" => $widget_script, "widget_style" => ""];
    }
 
    public function get_widget($widgetId)

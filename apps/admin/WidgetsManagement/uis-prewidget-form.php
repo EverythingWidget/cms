@@ -175,6 +175,7 @@ $WM = new admin\WidgetsManagement();
       var wp = $("#uis-widget").serializeJSON();
       if (self.getWidgetData)
          wp = JSON.stringify($.extend($.parseJSON(wp), self.getWidgetData.apply(null, null)));
+      //alert(wp);
       var styleId = $("#style_id").val();
       var styleClass = $("#used-classes").text();
       var widgetStyleClass = $("#style_class").val();
