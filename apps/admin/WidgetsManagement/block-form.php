@@ -79,8 +79,6 @@ $name = $_REQUEST["name"];
          });
 
          this.panelId = "<?php echo $panel_id ?>";
-         //this.containerId = "<?php echo $container_id ?>";
-         //this.blockHTML = $("<?php echo str_replace("\"", "'", trim(preg_replace('/\s+/', ' ', $block_html))) ?>");
          this.blockHTML = $("<div data-block='true'></div>");
          $("#used-classes").text(this.blockHTML.prop("class"));
          if (this.panelId)
@@ -154,11 +152,7 @@ $name = $_REQUEST["name"];
                   classes[i] = null;
                }
             });
-            //var l = $("<label></label>");
-
-
          });
-
          this.setClasses();
       };
 

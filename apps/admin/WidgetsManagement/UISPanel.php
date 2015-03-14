@@ -42,35 +42,26 @@ $container_id = $_REQUEST["containerId"];
                </div>
             </div>
             <div class="row">
-               <div class="col-xs-12 col-lg-6" >
-                  <div class="dashed-box">
-                     <div class="col-xs-12">
-                        <h2>Used</h2>
-                     </div>
-                     <div class="col-xs-12" id="panel-classes" >
-                     </div>
+               <div class="col-xs-12" >
+                  <h3>Used</h3>
+                  <div class="col-xs-12 options-panel" id="panel-classes" data-toggle="buttons">
                   </div>
                </div>
-               <div class="col-xs-12 col-lg-6"  >
-                  <div class="dashed-box">
-                     <div class="col-xs-12">
-                        <h2>Classes</h2>
-                     </div>
-                     <div class="col-xs-12" id="available-classes" >
-                        <?php
-                        //global $EW;
-                        /*$css_class = "panel";
-                        if (!$container_id)
-                           $css_class = "block";*/
-                        $templates = json_decode(EWCore::parse_css($_REQUEST["template"] . '/template.css', "panel"), true);
-                        foreach ($templates as $t)
-                        {
-                           ?>
-                           <label><?php echo $t ?></label>
-                           <?php
-                        }
+            </div>
+            <div class="row">
+               <div class="col-xs-12"  >
+                  <h3>Classes</h3>
+                  <div class="col-xs-12 options-panel" id="available-classes" data-toggle="buttons">
+                     <?php
+                     $templates = json_decode(EWCore::parse_css($_REQUEST["template"] . '/template.css', "panel"), true);
+
+                     foreach ($templates as $t)
+                     {
                         ?>
-                     </div>
+                        <label><?php echo $t ?></label>
+                        <?php
+                     }
+                     ?>
                   </div>
                </div>
             </div>
@@ -94,208 +85,181 @@ $container_id = $_REQUEST["containerId"];
 </div>
 <script  type="text/javascript">
 
-   function UISPanel()
-   {
-      this.bAdd = EW.addAction("tr{Add}", this.addPanel, {display: "none"}, "uis-panel-actions");
-      this.bEdit = EW.addAction("tr{Save}", this.updatePanel, {display: "none"}, "uis-panel-actions");
-      $("#appearance-conf input[name='title']").change(function () {
-
-         if ($(this).val() == "")
-         {
-            $("#title-text").prop("disabled", true);
-         }
-         else
-         {
-            $("#title-text").prop("disabled", false);
-         }
-      });
-
-
-      this.panelId = "<?php echo $panel_id ?>";
-      this.containerId = "<?php echo $container_id ?>";
-      if (this.panelId)
+   var uisPanel = (function () {
+      function UISPanel()
       {
-         var panel = $("#fr").contents().find("body #base-content-pane div[data-panel-id='" + this.panelId + "']");
-         var panelParams = (panel.attr("data-panel-parameters")) ? $.parseJSON(panel.attr("data-panel-parameters")) : {};
-         EW.setFormData("#appearance-conf", panelParams);
-         $("#uis-panel-title").html("<span>tr{Edit}</span>tr{Panel}");
-         $("#used-classes").text(panel.prop("class"));
-         this.bAdd.comeOut(200);
-         this.bEdit.comeIn(300);
-      }
-      else
-      {
-         this.bAdd.comeIn(300);
-         this.bEdit.comeOut(200);
-      }
-      $("#style_class").keyup(this.setClasses);
+         this.bAdd = EW.addAction("tr{Add}", this.addPanel, {display: "none"}, "uis-panel-actions");
+         this.bEdit = EW.addAction("tr{Save}", this.updatePanel, {display: "none"}, "uis-panel-actions");
+         $("#appearance-conf input[name='title']").change(function () {
 
-   }
-
-
-   UISPanel.prototype.readClasses = function ()
-   {
-      //$("#available-classes").html("");
-
-      //$.getJSON("index.php", {className: "EWCore", cmd: "parse_css", path: $("#template").val()}, function(data)
-      //{
-      var self = this;
-      var classes = $("#used-classes").text();
-
-      classes = classes.split(" ");
-      $.each($("#available-classes").find("label"), function (k, v) {
-         var a = $("<input type='checkbox'>");
-         a.val($(v).text().substring(7));
-         $(v).text($(v).text().substring(7));
-         a.change(function (event) {
-            if ($(this).is(":checked")) {
-               $("#panel-classes").append($(v));
+            if ($(this).val() == "")
+            {
+               $("#title-text").prop("disabled", true);
             }
             else
             {
-               $("#available-classes").append($(v));
-            }
-            self.setClasses();
-            //event.preventDefault()
-         });
-         $.each(classes, function (i, c) {
-            if (a.val() === (c))
-            {
-               a.prop('checked', true);
-               $("#panel-classes").append($(v));
-               classes[i] = null;
+               $("#title-text").prop("disabled", false);
             }
          });
-         //var l = $("<label></label>");
-         $(v).css({float: "left", margin: "0px 5px 5px 0px"});
-         $(v).prepend(a);
-         $(v).addClass("button white");
-      });
+         this.panelId = "<?php echo $panel_id ?>";
+         this.containerId = "<?php echo $container_id ?>";
+         if (this.panelId)
+         {
+            var panel = $("#fr").contents().find("body #base-content-pane div[data-panel-id='" + this.panelId + "']");
+            var panelParams = (panel.attr("data-panel-parameters")) ? $.parseJSON(panel.attr("data-panel-parameters")) : {};
+            EW.setFormData("#appearance-conf", panelParams);
+            $("#uis-panel-title").html("<span>tr{Edit}</span>tr{Panel}");
+            $("#used-classes").text(panel.prop("class"));
+            this.bAdd.comeOut(200);
+            this.bEdit.comeIn(300);
+         }
+         else
+         {
+            this.bAdd.comeIn(300);
+            this.bEdit.comeOut(200);
+         }
+         $("#style_class").keyup(this.setClasses);
+      }
 
-      $.each($("#size-layout").find("input:radio,input:checkbox"), function (k, v) {
-         $.each(classes, function (i, c) {
-            if ($(v).val() === c && !$(v).is(":checked"))
-            {
-               $(v).click();
-               $(v).prop("checked", true);
-            }
+
+      UISPanel.prototype.readClasses = function ()
+      {
+         var self = this;
+         var classes = $("#used-classes").text();
+         classes = classes.split(" ");
+         $.each($("#available-classes").find("label"), function (k, classBtn)
+         {
+            var a = $("<input type='checkbox'>");
+            classBtn = $(classBtn);
+            a.val(classBtn.text().substring(7));
+            classBtn.text(classBtn.text().substring(7));
+            a.change(function (event) {
+               if ($(this).is(":checked"))
+               {
+                  classBtn.removeClass("btn-default");
+                  classBtn.addClass("btn-success");
+                  $("#panel-classes").append($(classBtn));
+               }
+               else
+               {
+                  classBtn.removeClass("btn-success");
+                  classBtn.addClass("btn-default");
+                  $("#available-classes").append($(classBtn));
+               }
+               self.setClasses();
+            });
+            classBtn.addClass("btn btn-default btn-xs");
+            classBtn.prepend(a);
+            $.each(classes, function (i, c) {
+               if (a.val() === (c))
+               {
+                  classBtn.removeClass("btn-default");
+                  classBtn.addClass("btn-success active");
+                  a.prop('checked', true);
+                  $("#panel-classes").append(classBtn);
+                  classes.slice(i, 0);
+               }
+            });
          });
-      });
-      $.each($("#size-layout").find("input[data-slider]"), function (k, v) {
-         $.each(classes, function (i, c) {
-            if (c)
-            {
+         $.each($("#size-layout").find("input:radio,input:checkbox"), function (k, v) {
+            $.each(classes, function (i, c) {
+               if ($(v).val() === c && !$(v).is(":checked"))
+               {
+                  $(v).click();
+                  $(v).prop("checked", true);
+               }
+            });
+         });
+         $.each($("#size-layout").find("input[data-slider]"), function (k, v) {
+            $.each(classes, function (i, c) {
                var sub = c.match(/(\D+)(\d*)/);
-               //alert(sub[1]+" "+$(v).attr("name")+" "+sub[2]);
                if (sub && $(v).attr("name") === sub[1])
                {
-                  //alert(sub[2]);
                   $(v).val(sub[2]).change();
                }
-            }
+            });
          });
-      });
-      $("#size-layout input:radio,#size-layout input:checkbox,input[data-slider]").change(function (event) {
+         $("#size-layout input:radio,#size-layout input:checkbox,input[data-slider]").change(function (event) {
+            self.setClasses();
+         });
          self.setClasses();
-      });
-      self.setClasses();
-   };
-
-   UISPanel.prototype.setClasses = function ()
-   {
-
-      var styleClass = $("#style_class").val() + " ";
-      $("#used-classes").text("");
-
-      $.each($("#panel-classes").find("input"), function (k, v) {
-         styleClass += ($(v).val() + " ");
-      });
-
-      $.each($("#size-layout").find("input:radio:checked:not(:disabled),input:checkbox:checked:not(:disabled)"), function (k, v) {
-
-         styleClass += $(v).val() + " ";
-         //$("#used-classes").append();
-      });
-      $.each($("#size-layout input[data-slider]:not(:disabled)"), function (k, v) {
-         styleClass += $(v).attr("name") + $(v).val() + " ";
-         //$("#used-classes").append($(v).attr("name") + $(v).val() + " ");
-      });
-      //$("#used-classes").text(styleClass);
-      var classes = styleClass.split(" ");
-      var html = "";
-      $.each(classes, function (i, v) {
-         if (v)
-            html += "<span class='tag label label-default'>" + v + " </span>";
-      });
-      $("#used-classes").html(html);
-   };
-
-   // Create and add new div to the page
-   UISPanel.prototype.addPanel = function (pId)
-   {
-      //EW.lock(neuis.currentDialog, "...");
-      var params = $("#appearance-conf").serializeJSON();
-      var div = $("<div data-panel='true'><div class='row'></div></div>");
-      div.prop("id", $("#style_id").val());
-      div.attr("data-panel-parameters", params);
-      div.prop("class", "panel " + $("#used-classes").text());
-
-      //if (uisPanel.containerId != 0)
-
-      var containerElement = $("#fr").contents().find("body #base-content-pane div[data-panel-id='" + uisPanel.containerId + "']");
-      if (containerElement.hasClass("block"))
+      };
+      UISPanel.prototype.setClasses = function ()
       {
-         containerElement.append(div);
-      }
-      else if (!uisPanel.containerId)
+         var styleClass = $("#style_class").val() + " ";
+         $("#used-classes").text("");
+         $.each($("#panel-classes").find("input"), function (k, v) {
+            styleClass += ($(v).val() + " ");
+         });
+         $.each($("#size-layout input[data-slider]:not(:disabled)"), function (k, v) {
+            styleClass += $(v).attr("name") + $(v).val() + " ";
+         });
+         $.each($("#size-layout input:radio:checked:not(:disabled),#size-layout input:checkbox:checked:not(:disabled)"), function (k, v) {
+            styleClass += $(v).val() + " ";
+         });
+         $("#used-classes").text(styleClass);
+         var classes = styleClass.split(" ");
+         var html = "";
+         $.each(classes, function (i, v) {
+            if (v)
+               html += "<span class='tag label label-default'>" + v + " </span>";
+         });
+         $("#used-classes").html(html);
+      };
+      // Create and add new div to the page
+      UISPanel.prototype.addPanel = function (pId)
       {
-         var block = $("<div></div>");
-         block.prop("id", $("#style_id").val());
-         block.attr("data-panel-parameters", params);
-         block.prop("class", "panel block row " + $("#used-classes").text());
-         $("#fr").contents().find("body #base-content-pane").append(block);
-      }
-      else
+         var self = this;
+         //EW.lock(neuis.currentDialog, "...");
+         var params = $("#appearance-conf").serializeJSON();
+         var div = $("<div data-panel='true'><div class='row'></div></div>");
+         div.prop("id", $("#style_id").val());
+         div.attr("data-panel-parameters", params);
+         div.prop("class", "panel " + $("#used-classes").text());
+         //if (uisPanel.containerId != 0)
+
+         var containerElement = $("#fr").contents().find("body #base-content-pane div[data-panel-id='" + this.containerId + "']");
+         if (containerElement.hasClass("block"))
+         {
+            containerElement.append(div);
+         }
+         else if (!self.containerId)
+         {
+            var block = $("<div></div>");
+            block.prop("id", $("#style_id").val());
+            block.attr("data-panel-parameters", params);
+            block.prop("class", "panel block row " + $("#used-classes").text());
+            $("#fr").contents().find("body #base-content-pane").append(block);
+         }
+         else
+         {
+            containerElement.children(".row").append(div);
+         }
+         //else*/
+         //$("#fr").contents().find("body #base-content-pane").append(div);
+         $("#inspector-editor").trigger("refresh");
+         $.EW("getParentDialog", $("#uis-panel")).trigger("close");
+      };
+      UISPanel.prototype.updatePanel = function (pId)
       {
-         containerElement.children(".row").append(div);
-      }
-      //else*/
-      //$("#fr").contents().find("body #base-content-pane").append(div);
-      $("#inspector-editor").trigger("refresh");
-      $.EW("getParentDialog", $("#uis-panel")).trigger("close");
+         var params = $("#appearance-conf").serializeJSON();
+         var div = $("#fr").contents().find("body #base-content-pane div[data-panel-id='" + this.panelId + "']");
+         var oldParameters = div.attr("data-panel-parameters");
+         div.prop("id", $("#style_id").val());
+         div.attr("data-panel-parameters", params);
+         div.prop("class", "panel " + $("#used-classes").text());
+         /*if (oldParameters != params)
+          {
+          neuis.updateUIS(true);
+          }*/
 
-   };
-
-   UISPanel.prototype.updatePanel = function (pId)
-   {
-      var params = $("#appearance-conf").serializeJSON();
-      var div = $("#fr").contents().find("body #base-content-pane div[data-panel-id='" + uisPanel.panelId + "']");
-      var oldParameters = div.attr("data-panel-parameters");
-
-      div.prop("id", $("#style_id").val());
-      div.attr("data-panel-parameters", params);
-      div.prop("class", "panel " + $("#used-classes").text());
-
-      /*if (oldParameters != params)
-       {
-       neuis.updateUIS(true);
-       }*/
-
-      //$("#inspector-editor").trigger("refresh");
-      $.EW("getParentDialog", $("#uis-panel")).trigger("close");
-   };
-
-   var uisPanel = new UISPanel();
+         //$("#inspector-editor").trigger("refresh");
+         $.EW("getParentDialog", $("#uis-panel")).trigger("close");
+      };
+      return new UISPanel();
+   })();
 
    uisPanel.readClasses();
 
-<?php
-/* if ($row['widgets_parameters'])
-  {
-  $res = stripslashes($row['widgets_parameters']);
-  if ($res)
-  echo "EW.setFormData('#appearance-conf',$res);";
-  } */
-?>
 
 </script>
