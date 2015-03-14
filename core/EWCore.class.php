@@ -132,6 +132,7 @@ class EWCore
          if ($class_exist)
          {
             $RESULT_CONTENT = $app_section_object->process_request($function_name, $parameters);
+            
          }
          else if (EWCore::is_widget_feeder("page", "*", $section_name))
          {

@@ -323,7 +323,7 @@ div.sidebar{background-color:#4f5f6f;position:absolute;top:49px;left:10px;width:
 div.sidebar > label,div.sidebar > *{display:none;}
 div.sidebar.in > *{display:inherit;}
 div.sidebar .comp-btn{height:40px;color:#fff;padding:0px 15px;padding-left:46px;font-size:15px;float:left;display:inline;font-weight:300;}
-div.sidebar.in{left:5px;top:44px;height:auto;width:220px;border-radius:2px;box-shadow:0px 6px 20px -4px rgba(0,0,0,.5);}
+div.sidebar.in{left:5px;top:44px;height:auto;width:220px;border-radius:2px;box-shadow:0px 6px 20px -4px rgba(0,0,0,.5);z-index:6;}
 div.sidebar.in .comp-btn{display:none;}
 div.sidebar.small{min-width:54px;width:54px;}
 div.sidebar.small img{float:none; margin:0px auto;display:block;padding:0px;}

@@ -1,0 +1,22 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Mar 14, 2015, 12:56:29 PM
+    Author     : Eeliya
+*/
+@import url(http://fonts.googleapis.com/css?family=Raleway:400,300,700);
+html,body{font-family: 'Raleway', sans-serif;padding:0px;font-size:1.2em;}
+.block.header{padding:15px;border-bottom:2px solid #222;min-height:70px}
+.container{width:100%;min-height:100%}
+.block.section{padding:15px;}
+.section p{font-size:1.2em;font-weight:300;}
+.block.footer{background-color:#ccc;padding:15px;min-height:160px;}
+
+.widget.menu-bar{} 
+.menu-bar ul{list-style:none;margin:0px;overflow:hidden;}
+.menu-bar li{float:left;}
+.menu-bar a{display:block;padding:5px 15px;line-height:30px;border-radius:22px;border:2px solid transparent;color:#222;}
+.menu-bar a:hover{background-color:#ddd;}

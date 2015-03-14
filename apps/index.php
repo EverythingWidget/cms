@@ -137,15 +137,19 @@ if ($app_name == "asset")
 }
 
 $r_uri = strtok($_SERVER["REQUEST_URI"], "?");
+
 // If root dir is same with the uri then refer to the base url
 if ($root_dir == str_replace("/", "", $r_uri))
    $r_uri = "/";
 // Check if UI structure is specified
 if (!isset($_REQUEST["_uis"]))
 {
-   if ($_file)
-      $r_uri = "/" . $_file;
+   if ($section_name)
+      $r_uri = "/" . $section_name;
+   /*if ($_file)
+      $r_uri.='/' . $_file;*/
    $r_uri = str_replace('/' . $root_dir, "", $r_uri);
+   //echo $r_uri;
    // Remove last /
    if (substr($r_uri, -1) == "/")
       $r_uri = substr($r_uri, 0, strlen($r_uri) - 1);
