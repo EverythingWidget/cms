@@ -1773,7 +1773,7 @@ function EWNotification(element, options)
       position: "nw"
    };
 // Element collection
-   console.log(options);
+   //console.log(options);
    this.$element = $(element);
    this.$note = $('<div class="notification alert"></div>');
    this.options = $.extend(true, {}, notify_defaults, options);
@@ -1816,7 +1816,7 @@ function EWNotification(element, options)
    });
    this.$note.prepend(link);
    // Show notification
-   this.show();
+   //this.show();
    return this;
 }
 
@@ -1829,21 +1829,19 @@ EWNotification.prototype.closeNotification = function ()
 };
 EWNotification.prototype.show = function ()
 {
-   //if (this.options.fadeOut.enabled)
-   //var $to = this;  
    var top = 0;
    var left = 0;
    var position = this.options.position;
    var note = this.$note;
    var v = this.$element.find("div[data-alert][data-position='" + this.options.position + "']").last();
-   //alert(v.length);
    this.$note.css("opacity", "0");
-   //alert(v.length + "   " + this.$note.outerWidth());
    this.$element.append(this.$note);
    if (v.length > 0)
    {
       if (position == "ne" || position == "nw" || position == "n")
+      {
          top = v.outerHeight(true) + v.offset().top;
+      }
       if (position == "se" || position == "sw")
          top = v.offset().top - note.outerHeight(true);
    }

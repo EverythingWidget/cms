@@ -149,7 +149,7 @@ root{display:block;}
 .tabs-bar.tab-pane-lg .tab-pane{display:inherit;}
 .tabs-bar.tab-pane-xs .tab-pane{display:inherit;}
 
-.form-content.tab-content .tab-pane.static-block,.static-block{position:fixed;top:96px;bottom:0px;}
+.form-content.tab-content .tab-pane.static-block,.static-block{position:fixed;top:120px;bottom:0px;}
 .form-content.tab-content{position:absolute;width:100%;top:38px;right:0px;bottom:0px;left:0px;display:inherit}
 .form-content.tab-content .tab-pane{position:static;overflow:hidden;padding:0px 15px;}  
 

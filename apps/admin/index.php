@@ -455,7 +455,7 @@ if ($secId)
                         $("#action-bar-items").find("button,div").remove();
                         $("#main-content").empty();
                         EW.lock($("#main-content"), "");
-                        if(oldRequest)
+                        if (oldRequest)
                            oldRequest.abort();
                         oldRequest = $.post(element.prop("href"), function (data) {
                            //$("#action-bar-items").find("button").remove();
@@ -561,7 +561,16 @@ if ($secId)
                   EW.customAjaxErrorHandler = false;
                   return;
                }
-               //console.log(data);
+               //console.log(data.responseJSON);
+               try
+               {
+                  data.responseJSON = $.parseJSON(data.responseJSON);
+               }
+               catch (e)
+               {
+                  console.log("ajaxError:");
+                  console.log(e);
+               }
                $("body").EW().notify({
                   "message": {
                      html: (!data.responseJSON) ? "---ERROR---" : data.responseJSON.message
@@ -570,7 +579,8 @@ if ($secId)
                   position: "n",
                   delay: "stay"
                }).show();
-               EW.unlock($(".glass-pane-lock").parent());
+               // this code is buggy
+               //EW.unlock($(".glass-pane-lock").parent());
             });
 
             $('select').selectpicker({
@@ -652,9 +662,9 @@ if ($secId)
                   xsNavbar.data("nav-xs-btn", true);
                   nav.before(xsNavbar);
                   nav.data("button", xsNavbar);
-                  
+
                   var dropdownNavBtn = $("<li class='dropdown'><a id='tabs-btn' data-toggle='tab' href='#'></a></li>")
-                  nav.prepend(dropdownNavBtn);                  
+                  nav.prepend(dropdownNavBtn);
 
                   var xsNavBarBtn = xsNavbar.find("li");
                   nav.css({top: xsNavBarBtn.offset().top});
@@ -666,16 +676,16 @@ if ($secId)
                      $("body").append(nav);
                   });
                   nav.hover(function (e)
-                  {    
+                  {
                      nav.stop().animate({className: "nav nav-pills xs-nav-tabs-active nav-stacked dropdown in"}, 300, "Power3.easeOut");
                      e.preventDefault();
-                  }, 
-                  function ()
-                  {
-                     nav.stop().animate({className: "nav nav-pills xs-nav-tabs-active nav-stacked dropdown"}, 300, "Power3.easeOut", function () {
-                        nav = nav.detach();
-                     });
-                  });
+                  },
+                          function ()
+                          {
+                             nav.stop().animate({className: "nav nav-pills xs-nav-tabs-active nav-stacked dropdown"}, 300, "Power3.easeOut", function () {
+                                nav = nav.detach();
+                             });
+                          });
                });
                if ($(window).width() < 768)
                {

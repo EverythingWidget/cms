@@ -926,18 +926,17 @@ class ContentManagement extends \Section
       $result = $MYSQLI->query("SELECT * FROM ew_contents WHERE parent_id = '$id' LIMIT 1");
       if ($result->fetch_assoc())
       {
-         return array(status => "unable", status_code => 2);
-         return;
+         //return array(status => "unable", status_code => 2);
+         return \EWCore::log_error(400, "tr{In order to delete this folder, you must delete content of this folder first}");
       }
       $result = $MYSQLI->query("DELETE FROM ew_contents WHERE type = '$type' AND id = '$id'");
-      $MYSQLI->close();
       if ($result)
       {
          return array("status" => "success", "status_code" => 1, "message" => "Content has been deleted successfully");
       }
       else
       {
-         return array("status" => "unsuccess", "status_code" => 0, "message" => "Subcontent should be deleted first, content has not been deleted");
+          return \EWCore::log_error(400, "tr{Something went wrong, please try again}");
       }
    }
 
@@ -955,26 +954,10 @@ class ContentManagement extends \Section
       return json_encode($res);
    }
 
-   public function delete_category()
+   public function delete_category($categoryId)
    {
-      $MYSQLI = get_db_connection();
-      $categoryId = $MYSQLI->real_escape_string($_REQUEST["categoryId"]);
-      /* $result = $MYSQLI->query("SELECT * FROM ew_contents WHERE parent_id = '$categoryId' LIMIT 1");
-        if ($result->fetch_assoc())
-        {
-        echo json_encode(array(status => "unable"));
-        return;
-        }
-        $result = $MYSQLI->query("DELETE FROM ew_contents WHERE type = 'folder' AND id = '$categoryId'");
-        $MYSQLI->close();
-        if ($result)
-        {
-        echo json_encode(array(status => "success"));
-        }
-        else
-        {
-        echo json_encode(array(status => "unsuccess"));
-        } */
+      /*$MYSQLI = get_db_connection();
+      $categoryId = $MYSQLI->real_escape_string($_REQUEST["categoryId"]);*/
       return json_encode($this->delete_content("folder", $categoryId));
    }
 
