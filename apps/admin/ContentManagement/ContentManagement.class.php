@@ -16,6 +16,13 @@ use EWCore;
 class ContentManagement extends \Section
 {
 
+   public function __construct($app)
+   {
+      parent::__construct($app);
+      require_once('ew_contents.php');
+      require_once('ew_contents_labels.php');
+   }
+
    private $file_types = array("jpeg" => "image",
        "jpg" => "image",
        "png" => "image",
@@ -220,23 +227,10 @@ class ContentManagement extends \Section
     */
    public static function get_content_labels($content_id, $key = '%')
    {
-      $db = EWCore::get_db_connection();
       if (!$key)
          $key = '%';
-      //$totalRows = $db->query("SELECT COUNT(*)  FROM ew_contents_labels WHERE id=$content_id") or die($db->error);
-      //$totalRows = $totalRows->fetch_assoc();
-      $result = $db->query("SELECT * FROM ew_contents_labels WHERE content_id=$content_id AND `key`LIKE '$key'") or die($db->error);
-
-      //$out = array();
-      $rows = array();
-
-      while ($r = $result->fetch_assoc())
-      {
-         $rows[] = $r;
-      }
-      //$db->close();
-      //$out = array("totalRows" => $totalRows['COUNT(*)'], "result" => $rows);
-      return json_encode($rows);
+      $labels = \ew_contents_labels::where('content_id', '=', $content_id)->where('key', 'LIKE', $key)->get();
+      return $labels;
    }
 
    public static function get_content_with_label($content_id, $key, $value = '%')
@@ -436,44 +430,9 @@ class ContentManagement extends \Section
 
    public function get_article($articleId)
    {
-      //echo "ssssssssssss".$articleId;
-      //global $EW;
-      $db = \EWCore::get_db_connection();
-      //$articleId = $db->real_escape_string($_REQUEST["articleId"]);
-
-      $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents WHERE id = '$articleId'") or $db->error;
-      /* $result = $db->query("SELECT *,ew_contents.id AS id,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents, ew_contents_labels "
-        . "WHERE ew_contents.id = ew_contents_labels.content_id "
-        . "AND ew_contents_labels.key = 'admin_ContentManagement_document' "
-        . "AND ew_contents_labels.value = ew_contents.id "
-        . "AND ew_contents.id = '$articleId'") or $db->error; */
-
-      if ($rows = $result->fetch_assoc())
-      {
-         $rows["labels"] = ContentManagement::get_content_labels($articleId);
-
-         $db->close();
-
-         /* $actions = EWCore::read_actions_registry("ew-article-action-get");
-           try
-           {
-           foreach ($actions as $id => $data)
-           {
-           if (method_exists($data["class"], $data["function"]))
-           {
-           $func_result = call_user_func(array($data["class"], $data["function"]), $rows);
-           if ($func_result)
-           $rows = $func_result;
-           }
-           }
-           }
-           catch (Exception $e)
-           {
-
-           } */
-
-         return ($rows);
-      }
+      $article = ew_contents::find($articleId, ['*', \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")])->toArray();
+      $article["labels"] = ContentManagement::get_content_labels($articleId);
+      return $article;
    }
 
    public function update_article($id, $title, $parent_id, $keywords = null, $description = null, $content = null, $labels = null)

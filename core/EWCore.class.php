@@ -40,14 +40,15 @@ class EWCore
          static::$DB = new Illuminate\Database\Capsule\Manager;
          static::$DB->addConnection([
              'driver' => 'mysql',
-             'host' => 'localhost',
-             'database' => 'ew',
-             'username' => 'root',
-             'password' => '',
+             'host' => $database_config['host'],
+             'database' => $database_config['database'],
+             'username' => $database_config['username'],
+             'password' => $database_config['password'],
              'charset' => 'utf8',
              'collation' => 'utf8_unicode_ci',
              'prefix' => '',
          ]);
+         static::$DB->setAsGlobal();
          static::$DB->bootEloquent();
       }
    }
@@ -267,7 +268,7 @@ class EWCore
       {
          $database_config = include('database_config.php');
          // default database connection
-         $db = new mysqli($database_config['host'], $database_config['user'], $database_config['password'], $database_config['database']);
+         $db = new mysqli($database_config['host'], $database_config['username'], $database_config['password'], $database_config['database']);
          if ($db->connect_errno)
          {
             echo "Failed to connect to MySQL: (" . $db->connect_errno . ") " . $db->connect_error;
@@ -541,72 +542,6 @@ class EWCore
       {
          return;
       }
-      //return;
-      //print_r(get_declared_classes());
-      /* $apps_dir = opendir(EW_APPS_DIR);
-        while ($app_root = readdir($apps_dir))
-        {
-        if (strpos($app_root, '.') === 0)
-        {
-        continue;
-        }
-
-        //echo $app_root;
-
-        $path = EW_APPS_DIR . '/' . $app_root . '/';
-
-        $section_dirs = opendir($path);
-        $sections = array();
-
-        while ($section_dir = readdir($section_dirs))
-        {
-        if (strpos($section_dir, '.') === 0)
-        continue;
-        //echo $path.$section_dir."\n";
-        $section_dir = opendir($path . $section_dir);
-
-        while ($file = readdir($section_dir))
-        {
-        $i = strpos($file, '.class.php');
-        if (strpos($file, '.') === 0 || !$i)
-        continue;
-
-        $section_class_name = substr($file, 0, $i);
-        $real_class_name = "$app_root\\$section_class_name";
-        ///* if (self::$existed_classes[$real_class_name])
-        //  continue;
-        //   if (self::$existed_classes[$section_class_name])
-        // continue;
-
-        if (class_exists($real_class_name))
-        {
-        //self::$existed_classes[$real_class_name] = true;
-        //echo $real_class_name;
-        $sc = new $real_class_name(EWCore::get_app_instance($app_root));
-        if (method_exists($sc, "init_plugin"))
-        {
-        //echo "new - $section_class_name ";
-        try
-        {
-        call_user_func(array($sc, "init_plugin"));
-        }
-        catch (Exception $e)
-        {
-        echo $e;
-        }
-        }
-        }
-        else if (class_exists($section_class_name) && get_parent_class($section_class_name) == 'Section')
-        {
-        //self::$existed_classes[$section_class_name] = true;
-        //echo "old - $section_class_name ";
-        $sc = new $section_class_name(EWCore::get_app_instance($app_root));
-        if (method_exists($sc, "init_plugin"))
-        call_user_func(array($sc, "init_plugin"));
-        }
-        }
-        }
-        } */
 
       $apps_dirs = opendir(EW_APPS_DIR);
       $apps = array();
@@ -626,13 +561,17 @@ class EWCore
 
             if (strpos($file, ".app.php") != 0)
             {
-               require_once EW_APPS_DIR . "/" . $app_dir . "/" . $file;
-               //echo EW_APPS_DIR . "/" . $app_dir . "/" . $file."=";
-               $app_class_name = $app_dir . "\\" . substr($file, 0, strpos($file, "."));
-               //echo EW_APPS_DIR . "/" . $app_dir . "/" . $file;
-               //echo class_exists($app_class_name,false) ? "sdsd" : "no";
-               $app_object = new $app_class_name();
-               $app_object->init_app();
+               try
+               {
+                  require_once EW_APPS_DIR . "/" . $app_dir . "/" . $file;
+                  $app_class_name = $app_dir . "\\" . substr($file, 0, strpos($file, "."));
+                  $app_object = new $app_class_name();
+                  $app_object->init_app();
+               }
+               catch (Exception $ex)
+               {
+                  echo $ex->getTraceAsString();
+               }
             }
          }
          // Optimization tip

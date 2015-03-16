@@ -324,9 +324,9 @@ $tabs = EWCore::read_registry("ew-article-form-tab");
       {
          if (data && data.labels)
          {
-            var labels = $.parseJSON(data.labels);
-            ContentForm.initLabels(labels);
-            ContentForm.setLabels(labels);
+            //var labels = $.parseJSON(data.labels);
+            ContentForm.initLabels(data.labels);
+            ContentForm.setLabels(data.labels);
          }
          EW.setFormData("#<?php echo $form_id ?>", data);
          $("#content").change();

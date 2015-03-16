@@ -9,8 +9,15 @@ use Section;
  *
  * @author Eeliya
  */
+
 class Settings extends Section
 {
+   
+   public function __construct($app)
+   {
+      parent::__construct($app);
+      include_once 'ew_settings.php';
+   }
 
    public function get_title()
    {
@@ -52,7 +59,7 @@ class Settings extends Section
       if (!$params)
          $params = $_REQUEST["params"];
       $params = json_decode(stripslashes($params), TRUE);
-      
+
       foreach ($params as $key => $value)
       {
          //echo $key . " " . $value;
@@ -65,17 +72,12 @@ class Settings extends Section
 
    public static function read_settings()
    {
-      $db = \EWCore::get_db_connection();
-
-      $setting = $db->query("SELECT * FROM ew_settings") or die($db->error);
-      //$db = \EWCore::get_db_connection();
+      $settings = ew_settings::all(['key', 'value']);
       $rows = array();
-      while ($r = $setting->fetch_assoc())
+      foreach ($settings as $set)
       {
-         $rows[$r["key"]] = $r["value"];
+         $rows[$set["key"]] = $set["value"];
       }
-      $db->close();
-      //$out = array("totalRows" => $setting->num_rows, "result" => $rows);
       return json_encode($rows);
    }
 
@@ -92,7 +94,6 @@ class Settings extends Section
          $db->close();
          return $r;
       }
-
       //$out = array("totalRows" => $setting->num_rows, "result" => $rows);
       return FALSE;
    }
@@ -105,7 +106,6 @@ class Settings extends Section
          return;
       $locale_dir = opendir($path);
       $languages = array();
-
 
       if (strpos($language, ".json"))
       {

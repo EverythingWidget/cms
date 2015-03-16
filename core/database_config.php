@@ -5,10 +5,10 @@ return [
     'host' => "127.0.0.1",
 //define("MYSQL_HOST", $mysql_hostname);
 // Database User Name
-    'user' => "root",
+    'username' => "root",
 //define("MYSQL_USER", $mysql_user);
 // User Password
-    'password' => "",
+    'password' => '',
 //define("MYSQL_PASS", $mysql_password);
 // Database name
     'database' => "culturenights",

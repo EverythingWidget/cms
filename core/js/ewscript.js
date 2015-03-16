@@ -829,7 +829,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
          }
          catch (e)
          {
-            console.log(e);
+            console.error(e);
             window.clearInterval(int);
          }
 
