@@ -5,9 +5,9 @@ global $rootAddress, $pageAddress;
 $app = "webroot";
 $currentAppConf = json_decode(admin\Settings::read_settings(), true);
 
-$website_title = $currentAppConf["web-title"];
-$pageDescription = $currentAppConf["web-description"];
-$defaultKeywords = $currentAppConf["web-keywords"];
+$website_title = $currentAppConf["webroot/web-title"];
+$pageDescription = $currentAppConf["webroot/web-description"];
+$defaultKeywords = $currentAppConf["webroot/web-keywords"];
 
 $_SESSION['ROOT_DIR'] = EW_ROOT_DIR;
 $_REQUEST['cmdResult'] = '';

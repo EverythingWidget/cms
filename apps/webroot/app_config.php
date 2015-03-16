@@ -40,7 +40,7 @@
          },
          function (data)
          {
-            $("body").EW().notify(data);
+            $("body").EW().notify(data).show();
          }, "json");
       };
 
