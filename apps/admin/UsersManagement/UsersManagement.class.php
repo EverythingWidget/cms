@@ -37,16 +37,16 @@ class UsersManagement extends Section
 
    public static function login($username, $password)
    {
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
       if (!$username)
-         $username = $MYSQLI->real_escape_string($_POST["username"]);
+         $username = $db->real_escape_string($_POST["username"]);
       if (!$password)
-         $password = $MYSQLI->real_escape_string($_POST["password"]);
+         $password = $db->real_escape_string($_POST["password"]);
 //echo $username." ".$password;
-      $user = $MYSQLI->query("SELECT * FROM ew_users WHERE email = '$username' AND password = '$password' LIMIT 1") or die($MYSQLI->error);
+      $user = $db->query("SELECT * FROM ew_users WHERE email = '$username' AND password = '$password' LIMIT 1") or die($db->error);
       /* $stm->execute();
 
-        $user = $MYSQLI->query("SELECT COUNT(*)  FROM events ") or die($MYSQLI->error); */
+        $user = $db->query("SELECT COUNT(*)  FROM events ") or die($db->error); */
       if ($user_info = $user->fetch_assoc())
       {
          $_SESSION['login'] = '1';
@@ -119,7 +119,7 @@ class UsersManagement extends Section
 
    public function get_users_list($token = null, $size = null)
    {
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
 
       if (!isset($token))
       {
@@ -129,27 +129,27 @@ class UsersManagement extends Section
       {
          $size = ", $size";
       }
-      $totalRows = $MYSQLI->query("SELECT COUNT(*) FROM ew_users, ew_users_groups WHERE ew_users.group_id = ew_users_groups.id") or die(error_reporting());
+      $totalRows = $db->query("SELECT COUNT(*) FROM ew_users, ew_users_groups WHERE ew_users.group_id = ew_users_groups.id") or die(error_reporting());
       $totalRows = $totalRows->fetch_assoc();
 
-      $result = $MYSQLI->query("SELECT ew_users.id,email, first_name, last_name,ew_users_groups.title, DATE_FORMAT(ew_users.date_created,'%Y-%m-%d') AS round_date_created FROM ew_users, ew_users_groups WHERE ew_users.group_id = ew_users_groups.id ORDER BY ew_users.id LIMIT $token $size") or die($MYSQLI->error);
+      $result = $db->query("SELECT ew_users.id,email, first_name, last_name,ew_users_groups.title, DATE_FORMAT(ew_users.date_created,'%Y-%m-%d') AS round_date_created FROM ew_users, ew_users_groups WHERE ew_users.group_id = ew_users_groups.id ORDER BY ew_users.id LIMIT $token $size") or die($db->error);
 
       $rows = array();
       while ($r = $result->fetch_assoc())
       {
          $rows[] = $r;
       }
-      $MYSQLI->close();
+      $db->close();
       $out = array("totalRows" => $totalRows['COUNT(*)'], "result" => $rows);
       return json_encode($out);
    }
 
    public static function get_users_groups_list()
    {
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
 
-      $token = $MYSQLI->real_escape_string($_REQUEST["token"]);
-      $size = $MYSQLI->real_escape_string($_REQUEST["size"]);
+      $token = $db->real_escape_string($_REQUEST["token"]);
+      $size = $db->real_escape_string($_REQUEST["size"]);
       if (!$token)
       {
          $token = 0;
@@ -158,32 +158,32 @@ class UsersManagement extends Section
       {
          $size = 1000000000;
       }
-      $totalRows = $MYSQLI->query("SELECT COUNT(*) FROM ew_users_groups") or die(error_reporting());
+      $totalRows = $db->query("SELECT COUNT(*) FROM ew_users_groups") or die(error_reporting());
       $totalRows = $totalRows->fetch_assoc();
 
-      $result = $MYSQLI->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_users_groups ORDER BY id LIMIT $token, $size") or die($MYSQLI->error);
+      $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_users_groups ORDER BY id LIMIT $token, $size") or die($db->error);
 
       $rows = array();
       while ($r = $result->fetch_assoc())
       {
          $rows[] = $r;
       }
-      $MYSQLI->close();
+      $db->close();
       $out = array("totalRows" => $totalRows['COUNT(*)'], "result" => $rows);
       return json_encode($out);
    }
 
    public static function get_user_group_by_id($groupId)
    {
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
       if (!$groupId)
-         $groupId = $MYSQLI->real_escape_string($_REQUEST["groupId"]);
+         $groupId = $db->real_escape_string($_REQUEST["groupId"]);
 
-      $result = $MYSQLI->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_users_groups WHERE id = '$groupId'") or $MYSQLI->error;
+      $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_users_groups WHERE id = '$groupId'") or $db->error;
 
       if ($rows = $result->fetch_assoc())
       {
-         $MYSQLI->close();
+         $db->close();
 
          /* $actions = EWCore::read_actions_registry("ew-article-action-get");
            try
@@ -208,36 +208,36 @@ class UsersManagement extends Section
 
    public static function get_users_group_by_type($type)
    {
-      $MYSQLI = \EWCore::get_db_connection();
+      $db = \EWCore::get_db_connection();
       if (!$type)
-         $type = $MYSQLI->real_escape_string($_REQUEST["type"]);
+         $type = $db->real_escape_string($_REQUEST["type"]);
 
-      $result = $MYSQLI->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_users_groups WHERE type = '$type'") or die($MYSQLI->error);
+      $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_users_groups WHERE type = '$type'") or die($db->error);
 
       if ($rows = $result->fetch_assoc())
       {
-         $MYSQLI->close();
+         $db->close();
          return json_encode($rows);
       }
    }
 
    public function add_group($title = null, $description = null, $permission = null)
    {
-      $MYSQLI = EWCore::get_db_connection();
+      $db = \EWCore::get_db_connection();
       if (!$title)
-         $title = $MYSQLI->real_escape_string($_REQUEST["title"]);
+         $title = $db->real_escape_string($_REQUEST["title"]);
       if (!$description)
-         $description = $MYSQLI->real_escape_string($_REQUEST["description"]);
+         $description = $db->real_escape_string($_REQUEST["description"]);
       if (!$permission)
-         $permission = $MYSQLI->real_escape_string($_REQUEST["permission"]);
+         $permission = $db->real_escape_string($_REQUEST["permission"]);
 
-      $stm = $MYSQLI->prepare("INSERT INTO ew_users_groups (title, description, permission,date_created)
+      $stm = $db->prepare("INSERT INTO ew_users_groups (title, description, permission,date_created)
             VALUES (?, ?, ?, ?)");
       $stm->bind_param("ssss", $title, $description, $permission, date('Y-m-d H:i:s'));
 
       if ($stm->execute())
       {
-         //$MYSQLI->close();
+         //$db->close();
 
          /* $actions = EWCore::read_actions_registry("ew-article-action-get");
            try
@@ -256,16 +256,16 @@ class UsersManagement extends Section
 
            } */
 
-         return json_encode(array(status => "success", title => $title, message => "Users group '$title' has been added successfully", "id" => $MYSQLI->insert_id));
+         return json_encode(array(status => "success", title => $title, message => "Users group '$title' has been added successfully", "id" => $db->insert_id));
       }
       return json_encode(array(status => "unsuccess", title => "Update Group Unsuccessfull", message => "Users group has been NOT added"));
    }
 
    public function update_group($id = null, $title = null, $description = null, $permission = null)
    {
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
 
-      $stm = $MYSQLI->prepare("UPDATE ew_users_groups 
+      $stm = $db->prepare("UPDATE ew_users_groups 
             SET title = ? 
             , description = ? 
             , permission = ? WHERE id = ?");
@@ -273,7 +273,7 @@ class UsersManagement extends Section
 
       if ($stm->execute())
       {
-         $MYSQLI->close();
+         $db->close();
 
          /* $actions = EWCore::read_actions_registry("ew-article-action-get");
            try
@@ -294,23 +294,23 @@ class UsersManagement extends Section
 
          return json_encode(array(status => "success", title => $title, message => "tr{Users group} '$title' tr{has been updated successfully}"));
       }
-      return EWCore::log_error("400", "Users group has been NOT updated", $MYSQLI->error_list);
+      return EWCore::log_error("400", "Users group has been NOT updated", $db->error_list);
       //return json_encode(array(status => "unsuccess", title => "Update Group Unsuccessfull", message => "Users group has been NOT updated"));
    }
 
    public function delete_group($groupId = null)
    {
 
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
       if (!$groupId)
-         $groupId = $MYSQLI->real_escape_string($_REQUEST["id"]);
+         $groupId = $db->real_escape_string($_REQUEST["id"]);
       $group_info = json_decode(self::get_user_group_by_id($groupId), true);
-      $stm = $MYSQLI->prepare("DELETE FROM ew_users_groups WHERE id = ?");
+      $stm = $db->prepare("DELETE FROM ew_users_groups WHERE id = ?");
       $stm->bind_param("s", $groupId);
 
       if ($stm->execute())
       {
-         $MYSQLI->close();
+         $db->close();
 
          /* $actions = EWCore::read_actions_registry("ew-article-action-get");
            try
@@ -331,20 +331,20 @@ class UsersManagement extends Section
 
          return json_encode(array(status => "success", title => $group_info["title"], message => "tr{Users group} '{$group_info["title"]}' tr{has been deleted successfully}"));
       }
-      return EWCore::log_error("400", "tr{Users group has been NOT deleted}", $MYSQLI->error_list);
+      return EWCore::log_error("400", "tr{Users group has been NOT deleted}", $db->error_list);
    }
 
    public static function get_user_by_id($userId = null)
    {
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
       if (!$userId)
-         $userId = $MYSQLI->real_escape_string($_REQUEST["userId"]);
+         $userId = $db->real_escape_string($_REQUEST["userId"]);
 
-      $result = $MYSQLI->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_users WHERE id = '$userId'") or $MYSQLI->error;
+      $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_users WHERE id = '$userId'") or $db->error;
 
       if ($rows = $result->fetch_assoc())
       {
-         $MYSQLI->close();
+         $db->close();
 
          /* $actions = EWCore::read_actions_registry("ew-article-action-get");
            try
@@ -369,15 +369,15 @@ class UsersManagement extends Section
 
    public static function get_user_by_email($email = null)
    {
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
       if (!$email)
-         $email = $MYSQLI->real_escape_string($_REQUEST["email"]);
+         $email = $db->real_escape_string($_REQUEST["email"]);
 
-      $result = $MYSQLI->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_users WHERE email = '$email'") or $MYSQLI->error;
+      $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_users WHERE email = '$email'") or $db->error;
 
       if ($rows = $result->fetch_assoc())
       {
-         $MYSQLI->close();
+         $db->close();
 
          return json_encode($rows);
       }
@@ -399,17 +399,17 @@ class UsersManagement extends Section
 
    public static function add_user($email, $first_name, $last_name, $password, $group_id)
    {
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
       if (!$email)
-         $email = $MYSQLI->real_escape_string($_REQUEST["email"]);
+         $email = $db->real_escape_string($_REQUEST["email"]);
       if (!$first_name)
-         $first_name = $MYSQLI->real_escape_string($_REQUEST["first_name"]);
+         $first_name = $db->real_escape_string($_REQUEST["first_name"]);
       if (!$last_name)
-         $last_name = $MYSQLI->real_escape_string($_REQUEST["last_name"]);
+         $last_name = $db->real_escape_string($_REQUEST["last_name"]);
       if (!$password)
-         $password = $MYSQLI->real_escape_string($_REQUEST["password"]);
+         $password = $db->real_escape_string($_REQUEST["password"]);
       if (!$group_id)
-         $group_id = $MYSQLI->real_escape_string($_REQUEST["group_id"]);
+         $group_id = $db->real_escape_string($_REQUEST["group_id"]);
       if (!$group_id)
          $group_id = 0;
 
@@ -417,14 +417,14 @@ class UsersManagement extends Section
       {
          return json_encode(array(status => "duplicate", error_message => "An  account with this email address is already exist"));
       }
-      $stm = $MYSQLI->prepare("INSERT INTO ew_users (email, first_name, last_name, password, group_id, date_created)
-            VALUES (?, ?, ?, ?, ? ,?)") or die($MYSQLI->error);
+      $stm = $db->prepare("INSERT INTO ew_users (email, first_name, last_name, password, group_id, date_created)
+            VALUES (?, ?, ?, ?, ? ,?)") or die($db->error);
       $stm->bind_param("ssssss", $email, $first_name, $last_name, $password, $group_id, date('Y-m-d H:i:s'));
 
       if ($stm->execute())
       {
-         $MYSQLI->close();
-         return json_encode(array(status => "success", email => $email, message => "New user '$email' has been added successfully", "id" => $MYSQLI->insert_id));
+         $db->close();
+         return json_encode(array(status => "success", email => $email, message => "New user '$email' has been added successfully", "id" => $db->insert_id));
       }
       return json_encode(array(status => "unsuccess", message => "New User has been NOT added"));
    }
@@ -432,13 +432,13 @@ class UsersManagement extends Section
    public static function add_user_skip($email, $first_name, $last_name, $password)
    {
 
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
       if (!$email)
-         $email = $MYSQLI->real_escape_string($_REQUEST["email"]);
+         $email = $db->real_escape_string($_REQUEST["email"]);
       if (!$first_name)
-         $first_name = $MYSQLI->real_escape_string($_REQUEST["first_name"]);
+         $first_name = $db->real_escape_string($_REQUEST["first_name"]);
       if (!$last_name)
-         $last_name = $MYSQLI->real_escape_string($_REQUEST["last_name"]);
+         $last_name = $db->real_escape_string($_REQUEST["last_name"]);
       $password = self::random_password();
       $group_id = 0;
       if (!$group_id)
@@ -448,15 +448,15 @@ class UsersManagement extends Section
 
       if (!$user_info)
       {
-         $stm = $MYSQLI->prepare("INSERT INTO ew_users (email, first_name, last_name, password, group_id, date_created)
-            VALUES (?, ?, ?, ?, ? ,?)") or die($MYSQLI->error);
+         $stm = $db->prepare("INSERT INTO ew_users (email, first_name, last_name, password, group_id, date_created)
+            VALUES (?, ?, ?, ?, ? ,?)") or die($db->error);
          $stm->bind_param("ssssss", $email, $first_name, $last_name, $password, $group_id, date('Y-m-d H:i:s'));
 
          if ($stm->execute())
          {
-            $MYSQLI->close();
-            //return json_encode(array(status => "success", email => $email, message => "New user '$email' has been added successfully", "id" => $MYSQLI->insert_id));
-            $user_info = array("id" => $MYSQLI->insert_id, "email" => $email, "first_name" => $first_name, "last_name" => $last_name, "password" => $password);
+            $db->close();
+            //return json_encode(array(status => "success", email => $email, message => "New user '$email' has been added successfully", "id" => $db->insert_id));
+            $user_info = array("id" => $db->insert_id, "email" => $email, "first_name" => $first_name, "last_name" => $last_name, "password" => $password);
          }
       }
       return json_encode($user_info);
@@ -464,29 +464,29 @@ class UsersManagement extends Section
 
    public function update_user($id, $email, $first_name, $last_name, $password, $group_id)
    {
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
       if (!$id)
-         $id = $MYSQLI->real_escape_string($_REQUEST["id"]);
+         $id = $db->real_escape_string($_REQUEST["id"]);
       if (!$email)
-         $email = $MYSQLI->real_escape_string($_REQUEST["email"]);
+         $email = $db->real_escape_string($_REQUEST["email"]);
       if (!$first_name)
-         $first_name = $MYSQLI->real_escape_string($_REQUEST["first_name"]);
+         $first_name = $db->real_escape_string($_REQUEST["first_name"]);
       if (!$last_name)
-         $last_name = $MYSQLI->real_escape_string($_REQUEST["last_name"]);
+         $last_name = $db->real_escape_string($_REQUEST["last_name"]);
       if (!$password)
-         $password = $MYSQLI->real_escape_string($_REQUEST["password"]);
+         $password = $db->real_escape_string($_REQUEST["password"]);
       if (!$group_id)
-         $group_id = $MYSQLI->real_escape_string($_REQUEST["group_id"]);
+         $group_id = $db->real_escape_string($_REQUEST["group_id"]);
       if (!$group_id)
          $group_id = 0;
 
-      $stm = $MYSQLI->prepare("UPDATE ew_users SET email = ?, first_name = ?, last_name = ?, password = ?, group_id = ? WHERE id = ?");
+      $stm = $db->prepare("UPDATE ew_users SET email = ?, first_name = ?, last_name = ?, password = ?, group_id = ? WHERE id = ?");
       $stm->bind_param("ssssss", $email, $first_name, $last_name, $password, $group_id, $id);
 
       if ($stm->execute())
       {
-         $MYSQLI->close();
-         return json_encode(array(status => "success", email => $email, message => "New user '$email' has been added successfully", "id" => $MYSQLI->insert_id));
+         $db->close();
+         return json_encode(array(status => "success", email => $email, message => "New user '$email' has been added successfully", "id" => $db->insert_id));
       }
       return json_encode(array(status => "unsuccess", message => "New User has been NOT added"));
    }
@@ -494,16 +494,16 @@ class UsersManagement extends Section
    public static function delete_user($userId = null)
    {
 
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
       if (!$userId)
-         $userId = $MYSQLI->real_escape_string($_REQUEST["id"]);
+         $userId = $db->real_escape_string($_REQUEST["id"]);
       $user_info = json_decode(self::get_user_by_id($userId), true);
-      $stm = $MYSQLI->prepare("DELETE FROM ew_users WHERE id = ?");
+      $stm = $db->prepare("DELETE FROM ew_users WHERE id = ?");
       $stm->bind_param("s", $userId);
 
       if ($stm->execute())
       {
-         $MYSQLI->close();
+         $db->close();
 
          return json_encode(array(status => "success", title => $user_info["email"], message => "User  '{$user_info["email"]}' has been deleted successfully"));
       }

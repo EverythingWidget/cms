@@ -18,10 +18,10 @@ class Categories extends Section
 
   public function get_categories_list()
   {
-    $MYSQLI = get_db_connection();
-    //$parentId = $MYSQLI->real_escape_string($this->get_param("parentId"));
-    $token = $MYSQLI->real_escape_string($_REQUEST["token"]);
-    $size = $MYSQLI->real_escape_string($_REQUEST["size"]);
+    $db = \EWCore::get_db_connection();
+    //$parentId = $db->real_escape_string($this->get_param("parentId"));
+    $token = $db->real_escape_string($_REQUEST["token"]);
+    $size = $db->real_escape_string($_REQUEST["size"]);
     //echo "asssssssssssssssss";
     if (!$token)
     {
@@ -32,9 +32,9 @@ class Categories extends Section
       $size = 99999999999999;
     }
 
-    $totalRows = $MYSQLI->query("SELECT COUNT(*)  FROM categories") or die($MYSQLI->error);
+    $totalRows = $db->query("SELECT COUNT(*)  FROM categories") or die($db->error);
     $totalRows = $totalRows->fetch_assoc();
-    $result = $MYSQLI->query("SELECT *  FROM categories  LIMIT $token,$size") or die($MYSQLI->error);
+    $result = $db->query("SELECT *  FROM categories  LIMIT $token,$size") or die($db->error);
 
     //$out = array();
     $rows = array();
@@ -44,7 +44,7 @@ class Categories extends Section
 
       $rows[] = $r;
     }
-    $MYSQLI->close();
+    $db->close();
     $out = array("totalRows" => $totalRows['COUNT(*)'], "result" => $rows);
     return json_encode($out);
   }

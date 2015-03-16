@@ -28,10 +28,10 @@ class Countries extends Section
 
    public function getcountries_list()
    {
-      $MYSQLI = get_db_connection();
-      //$parentId = $MYSQLI->real_escape_string($this->get_param("parentId"));
-      $token = $MYSQLI->real_escape_string($_REQUEST["token"]);
-      $size = $MYSQLI->real_escape_string($_REQUEST["size"]);
+      $db = \EWCore::get_db_connection();
+      //$parentId = $db->real_escape_string($this->get_param("parentId"));
+      $token = $db->real_escape_string($_REQUEST["token"]);
+      $size = $db->real_escape_string($_REQUEST["size"]);
       //echo "asssssssssssssssss";
       if (!$token)
       {
@@ -42,9 +42,9 @@ class Countries extends Section
          $size = 99999999999999;
       }
 
-      $totalRows = $MYSQLI->query("SELECT COUNT(*)  FROM countries ") or die($MYSQLI->error);
+      $totalRows = $db->query("SELECT COUNT(*)  FROM countries ") or die($db->error);
       $totalRows = $totalRows->fetch_assoc();
-      $result = $MYSQLI->query("SELECT *  FROM countries  LIMIT $token,$size") or die($MYSQLI->error);
+      $result = $db->query("SELECT *  FROM countries  LIMIT $token,$size") or die($db->error);
 
       //$out = array();
       $rows = array();
@@ -52,33 +52,33 @@ class Countries extends Section
       {
          $rows[] = $r;
       }
-      $MYSQLI->close();
+      $db->close();
       $out = array("totalRows" => $totalRows['COUNT(*)'], "result" => $rows);
       return json_encode($out);
    }
 
    public static function get_country($country_id)
    {
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
       if (!$country_id)
-         $country_id = $MYSQLI->real_escape_string($_REQUEST["country_id"]);
+         $country_id = $db->real_escape_string($_REQUEST["country_id"]);
 
-      $result = $MYSQLI->query("SELECT * FROM countries WHERE id = '$country_id'") or $MYSQLI->error;
+      $result = $db->query("SELECT * FROM countries WHERE id = '$country_id'") or $db->error;
 
       if ($rows = $result->fetch_assoc())
       {
-         $MYSQLI->close();
+         $db->close();
          return json_encode($rows);
       }
    }
 
    public function add_country($name, $iso)
    {
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
       if (!$name)
-         $name = $MYSQLI->real_escape_string($_REQUEST["name"]);
+         $name = $db->real_escape_string($_REQUEST["name"]);
       if (!$iso)
-         $iso = $MYSQLI->real_escape_string($_REQUEST["iso"]);
+         $iso = $db->real_escape_string($_REQUEST["iso"]);
       if (!$name)
       {
          $res = array("status" => "error", "error_message" => "The field name is mandatory");
@@ -88,27 +88,27 @@ class Countries extends Section
       //if (!$order)
       //  $order = 0;
 
-      $stm = $MYSQLI->prepare("INSERT INTO countries (name, iso, slug) 
-            VALUES (?, ?, ?)") or die($MYSQLI->error);
-      $stm->bind_param("sss", $name, $iso, $slug) or die($MYSQLI->error);
+      $stm = $db->prepare("INSERT INTO countries (name, iso, slug) 
+            VALUES (?, ?, ?)") or die($db->error);
+      $stm->bind_param("sss", $name, $iso, $slug) or die($db->error);
       if ($stm->execute())
       {
          $res = array("status" => "success", "id" => $stm->insert_id, "message" => "Country {$name} has been added successfully");
          $stm->close();
-         $MYSQLI->close();
+         $db->close();
       }
       return json_encode($res);
    }
 
    public function update_country($country_id, $name, $iso)
    {
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
       if (!$country_id)
-         $country_id = $MYSQLI->real_escape_string($_REQUEST["id"]);
+         $country_id = $db->real_escape_string($_REQUEST["id"]);
       if (!$name)
-         $name = $MYSQLI->real_escape_string($_REQUEST["name"]);
+         $name = $db->real_escape_string($_REQUEST["name"]);
       if (!$iso)
-         $iso = $MYSQLI->real_escape_string($_REQUEST["iso"]);
+         $iso = $db->real_escape_string($_REQUEST["iso"]);
       if (!$name)
       {
          $res = array("status" => "error", "error_message" => "The field name is mandatory");
@@ -118,30 +118,30 @@ class Countries extends Section
       //if (!$order)
       //  $order = 0;
 
-      $stm = $MYSQLI->prepare("UPDATE countries SET name = ?, iso = ?, slug = ? WHERE id = ?") or die($MYSQLI->error);
-      $stm->bind_param("ssss", $name, $iso, $slug, $country_id) or die($MYSQLI->error);
+      $stm = $db->prepare("UPDATE countries SET name = ?, iso = ?, slug = ? WHERE id = ?") or die($db->error);
+      $stm->bind_param("ssss", $name, $iso, $slug, $country_id) or die($db->error);
       if ($stm->execute())
       {
          $res = array("status" => "success", "id" => $country_id, "message" => "Country {$name} has been updated successfully");
          $stm->close();
-         $MYSQLI->close();
+         $db->close();
       }
       return json_encode($res);
    }
 
    public function delete_country($country_id)
    {
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
       if (!$country_id)
-         $country_id = $MYSQLI->real_escape_string($_REQUEST["country_id"]);
+         $country_id = $db->real_escape_string($_REQUEST["country_id"]);
 
-      $stm = $MYSQLI->prepare("DELETE FROM countries WHERE id = ?") or die($MYSQLI->error);
-      $stm->bind_param("s", $country_id) or die($MYSQLI->error);
+      $stm = $db->prepare("DELETE FROM countries WHERE id = ?") or die($db->error);
+      $stm->bind_param("s", $country_id) or die($db->error);
       if ($stm->execute())
       {
          $res = array("status" => "success", "id" => $country_id, "message" => "Country with id: {$country_id} has been deleted successfully");
          $stm->close();
-         $MYSQLI->close();
+         $db->close();
       }
       return json_encode($res);
    }

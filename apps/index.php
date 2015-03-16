@@ -19,7 +19,7 @@ error_reporting(E_ERROR);
 ini_set('display_errors', '1');
 
 EWCore::set_default_locale("admin");
-EWCore::set_db_connection(get_db_connection());
+//EWCore::set_db_connection(get_db_connection());
 
 $path = ltrim($_SERVER['REQUEST_URI'], '/');    // Trim leading slash(es)
 // Decode url to a normal string

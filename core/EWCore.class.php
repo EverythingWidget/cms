@@ -19,7 +19,7 @@ class EWCore
    private static $plugins_initialized = false;
    private static $db_connection;
    private $current_method_args;
-   public static $DB;
+   public static $DB = null;
 
    public function __construct()
    {
@@ -31,32 +31,35 @@ class EWCore
       spl_autoload_register(array($this, 'autoload_core'));
       spl_autoload_register(array($this, 'autoload_apps'));
       $this->load_modules();
-      
+      $database_config = include('database_config.php');
       self::$loaders_installed = true;
       self::init_sections_plugins();
-      static::$DB = new Illuminate\Database\Capsule\Manager;
 
-      static::$DB->addConnection([
-          'driver' => 'mysql',
-          'host' => 'localhost',
-          'database' => 'ew',
-          'username' => 'root',
-          'password' => '',
-          'charset' => 'utf8',
-          'collation' => 'utf8_unicode_ci',
-          'prefix' => '',
-      ]);
-      static::$DB->bootEloquent();
+      if ($database_config["database_library"] == TRUE)
+      {
+         static::$DB = new Illuminate\Database\Capsule\Manager;
+         static::$DB->addConnection([
+             'driver' => 'mysql',
+             'host' => 'localhost',
+             'database' => 'ew',
+             'username' => 'root',
+             'password' => '',
+             'charset' => 'utf8',
+             'collation' => 'utf8_unicode_ci',
+             'prefix' => '',
+         ]);
+         static::$DB->bootEloquent();
+      }
    }
 
    public function load_modules($modules)
-   { 
+   {
       require 'modules/autoload.php';
    }
 
    public function processRequest($parameters = null)
    {
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
       // If parameters is null set the request as parameters
       if (!$parameters)
       {
@@ -75,12 +78,12 @@ class EWCore
             $temp = null;
             if (is_array($parameters[$param->getName()]))
             {
-               array_walk_recursive($parameters[$param->getName()], $MYSQLI->real_escape_string);
+               array_walk_recursive($parameters[$param->getName()], $db->real_escape_string);
                $temp = $parameters[$param->getName()];
             }
             else
             {
-               $temp = $MYSQLI->real_escape_string($parameters[$param->getName()]);
+               $temp = $db->real_escape_string($parameters[$param->getName()]);
             }
             $functions_arguments[] = $temp;
             $this->current_method_args[$param->getName()] = $temp;
@@ -261,7 +264,17 @@ class EWCore
    public static function get_db_connection()
    {
       if (!self::$db_connection->host_info)
-         self::$db_connection = get_db_connection();
+      {
+         $database_config = include('database_config.php');
+         // default database connection
+         $db = new mysqli($database_config['host'], $database_config['user'], $database_config['password'], $database_config['database']);
+         if ($db->connect_errno)
+         {
+            echo "Failed to connect to MySQL: (" . $db->connect_errno . ") " . $db->connect_error;
+         }
+         $db->set_charset("utf8");
+         static::$db_connection = $db;
+      }
       return self::$db_connection;
    }
 
@@ -409,17 +422,17 @@ class EWCore
 
    private function save_setting($key = null, $value = null)
    {
-      $MYSQLI = EWCore::get_db_connection();
+      $db = \EWCore::get_db_connection();
 
-      $setting = $MYSQLI->query("SELECT * FROM ew_settings WHERE `key` = '$key' ") or die($MYSQLI->error);
+      $setting = $db->query("SELECT * FROM ew_settings WHERE `key` = '$key' ") or die($db->error);
       if ($user_info = $setting->fetch_assoc())
       {
-         $MYSQLI->query("UPDATE ew_settings SET value = '$value' WHERE `key` = '$key' ") or die($MYSQLI->error);
+         $db->query("UPDATE ew_settings SET value = '$value' WHERE `key` = '$key' ") or die($db->error);
          return TRUE;
       }
       else
       {
-         $MYSQLI->query("INSERT INTO ew_settings(`key`, `value`) VALUES('$key','$value')") or die($MYSQLI->error);
+         $db->query("INSERT INTO ew_settings(`key`, `value`) VALUES('$key','$value')") or die($db->error);
          return TRUE;
       }
       return FALSE;
@@ -427,7 +440,7 @@ class EWCore
 
    public function save_settings($params)
    {
-      //$MYSQLI = get_db_connection();
+      //$db = \EWCore::get_db_connection();
 //echo $params;
       $params = json_decode(stripslashes($params), TRUE);
       foreach ($params as $key => $value)
@@ -442,12 +455,12 @@ class EWCore
 
    public static function read_settings($app)
    {
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
       if ($app)
          $app .='/%';
 
-      $setting = $MYSQLI->query("SELECT * FROM ew_settings WHERE `key` LIKE '$app'") or die($MYSQLI->error);
-      //$MYSQLI = get_db_connection();
+      $setting = $db->query("SELECT * FROM ew_settings WHERE `key` LIKE '$app'") or die($db->error);
+      //$db = \EWCore::get_db_connection();
       $rows = array();
       while ($r = $setting->fetch_assoc())
       {
@@ -455,18 +468,18 @@ class EWCore
          $key = substr($r["key"], strlen($app) - 1);
          $rows[$key] = $r["value"];
       }
-      $MYSQLI->close();
+      $db->close();
       //$out = array("totalRows" => $setting->num_rows, "result" => $rows);
       return json_encode($rows);
    }
 
    public static function read_setting($key)
    {
-      $MYSQLI = EWCore::get_db_connection();
+      $db = \EWCore::get_db_connection();
       if (!$key)
-         $key = $MYSQLI->real_escape_string($_REQUEST["key"]);
-      $setting = $MYSQLI->query("SELECT * FROM ew_settings WHERE `key` = '$key'") or die($MYSQLI->error);
-      //$MYSQLI = get_db_connection();
+         $key = $db->real_escape_string($_REQUEST["key"]);
+      $setting = $db->query("SELECT * FROM ew_settings WHERE `key` = '$key'") or die($db->error);
+      //$db = \EWCore::get_db_connection();
       //$rows = array();
       while ($r = $setting->fetch_assoc())
       {
@@ -859,11 +872,11 @@ class EWCore
 
    public static function to_slug($title, $table_name, $field_name = "slug")
    {
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
       $slug = self::make_slugs($title);
       //echo $slug;
       $query = "SELECT COUNT(*) AS NumHits FROM $table_name WHERE  $field_name  LIKE '$slug%'";
-      $result = $MYSQLI->query($query) or die($MYSQLI->error);
+      $result = $db->query($query) or die($db->error);
       $row = $result->fetch_assoc();
       $numHits = $row['NumHits'];
 

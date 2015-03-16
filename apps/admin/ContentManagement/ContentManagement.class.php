@@ -223,7 +223,7 @@ class ContentManagement extends \Section
       $db = EWCore::get_db_connection();
       if (!$key)
          $key = '%';
-      //$totalRows = $MYSQLI->query("SELECT COUNT(*)  FROM ew_contents_labels WHERE id=$content_id") or die($MYSQLI->error);
+      //$totalRows = $db->query("SELECT COUNT(*)  FROM ew_contents_labels WHERE id=$content_id") or die($db->error);
       //$totalRows = $totalRows->fetch_assoc();
       $result = $db->query("SELECT * FROM ew_contents_labels WHERE content_id=$content_id AND `key`LIKE '$key'") or die($db->error);
 
@@ -234,7 +234,7 @@ class ContentManagement extends \Section
       {
          $rows[] = $r;
       }
-      //$MYSQLI->close();
+      //$db->close();
       //$out = array("totalRows" => $totalRows['COUNT(*)'], "result" => $rows);
       return json_encode($rows);
    }
@@ -247,7 +247,7 @@ class ContentManagement extends \Section
          return json_encode([]);
       if (!$value)
          $value = '%';
-      //$totalRows = $MYSQLI->query("SELECT COUNT(*)  FROM ew_contents_labels WHERE id=$content_id") or die($MYSQLI->error);
+      //$totalRows = $db->query("SELECT COUNT(*)  FROM ew_contents_labels WHERE id=$content_id") or die($db->error);
       //$totalRows = $totalRows->fetch_assoc();
       $result = $db->query("SELECT *,ew_contents.id AS id, DATE_FORMAT(date_created,'%d-%m-%Y') FROM ew_contents_labels, ew_contents "
               //. "WHERE content_id in (SELECT content_id from ew_contents_labels  WHERE `key` = 'admin_ContentManagement_document' AND `value` = $content_id)"
@@ -265,7 +265,7 @@ class ContentManagement extends \Section
          $rows[] = $r;
          //print_r($r);
       }
-      //$MYSQLI->close();
+      //$db->close();
       //$out = array("totalRows" => $totalRows['COUNT(*)'], "result" => $rows);
       return json_encode($rows);
    }
@@ -319,7 +319,7 @@ class ContentManagement extends \Section
             $this->update_label($id, $key, $value);
          }
 
-         //$MYSQLI->close();
+         //$db->close();
       }
       return json_encode($res);
    }
@@ -378,15 +378,15 @@ class ContentManagement extends \Section
 
    public function add_article($title, $parent_id, $keywords, $description, $labels)
    {
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
       if (!$parent_id)
          $parent_id = 0;
 
-      //$sourcePageAddress = $MYSQLI->real_escape_string($_REQUEST['source_page_address']);
+      //$sourcePageAddress = $db->real_escape_string($_REQUEST['source_page_address']);
       //$htmlContent = html_entity_decode($_REQUEST['content']);
       $htmlContent = $_REQUEST['content'];
-      //$order = $MYSQLI->real_escape_string($_REQUEST['order']);
-      //$createdDate = $MYSQLI->real_escape_string($_REQUEST['date_created']);
+      //$order = $db->real_escape_string($_REQUEST['order']);
+      //$createdDate = $db->real_escape_string($_REQUEST['date_created']);
       $this->get_current_command_args();
       if (!$title)
       {
@@ -438,21 +438,21 @@ class ContentManagement extends \Section
    {
       //echo "ssssssssssss".$articleId;
       //global $EW;
-      $MYSQLI = get_db_connection();
-      //$articleId = $MYSQLI->real_escape_string($_REQUEST["articleId"]);
+      $db = \EWCore::get_db_connection();
+      //$articleId = $db->real_escape_string($_REQUEST["articleId"]);
 
-      $result = $MYSQLI->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents WHERE id = '$articleId'") or $MYSQLI->error;
-      /* $result = $MYSQLI->query("SELECT *,ew_contents.id AS id,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents, ew_contents_labels "
+      $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents WHERE id = '$articleId'") or $db->error;
+      /* $result = $db->query("SELECT *,ew_contents.id AS id,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents, ew_contents_labels "
         . "WHERE ew_contents.id = ew_contents_labels.content_id "
         . "AND ew_contents_labels.key = 'admin_ContentManagement_document' "
         . "AND ew_contents_labels.value = ew_contents.id "
-        . "AND ew_contents.id = '$articleId'") or $MYSQLI->error; */
+        . "AND ew_contents.id = '$articleId'") or $db->error; */
 
       if ($rows = $result->fetch_assoc())
       {
          $rows["labels"] = ContentManagement::get_content_labels($articleId);
 
-         $MYSQLI->close();
+         $db->close();
 
          /* $actions = EWCore::read_actions_registry("ew-article-action-get");
            try
@@ -487,7 +487,7 @@ class ContentManagement extends \Section
       //echo $parent_id;
       //global $functions_arguments;
       //print_r($this->get_current_method_args());
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
       //print_r(func_get_args());     
       $v->rule('required', ["title", "parent_id"])->message(' {field} is required');
       $v->rule('integer', "parent_id")->message(' {field} should be integer');
@@ -495,17 +495,17 @@ class ContentManagement extends \Section
           "title" => 'tr{Title}',
           "parent_id" => 'Folder ID'
       ));
-      /* $id = $MYSQLI->real_escape_string($_REQUEST['id']);
-        $title = $MYSQLI->real_escape_string($_REQUEST['title']);
-        $parent_id = $MYSQLI->real_escape_string($_REQUEST['parent_id']);
-        $keywords = $MYSQLI->real_escape_string($_REQUEST['keywords']);
-        $description = $MYSQLI->real_escape_string($_REQUEST['description']); */
+      /* $id = $db->real_escape_string($_REQUEST['id']);
+        $title = $db->real_escape_string($_REQUEST['title']);
+        $parent_id = $db->real_escape_string($_REQUEST['parent_id']);
+        $keywords = $db->real_escape_string($_REQUEST['keywords']);
+        $description = $db->real_escape_string($_REQUEST['description']); */
       if (!$v->validate())
          return EWCore::log_error("400", "New article has not been added", $v->errors());
 
       /* $content = (stripcslashes($content));
         $createdModified = date('Y-m-d H:i:s');
-        $stm = $MYSQLI->prepare("UPDATE ew_contents
+        $stm = $db->prepare("UPDATE ew_contents
         SET title = ?
         , keywords = ?
         , description = ?
@@ -522,24 +522,24 @@ class ContentManagement extends \Section
       }
       else
       {
-         return EWCore::log_error("400", "New article has not been added", $MYSQLI->error_list);
+         return EWCore::log_error("400", "New article has not been added", $db->error_list);
       }
    }
 
    public function get_categories_list($parent_id, $token, $size)
    {
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
 
-      $result = $MYSQLI->query("SELECT parent_id FROM ew_contents WHERE id = '$parent_id'") or die("safasfasf");
+      $result = $db->query("SELECT parent_id FROM ew_contents WHERE id = '$parent_id'") or die("safasfasf");
       while ($r = $result->fetch_assoc())
       {
          $container_id = $r["parent_id"];
       }
 
-      $totalRows = $MYSQLI->query("SELECT COUNT(*) FROM ew_contents WHERE type = 'folder' AND parent_id = '$parent_id'") or die(error_reporting());
+      $totalRows = $db->query("SELECT COUNT(*) FROM ew_contents WHERE type = 'folder' AND parent_id = '$parent_id'") or die(error_reporting());
       $totalRows = $totalRows->fetch_assoc();
 
-      $result = $MYSQLI->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents WHERE type = 'folder' AND parent_id = '$parent_id'") or die("safasfasf");
+      $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents WHERE type = 'folder' AND parent_id = '$parent_id'") or die("safasfasf");
 
       $rows = array();
       while ($r = $result->fetch_assoc())
@@ -547,14 +547,14 @@ class ContentManagement extends \Section
          $r["parent_id"] = $container_id;
          $rows[] = $r;
       }
-      $MYSQLI->close();
+      $db->close();
       $out = array("totalRows" => $totalRows['COUNT(*)'], "result" => $rows);
       return json_encode($out);
    }
 
    public function get_articles_list($parent_id = null, $token, $size)
    {
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
 
       if (!isset($token))
       {
@@ -567,17 +567,17 @@ class ContentManagement extends \Section
 
       if (is_null($parent_id) && $parent_id != 0)
       {
-         //$result = $MYSQLI->query("SELECT parent_id FROM ew_contents") or die("safasfasf");
-         $result = $MYSQLI->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents WHERE type = 'article' ORDER BY title") or die("EW:error on selecting articles list");
+         //$result = $db->query("SELECT parent_id FROM ew_contents") or die("safasfasf");
+         $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents WHERE type = 'article' ORDER BY title") or die("EW:error on selecting articles list");
       }
       else
       {
-         $result = $MYSQLI->query("SELECT parent_id FROM ew_contents WHERE id = '$parent_id'") or die("safasfasf");
+         $result = $db->query("SELECT parent_id FROM ew_contents WHERE id = '$parent_id'") or die("safasfasf");
          while ($r = $result->fetch_assoc())
          {
             $container_id = $r["parent_id"];
          }
-         $result = $MYSQLI->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents WHERE type = 'article' AND parent_id = '$parent_id' ORDER BY title") or die("EW:error on selecting articles list");
+         $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents WHERE type = 'article' AND parent_id = '$parent_id' ORDER BY title") or die("EW:error on selecting articles list");
       }
 
       $rows = array();
@@ -586,30 +586,30 @@ class ContentManagement extends \Section
          $r["pre_parent_id"] = $container_id;
          $rows[] = $r;
       }
-      $MYSQLI->close();
+      $db->close();
       $out = array("totalRows" => $result->num_rows, "result" => $rows);
       return $out;
    }
 
    public function get_content($id)
    {
-      $MYSQLI = get_db_connection();
-      //$articleId = $MYSQLI->real_escape_string($_REQUEST["articleId"]);
+      $db = \EWCore::get_db_connection();
+      //$articleId = $db->real_escape_string($_REQUEST["articleId"]);
 
-      $result = $MYSQLI->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents WHERE id = '$id'") or $MYSQLI->error;
+      $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents WHERE id = '$id'") or $db->error;
       if ($rows = $result->fetch_assoc())
       {
          $rows["labels"] = ContentManagement::get_content_labels($id);
 
-         $MYSQLI->close();
+         $db->close();
          return json_encode($rows);
       }
    }
 
    public function get_contents($title_filter = '%', $type = '%', $token = 0, $size = 99999999999999)
    {
-      $MYSQLI = get_db_connection();
-      //$parentId = $MYSQLI->real_escape_string($this->get_param("parentId"));
+      $db = \EWCore::get_db_connection();
+      //$parentId = $db->real_escape_string($this->get_param("parentId"));
       //echo "asssssssssssssssss";
       if (!$token)
       {
@@ -620,9 +620,9 @@ class ContentManagement extends \Section
          $size = 99999999999999;
       }
 
-      $totalRows = $MYSQLI->query("SELECT COUNT(*)  FROM ew_contents WHERE  title LIKE '$title_filter%' AND type LIKE '$type'") or die($MYSQLI->error);
+      $totalRows = $db->query("SELECT COUNT(*)  FROM ew_contents WHERE  title LIKE '$title_filter%' AND type LIKE '$type'") or die($db->error);
       $totalRows = $totalRows->fetch_assoc();
-      $result = $MYSQLI->query("SELECT *,DATE_FORMAT(date_created,'%d-%m-%Y') AS 'date_created' FROM ew_contents WHERE title COLLATE UTF8_GENERAL_CI LIKE '$title_filter%' AND type LIKE '$type' ORDER BY title  LIMIT $token,$size") or die($MYSQLI->error);
+      $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%d-%m-%Y') AS 'date_created' FROM ew_contents WHERE title COLLATE UTF8_GENERAL_CI LIKE '$title_filter%' AND type LIKE '$type' ORDER BY title  LIMIT $token,$size") or die($db->error);
 
       //$out = array();
       $rows = array();
@@ -631,14 +631,14 @@ class ContentManagement extends \Section
       {
          $rows[] = $r;
       }
-      $MYSQLI->close();
+      $db->close();
       $out = array("totalRows" => $totalRows['COUNT(*)'], "result" => $rows);
       return json_encode($out);
    }
 
    public function add_category($title, $parent_id, $keywords, $description, $labels)
    {
-      $MYSQLI = \EWCore::get_db_connection();
+      $db = \EWCore::get_db_connection();
 
       if (!$parentId)
          $parentId = 0;
@@ -648,7 +648,7 @@ class ContentManagement extends \Section
       $result = $this->add_content("folder", $title, $parent_id, $keywords, $description, $html_content, "", $labels);
       $result = json_decode($result, true);
 
-      /* $stm = $MYSQLI->prepare("INSERT INTO content_categories (title , parent_id , date_created , content_categories.order) VALUES (? , ? , NOW() , '0')");
+      /* $stm = $db->prepare("INSERT INTO content_categories (title , parent_id , date_created , content_categories.order) VALUES (? , ? , NOW() , '0')");
         $stm->bind_param("ss", $title, $parentId); */
 
       if ($result["id"])
@@ -661,15 +661,15 @@ class ContentManagement extends \Section
 
    public function get_category($id)
    {
-      $MYSQLI = get_db_connection();
-      //$categoryId = $MYSQLI->real_escape_string($_REQUEST["categoryId"]);
+      $db = \EWCore::get_db_connection();
+      //$categoryId = $db->real_escape_string($_REQUEST["categoryId"]);
 
 
-      $result = $MYSQLI->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents WHERE id = '$id'") or die($MYSQLI->error);
+      $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents WHERE id = '$id'") or die($db->error);
 
       if ($rows = $result->fetch_assoc())
       {
-         $MYSQLI->close();
+         $db->close();
          //$actions = EWCore::read_actions_registry("ew-category-action-get");
          /* try
            {
@@ -693,7 +693,7 @@ class ContentManagement extends \Section
 
    public function update_category($id = null, $title = null, $parent_id = null, $keywords = null, $description = null, $content = null, $labels = null)
    {
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
 
       //$createdModified = date('Y-m-d H:i:s');
       $v = new \Valitron\Validator($this->get_current_command_args());
@@ -701,7 +701,7 @@ class ContentManagement extends \Section
       //echo $parent_id;
       //global $functions_arguments;
       //print_r($this->get_current_method_args());
-      //$MYSQLI = get_db_connection();
+      //$db = \EWCore::get_db_connection();
       //print_r(func_get_args());     
       $v->rule('required', ["title", "parent_id"])->message(' {field} is required');
       $v->rule('integer', "parent_id")->message(' {field} should be integer');
@@ -709,17 +709,17 @@ class ContentManagement extends \Section
           "title" => 'tr{Title}',
           "parent_id" => 'Folder ID'
       ));
-      /* $id = $MYSQLI->real_escape_string($_REQUEST['id']);
-        $title = $MYSQLI->real_escape_string($_REQUEST['title']);
-        $parent_id = $MYSQLI->real_escape_string($_REQUEST['parent_id']);
-        $keywords = $MYSQLI->real_escape_string($_REQUEST['keywords']);
-        $description = $MYSQLI->real_escape_string($_REQUEST['description']); */
+      /* $id = $db->real_escape_string($_REQUEST['id']);
+        $title = $db->real_escape_string($_REQUEST['title']);
+        $parent_id = $db->real_escape_string($_REQUEST['parent_id']);
+        $keywords = $db->real_escape_string($_REQUEST['keywords']);
+        $description = $db->real_escape_string($_REQUEST['description']); */
       if (!$v->validate())
          return EWCore::log_error("400", "New folder has not been added", $v->errors());
 
       /* $content = (stripcslashes($content));
         $createdModified = date('Y-m-d H:i:s');
-        $stm = $MYSQLI->prepare("UPDATE ew_contents
+        $stm = $db->prepare("UPDATE ew_contents
         SET title = ?
         , keywords = ?
         , description = ?
@@ -736,30 +736,30 @@ class ContentManagement extends \Section
       }
       else
       {
-         return EWCore::log_error("400", "New folder has not been added", $MYSQLI->error_list);
+         return EWCore::log_error("400", "New folder has not been added", $db->error_list);
       }
    }
 
    public function delete_image($id)
    {
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
       if (!$id)
-         $id = $MYSQLI->real_escape_string($_REQUEST["id"]);
-      $result = $MYSQLI->query("SELECT * FROM ew_contents WHERE parent_id = '$id' LIMIT 1");
+         $id = $db->real_escape_string($_REQUEST["id"]);
+      $result = $db->query("SELECT * FROM ew_contents WHERE parent_id = '$id' LIMIT 1");
       if ($result->fetch_assoc())
       {
          return json_encode(array(status => "unable", status_code => 2));
          return;
       }
-      $result = $MYSQLI->query("SELECT * FROM ew_contents, ew_images WHERE ew_contents.id = ew_images.content_id AND ew_contents.id = '$id' LIMIT 1");
+      $result = $db->query("SELECT * FROM ew_contents, ew_images WHERE ew_contents.id = ew_images.content_id AND ew_contents.id = '$id' LIMIT 1");
       if ($file = $result->fetch_assoc())
       {
          $path_parts = pathinfo(EW_MEDIA_DIR . '/' . $file["source"]);
          unlink(EW_MEDIA_DIR . '/' . $path_parts["basename"]);
          unlink(EW_MEDIA_DIR . '/' . $path_parts["filename"] . '.thumb.' . $path_parts["extension"]);
       }
-      $result = $MYSQLI->query("DELETE FROM ew_contents WHERE type = 'image' AND id = '$id'");
-      $MYSQLI->close();
+      $result = $db->query("DELETE FROM ew_contents WHERE type = 'image' AND id = '$id'");
+      $db->close();
       if ($result)
       {
          return json_encode(array("status" => "success", "status_code" => 1, "message" => ""));
@@ -772,18 +772,18 @@ class ContentManagement extends \Section
 
    public function delete_content($type, $id)
    {
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
       if (!$type)
-         $type = $MYSQLI->real_escape_string($_REQUEST["type"]);
+         $type = $db->real_escape_string($_REQUEST["type"]);
       if (!$id)
-         $id = $MYSQLI->real_escape_string($_REQUEST["id"]);
-      $result = $MYSQLI->query("SELECT * FROM ew_contents WHERE parent_id = '$id' LIMIT 1");
+         $id = $db->real_escape_string($_REQUEST["id"]);
+      $result = $db->query("SELECT * FROM ew_contents WHERE parent_id = '$id' LIMIT 1");
       if ($result->fetch_assoc())
       {
          //return array(status => "unable", status_code => 2);
          return \EWCore::log_error(400, "tr{In order to delete this folder, you must delete content of this folder first}");
       }
-      $result = $MYSQLI->query("DELETE FROM ew_contents WHERE type = '$type' AND id = '$id'");
+      $result = $db->query("DELETE FROM ew_contents WHERE type = '$type' AND id = '$id'");
       if ($result)
       {
          return array("status" => "success", "status_code" => 1, "message" => "Content has been deleted successfully");
@@ -796,8 +796,8 @@ class ContentManagement extends \Section
 
    public function delete_album()
    {
-      $MYSQLI = get_db_connection();
-      $albumId = $MYSQLI->real_escape_string($_REQUEST["albumId"]);
+      $db = \EWCore::get_db_connection();
+      $albumId = $db->real_escape_string($_REQUEST["albumId"]);
       $res = $this->delete_content("album", $albumId);
       if ($res["status_code"] == 1)
          $res["message"] = "The album has been deleted successfuly";
@@ -810,17 +810,17 @@ class ContentManagement extends \Section
 
    public function delete_category($categoryId)
    {
-      /* $MYSQLI = get_db_connection();
-        $categoryId = $MYSQLI->real_escape_string($_REQUEST["categoryId"]); */
+      /* $db = \EWCore::get_db_connection();
+        $categoryId = $db->real_escape_string($_REQUEST["categoryId"]); */
       return json_encode($this->delete_content("folder", $categoryId));
    }
 
    public function delete_article($articleId)
    {
-      $MYSQLI = get_db_connection();
-      //$articleId = $MYSQLI->real_escape_string($_REQUEST["articleId"]);
-      $result = $MYSQLI->query("DELETE FROM ew_contents WHERE id = '$articleId'");
-      $MYSQLI->close();
+      $db = \EWCore::get_db_connection();
+      //$articleId = $db->real_escape_string($_REQUEST["articleId"]);
+      $result = $db->query("DELETE FROM ew_contents WHERE id = '$articleId'");
+      $db->close();
       if ($result)
       {
          echo json_encode(array(status => "success", "message" => "tr{Article has been deleted succesfully}"));
@@ -828,13 +828,13 @@ class ContentManagement extends \Section
       else
       {
 
-         return EWCore::log_error("400", "tr{Something went wrong, please try again}", $MYSQLI->error_list);
+         return EWCore::log_error("400", "tr{Something went wrong, please try again}", $db->error_list);
       }
    }
 
    public function get_documents_list($parentId, $token = null, $size = null)
    {
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
 
       if (!isset($token))
       {
@@ -845,7 +845,7 @@ class ContentManagement extends \Section
          $size = 99999999999999;
       }
 
-      $result = $MYSQLI->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM content_categories WHERE parent_id = '$parentId' ORDER BY title") or die("safasfasf");
+      $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM content_categories WHERE parent_id = '$parentId' ORDER BY title") or die("safasfasf");
       $categories = array();
       while ($r = $result->fetch_assoc())
       {
@@ -853,7 +853,7 @@ class ContentManagement extends \Section
          $categories[] = $r;
       }
 
-      $result = $MYSQLI->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents WHERE category_id = '$parentId' ORDER BY title") or die("safasfasf");
+      $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents WHERE category_id = '$parentId' ORDER BY title") or die("safasfasf");
       $articles = array();
       while ($r = $result->fetch_assoc())
       {
@@ -861,7 +861,7 @@ class ContentManagement extends \Section
          $articles[] = $r;
       }
       $documents = array_merge($categories, $articles);
-      $MYSQLI->close();
+      $db->close();
       $out = array("totalRows" => count($documents), "result" => $documents);
       return json_encode($out);
    }
@@ -916,7 +916,7 @@ class ContentManagement extends \Section
 
    public function get_media_list($parent_id, $token = null, $size = null)
    {
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
 
       $path = "/";
 
@@ -932,7 +932,7 @@ class ContentManagement extends \Section
            mkdir($root . $path . '.thumbs/');
            } */
 
-         $result = $MYSQLI->query("SELECT parent_id FROM ew_contents WHERE id = '$parent_id'") or die("safasfasf");
+         $result = $db->query("SELECT parent_id FROM ew_contents WHERE id = '$parent_id'") or die("safasfasf");
          while ($r = $result->fetch_assoc())
          {
             $container_id = $r["parent_id"];
@@ -940,14 +940,14 @@ class ContentManagement extends \Section
 
          $files = array();
          // Folder
-         $result = $MYSQLI->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents WHERE type = 'album' AND parent_id = '$parent_id' ORDER BY title") or die("safasfasf");
+         $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents WHERE type = 'album' AND parent_id = '$parent_id' ORDER BY title") or die("safasfasf");
          while ($r = $result->fetch_assoc())
          {
             $files[] = array(title => $r["title"], type => "folder", size => "", ext => "", "parentId" => $container_id, "id" => $r["id"]);
          }
 
          // images
-         $result = $MYSQLI->query("SELECT *,ew_contents.id AS content_id, DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents, ew_images WHERE ew_contents.id = ew_images.content_id AND parent_id = '$parent_id' ORDER BY title") or die("safasfasf");
+         $result = $db->query("SELECT *,ew_contents.id AS content_id, DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents, ew_images WHERE ew_contents.id = ew_images.content_id AND parent_id = '$parent_id' ORDER BY title") or die("safasfasf");
          while ($r = $result->fetch_assoc())
          {
             $file = $r["source"];
@@ -994,15 +994,15 @@ class ContentManagement extends \Section
 
    public function get_album()
    {
-      $MYSQLI = get_db_connection();
-      $albumId = $MYSQLI->real_escape_string($_REQUEST["albumId"]);
+      $db = \EWCore::get_db_connection();
+      $albumId = $db->real_escape_string($_REQUEST["albumId"]);
 
 
-      $result = $MYSQLI->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents WHERE id = '$albumId'") or die($MYSQLI->error);
+      $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents WHERE id = '$albumId'") or die($db->error);
 
       if ($rows = $result->fetch_assoc())
       {
-         $MYSQLI->close();
+         $db->close();
 
          return json_encode($rows);
       }
@@ -1010,15 +1010,15 @@ class ContentManagement extends \Section
 
    public function add_album($title = null, $labels)
    {
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
       if (!$title)
-         $title = $MYSQLI->real_escape_string($_REQUEST['title']);
+         $title = $db->real_escape_string($_REQUEST['title']);
 
-      /* $parentId = $MYSQLI->real_escape_string($_REQUEST['parentId']);
+      /* $parentId = $db->real_escape_string($_REQUEST['parentId']);
         if (!$parentId)
         $parentId = 0; */
-      $keywords = $MYSQLI->real_escape_string($_REQUEST['keywords']);
-      $description = $MYSQLI->real_escape_string($_REQUEST['description']);
+      $keywords = $db->real_escape_string($_REQUEST['keywords']);
+      $description = $db->real_escape_string($_REQUEST['description']);
       $htmlContent = stripcslashes($_REQUEST['html_content']);
 
       $result = $this->add_content("album", $title, 0, $keywords, $description, $htmlContent, "", $labels);
@@ -1026,7 +1026,7 @@ class ContentManagement extends \Section
       $res = array(status => "success", message => "The directory {" . $title . "} hase been created succesfuly");
 
       // $stm->close();
-      //$MYSQLI->close();
+      //$db->close();
       // Call plugins actions
       // End of plugins actions call
       //$root = EW_MEDIA_DIR;
@@ -1053,15 +1053,15 @@ class ContentManagement extends \Section
 
    public function update_album()
    {
-      $MYSQLI = get_db_connection();
-      $albumId = $MYSQLI->real_escape_string($_REQUEST['id']);
-      $title = $MYSQLI->real_escape_string($_REQUEST['title']);
-      $parent_id = $MYSQLI->real_escape_string($_REQUEST['parent_id']);
-      $keywords = $MYSQLI->real_escape_string($_REQUEST['keywords']);
-      $description = $MYSQLI->real_escape_string($_REQUEST['description']);
+      $db = \EWCore::get_db_connection();
+      $albumId = $db->real_escape_string($_REQUEST['id']);
+      $title = $db->real_escape_string($_REQUEST['title']);
+      $parent_id = $db->real_escape_string($_REQUEST['parent_id']);
+      $keywords = $db->real_escape_string($_REQUEST['keywords']);
+      $description = $db->real_escape_string($_REQUEST['description']);
       $htmlContent = stripcslashes($_REQUEST['html_content']);
       $createdModified = date('Y-m-d H:i:s');
-      $stm = $MYSQLI->prepare("UPDATE ew_contents 
+      $stm = $db->prepare("UPDATE ew_contents 
             SET title = ? 
             , keywords = ? 
             , description = ? 
@@ -1073,7 +1073,7 @@ class ContentManagement extends \Section
       if ($stm->execute())
       {
          $stm->close();
-         $MYSQLI->close();
+         $db->close();
 
          echo json_encode(array(status => "success", title => $title));
       }
@@ -1085,18 +1085,18 @@ class ContentManagement extends \Section
 
    public function delete_content_by_id($id)
    {
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
 
       if (!$id)
-         $id = $MYSQLI->real_escape_string($_REQUEST["id"]);
-      $result = $MYSQLI->query("SELECT * FROM ew_contents WHERE parent_id = '$id' LIMIT 1");
+         $id = $db->real_escape_string($_REQUEST["id"]);
+      $result = $db->query("SELECT * FROM ew_contents WHERE parent_id = '$id' LIMIT 1");
       $output = array();
       if ($result->fetch_assoc())
       {
          return json_encode(array(status => "unable", status_code => 2));
       }
-      $result = $MYSQLI->query("DELETE FROM ew_contents WHERE id = '$id'");
-      $MYSQLI->close();
+      $result = $db->query("DELETE FROM ew_contents WHERE id = '$id'");
+      $db->close();
       if ($result)
       {
          return json_encode(array("status" => "success", "status_code" => 1, "message" => ""));
@@ -1180,14 +1180,14 @@ class ContentManagement extends \Section
 
    public function upload_file($path, $parent_id)
    {
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
       require_once EW_ROOT_DIR . "core/upload.class.php";
       ini_set("memory_limit", "100M");
       if (isset($_REQUEST["path"]))
          $path = $_REQUEST["path"];
 
       if (!$parent_id)
-         $parent_id = $MYSQLI->real_escape_string($_REQUEST["parentId"]);
+         $parent_id = $db->real_escape_string($_REQUEST["parentId"]);
       $alt_text = $_REQUEST["alt_text"];
       //if (!$order)
       //  $order = 0;
@@ -1222,21 +1222,21 @@ class ContentManagement extends \Section
                $result = $this->add_content("image", $foo->file_dst_name_body, $parent_id, "", "", "", "", "");
                $result = json_decode($result, true);
                //print_r($result);
-               // $stm = $MYSQLI->prepare("INSERT INTO ew_contents (title , keywords , description , parent_id , source_page_address , html_content , ew_contents.order , date_created,type) 
-               //  VALUES (? , ? , ? , ? , ? , ? , ? , ?,'article')") or die($MYSQLI->error);
-               //  $stm->bind_param("ssssssss", $title, $keywords, $description, $categoryId, $sourcePageAddress, $htmlContent, $order, $createdDate) or die($MYSQLI->error); 
+               // $stm = $db->prepare("INSERT INTO ew_contents (title , keywords , description , parent_id , source_page_address , html_content , ew_contents.order , date_created,type) 
+               //  VALUES (? , ? , ? , ? , ? , ? , ? , ?,'article')") or die($db->error);
+               //  $stm->bind_param("ssssssss", $title, $keywords, $description, $categoryId, $sourcePageAddress, $htmlContent, $order, $createdDate) or die($db->error); 
                if ($result["id"])
                {
                   $content_id = $result["id"];
-                  $stm = $MYSQLI->prepare("INSERT INTO ew_images (content_id, source , alt_text) 
-            VALUES (? , ? , ?)") or die($MYSQLI->error);
+                  $stm = $db->prepare("INSERT INTO ew_images (content_id, source , alt_text) 
+            VALUES (? , ? , ?)") or die($db->error);
                   $image_path = $foo->file_dst_name;
-                  $stm->bind_param("sss", $content_id, $image_path, $alt_text) or die($MYSQLI->error);
+                  $stm->bind_param("sss", $content_id, $image_path, $alt_text) or die($db->error);
                   if ($stm->execute())
                   {
                      $res = array("status" => "success", "id" => $stm->insert_id);
                      //$stm->close();
-                     //$MYSQLI->close();
+                     //$db->close();
                   }
                }
 
@@ -1254,7 +1254,7 @@ class ContentManagement extends \Section
          }
       }
       $stm->close();
-      $MYSQLI->close();
+      $db->close();
       return json_encode(array(status => "success", message => "Uploaded: " . $succeed . " Error: " . $error));
    }
 

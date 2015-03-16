@@ -24,22 +24,22 @@ class Settings extends Section
 
    public function save_setting($key = null, $value = null)
    {
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
 
       if (!$key)
-         $key = $MYSQLI->real_escape_string($_REQUEST["key"]);
+         $key = $db->real_escape_string($_REQUEST["key"]);
       if (!$value)
-         $value = $MYSQLI->real_escape_string($_REQUEST["value"]);
+         $value = $db->real_escape_string($_REQUEST["value"]);
 
-      $setting = $MYSQLI->query("SELECT * FROM ew_settings WHERE `key` = '$key' ") or die($MYSQLI->error);
+      $setting = $db->query("SELECT * FROM ew_settings WHERE `key` = '$key' ") or die($db->error);
       if ($setting = $setting->fetch_assoc())
       {
-         $MYSQLI->query("UPDATE ew_settings SET value = '$value' WHERE `key` = '$key' ") or die($MYSQLI->error);
+         $db->query("UPDATE ew_settings SET value = '$value' WHERE `key` = '$key' ") or die($db->error);
          return TRUE;
       }
       else
       {
-         $MYSQLI->query("INSERT INTO ew_settings(`key`, `value`) VALUES('$key','$value')") or die($MYSQLI->error);
+         $db->query("INSERT INTO ew_settings(`key`, `value`) VALUES('$key','$value')") or die($db->error);
          return TRUE;
       }
       return FALSE;
@@ -47,7 +47,7 @@ class Settings extends Section
 
    public function save_settings($params)
    {
-      //$MYSQLI = get_db_connection();
+      //$db = \EWCore::get_db_connection();
       //print_r($params);
       if (!$params)
          $params = $_REQUEST["params"];
@@ -65,31 +65,31 @@ class Settings extends Section
 
    public static function read_settings()
    {
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
 
-      $setting = $MYSQLI->query("SELECT * FROM ew_settings") or die($MYSQLI->error);
-      //$MYSQLI = get_db_connection();
+      $setting = $db->query("SELECT * FROM ew_settings") or die($db->error);
+      //$db = \EWCore::get_db_connection();
       $rows = array();
       while ($r = $setting->fetch_assoc())
       {
          $rows[$r["key"]] = $r["value"];
       }
-      $MYSQLI->close();
+      $db->close();
       //$out = array("totalRows" => $setting->num_rows, "result" => $rows);
       return json_encode($rows);
    }
 
    public function read_setting($key)
    {
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
       if (!$key)
-         $key = $MYSQLI->real_escape_string($_REQUEST["key"]);
-      $setting = $MYSQLI->query("SELECT * FROM ew_settings WHERE `key` = '$key'") or die($MYSQLI->error);
-      //$MYSQLI = get_db_connection();
+         $key = $db->real_escape_string($_REQUEST["key"]);
+      $setting = $db->query("SELECT * FROM ew_settings WHERE `key` = '$key'") or die($db->error);
+      //$db = \EWCore::get_db_connection();
       //$rows = array();
       while ($r = $setting->fetch_assoc())
       {
-         $MYSQLI->close();
+         $db->close();
          return $r;
       }
 

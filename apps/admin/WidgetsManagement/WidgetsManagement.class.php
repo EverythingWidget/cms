@@ -117,7 +117,7 @@ class WidgetsManagement extends Section
 
    public function get_uis_list($token = 0, $size = 99999999999999)
    {
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
 
       if (!isset($token))
       {
@@ -128,9 +128,9 @@ class WidgetsManagement extends Section
          $size = 99999999999999;
       }
 
-      $totalRows = $MYSQLI->query("SELECT COUNT(*)  FROM ew_ui_structures ") or die(error_reporting());
+      $totalRows = $db->query("SELECT COUNT(*)  FROM ew_ui_structures ") or die(error_reporting());
       $totalRows = $totalRows->fetch_assoc();
-      $result = $MYSQLI->query("SELECT *  FROM ew_ui_structures ORDER BY name LIMIT $token,$size") or die(error_reporting());
+      $result = $db->query("SELECT *  FROM ew_ui_structures ORDER BY name LIMIT $token,$size") or die(error_reporting());
 
 //$out = array();
       $rows = array();
@@ -138,16 +138,16 @@ class WidgetsManagement extends Section
       {
          $rows[] = $r;
       }
-      $MYSQLI->close();
+      $db->close();
       $out = array("totalRows" => $totalRows['COUNT(*)'], "result" => $rows);
       return ($out);
    }
 
    public function get_path_uis_list()
    {
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
 
-      $result = $MYSQLI->query("SELECT ew_pages_ui_structures.path,ew_ui_structures.id, ew_ui_structures.name, ew_ui_structures.template  FROM ew_pages_ui_structures,ew_ui_structures WHERE ew_pages_ui_structures.ui_structure_id = ew_ui_structures.id") or die(error_reporting());
+      $result = $db->query("SELECT ew_pages_ui_structures.path,ew_ui_structures.id, ew_ui_structures.name, ew_ui_structures.template  FROM ew_pages_ui_structures,ew_ui_structures WHERE ew_pages_ui_structures.ui_structure_id = ew_ui_structures.id") or die(error_reporting());
 
 //$out = array();
       $rows = array();
@@ -155,36 +155,36 @@ class WidgetsManagement extends Section
       {
          $rows[] = array($r["path"] . "_uisId" => $r["id"], $r["path"] => $r["name"]);
       }
-      $MYSQLI->close();
+      $db->close();
       //$out = array(;
       return json_encode($rows);
    }
 
    public function get_all_pages_uis_list()
    {
-      $MYSQLI = get_db_connection();
-      $result = $MYSQLI->query("SELECT ew_pages_ui_structures.id AS id, ew_pages_ui_structures.path AS path, ew_ui_structures.name AS name FROM ew_pages_ui_structures,ew_ui_structures WHERE ew_pages_ui_structures.ui_structure_id = ew_ui_structures.id AND ew_pages_ui_structures.path LIKE '%'") or die(error_reporting());
+      $db = \EWCore::get_db_connection();
+      $result = $db->query("SELECT ew_pages_ui_structures.id AS id, ew_pages_ui_structures.path AS path, ew_ui_structures.name AS name FROM ew_pages_ui_structures,ew_ui_structures WHERE ew_pages_ui_structures.ui_structure_id = ew_ui_structures.id AND ew_pages_ui_structures.path LIKE '%'") or die(error_reporting());
       $rows = array();
       while ($r = $result->fetch_assoc())
       {
          $rows[] = $r;
       }
-      $MYSQLI->close();
+      $db->close();
       //$out = array(;
       return json_encode(array("totalRows" => $result->num_rows, "result" => $rows));
    }
 
    public function add_uis($name = null, $template = null, $template_settings = null, $structure = null)
    {
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
 
       if (!$name)
       {
          $res = array("status" => "unsuccess", "message" => "The field name is mandatory");
-         $MYSQLI->close();
+         $db->close();
          return json_encode($res);
       }
-      $stm = $MYSQLI->prepare("INSERT INTO ew_ui_structures(name,template,template_settings,structure) VALUES (?,?,?,?)");
+      $stm = $db->prepare("INSERT INTO ew_ui_structures(name,template,template_settings,structure) VALUES (?,?,?,?)");
       $stm->bind_param("ssss", $name, $template, stripslashes($template_settings), stripslashes($structure));
       $stm->execute();
       if ($_REQUEST['defaultUIS'] == "true")
@@ -197,23 +197,23 @@ class WidgetsManagement extends Section
       }
       $res = array("status" => "success", "uisId" => $stm->insert_id, "name" => $name);
       $stm->close();
-      $MYSQLI->close();
+      $db->close();
       return json_encode($res);
    }
 
    public function import_uis()
    {
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
 
       $fileContent = json_decode(file_get_contents($_FILES['uis_file']['tmp_name']), true);
 
       if (!$fileContent["name"])
       {
          $res = array("status" => "unsuccess", "message" => "The field name is mandatory");
-         $MYSQLI->close();
+         $db->close();
          return json_encode($res);
       }
-      $stm = $MYSQLI->prepare("INSERT INTO ew_ui_structures(name,template, template_settings,structure) VALUES (?,?,?,?)");
+      $stm = $db->prepare("INSERT INTO ew_ui_structures(name,template, template_settings,structure) VALUES (?,?,?,?)");
       $stm->bind_param("ssss", $fileContent["name"], $fileContent["template"], $fileContent["template_settings"], $fileContent["structure"]);
       $stm->execute();
       /* if ($_REQUEST['defaultUIS'] == "true")
@@ -226,19 +226,19 @@ class WidgetsManagement extends Section
         } */
       $res = array("status" => "success", "uisId" => $stm->insert_id, "message" => "tr{The UIS has been imported succesfully}");
       $stm->close();
-      $MYSQLI->close();
+      $db->close();
       return json_encode($res);
    }
 
    public function export_uis($uis_id)
    {
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
       $table = "ew_ui_structures";
       if (!$uis_id)
          return \EWCore::log_error(400, "Please specify layout ID");
 
       // load the original record into an array
-      $result = $MYSQLI->query("SELECT * FROM {$table} WHERE id={$uis_id}");
+      $result = $db->query("SELECT * FROM {$table} WHERE id={$uis_id}");
       if (!$result)
          return \EWCore::log_error(400, "Layout not found");
 
@@ -262,19 +262,19 @@ class WidgetsManagement extends Section
 
    public function clone_uis($id = null)
    {
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
       $table = "ew_ui_structures";
 
       // load the original record into an array
-      $result = $MYSQLI->query("SELECT * FROM {$table} WHERE id={$id}");
+      $result = $db->query("SELECT * FROM {$table} WHERE id={$id}");
       $original_record = $result->fetch_assoc();
       $name = $original_record["name"] . " - clone";
       $template = $original_record["template"];
       $structure = $original_record["structure"];
       //$this->add_uis($name);
       // insert the new record and get the new auto_increment id
-      /* $MYSQLI->query("INSERT INTO {$table} (`{$id_field}`) VALUES (NULL)");
-        $newid = $MYSQLI->insert_id;
+      /* $db->query("INSERT INTO {$table} (`{$id_field}`) VALUES (NULL)");
+        $newid = $db->insert_id;
 
         // generate the query to update the new record with the previous values
         $query = "UPDATE {$table} SET ";
@@ -287,7 +287,7 @@ class WidgetsManagement extends Section
         }
         $query = substr($query, 0, strlen($query) - 2); // lop off the extra trailing comma
         $query .= " WHERE {$id_field}={$newid}";
-        $MYSQLI->query($query); */
+        $db->query($query); */
 
       // return the new id
       $res = $this->add_uis($name, $template, $structure);
@@ -296,17 +296,17 @@ class WidgetsManagement extends Section
 
    public function update_uis($uisId = null, $name = null, $template = null, $template_settings = null, $perview_url = null, $structure = null)
    {
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
 
       if (!$name)
       {
          $res = array("status" => "unsuccess", "message" => "The field name is mandatory");
-         $MYSQLI->close();
+         $db->close();
          return json_encode($res);
       }
-      $stm = $MYSQLI->prepare("UPDATE ew_ui_structures SET name = ?, template= ?, template_settings= ?, perview_url = ?, structure = ? WHERE id = ?") or die($MYSQLI->error);
+      $stm = $db->prepare("UPDATE ew_ui_structures SET name = ?, template= ?, template_settings= ?, perview_url = ?, structure = ? WHERE id = ?") or die($db->error);
       $stm->bind_param("ssssss", $name, $template, stripslashes($template_settings), $perview_url, stripslashes($structure), $uisId);
-      $error = $MYSQLI->errno;
+      $error = $db->errno;
       if ($stm->execute())
       {
          if ($_REQUEST['defaultUIS'] == "true")
@@ -318,7 +318,7 @@ class WidgetsManagement extends Section
             $this->set_uis("@HOME_PAGE", $uisId);
          }
          $stm->close();
-         $MYSQLI->close();
+         $db->close();
          echo json_encode(array(status => "success", "message" => "tr{The layout has been saved successfully}", "data" => [title => $name]));
       }
       else
@@ -329,11 +329,11 @@ class WidgetsManagement extends Section
 
    public static function get_uis($uisId = null)
    {
-      $MYSQLI = \EWCore::get_db_connection();
+      $db = \EWCore::get_db_connection();
 
       if (!$uisId)
          return;
-      $result = $MYSQLI->query("SELECT * FROM ew_ui_structures WHERE id = '$uisId'") or die(null);
+      $result = $db->query("SELECT * FROM ew_ui_structures WHERE id = '$uisId'") or die(null);
       $default_uis = json_decode(WidgetsManagement::get_path_uis("@DEFAULT"), true);
       $home_uis = json_decode(WidgetsManagement::get_path_uis("@HOME_PAGE"), true);
 
@@ -353,10 +353,10 @@ class WidgetsManagement extends Section
 
    public function delete_uis($uisId)
    {
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
 
-      $result = $MYSQLI->query("DELETE FROM ew_ui_structures WHERE id = '$uisId'");
-      $MYSQLI->close();
+      $result = $db->query("DELETE FROM ew_ui_structures WHERE id = '$uisId'");
+      $db->close();
       if ($result)
       {
          echo json_encode(array(status => "success"));
@@ -369,20 +369,20 @@ class WidgetsManagement extends Section
 
    public function add_panel($uisId = null, $styleId = null, $styleClass = null)
    {
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
 
-      $parameters = $MYSQLI->real_escape_string($_REQUEST["parameters"]);
-      $container_id = $MYSQLI->real_escape_string($_REQUEST["containerId"]);
+      $parameters = $db->real_escape_string($_REQUEST["parameters"]);
+      $container_id = $db->real_escape_string($_REQUEST["containerId"]);
 
       if (!$uisId)
       {
          $res = array("status" => "unsuccess", "message" => "The field UIS ID is mandatory");
-         $MYSQLI->close();
+         $db->close();
          return json_encode($res);
       }
-      $stm = $MYSQLI->prepare("INSERT INTO ui_structures_parts (ui_structure_id
+      $stm = $db->prepare("INSERT INTO ui_structures_parts (ui_structure_id
   , item_type ,style_id, style_class,widgets_parameters,container_id,ui_structures_parts.order)
-  SELECT ? , 'panel' , ? , ?, ? ,?,  count(*) FROM ui_structures_parts WHERE item_type = 'panel' AND ui_structure_id = $uisId") or die($MYSQLI->error);
+  SELECT ? , 'panel' , ? , ?, ? ,?,  count(*) FROM ui_structures_parts WHERE item_type = 'panel' AND ui_structure_id = $uisId") or die($db->error);
       $stm->bind_param("sssss", $uisId, $styleId, $styleClass, $parameters, $container_id);
       if ($stm->execute())
       {
@@ -393,25 +393,25 @@ class WidgetsManagement extends Section
          $res = array("status" => "error", message => "Panel has NOT been added, Please try again");
       }
       $stm->close();
-      $MYSQLI->close();
+      $db->close();
       return json_encode($res);
    }
 
    public function update_panel()
    {
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
 
-      $panelId = $MYSQLI->real_escape_string($_REQUEST['panelId']);
-      $styleId = $MYSQLI->real_escape_string($_REQUEST['styleId']);
-      $styleClass = $MYSQLI->real_escape_string($_REQUEST['styleClass']);
-      $parameters = $MYSQLI->real_escape_string($_REQUEST["parameters"]);
+      $panelId = $db->real_escape_string($_REQUEST['panelId']);
+      $styleId = $db->real_escape_string($_REQUEST['styleId']);
+      $styleClass = $db->real_escape_string($_REQUEST['styleClass']);
+      $parameters = $db->real_escape_string($_REQUEST["parameters"]);
       if (!$panelId)
       {
          $res = array("status" => "unsuccess", "message" => "The field Panel ID is mandatory");
-         $MYSQLI->close();
+         $db->close();
          return json_encode($res);
       }
-      $stm = $MYSQLI->prepare("UPDATE ui_structures_parts SET style_id = ?, style_class = ? , widgets_parameters = ? WHERE id = ?");
+      $stm = $db->prepare("UPDATE ui_structures_parts SET style_id = ?, style_class = ? , widgets_parameters = ? WHERE id = ?");
       $stm->bind_param("ssss", $styleId, $styleClass, $parameters, $panelId);
       if ($stm->execute())
       {
@@ -422,7 +422,7 @@ class WidgetsManagement extends Section
          $res = array("status" => "error", message => "Panel has NOT been updated, Please try again");
       }
       $stm->close();
-      $MYSQLI->close();
+      $db->close();
       return json_encode($res);
    }
 
@@ -640,16 +640,16 @@ class WidgetsManagement extends Section
 
    public function get_widget($widgetId)
    {
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
       if (!isset($widgetId))
-         $widgetId = $MYSQLI->real_escape_string($_REQUEST["wId"]);
+         $widgetId = $db->real_escape_string($_REQUEST["wId"]);
       if (!$widgetId)
          return;
-      $result = $MYSQLI->query("SELECT * FROM ui_structures_parts WHERE id = '$widgetId'") or die(null);
+      $result = $db->query("SELECT * FROM ui_structures_parts WHERE id = '$widgetId'") or die(null);
 
       if ($rows = $result->fetch_assoc())
       {
-         $MYSQLI->close();
+         $db->close();
          return json_encode($rows);
       }
       else
@@ -660,10 +660,10 @@ class WidgetsManagement extends Section
 
    public function update_widget($widgetId = null, $widgetType = null, $widgetParameters = null, $styleId = null, $styleClass = null, $style = null)
    {
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
 
-      $stm = $MYSQLI->prepare("UPDATE ui_structures_parts SET  widget_type = ?, widgets_parameters = ? ,style_id = ?, style_class= ?, style = ? 
-            WHERE id = ?") or die($MYSQLI->error);
+      $stm = $db->prepare("UPDATE ui_structures_parts SET  widget_type = ?, widgets_parameters = ? ,style_id = ?, style_class= ?, style = ? 
+            WHERE id = ?") or die($db->error);
       $stm->bind_param("ssssss", $widgetType, $widgetParameters, $styleId, $styleClass, $style, $widgetId);
 
       if ($stm->execute())
@@ -675,7 +675,7 @@ class WidgetsManagement extends Section
          $res = array("status" => "error", message => "Widget has NOT been updated, Please try again");
       }
       $stm->close();
-      $MYSQLI->close();
+      $db->close();
       return json_encode($res);
    }
 
@@ -785,10 +785,10 @@ class WidgetsManagement extends Section
 
    public function add_to_panel($panelId = null, $widgetType = null, $widgetParameters = null, $uisId = null, $styleId = null, $styleClass = null, $style = null)
    {
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
 
-      $stm = $MYSQLI->prepare("INSERT INTO ui_structures_parts (ui_structure_id , item_type, widget_type, widgets_parameters , container_id ,style_id,style_class,style, ui_structures_parts.order) 
-            SELECT ?,'widget',?,?,?,?,?,?,count(*) FROM ui_structures_parts WHERE container_id = $panelId") or die($MYSQLI->error);
+      $stm = $db->prepare("INSERT INTO ui_structures_parts (ui_structure_id , item_type, widget_type, widgets_parameters , container_id ,style_id,style_class,style, ui_structures_parts.order) 
+            SELECT ?,'widget',?,?,?,?,?,?,count(*) FROM ui_structures_parts WHERE container_id = $panelId") or die($db->error);
       $stm->bind_param("sssssss", $uisId, $widgetType, $widgetParameters, $panelId, $styleId, $styleClass, $style);
 
       if ($stm->execute())
@@ -800,17 +800,17 @@ class WidgetsManagement extends Section
          $res = array("status" => "error", message => "Widget has NOT been added, Please try again");
       }
       $stm->close();
-      $MYSQLI->close();
+      $db->close();
       return json_encode($res);
    }
 
    public function remove_from_panel()
    {
-      $MYSQLI = get_db_connection();
-      $uisId = $MYSQLI->real_escape_string($_REQUEST['uisId']);
-      $widgetId = $MYSQLI->real_escape_string($_REQUEST['widgetId']);
+      $db = \EWCore::get_db_connection();
+      $uisId = $db->real_escape_string($_REQUEST['uisId']);
+      $widgetId = $db->real_escape_string($_REQUEST['widgetId']);
 
-      $stm = $MYSQLI->prepare("DELETE FROM ui_structures_parts WHERE id = ? AND ui_structure_id = ? AND item_type = 'widget'") or die($MYSQLI->error);
+      $stm = $db->prepare("DELETE FROM ui_structures_parts WHERE id = ? AND ui_structure_id = ? AND item_type = 'widget'") or die($db->error);
       $stm->bind_param("ss", $widgetId, $uisId);
 
       if ($stm->execute())
@@ -826,11 +826,11 @@ class WidgetsManagement extends Section
 
    public function remove_panel()
    {
-      $MYSQLI = get_db_connection();
-      $uisId = $MYSQLI->real_escape_string($_REQUEST['uisId']);
-      $widgetId = $MYSQLI->real_escape_string($_REQUEST['panelId']);
+      $db = \EWCore::get_db_connection();
+      $uisId = $db->real_escape_string($_REQUEST['uisId']);
+      $widgetId = $db->real_escape_string($_REQUEST['panelId']);
 
-      $stm = $MYSQLI->prepare("DELETE FROM ui_structures_parts WHERE (id = ? OR container_id = ?) AND ui_structure_id = ?") or die($MYSQLI->error);
+      $stm = $db->prepare("DELETE FROM ui_structures_parts WHERE (id = ? OR container_id = ?) AND ui_structure_id = ?") or die($db->error);
       $stm->bind_param("sss", $widgetId, $widgetId, $uisId);
 
       if ($stm->execute())
@@ -869,13 +869,13 @@ class WidgetsManagement extends Section
    public static function generate_view($uisId, $index = 0, $no_data = false)
    {
       $RESULT_HTML = '';
-      $MYSQLI = \EWCore::get_db_connection();
+      $db = \EWCore::get_db_connection();
       if (!$no_data)
       {
          $no_data = false;
       }
 
-      $panels = $MYSQLI->query("SELECT * FROM ew_ui_structures WHERE id = '$uisId' ") or die($MYSQLI->error);
+      $panels = $db->query("SELECT * FROM ew_ui_structures WHERE id = '$uisId' ") or die($db->error);
       // Create unigue set of ID's every time when generate_view is called
       $timestamp = time();
       if ($_SESSION["_ew_gw_ts"] == $timestamp)
@@ -955,8 +955,8 @@ class WidgetsManagement extends Section
 
    public function show_container($container_id)
    {
-      $MYSQLI = get_db_connection();
-      $items = $MYSQLI->query("SELECT * FROM ui_structures_parts WHERE container_id = '$container_id'  ORDER BY ui_structures_parts.order") or die($MYSQLI->error);
+      $db = \EWCore::get_db_connection();
+      $items = $db->query("SELECT * FROM ui_structures_parts WHERE container_id = '$container_id'  ORDER BY ui_structures_parts.order") or die($db->error);
 
       while ($rows = $items->fetch_assoc())
       {
@@ -978,22 +978,22 @@ class WidgetsManagement extends Section
    {
       $path = ($path) ? $path : $_REQUEST["path"];
       $uis_id = ($uis_id) ? $uis_id : $_REQUEST["uisId"];
-      $MYSQLI = get_db_connection();
+      $db = \EWCore::get_db_connection();
       $res = array("status" => "success", message => "UIS has been set successfully for $path");
       if (!$uis_id)
       {
-         $result = $MYSQLI->query("DELETE FROM ew_pages_ui_structures WHERE path = '$path'");
+         $result = $db->query("DELETE FROM ew_pages_ui_structures WHERE path = '$path'");
          if ($result)
          {
             return json_encode($res);
          }
       }
-      $MYSQLI->query("SELECT * FROM ew_pages_ui_structures WHERE path = '$path'") or die($MYSQLI->error);
+      $db->query("SELECT * FROM ew_pages_ui_structures WHERE path = '$path'") or die($db->error);
 
 
-      if ($MYSQLI->affected_rows == 0)
+      if ($db->affected_rows == 0)
       {
-         $stm = $MYSQLI->prepare("INSERT INTO ew_pages_ui_structures(path ,ui_structure_id ) VALUES(?,?)") or die($MYSQLI->error);
+         $stm = $db->prepare("INSERT INTO ew_pages_ui_structures(path ,ui_structure_id ) VALUES(?,?)") or die($db->error);
          $stm->bind_param("ss", $path, $uis_id);
          if ($stm->execute())
             $res = array("status" => "success", message => "UIS has been set successfully for $path ", "puisId" => $stm->insert_id);
@@ -1002,25 +1002,25 @@ class WidgetsManagement extends Section
       }
       else
       {
-         $stm = $MYSQLI->prepare("UPDATE ew_pages_ui_structures SET  ui_structure_id = ?  WHERE path = ?") or die($MYSQLI->error);
+         $stm = $db->prepare("UPDATE ew_pages_ui_structures SET  ui_structure_id = ?  WHERE path = ?") or die($db->error);
          $stm->bind_param("ss", $uis_id, $path);
          if (!$stm->execute())
             $res = array("status" => "error", message => "UIS has NOT been sat, Please try again");
       }
 
       $stm->close();
-      $MYSQLI->close();
+      $db->close();
       return json_encode($res);
    }
 
    public static function get_path_uis($path = null)
    {
       $path = ($path) ? $path : $_REQUEST["path"];
-      $MYSQLI = get_db_connection();
-      $result = $MYSQLI->query("SELECT ew_ui_structures.id AS id,name,template,path FROM ew_pages_ui_structures,ew_ui_structures WHERE ew_pages_ui_structures.ui_structure_id = ew_ui_structures.id AND path = '$path'") or die($MYSQLI->error);
+      $db = \EWCore::get_db_connection();
+      $result = $db->query("SELECT ew_ui_structures.id AS id,name,template,path FROM ew_pages_ui_structures,ew_ui_structures WHERE ew_pages_ui_structures.ui_structure_id = ew_ui_structures.id AND path = '$path'") or die($db->error);
       if ($rows = $result->fetch_assoc())
       {
-         //$MYSQLI->close();
+         //$db->close();
          return json_encode($rows);
       }
       else

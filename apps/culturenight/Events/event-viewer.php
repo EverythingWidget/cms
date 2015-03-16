@@ -1,7 +1,7 @@
 <?php
 session_start();
-/*$MYSQLI = get_db_connection();
-$result = $MYSQLI->query("SELECT * FROM events ORDER BY start_date LIMIT 15") or die($MYSQLI->error);
+/*$db = \EWCore::get_db_connection();
+$result = $db->query("SELECT * FROM events ORDER BY start_date LIMIT 15") or die($db->error);
 
 while ($rows = $result->fetch_assoc())
 {

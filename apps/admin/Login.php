@@ -20,9 +20,9 @@ if (isset($_SESSION['login']))
    header('Location: index.php');
    return;
 }
-/* $MYSQLI = get_db_connection();
-  $username = $MYSQLI->real_escape_string($_POST["UserName"]);
-  $password = $MYSQLI->real_escape_string($_POST["Password"]); */
+/* $db = \EWCore::get_db_connection();
+  $username = $db->real_escape_string($_POST["UserName"]);
+  $password = $db->real_escape_string($_POST["Password"]); */
 //if(!isset($_POST['UserName']) )
 
 
