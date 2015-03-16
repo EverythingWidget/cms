@@ -30,8 +30,8 @@ class EWCore
       spl_autoload_register(array($this, 'autoload_sections'));
       spl_autoload_register(array($this, 'autoload_core'));
       spl_autoload_register(array($this, 'autoload_apps'));
-
-      $this->load_modules(include('modules.php'));
+      $this->load_modules();
+      
       self::$loaders_installed = true;
       self::init_sections_plugins();
       static::$DB = new Illuminate\Database\Capsule\Manager;
@@ -47,21 +47,11 @@ class EWCore
           'prefix' => '',
       ]);
       static::$DB->bootEloquent();
-  
    }
 
    public function load_modules($modules)
-   {
-      /* foreach ($modules as $module)
-        {
-        // include the module file if exist
-        $file = EW_ROOT_DIR . 'core/modules/vendor/' . $module . '.php';
-        if (file_exists($file))
-        {
-        require_once $file;
-        }
-        } */
-      require 'modules/vendor/autoload.php';
+   { 
+      require 'modules/autoload.php';
    }
 
    public function processRequest($parameters = null)

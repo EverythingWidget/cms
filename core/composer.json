@@ -1,0 +1,9 @@
+{
+   "require": {
+      "illuminate/database": "*"
+   },
+  "config": {
+        "vendor-dir": "modules/"
+    }
+   
+}
