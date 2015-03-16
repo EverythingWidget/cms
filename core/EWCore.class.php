@@ -19,6 +19,7 @@ class EWCore
    private static $plugins_initialized = false;
    private static $db_connection;
    private $current_method_args;
+   public static $DB;
 
    public function __construct()
    {
@@ -29,8 +30,38 @@ class EWCore
       spl_autoload_register(array($this, 'autoload_sections'));
       spl_autoload_register(array($this, 'autoload_core'));
       spl_autoload_register(array($this, 'autoload_apps'));
+
+      $this->load_modules(include('modules.php'));
       self::$loaders_installed = true;
       self::init_sections_plugins();
+      static::$DB = new Illuminate\Database\Capsule\Manager;
+
+      static::$DB->addConnection([
+          'driver' => 'mysql',
+          'host' => 'localhost',
+          'database' => 'ew',
+          'username' => 'root',
+          'password' => '',
+          'charset' => 'utf8',
+          'collation' => 'utf8_unicode_ci',
+          'prefix' => '',
+      ]);
+      static::$DB->bootEloquent();
+  
+   }
+
+   public function load_modules($modules)
+   {
+      /* foreach ($modules as $module)
+        {
+        // include the module file if exist
+        $file = EW_ROOT_DIR . 'core/modules/vendor/' . $module . '.php';
+        if (file_exists($file))
+        {
+        require_once $file;
+        }
+        } */
+      require 'modules/vendor/autoload.php';
    }
 
    public function processRequest($parameters = null)
@@ -132,7 +163,6 @@ class EWCore
          if ($class_exist)
          {
             $RESULT_CONTENT = $app_section_object->process_request($function_name, $parameters);
-            
          }
          else if (EWCore::is_widget_feeder("page", "*", $section_name))
          {
@@ -146,7 +176,7 @@ class EWCore
          }
          else
          {
-            
+
             // Refer to app section index
             $path = EW_APPS_DIR . '/' . $app_name . '/' . $section_name . '/' . $function_name;
          }
@@ -903,13 +933,14 @@ class EWCore
 
       EWCore::register_object("ew-widget-feeder", $app, self::$registry["ew-widget-feeder"][$app]);
    }
-/**
- * Check whether widget feeder exists
- * @param type $type
- * @param string $app
- * @param type $id
- * @return boolean returns app name if the $app parameter is set to * or true if the app name is specefied and false in other cases
- */
+
+   /**
+    * Check whether widget feeder exists
+    * @param type $type
+    * @param string $app
+    * @param type $id
+    * @return boolean returns app name if the $app parameter is set to * or true if the app name is specefied and false in other cases
+    */
    public static function is_widget_feeder($type, $app, $id)
    {
       $func = null;
@@ -926,7 +957,7 @@ class EWCore
       }
       if (!$app)
          $app = 'admin';
-      
+
       //if (array_key_exists("$type:$id", EWCore::read_registry("ew-widget-feeder")))
       if (EWCore::read_registry("ew-widget-feeder")[$app][$type][$id])
       {
