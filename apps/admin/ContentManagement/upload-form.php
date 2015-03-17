@@ -95,7 +95,7 @@
             $("body").EW().notify(res).show();
             if (res.status == "success")
             {
-               $.EW("getParentDialog", $("#album-form")).trigger("close");
+               $.EW("getParentDialog", $("#upload-form")).trigger("close");
                $(document).trigger("media-list.refresh");
             }
             //$('#content_here_please').html(res);

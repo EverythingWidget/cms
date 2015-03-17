@@ -50,8 +50,8 @@ if (!$_SESSION['login'])
       else
          this.bSee = $();
       this.bDel = $();
-      $(document).off("album-list");
-      $(document).on("album-list.refresh", function (e, eventData) {
+      $(document).off("media-list");
+      $(document).on("media-list.refresh", function (e, eventData) {
          self.listMedia();
       });
       var oldCn = 0;

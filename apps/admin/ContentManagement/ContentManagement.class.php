@@ -267,7 +267,7 @@ class ContentManagement extends \Section
       {
          \EWCore::log_error(400, "tr{Type is requierd}");
       }
-      
+
 
       $content = new ew_contents;
       $content->author_id = $_SESSION['EW.USER_ID'];
@@ -1113,9 +1113,10 @@ class ContentManagement extends \Section
                // $stm = $db->prepare("INSERT INTO ew_contents (title , keywords , description , parent_id , source_page_address , html_content , ew_contents.order , date_created,type) 
                //  VALUES (? , ? , ? , ? , ? , ? , ? , ?,'article')") or die($db->error);
                //  $stm->bind_param("ssssssss", $title, $keywords, $description, $categoryId, $sourcePageAddress, $htmlContent, $order, $createdDate) or die($db->error); 
-               if ($result["id"])
+               //print_r($result);
+               if ($result["data"]["id"])
                {
-                  $content_id = $result["id"];
+                  $content_id = $result["data"]["id"];
                   $stm = $db->prepare("INSERT INTO ew_images (content_id, source , alt_text) 
             VALUES (? , ? , ?)") or die($db->error);
                   $image_path = $foo->file_dst_name;
@@ -1130,6 +1131,8 @@ class ContentManagement extends \Section
 
                $this->create_image_thumb($foo->file_dst_pathname, 140);
                $succeed++;
+               $stm->close();
+               $db->close();
             }
             else
             {
@@ -1141,9 +1144,8 @@ class ContentManagement extends \Section
             $error+=2;
          }
       }
-      $stm->close();
-      $db->close();
-      return json_encode(array(status => "success", message => "Uploaded: " . $succeed . " Error: " . $error));
+
+      return json_encode(array(status => "success", message => "Uploaded: " . $succeed . " Error: " . $error . ' ' . $foo->error));
    }
 
    /**
