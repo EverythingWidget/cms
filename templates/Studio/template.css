@@ -1,0 +1,100 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+
+/* 
+    Created on : Dec 22, 2014, 2:36:49 PM
+    Author     : Eeliya
+*/
+@import url(http://fonts.googleapis.com/css?family=Dosis:300,400,500,600,700);
+@font-face {
+   font-family: 'Roboto';
+   src: local('Roboto Light'), local('Roboto-Light'), url('Roboto-Light.ttf');
+   font-weight: 300;
+   font-style: normal;
+}
+@font-face {
+   font-family: 'Roboto';
+   src: local('Roboto'), local('Roboto'), url('Roboto-Regular.ttf');
+   font-style: normal;
+}
+@font-face {
+   font-family: 'Roboto';
+   src: local('Roboto Bold'), local('Roboto-Bold'), url('Roboto-Bold.ttf');
+   font-weight: bold;
+   font-style: normal;
+}
+::-webkit-scrollbar {   width: 20px;}
+::-webkit-scrollbar-track {background-color:transparent;}
+::-webkit-scrollbar-thumb { background-color:rgba(0,0,0,.5);border:0px solid transparent;border-radius:0px;background-clip:content-box;}
+::-webkit-scrollbar-thumb:hover{  background-color:rgba(0,0,0,.7);  }
+::-webkit-scrollbar-thumb:active{  background-color:rgba(0,0,0,.8);  }
+root {display: block;}
+
+html,body{margin:0px;height:100%;font-family:'Dosis',arial,sans-serif;}
+#base-content-pane{width:100%;max-width:100%;min-height:100%;background-attachment:fixed;}
+.onepage-wrapper{overflow:hidden;width:100%;}
+.block.header-row{position:fixed;width:100%;height:60px;background-color:#fff;box-shadow:0px 0px 5px 0px rgba(0,0,0,.2);overflow:hidden;}
+.block.content-row{display:block;width:100%;top:0px;bottom:0px;background-color:#ddd;font-size:24px;font-weight:300;}
+.block.footer-row{display:block;width:100%;height:100px;background-color:#eee;}
+.block.menu-container{display:block;min-height:60px;background-color:rgba(0,0,0,.5);position:fixed;width:100%;z-index:10;}
+.block.section{display:block;padding:0px 15px;margin:0px;position:relative}
+.block.section h3{font-size:1.8em;}
+.block.section h2{font-size:2.3em;}
+.block.section h1{text-align:center;font-size:6.5em;font-weight:400;color:#fff;text-shadow:0px 0px 15px rgba(0,0,0,.75);margin:10px 0px;}
+.block.section p{font-size:1.6em;font-weight:400;}
+.block.background{background-position:center top;background-size:100% auto;background-repeat:no-repeat;width:100%;min-height:520px;position:relative;padding-top:60px;}
+.block.studio {background-image:url('studio2.jpg');}
+.block.works {background-image:url('works.jpg');}
+.block.team {background-image:url('team6.jpg');}
+.panel.content-margin{margin-top:500px;margin-bottom:50px;}
+@media (max-width: 1359px) 
+{
+.overlay.content-margin{margin-top:700px;margin-bottom:50px; position:absolute;z-index:1;width:auto;left:15px;right:15px;}
+}
+@media (min-width: 1360px) 
+{
+   .overlay.content-margin{margin-top:700px;margin-bottom:50px; position:absolute;z-index:1;}
+}
+.panel.overlay{}
+.widget.menu-bar > ul{font-size:1.3em;color:#fff;list-style:none;margin:0px;overflow:hidden;}
+.widget.menu-bar > ul  li{float:left;width:110px;text-align:center;}
+.widget.menu-bar > ul li a{display:block;color:#fff;padding:15px 10px;line-height:30px;font-weight:600;}
+.widget.menu-bar > ul li a:hover{background-color:rgba(0,0,0,.2)}
+.widget.menu-bar > ul li.active a{background-color:rgba(0,0,0,.3);color:#ddd;}
+.widget-container.clearfix{float:none;margin:0px auto;}
+.widget.login-form{padding:15px;background-color:#fff;display:block;margin:20px auto;border-radius:6px;}
+.widget.login-form input{display:block;width:100%;margin-bottom:10px;}
+.widget.page-slider{display:block;margin:0px;width:100%;;padding:0px;overflow:hidden;}
+.widget.dark-box{background-color:rgba(0,0,0,.0);color:#fff;padding:20px 25px;text-align:center;}
+.widget.dark-box p{margin:0px;font-weight:300;font-size:2.8em;/*text-shadow:0px 1px 3px rgba(0,0,0,.8), 0px -1px 12px rgba(250,180,80,.8);*/}
+.panel.white-box{padding-top:20px;padding-bottom:30px;background-color:rgba(255,255,255,1);border-radius:10px;box-shadow:0px 2px 15px -1px rgba(0,0,0,.25);}
+.panel.white-box h2{margin:0px auto;margin-bottom:50px;text-align:center;font-weight:700;font-size:4.2em;}
+.widget.works-list{padding:0px 15px;}
+.widget.works-list .list-content .item,.widget.works-item{color:#fff;position:relative;overflow:hidden;transition: all .3s ease-out}
+.widget.works-list .list-content .item:hover p:last-child,.widget.works-item:hover p:last-child{height:50%;}
+.widget.works-list .list-content .item h3, .widget.works-item h3{text-align:center;margin:0px;}
+.widget.works-list .list-content .item img,.widget.works-item img{display:block;margin:0px auto;min-width:100%;}
+.widget.works-list .list-content .item p,.widget.works-item p{margin:0px;background-color:rgba(0,0,0,.5)}
+.widget.works-item .widget-header{width:100%;padding:15px 0px;top:0px;position:absolute;text-shadow:0px 0px 5px rgba(0,0,0,.8);font-weight:600;font-size:2.2em;}
+.widget.works-list .list-content .item p:last-child,.widget.works-item p:last-child{left:15px;right:15px;height:60px;bottom:0px;position:absolute;background-color:rgba(0,0,0,.5);padding:15px;transition: all .3s ease}
+
+.widget.team-members .list-content .item{text-align:center;}
+.widget.team-members .list-content .item *{transition: all .24s ease}
+.widget.team-members .list-content .item h3{}
+.widget.team-members .list-content .item img{display:block;margin:0px auto;width:100%;max-width:300px;max-height:300px;border-radius:150px;box-shadow:0px 2px 8px -1px rgba(0,0,0,.3);}
+.widget.team-members .list-content .item p{max-width:300px;margin:20px auto;background-color:#eee;border-radius:25px;padding:10px 20px;height:50px;line-height:30px;overflow:hidden;box-shadow:0px 1px 2px -1px rgba(0,0,0,.5);}
+.widget.team-members .list-content .item:hover img{border-radius:0px;}
+.widget.team-members .list-content .item:hover p{border-radius:0px;margin-top:1px;background-color:#555;color:#fff;}
+.btn-text{color:rgba(0,0,0,.5);font-weight:bold;background-color:transparent;font-size:15px;border-width:1px;border-radius:2px;border-color:transparent;padding:7px 12px;}
+.btn-text:hover{color:rgba(0,0,0,.8);border-color:rgba(0,0,0,.1);}
+.btn-text:active{color:#fff;background-color:rgba(0,0,0,.8);}
+.page-slide{height:100%;width:100%;overflow:auto;position:absolute;top:0px;left:0px;bottom:0px;}
+.page-slide.active{display:block;}
+
+input{line-height:28px;border:1px solid #ccc;border-radius:2px;}
+.dynamic-column{}
+.row-seprator{display:block;margin:0px;height:0px;padding:0px;}
+

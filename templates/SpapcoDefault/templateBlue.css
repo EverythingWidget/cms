@@ -1,0 +1,1145 @@
+/* 
+    Document   : template
+    Created on : Apr 28, 2012, 12:52:54 PM
+    Author     : Rashidi
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+root 
+{ 
+    display: block;
+}
+
+@font-face 
+{
+    font-family: 'Uthman';
+    src: url('Uthman.eot');
+    src: url('Uthman.eot?#iefix') format('embedded-opentype'), url('Uthman.woff') format('woff'), url('Uthman.ttf') format('truetype'), url('Uthman.svg#Uthman') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face 
+{
+    font-family: 'UthmanR';
+    src: url('UthmanR.eot');
+    src: url('UthmanR.eot?#iefix') format('embedded-opentype'), url('UthmanR.woff') format('woff'), url('UthmanR.ttf') format('truetype'), url('UthmanR.svg#UthmanR') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/*a, a:link, a:visited
+{
+    font-family: Tahoma;
+    font-size: 14px;
+    color: #241dc2;
+    text-decoration: none;
+}
+
+a:hover
+{
+    text-decoration: underline;
+}*/
+
+html, body
+{
+    margin: 0px;
+}
+
+.LoadingAnimation
+{
+    background-color: transparent; 
+    background-image: url('Loading.gif');
+    background-repeat: no-repeat;
+    background-position: center center;
+    position: absolute; 
+    top: 50%; 
+    left:50%; 
+    padding:5px; 
+    width: 20px; 
+    height: 20px; 
+    text-align:center;     
+    cursor:default;
+    display:block;
+    margin:-15px;
+    z-index: 1;
+}
+
+#BaseContentPane
+{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 0;
+}
+
+#CenterContentPane
+{
+    width: 970px;
+    margin: 0px auto;
+    overflow: hidden;
+}
+
+#TopContentPane
+{
+    background-color: rgba(255 , 255 , 255 , 0.85);
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    z-index: 1;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+    padding: 0px;
+    margin: 0px;
+    overflow: auto;
+    visibility: hidden;
+}
+
+#TopContentPane #TCPC
+{
+    background-color: #fff;
+    width: 800px;      
+    height: 20px;
+    padding: 10px;
+    margin: 10px auto;
+    overflow: hidden;
+    border: 1px solid #888;
+    box-shadow: 0px 0px 6px 0px rgba(0 , 0 , 0 , 0.3);
+    position: relative;
+}
+
+#CenterContentPane.Admin
+{    
+    width: auto;
+    background: #f2f2f2;
+    display: block;
+    min-width: 1000px;
+    min-height: 50px;
+    margin: 0px;
+    margin-top: 0px;
+    overflow: hidden;
+}
+
+#RightPanel.Admin
+{
+    width: 45%;
+    float: right;
+}
+
+#FixLeftPanel
+{
+    background-color: #f2f2f2;
+    width: 55%; 
+    float: left;    
+    position: fixed;
+    top: 60px; 
+    left: 0px; 
+    bottom: 0px;
+    overflow: auto;
+    direction: rtl;
+}
+
+#FixLeftPanel .button
+{
+    float: right;
+    margin: 10px;
+    margin-left: 0px;
+}
+
+#FixLeftPanel #ButtonsPane
+{    
+    display: block;
+    overflow: hidden;
+}
+
+#FixLeftPanel #TargetForm
+{
+    background-color: #fff;
+    display: block;
+    min-height: 0px;
+    margin: 5px;
+    overflow: hidden;    
+    box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.1);
+}
+
+#FixLeftPanel #TargetForm .Title
+{
+    width: auto;
+    height: 40px;  
+    line-height: 34px;
+    padding: 10px;
+    margin-right: 10px;
+    float: right; 
+    font-family: UthmanR, Arial;
+    font-size: 26px;
+    color: #303030;
+}
+
+#HeaderPanel
+{
+    width: 100%;
+    min-height: 50px;      
+    float: left;    
+    margin-top: 0px;
+}
+
+#LeftPanel
+{
+    width: 728px;
+    float: left;    
+    overflow: hidden;    
+}
+
+#InnerPanel
+{
+    width: auto;
+    min-height: 20px;
+    height: auto;
+    display: block;
+    border: 1px solid #cecece;
+    border-radius: 6px;
+    overflow: hidden;
+    padding: 3px;
+    float: none;  
+}
+
+#InnerPanel #PageContent
+{
+    display: block;
+    padding: 5px;
+}
+
+#IndexContent
+{
+    display: block;
+    overflow: hidden;
+}
+
+#RightPanel
+{
+    width: 230px;
+    float: right;
+}
+
+#RightPanel .Title
+{
+    width: auto;
+    height: 40px;  
+    line-height: 34px;
+    padding: 10px;
+    margin-right: 10px;
+    float: right; 
+    font-family: UthmanR, Arial;
+    font-size: 26px;
+    color: #303030;
+}
+
+/*#Logo
+{
+    background: url(Logo.png) no-repeat;
+    width: 320px;
+    height: 320px;
+    display: block;
+}*/
+
+#ExtraPanel
+{    
+    /*background-color: #339900;*/
+    width: 100%;
+    float: left;    
+}
+
+#FooterPanel
+{    
+    /*background-color: yellowgreen;*/
+    width: 100%;
+    height: 50px;
+    float: left;
+}
+
+#HeaderPanel.Admin
+{
+    background-color: #fff;
+    width: 100%;
+    height: 60px;      
+    float: left;        
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    margin: 0px;
+}
+
+#HeaderPanel #PageTitle
+{    
+    width: auto;
+    height: 40px;  
+    line-height: 34px;
+    padding: 10px;
+    margin-right: 10px;
+    float: right; 
+    font-family: UthmanR, Arial;
+    font-size: 32px;
+    color: #33aaff;
+    cursor: default;
+
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+#MainPanel
+{
+    background-color: #ffffff;
+    width: 100%;     
+    min-height: 200px;
+    float: left;     
+    margin-top: 65px;
+    overflow: hidden;
+}
+
+#MainPanel .Item
+{    
+    width: 182px;     
+    height: 60px;
+    line-height: 30px;
+    float: right;    
+    margin: 5px;
+    padding: 2px;
+    padding-right: 60px;
+    border: 2px solid #f2f2f2;
+    border-radius: 1px;
+    overflow: hidden;
+    text-decoration: none;
+    font-family: Arial;
+    font-size: 18px;
+    direction: rtl;
+    color: #333;
+    outline: none;
+}
+
+#MainPanel .Item:hover
+{
+    border-color: #c4c4c4;
+}
+
+#MainPanel .Item:active
+{
+    border-color: #333;
+}
+
+.Panel
+{
+    margin: 0px;
+    padding: 0px;
+    font-family: Tahoma;
+    font-size: 13px;
+    position: relative;
+    z-index: 0;
+}
+
+.widget
+{
+    width: 100%;
+    float: right;
+    position: relative;
+    padding: 0px;
+}
+
+#RightPanel .widget > .Title, .widget > .Title
+{
+    /*    background: url(WidgetTitleIcon.png) no-repeat;*/
+    background-position: right center;
+    float: none;
+    display: block;
+    height: 50px;
+    line-height: 50px;    
+    font-family: Uthman, Arial;
+    font-size: 21px;
+    color: #0066aa;       
+    direction: rtl;
+    padding: 0px;
+    padding-right: 10px;
+    text-align: right;
+}
+
+* .widget > .Title a
+{
+    float: left;
+    color: #888;
+    height: 30px;
+    line-height: 30px;
+    margin: 10px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+* .widget > .Title a:hover
+{
+    color: #222;
+}
+
+* .widget > .Title a:active
+{
+    color: #241dc2;
+}
+
+.widget .content
+{    
+    display: block;
+    line-height: 20px;
+    font-family: Tahoma;
+    font-size: 13px;
+    color: #505050;   
+    padding: 5px;
+    border-top: 1px solid #f0f0f0;
+    direction: rtl;
+    text-align: right;
+    overflow: hidden;
+}
+
+.widget a.SeeMore
+{    
+    width: auto;
+    float: left;
+    height: 24px;
+    line-height: 24px;
+    font-family: Tahoma;
+    font-size: 12px;
+    font-weight: bold;
+    padding-left: 20px;
+    padding-right: 6px;
+    border-radius: 3px;
+    color: #241dc2;
+    text-decoration: none;
+}
+
+.widget a.SeeMore:hover
+{    
+    background-color: #ededed;
+}
+
+.widget a.SeeMore:active
+{    
+    background-color: #241dc2;
+    color: #ededed;
+}
+
+.widget.HalfSize
+{
+    width: 305px;
+    height: 120px;
+}
+
+.widget.DreitelSize
+{
+    width: 202px;
+    margin: 0px;
+    margin-top: 5px;
+    margin-right: 3px;
+}
+
+.widget.Club .content
+{
+    border: 2px solid #dadada;
+    border-radius: 2px;
+    background-color: #f4f4f4;
+}
+
+.widget.Club img
+{
+    display: block;
+    height: 50px;
+    margin: 5px;
+}
+
+#MenuBar
+{
+    background-color: #0099ff;
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ffffff), to(#eef5ff)); 
+    /* Safari 5.1, Chrome 10+ */ 
+    background: -webkit-linear-gradient(top, #ffffff, #eef5ff); 
+    /* Firefox 3.6+ */ 
+    background: -moz-linear-gradient(top, #ffffff, #eef5ff); 
+    /* IE 10 */ 
+    background: -ms-linear-gradient(top, #ffffff, #eef5ff); 
+    /* Opera 11.10+ */ 
+    background: -o-linear-gradient(top, #ffffff, #eef5ff);
+    width: 970px;
+    min-height: 66px;
+    float: left;
+    margin-top: 0px;    
+    margin-bottom: 10px;
+    direction: rtl;    
+    overflow: hidden;
+    border-bottom: 1px solid #def0fe;
+}
+
+#MenuBar > .Item
+{
+    background: transparent;
+    float: right;
+    height: 46px;
+    line-height: 46px;
+    font-family: Uthman,Tahoma;
+    font-size: 21px;
+    border-radius: 0px;
+    margin: 0px;   
+    margin-top: 20px;
+    direction: rtl;
+    padding-left: 8px;
+    padding-right: 8px;
+    margin-left: 2px;
+    margin-right: 2px;
+    color: #6e9ebf;
+    text-align: center;
+    text-decoration: none;
+}
+
+#MenuBar > .Item:hover
+{
+    /*    c21d24*/
+    
+
+    color: #0099ff;
+}
+
+#LoginWidget
+{    
+    /*    background: url(NavBarBg.png) repeat-y;*/
+    width: 218px;
+    min-height: 30px;
+    border: 2px solid #241dc2;
+    float: left;
+    direction: rtl;   
+}
+
+#LoginWidget .Item
+{
+    background-color: #ededed;
+    width: 170px;
+    height: 30px;
+    line-height: 20px;
+    float: right;
+    margin-right: 0px;
+    font-family: Uthman, Arial;
+    font-size: 18px;
+    border-radius: 0px;
+    margin-top: 10px;
+    margin-bottom: 0px;
+    direction: rtl;
+    color: #241dc2;
+    text-align: right;
+    text-decoration: none;
+
+    -webkit-transition: background-color .1s linear;
+    -moz-transition: background-color .1s linear;
+    -o-transition: background-color .1s linear;
+    -ms-transition: background-color .1s linear;
+    transition: background-color .1s linear;
+}
+
+/*#LoginWidget .Item span
+{    
+    background-image: url(NavBarIcon.png);
+    float: left;
+    width: 56px;
+    height: 56px;
+    margin: -8px;
+    margin-left: -10px;
+    border: 0px;
+    outline: 0px;
+}*/
+
+#LoginWidget .Item:hover
+{
+    background-color: #e4e4e4;
+}
+
+#LoginWidget .Item:active
+{
+    /*    c21d24*/
+    background-color: #241dc2;
+    color: #eaeaea;
+    outline: none;
+}
+
+#ContactUs
+{
+    /*    background: url(ContactUs.png) no-repeat;*/
+    width: 320px;
+    height: 100px;
+    float: left;
+    direction: rtl;   
+    margin-top: 25px;
+    margin-bottom: 5px;
+}
+
+#NavBar
+{
+    /*    background: url(NavBarBg.png) repeat-y;*/
+    background-color: #f0f0f0;
+    width: 228px;
+    min-height: 30px;
+    float: left;
+    direction: rtl;   
+    border: 1px solid #e6e6e6;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    margin-bottom: 10px;
+}
+
+#NavBar .Item
+{
+    width: 210px;
+    height: 28px;
+    line-height: 28px;
+    padding-right: 10px;
+    float: right;
+    margin-right: 0px;
+    font-family: Tahoma;
+    font-size: 14px;
+    margin: 5px;
+    margin-bottom: 0px;
+    border-radius: 2px;
+    direction: rtl;
+    color: #000;
+    text-align: right;
+    text-decoration: none;
+
+    -webkit-transition: background-color .1s linear;
+    -moz-transition: background-color .1s linear;
+    -o-transition: background-color .1s linear;
+    -ms-transition: background-color .1s linear;
+    transition: background-color .1s linear;
+}
+
+/*#NavBar .Item span
+{    
+    background-image: url(NavBarIcon.png);
+    float: left;
+    width: 56px;
+    height: 56px;
+    margin: -8px;
+    margin-left: -10px;
+    border: 0px;
+    outline: 0px;
+}*/
+
+#NavBar .Item:hover
+{
+    color: #fff;
+    background-color: #0099ff;
+}
+
+#NavBar .Item:active
+{
+    background-color: #0066aa;
+    outline: none;
+}
+
+*.NavBarIcon
+{
+    /*    background-image: url(NavBarIcon.png);*/
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+/*#News
+{
+    width: 220px;
+    min-height: 30px;
+    float: left;
+    direction: rtl;   
+}
+
+#News .Content
+{
+    border: none;
+    padding: 0px;
+}
+
+#News .Item
+{
+    background-color: #f0f0f0;
+    display: block;
+    height: 60px;
+    line-height: 20px;
+    font-family: Uthman, Arial;
+    font-size: 13px;
+    direction: rtl;
+    color: #333;
+    text-align: right;
+    text-decoration: none;
+    border: 2px solid #ddd; 
+    margin: 1px;
+}*/
+
+#Registare
+{
+    /*    background-image: url(Registare.png);*/
+    float: left;
+    width: 120px;
+    height: 190px;
+    border: 1px solid #ddd;
+    border-radius: 2px;
+    outline: 0px;
+    padding: 0px
+}
+
+#Registare:hover
+{
+    border-color: #d43230;
+}
+
+a.ImageLink img
+{
+    width: 100%;
+    height: 100%;
+    padding: 0px;
+    border: 0px;
+}
+
+.BackButton
+{
+    background-color: #fff;
+    background-image: url('BackBtn.png');
+    background-repeat: no-repeat;
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    border: 2px solid #505050;
+    border-radius: 1px;
+    cursor: pointer;
+    float: right;
+    margin: 12px;
+    margin-left: 0px;
+    margin-right: 10px;
+    text-decoration: none;
+}
+
+.BackButton:hover
+{
+    background-color: #f0f0f0;
+}
+
+.BackButton:active
+{
+    background-position: 0px -32px;
+    background-color: #505050;
+    color: #fff;    
+}
+
+.CloseButton
+{
+    background-color: #fff;
+    background-image: url('CloseBtn.png');
+    background-repeat: no-repeat;
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    border: 2px solid #505050;
+    border-radius: 1px;
+    cursor: pointer;
+    float: right;
+    margin: 12px;
+    margin-left: 0px;
+    margin-right: 10px;
+    text-decoration: none;
+}
+
+.CloseButton:hover
+{
+    background-color: #f0f0f0;
+}
+
+.CloseButton:active
+{
+    background-position: 0px -32px;
+    background-color: #505050;
+    color: #fff;
+}
+
+.BoxRow
+{    
+    display: block;
+    height: 22px;
+    line-height: 22px;
+    padding: 6px;
+    color: #000;
+    font-family: UthmanR, Arial;
+    font-size: 22px;
+    direction: rtl;
+    margin: 5px; 
+    border: 2px solid #eaeaea;
+    border-radius: 1px;
+    cursor: pointer;
+
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+.BoxRow:hover
+{
+    border-color: #c4c4c4;
+}
+
+.BoxRow:active
+{
+    border-color: #33aaff;
+}
+
+.BoxRow.Selected
+{
+    border-color: #33aaff;
+    background-color: #33aaff;
+    color: #fff;
+    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.1);
+}
+
+.BoxRow > .Title
+{
+    width: auto;
+    height: 22px;
+    line-height: 22px;
+    font-family: UthmanR, Arial;
+    font-size: 22px;
+    padding: 0px;
+    margin: 0px;
+    float: right;
+}
+
+#RightPanel .BoxRow > .Title
+{
+    width: auto;
+    height: 22px;
+    line-height: 22px;
+    font-family: UthmanR, Arial;
+    font-size: 22px;
+    padding: 0px;
+    margin: 0px;
+    float: right;
+    color: inherit;
+}
+
+.Row
+{
+    display: block;
+    min-height: 32px;
+    margin-right: 10px;
+    direction: rtl;
+    margin-bottom: 8px;
+    overflow: hidden;
+}
+
+.Label
+{
+    height: 32px;
+    line-height: 28px;
+    float: right;
+    padding: 0px;
+    padding-right: 8px;
+    padding-left: 4px;
+    margin-left: 3px;
+    direction: rtl;
+    text-align: center;
+    font-family: UthmanR , Arial;
+    font-size: 21px;
+    cursor: default;
+}
+
+.SmallLabel
+{
+    min-height: 20px;
+    line-height: 20px;
+    float: right;
+    padding: 0px;
+    padding-right: 6px;
+    padding-left: 6px;
+    margin-left: 3px;
+    direction: rtl;
+    text-align: right;
+    font-family: Tahoma;
+    font-size: 12px;
+    color: #555;
+    cursor: default;
+    overflow: hidden;
+}
+
+#FixLeftPanel .Row .button
+{
+    height: 28px;
+    line-height: 24px;
+    margin: 0px;
+    margin-left: 3px;
+}
+
+.text-field
+{
+    width: auto;
+    height: 28px;
+    line-height: 28px;
+    border: 2px solid #ccc;
+    padding: 0px;
+    padding-right: 4px;
+    padding-left: 4px;
+    outline: none;
+    float: right;
+    direction: rtl;
+    margin-left: 3px;
+    font-family: Tahoma;
+    font-size: 12px;
+}
+
+.text-field.Radio
+{
+    width: auto;
+    height: 28px;
+    line-height: 28px;
+    border: 2px solid #ccc;
+    padding: 0px;
+    padding-right: 4px;
+    padding-left: 4px;
+    outline: none;
+    float: right;
+    direction: rtl;
+    margin-left: 3px;
+    font-family: Tahoma;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.text-field.Radio span
+{
+    width: auto;
+    height: 28px;
+    line-height: 28px;    
+    float: right;
+    direction: rtl;
+    font-family: Tahoma;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.text-field.Radio input
+{
+    width: 30px;
+    height: 28px;
+    line-height: 28px;
+    padding: 0px;
+    padding-right: 4px;
+    padding-left: 4px;
+    margin: 0px;
+    margin-right: 10px;
+    outline: none;
+    float: left;    
+    cursor: pointer;
+}
+
+input.text-field:focus
+{
+    border-color: #0099ff;
+}
+
+textarea.text-field:focus
+{
+    border-color: #0099ff;
+}
+
+.text-field:disabled
+{
+    background-color: #fafafa;
+}
+
+.ComboBox
+{
+    width: auto;
+    height: 28px;
+    line-height: 28px;
+    border: 2px solid #ccc;
+    padding-right: 4px;
+    padding-left: 4px;
+    outline: none;
+    float: right;
+    direction: rtl;
+    margin-left: 3px;
+    font-family: Tahoma;
+    font-size: 12px;
+}
+
+.ComboBox > select
+{    
+    width: inherit;
+    float: right;
+    background: none;
+    background-color: #fff;
+    height: 24px;
+    line-height: 24px;
+    padding: 0px;
+    margin-top: 2px;
+    border: none;
+    outline: none;    
+    font-family: Tahoma;
+    font-size: 13px;
+}
+
+.button
+{
+    background-color: transparent;
+    float: left;
+    min-width: 8px;
+    height: 28px;
+    line-height: 28px;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-family: Arial;
+    font-size: 18px;
+    text-align: center;
+    color: #222;
+    overflow: hidden;
+    border: 2px solid #333333;
+    margin: 0px;
+    outline: none;
+    cursor: pointer;
+    text-decoration: none;
+
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+
+    -webkit-transition: background-color .1s linear;
+    -moz-transition: background-color .1s linear;
+    -o-transition: background-color .1s linear;
+    -ms-transition: background-color .1s linear;
+    transition: background-color .1s linear;
+}
+
+.button:hover {
+    background-color: #f0f0f0; 
+
+}
+
+/*.button:focus {
+    -webkit-box-shadow: 0px 0px 4px 1px #33ccff;
+    -moz-box-shadow: 0px 0px 4px 1px #33ccff;
+    box-shadow: 0px 0px 4px 1px #33ccff;
+}*/
+
+.button:active {    
+    color: #fff;
+}
+
+*.green
+{
+    border-color: #339900;
+    color: #339900;
+}
+
+.button.green:hover
+{
+    background-color: #daffcc;
+}
+
+.button.green:active
+{
+    background-color: #339900;
+    color: #fff;
+}
+
+*.OkButton
+{
+    background-image: url(OkBtn.png); 
+    background-repeat: no-repeat;
+}
+
+*.OkButton:active
+{
+    background-position: 0px -28px;
+}
+
+*.Blue
+{
+    border-color: #0080f0;
+    color: #0080f0;
+}
+
+.button.Blue:hover
+{
+    background-color: #ccefff;
+}
+
+.button.Blue:active
+{
+    background-color: #0080f0;
+    color: #fff;
+}
+
+*.EditBtn
+{
+    background-image: url(EditBtn.png); 
+    background-repeat: no-repeat;
+}
+
+*.EditBtn:active
+{
+    background-position: 0px -28px;
+}
+
+*.Red
+{
+    border-color: #dd2200;
+    color: #dd2200;
+}
+
+.button.Red:hover
+{
+    background-color: #ffcaca;
+}
+
+.button.Red:active
+{
+    background-color: #dd2200;
+    color: #fff;
+}
+
+*.Mandatory
+{
+    background-image: url(Star.png); 
+    background-repeat: no-repeat;
+    background-position: right top;
+}
+
+*.DeleteBtn
+{
+    background-image: url(DeleteBtn.png); 
+    background-repeat: no-repeat;
+}
+
+*.DeleteBtn:active
+{
+    background-position: 0px -28px;
+}
+
+*.EnterIcon
+{
+    background-image: url(EnterIcon.png); 
+    background-repeat: no-repeat;
+    background-position: 1px 3px;
+}
+
+*.EnterIcon:active
+{
+    background-position: left -15px;
+}

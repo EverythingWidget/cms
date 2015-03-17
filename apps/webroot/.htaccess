@@ -1,0 +1,12 @@
+Options +FollowSymlinks
+
+RewriteEngine on
+
+RewriteRule ^article/([0-9]+)$ index.php?articleId=$1
+RewriteRule ^category/([0-9]+)$ index.php?categoryId=$1
+
+RewriteRule ^section/([0-9]+)/page/([a-zA-Z0-9_-]+)/command/&cmd=([a-zA-Z0-9_-]+)/?(.*)$ index.php?secId=$1&page=$2\.php&cmd=$3&$4
+RewriteRule ^section/([0-9]+)/page/([a-zA-Z0-9_-]+)/command/([a-zA-Z0-9_-]+)/?(.*)$ index.php?secId=$1&page=$2\.php&cmd=$3&$4
+RewriteRule ^section/([0-9]+)/command/([a-zA-Z0-9_-]+)/?(.*)$ index.php?secId=$1&page=index.php&cmd=$2&$3
+RewriteRule ^section/([0-9]+)/page/([a-zA-Z0-9_-]+)/?(.*)$ index.php?secId=$1&page=$2.php&$3
+RewriteRule ^section/([0-9]+)/?(.*)$ index.php?secId=$1&page=index.php&$2&%{QUERY_STRING}

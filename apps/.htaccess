@@ -1,0 +1,58 @@
+RewriteEngine On
+
+RewriteCond %{REQUEST_URI} \.(.{2,4})$
+RewriteCond %{REQUEST_URI} !\.(php)$
+RewriteRule ^(.{2,3})?/(.*) /EverythingWidget/$2 [L]
+
+
+RewriteCond %{REQUEST_URI} \.(.{2,4})$
+RewriteCond %{REQUEST_URI} !\.(php)$
+RewriteCond %{REQUEST_URI} !asset
+#RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^(app-)?(.*) $2 [L]
+
+
+FallbackResource /EverythingWidget/index.php
+
+#RewriteCond %{REQUEST_URI} app-([^\/]*)$
+#RewriteRule (.*) http://%{HTTP_HOST}/EverythingWidget/$1/ [R=301,L] 
+
+#RewriteRule ^res/([^\/]*)/(.*)? index.php?_a_s_c=RESOURCE>$1>$2&_file=$2&%{QUERY_STRING} [L]
+
+
+
+# 3: when I ask for any file except php (js, css, png and so on), I should get the real file and should not be redirected
+
+
+##RewriteRule w-?([^\/]*)/app-([^\/]*)/(.*) index.php?_a_s_c=DEFAULT_APP>>&uisMode=true&theApp=$2&theLang=$1&%{QUERY_STRING} [L]
+
+##RewriteRule ^w$ http://%{HTTP_HOST}/ [L,R=301]
+##RewriteRule ^app-([^\/]*)/(.*) $1/index.php [L]
+
+
+#RewriteRule ^(.{2,3})/(.*)$ $2?_lang=$1&%{QUERY_STRING} [L]
+
+#RewriteRule ^app-([^\/]*)/([^\/]*)/([^\/]*) index.php?_a_s_c=$1>$2>$3&%{QUERY_STRING} [L]
+#RewriteRule ^app-([^\/]*)/(.*) index.php?_a_s_c=$1>>&_file=$2&%{QUERY_STRING} [L]
+#RewriteRule ^app-(.*) index.php?_a_s_c=webroot>>&_file=$1&%{QUERY_STRING} [L]
+
+
+##RewriteRule /(.*) index.php?_a_s_c=DEFAULT_APP>>&_lang=c&_page=$1&_parameters=$3&%{QUERY_STRING} [L]
+##RewriteRule ^lang-([^\/]*)/article/([^\/]*)/?(.*) index.php?_a_s_c=DEFAULT_APP>>&_lang=$1&article=$2&_parameters=$3&%{QUERY_STRING} [L]
+##RewriteRule ^lang-([^\/]*)/category/([^\/]*)/?(.*) index.php?_a_s_c=DEFAULT_APP>>&_lang=$1&category=$2&_parameters=$3&%{QUERY_STRING} [L]
+##RewriteRule ^lang-([^\/]*)/page/([^\/]*)/?(.*) index.php?_a_s_c=DEFAULT_APP>>&_lang=$1&_file=$2&_parameters=$3&%{QUERY_STRING} [L]
+##RewriteRule ^lang-([^\/]*)/([^\/]*)/?(.*) index.php?_a_s_c=DEFAULT_APP>>&_lang=$1&_file=$2&_parameters=$3&%{QUERY_STRING} [L]
+##RewriteRule ^lang-([^\/]*)/(.*) index.php?_a_s_c=DEFAULT_APP>>&uisMode=true&%{QUERY_STRING} [L]
+
+#RewriteRule ^([^\/]*)/?(.*) index.php?_a_s_c=DEFAULT_APP>>&_file=$1&_parameters=$2&%{QUERY_STRING} [L]
+
+#RewriteCond %{REQUEST_URI} !^lang-
+#RewriteRule ^([^\/]*)/?(.*) index.php?_a_s_c=DEFAULT_APP>>&_file=$1&_parameters=$2&%{QUERY_STRING} [L]
+
+
+
+
+
+
+
+

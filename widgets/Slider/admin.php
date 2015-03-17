@@ -1,0 +1,1 @@
+<?php/* * title: Slider * description: Show multiple pages */

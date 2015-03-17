@@ -1,0 +1,1 @@
+<?php/* * title: News * description: Show the latest articles or select a news feeder */
