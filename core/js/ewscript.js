@@ -197,76 +197,6 @@ EverythingWidgets.prototype.addNotification = function (css)
    return li;
 };
 
-/*this.newTopPane = function (onClose, decoration)
- {
- var topPane = $(document.createElement("div"));
- //EW.lock($("body"), " ");
- topPane.onClosed = function () {
- };
- if (onClose)
- {
- topPane.onClosed = onClose;
- }
- var xBtn = $("<a></a>");
- xBtn.click(function () {
- topPane.dispose();
- });
- if (typeof onClose == "string")
- decoration = onClose;
- //xBtn.find("a").removeClass("button");
- xBtn.addClass("close-button x-icon");
- xBtn.css("z-index", "2");
- if (decoration == "full")
- {
- topPane.addClass("top-pane col-xs-12 full");
- xBtn.css({
- position: "absolute",
- right: "10px",
- top: "10px",
- width: "30px",
- height: "30px"
- });
- }
- else if (decoration == "modal")
- {
- topPane.addClass("top-pane center");
- }
- else
- {
- topPane.addClass("top-pane col-xs-12");
- xBtn.css({
- position: "absolute",
- right: "50px",
- top: "10px",
- width: "30px",
- height: "30px"
- });
- }
- topPane.hide();
- topPane.addClass("scale-out transparent");
- topPane.css({
- position: "absolute",
- top: "0px"
- });
- $("body").append(topPane);
- 
- xBtn.hide();
- $("body").append(xBtn);
- xBtn.delay(300).fadeIn(200);
- topPane.show();
- topPane.removeClass("scale-out transparent");
- topPane.dispose = function () {
- 
- //this.fadeOut(200, function() {
- //EW.unlock($("body"));
- $(this).remove();
- //});
- xBtn.remove();
- topPane.onClosed();
- };
- return topPane;
- };*/
-
 /**
  * Create activity function and return it
  * @param {json} conf <b>activity</b>, <b>defaultClass</b>, <b>title</b>, <b>postData</b>, <b>onDone</b> 
@@ -817,15 +747,15 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
    {
       // Set default jquery html() function
       modalPane.html = modalPane.__proto__.html;
-      /*var int = setInterval(function ()
+      var int = setInterval(function ()
       {
          try
          {
             if (!modalPane.isOpen)
-               return;*/
+               return;
             modalPane.html(data);
             modalPane.html = htmlFunction;
-            /*window.clearInterval(int);
+            window.clearInterval(int);
          }
          catch (e)
          {
@@ -833,7 +763,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
             window.clearInterval(int);
          }
 
-      }, 20);*/
+      }, 20);
    };
    // Overwrite the default jquery html() function behavior
    modalPane.html = htmlFunction;
