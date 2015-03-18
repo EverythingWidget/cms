@@ -34,7 +34,7 @@
       }
       $.post("<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/get_content_with_label", {content_id: ContentForm.getLabel("admin_ContentManagement_document"), key: "<?php echo $key ?>"}, function (data) {
          $("#<?php echo $key ?>_attached").empty();
-         $.each(data, function (i, content)
+         $.each(data['result'], function (i, content)
          {
             var langItem = $("<li class=''><a rel='ajax' href='#' class='link'>" + content.title + "</a></li>");
             if (content.id == "<?php echo $value ?>")

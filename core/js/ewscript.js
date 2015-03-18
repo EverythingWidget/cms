@@ -353,7 +353,7 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler)
       }
       else
       {
-         var elm =$();
+         var elm = $();
          try {
             elm = $(formId + " :input[name='" + key + "'][value='" + val + "']");
          } catch (e)
@@ -768,23 +768,27 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
    {
       // Set default jquery html() function
       modalPane.html = modalPane.__proto__.html;
-      /*var int = setInterval(function ()
-       {
-       try
-       {
-       if (!modalPane.isOpen)
-       return;*/
-      modalPane.html(data);
-      modalPane.html = htmlFunction;
-      /*window.clearInterval(int);
-       }
-       catch (e)
-       {
-       console.error(e);
-       window.clearInterval(int);
-       }
-       
-       }, 20);*/
+      var withTillModalOpen = function ()
+      {
+         //try
+         //{
+         if (!modalPane.isOpen)
+         {
+            setTimeout(withTillModalOpen, 20)
+            return;
+         }
+         modalPane.html(data);
+         modalPane.html = htmlFunction;
+         //window.clearInterval(int);
+         /*}
+          catch (e)
+          {
+          console.error(e);
+          window.clearInterval(int);
+          }*/
+
+      };
+      withTillModalOpen.call();
    };
    // Overwrite the default jquery html() function behavior
    modalPane.html = htmlFunction;

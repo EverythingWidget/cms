@@ -6,49 +6,6 @@ if (!isset($_SESSION['login']))
    include "Login.php";
    return;
 }
-
-/*$compId = $_REQUEST['compId'];
-$secId = $_REQUEST['_section_name'];
-$className = $_REQUEST['className'];
-$cmd = $_REQUEST['cmd'];
-$compPage = null;
-$pageTitle = 'Administration';
-
-$sectionTitle = '';
-if (!$compId)
-{
-   $compId = "AppsManagement";
-}
- print_r($_REQUEST);
-if (class_exists($app_name . "\\" . $compId))
-{
-   $ccc = $app_name . "\\" . $compId;
-   $sc = new $ccc($ccc, $_REQUEST);
-  
-   // Load current component content
-   $compPage = EWCore::process_command("admin", $compId, null);
-   $temp = json_decode($compPage, true);
-   // If the statusCode is not 200 then show the error
-   if ($temp["statusCode"] && $temp["statusCode"] != 200)
-   {
-      //http_response_code(200);
-      header('Content-Type: text/html');
-      $compPage = "<div class='box box-error'>{$temp["message"]}</div>";
-   }
-   $pageTitle = "tr{{$sc->get_title()}}";
-}*/
-
-/* if ($secId)
-  {
-  $result = mysql_query("SELECT * FROM sections WHERE id = '$secId'") or die(mysql_error());
-  while ($row = mysql_fetch_array($result))
-  {
-  $compPage = '../sections/' . $row['root_dir'] . '/admin/index.php';
-  $pageTitle = $pageTitle . ' : ' . $row['title'];
-  $sectionTitle = ': ' . $row['title'];
-  }
-  } */
-//define(EW_ROOT_URL, EW_ROOT_URL . ($_language) ? $_language . '/' : '');
 ?> 
 <!DOCTYPE html>
 <html>
@@ -497,9 +454,9 @@ if (class_exists($app_name . "\\" . $compId))
                   var rl = '<ul>';
                   $.each(data.responseJSON.reason, function (current, i)
                   {
-                     rl+= '<li><h4>'+current+'</h4><p>'+i.join()+'</p></li>';
+                     rl += '<li><h4>' + current + '</h4><p>' + i.join() + '</p></li>';
                   });
-                  rl+='</ul>';
+                  rl += '</ul>';
                }
                catch (e)
                {
@@ -508,7 +465,7 @@ if (class_exists($app_name . "\\" . $compId))
                }
                $("body").EW().notify({
                   "message": {
-                     html: (!data.responseJSON) ? "---ERROR---" : data.responseJSON.message+rl
+                     html: (!data.responseJSON) ? "---ERROR---" : data.responseJSON.message + rl
                   },
                   status: "error",
                   position: "n",
@@ -523,7 +480,7 @@ if (class_exists($app_name . "\\" . $compId))
             });
             //$("#sidebar").hide();
             var sidebar = $("#sidebar");
-
+            //sidebar.attr("tabindex", 1);
             sidebar.on("mouseleave", function ()
             {
                sidebar.stop().css({overflowY: "hidden"});
@@ -541,13 +498,14 @@ if (class_exists($app_name . "\\" . $compId))
                sidebar.css({maxHeight: $(window).height() - 100});
                $("#sidebar:not(.in)").stop().animate({className: "sidebar in", width: "220px"}, 360, "Power4.easeOut", function () {
                   sidebar.stop().css({overflowY: "auto"});
+                  if (event.type == 'focus')
+                  {
+                     sidebar.find("a:first").focus();
+                  }
                });
-               //$("#sidebar").stop().fadeIn(300);
-               //alert($("#sidebar").html());
                event.stopPropagation();
                $(window).on("click.sidebar", function ()
                {
-
                   $("#sidebar").trigger("mouseleave");
                   $(window).off("click.sidebar");
                });
@@ -556,13 +514,9 @@ if (class_exists($app_name . "\\" . $compId))
 
             document.addEventListener("DOMNodeInserted", function (event)
             {
-               //var $elementJustAdded = $(event.target);
                if (event.target)
                {
                   initPlugins(event.target);
-                  /*$elementJustAdded.find("select").selectpicker({
-                   container: "body"
-                   });*/
                }
 
                $(".nav.xs-nav-tabs").data("xs-nav-bar-active", function (e) {
@@ -658,7 +612,7 @@ if (class_exists($app_name . "\\" . $compId))
                      <?php
                      if ($_SESSION['login'])
                      {
-                        echo '<a class="ExitBtn" href="./app-admin/UsersManagement/logout?url='.EW_DIR_URL.'app-admin/" ></a>';
+                        echo '<a class="ExitBtn" href="./app-admin/UsersManagement/logout?url=' . EW_DIR_URL . 'app-admin/" ></a>';
                      }
                      ?>
                   </div>

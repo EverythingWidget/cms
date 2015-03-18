@@ -219,35 +219,30 @@ class ContentManagement extends \Section
 
    public static function get_content_with_label($content_id, $key, $value = '%')
    {
-
-      $db = EWCore::get_db_connection();
       if (preg_match('/\$content\.(\w*)/', $content_id))
          return [];
       if (!$content_id)
          return json_encode([]);
       if (!$value)
          $value = '%';
-      //$totalRows = $db->query("SELECT COUNT(*)  FROM ew_contents_labels WHERE id=$content_id") or die($db->error);
-      //$totalRows = $totalRows->fetch_assoc();
-      $result = $db->query("SELECT *,ew_contents.id AS id, DATE_FORMAT(date_created,'%d-%m-%Y') FROM ew_contents_labels, ew_contents "
-              //. "WHERE content_id in (SELECT content_id from ew_contents_labels  WHERE `key` = 'admin_ContentManagement_document' AND `value` = $content_id)"
-              . "WHERE (content_id in (SELECT content_id from ew_contents_labels  WHERE `content_id` = $content_id)"
-              . "OR content_id in (SELECT content_id from ew_contents_labels  WHERE `key` = 'admin_ContentManagement_document' AND `value` = $content_id))"
-              . "AND ew_contents_labels.content_id = ew_contents.id "
-              . "AND `key`LIKE '$key' AND `value` LIKE '$value' ORDER BY `value`") or die($db->error);
 
-      //$out = array();
-      $rows = array();
-//echo $content_id;
-      while ($r = $result->fetch_assoc())
-      {
+      $rows = \Illuminate\Database\Capsule\Manager::table('ew_contents_labels')->join('ew_contents', 'ew_contents_labels.content_id', '=', 'ew_contents.id')
+                      ->where(function($query) use ($content_id) {
+                         $query->whereIn('content_id', function($query) use ($content_id) {
+                            $query->select('content_id')
+                            ->from('ew_contents_labels')
+                            ->where('content_id', '=', $content_id);
+                         })->orWhereIn('content_id', function($query) use ($content_id) {
+                            $query->select('content_id')
+                            ->from('ew_contents_labels')
+                            ->where('key', '=', 'admin_ContentManagement_document')
+                            ->where('value', '=', $content_id);
+                         });
+                      })
+                      ->where('key', 'LIKE', $key)
+                      ->where('value', 'LIKE', $value)->orderBy('value');
 
-         $rows[] = $r;
-         //print_r($r);
-      }
-      //$db->close();
-      //$out = array("totalRows" => $totalRows['COUNT(*)'], "result" => $rows);
-      return json_encode($rows);
+      return ["totalRows" => $rows->count(), "result" => $rows->get(['*', \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")])];
    }
 
    /**
@@ -265,19 +260,18 @@ class ContentManagement extends \Section
     */
    public function add_content($type, $title, $parent_id, $keywords, $description, $html_content, $featured_image, $labels, $date_created, $date_modified)
    {
-      if (!$date_created)
-      {
-         $date_created = date('Y-m-d H:i:s');
-      }
-      if (!$date_modified)
-      {
-         $date_modified = date('Y-m-d H:i:s');
-      }
+$v = new \Valitron\Validator($this->get_current_command_args());
 
-      if (!$type)
-      {
-         \EWCore::log_error(400, "tr{Type is requierd}");
-      }
+      $v->rule('required', ['title','type'])->message('tr{{field} is required}');
+      $v->rule('integer', "parent_id")->message('tr{{field} should be integer}');
+      $v->labels(array(
+          "title" => 'Title',
+          "parent_id" => 'Folder ID'
+      ));
+
+      if (!$v->validate())
+         return EWCore::log_error("400", "tr{Content has not been added}", $v->errors());     
+
 
 
       $content = new ew_contents;
@@ -289,15 +283,15 @@ class ContentManagement extends \Section
       $content->parent_id = $parent_id;
       $content->content = $html_content;
       $content->featured_image = $featured_image;
-      $content->date_created = $date_created;
-      $content->date_modified = $date_modified;
+      $content->date_created = date('Y-m-d H:i:s');
+      $content->date_modified = date('Y-m-d H:i:s');
       $content->save();
-      //print_r($content->query()->);
+
       if ($content->id)
       {
          $res = ["status" => "success", "data" => $content->toArray()];
          $id = $content->id;
-         $labels = json_decode(stripslashes($labels), true);
+         $labels = json_decode($labels, true);
          foreach ($labels as $key => $value)
          {
             $this->update_label($id, $key, $value);
@@ -318,14 +312,9 @@ class ContentManagement extends \Section
       ));
 
       if (!$v->validate())
-      {
-         return EWCore::log_error("400", "tr{Content has not been updated}", $v->errors());
-      }
-      $labels = json_decode(stripslashes($labels), true);
-      $date_modified = date('Y-m-d H:i:s');
+         return EWCore::log_error("400", "tr{Content has not been updated}", $v->errors());     
 
       $content = ew_contents::find($id);
-      
       $content->author_id = $_SESSION['EW.USER_ID'];
       $content->type = $type;
       $content->title = $title;
@@ -334,14 +323,14 @@ class ContentManagement extends \Section
       $content->parent_id = $parent_id;
       $content->content = $html_content;
       $content->featured_image = $featured_image;
-      $content->date_modified = $date_modified;
+      $content->date_modified = date('Y-m-d H:i:s');
       $content->save();
-//echo "saf";
+
       if ($content->id)
       {
          $res = ["status" => "success", "data" => $content->toArray()];
          $id = $content->id;
-         $labels = json_decode(stripslashes($labels), true);
+         $labels = json_decode($labels, true);
          foreach ($labels as $key => $value)
          {
             $this->update_label($id, $key, $value);
@@ -391,10 +380,6 @@ class ContentManagement extends \Section
       if (!$size)
          $size = 30;
       $articles = $this->get_articles_list($id, $token, $size);
-      //$result["html"] = "WIDGET_DATA_MODEL";
-      //$result["title"] = $articles[0]['title'];
-      //$result["content"] = $articles[0]['content'];
-      //$result["html"] = "<h3></h3><p></p>";
       $result["num_rows"] = $articles["totalRows"];
       foreach ($articles["result"] as $article)
       {
@@ -448,16 +433,7 @@ class ContentManagement extends \Section
    {
       $container_id = ew_contents::find($parent_id);
       $container_id = $container_id['parent_id'];
-      /* $result = $db->query("SELECT parent_id FROM ew_contents WHERE id = '$parent_id'") or die($db->error);
-        while ($r = $result->fetch_assoc())
-        {
-        $container_id = $r["parent_id"];
-        } */
       $folders = ew_contents::all(['*', \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")])->where('parent_id', '=', $parent_id)->where('type', 'folder');
-      //$totalRows = $db->query("SELECT COUNT(*) FROM ew_contents WHERE type = 'folder' AND parent_id = '$parent_id'") or die(error_reporting());
-      //$totalRows = $totalRows->fetch_assoc();
-      //$result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents WHERE type = 'folder' AND parent_id = '$parent_id'") or die("safasfasf");
-
       $rows = array();
       $folders_ar = $folders->toArray();
       foreach ($folders_ar as $i)
@@ -471,55 +447,45 @@ class ContentManagement extends \Section
 
    public function get_articles_list($parent_id = null, $token, $size)
    {
-      $db = \EWCore::get_db_connection();
-
       if (!isset($token))
       {
          $token = 0;
       }
       if (!$size)
       {
-         $size = 99999999999999;
+         $size = '18446744073709551610';
       }
 
+      // if there is no parent_id then select all the articles
       if (is_null($parent_id) && $parent_id != 0)
       {
-         $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents WHERE type = 'article' ORDER BY title") or die("EW:error on selecting articles list");
+         $articles = ew_contents::where('type', 'article')->orderBy('title')->get(['*', \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
+         return ["totalRows" => $articles->count(), "result" => $articles->toArray()];
       }
       else
       {
-         $result = $db->query("SELECT parent_id FROM ew_contents WHERE id = '$parent_id'") or die("safasfasf");
-         while ($r = $result->fetch_assoc())
+         $container_id = ew_contents::find($parent_id);
+         $container_id = $container_id['parent_id'];
+         $articles = ew_contents::where('parent_id', '=', $parent_id)->where('type', 'article')->take($size)->skip($token)->get(['*', \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
+         $rows = array();
+         $articles_ar = $articles->toArray();
+         foreach ($articles_ar as $i)
          {
-            $container_id = $r["parent_id"];
+            $i["pre_parent_id"] = $container_id;
+            $rows[] = $i;
          }
-         $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents WHERE type = 'article' AND parent_id = '$parent_id' ORDER BY title") or die("EW:error on selecting articles list");
+         return ["totalRows" => $articles->count(), "result" => $rows];
       }
 
-      $rows = array();
-      while ($r = $result->fetch_assoc())
-      {
-         $r["pre_parent_id"] = $container_id;
-         $rows[] = $r;
-      }
-      $db->close();
-      $out = array("totalRows" => $result->num_rows, "result" => $rows);
-      return $out;
+      return \EWCore::log_error(400, 'tr{Something went wrong}');
    }
 
    public function get_content($id)
    {
-      $db = \EWCore::get_db_connection();
-      //$articleId = $db->real_escape_string($_REQUEST["articleId"]);
-
-      $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents WHERE id = '$id'") or $db->error;
-      if ($rows = $result->fetch_assoc())
-      {
-         $rows["labels"] = ContentManagement::get_content_labels($id);
-
-         $db->close();
-         return json_encode($rows);
-      }
+      if (!isset($id))
+         return \EWCore::log_error(400, 'tr{Content Id is requird}');
+      $content = ew_contents::find($id, ['*', \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
+      return $content->toArray();
    }
 
    public function get_contents($title_filter = '%', $type = '%', $token = 0, $size = 99999999999999)
@@ -1077,7 +1043,7 @@ class ContentManagement extends \Section
          $path = $_REQUEST["path"];
 
       if (!$parent_id)
-         $parent_id = $db->real_escape_string($_REQUEST["parentId"]);
+         $parent_id = 0;
       $alt_text = $_REQUEST["alt_text"];
       //if (!$order)
       //  $order = 0;

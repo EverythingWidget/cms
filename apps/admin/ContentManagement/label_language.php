@@ -40,7 +40,7 @@
       }
       $.post("<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/get_content_with_label", {content_id: documentId, key: "<?php echo $key ?>"}, function (data) {
          $("#<?php echo $key ?>_languages").empty();
-         $.each(data, function (i, content)
+         $.each(data['result'], function (i, content)
          {
             //$("#<?php echo $key ?>_select option[value='" + content.value + "']").remove();
             var langItem = $("<li><a rel='ajax' href='#' class='link'>" + languages[content.value] + "<p>" + content["title"] + "</p></a></li>");
