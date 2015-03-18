@@ -337,18 +337,29 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler)
       jsonData["status"] = "error";
       jsonData["delay"] = "stay";
       //$(formId).html("<div class='box box-error'><label class='value'>" + jsonData["message"] + "</label></div>");
-     $(formId).EW().notify(jsonData).show();      
+      $(formId).EW().notify(jsonData).show();
       return;
    }
+   //alert(JSON.stringify(jsonData));
+   //jsonData = $.parseJSON(JSON.stringify(jsonData));
    var setInputData = function (key, val)
    {
+      //alert(typeof (val)) ;
+      //alert(JSON.stringify(val));
+
       if (handler)
       {
          $(formId + " [id='" + key + "']").val(handler(key, val));
       }
       else
       {
-         var elm = $(formId + " :input[name='" + key + "'][value='" + val + "']");
+         var elm =$();
+         try {
+            elm = $(formId + " :input[name='" + key + "'][value='" + val + "']");
+         } catch (e)
+         {
+
+         }
          if (elm.length == 0)
          {
             elm = $(formId + " :input[name='" + key + "']");
@@ -374,10 +385,20 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler)
          }
          else if (elm.is(":input"))
          {
+            /*if (val && typeof (val) == 'string')
+             {               
+             val = val.replace(/\\/g, "");
+             }*/
             elm.val(val).change();
          }
          else
+         {
+            /*if (val && typeof (val) == 'string')
+             {
+             val = val.replace(/\\/g, "")
+             }*/
             elm.text(val);
+         }
       }
    };
    if (!jsonData)
@@ -747,23 +768,23 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
    {
       // Set default jquery html() function
       modalPane.html = modalPane.__proto__.html;
-      var int = setInterval(function ()
-      {
-         try
-         {
-            if (!modalPane.isOpen)
-               return;
-            modalPane.html(data);
-            modalPane.html = htmlFunction;
-            window.clearInterval(int);
-         }
-         catch (e)
-         {
-            console.error(e);
-            window.clearInterval(int);
-         }
-
-      }, 20);
+      /*var int = setInterval(function ()
+       {
+       try
+       {
+       if (!modalPane.isOpen)
+       return;*/
+      modalPane.html(data);
+      modalPane.html = htmlFunction;
+      /*window.clearInterval(int);
+       }
+       catch (e)
+       {
+       console.error(e);
+       window.clearInterval(int);
+       }
+       
+       }, 20);*/
    };
    // Overwrite the default jquery html() function behavior
    modalPane.html = htmlFunction;
@@ -1511,8 +1532,11 @@ EverythingWidgets.prototype.addURLHandler = function (handler, hashName)
       {
          if (" " + handlers[i] == " " + handler)
          {
+            //alert("rep");
+            //console.log(handler.toString());
             handlers[i] = null;
             handlers[i] = handler;
+            handlers[i].call();
             return;
          }
       }

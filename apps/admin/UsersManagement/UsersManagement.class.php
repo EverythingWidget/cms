@@ -60,6 +60,15 @@ class UsersManagement extends Section
       return FALSE;
    }
 
+   public function logout($url)
+   {
+      unset($_SESSION['login']);
+      session_destroy();
+      if(!$url)
+         $url = '/';
+      header("Location: $url");
+   }
+
    public static function sign_up()
    {
       $resullt = json_decode(self::add_user(null, null, null, null, null), TRUE);

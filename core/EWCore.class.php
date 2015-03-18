@@ -116,19 +116,17 @@ class EWCore
          return $RESULT_CONTENT;
       }
       //echo " $app_name  $section_name  $function_name";
-      $real_class_name = $app_name . '\\' . $section_name;
+      $real_class_name = $app_name . '\\' . ucfirst($app_name);
       $parameters["_app_name"] = $app_name;
       $parameters["_section_name"] = $section_name;
       $parameters['_function_name'] = $function_name;
-
+      //print_r($parameters);
       // show index.php of app
       if (!$function_name)
       {
-         $function_name = "index.php";
+         $function_name = "index";
+         $parameters['_function_name'] = $function_name;
       }
-
-      /* if ($_REQUEST["ew_actionBase"])
-        print_r($_REQUEST["ew_actionBase"]); */
 
       if ($section_name == "EWCore")
       {
@@ -138,27 +136,36 @@ class EWCore
       else
       {
          $class_exist = false;
-         // If class has namespace
+         //var_dump(class_exists($app_name.'\\'.  ucfirst($app_name)));
          if (class_exists($real_class_name))
          {
             // Create an instance of section with its parent App
-            $app_section_object = new $real_class_name(EWCore::get_app_instance($app_name));
+            $app_object = new $real_class_name;
             $class_exist = true;
          }
-         // If class has no namespace
-         else if (class_exists($section_name))
-         {
-            // Create an instance of section with its parent App
-            $app_section_object = new $section_name(EWCore::get_app_instance($app_name));
-            $class_exist = true;
-         }
+         // If class has namespace
+         /* if (class_exists($real_class_name))
+           {
+           // Create an instance of section with its parent App
+           $app_section_object = new $real_class_name(EWCore::get_app_instance($app_name));
+           $class_exist = true;
+           }
+           // If class has no namespace
+           else if (class_exists($section_name))
+           {
+           // Create an instance of section with its parent App
+           $app_section_object = new $section_name(EWCore::get_app_instance($app_name));
+           $class_exist = true;
+           } */
 
          $pages_feeders = EWCore::read_registry("ew-widget-feeder");
          if ($class_exist)
          {
-            $RESULT_CONTENT = $app_section_object->process_request($function_name, $parameters);
+            //echo "safdasf";
+            //$RESULT_CONTENT = $app_section_object->process_request($function_name, $parameters);
+            $RESULT_CONTENT = $app_object->process_command($section_name, $function_name, $parameters);
          }
-         else if (EWCore::is_widget_feeder("page", "*", $section_name))
+         /*else if (EWCore::is_widget_feeder("page", "*", $section_name))
          {
             // Show index if the URL contains a page feeder
             $path = EW_APPS_DIR . '/' . $app_name . '/index.php';
@@ -173,10 +180,10 @@ class EWCore
 
             // Refer to app section index
             $path = EW_APPS_DIR . '/' . $app_name . '/' . $section_name . '/' . $function_name;
-         }
+         }*/
       }
 
-      if ($path && file_exists($path))
+      /*if ($path && file_exists($path))
       {
          ob_start();
          include $path;
@@ -185,7 +192,7 @@ class EWCore
       else if ($path)
       {
          $RESULT_CONTENT = EWCore::log_error(404, "<h4>{$path}</h4><p>EWCore: FILE NOT FOUND</p>");
-      }
+      }*/
       // Call ew command listeners
       //echo is_array($RESULT_CONTENT);
       $actions = EWCore::read_registry("ew_command_listener");
@@ -490,7 +497,7 @@ class EWCore
       //$out = array("totalRows" => $setting->num_rows, "result" => $rows);
       return FALSE;
    }
-   
+
    public static function get_app_sections($app_dir)
    {
 
@@ -1474,21 +1481,21 @@ class EWCore
    {
       if ($send_header)
       {
-         http_response_code($header_code);         
+         http_response_code($header_code);
          header('Content-Type: application/json');
       }
       $error_content = array("statusCode" => $header_code, "url" => $_REQUEST["_app_name"] . "/" . $_REQUEST["_section_name"] . "/" . $_REQUEST["_function_name"],
           "message" => $message,
           "reason" => $reason);
-      /*if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
-      {*/
-         
-         return json_encode($error_content);
-      /*}
-      else
-      {
-         return "<h2>Error No: $header_code</h2><p>$message</p>";
-      }*/
+      /* if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
+        { */
+
+      return json_encode($error_content);
+      /* }
+        else
+        {
+        return "<h2>Error No: $header_code</h2><p>$message</p>";
+        } */
    }
 
    public static function get_url_uis($url)

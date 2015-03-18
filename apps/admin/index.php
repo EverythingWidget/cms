@@ -4,13 +4,10 @@ session_start();
 if (!isset($_SESSION['login']))
 {
    include "Login.php";
-   //if (!isset($_SESSION['login']))
-   //{
    return;
-   //}
 }
 
-$compId = $_REQUEST['compId'];
+/*$compId = $_REQUEST['compId'];
 $secId = $_REQUEST['_section_name'];
 $className = $_REQUEST['className'];
 $cmd = $_REQUEST['cmd'];
@@ -22,11 +19,12 @@ if (!$compId)
 {
    $compId = "AppsManagement";
 }
+ print_r($_REQUEST);
 if (class_exists($app_name . "\\" . $compId))
 {
    $ccc = $app_name . "\\" . $compId;
    $sc = new $ccc($ccc, $_REQUEST);
-
+  
    // Load current component content
    $compPage = EWCore::process_command("admin", $compId, null);
    $temp = json_decode($compPage, true);
@@ -38,7 +36,7 @@ if (class_exists($app_name . "\\" . $compId))
       $compPage = "<div class='box box-error'>{$temp["message"]}</div>";
    }
    $pageTitle = "tr{{$sc->get_title()}}";
-}
+}*/
 
 /* if ($secId)
   {
@@ -660,7 +658,7 @@ if (class_exists($app_name . "\\" . $compId))
                      <?php
                      if ($_SESSION['login'])
                      {
-                        echo '<a class="ExitBtn" href="./app-admin/logout.php" ></a>';
+                        echo '<a class="ExitBtn" href="./app-admin/UsersManagement/logout?url='.EW_DIR_URL.'app-admin/" ></a>';
                      }
                      ?>
                   </div>

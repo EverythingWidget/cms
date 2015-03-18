@@ -1,6 +1,3 @@
-<?php
-//var_dump(EW_Contents::all());
-?>
 <div  class="row">
    <div class="col-xs-12" >
       <div id="categories-list"  class="box">
@@ -16,8 +13,7 @@
    </div>
 </div>
 
-<script  type="text/javascript">
-
+<script>
    function Documents()
    {
       var self = this;
@@ -42,7 +38,7 @@
       $(document).on("article-list.refresh", function (e, eventData) {
          self.listCategories();
          if (eventData)
-         {            
+         {
             if (eventData.data.type == "article")
                EW.setHashParameters({categoryId: null, articleId: eventData.data.id});
             if (eventData.data.type == "folder")
@@ -75,168 +71,6 @@
          this.articleId = articleId;
          this.seeArticleActivity({articleId: articleId});
       }
-   };
-
-   /*Documents.prototype.seeArticle = function ()
-    {
-    tp = EW.createModal({class: "full", onClose: function ()
-    {
-    article.dispose();
-    EW.setHashParameter("cmd", null);
-    }});
-    documents.currentTopPane = tp;
-    EW.lock(tp);
-    $.post('<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/article-form.php', {act: "see", articleId: documents.articleId, categoryId: documents.parentId}, function (data) {
-    tp.html(data);
-    article.editArticleForm();
-    });
-    };*/
-
-
-   Documents.prototype.newArticle = function ()
-   {
-      tp = EW.createModal({class: "full", onClose: function ()
-         {
-            article.dispose();
-            EW.setHashParameter("cmd", null);
-         }});
-      documents.currentTopPane = tp;
-      $.post('<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/article-form.php', {categoryId: documents.parentId}, function (data) {
-         tp.html(data);
-         article.newArticleForm();
-      });
-   };
-
-
-   Documents.prototype.newCategory = function ()
-   {
-      var temp = documents.categoryId;
-      tp = EW.newTopPane(function () {
-         EW.setHashParameter("cmd", null);
-         //contentManagement.showActions();
-      });
-      documents.currentTopPane = tp;
-      $.post('<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/category-form.php', {parentId: documents.categoryId}, function (data) {
-         tp.html(data);
-      });
-   };
-
-   Documents.prototype.addCategory = function ()
-   {
-      //var c = tinyMCE.activeEditor.getContent();
-      var params = $.parseJSON($("#category-form").serializeJSON());
-      params.parentId = documents.parentId;
-      //alert(params);
-      if ($("#title").val())
-      {
-         EW.lock(documents.currentTopPane, "Saving...");
-         $.post('<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/add_category', params, function (data) {
-            //if (data.status === "success")
-            //{
-            EW.$("body").EW().notify(data).show();
-            documents.listCategories();
-            documents.currentTopPane.dispose();
-            //}
-         }, "json");
-      }
-      return false;
-   };
-
-   Documents.prototype.editCategory = function ()
-   {
-      if ($("#title").val())
-      {
-         EW.lock(documents.currentTopPane, "Saving...");
-         $.post('<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/update_category', $.parseJSON($("#category-form").serializeJSON()), function (data) {
-            // if (data.status === "success")
-            //{
-            documents.listCategories();
-            $("body").EW().notify(data).show();
-            EW.unlock(documents.currentTopPane);
-            //}
-
-         }, "json");
-      }
-      return false;
-   };
-
-   Documents.prototype.deleteCategory = function ()
-   {
-      $('<div></div>').appendTo('body')
-              .html('<div><p>Are you sure of deleting this folder?</p></div>')
-              .dialog({
-                 modal: true, title: 'Delete Folder', zIndex: 1000, autoOpen: true,
-                 width: '300px', resizable: false,
-                 buttons: {
-                    Yes: function () {
-                       EW.lock(documents.currentTopPane, "Saving...");
-                       $.post('<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/delete_category', {
-                          categoryId: documents.categoryId}, function (data) {
-                          if (data.status === "unable")
-                          {
-                             //listCategories();
-                             //EW.unlock(contentManagement.currentTopPane);
-                             alert("To delete this folder you have to delete all it's sub categories and articles first.");
-                             EW.unlock(documents.currentTopPane);
-                          }
-                          else if (data.status === "success")
-                          {
-                             EW.setHashParameter("categoryId", null);
-                             $("body").EW().notify(data).show();
-                             documents.listCategories();
-                             documents.currentTopPane.dispose();
-                          }
-                          else
-                          {
-                             EW.unlock(documents.currentTopPane);
-                             $("body").EW().notify(data).show();
-                          }
-                       }, "json");
-                       $(this).dialog("close");
-                    },
-                    No: function () {
-                       //doFunctionForNo();
-                       $(this).dialog("close");
-                    }
-                 },
-                 close: function (event, ui) {
-                    $(this).remove();
-                 }
-              });
-      return false;
-   };
-
-   Documents.prototype.deleteArticle = function ()
-   {
-      if (confirm("Do you really want to delete this article?"))
-      {
-         $.post('<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/delete_article', {
-            articleId: documents.articleId}, function (data) {
-            if (data.status === "success")
-            {
-               EW.setHashParameter("article", null);
-               $("body").EW().notify(data).show();
-               documents.listCategories();
-               documents.currentTopPane.dispose();
-            }
-            else
-            {
-               EW.unlock(documents.currentTopPane);
-               $("body").EW().notify(data).show();
-            }
-         }, "json");
-      }
-   };
-
-   Documents.prototype.selectCategory = function (rowElm, cId)
-   {
-      $(documents.currentItem).removeClass("selected");
-      $(rowElm).addClass("selected");
-      documents.currentItem = rowElm;
-   };
-
-   Documents.prototype.seeSubCategories = function () {
-      EW.setHashParameters({"parent": documents.categoryId});
    };
 
    Documents.prototype.listCategories = function ()
@@ -297,12 +131,20 @@
 
    Documents.prototype.createFolder = function (title, dateCreated, id, model)
    {
-      var div = $("<div class='content-item folder' data-category-id='{id}'><span></span><p>{title}</p><p class='date'>{round_date_created}</p></div>").EW().createView(model);
+      var self = this;
+      var div = $("<div tabindex='1' class='content-item folder' data-category-id='{id}'><span></span><p>{title}</p><p class='date'>{round_date_created}</p></div>").EW().createView(model);
       div.click(function () {
          EW.setHashParameters({"articleId": null, "categoryId": id});
       });
       div.dblclick(function () {
          EW.setHashParameter("parent", id);
+      });
+      div.on('focus', function ()
+      {
+         EW.setHashParameters({"articleId": null, "categoryId": id});
+         $(self.currentItem).removeClass("selected");
+         $(div).addClass("selected");
+         self.currentItem = div;
       });
       return div;
    };
@@ -310,12 +152,19 @@
    Documents.prototype.createFile = function (title, dateCreated, id, model)
    {
       var self = this;
-      var div = $("<div class='content-item article' data-article-id='{id}'><span></span><p>{title}</p><p class='date'>{round_date_created}</p></div>").EW().createView(model);
+      var div = $("<div tabindex='1' class='content-item article' data-article-id='{id}'><span></span><p>{title}</p><p class='date'>{round_date_created}</p></div>").EW().createView(model);
       div.click(function () {
          EW.setHashParameters({categoryId: null, articleId: id});
       });
       div.dblclick(function () {
          self.seeArticleActivity({articleId: id});
+      });
+      div.on('focus', function ()
+      {
+         EW.setHashParameters({categoryId: null, articleId: id});
+         $(self.currentItem).removeClass("selected");
+         $(div).addClass("selected");
+         self.currentItem = div;
       });
       return div;
    };
@@ -341,12 +190,10 @@
       if (cId)
       {
          documents.bSee.comeIn(300);
-         documents.selectCategory($("div[data-category-id=" + cId + "]"), cId);
       }
       if (aId)
       {
          documents.bSee.comeIn(300);
-         documents.selectCategory($("div[data-article-id=" + aId + "]"), aId);
       }
 
       if (!parent)
@@ -363,50 +210,27 @@
          documents.preParentId = documents.parentId;
          documents.parentId = parent;
          documents.listCategories();
-
       }
 
-      if (parent >= 0)
-      {
-         //documents.bNewFile.comeIn(300);
-      }
-      else
-      {
-         //documents.bNewFile.comeOut(200);
-      }
       if (parent == 0)
       {
-         //pcId = null;
-         //EW.setHashParameter("preCategoryId", null);
          documents.bUp.comeOut(300);
       }
       if (parent > 0)
          documents.bUp.comeIn(300);
 
-
       if (cmd)
       {
          if (cmd === "see")
          {
-
             if (cId)
             {
                documents.categoryId = cId;
-               documents.seeCategory();
             }
             else if (aId)
             {
                documents.articleId = aId;
-               documents.seeArticle();
             }
-         }
-         if (cmd == "new-category")
-         {
-            documents.newCategory();
-         }
-         else if (cmd == "new-article")
-         {
-            documents.newArticle();
          }
       }
 
@@ -416,20 +240,11 @@
             documents.currentTopPane.dispose();
          //contentManagement.setPreCategoryId(EW.getHashParameter("preCategoryId"));
       }
-
-
-
-      return "DocumentsHandler";
+      //alert("d");
    });
 
    documents.dispose = function ()
    {
       EW.removeURLHandler(documents.handler);
-      documents.bNewFile.remove();
-      documents.bNewFolder.remove();
-      documents.bSee.remove();
-      documents.bUp.remove();
-      if (documents.currentTopPane)
-         documents.currentTopPane.dispose();
    };
 </script>

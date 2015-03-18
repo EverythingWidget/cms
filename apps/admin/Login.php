@@ -17,7 +17,7 @@ if ($_POST['username'] && !$_SESSION['login'])
 if (isset($_SESSION['login']))
 {
    //echo $_SESSION['login'];
-   header('Location: index.php');
+   header('Location: ' . EW_DIR_URL . 'app-admin/');
    return;
 }
 /* $db = \EWCore::get_db_connection();

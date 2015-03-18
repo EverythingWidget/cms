@@ -16,7 +16,7 @@ namespace admin;
 class ew_contents extends \Illuminate\Database\Eloquent\Model
 {
 
-   protected $fillable = array('id', 'author_id', 'type', 'title', 'slug', 'keywords', 'description');
+   protected $fillable = array('id', 'author_id', 'type', 'title', 'slug', 'keywords', 'description', 'parent_id', 'featured_image', 'content', 'date_modified');
 
    public function __construct(array $attributes = array())
    {

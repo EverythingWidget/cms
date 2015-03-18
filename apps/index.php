@@ -27,8 +27,6 @@ $path = urldecode($path);
 if (strpos($path, '?'))
    $path = substr($path, 0, strpos($path, '?'));
 $elements = explode('/', $path);
-//print_r($elements);
-//echo '<br/><h3>Request parameters</h3>';
 $parameter_index = 0;
 if (strpos(EW_DIR, $elements[0]))
 {
@@ -80,12 +78,6 @@ if (isset($elements[$parameter_index]) && preg_match("/^([^\.]*)$/", $elements[$
    $section_name = $elements[$parameter_index];
    $_REQUEST["_section_name"] = $section_name;
 
-   /* $rest_of_elements = array_slice($elements, $parameter_index);
-     $file_uri = implode('/', $rest_of_elements);
-
-     $_file = $file_uri;
-     $_REQUEST["_file"] = $_file; */
-
    $parameter_index++;
 }
 
@@ -94,6 +86,7 @@ $function_name = null;
 if (isset($elements[$parameter_index]))
 {
    $function_name = $elements[$parameter_index];
+   $function_name = ($function_name == 'index.php') ? 'index' : $function_name;
    $_REQUEST["_function_name"] = $function_name;
 
    $rest_of_elements = array_slice($elements, $parameter_index);
@@ -106,19 +99,6 @@ if (isset($elements[$parameter_index]))
    $parameter_index++;
 }
 
-//print_r($_REQUEST);
-//print_r($_SERVER);
-// Set error reporting
-//print_r($_REQUEST);
-//echo $_language;
-// Add slash at the end of URL
-//if ($app_name == "webroot" && stripos($_SERVER['REQUEST_URI'], 'apps/' . $_file) !== false && file_exists(EW_APPS_DIR . '/' . $_file))
-//{
-//if ($_file == $app_name)
-//   header("location: /") or die("error on redirecting");
-//header("location: /" . $_file . "/") or die("error on redirecting");
-//die();
-//}
 // Create instance of EWCore class 
 global $EW;
 $EW = new \EWCore();
@@ -146,8 +126,8 @@ if (!isset($_REQUEST["_uis"]))
 {
    if ($section_name)
       $r_uri = "/" . $section_name;
-   /*if ($_file)
-      $r_uri.='/' . $_file;*/
+   /* if ($_file)
+     $r_uri.='/' . $_file; */
    $r_uri = str_replace('/' . $root_dir, "", $r_uri);
    //echo $r_uri;
    // Remove last /

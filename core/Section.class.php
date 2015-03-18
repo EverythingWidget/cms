@@ -53,6 +53,7 @@ class Section
 
    public function process_request($method_name, $parameters = null)
    {
+      //echo $method_name;
       if (!$method_name)
       {
          return EWCore::log_error(400, "Wrong command: {$this->app->get_root()}/{$this->current_class->getShortName()}. Method can not be null.");
@@ -126,12 +127,13 @@ class Section
          $temp = NULL;
          if (is_array($parameters[$param->getName()]))
          {
-            array_walk_recursive($parameters[$param->getName()], $db->real_escape_string);
+            //array_walk_recursive($parameters[$param->getName()], Illuminate\Database\Capsule\Manager::connection()->getPdo()->quote);
             $temp = $parameters[$param->getName()];
          }
          else
          {
-            $temp = $db->real_escape_string($parameters[$param->getName()]);
+            //$temp = Illuminate\Database\Capsule\Manager::connection()->getPdo()->quote($parameters[$param->getName()]);
+            $temp = $parameters[$param->getName()];
          }
          $functions_arguments[] = $temp;
          $this->current_method_args[$param->getName()] = $temp;
@@ -265,6 +267,12 @@ class Section
    public function getName()
    {
       return $this->sectionName = $secName;
+   }
+
+   public function index()
+   {
+      $path = $this->app->get_root() . '/' . $this->get_section_name() . '/index.php';
+      include $path;
    }
 
    public function get_index()

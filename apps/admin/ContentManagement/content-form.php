@@ -120,7 +120,8 @@ function get_properties($form_config, $form_id)
          foreach ($content_labels as $key => $value)
          {
             $data_array = json_decode($form_config["data"], true);
-            $labels = json_decode($data_array["labels"], true);
+            $labels= $data_array["labels"];
+            //$labels = json_decode($data_array["labels"], true);
             foreach ($labels as $label_data)
             {
                if ($label_data["key"] == $key)

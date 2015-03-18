@@ -29,7 +29,7 @@
       if (!ContentForm.getLabel("admin_ContentManagement_document"))
       {
          ContentForm.activeLabel("admin_ContentManagement_document", true);
-         $("#<?php echo $key ?>_value").val(formData["id"]);
+         $("#<?php echo $key ?>_value").val('$content.id');
          $("#<?php echo $key ?>_text").val(formData["title"]).change();         
       }
       $.post("<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/get_content_with_label", {content_id: ContentForm.getLabel("admin_ContentManagement_document"), key: "<?php echo $key ?>"}, function (data) {

@@ -1,13 +1,9 @@
 <?php
+
 namespace admin;
 
 use Section;
 use EWCore;
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 /**
  * Description of SectionManagement
@@ -23,7 +19,7 @@ class AppsManagement extends Section
    }
 
    public function get_app_sections($appDir)
-   {      
+   {
       $tempEW = new EWCore($appDir . '/');
 
       $path = EW_APPS_DIR . '/' . $appDir . '/';
@@ -36,15 +32,6 @@ class AppsManagement extends Section
       {
          if (strpos($section_dir, '.') === 0)
             continue;
-         //$section_dir = opendir($path . $section_dir);
-         //while ($file = readdir($section_dir))
-         //{
-         //if (strpos($file, '.') === 0)
-         //continue;
-         //$i = strpos($file, '.class.php');
-         //if ($i != 0)
-         //{
-         //$section_class_name = substr($file, 0, $i);
          $section_class_name = $section_dir;
          $class_name = $section_dir;
          $namespace_class_name = $appDir . "\\" . $section_class_name;
@@ -71,51 +58,11 @@ class AppsManagement extends Section
             if ($sc->get_title() && !$sc->is_hidden())
                $sections[] = array("title" => "tr:$appDir" . "{" . $sc->get_title() . "}", "className" => $class_name, "description" => "tr:$appDir" . "{" . $sc->get_description() . "}");
          }
-         // }
-         //}
       }
-
-      /* if (!empty($sections))
-        return json_encode($sections);
-
-        $path = EW_APPS_DIR . '/' . $appDir . '/sections/';
-
-        $section_dirs = opendir($path);
-
-        while ($section_dir = readdir($section_dirs))
-        {
-        if (strpos($section_dir, '.') === 0)
-        continue;
-        $section_dir = opendir($path . $section_dir);
-        while ($file = readdir($section_dir))
-        {
-        if (strpos($file, '.') === 0)
-        continue;
-        $i = strpos($file, '.class.php');
-        if ($i != 0)
-        {
-        $section_class_name = substr($file, 0, $i);
-        $class_name = $section_class_name;
-        $namespace_class_name = $appDir . "\\" . $section_class_name;
-        if (class_exists($namespace_class_name))
-        {
-        $section_class_name = $namespace_class_name;
-        }
-        if (class_exists($section_class_name) && get_parent_class($section_class_name) == 'Section')
-        {
-        $sc = new $section_class_name($section_class_name, $_REQUEST);
-        //echo $section_class_name;
-        if ($sc->get_title() && !$sc->is_hidden())
-        $sections[] = array("title" => "tr:$appDir" . "{" . $sc->get_title() . "}", "className" => $class_name, "description" => "tr:$appDir" . "{" . $sc->get_description() . "}");
-        }
-        }
-        }
-        } */
-      //EWCore::add_app_locale_to_translator($_REQUEST["appDir"]);
       return json_encode($sections);
    }
-   
-    /**
+
+   /**
     * 
     * @param array $form_config [optional] <p>An array that contains content form configurations.<br/>
     * the keys are: <b>title</b>, <b>saveActivity</b>, <b>updateActivity</b>, <b>data</b>
@@ -132,6 +79,11 @@ class AppsManagement extends Section
    public function get_description()
    {
       return "Your app's Control Panel";
+   }
+
+   public function index()
+   {
+      include 'admin/AppsManagement/index.php';
    }
 
 //put your code here

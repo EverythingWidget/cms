@@ -4,8 +4,8 @@ function sidebar()
 {
    // ew-contents-main-form, sidebar
    $html = '<label>tr{Libraries}</label><ul>'
-           . '<li><a rel="ajax" data-default="true" href="lib=documents">tr{Documents}</a></li>'
-           . '<li><a rel="ajax" href="lib=media">tr{Media}</a></li></ul>';
+           . '<li><a rel="ajax" data-default="true" data-ew-nav="documents" href="'.EW_ROOT_URL.'app-admin/ContentManagement/Documents.php" />tr{Documents}</a></li>'
+           . '<li><a rel="ajax" data-ew-nav="media" href="'.EW_ROOT_URL.'app-admin/ContentManagement/Media.php">tr{Media}</a></li></ul>';
 
    return $html;
 }
@@ -32,18 +32,22 @@ function script()
       {
       };
       var oldLib = "";
-      $(document).ready(function () {
+      /*$(document).ready(function () {
          var contentManagement = new ContentManagement();
          EW.addURLHandler(function () {
             var lib = EW.getHashParameter("lib");
-            if (contentManagement.oldLib !== lib) {
-               if (contentManagement.currentLib) {
-                  if (contentManagement.currentLib.dispose) {
+            if (contentManagement.oldLib !== lib)
+            {
+               if (contentManagement.currentLib) 
+               {
+                  if (contentManagement.currentLib.dispose) 
+                  {
                      contentManagement.currentLib.dispose();
                   }
                   $("#action-bar-items").find("button").remove();
                }
-               if (lib == "documents") {
+               if (lib == "documents") 
+               {
                   EW.lock($("#main-content"), "");
                   $.post('<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/Documents.php', function (data) {
                      EW.unlock($("#main-content"));
@@ -51,7 +55,9 @@ function script()
                      contentManagement.currentLib = documents;
                   });
                   contentManagement.oldLib = "documents";
-               } else {
+               } 
+               else 
+               {
                   EW.lock($("#main-content"), "");
                   $.post('<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/Media.php', function (data) {
                      EW.unlock($("#main-content"));
@@ -63,7 +69,7 @@ function script()
             }
             return "ContentManagementHandler";
          });
-      });
+      });*/
    </script>
    <?php
    return ob_get_clean();

@@ -82,11 +82,12 @@ if (!$_SESSION['login'])
 
    Media.prototype.selectItem = function (rowElm)
    {
-      //$(media.currentItem).removeClass("selected");
+      $(media.currentItem).removeClass("selected");
       $(rowElm).focus();
-      //media.currentItem = rowElm;
+      media.currentItem = rowElm;
+      $(media.currentItem).addClass("selected");
    };
-   
+
    Media.prototype.listMedia = function ()
    {
       var self = this;
@@ -109,6 +110,10 @@ if (!$_SESSION['login'])
             var temp = self.createMedia(element.title, element.type, element.ext, element.size, element.thumbURL, element.id);
             if (element.type == "folder")
             {
+               temp.on('keydown', function (e) {
+                  if (e.which == 13)
+                     EW.setHashParameter("parentId", element.id);
+               });
                temp.click(function () {
                   //EW.setHashParameter("title", element.title, "Media");
                   EW.setHashParameter("albumId", element.id);
@@ -143,7 +148,7 @@ if (!$_SESSION['login'])
          if (flag)
             EW.setHashParameter("preParentId", pId, "Media");
 // Select current item
-         self.selectItem($("div[data-item-id='" + self.itemId + "']"));
+         $("div[data-item-id='" + self.itemId + "']").focus();
       }, "json");
    };
    Media.prototype.createMedia = function (title, type, ext, size, ImageURL, id)
@@ -153,10 +158,12 @@ if (!$_SESSION['login'])
       div.addClass("content-item");
       div.addClass(type);
       div.addClass(ext);
-      div.attr("tabindex","1");
-      div.on("focus",function()
+      div.attr("tabindex", "1");
+      div.on("focus", function ()
       {
+         $(self.currentItem).removeClass("selected");
          self.currentItem = div;
+         $(self.currentItem).addClass("selected");
          EW.setHashParameter("albumId", id);
       });
       //div.append("<span></span>");
@@ -176,7 +183,6 @@ if (!$_SESSION['login'])
       div.attr("data-item-id", id);
       div.click(function ()
       {
-
       });
       div.dblclick(function ()
       {
@@ -185,7 +191,7 @@ if (!$_SESSION['login'])
       return div;
    };
    var media = new Media();
-   EW.addURLHandler(function ()
+   media.handler = EW.addURLHandler(function ()
    {
       var parent = EW.getHashParameter("parentId");
       var itemId = EW.getHashParameter("albumId");
@@ -229,7 +235,10 @@ if (!$_SESSION['login'])
          media.bDel.comeOut();
       }
 
-      return "MediaHandler";
    });
+   media.dispose = function ()
+   {
+      EW.removeURLHandler(media.handler);
+   };
 
 </script>
