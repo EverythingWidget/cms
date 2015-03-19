@@ -427,11 +427,13 @@
       return this.each(function () {
          var self = $(this);
          opt.input = self;
-         setInterval(function () 
+         var oldOffset = opt.input.offset();
+         setInterval(function ()
          {
-            var offset = opt.input.offset();
-            if (opt.container && opt.input)
+            var offset = opt.input.offset().top;
+            if (offset !== oldOffset && opt.container && opt.input)
             {
+               oldOffset = offset;
                opt.container.css({
                   top: offset.top + opt.input.outerHeight(),
                })

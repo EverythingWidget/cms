@@ -1,11 +1,10 @@
 <?php
 session_start();
-//global $EW;
-//echo $widget_parameters;
+
+$language = $_REQUEST["_language"];
 $titles = $widget_parameters["title"];
 $links = $widget_parameters["feeder"];
 $icnons = $widget_parameters["title"];
-//$result = mysql_query("SELECT * FROM menus , sub_menus WHERE menus.id = sub_menus.menu_id AND menus.id = '$menuId' ORDER BY sub_menus.order") or die(mysql_error());
 ?>
 <ul>
    <?php
@@ -28,11 +27,11 @@ $icnons = $widget_parameters["title"];
          }
          else if ($link["type"])
          {
-            $linkURL = EW_DIR_URL . $link["type"] . '/' . $link["id"];
+            $linkURL = EW_DIR_URL . $language . '/' . $link["type"] . '/' . $link["id"];
          }
          else
          {
-            $linkURL = EW_DIR_URL;
+            $linkURL = EW_DIR_URL . $language . '/';
          }
 
          $active = ($linkURL == $_SERVER["REQUEST_URI"]) ? "active" : "";
@@ -45,7 +44,7 @@ $icnons = $widget_parameters["title"];
             echo "<ul>";
             foreach ($sub_menus as $sub_menu)
             {
-               echo "<li class='$active'><a href='" . EW_DIR_URL . "{$sub_menu["link"]}'>{$sub_menu["title"]}</a></li>";
+               echo "<li class='$active'><a href='" . EW_DIR_URL . $language . '/' . "{$sub_menu["link"]}'>{$sub_menu["title"]}</a></li>";
             }
             echo "</ul>";
          }
@@ -67,16 +66,16 @@ $icnons = $widget_parameters["title"];
       }
       else if ($link["type"])
       {
-         $linkURL = EW_DIR_URL . $link["type"] . '/' . $link["id"];
+         $linkURL = EW_DIR_URL . $language . '/' . $link["type"] . '/' . $link["id"];
       }
       else
       {
-         $linkURL = EW_DIR_URL;
+         $linkURL = EW_DIR_URL . $language . '/';
       }
       ?>
       <li>
          <?php
-         echo "<a href='" . EW_DIR_URL . "{$linkURL}'>";
+         echo "<a href='" . EW_DIR_URL . $language . '/' . "{$linkURL}'>";
          echo $titles . "</a>";
 
 
@@ -85,7 +84,7 @@ $icnons = $widget_parameters["title"];
             echo "<ul>";
             foreach ($sub_menus as $sub_menu)
             {
-               echo "<li><a href='" . EW_DIR_URL . "{$sub_menu["link"]}'>";
+               echo "<li><a href='" . EW_DIR_URL . $language . '/' . "{$sub_menu["link"]}'>";
                echo $sub_menu["title"] . "</a></li>";
             }
             echo "</ul>";

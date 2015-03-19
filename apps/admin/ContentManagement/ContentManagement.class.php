@@ -260,18 +260,9 @@ class ContentManagement extends \Section
     */
    public function add_content($type, $title, $parent_id, $keywords, $description, $html_content, $featured_image, $labels, $date_created, $date_modified)
    {
-$v = new \Valitron\Validator($this->get_current_command_args());
-
-      $v->rule('required', ['title','type'])->message('tr{{field} is required}');
-      $v->rule('integer', "parent_id")->message('tr{{field} should be integer}');
-      $v->labels(array(
-          "title" => 'Title',
-          "parent_id" => 'Folder ID'
-      ));
-
-      if (!$v->validate())
-         return EWCore::log_error("400", "tr{Content has not been added}", $v->errors());     
-
+      $validator = \SimpleValidator\Validator::validate(compact(['title', 'type', 'parent_id']), ew_contents::$rules);
+      if (!$validator->isSuccess())
+         return EWCore::log_error("400", "tr{Content has not been added}", $validator->getErrors());
 
 
       $content = new ew_contents;
@@ -302,17 +293,9 @@ $v = new \Valitron\Validator($this->get_current_command_args());
 
    public function update_content($id, $title, $type, $parent_id, $keywords, $description, $html_content, $featured_image, $labels)
    {
-      $v = new \Valitron\Validator($this->get_current_command_args());
-
-      $v->rule('required', "title")->message(' {field} is required');
-      $v->rule('integer', "parent_id")->message(' {field} should be integer');
-      $v->labels(array(
-          "title" => 'tr{Title}',
-          "parent_id" => 'Folder ID'
-      ));
-
-      if (!$v->validate())
-         return EWCore::log_error("400", "tr{Content has not been updated}", $v->errors());     
+      $validator = \SimpleValidator\Validator::validate(compact(['title', 'type', 'parent_id']), ew_contents::$rules);
+      if (!$validator->isSuccess())
+         return EWCore::log_error("400", "tr{Content has not been added}", $validator->getErrors());
 
       $content = ew_contents::find($id);
       $content->author_id = $_SESSION['EW.USER_ID'];
@@ -360,15 +343,21 @@ $v = new \Valitron\Validator($this->get_current_command_args());
          return json_encode(["status" => "success", "title" => $title, "message" => "tr{The new article has been added succesfully}", "data" => ["id" => $result["data"]["id"], "type" => "article"]]);
          // End of plugins actions call
       }
-      return \EWCore::log_error(400, "tr{Something went wrong, content has not been added}");
+      return $result;
+//      return \EWCore::log_error(400, "tr{Something went wrong, content has not been added}");
    }
 
    public function ew_page_feeder_article($id, $language)
    {
-      $articles = json_decode($this->get_content_with_label($id, "admin_ContentManagement_language", $language), true);
+      //echo $language;
+      $articles = $this->get_content_with_label($id, "admin_ContentManagement_language", $language);
+      $article = [];
+      //print_r($articles);
+      if ($articles)
+         $article = $articles["result"][0];
       $result["html"] = "WIDGET_DATA_MODEL";
-      $result["title"] = $articles[0]['title'];
-      $result["content"] = $articles[0]['content'];
+      $result["title"] = $article['title'];
+      $result["content"] = $article['content'];
       //print_r($articles);
       return json_encode($result);
    }
@@ -405,8 +394,7 @@ $v = new \Valitron\Validator($this->get_current_command_args());
    {
       $v = new \Valitron\Validator($this->get_current_command_args());
 
-      $db = \EWCore::get_db_connection();
-      //print_r(func_get_args());     
+
       $v->rule('required', ["title", "parent_id"])->message(' {field} is required');
       $v->rule('integer', "parent_id")->message(' {field} should be integer');
       $v->labels(array(
@@ -425,7 +413,7 @@ $v = new \Valitron\Validator($this->get_current_command_args());
       }
       else
       {
-         return EWCore::log_error("400", "New article has not been added", $db->error_list);
+         return EWCore::log_error("400", "New article has not been added");
       }
    }
 
@@ -499,23 +487,28 @@ $v = new \Valitron\Validator($this->get_current_command_args());
       }
       if (!$size)
       {
-         $size = 99999999999999;
+         $size = '18446744073709551610';
       }
 
-      $totalRows = $db->query("SELECT COUNT(*)  FROM ew_contents WHERE  title LIKE '$title_filter%' AND type LIKE '$type'") or die($db->error);
-      $totalRows = $totalRows->fetch_assoc();
-      $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%d-%m-%Y') AS 'date_created' FROM ew_contents WHERE title COLLATE UTF8_GENERAL_CI LIKE '$title_filter%' AND type LIKE '$type' ORDER BY title  LIMIT $token,$size") or die($db->error);
+      $contents = ew_contents::where('type', 'LIKE', $type)
+                      ->where(\Illuminate\Database\Capsule\Manager::raw("`title` COLLATE UTF8_GENERAL_CI"), 'LIKE', $title_filter . '%')
+                      ->orderBy('title')->take($size)->skip($token)->get($id, ['*', \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
+      //print_r($contents);
+      return ["totalRows" => $contents->count(), "result" => $contents->toArray()];
+      /* $totalRows = $db->query("SELECT COUNT(*)  FROM ew_contents WHERE  title LIKE '$title_filter%' AND type LIKE '$type'") or die($db->error);
+        $totalRows = $totalRows->fetch_assoc();
+        $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%d-%m-%Y') AS 'date_created' FROM ew_contents WHERE title COLLATE UTF8_GENERAL_CI LIKE '$title_filter%' AND type LIKE '$type' ORDER BY title  LIMIT $token,$size") or die($db->error);
 
-      //$out = array();
-      $rows = array();
+        //$out = array();
+        $rows = array();
 
-      while ($r = $result->fetch_assoc())
-      {
-         $rows[] = $r;
-      }
-      $db->close();
-      $out = array("totalRows" => $totalRows['COUNT(*)'], "result" => $rows);
-      return json_encode($out);
+        while ($r = $result->fetch_assoc())
+        {
+        $rows[] = $r;
+        }
+        $db->close();
+        $out = array("totalRows" => $totalRows['COUNT(*)'], "result" => $rows);
+        return json_encode($out); */
    }
 
    public function add_category($title, $parent_id, $keywords, $description, $labels)
@@ -533,12 +526,13 @@ $v = new \Valitron\Validator($this->get_current_command_args());
       /* $stm = $db->prepare("INSERT INTO content_categories (title , parent_id , date_created , content_categories.order) VALUES (? , ? , NOW() , '0')");
         $stm->bind_param("ss", $title, $parentId); */
 
-      if ($result["id"])
+      if ($result['data']["id"])
       {
          $content_id = $result["id"];
          $res = array("status" => "success", "message" => "Folder has been added successfully", "data" => ["id" => $content_id, "type" => "folder"]);
          return json_encode($res);
       }
+      return $result;
    }
 
    public function get_category($id)

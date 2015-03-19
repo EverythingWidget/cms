@@ -34,11 +34,14 @@ if (strpos(EW_DIR, $elements[0]))
    $parameter_index = 1;
 }
 
+// Create instance of EWCore class 
+global $EW;
+$EW = new \EWCore();
 
 // Check the language parameter
 $language = "en";
 $default_language = EWCore::read_setting("ew/language");
-//echo $default_language;
+
 if ($default_language)
 {
    $language = $default_language;
@@ -48,6 +51,17 @@ if (preg_match("/^(.{2,3})$/", $elements[$parameter_index], $match))
    $language = $match[0];
    $parameter_index++;
 }
+//echo $_SERVER['REQUEST_URI'];
+// add default language add the end of url if if was not a valid language or specified
+if (!EWCore::$languages[$language] || $parameter_index == 1)
+{
+   //echo $_SERVER['REQUEST_URI'] . '<br/>';
+   $URI = str_replace($root_dir, $root_dir . '/en', $_SERVER['REQUEST_URI']);
+   //echo $URI . 'ff';
+   header('Location: ' . $URI);
+   die();
+}
+
 $_REQUEST["_language"] = $language;
 $url_language = ($language == "en") ? '' : $language . '/';
 // Set the language for the root url
@@ -98,10 +112,6 @@ if (isset($elements[$parameter_index]))
 
    $parameter_index++;
 }
-
-// Create instance of EWCore class 
-global $EW;
-$EW = new \EWCore();
 
 // set default user group if no user group has been spacified
 if (!isset($_SESSION["EW.USERS_GROUP"]))

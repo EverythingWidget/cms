@@ -372,5 +372,43 @@
             "orm",
             "sql"
         ]
+    },
+    {
+        "name": "simple-validator/simple-validator",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/cangelis/simple-validator.git",
+            "reference": "58b8b0e76a83541aaa0c36a7c173ee14935ce42d"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/cangelis/simple-validator/zipball/58b8b0e76a83541aaa0c36a7c173ee14935ce42d",
+            "reference": "58b8b0e76a83541aaa0c36a7c173ee14935ce42d",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.0"
+        },
+        "time": "2014-10-13 13:02:16",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "SimpleValidator\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Can Geliş",
+                "email": "geliscan@gmail.com"
+            }
+        ],
+        "description": "Yet another validation class for PHP"
     }
 ]

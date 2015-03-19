@@ -186,7 +186,7 @@ class WidgetsManagement extends Section
          return json_encode($res);
       }
       $stm = $db->prepare("INSERT INTO ew_ui_structures(name,template,template_settings,structure) VALUES (?,?,?,?)");
-      $stm->bind_param("ssss", $name, $template, stripslashes($template_settings), stripslashes($structure));
+      $stm->bind_param("ssss", $name, $template, ($template_settings), ($structure));
       $stm->execute();
       if ($_REQUEST['defaultUIS'] == "true")
       {
@@ -306,7 +306,7 @@ class WidgetsManagement extends Section
          return json_encode($res);
       }
       $stm = $db->prepare("UPDATE ew_ui_structures SET name = ?, template= ?, template_settings= ?, perview_url = ?, structure = ? WHERE id = ?") or die($db->error);
-      $stm->bind_param("ssssss", $name, $template, stripslashes($template_settings), $perview_url, stripslashes($structure), $uisId);
+      $stm->bind_param("ssssss", $name, $template, ($template_settings), $perview_url, ($structure), $uisId);
       $error = $db->errno;
       if ($stm->execute())
       {
@@ -629,14 +629,14 @@ class WidgetsManagement extends Section
       self::$current_timestamp = strval($timestamp);
       $widget_id = "widget-" . self::$current_timestamp . '-' . self::$ui_index . '-' . self::$widget_index;
       $widget_html = '';
-      $widget_html .=self::open_widget($widget_id, $widget_type, $style_class, $widget_style_class, $style_id, stripslashes($widget_parameters));
+      $widget_html .=self::open_widget($widget_id, $widget_type, $style_class, $widget_style_class, $style_id, ($widget_parameters));
       $widget_html .=self::close_widget();
       /* if (self::get_widget_data_object())
         {
         $widget_data = reset(self::get_widget_data_object());
         } */
       $widget_script = self::get_html_scripts($widget_id);
-      return ["widget_html" => $widget_html, "widget_data" => stripslashes($widget_parameters), "widget_id" => $widget_id, "widget_script" => $widget_script, "widget_style" => ""];
+      return ["widget_html" => $widget_html, "widget_data" => ($widget_parameters), "widget_id" => $widget_id, "widget_script" => $widget_script, "widget_style" => ""];
    }
 
    public function get_widget($widgetId)
@@ -893,13 +893,19 @@ class WidgetsManagement extends Section
 
       while ($rows = $panels->fetch_assoc())
       {
+         
          $res = json_decode(($rows["structure"]), true);
+         //echo json_encode($rows["structure"]);
+         //echo json_decode(stripslashes($rows["structure"]));
          if (json_last_error() != JSON_ERROR_NONE)
          {
             $res = json_decode(stripslashes($rows["structure"]), true);
+            //var_dump(json_last_error_msg() );
          }
+         
       }
       //ob_start();
+      //print_r($rows["structure"]);
       foreach ($res as $key => $value)
       {
          $RESULT_HTML.=self::open_block("panel-" . self::$current_timestamp . "-" . self::$ui_index . "-" . self::$panel_index, "", $value["class"], $value["id"], $value["panelParameters"], FALSE, $value["blockName"]);

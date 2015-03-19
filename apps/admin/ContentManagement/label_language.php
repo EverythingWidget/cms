@@ -10,6 +10,7 @@
       <option value="cmn">Mandarin</option>
       <option value="ar">Arabic</option>
       <option value="fa">فارسی</option>
+      <option value="nl">Dutch</option>
    </select>
 </div>
 <div class="col-xs-12">
@@ -18,7 +19,7 @@
    </ul>
 </div>
 <script>
-   var languages = {en: "English", es: "Spanish", de: "German", ru: "Russian", cmn: "Mandarin", ar: "Arabic", fa: "فارسی"};
+   var languages = {en: "English", es: "Spanish", de: "German", ru: "Russian", cmn: "Mandarin", ar: "Arabic", fa: "فارسی", nl: 'Dutch'};
    $("#<?php echo $key ?>_value").val("<?php echo $value ?>");
    $("#<?php echo $key ?>_select").on("change", function ()
    {
@@ -40,26 +41,27 @@
       }
       $.post("<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/get_content_with_label", {content_id: documentId, key: "<?php echo $key ?>"}, function (data) {
          $("#<?php echo $key ?>_languages").empty();
-         $.each(data['result'], function (i, content)
-         {
-            //$("#<?php echo $key ?>_select option[value='" + content.value + "']").remove();
-            var langItem = $("<li><a rel='ajax' href='#' class='link'>" + languages[content.value] + "<p>" + content["title"] + "</p></a></li>");
-            if (content.id == formData.id)
+         if (data['result'])
+            $.each(data['result'], function (i, content)
             {
-               langItem.addClass("active");
-               $("#<?php echo $key ?>_value").val(content.value);
-            }
-            else
-               langItem.find("a").on("click", function ()
+               //$("#<?php echo $key ?>_select option[value='" + content.value + "']").remove();
+               var langItem = $("<li><a rel='ajax' href='#' class='link'>" + languages[content.value] + "<p>" + content["title"] + "</p></a></li>");
+               if (content.id == formData.id)
                {
-                  $.post("<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/get_article", {articleId: content.id}, function (data)
+                  langItem.addClass("active");
+                  $("#<?php echo $key ?>_value").val(content.value);
+               }
+               else
+                  langItem.find("a").on("click", function ()
                   {
-                     ContentForm.setData(data);
-                     //EW.setHashParameter("articleId", lang.id)
-                  }, "json");
-               });
-            $("#<?php echo $key ?>_languages").append(langItem);
-         });
+                     $.post("<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/get_article", {articleId: content.id}, function (data)
+                     {
+                        ContentForm.setData(data);
+                        //EW.setHashParameter("articleId", lang.id)
+                     }, "json");
+                  });
+               $("#<?php echo $key ?>_languages").append(langItem);
+            });
       }, "json");
    });
 

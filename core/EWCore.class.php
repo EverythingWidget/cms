@@ -20,18 +20,22 @@ class EWCore
    private static $db_connection;
    private $current_method_args;
    public static $DB = null;
+   public static $languages;
 
    public function __construct()
    {
+      static::$languages = include('config/languages.php');
       $this->apps_root = EW_APPS_DIR . '/';
       $this->request = $_REQUEST;
       //$this->registry = array();
       //$this->action_registry = array();
       spl_autoload_register(array($this, 'autoload_sections'));
       spl_autoload_register(array($this, 'autoload_core'));
-      spl_autoload_register(array($this, 'autoload_apps'));
-      $this->load_modules();
+      spl_autoload_register(array($this, 'autoload_apps'));      
+      
       $database_config = include('config/database_config.php');
+      
+      $this->load_modules();
       self::$loaders_installed = true;
       self::init_sections_plugins();
 

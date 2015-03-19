@@ -30,34 +30,35 @@
       {
          ContentForm.activeLabel("admin_ContentManagement_document", true);
          $("#<?php echo $key ?>_value").val('$content.id');
-         $("#<?php echo $key ?>_text").val(formData["title"]).change();         
+         $("#<?php echo $key ?>_text").val(formData["title"]).change();
       }
       $.post("<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/get_content_with_label", {content_id: ContentForm.getLabel("admin_ContentManagement_document"), key: "<?php echo $key ?>"}, function (data) {
          $("#<?php echo $key ?>_attached").empty();
-         $.each(data['result'], function (i, content)
-         {
-            var langItem = $("<li class=''><a rel='ajax' href='#' class='link'>" + content.title + "</a></li>");
-            if (content.id == "<?php echo $value ?>")
+         if (data['result'])
+            $.each(data['result'], function (i, content)
             {
-               $("#<?php echo $key ?>_value").val(content.id);
-               $("#<?php echo $key ?>_text").val(content.title).change();
-            }
-            if (content.id == formData.id)
-            {
-               langItem.addClass("active");
-               //$("#<?php echo $key ?>_value").val(formData["id"]);
-               //$("#<?php echo $key ?>_text").val(formData["title"]).change();
-            }
-            else
-               langItem.find("a").on("click", function ()
+               var langItem = $("<li class=''><a rel='ajax' href='#' class='link'>" + content.title + "</a></li>");
+               if (content.id == "<?php echo $value ?>")
                {
-                  $.post("<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/get_article", {articleId: content.id}, function (data)
+                  $("#<?php echo $key ?>_value").val(content.id);
+                  $("#<?php echo $key ?>_text").val(content.title).change();
+               }
+               if (content.id == formData.id)
+               {
+                  langItem.addClass("active");
+                  //$("#<?php echo $key ?>_value").val(formData["id"]);
+                  //$("#<?php echo $key ?>_text").val(formData["title"]).change();
+               }
+               else
+                  langItem.find("a").on("click", function ()
                   {
-                     ContentForm.setData(data);
-                  }, "json");
-               });
-            $("#<?php echo $key ?>_attached").append(langItem);
-         });
+                     $.post("<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/get_article", {articleId: content.id}, function (data)
+                     {
+                        ContentForm.setData(data);
+                     }, "json");
+                  });
+               $("#<?php echo $key ?>_attached").append(langItem);
+            });
       }, "json");
    });
 </script>

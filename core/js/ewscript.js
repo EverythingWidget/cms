@@ -617,7 +617,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
             if (!originElement || !$.contains(document, originElement[0]))
             {
                animationDiv.text("");
-               animationDiv.delay(30).animate({top: "+=10%", left: "+=10%", width: "-=20%", height: "-=20%", opacity: 0 /*, lineHeight: ce.outerHeight() + "px"*/}, 360, "Power2.easeOut", function () {
+               animationDiv.delay(30).animate({top: "+=5%", left: "+=5%", width: "-=10%", height: "-=10%", opacity: 0}, 360, "Power1.easeOut", function () {
                   if (originElement)
                      originElement.css("visibility", "");
                   animationDiv.remove();

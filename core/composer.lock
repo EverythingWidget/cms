@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "2e25880728da5646984bdd530f2b2afc",
+    "hash": "0ae911309b664045ec53e505759b9b10",
     "packages": [
         {
             "name": "danielstjules/stringy",
@@ -365,12 +365,50 @@
                 "time"
             ],
             "time": "2015-03-08 14:05:44"
+        },
+        {
+            "name": "simple-validator/simple-validator",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/cangelis/simple-validator.git",
+                "reference": "58b8b0e76a83541aaa0c36a7c173ee14935ce42d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/cangelis/simple-validator/zipball/58b8b0e76a83541aaa0c36a7c173ee14935ce42d",
+                "reference": "58b8b0e76a83541aaa0c36a7c173ee14935ce42d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "SimpleValidator\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Can Geliş",
+                    "email": "geliscan@gmail.com"
+                }
+            ],
+            "description": "Yet another validation class for PHP",
+            "time": "2014-10-13 13:02:16"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "simple-validator/simple-validator": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
