@@ -80,7 +80,7 @@
       var pId = 0;
       var hasNode = false;
       $("#categories-list").html("<div class='col-xs-12'><h2 >Loading Folders</h2></div>");
-      $.post('<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/get_categories_list', {parent_id: documents.parentId}, function (data)
+      $.post('app-admin/ContentManagement/get_categories_list', {parent_id: documents.parentId}, function (data)
       {
          $("#categories-list").html("<h2 id='cate-title'>tr{Folders}</h2><div class='row box-content'></div>");
          //$("#cate-title").loadingText();
@@ -104,7 +104,7 @@
          }
       }, "json");
       $("#articles-list").html("<div class='col-xs-12'><h2>Loading Article</h2></div>");
-      $.post('<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/get_articles_list', {parent_id: documents.parentId}, function (data)
+      $.post('app-admin/ContentManagement/get_articles_list', {parent_id: documents.parentId}, function (data)
       {
          $("#articles-list").html("<h2>tr{Articles}</h2><div class='row box-content'></div>");
          var aId = EW.getHashParameter("articleId");

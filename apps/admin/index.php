@@ -38,7 +38,7 @@ if (!isset($_SESSION['login']))
          //var EW = new EverythingWidgets();
          EverythingWidgets.prototype.loadSections = function ()
          {
-            $.post('<?php echo EW_ROOT_URL; ?>app-admin/AppsManagement/get_app_sections', {appDir: "admin"}, function (data)
+            $.get('app-admin/AppsManagement/get_app_sections', {appDir: "admin"}, function (data)
             {
                var items = [];
                $.each(data, function (key, val) {

@@ -1,9 +1,9 @@
+<IfModule mod_rewrite.c>
 RewriteEngine On
 
 RewriteCond %{REQUEST_URI} \.(.{2,4})$
 RewriteCond %{REQUEST_URI} !\.(php)$
 RewriteRule ^(.{2,3})?/(.*) /EverythingWidget/$2 [L]
-
 
 RewriteCond %{REQUEST_URI} \.(.{2,4})$
 RewriteCond %{REQUEST_URI} !\.(php)$
@@ -23,6 +23,4 @@ RewriteRule ^(.*)$ /EverythingWidget/index.php/$1 [L]
 
 FallbackResource /EverythingWidget/index.php
 
-
-
-
+</IfModule>

@@ -59,7 +59,7 @@ class AppsManagement extends Section
                $sections[] = array("title" => "tr:$appDir" . "{" . $sc->get_title() . "}", "className" => $class_name, "description" => "tr:$appDir" . "{" . $sc->get_description() . "}");
          }
       }
-      return json_encode($sections);
+      return ($sections);
    }
 
    /**

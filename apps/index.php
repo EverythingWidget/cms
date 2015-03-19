@@ -51,22 +51,13 @@ if (preg_match("/^(.{2,3})$/", $elements[$parameter_index], $match))
    $language = $match[0];
    $parameter_index++;
 }
-//echo $_SERVER['REQUEST_URI'];
-// add default language add the end of url if if was not a valid language or specified
-if (!EWCore::$languages[$language] || $parameter_index == 1)
-{
-   //echo $_SERVER['REQUEST_URI'] . '<br/>';
-   $URI = str_replace($root_dir, $root_dir . '/en', $_SERVER['REQUEST_URI']);
-   //echo $URI . 'ff';
-   header('Location: ' . $URI);
-   die();
-}
+
 
 $_REQUEST["_language"] = $language;
 $url_language = ($language == "en") ? '' : $language . '/';
 // Set the language for the root url
 define('EW_ROOT_URL', 'http://' . $_SERVER['SERVER_NAME'] . EW_DIR_URL . $url_language);
-
+//define('ROOT_URL', EW_DIR_URL . $url_language);
 // Check the app parameter
 $app_name = "webroot";
 if (preg_match("/^app-([^\/]*)$/", $elements[$parameter_index], $match))
