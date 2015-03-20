@@ -226,7 +226,7 @@ $container_id = $_REQUEST["containerId"];
          var block = $("<div></div>");
          block.prop("id", $("#style_id").val());
          block.attr("data-panel-parameters", params);
-         block.prop("class", "panel block row " + $("#used-classes").text());
+         block.prop("class", "panel row " + $("#used-classes").text());
          $("#fr").contents().find("body #base-content-pane").append(block);
       }
       else

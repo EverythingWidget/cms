@@ -34,10 +34,6 @@ if (strpos(EW_DIR, $elements[0]))
    $parameter_index = 1;
 }
 
-// Create instance of EWCore class 
-global $EW;
-$EW = new \EWCore();
-
 // Check the language parameter
 $language = "en";
 $default_language = EWCore::read_setting("ew/language");
@@ -49,15 +45,17 @@ if ($default_language)
 if (preg_match("/^(.{2,3})$/", $elements[$parameter_index], $match))
 {
    $language = $match[0];
+   $_REQUEST["_url_language"] = $language;
    $parameter_index++;
 }
 
-
 $_REQUEST["_language"] = $language;
+
 $url_language = ($language == "en") ? '' : $language . '/';
 // Set the language for the root url
-define('EW_ROOT_URL', 'http://' . $_SERVER['SERVER_NAME'] . EW_DIR_URL . $url_language);
-//define('ROOT_URL', EW_DIR_URL . $url_language);
+$u = 'http://' . $_SERVER['SERVER_NAME'] . EW_DIR_URL . $url_language;
+define('EW_ROOT_URL', $u);
+
 // Check the app parameter
 $app_name = "webroot";
 if (preg_match("/^app-([^\/]*)$/", $elements[$parameter_index], $match))
@@ -79,7 +77,6 @@ if ($elements[$parameter_index] == 'asset')
 $section_name = null;
 if (isset($elements[$parameter_index]) && preg_match("/^([^\.]*)$/", $elements[$parameter_index], $match))
 {
-   //echo "asdsad::::".$elements[$parameter_index];
    $section_name = $elements[$parameter_index];
    $_REQUEST["_section_name"] = $section_name;
 
@@ -103,6 +100,9 @@ if (isset($elements[$parameter_index]))
 
    $parameter_index++;
 }
+// Create instance of EWCore class 
+global $EW;
+$EW = new \EWCore();
 
 // set default user group if no user group has been spacified
 if (!isset($_SESSION["EW.USERS_GROUP"]))

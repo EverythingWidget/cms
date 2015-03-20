@@ -524,7 +524,7 @@ class WidgetsManagement extends Section
          require_once EW_TEMPLATES_DIR . "/blocks/" . $block_name . ".php";
          $block_name::initiate();
       }
-      $result_html.= "<div class='panel block $style_class'  $style_id_text  data-panel-id=\"$panel_id\"  $container_id  $style data-panel-parameters='" . stripcslashes($param_json) . "' data-block='true'>";
+      $result_html.= "<div class='block $style_class'  $style_id_text  data-panel-id=\"$panel_id\"  $container_id  $style data-panel-parameters='" . stripcslashes($param_json) . "' data-block='true'>";
       /* if ($parameters["title"] && $parameters["title"] != "none")
         {
         $result_html.= "<div class='col-xs-12 panel-header'><{$parameters["title"]}>" . $parameters["title-text"] . "</{$parameters["title"]}></div>";

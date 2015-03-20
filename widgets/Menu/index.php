@@ -1,8 +1,9 @@
 <?php
 session_start();
 $language = '';
-if ($_REQUEST["_language"] != 'en')
+if ($_REQUEST["_url_language"] || $_REQUEST["_language"] != 'en')
    $language = $_REQUEST["_language"] . '/';
+//echo $language;
 $titles = $widget_parameters["title"];
 $links = $widget_parameters["feeder"];
 $icnons = $widget_parameters["title"];
@@ -18,7 +19,11 @@ $icnons = $widget_parameters["title"];
 
          if ($link["type"] == "link")
          {
-            $linkURL = EW_DIR_URL . $link["url"];
+            //echo EWCore::$languages['en'];
+            if (!EWCore::$languages[str_replace('/', '', $link["url"])])
+               $linkURL = EW_DIR_URL . $language . $link["url"];
+            else
+               $linkURL = EW_DIR_URL . $link["url"];
          }
          else if ($link["type"] == "widget-feeder")
          {
@@ -34,11 +39,15 @@ $icnons = $widget_parameters["title"];
          {
             $linkURL = EW_DIR_URL . $language;
          }
+         $link_requlare_expression_ready = preg_quote($linkURL, '/');
+         $pattern = "/$link_requlare_expression_ready(.*)/";
+         //echo $link_requlare_expression_ready;
+         preg_match($pattern, $_SERVER['REQUEST_URI'] . '.', $match);
+         $active = ($match) ? "active" : "";
 
-         $active = ($linkURL == $_SERVER["REQUEST_URI"]) ? "active" : "";
          // Menu
-
          echo "<li class='$active'><a href='{$linkURL}'>" . $titles[$i] . "</a>";
+
          // Sub menu if exist
          if ($sub_menus)
          {

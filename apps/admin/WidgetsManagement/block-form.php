@@ -181,7 +181,7 @@ $name = $_REQUEST["name"];
          this.blockHTML.prop("id", $("#style_id").val());
          this.blockHTML.attr("data-panel-parameters", params);
          this.blockHTML.attr("data-block-name", "<?php echo $block_class_name; ?>");
-         this.blockHTML.prop("class", "panel block row " + $("#used-classes").text());
+         this.blockHTML.prop("class", "block row " + $("#used-classes").text());
          if ($("#fr").contents().find("body [base-content-pane]").length)
             $("#fr").contents().find("body [base-content-pane]").append(this.blockHTML);
          else

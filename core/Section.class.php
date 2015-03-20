@@ -339,8 +339,10 @@ class Section
     * @param type $id
     * @param type $function_name Name of the fucntion without the prefix
     */
-   public function register_widget_feeder($type, $id, $function_name)
+   public function register_widget_feeder($type, $id, $function_name = null)
    {
+      if (!$function_name)
+         $function_name = $id;
       //$ro = new ReflectionClass($this);
       //$app = $this->app->get_root();
       //EWCore::register_object("ew-widget-feeder", "$type:$app", array($this, "ew_" . $type . "_feeder_" . $function_name));

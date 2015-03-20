@@ -70,8 +70,9 @@ class ContentManagement extends \Section
           "album-form.php:tr{New Album}"));
       $this->register_content_label("document", ["title" => "Document", "description" => "Attach this content to other content", "type" => "data_url", "value" => "app-admin/ContentManagement/get_articles_llist"]);
       $this->register_content_label("language", ["title" => "Language", "description" => "Language of the content"]);
-      $this->register_widget_feeder("page", "article", "article");
-      $this->register_widget_feeder("list", "folder", "folder");
+      $this->register_widget_feeder("page", "article");
+      $this->register_widget_feeder("list", "folder");
+      $this->register_widget_feeder("menu", "languages");
    }
 
    public function ew_label_document($key, $value, $data, $form_id)
@@ -222,7 +223,7 @@ class ContentManagement extends \Section
       if (preg_match('/\$content\.(\w*)/', $content_id))
          return [];
       if (!$content_id)
-         return json_encode([]);
+         return null;
       if (!$value)
          $value = '%';
 
@@ -349,17 +350,20 @@ class ContentManagement extends \Section
 
    public function ew_page_feeder_article($id, $language)
    {
-      //echo $language;
+
       $articles = $this->get_content_with_label($id, "admin_ContentManagement_language", $language);
       $article = [];
-      //print_r($articles);
+      //echo count($articles['result']);
       if ($articles)
+      {
          $article = $articles["result"][0];
-      $result["html"] = "WIDGET_DATA_MODEL";
-      $result["title"] = $article['title'];
-      $result["content"] = $article['content'];
-      //print_r($articles);
-      return json_encode($result);
+         $result["html"] = "WIDGET_DATA_MODEL";
+         $result["title"] = $article['title'];
+         $result["content"] = $article['content'];
+         return json_encode($result);
+      }
+
+      return NULL;
    }
 
    public function ew_list_feeder_folder($id, $token = 0, $size)
@@ -376,6 +380,22 @@ class ContentManagement extends \Section
       }
       //print_r($language);
       return json_encode($result);
+   }
+
+   public function ew_menu_feeder_languages($id, $token = 0, $size)
+   {
+      if (!$token)
+         $token = 0;
+      if (!$size)
+         $size = 30;
+      /* $articles = $this->get_articles_list($id, $token, $size);
+        $result["num_rows"] = $articles["totalRows"];
+        foreach ($articles["result"] as $article)
+        {
+        $result["items"][] = ["html" => "{$article["content"]}"];
+        }
+        //print_r($language);
+        return json_encode($result); */
    }
 
    public function get_article($articleId)

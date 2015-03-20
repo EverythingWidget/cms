@@ -347,7 +347,7 @@ session_start();
       {
          v = $(v);
          var div = $("<div></div>");
-         if (v.hasClass("panel"))
+         if (v.hasClass("panel") || v.hasClass("block"))
          {
             var liUl = $("<li><div><a href='#' class='item-label'><img src='./templates/default/panel-icon.png' class='handle'/></a><a href='#' class='btn btn-primary add-item'>Add</a><a href='#' class='close-icon' ></a></div></li>");
             liUl.attr("data-linked-panel-id", v.attr("data-panel-id"));
