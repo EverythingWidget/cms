@@ -1,10 +1,5 @@
 RewriteEngine On
 
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_URI} !asset
-RewriteCond %{REQUEST_URI} !(.*)/$
-RewriteRule ^(.*)$ /EverythingWidget/$1/ [L]
-
 RewriteCond %{REQUEST_URI} \.(.{2,4})$
 RewriteCond %{REQUEST_URI} !\.(php)$
 RewriteRule ^(.{2,3})?/(.*) /EverythingWidget/$2 [L]
@@ -15,19 +10,14 @@ RewriteCond %{REQUEST_URI} !asset
 #RewriteCond %{REQUEST_FILENAME} -f
 RewriteRule ^(app-)?(.*) $2 [L]
 
-
-
 # Removes index.php from ExpressionEngine URLs
 RewriteCond %{THE_REQUEST} ^GET.*index\.php [NC]
 RewriteCond %{REQUEST_URI} !/system/.* [NC]
-RewriteRule (.*?)index\.php/*(.*) /EverythingWidget/$1$2 [NE,L]
+RewriteRule (.*?)index\.php/*(.*) /EverythingWidget/$1$2 [R=301,NE,L]
 # Directs all EE web requests through the site index file
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_URI} !asset
 RewriteRule ^(.*)$ /EverythingWidget/index.php/$1 [L]
 
-
-
 FallbackResource /EverythingWidget/index.php
-
