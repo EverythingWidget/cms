@@ -1453,7 +1453,7 @@ EWTable.prototype.read = function (customURLData)
          self.table.empty();
          self.next.css('visibility', 'hidden');
          self.previous.css('visibility', 'hidden');
-         self.container.replaceWith("<div class='box box-error'><label class='value'>" + o.responseJSON.message + "</label></div>");
+         self.container.replaceWith("<div class='box box-error'><h2>"+o.responseJSON.statusCode+"</h2>" + o.responseJSON.message + "</div>");
          EW.customAjaxErrorHandler = true;
       }
    });

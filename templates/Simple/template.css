@@ -23,4 +23,10 @@ html,body{font-family: 'Raleway', sans-serif;padding:0px;font-size:1.2em;}
 .menu-bar li.active a,.menu-bar a.active{border-color:#222;}
 .menu-bar a{display:block;padding:5px 15px;line-height:30px;border-radius:22px;border:2px solid transparent;color:#222;}
 .menu-bar a:hover{background-color:#ddd;}
+
 .widget.list{}
+.list ul{list-style:none;padding:0px;margin:0px;}
+.list li{display:block;}
+.list a{display:block;line-height:30px;padding:5px 10px;margin-bottom:5px;color:#006699;border-radius:2px;}
+.list li:last-child a{margin-bottom:0px;}
+.list a:hover{background-color:#96dfff}

@@ -56,7 +56,7 @@ $view_data = [];
          {
             //http_response_code(200);
             header('Content-Type: text/html');
-            $compPage = "<div class='box box-error'>{$temp["message"]}</div>";
+            $compPage = "<div class='box box-error'><h2>{$temp["statusCode"]}</h2>{$temp["message"]}</div>";
          }
          $pageTitle = "tr{{$sc->get_title()}}";
       }

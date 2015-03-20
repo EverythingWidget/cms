@@ -406,7 +406,7 @@
 
          if ((k == KEY.UP || k == KEY.DOWN) && !$.data(this, "typingTimeout"))
          {
-            startTypingTimeout(e, this);
+            //startTypingTimeout(e, this);
          }
          else if (k == KEY.BS || k == KEY.DEL)
          {
@@ -440,31 +440,32 @@
             }
          }, 100);
          self.attr("autocomplete", "off")
-                 .keydown(handleKeyDownUp)
-                 .keyup(handleKeyDownUp)
-                 .keypress(function (e) {
+                 //.keydown(handleKeyDownUp)
+                 //.keyup(handleKeyDownUp)
+                 .keydown(function (e) {
                     var typingTimeout = $.data(this, "typingTimeout");
                     var k = e.keyCode || e.which; // keyCode == 0 in Gecko/FF on keypress
-                    if (typingTimeout)
+                    if ((k == KEY.UP || k == KEY.DOWN) && !$.data(this, "typingTimeout"))
                     {
-                       $.data(this, "typingTimeout", false);
-                       //window.clearInterval(typingTimeout);
+                       return;
+                    }
+                    else if (k == KEY.BS || k == KEY.DEL || k != KEY.RETURN)
+                    {
+                       if (typingTimeout)
+                       {
+                          $.data(this, "typingTimeout", false);
+                          //window.clearInterval(typingTimeout);
+                       }
+                       startTypingTimeout(e, this);
+                    }
+                    else
+                    {
+                       preventTabInAutocompleteMode(e);
                     }
 
                     if ($.data(document.body, "suppressKey"))
                     {
                        $.data(document.body, "suppressKey", false);
-                       //handleKeyDownUp(e)
-
-                    }
-                    if ($.data(document.body, "autocompleteMode") && k < 32 && k != KEY.BS && k != KEY.DEL)
-                    {
-                       return false;
-
-                    }
-                    else //if (k == KEY.BS || k == KEY.DEL || k > 32)
-                    { // more than ESC and RETURN and the like
-                       startTypingTimeout(e, this);
                     }
 
                  })
@@ -506,7 +507,8 @@
       });
 
       $("body").bind("activate.autocomplete", function (e) {
-         console.log('activate');
+
+         //console.log('activate');
          // Try hitting return to activate autocomplete and then hitting it again on blank input
          // to close it.  w/o checking the active object first this input.triggerHandler() will barf.
          if (active.length) {
@@ -525,7 +527,10 @@
       });
 
       $("body").one("off.autocomplete", function (e, reset) {
+         //alert('f');
+         $.data(input, "typingTimeout", false);
          opt.dismissList(container);
+
          $.data(document.body, "autocompleteMode", false);
          input.unbind("keydown.autocomplete");
          $("body").add(window)
