@@ -33,3 +33,5 @@ html,body{font-family: 'Raleway', sans-serif;padding:0px;font-size:1.2em;}
 .list li:last-child a{margin-bottom:0px;}
 .list a:hover{background-color:#cff6ff}
 .list .active a{font-weight:bold;}
+
+.widget.image img{display:block;width:100%;margin:15px 0px;box-shadow:0px 2px 3px rgba(0,0,0,.2);}

@@ -515,20 +515,6 @@ class ContentManagement extends \Section
                       ->orderBy('title')->take($size)->skip($token)->get($id, ['*', \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
       //print_r($contents);
       return ["totalRows" => $contents->count(), "result" => $contents->toArray()];
-      /* $totalRows = $db->query("SELECT COUNT(*)  FROM ew_contents WHERE  title LIKE '$title_filter%' AND type LIKE '$type'") or die($db->error);
-        $totalRows = $totalRows->fetch_assoc();
-        $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%d-%m-%Y') AS 'date_created' FROM ew_contents WHERE title COLLATE UTF8_GENERAL_CI LIKE '$title_filter%' AND type LIKE '$type' ORDER BY title  LIMIT $token,$size") or die($db->error);
-
-        //$out = array();
-        $rows = array();
-
-        while ($r = $result->fetch_assoc())
-        {
-        $rows[] = $r;
-        }
-        $db->close();
-        $out = array("totalRows" => $totalRows['COUNT(*)'], "result" => $rows);
-        return json_encode($out); */
    }
 
    public function add_category($title, $parent_id, $keywords, $description, $labels)
@@ -566,23 +552,6 @@ class ContentManagement extends \Section
       if ($rows = $result->fetch_assoc())
       {
          $db->close();
-         //$actions = EWCore::read_actions_registry("ew-category-action-get");
-         /* try
-           {
-           foreach ($actions as $id => $data)
-           {
-           if (method_exists($data["class"], $data["function"]))
-           {
-           $func_result = call_user_func(array($data["class"], $data["function"]), $rows);
-           if ($func_result)
-           $rows = $func_result;
-           }
-           }
-           }
-           catch (Exception $e)
-           {
-
-           } */
          return json_encode($rows);
       }
    }
@@ -821,19 +790,6 @@ class ContentManagement extends \Section
 
       try
       {
-
-         //$dir_contents = opendir($root . $path);
-         /* if (!is_dir($root . $path . '.thumbs/'))
-           {
-           mkdir($root . $path . '.thumbs/');
-           } */
-
-         /* $result = $db->query("SELECT parent_id FROM ew_contents WHERE id = '$parent_id'") or die("safasfasf");
-           while ($r = $result->fetch_assoc())
-           {
-           $container_id = $r["parent_id"];
-           } */
-
          $files = array();
          // Folder
          $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents WHERE type = 'album' AND parent_id = '$parent_id' ORDER BY title") or die("safasfasf");

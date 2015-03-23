@@ -36,11 +36,7 @@ if (!$_SESSION['login'])
          EW.setHashParameter("parentId", null);
       }, {float: "right", display: "none"}, "action-bar-items");
       this.bNewAlbum = EW.addActivity({title: "tr{New Album}", activity: "app-admin/ContentManagement/album-form.php", parent: "action-bar-items"}).hide();
-      this.bUploadFile = EW.addActivity({title: "tr{Upload Photo}", activity: "app-admin/ContentManagement/upload-form.php", parent: "action-bar-items",
-         hash: function ()
-         {
-            return {albumId: self.parentId}
-         }
+      this.bUploadFile = EW.addActivity({title: "tr{Upload Photo}", activity: "app-admin/ContentManagement/upload-form.php", parent: "action-bar-items"
       });
       this.seeAlbumActivity = EW.getActivity({activity: "app-admin/ContentManagement/album-form.php_see"});
       //this.seeArticleActivity = EW.getActivity({activity: "app-admin/ContentManagement/article-form.php_see"});
