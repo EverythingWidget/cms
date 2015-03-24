@@ -157,11 +157,12 @@ class App
    {
       return $this->get_root() . '/' . $path;
    }
-   
-   public function load_view($path,$view_data)
+
+   public function load_view($path, $view_data)
    {
-      extract($view_data);
-      $path= $this->get_root() . '/' . $path;
+      if ($view_data)
+         extract($view_data);
+      $path = $this->get_root() . '/' . $path;
       include $path;
    }
 

@@ -560,11 +560,11 @@ session_start();
       var panelIndex = 1;
       var widgetIndex = 1;
 
-      $.each(parentNode.find(".panel,.widget"), function (i, e)
+      $.each(parentNode.find(".block,.panel,.widget"), function (i, e)
       {
          e = $(e)
          //console.log(e.attr("data-panel-id"));
-         if (e.is(".panel"))
+         if (e.is(".panel") || e.is(".block"))
          {
             if (!e.attr("data-panel-id"))
                e.attr("data-panel-id", "panel-" + panelIndex);

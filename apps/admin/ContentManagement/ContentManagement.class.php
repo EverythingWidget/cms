@@ -388,14 +388,13 @@ class ContentManagement extends \Section
          $token = 0;
       if (!$size)
          $size = 30;
-      /* $articles = $this->get_articles_list($id, $token, $size);
-        $result["num_rows"] = $articles["totalRows"];
-        foreach ($articles["result"] as $article)
-        {
-        $result["items"][] = ["html" => "{$article["content"]}"];
-        }
-        //print_r($language);
-        return json_encode($result); */
+
+      return ['title' => ['link' => '', 'icon' => '']];
+   }
+   
+   public function ew_menu_feeder_cp_languages($parameters)
+   {
+      //$this->v
    }
 
    public function get_article($articleId)
@@ -1068,9 +1067,7 @@ class ContentManagement extends \Section
                }
 
                $this->create_image_thumb($foo->file_dst_pathname, 140);
-               $succeed++;
-               $stm->close();
-               $db->close();
+               $succeed++;  
             }
             else
             {

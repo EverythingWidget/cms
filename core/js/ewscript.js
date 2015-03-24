@@ -21,6 +21,7 @@ $.fn.serializeJSON = function ()
    {
       return null;
    }
+
    return JSON.stringify(o);
 };
 
@@ -1453,7 +1454,7 @@ EWTable.prototype.read = function (customURLData)
          self.table.empty();
          self.next.css('visibility', 'hidden');
          self.previous.css('visibility', 'hidden');
-         self.container.replaceWith("<div class='box box-error'><h2>"+o.responseJSON.statusCode+"</h2>" + o.responseJSON.message + "</div>");
+         self.container.replaceWith("<div class='box box-error'><h2>" + o.responseJSON.statusCode + "</h2>" + o.responseJSON.message + "</div>");
          EW.customAjaxErrorHandler = true;
       }
    });
@@ -1974,42 +1975,48 @@ function ExtendableList(element, cSettings)
    var oneValue = false;
    var items = new Array();
    var ci = null;
+   ci = base.createItem();
+   //alert(v[i]);
    //alert(JSON.stringify(this.settings.value));
    $.each(this.settings.value, function (k, v)
    {
-//      alert(k+" "+typeof (v));
-      if (typeof (v) != "object")
+      if (ci.find("input[name='" + k + "']").length > 0)
       {
-         if (!oneValue)
+         //console.log(ci.find("input[name='" + k + "']").length);
+         if (typeof (v) != "object")
          {
-            ci = base.createItem();
-            oneValue = true;
-            //init = true;
-            items.push(ci);
-         }
-
-         ci.find("input[name='" + k + "']").val(v).change();
-      }
-
-      if (!oneValue)
-      {
-         if (!init)
-         {
-            // Create the list and set the value for the first key
-            for (var i = 0; i < v.length; i++)
+            if (!oneValue)
             {
                ci = base.createItem();
-               ci.find(":input[name='" + k + "']").val(v[i]).change();
+               oneValue = true;
+               //init = true;
                items.push(ci);
-               init = true;
             }
+
+            ci.find("input[name='" + k + "']").val(v).change();
          }
-         else
+
+         if (!oneValue)
          {
-            // Set the value for the other keys
-            for (var i = 0; i < v.length; i++)
+            if (!init)
             {
-               items[i].find(":input[name='" + k + "']").val(v[i]).change();
+               // Create the list and set the value for the first key
+               for (var i = 0; i < v.length; i++)
+               {
+                  //alert(k+" "+typeof (v));
+                  ci = base.createItem();
+                  ci.find(":input[name='" + k + "']").val(v[i]).change();
+                  items.push(ci);
+                  init = true;
+               }
+            }
+            else
+            {
+               // Set the value for the other keys
+               for (var i = 0; i < v.length; i++)
+               {
+                  items[i].find(":input[name='" + k + "']").val(v[i]).change();
+               }
             }
          }
       }

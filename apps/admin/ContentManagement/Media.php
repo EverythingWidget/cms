@@ -35,14 +35,14 @@ if (!$_SESSION['login'])
          var preParentId = EW.getHashParameter("preParentId");
          EW.setHashParameter("parentId", null);
       }, {float: "right", display: "none"}, "action-bar-items");
-      this.bNewAlbum = EW.addActivity({title: "tr{New Album}", activity: "app-admin/ContentManagement/album-form.php", parent: "action-bar-items"}).hide();
-      this.bUploadFile = EW.addActivity({title: "tr{Upload Photo}", activity: "app-admin/ContentManagement/upload-form.php", parent: "action-bar-items"
+      this.bNewAlbum = EW.addActivity({title: "tr{New Album}", activity: "app-admin/ContentManagement/album-form.php"}).hide();
+      this.bUploadFile = EW.addActivity({title: "tr{Upload Photo}", activity: "app-admin/ContentManagement/upload-form.php"
       });
       this.seeAlbumActivity = EW.getActivity({activity: "app-admin/ContentManagement/album-form.php_see"});
       //this.seeArticleActivity = EW.getActivity({activity: "app-admin/ContentManagement/article-form.php_see"});
 
       if (this.seeAlbumActivity)
-         this.bSee = EW.addAction("tr{See}", $.proxy(this.seeDetails, this), null, "action-bar-items").hide();
+         this.bSee = EW.addAction("tr{See}", $.proxy(this.seeDetails, this)).hide();
       else
          this.bSee = $();
       this.bDel = $();

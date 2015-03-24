@@ -261,17 +261,19 @@ class WidgetsManagement extends Section
       return $file;
    }
 
-   public function clone_uis($id = null)
+   public function clone_uis($uisId = null)
    {
       $db = \EWCore::get_db_connection();
       $table = "ew_ui_structures";
 
       // load the original record into an array
-      $result = $db->query("SELECT * FROM {$table} WHERE id={$id}");
+      $result = $db->query("SELECT * FROM $table WHERE id=$uisId");
+      //print_r($id);
       $original_record = $result->fetch_assoc();
       $name = $original_record["name"] . " - clone";
       $template = $original_record["template"];
-      $structure = $original_record["structure"];
+      $template_settings = $original_record["template_settings"];
+      $structure = ($original_record["structure"]);
       //$this->add_uis($name);
       // insert the new record and get the new auto_increment id
       /* $db->query("INSERT INTO {$table} (`{$id_field}`) VALUES (NULL)");
@@ -291,7 +293,7 @@ class WidgetsManagement extends Section
         $db->query($query); */
 
       // return the new id
-      $res = $this->add_uis($name, $template, $structure);
+      $res = $this->add_uis($name, $template, $template_settings, $structure);
       return $res;
    }
 
@@ -893,7 +895,7 @@ class WidgetsManagement extends Section
 
       while ($rows = $panels->fetch_assoc())
       {
-         
+
          $res = json_decode(($rows["structure"]), true);
          //echo json_encode($rows["structure"]);
          //echo json_decode(stripslashes($rows["structure"]));
@@ -902,7 +904,6 @@ class WidgetsManagement extends Section
             $res = json_decode(stripslashes($rows["structure"]), true);
             //var_dump(json_last_error_msg() );
          }
-         
       }
       //ob_start();
       //print_r($rows["structure"]);

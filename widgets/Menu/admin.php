@@ -5,8 +5,13 @@
  * feeder_type: menu
  */
 ?>
+<div class="row mar-top">
+   <div class="col-xs-12 ">      
+      <input class="text-field" name="feeder" id="feeder" data-label="Default Content" data-ew-plugin="link-chooser" >    
+   </div>
+</div>
 <div class="row">
-   <div class="col-xs-12">
+   <div class="col-xs-12 ">      
       <ul id="menu" class="list arrangeable">
          <li class="" style="">
             <div class="wrapper">
@@ -16,7 +21,7 @@
                      <input class="text-field floatlabel" data-label='Menu Tile' name="title"/>  
                   </div>
                   <div class="col-xs-12 col-md-6" >
-                     <input class="text-field test" data-label='Link' data-ew-plugin="link-chooser" name="feeder"/>
+                     <input class="text-field test" data-label='Link' data-ew-plugin="link-chooser" name="link"/>
                   </div>
                </div>      
                <div class="row">
@@ -29,6 +34,7 @@
       </ul>
    </div>
 </div>
+
 <script>
 
    $("#menu").EW().dynamicList({

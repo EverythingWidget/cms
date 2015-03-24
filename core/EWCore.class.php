@@ -31,10 +31,10 @@ class EWCore
       //$this->action_registry = array();
       spl_autoload_register(array($this, 'autoload_sections'));
       spl_autoload_register(array($this, 'autoload_core'));
-      spl_autoload_register(array($this, 'autoload_apps'));      
-      
+      spl_autoload_register(array($this, 'autoload_apps'));
+
       $database_config = include('config/database_config.php');
-      
+
       $this->load_modules();
       self::$loaders_installed = true;
       self::init_sections_plugins();
@@ -169,34 +169,34 @@ class EWCore
             //$RESULT_CONTENT = $app_section_object->process_request($function_name, $parameters);
             $RESULT_CONTENT = $app_object->process_command($section_name, $function_name, $parameters);
          }
-         /*else if (EWCore::is_widget_feeder("page", "*", $section_name))
-         {
-            // Show index if the URL contains a page feeder
-            $path = EW_APPS_DIR . '/' . $app_name . '/index.php';
-         }
-         else if (!$section_name)
-         {
-            // Refer to app index
-            $path = EW_APPS_DIR . '/' . $app_name . '/' . $function_name;
-         }
-         else
-         {
+         /* else if (EWCore::is_widget_feeder("page", "*", $section_name))
+           {
+           // Show index if the URL contains a page feeder
+           $path = EW_APPS_DIR . '/' . $app_name . '/index.php';
+           }
+           else if (!$section_name)
+           {
+           // Refer to app index
+           $path = EW_APPS_DIR . '/' . $app_name . '/' . $function_name;
+           }
+           else
+           {
 
-            // Refer to app section index
-            $path = EW_APPS_DIR . '/' . $app_name . '/' . $section_name . '/' . $function_name;
-         }*/
+           // Refer to app section index
+           $path = EW_APPS_DIR . '/' . $app_name . '/' . $section_name . '/' . $function_name;
+           } */
       }
 
-      /*if ($path && file_exists($path))
-      {
-         ob_start();
-         include $path;
-         $RESULT_CONTENT = ob_get_clean();
-      }
-      else if ($path)
-      {
-         $RESULT_CONTENT = EWCore::log_error(404, "<h4>{$path}</h4><p>EWCore: FILE NOT FOUND</p>");
-      }*/
+      /* if ($path && file_exists($path))
+        {
+        ob_start();
+        include $path;
+        $RESULT_CONTENT = ob_get_clean();
+        }
+        else if ($path)
+        {
+        $RESULT_CONTENT = EWCore::log_error(404, "<h4>{$path}</h4><p>EWCore: FILE NOT FOUND</p>");
+        } */
       // Call ew command listeners
       //echo is_array($RESULT_CONTENT);
       $actions = EWCore::read_registry("ew_command_listener");
@@ -1277,7 +1277,7 @@ class EWCore
 
 //Match any and all selectors (and pseudos)
       //$pattern_two = '/[\.|#][\. \w-]+[:[\w]+]?/';
-      $pattern_two = '/(div)?(\.' . $className . '\.)+[\.\w-]+/';
+      $pattern_two = '/(div)?(\.' . $className . '\.)+[\w-]+/';
       // '/(div)?(\.panel)+[\.\w-]+/'  for panels
       // '/(div)?(\.widget)[\.\w-]+/' for widgets
 //Run the first regex pattern on the input
@@ -1289,6 +1289,9 @@ class EWCore
 //Run the second regex pattern on $stripped input
       $matches = preg_match_all($pattern_two, $stripped, $selectors);
 //Show the results
+
+      //$selectors[0] = str_replace('.', ' ', $selectors[0]);
+
       return json_encode(array_unique($selectors[0]));
    }
 

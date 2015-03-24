@@ -1,11 +1,11 @@
 <?php
-session_start();
+
 $language = '';
 if ($_REQUEST["_url_language"] || $_REQUEST["_language"] != 'en')
    $language = $_REQUEST["_language"] . '/';
 //echo $language;
 $titles = $widget_parameters["title"];
-$links = $widget_parameters["feeder"];
+$links = $widget_parameters["link"];
 $icnons = $widget_parameters["title"];
 ?>
 <ul>
