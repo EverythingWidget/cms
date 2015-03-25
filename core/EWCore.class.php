@@ -931,6 +931,11 @@ class EWCore
    public static function is_widget_feeder($type, $app, $id)
    {
       $func = null;
+      /*array_walk(EWCore::read_registry("ew-widget-feeder"),function($item,$key)
+        {
+         if ($app == "*")
+         echo $key."<br/>";
+        });*/
       // Check all thge apps for specified feeder
       if ($app == "*")
       {
@@ -941,9 +946,10 @@ class EWCore
                return $feeder;
          }
          return FALSE;
-      }
+      }      
       if (!$app)
          $app = 'admin';
+      
 
       //if (array_key_exists("$type:$id", EWCore::read_registry("ew-widget-feeder")))
       if (EWCore::read_registry("ew-widget-feeder")[$app][$type][$id])

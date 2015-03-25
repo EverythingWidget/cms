@@ -222,8 +222,10 @@ class ContentManagement extends \Section
    {
       if (preg_match('/\$content\.(\w*)/', $content_id))
          return [];
+      
       if (!$content_id)
-         return null;
+         return [];
+      
       if (!$value)
          $value = '%';
 
@@ -242,7 +244,6 @@ class ContentManagement extends \Section
                       })
                       ->where('key', 'LIKE', $key)
                       ->where('value', 'LIKE', $value)->orderBy('value');
-
       return ["totalRows" => $rows->count(), "result" => $rows->get(['*', \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")])];
    }
 
@@ -440,9 +441,11 @@ class ContentManagement extends \Section
    {
       $container_id = ew_contents::find($parent_id);
       $container_id = $container_id['parent_id'];
-      $folders = ew_contents::all(['*', \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")])->where('parent_id', '=', $parent_id)->where('type', 'folder');
+      $folders = ew_contents::where('parent_id', '=', $parent_id)->where('type', 'folder')->get(['*', \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
+      
       $rows = array();
       $folders_ar = $folders->toArray();
+      
       foreach ($folders_ar as $i)
       {
          $i["parent_id"] = $container_id;
@@ -533,7 +536,7 @@ class ContentManagement extends \Section
 
       if ($result['data']["id"])
       {
-         $content_id = $result["id"];
+         $content_id = $result['data']["id"];
          $res = array("status" => "success", "message" => "Folder has been added successfully", "data" => ["id" => $content_id, "type" => "folder"]);
          return json_encode($res);
       }
