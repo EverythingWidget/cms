@@ -21,7 +21,7 @@ function get_editor($form_config, $form_id)
    ?>
    <div class="row">      
       <div class="col-lg-12 mar-top">         
-         <textarea id="content" name="content" style="padding:0px 2px; width:100%;min-height:500px;" ></textarea>
+         <div contenteditable="true" id="content" name="content" style="padding:0px 2px; width:100%;min-height:500px;" ></div>
       </div>
       <div class="col-lg-12">      
          <label>Press SHIFT + ENTER to add a new paragraph</label>
@@ -30,49 +30,72 @@ function get_editor($form_config, $form_id)
    <script src="<?php echo EW_ROOT_URL ?>app-admin/Tools/tinymce/tinymce.min.js"></script>
    <!-- <script src="<?php echo EW_ROOT_URL ?>app-admin/Tools/ckeditor/ckeditor.js"></script>-->
    <script>
+      $(document).ready(function () {
+         var editor = $("#content");
+         editor.on("keydown", function (e)
+         {
+            if (e.which === 13)
+            {e.preventDefault();
+               var node = $("<h3>hhh</h3>")[0];
+               editor.append(node);
+               
+               var range = document.createRange();
+               var sel = window.getSelection();
+               range.selectNodeContents(node);
+               //range.setEnd(node, 1);
+               //range.collapse(false);
+               sel.removeAllRanges();
+               sel.addRange(range);
+               //node.focus();
+               //self.focusQueue.splice(index, 1);
+               // Call onCommand whenever user hit enter and pass the command string and generated event
+
+            }
+         });
+      });
       /*$(document).ready(function () {
        setTimeout(function () {
        CKEDITOR.replace('content', {height: "500px"});
        //alert("asdasd");
        }, 500);
        });*/
-      tinymce.EditorManager.execCommand('mceRemoveEditor', false, "content");
-      setTimeout(function () {
-         tinymce.EditorManager.init({
-            forced_root_block: false,
-            mode: "exact",
-            elements: 'content',
-            relative_urls: false,
-            remove_script_host: false,
-            schema: "html5",
-            theme: "modern",
-            apply_source_formatting: true,
-            height: 340,
-            ew_media_url: "<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/Media.php",
-            visualblocks_default_state: true,
-            image_class_list: [
-               {title: 'None', value: ''},
-               {title: 'Image', value: 'image'},
-               {title: 'Cover', value: 'cover'}
-            ],
-            menubar: "file edit view format",
-            //content_css: "admin/styles/template.css",
-            plugins: [
-               "advlist autolink lists link image ewimage charmap print preview anchor textcolor",
-               "searchreplace visualblocks code fullscreen",
-               "insertdatetime table contextmenu paste"
-            ],
-            toolbar: "insertfile undo redo | styleselect | forecolor backcolor bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image table charmap insertdatetime | ewimage | code"
-                    // Example content CSS (should be your site CSS)
-
-         });
-
-
-         $("#<?php echo $form_id ?>").on("refresh", function (e, formData)
-         {
-            $(tinymce.get('content').getBody()).html(formData["content"]);
-         });
-      }, 300);
+      /*tinymce.EditorManager.execCommand('mceRemoveEditor', false, "content");
+       setTimeout(function () {
+       tinymce.EditorManager.init({
+       forced_root_block: false,
+       mode: "exact",
+       elements: 'content',
+       relative_urls: false,
+       remove_script_host: false,
+       schema: "html5",
+       theme: "modern",
+       apply_source_formatting: true,
+       height: 340,
+       ew_media_url: "<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/Media.php",
+       visualblocks_default_state: true,
+       image_class_list: [
+       {title: 'None', value: ''},
+       {title: 'Image', value: 'image'},
+       {title: 'Cover', value: 'cover'}
+       ],
+       menubar: "file edit view format",
+       //content_css: "admin/styles/template.css",
+       plugins: [
+       "grid advlist autolink lists link image ewimage charmap print preview anchor textcolor",
+       "searchreplace visualblocks code fullscreen",
+       "insertdatetime table contextmenu paste"
+       ],
+       toolbar: "grid | insertfile undo redo | styleselect | forecolor backcolor bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image table charmap insertdatetime | ewimage | code"
+       // Example content CSS (should be your site CSS)
+          
+       });
+          
+          
+       $("#<?php echo $form_id ?>").on("refresh", function (e, formData)
+       {
+       $(tinymce.get('content').getBody()).html(formData["content"]);
+       });
+       }, 300);*/
    </script>
    <?php
    return ob_get_clean();
@@ -120,7 +143,7 @@ function get_properties($form_config, $form_id)
          foreach ($content_labels as $key => $value)
          {
             $data_array = json_decode($form_config["data"], true);
-            $labels= $data_array["labels"];
+            $labels = $data_array["labels"];
             //$labels = json_decode($data_array["labels"], true);
             foreach ($labels as $label_data)
             {
@@ -241,7 +264,7 @@ $tabs = EWCore::read_registry("ew-article-form-tab");
        * @param {boolean} flag If true then active the label only for the new content. Default is false
        */
       activeLabel: function (label, flag)
-      {   
+      {
          if (!flag)
          {
             $("#" + label + "_control_button:not(:checked)").click();
