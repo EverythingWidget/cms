@@ -930,12 +930,34 @@ class EWCore
     */
    public static function is_widget_feeder($type, $app, $id)
    {
+      if (!$app && $app != '*')
+         $app = 'admin';
       $func = null;
-      /*array_walk(EWCore::read_registry("ew-widget-feeder"),function($item,$key)
-        {
-         if ($app == "*")
-         echo $key."<br/>";
-        });*/
+      $feederApp = true;
+      $result = false;
+      array_walk(EWCore::read_registry("ew-widget-feeder"), function($item, $key)use ($type, $app, $id, &$feederApp, &$result) {
+         if ($app == "*" || $app == $key)
+         {
+            if ($type == '*')
+            {
+               foreach ($item as $feeder => $p)
+               {
+                  if ($p[$id])
+                  {
+                     //echo $key." ".$feeder."  ".$id;
+                     $result = true;
+                  }
+               }
+            }
+            else if ($item[$type][$id])
+            {
+               $feederApp = $key;
+               $result = true;
+            }
+         }
+      });
+      if ($result)
+         return $feederApp;
       // Check all thge apps for specified feeder
       if ($app == "*")
       {
@@ -946,10 +968,10 @@ class EWCore
                return $feeder;
          }
          return FALSE;
-      }      
+      }
       if (!$app)
          $app = 'admin';
-      
+
 
       //if (array_key_exists("$type:$id", EWCore::read_registry("ew-widget-feeder")))
       if (EWCore::read_registry("ew-widget-feeder")[$app][$type][$id])
@@ -1295,7 +1317,6 @@ class EWCore
 //Run the second regex pattern on $stripped input
       $matches = preg_match_all($pattern_two, $stripped, $selectors);
 //Show the results
-
       //$selectors[0] = str_replace('.', ' ', $selectors[0]);
 
       return json_encode(array_unique($selectors[0]));

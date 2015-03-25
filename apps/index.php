@@ -125,11 +125,13 @@ if ($root_dir == str_replace("/", "", $r_uri))
 // Check if UI structure is specified
 if (!isset($_REQUEST["_uis"]))
 {
+   
    if ($section_name)
       $r_uri = "/" . $section_name;
    if ($_file)
       $r_uri.='/' . $_file;
    $r_uri = str_replace('/' . $root_dir, "", $r_uri);
+   //echo $r_uri.'<br/>';
    //echo $r_uri;
    // Remove last /
    if (strlen($r_uri) > 1 && substr($r_uri, -1) == "/")
@@ -139,7 +141,7 @@ if (!isset($_REQUEST["_uis"]))
    $_REQUEST["_uis_template"] = $uis_data["uis_template"];
    if (!$_REQUEST["_uis_template_settings"])
       $_REQUEST["_uis_template_settings"] = $uis_data["uis_template_settings"];
-   //print_r($r_uri);
+   //print_r($_REQUEST);
 }
 else
 {

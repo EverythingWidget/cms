@@ -11,7 +11,7 @@ return [
     'password' => '',
 //define("MYSQL_PASS", $mysql_password);
 // Database name
-    'database' => "ew",
+    'database' => "culturenights",
     'database_library' => true
 ];
 

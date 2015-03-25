@@ -1,5 +1,4 @@
 <?php
-
 $language = '';
 if ($_REQUEST["_url_language"] || $_REQUEST["_language"] != 'en')
    $language = $_REQUEST["_language"] . '/';
@@ -82,26 +81,24 @@ $icnons = $widget_parameters["title"];
       {
          $linkURL = EW_DIR_URL . $language;
       }
-      ?>
-      <li>
-         <?php
-         echo "<a href='" . EW_DIR_URL . $language . "{$linkURL}'>";
-         echo $titles . "</a>";
 
+      $link_requlare_expression_ready = preg_quote($linkURL, '/');
+      $pattern = "/$link_requlare_expression_ready(.*)/";
+      preg_match($pattern, $_SERVER['REQUEST_URI'] . '.', $match);
+      $active = ($match) ? "active" : "";
 
-         if ($sub_menus)
+      echo "<li class='$active' ><a href='$linkURL'>$titles</a>";
+      if ($sub_menus)
+      {
+         echo "<ul>";
+         foreach ($sub_menus as $sub_menu)
          {
-            echo "<ul>";
-            foreach ($sub_menus as $sub_menu)
-            {
-               echo "<li><a href='" . EW_DIR_URL . $language . "{$sub_menu["link"]}'>";
-               echo $sub_menu["title"] . "</a></li>";
-            }
-            echo "</ul>";
+            echo "<li class='$active'><a href='" . EW_DIR_URL . $language . "{$sub_menu["link"]}'>";
+            echo $sub_menu["title"] . "</a></li>";
          }
-         ?>
-      </li>
-      <?php
+         echo "</ul>";
+      }
+      echo '</li>';
    }
    ?>
 </ul>

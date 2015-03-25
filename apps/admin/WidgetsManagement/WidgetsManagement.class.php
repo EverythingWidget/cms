@@ -62,7 +62,7 @@ class WidgetsManagement extends Section
 //echo "assssssssssssssssssss".$data["id"];
       if ($_data["id"])
       {
-         $page_uis = json_decode($this->get_path_uis("/category/" . $_data["id"]), true);
+         $page_uis = json_decode($this->get_path_uis("/folder/" . $_data["id"]), true);
          $_data["WidgetManagement_pageUisId"] = ($page_uis["id"]) ? $page_uis["id"] : "";
          $_data["WidgetManagement_name"] = ($page_uis["name"]) ? $page_uis["name"] : "Inherit/Default";
       }
@@ -73,11 +73,11 @@ class WidgetsManagement extends Section
    {
       if ($WidgetManagement_pageUisId)
       {
-         $this->set_uis("/category/" . $id, $WidgetManagement_pageUisId);
+         $this->set_uis("/folder/" . $id, $WidgetManagement_pageUisId);
       }
       else
       {
-         $this->set_uis("/category/" . $id);
+         $this->set_uis("/folder/" . $id);
       }
    }
 
