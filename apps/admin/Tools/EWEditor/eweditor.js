@@ -99,7 +99,7 @@ EWEditor.prototype.initPlugins = function (plugins)
       if (select.baseNode && select.baseNode.parentNode && $(select.baseNode.parentNode).not("div"))
          $(select.baseNode.parentNode).css({textAlign: "right"});
    });
-   alignBtns.append([alignLeft,alignCenter,alignRight]);
+   alignBtns.append([alignLeft, alignCenter, alignRight]);
    this.editorToolbar.append(alignBtns);
 }
 
@@ -183,14 +183,14 @@ EWEditor.prototype.addRow = function (focus)
    var row = $("<div class='row' tabindex='1'>");
    row.on('focus', function (e)
    {
-      //row.attr('contenteditable', true);
+      row.attr('contenteditable', true);
       //row.focus();
       self.activeElement = row;
       //console.log("focus");
    });
    row.on('blur', function (e)
    {
-      //row.attr('contenteditable', false);
+      row.attr('contenteditable', false);
    });
    this.editorContentBody.append(row);
    row.focus();
@@ -213,6 +213,16 @@ EWEditor.prototype.addColumn = function (row)
    col.on('blur', function (e)
    {
       col.attr('contenteditable', false);
+   });
+   col.on('keydown', function (e)
+   {
+
+      if (e.which == 8 && col.text() == '')
+      {
+         e.preventDefault();
+         col.parent().focus();
+         col.remove();
+      }
    });
    row.append(col);
    col.focus();
