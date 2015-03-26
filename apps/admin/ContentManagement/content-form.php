@@ -19,38 +19,17 @@ function get_editor($form_config, $form_id)
 {
    ob_start();
    ?>
-   <div class="row">      
-      <div class="col-lg-12 mar-top">         
-         <div contenteditable="true" id="content" name="content" style="padding:0px 2px; width:100%;min-height:500px;" ></div>
-      </div>
-      <div class="col-lg-12">      
-         <label>Press SHIFT + ENTER to add a new paragraph</label>
-      </div>
-   </div>
+
+   <div  id="content" name="content" style="" ></div>
+
    <script src="<?php echo EW_ROOT_URL ?>app-admin/Tools/tinymce/tinymce.min.js"></script>
+   <script src="<?php echo EW_ROOT_URL ?>app-admin/Tools/EWEditor/eweditor.js"></script>
    <!-- <script src="<?php echo EW_ROOT_URL ?>app-admin/Tools/ckeditor/ckeditor.js"></script>-->
    <script>
       $(document).ready(function () {
-         var editor = $("#content");
-         editor.on("keydown", function (e)
-         {
-            if (e.which === 13)
-            {e.preventDefault();
-               var node = $("<h3>hhh</h3>")[0];
-               editor.append(node);
-               
-               var range = document.createRange();
-               var sel = window.getSelection();
-               range.selectNodeContents(node);
-               //range.setEnd(node, 1);
-               //range.collapse(false);
-               sel.removeAllRanges();
-               sel.addRange(range);
-               //node.focus();
-               //self.focusQueue.splice(index, 1);
-               // Call onCommand whenever user hit enter and pass the command string and generated event
-
-            }
+         var test = new EWEditor({
+            id: '#content',
+            bootstrap:'./core/css/bootstrap.min.css'
          });
       });
       /*$(document).ready(function () {
@@ -105,83 +84,81 @@ function get_properties($form_config, $form_id)
 {
    ob_start();
    ?>
+   <div class="col-lg-12">
+      <div id="content-data" class="row margin-bottom">
+         <div id="properties-form" class="col-lg-8 col-md-8 col-sm-12 col-xs-12" >
+            <input type="hidden" id="id" name="id" value="">
+            <input type="hidden" id="type" name="type" value="<?php echo $form_config["contentType"] ?>">
+            <div class="row mar-top">
+               <div class="col-xs-12 col-md-12 col-lg-12">
 
-
-   <div id="content-data" class="row margin-bottom">
-      <div id="properties-form" class="col-lg-8 col-md-8 col-sm-12 col-xs-12" >
-         <input type="hidden" id="id" name="id" value="">
-         <input type="hidden" id="type" name="type" value="<?php echo $form_config["contentType"] ?>">
-         <div class="row mar-top">
-            <div class="col-xs-12 col-md-12 col-lg-12">
-
-               <input class="text-field" data-label="tr{Title}" value="" id="title" name="title" data-validate="r"/>
+                  <input class="text-field" data-label="tr{Title}" value="" id="title" name="title" data-validate="r"/>
+               </div>
             </div>
-         </div>
-         <div class="row">
-            <div class="col-xs-12 col-md-6 col-lg-6">
-               <textarea class="text-field" id="keywords" data-label="tr{Keywords}" name="keywords"  ></textarea>
-            </div>
-            <div class="col-xs-12 col-md-6 col-lg-6">
-               <textarea class="text-field" id="description" data-label="tr{Description}" name="description"  ></textarea>
-            </div>
-         </div>
-         <?php
-         // App custom inputs
-         $input_groups = EWCore::read_registry("ew-content-form-proerties");
-         foreach ($input_groups as $id => $inputs)
-         {
-            echo "<div class=row><div class='col-xs-12'><h3>{$inputs["title"]}</h3></div></div>";
-            echo $inputs["content"];
-         }
-         ?>
-      </div>
-
-      <div id="content-labels" class="col-lg-4 col-md-4 col-sm-12 col-xs-12" >
-         <?php
-         // Load content labels
-         $content_labels = EWCore::read_registry("ew-content-labels");
-         foreach ($content_labels as $key => $value)
-         {
-            $data_array = json_decode($form_config["data"], true);
-            $labels = $data_array["labels"];
-            //$labels = json_decode($data_array["labels"], true);
-            foreach ($labels as $label_data)
-            {
-               if ($label_data["key"] == $key)
-               {
-                  $label_value = $label_data["value"];
-                  break;
-               }
-            }
-            //$listener_method_object = new ReflectionMethod($value["object"], $value["function"]);
-            // Call label method and pass key and content data to it
-            $label = json_decode(EWCore::process_command($value["app"], $value["section"], $value["command"], ["key" => $key, "value" => $label_value, "data" => ($form_config["data"]), "form_id" => $form_id]), true);
-            ?>
-            <div class=row>
-               <div class='col-xs-12'>
-                  <div class='box box-grey content-label disabled' data-activated="false">
-                     <div class='row'>
-                        <div class='col-xs-12'>
-                           <h3 class="pull-left"><?php echo $value["title"] ?></h3>
-                           <div class="btn-group pull-right" data-toggle="buttons">
-                              <label class="btn btn-default btn-sm">
-                                 <input type="checkbox" id="<?php echo $key ?>_control_button" class="label-control-button"  ><span>Turned Off</span>
-                              </label>
-                           </div>
-                        </div>
-                     </div>
-                     <div class='row'>
-                        <?php echo $label["html"] ?>
-                     </div>
-                  </div>
+            <div class="row">
+               <div class="col-xs-12 col-md-6 col-lg-6">
+                  <textarea class="text-field" id="keywords" data-label="tr{Keywords}" name="keywords"  ></textarea>
+               </div>
+               <div class="col-xs-12 col-md-6 col-lg-6">
+                  <textarea class="text-field" id="description" data-label="tr{Description}" name="description"  ></textarea>
                </div>
             </div>
             <?php
-            //echo $inputs["content"];
-         }
-         ?>
+            // App custom inputs
+            $input_groups = EWCore::read_registry("ew-content-form-proerties");
+            foreach ($input_groups as $id => $inputs)
+            {
+               echo "<div class=row><div class='col-xs-12'><h3>{$inputs["title"]}</h3></div></div>";
+               echo $inputs["content"];
+            }
+            ?>
+         </div>
 
-
+         <div id="content-labels" class="col-lg-4 col-md-4 col-sm-12 col-xs-12" >
+            <?php
+            // Load content labels
+            $content_labels = EWCore::read_registry("ew-content-labels");
+            foreach ($content_labels as $key => $value)
+            {
+               $data_array = json_decode($form_config["data"], true);
+               $labels = $data_array["labels"];
+               //$labels = json_decode($data_array["labels"], true);
+               foreach ($labels as $label_data)
+               {
+                  if ($label_data["key"] == $key)
+                  {
+                     $label_value = $label_data["value"];
+                     break;
+                  }
+               }
+               //$listener_method_object = new ReflectionMethod($value["object"], $value["function"]);
+               // Call label method and pass key and content data to it
+               $label = json_decode(EWCore::process_command($value["app"], $value["section"], $value["command"], ["key" => $key, "value" => $label_value, "data" => ($form_config["data"]), "form_id" => $form_id]), true);
+               ?>
+               <div class=row>
+                  <div class='col-xs-12'>
+                     <div class='box box-grey content-label disabled' data-activated="false">
+                        <div class='row'>
+                           <div class='col-xs-12'>
+                              <h3 class="pull-left"><?php echo $value["title"] ?></h3>
+                              <div class="btn-group pull-right" data-toggle="buttons">
+                                 <label class="btn btn-default btn-sm">
+                                    <input type="checkbox" id="<?php echo $key ?>_control_button" class="label-control-button"  ><span>Turned Off</span>
+                                 </label>
+                              </div>
+                           </div>
+                        </div>
+                        <div class='row'>
+                           <?php echo $label["html"] ?>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <?php
+               //echo $inputs["content"];
+            }
+            ?>
+         </div>
       </div>
    </div>
    <?php
@@ -217,7 +194,7 @@ $tabs = EWCore::read_registry("ew-article-form-tab");
       </ul>
    </div>
    <div class="form-content  tabs-bar">
-      <div class="tab-content col-xs-12">
+      <div class="tab-content">
          <div class="tab-pane active" id="content-properties">
             <?php echo get_properties($form_config, $form_id); ?>
          </div>
