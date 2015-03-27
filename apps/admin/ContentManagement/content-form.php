@@ -20,61 +20,69 @@ function get_editor($form_config, $form_id)
    ob_start();
    ?>
 
-   <div  id="content" name="content" style="" ></div>
+   <!--<div  id="content-editor" style="" ></div>-->
+   <div class="col-lg-12 mar-top">
+      <textarea  id="content" name="content" style="" ></textarea>
+   </div>
 
    <script src="<?php echo EW_ROOT_URL ?>app-admin/Tools/tinymce/tinymce.min.js"></script>
-   <script src="<?php echo EW_ROOT_URL ?>app-admin/Tools/EWEditor/eweditor.js"></script>
-   <!-- <script src="<?php echo EW_ROOT_URL ?>app-admin/Tools/ckeditor/ckeditor.js"></script>-->
+   <!-- <script src="<?php echo EW_ROOT_URL ?>app-admin/Tools/EWEditor/eweditor.js"></script>
+   <script src="<?php echo EW_ROOT_URL ?>app-admin/Tools/ckeditor/ckeditor.js"></script>-->
    <script>
-      $(document).ready(function () {
-         var test = new EWEditor({
-            id: '#content',
-            bootstrap:'./core/css/bootstrap.min.css'
-         });
-      });
+      /*$(document).ready(function () {
+       var test = new EWEditor({
+       id: '#content-editor',
+       bootstrap: './core/css/bootstrap.min.css'
+       });
+       $("#<?php echo $form_id ?>").on("refresh", function (e, formData)
+       {
+       test.setContent(formData["content"]);
+       });
+       });*/
       /*$(document).ready(function () {
        setTimeout(function () {
        CKEDITOR.replace('content', {height: "500px"});
        //alert("asdasd");
        }, 500);
        });*/
-      /*tinymce.EditorManager.execCommand('mceRemoveEditor', false, "content");
-       setTimeout(function () {
-       tinymce.EditorManager.init({
-       forced_root_block: false,
-       mode: "exact",
-       elements: 'content',
-       relative_urls: false,
-       remove_script_host: false,
-       schema: "html5",
-       theme: "modern",
-       apply_source_formatting: true,
-       height: 340,
-       ew_media_url: "<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/Media.php",
-       visualblocks_default_state: true,
-       image_class_list: [
-       {title: 'None', value: ''},
-       {title: 'Image', value: 'image'},
-       {title: 'Cover', value: 'cover'}
-       ],
-       menubar: "file edit view format",
-       //content_css: "admin/styles/template.css",
-       plugins: [
-       "grid advlist autolink lists link image ewimage charmap print preview anchor textcolor",
-       "searchreplace visualblocks code fullscreen",
-       "insertdatetime table contextmenu paste"
-       ],
-       toolbar: "grid | insertfile undo redo | styleselect | forecolor backcolor bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image table charmap insertdatetime | ewimage | code"
-       // Example content CSS (should be your site CSS)
-          
-       });
-          
-          
-       $("#<?php echo $form_id ?>").on("refresh", function (e, formData)
-       {
-       $(tinymce.get('content').getBody()).html(formData["content"]);
-       });
-       }, 300);*/
+      tinymce.EditorManager.execCommand('mceRemoveEditor', false, "content");
+      setTimeout(function () {
+         tinymce.EditorManager.init({
+            //forced_root_block: false,
+            mode: "exact",
+            elements: 'content',
+            relative_urls: false,
+            remove_script_host: false,
+            schema: "html5",
+            theme: "modern",
+            apply_source_formatting: true,
+            height: 340,
+            ew_media_url: "<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/Media.php",
+            visualblocks_default_state: true,
+            image_class_list: [
+               {title: 'None', value: ''},
+               {title: 'Image', value: 'image'},
+               {title: 'Cover', value: 'cover'}
+            ],
+            menubar: "file edit view format",
+            //content_css: "admin/styles/template.css",
+            plugins: [
+               "advlist autolink lists link image ewimage charmap print preview anchor textcolor",
+               "searchreplace code fullscreen",
+               "insertdatetime table contextmenu paste"
+            ],
+            toolbar: "insertfile undo redo | styleselect | forecolor backcolor bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image table charmap insertdatetime | ewimage | code"
+                    // Example content CSS (should be your site CSS)
+
+         });
+
+
+         $("#<?php echo $form_id ?>").on("refresh", function (e, formData)
+         {
+            $(tinymce.get('content').getBody()).html(formData["content"]);
+         });
+      }, 300);
+
    </script>
    <?php
    return ob_get_clean();

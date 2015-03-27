@@ -367,7 +367,7 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler)
          }
          if (elm.length == 0)
          {
-            elm = $(formId + " [id='" + key + "']");
+            elm = $(formId + " #" + key);
          }
          else
          {

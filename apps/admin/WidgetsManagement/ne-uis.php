@@ -632,21 +632,15 @@ session_start();
             frameBody = $(document.getElementById("fr").contentDocument.body);
             if (!container)
             {
+
                return;
             }
             var linkedParentId = container.el.parent().attr("data-linked-panel-id");
             var linkedPanelId = item.attr("data-linked-panel-id");
             var linkedWidgetId = item.attr("data-linked-widget-id");
             oldContainer.removeClass("highlight");
-            //console.log(container.el);
-            //console.log(item);
-            // If drop bacck on the same container dont change anything
-            /*if(container.el.parent().data("linked-panel-id") == oldContainer.parent().data("linked-panel-id"))
-             {
-             _super(item);
-             }*/
-
             var parent = frameBody.find("[data-panel-id='" + linkedParentId + "']");
+            var baseContentPane = frameBody.find("#base-content-pane");
 
             if (!parent.attr("data-block"))
             {
@@ -654,11 +648,18 @@ session_start();
             }
             if (parent.length <= 0)
             {
-               //_super(item);
+               var panel = frameBody.find("[data-panel-id='" + linkedPanelId + "']").detach();
+               if (baseContentPane.children().length <= item.index())
+               {
+                  baseContentPane.append(panel);
+               }
+               else
+               {
+                  baseContentPane.children().eq(item.index()).before(panel);
+               }
+               _super(item);
                return;
             }
-            //console.log(linkedParentId);
-            //console.log(parent);
 
             if (linkedWidgetId)
             {
@@ -679,7 +680,7 @@ session_start();
                var panel = frameBody.find("[data-panel-id='" + linkedPanelId + "']").detach();
                if (parent.length == 0)
                {
-                  parent = frameBody.find("#base-content-pane");
+                  parent = baseContentPane;
                }
                if (parent.children().length <= item.index())
                {
@@ -1293,7 +1294,7 @@ session_start();
 
    function setView()
    {
-      //obj('<?php // echo $styleId ? $styleId : 'testDiv'                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   ?>').style.cssText = obj('style').value;
+      //obj('<?php // echo $styleId ? $styleId : 'testDiv'                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     ?>').style.cssText = obj('style').value;
       //obj('fr').contentDocument.body.innerHTML = '<link href="../templates/SpapcoDefault/template.css" rel="stylesheet" type="text/css">';
       $('#fr').contentDocument.getElementById('dynamicStyle').innerHTML = $('#style').value;
       $('#fr').contentDocument.getElementById('<?php echo $name ?>').className = 'Panel <?php echo $class ?> ' + $('#class').value;
