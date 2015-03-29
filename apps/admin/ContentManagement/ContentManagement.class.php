@@ -859,6 +859,7 @@ class ContentManagement extends \Section
 
          return json_encode($rows);
       }
+      return json_encode([]);
    }
 
    public function add_album($title = null, $keywords = NULL, $description = NULL, $html_content = NULL, $labels)

@@ -58,8 +58,8 @@ function script()
             {
                $("body").EW().notify(data).show();
                ContentForm.setData(data.data);
-               $(document).trigger("article-list.refresh");
                $.EW("getParentDialog", $("#article-form")).trigger("close");
+               $(document).trigger("article-list.refresh");               
             }}).hide();
 
          this.bEdit = EW.addActivity({title: "tr{Save}", defaultClass: "btn-success", activity: "app-admin/ContentManagement/update_article",

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel='stylesheet' href="../../../core/css/bootstrap.css"/>
+      <link rel='stylesheet' href="medium-editor.css"/>
+      <link rel='stylesheet' href="default.css"/>
+      <script src="../../../core/js/jquery/jquery-2.1.1.min.js"></script>        
+      <script src='medium-editor.js'></script>
+      <script src="../ckeditor/ckeditor.js"></script>
+      <style>
+         html, body{padding:10px 2px;margin:0px} 
+         .container{width:100%} 
+         //p{outline:1px dashed #aaa} 
+         .row{border:2px solid #ccc;} 
+         .row:focus{outline:none;border-color:#888;}
+         .row:before {content: 'ROW';line-height: 20px;display:block;padding:0px 4px;  font-size: 11px;  font-weight: bold;}
+         .column{border:2px solid rgba(0,0,0,.1);padding-top:20px;min-height:44px;}
+         .column:focus:before{background-color:#3cf;}
+         .column:focus{border-color:#3cf;outline:none;}
+         .column:before {content: 'COLUMN';line-height: 20px;display:block;padding:0px 4px;font-size: 11px;font-weight:bold;background-color: rgba(0,0,0,.1);margin:-20px -15px 0;}
+      </style>
+
+      <script>
+         $(document).ready(function () {
+            CKEDITOR.disableAutoInline = true;
+
+            Editor =
+                    {
+                       activeElement: null,
+                       addColumn: function (col, row)
+                       {
+//editor= new MediumEditor(col,{staticToolbar:true,stickyToolbar:true});
+                          //this.editor.refresh(col,{staticToolbar:true,stickyToolbar:true});
+                          CKEDITOR.inline(col[0]);
+                          row.append(col);
+                          col.focus();
+                          /*var node = col.find('p')[0];
+                           this.focusElement(node);*/
+                       },
+                       showEditor: function (e)
+                       {
+                          //this.editor.refresh(e,{staticToolbar:true,stickyToolbar:true});
+                       },
+                       addRow: function (col)
+                       {
+
+
+
+                       },
+                       addElement: function (e, p)
+                       {
+                          //CKEDITOR.inline(e[0]);
+                          if (p)
+                             p.append(e);
+                          else
+                          {
+                             //alert($(document).html());
+                             $("#container").append(e);
+                          }
+
+                          e.focus();
+                       }
+                    }
+            //Editor.addElement($("<div class='row' tabindex='1'>"));
+         });
+         //console.log($(document));
+      </script>
+   </head>
+   <body>
+      <div id='container' class='container'>
+
+      </div>
+
+   </body>
+</html>

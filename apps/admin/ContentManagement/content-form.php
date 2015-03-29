@@ -25,11 +25,12 @@ function get_editor($form_config, $form_id)
       <textarea  id="content" name="content" style="" ></textarea>
    </div>
 
-   <script src="<?php echo EW_ROOT_URL ?>app-admin/Tools/tinymce/tinymce.min.js"></script>
-   <!-- <script src="<?php echo EW_ROOT_URL ?>app-admin/Tools/EWEditor/eweditor.js"></script>
-   <script src="<?php echo EW_ROOT_URL ?>app-admin/Tools/ckeditor/ckeditor.js"></script>-->
+         <script src="<?php echo EW_ROOT_URL ?>app-admin/Tools/tinymce/tinymce.min.js"></script>
+      <!--<script src="<?php echo EW_ROOT_URL ?>app-admin/Tools/EWEditor/eweditor.js"></script>-->
+      <!--<script src="<?php echo EW_ROOT_URL ?>app-admin/Tools/ckeditor/ckeditor.js"></script>-->
    <script>
       /*$(document).ready(function () {
+       
        var test = new EWEditor({
        id: '#content-editor',
        bootstrap: './core/css/bootstrap.min.css'
@@ -68,10 +69,10 @@ function get_editor($form_config, $form_id)
             //content_css: "admin/styles/template.css",
             plugins: [
                "advlist autolink lists link image ewimage charmap print preview anchor textcolor",
-               "searchreplace code fullscreen",
+               "searchreplace code fullscreen layer",
                "insertdatetime table contextmenu paste"
             ],
-            toolbar: "insertfile undo redo | styleselect | forecolor backcolor bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image table charmap insertdatetime | ewimage | code"
+            toolbar: "undo redo | styleselect | forecolor backcolor bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image table charmap insertdatetime | ewimage | code | layer"
                     // Example content CSS (should be your site CSS)
 
          });
@@ -326,7 +327,7 @@ $tabs = EWCore::read_registry("ew-article-form-tab");
          formData['labels'] = this.getLabels();
          //formData["content"] = CKEDITOR.instances.content.getData();
          if (tinymce && tinymce.activeEditor)
-            formData["content"] = tinymce.activeEditor.getContent();
+          formData["content"] = tinymce.activeEditor.getContent();
          return formData;
       },
       setData: function (data)

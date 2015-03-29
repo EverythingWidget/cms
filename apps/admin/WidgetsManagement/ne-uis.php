@@ -119,9 +119,9 @@ session_start();
    .focus-current-item .current-item, .current-item  {/*  visibility:hidden;  */}
    .current-element
    {
-   border:1px solid #3cf;
+   border:3px solid #3cf;
    border-radius:0px;
-   background-color:rgba(255,255,255,.1);
+   background-color:rgba(240,240,240,.3);
    z-index:15;
    position:absolute;
    display:none;
@@ -142,7 +142,7 @@ session_start();
    border: 1px solid #222;
    outline: 1px dashed #ddd;
    outline-offset: -1px;
-   z-index:50;
+   z-index:10;
    }
 
    /*.widget-glass-pane:hover

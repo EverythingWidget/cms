@@ -287,12 +287,14 @@ if (!isset($_SESSION['login']))
 
          function initPlugins(element)
          {
+            if (!element.innerHTML && element.nodeName.toLowerCase() != 'input' && element.nodeName.toLowerCase() != 'textarea')
+               return;
             var $element = $(element);
             EW.initPlugins($element);
 
             // Bootstraps Plugins
             // Begin
-            $("[data-toggle='tooltip'],[data-tooltip]").tooltip();
+            //$("[data-toggle='tooltip'],[data-tooltip]").tooltip();
             // End
 
             $element.find("a[rel='ajax']").each(function ()

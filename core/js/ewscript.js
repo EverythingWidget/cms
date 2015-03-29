@@ -1918,7 +1918,7 @@ function EWFormValidator(element, options)
    };
    $form.find(".errors-list").remove();
    var inputs = $form.find("input, textarea, select");
-   var errorPanel;
+   var errorPanel = $();
    $.each(inputs, function (i, elm) {
       var $currentElement = $(elm);
       if ($currentElement.data("validate"))
@@ -2214,15 +2214,30 @@ ew_plugins = {
 };
 EverythingWidgets.prototype.initPlugins = function ($element)
 {
-   // set input and textarea dir to auto
-   $element.find("input, textarea").attr("dir", "auto");
-   // EW Plugins
-   // Begin
-   $element.find('input[data-ew-plugin="link-chooser"], textarea[data-ew-plugin="link-chooser"]').EW().linkChooser();
-   // Input floatable labels
-   $element.find('input[data-label], textarea[data-label], select[data-label]').floatlabel();
-   $element.find('[data-ew-plugin="image-chooser"]').EW().imageChooser();
-   $element.find('[data-slider]').simpleSlider();
+   if ($element.is("input"))
+   {
+      $element.attr("dir", "auto");     
+      if ($element.is("[data-ew-plugin='link-chooser']"))
+         $element.EW().linkChooser();
+      if ($element.is("[data-label]"))
+         $element.floatlabel();
+      if ($element.is('[data-ew-plugin="image-chooser"]'))
+         $element.EW().imageChooser();
+      if ($element.is("[data-slider]"))
+         $element.simpleSlider();
+   }
+   else
+   {
+      // set input and textarea dir to auto
+      $element.find("input, textarea").attr("dir", "auto");
+      // EW Plugins
+      // Begin
+      $element.find('input[data-ew-plugin="link-chooser"], textarea[data-ew-plugin="link-chooser"]').EW().linkChooser();
+      // Input floatable labels
+      $element.find('input[data-label], textarea[data-label], select[data-label]').floatlabel();
+      $element.find('[data-ew-plugin="image-chooser"]').EW().imageChooser();
+      $element.find('[data-slider]').simpleSlider();
+   }
    // End
 };
 var EW;

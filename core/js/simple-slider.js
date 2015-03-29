@@ -439,9 +439,11 @@ var __slice = [].slice,
                   settings.animate = $el.data("slider-animate");
                }
             }
-            if ($(this).data("slider-object"))
-               return $(this).data("slider-object");
-            return $(this).data("slider-object", new SimpleSlider($(this), settings));
+            if (!$(this).attr("data-slider-active"))
+            {
+               $(this).attr("data-slider-active", true);
+               return $(this).data("slider-object", new SimpleSlider($(this), settings));
+            }
          }
       });
    };
