@@ -546,12 +546,13 @@ function MJEditor(selector, opts) {
          range = self.selection.getRangeAt(0);
          parentNode = range.startContainer.parentNode;
          currentNode = range.startContainer;
-         //console.log(self.isList(parentNode));
+         console.log(self.isList(parentNode));
          var listItem = self.isList(parentNode);
          if (!listItem)
          {
             if (self.isHeading(parentNode.nodeName) || parentNode.nodeName === 'BLOCKQUOTE')
             {
+               console.log("Q");
                e.preventDefault();
                self.newParagraph(parentNode.nextSibling);
             }
@@ -583,10 +584,22 @@ function MJEditor(selector, opts) {
                            self.executeCommand('ul');
 
                         }
+                        else if (parentNode.tagName === 'P')
+                        {
+                           e.preventDefault();
+                           self.cleanUp();
+                           console.log($(parentNode.parentNode));
+                           console.log($(currentNode));
+                           /*if (currentNode.insertBefore)
+                            self.newParagraph(null, currentNode);
+                            else*/
+                           self.newParagraph(null, parentNode.parentNode, parentNode.nextSibling);
+                        }
                         else
                         {
                            e.preventDefault();
                            self.cleanUp();
+                           console.log('normal para');
                            self.newParagraph();
                         }
                      }
@@ -620,7 +633,7 @@ function MJEditor(selector, opts) {
             this.cleanUp();
          }
       },
-      newParagraph: function (target) {
+      newParagraph: function (target, parent, place) {
          var currentNode, range, newEl, newRange, liveP;
          target = target || undefined;
          this.selection = w.getSelection();
@@ -635,20 +648,27 @@ function MJEditor(selector, opts) {
          }
          newEl.id = 'editor-new-p';
          newEl.innerHTML = '\u00a0';
-
-         if (target === undefined) {
+         if (parent)
+         {
+            parent.insertBefore(newEl, place);
+         }
+         else if (target === undefined) {
             this.liveElement.appendChild(newEl);
-         } else {
+         }
+
+         else {
             this.liveElement.insertBefore(newEl, target);
          }
          newRange = d.createRange();
-         newRange.selectNodeContents(newEl);
-
+         //newRange.selectNodeContents(newEl);
+         //console.log('para');
+         //console.log(parent);
          newRange.setStart(newEl, 0);
          this.selection = w.getSelection();
+         this.selection.collapse(false);
          this.selection.removeAllRanges();
          this.selection.addRange(newRange);
-         document.execCommand('delete', false, null);
+         //document.execCommand('delete', false, null);
       },
       initListeners: function () {
          var self = this,
@@ -714,9 +734,22 @@ function MJEditor(selector, opts) {
                     {
                        if (e.keyCode === 8) {
                           self.backspaceHandler(e);
-                       } else {
-                          if (self.liveElement.className.indexOf('editor-heading') === -1 && self.currentNode === self.liveElement) {
+                       }
+                       else
+                       {
+                          if (self.liveElement.className.indexOf('editor-heading') === -1 && self.currentNode === self.liveElement)
+                          {
                              self.newParagraph();
+                          }
+                          else if (self.currentNode.parentNode && self.currentNode.parentNode.tagName !== 'P' && self.currentNode.tagName !== 'P' )
+                          {
+                             console.log($(self.currentNode));
+                             console.log('inja');
+                             self.newParagraph(null, self.currentNode);
+                          }
+                          else
+                          {
+
                           }
                        }
                     }
@@ -802,7 +835,7 @@ function MJEditor(selector, opts) {
             {
                var old_element = this.elements[i];
                var new_element = old_element.cloneNode(true);
-               console.log(old_element.parentNode);
+               //console.log(old_element.parentNode);
                if (old_element.parentNode)
                   old_element.parentNode.replaceChild(new_element, old_element);
             }

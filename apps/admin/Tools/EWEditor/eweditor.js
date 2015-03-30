@@ -84,18 +84,18 @@ var EWEditorPlugin = {
 EWEditor.prototype.initPlugins = function (plugins)
 {
    var self = this;
-   self.addRow();
+   var frameEditor = self.iFrame[0].contentWindow.Editor;
+   var frameWindow = $(self.iFrame[0].contentDocument.body);
+   //self.addRow();
 
    this.sizeSlider = $('<input class="col-xs-12" type="text" name="col-lg-" id="col-lg-" value="12" data-slider="true" data-slider-range="1,12" data-slider-snap="true" data-slider-highlight="true" data-slider-step="1" >');
    this.sizeSlider.on('change', function ()
    {
-      var currentClass = self.activeElement.attr('class');
+      var currentClass = frameEditor.activeElement.attr('class');
       currentClass = currentClass.replace(/col-xs-(\d*)/, 'col-xs-' + self.sizeSlider.val());
-      self.activeElement.attr('class', currentClass);
-
-
+      frameEditor.activeElement.attr('class', currentClass);
    });
-   this.editorContentBody.on('element-select', function (e, element)
+   frameEditor.on('element-select', function (element)
    {
       if (element && element.is('.column'))
       {
@@ -115,19 +115,22 @@ EWEditor.prototype.initPlugins = function (plugins)
 
    var cra = false;
    var currentElement;
+
    this.controlRow.find('button').on('click', function ()
    {
+      if (!currentElement)
+         return;
       if (currentElement.is('#container'))
       {
-         self.addRow();
+         frameEditor.addRow();
       }
       else if (currentElement.is('.row'))
       {
-         self.addColumn(currentElement);
+         frameEditor.addColumn(currentElement);
       }
       else if (currentElement.is('.column'))
       {
-         self.addRow(currentElement);
+         frameEditor.addRow(currentElement);
       }
    });
    this.controlRow.on('mouseenter', function ()
@@ -139,7 +142,7 @@ EWEditor.prototype.initPlugins = function (plugins)
       cra = false;
    });
 
-   var olsStyle = {};
+   var oldStyle = {};
    var target = {};
 
    setInterval(function ()
@@ -148,20 +151,22 @@ EWEditor.prototype.initPlugins = function (plugins)
       {
          target.offset = currentElement.offset();
          target.size = {width: currentElement.outerWidth(), height: currentElement.outerHeight()};
-         if (JSON.stringify(target) === JSON.stringify(olsStyle))
+         if (JSON.stringify(target) === JSON.stringify(oldStyle))
          {
-            //return;
+            return;
          }
-         self.controlRow.css({top: currentElement.offset().top + currentElement.outerHeight() - 54,
-            left: currentElement.offset().left, width: currentElement.outerWidth()});
-         olsStyle.offset = currentElement.offset();
-         olsStyle.size = {width: currentElement.outerWidth(), height: currentElement.outerHeight()};
+         self.controlRow.css({top: currentElement.offset().top + currentElement.outerHeight() - 28,
+            left: currentElement.offset().left+2, width: currentElement.outerWidth() - 4});
+         oldStyle.offset = currentElement.offset();
+         oldStyle.size = {width: currentElement.outerWidth(), height: currentElement.outerHeight()};
+         //console.log("sssssssss");
       }
    }, 50);
-   this.editorContentBody.on('element-select', function (e, element)
+   frameEditor.on('element-select', function (element)
    {
       if (element/* && element.is('.column, .row')*/)
       {
+         //console.log(element);
          currentElement = element;
          //self.controlRow.show();
       }
@@ -177,25 +182,25 @@ EWEditor.prototype.initEventListeners = function ()
    var frameWindow = this.iFrame[0].contentWindow;
    var frameDoc = this.iFrame[0].contentDocument;
 
-   this.editorContentBody.on('focus', function (e)
-   {
-      self.editorContentBody.attr('contenteditable', true);
-      self.iFrame[0].contentWindow.Editor.selectElement(self.editorContentBody);
-      //self.editorContentBody.focus();
-      if (self.activeElement)
-         self.activeElement.removeClass('active');
-      self.activeElement = self.editorContentBody;
-      self.triggerSelectElement();
-   });
-   this.editorContentBody.on('blur', function (e)
-   {
-      //self.editorContentBody.attr('contenteditable', false);
-      //self.activeElement = null;
-      //self.triggerSelectElement();
-   });
-   this.editorContentBody.on('keydown', function (e) {
-      //e.preventDefault();
-   });
+   /*this.editorContentBody.on('focus', function (e)
+    {
+    //self.editorContentBody.attr('contenteditable', true);
+    // self.iFrame[0].contentWindow.Editor.selectElement(self.editorContentBody);
+    //self.editorContentBody.focus();
+    if (self.activeElement)
+    self.activeElement.removeClass('active');
+    self.activeElement = self.editorContentBody;
+    self.triggerSelectElement();
+    });
+    this.editorContentBody.on('blur', function (e)
+    {
+    //self.editorContentBody.attr('contenteditable', false);
+    //self.activeElement = null;
+    //self.triggerSelectElement();
+    });
+    this.editorContentBody.on('keydown', function (e) {
+    //e.preventDefault();
+    });*/
 }
 
 EWEditor.prototype.getSelection = function ()
@@ -226,54 +231,12 @@ EWEditor.prototype.focusElement = function (node)
 
 EWEditor.prototype.addRow = function (col)
 {
-   var self = this;
-   var row = $("<div class='row' tabindex='1'>");
 
-   row.on('focus', function (e)
-   {
-      row.attr('contenteditable', true);
-      //row.focus();
-      row.addClass('active');
-      if (self.activeElement)
-         self.activeElement.removeClass('active');
-      self.activeElement = row;
-      self.triggerSelectElement();
-   });
-   row.on('blur', function (e)
-   {
-      //self.activeElement = null;
-      //row.attr('contenteditable', false);
-      //self.triggerSelectElement();
-   });
-   this.iFrame[0].contentWindow.Editor.addElement(row, col);
 }
 
 EWEditor.prototype.addColumn = function (row)
 {
-   var self = this;
-   var col = $("<div class='col-xs-12 pull-left column' tabindex='1' contenteditable='true'></div>");
 
-   col.on('focus', function (e)
-   {
-      col.addClass('active');
-      if (self.activeElement)
-         self.activeElement.removeClass('active');
-      col.attr('contenteditable', true);
-      //col.focus();
-      /* if (self.activeElement)
-       self.activeElement.removeClass('active');*/
-      self.activeElement = col;
-      self.iFrame[0].contentWindow.Editor.showEditor(self.activeElement);
-      self.triggerSelectElement();
-      e.preventDefault();
-   });
-   col.on('blur', function (e)
-   {
-      //self.activeElement = null;
-      col.attr('contenteditable', false);
-      //self.triggerSelectElement();
-   });
-   this.iFrame[0].contentWindow.Editor.addColumn(col, row);
 }
 
 EWEditor.prototype.setContent = function (content)
@@ -284,9 +247,5 @@ EWEditor.prototype.setContent = function (content)
 
 EWEditor.prototype.triggerSelectElement = function (content)
 {
-   this.editorContentBody.trigger('element-select', [this.activeElement]);
-   //if (this.activeElement)
-   //this.iFrame[0].contentWindow.Editor.selectElement(this.activeElement);
-
 }
 

@@ -9,20 +9,20 @@
       <link rel='stylesheet' href="default.css"/>
       <script src="../../../core/js/jquery/jquery-2.1.1.min.js"></script>        
 
-      <script src="notebook.js"></script>
+      <script src="mjbp.js"></script>
       <style>
          html, body{padding:10px 2px;margin:0px;} 
          body{padding-top:30px;}
          .container{width:100%;}
-         #container{border:2px solid #aaa;padding-bottom:54px;}
+         #container{border:2px solid #aaa;padding-bottom:108px;}
          #container:focus{outline:none;border-color:#333;}
          //p{outline:1px dashed #aaa} 
-         .row{border:2px solid #ccc;} 
-         .row:focus, .row.active{outline:none;border-color:#333;padding-bottom:54px;}
+         .row{border:2px solid #ccc;padding-bottom:54px;margin-bottom:-54px;} 
+         .row:focus, .row.active{outline:none;border-color:#333;}
          .row:before {content: 'ROW';line-height: 20px;display:block;padding:0px 4px;  font-size: 11px;  font-weight: bold;}
-         .column{border:2px solid rgba(0,0,0,.1);padding-top:20px;min-height:44px;}
+         .column{border:2px solid rgba(0,0,0,.1);padding-top:20px;min-height:44px;padding-bottom:54px;}
          .column:focus:before, .column.active:before{background-color:#3cf;}
-         .column:focus, column.active{border-color:#3cf;outline:none;padding-bottom:54px;}
+         .column:focus, column.active{border-color:#3cf;outline:none;}
          .column:before {content: 'COLUMN';line-height: 20px;display:block;padding:0px 4px;font-size: 11px;font-weight:bold;background-color: rgba(0,0,0,.1);margin:-20px -15px 0;}
          .control-row{padding:10px;background-color:rgba(240,240,240,.9);position:absolute;z-index:5;}
          .control-row .btn{float:none;margin:0px auto;display:block;}
@@ -31,61 +31,58 @@
       <script>
          $(document).ready(function () {
             //CKEDITOR.disableAutoInline = true;
-            /*var textEditor = new MJEditor(null, {
-             buttons: ['b', 'i', 'blockquote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ol', 'ul', 'a', 'cancel', 'back', 'enter']
-             });*/
+
             Editor =
                     {
                        activeElement: null,
                        controlRow: $("#control-row"),
-                       addColumn: function (col, row)
+                       eventHandlers: [],
+                       addColumn: function (row)
                        {
-//editor= new MediumEditor(col,{staticToolbar:true,stickyToolbar:true});
-                          //this.editor.refresh(col,{staticToolbar:true,stickyToolbar:true});
-                          //CKEDITOR.inline(col[0]);
-                          /*tinymce.init({
-                           selector: '.column',
-                           inline: true,
-                           toolbar: "undo redo",
-                           menubar: false,
-                           plugins: [
-                           "advlist autolink lists link image charmap print preview anchor",
-                           "searchreplace visualblocks code fullscreen",
-                           "insertdatetime media table contextmenu paste"
-                           ],
-                           toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"
-                           });*/
+                          var self = this;
+                          var col = $("<div class='col-xs-12 pull-left column' tabindex='1' contenteditable='true'></div>");
 
-                          row.append(col);
-                          col.focus();
-                          /*var node = col.find('p')[0];
-                           this.focusElement(node);*/
-                       },
-                       showEditor: function (e)
-                       {
-                          //this.editor.refresh(e,{staticToolbar:true,stickyToolbar:true});
+                          col.on('focus', function (e)
+                          {
+                             col.addClass('active');
+                             if (self.activeElement)
+                                self.activeElement.removeClass('active');
+                             self.activeElement = col;
+                             self.triggerSelectElement();
+                             e.preventDefault();
+                          });
+                          col.on('blur', function (e)
+                          {
+
+                          });
+                          this.addElement(col, row);
+                          return col;
                        },
                        addRow: function (col)
                        {
+                          var self = this;
+                          var row = $("<div class='row' tabindex='1'>");
 
+                          row.on('focus', function (e)
+                          {
+                             row.addClass('active');
+                             if (self.activeElement)
+                                self.activeElement.removeClass('active');
+                             self.activeElement = row;
+                             self.triggerSelectElement();
+                          });
+                          row.on('blur', function (e)
+                          {
 
-
+                          });
+                          this.addElement(row, col);
+                          return row;
                        },
                        selectElement: function (e)
                        {
-                          console.log(e);
-                          if (!e)
-                          {
-                             /*textEditor.refresh(null, {
-                              buttons: ['b', 'i', 'blockquote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ol', 'ul', 'a', 'cancel', 'back', 'enter']
-                              });*/
-                             return;
-                          }
-                          /* textEditor.refresh(e[0], {
-                           buttons: ['b', 'i', 'blockquote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ol', 'ul', 'a', 'cancel', 'back', 'enter']
-                           });*/
-                          if (e)
-                             $('.row').notebook();
+                          /*console.log(e);
+                           if (e)
+                           $('.row').notebook();*/
                        },
                        addElement: function (e, p)
                        {
@@ -93,13 +90,70 @@
                              p.append(e);
                           else
                           {
-                             //alert($(document).html());
                              $("#container").append(e);
                           }
-
                           e.focus();
+                          var ce = $("#container")[0];
+                          if (ce.setSelectionRange) {
+                                ce.focus();
+                                ce.setSelectionRange(0, 0);
+                             }
+                             else if (ce.createTextRange) {
+                                var range = ce.createTextRange();
+                                range.collapse(true);
+                                range.moveEnd('character', 0);
+                                range.moveStart('character', 0);
+                                range.select();
+                             }
+                          
+                          return e;
+                       },
+                       triggerSelectElement: function (content)
+                       {
+                          $(document.body).trigger('element-select', [this.activeElement]);
+                          //console.log("sss");
+                          for (var i = 0; i < this.eventHandlers.length; i++)
+                          {
+                             this.eventHandlers[i].action.call(this, this.activeElement);
+                          }
+                          //if (this.activeElement)
+                          //this.iFrame[0].contentWindow.Editor.selectElement(this.activeElement);
+
+                       },
+                       on: function (name, action)
+                       {
+                          this.eventHandlers.push({name: name, action: action});
+                       },
+                       init: function ()
+                       {
+                          var self = this;
+                          var ce = $("#container")[0];
+                          $("#container").on('focus', function ()
+                          {
+                             if (self.activeElement)
+                                self.activeElement.removeClass('active');
+                             self.activeElement = $("#container");
+                             self.triggerSelectElement();
+
+                             if (ce.setSelectionRange) {
+                                ce.focus();
+                                ce.setSelectionRange(0, 0);
+                             }
+                             else if (ce.createTextRange) {
+                                var range = ce.createTextRange();
+                                range.collapse(true);
+                                range.moveEnd('character', 0);
+                                range.moveStart('character', 0);
+                                range.select();
+                             }
+                          });
                        }
                     }
+            Editor.init();
+
+            var textEditor = new MJEditor(document.getElementById("container"), {
+               buttons: ['b', 'i', 'blockquote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ol', 'ul', 'a', 'cancel', 'back', 'enter']
+            });
             /*var editor = new MJEditor(document.getElementById("container"), {
              buttons: ['b', 'i', 'blockquote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ol', 'ul', 'a', 'cancel', 'back', 'enter']
              });*/
