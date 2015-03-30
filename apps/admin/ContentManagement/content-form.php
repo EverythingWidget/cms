@@ -20,16 +20,16 @@ function get_editor($form_config, $form_id)
    ob_start();
    ?>
 
-   <!--<div  id="content-editor" style="" ></div>-->
-   <div class="col-lg-12 mar-top">
+   <div  id="content-editor" style="" ></div>
+   <!--<div class="col-lg-12 mar-top">
       <textarea  id="content" name="content" style="" ></textarea>
-   </div>
+   </div>-->
 
-         <script src="<?php echo EW_ROOT_URL ?>app-admin/Tools/tinymce/tinymce.min.js"></script>
-      <!--<script src="<?php echo EW_ROOT_URL ?>app-admin/Tools/EWEditor/eweditor.js"></script>-->
+         <!--<script src="<?php echo EW_ROOT_URL ?>app-admin/Tools/tinymce/tinymce.min.js"></script>-->
+      <script src="<?php echo EW_ROOT_URL ?>app-admin/Tools/EWEditor/eweditor.js"></script>
       <!--<script src="<?php echo EW_ROOT_URL ?>app-admin/Tools/ckeditor/ckeditor.js"></script>-->
    <script>
-      /*$(document).ready(function () {
+      $(document).ready(function () {
        
        var test = new EWEditor({
        id: '#content-editor',
@@ -39,14 +39,14 @@ function get_editor($form_config, $form_id)
        {
        test.setContent(formData["content"]);
        });
-       });*/
+       });
       /*$(document).ready(function () {
        setTimeout(function () {
        CKEDITOR.replace('content', {height: "500px"});
        //alert("asdasd");
        }, 500);
        });*/
-      tinymce.EditorManager.execCommand('mceRemoveEditor', false, "content");
+      /*tinymce.EditorManager.execCommand('mceRemoveEditor', false, "content");
       setTimeout(function () {
          tinymce.EditorManager.init({
             //forced_root_block: false,
@@ -82,7 +82,7 @@ function get_editor($form_config, $form_id)
          {
             $(tinymce.get('content').getBody()).html(formData["content"]);
          });
-      }, 300);
+      }, 300);*/
 
    </script>
    <?php
@@ -326,8 +326,8 @@ $tabs = EWCore::read_registry("ew-article-form-tab");
          delete formData.value;
          formData['labels'] = this.getLabels();
          //formData["content"] = CKEDITOR.instances.content.getData();
-         if (tinymce && tinymce.activeEditor)
-          formData["content"] = tinymce.activeEditor.getContent();
+         /*if (tinymce && tinymce.activeEditor)
+          formData["content"] = tinymce.activeEditor.getContent();*/
          return formData;
       },
       setData: function (data)

@@ -3,37 +3,59 @@
    <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
       <link rel='stylesheet' href="../../../core/css/bootstrap.css"/>
       <link rel='stylesheet' href="medium-editor.css"/>
       <link rel='stylesheet' href="default.css"/>
       <script src="../../../core/js/jquery/jquery-2.1.1.min.js"></script>        
-      <script src='medium-editor.js'></script>
-      <script src="../ckeditor/ckeditor.js"></script>
+
+      <script src="notebook.js"></script>
       <style>
-         html, body{padding:10px 2px;margin:0px} 
-         .container{width:100%} 
+         html, body{padding:10px 2px;margin:0px;} 
+         body{padding-top:30px;}
+         .container{width:100%;}
+         #container{border:2px solid #aaa;padding-bottom:54px;}
+         #container:focus{outline:none;border-color:#333;}
          //p{outline:1px dashed #aaa} 
          .row{border:2px solid #ccc;} 
-         .row:focus{outline:none;border-color:#888;}
+         .row:focus, .row.active{outline:none;border-color:#333;padding-bottom:54px;}
          .row:before {content: 'ROW';line-height: 20px;display:block;padding:0px 4px;  font-size: 11px;  font-weight: bold;}
          .column{border:2px solid rgba(0,0,0,.1);padding-top:20px;min-height:44px;}
-         .column:focus:before{background-color:#3cf;}
-         .column:focus{border-color:#3cf;outline:none;}
+         .column:focus:before, .column.active:before{background-color:#3cf;}
+         .column:focus, column.active{border-color:#3cf;outline:none;padding-bottom:54px;}
          .column:before {content: 'COLUMN';line-height: 20px;display:block;padding:0px 4px;font-size: 11px;font-weight:bold;background-color: rgba(0,0,0,.1);margin:-20px -15px 0;}
+         .control-row{padding:10px;background-color:rgba(240,240,240,.9);position:absolute;z-index:5;}
+         .control-row .btn{float:none;margin:0px auto;display:block;}
       </style>
 
       <script>
          $(document).ready(function () {
-            CKEDITOR.disableAutoInline = true;
-
+            //CKEDITOR.disableAutoInline = true;
+            /*var textEditor = new MJEditor(null, {
+             buttons: ['b', 'i', 'blockquote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ol', 'ul', 'a', 'cancel', 'back', 'enter']
+             });*/
             Editor =
                     {
                        activeElement: null,
+                       controlRow: $("#control-row"),
                        addColumn: function (col, row)
                        {
 //editor= new MediumEditor(col,{staticToolbar:true,stickyToolbar:true});
                           //this.editor.refresh(col,{staticToolbar:true,stickyToolbar:true});
-                          CKEDITOR.inline(col[0]);
+                          //CKEDITOR.inline(col[0]);
+                          /*tinymce.init({
+                           selector: '.column',
+                           inline: true,
+                           toolbar: "undo redo",
+                           menubar: false,
+                           plugins: [
+                           "advlist autolink lists link image charmap print preview anchor",
+                           "searchreplace visualblocks code fullscreen",
+                           "insertdatetime media table contextmenu paste"
+                           ],
+                           toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"
+                           });*/
+
                           row.append(col);
                           col.focus();
                           /*var node = col.find('p')[0];
@@ -49,9 +71,24 @@
 
 
                        },
+                       selectElement: function (e)
+                       {
+                          console.log(e);
+                          if (!e)
+                          {
+                             /*textEditor.refresh(null, {
+                              buttons: ['b', 'i', 'blockquote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ol', 'ul', 'a', 'cancel', 'back', 'enter']
+                              });*/
+                             return;
+                          }
+                          /* textEditor.refresh(e[0], {
+                           buttons: ['b', 'i', 'blockquote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ol', 'ul', 'a', 'cancel', 'back', 'enter']
+                           });*/
+                          if (e)
+                             $('.row').notebook();
+                       },
                        addElement: function (e, p)
                        {
-                          //CKEDITOR.inline(e[0]);
                           if (p)
                              p.append(e);
                           else
@@ -63,15 +100,44 @@
                           e.focus();
                        }
                     }
-            //Editor.addElement($("<div class='row' tabindex='1'>"));
+            /*var editor = new MJEditor(document.getElementById("container"), {
+             buttons: ['b', 'i', 'blockquote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ol', 'ul', 'a', 'cancel', 'back', 'enter']
+             });*/
          });
          //console.log($(document));
       </script>
    </head>
    <body>
-      <div id='container' class='container'>
+      <div id="editor">
+         <div id="editor-mask">
+            <div class="editor-buttons">
+               <button id="editor-b" data-command="bold"><i class="fa fa-bold"></i></button>
+               <button id="editor-i" data-command="italic"><i class="fa fa-italic"></i></button>
+               <button id="editor-blockquote" data-command="quote"><i class="fa fa-quote-left"></i></button>
+               <button class="heading" id="editor-h1" data-command="h1"><i class="fa fa-header"></i>1</button>
+               <button class="heading" id="editor-h2" data-command="h2"><i class="fa fa-header"></i>2</button>
+               <button class="heading" id="editor-h3" data-command="h3"><i class="fa fa-header"></i>3</button>
+               <button class="heading" id="editor-h4" data-command="h4"><i class="fa fa-header"></i>4</button>
+               <button class="heading" id="editor-h5" data-command="h5"><i class="fa fa-header"></i>5</button>
+               <button class="heading" id="editor-h6" data-command="h6"><i class="fa fa-header"></i>6</button>
+               <button id="editor-ol" data-command="ol"><i class="fa fa-list-ol"></i></button>
+               <button id="editor-ul" data-command="ul"><i class="fa fa-list-ul"></i></button>
+               <button id="editor-a" data-command="a"><i class="fa fa-link"></i></button>
+
+            </div>
+            <div id="editor-link-field-holder">
+               <input type="text" id="editor-link-field" placeholder="Type or paste link">
+               <button id="editor-cancel" data-command="cancel"><i class="fa fa-unlink"></i></button>
+               <button id="editor-back" data-command="back"><i class="fa fa-arrow-left"></i></button>
+               <button class="pull-right" id="editor-enter" data-command="enter"><i class="fa fa-check"></i></button>
+            </div>
+         </div>
+      </div>
+      <div id='container' class='container' tabindex="1">
 
       </div>
-
+      <div id="control-row" class='control-row' >
+         <button class='btn btn-info'><i class='fa fa-plus fa-lg'></i></button>
+      </div>
    </body>
 </html>
