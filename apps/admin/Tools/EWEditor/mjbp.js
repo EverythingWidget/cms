@@ -175,12 +175,16 @@ function MJEditor(selector, opts) {
 
          for (i in parentNodes) {
             if (parentNodes.hasOwnProperty(i)) {
+               //console.log(i);
                button = d.getElementById('editor-' + i.toLowerCase());
                if (button && button.className.indexOf('active') === -1) {
                   button.className = button.className + ' active';
                }
             }
          }
+         var ta = $(this.selection.anchorNode.parentNode).css('text-align');
+         $("button[data-command='" + ta + "']").addClass("active");
+
          return this;
       },
       bindUI: function ()
@@ -301,6 +305,18 @@ function MJEditor(selector, opts) {
                } else {
                   d.execCommand('formatBlock', false, 'blockquote');
                }
+            },
+            'left': function () {
+               d.execCommand('justifyleft', false);
+            },
+            'center': function () {
+               d.execCommand('justifycenter', false);
+            },
+            'right': function () {
+               d.execCommand('justifyright', false);
+            },
+            'justify': function () {
+               d.execCommand('justifyFull', false);
             },
             'h1': function () {
                styleActions.heading('H1');
@@ -546,15 +562,14 @@ function MJEditor(selector, opts) {
          range = self.selection.getRangeAt(0);
          parentNode = range.startContainer.parentNode;
          currentNode = range.startContainer;
-         console.log(self.isList(parentNode));
+         //console.log(self.isList(parentNode));
          var listItem = self.isList(parentNode);
          if (!listItem)
          {
             if (self.isHeading(parentNode.nodeName) || parentNode.nodeName === 'BLOCKQUOTE')
             {
-               console.log("Q");
                e.preventDefault();
-               self.newParagraph(parentNode.nextSibling);
+               self.newParagraph(null, parentNode.parentNode, parentNode.nextSibling);
             }
             else
             {
@@ -588,8 +603,8 @@ function MJEditor(selector, opts) {
                         {
                            e.preventDefault();
                            self.cleanUp();
-                           console.log($(parentNode.parentNode));
-                           console.log($(currentNode));
+                           //console.log($(parentNode.parentNode));
+                           //console.log($(currentNode));
                            /*if (currentNode.insertBefore)
                             self.newParagraph(null, currentNode);
                             else*/
@@ -722,8 +737,12 @@ function MJEditor(selector, opts) {
                     }, 1);
                  },
                  keyDownListener = function (e) {
-                    var sel = d.getSelection(),
-                            range = sel.getRangeAt(0);
+                    var sel = d.getSelection();
+                    var range;
+
+                    if (!sel.anchorNode)
+                       return;
+                    range = sel.getRangeAt(0);
                     self.currentNode = range.startContainer;
 
                     if (e.keyCode === 13)
@@ -739,9 +758,10 @@ function MJEditor(selector, opts) {
                        {
                           if (self.liveElement.className.indexOf('editor-heading') === -1 && self.currentNode === self.liveElement)
                           {
+                             console.log('no heading');
                              self.newParagraph();
                           }
-                          else if (self.currentNode.parentNode && self.currentNode.parentNode.tagName !== 'P' && self.currentNode.tagName !== 'P' )
+                          else if (self.currentNode.parentNode && !self.isHeading(self.currentNode.parentNode.nodeName) && self.currentNode.parentNode.tagName !== 'P' && self.currentNode.tagName !== 'P')
                           {
                              console.log($(self.currentNode));
                              console.log('inja');
@@ -773,6 +793,7 @@ function MJEditor(selector, opts) {
             toolkit.on(this.elements[i], 'keyup', keyUpListener);
             toolkit.on(this.elements[i], 'blur', blur);
             toolkit.on(this.elements[i], 'focus', focus);
+            this.liveElement = this.elements[i];
          }
 
          toolkit.on(d.getElementById('editor-link-field'), 'keydown', linkInputListener);

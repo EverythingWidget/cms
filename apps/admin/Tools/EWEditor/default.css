@@ -25,7 +25,7 @@
    padding: 0px;
    z-index: 1000;
    border-radius: 5px;
-   box-shadow:0px 2px 8px rgba(0,0,0,.3);
+   box-shadow:0px 2px 5px -1px rgba(0,0,0,.5);
    overflow:hidden;
 }
 #editor-mask {
@@ -55,6 +55,9 @@
 }
 
 #editor button.active {
+   background-color:#37474F;   
+}
+#editor button.active:hover {
    background-color:#263238;   
 }
 #editor button:hover {

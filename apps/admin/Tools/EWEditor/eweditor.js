@@ -28,9 +28,9 @@ EWEditor.prototype.init = function (settings)
    this.editorValue = this.editorWindow.html();
    this.editorWindow.empty();
    this.editorToolbar = $("<div class='col-xs-12'><div class=row></div></div>").find('.row');
-   this.editorToolbar.parent().css({zIndex: 1, backgroundColor: '#e0e0e0', position: 'absolute', top: '0px', width: '100%', height: '80px', border: '0px solid #000', borderRadius: '6px'});
+   this.editorToolbar.parent().css({zIndex: 1, backgroundColor: '#e0e0e0', position: 'absolute', top: '0px', width: '100%', height: '50px', border: '0px solid #000', borderRadius: '6px'});
    this.editorContent = $("<div>");
-   this.editorContent.css({position: 'absolute', top: '80px', bottom: 0, width: '100%'});
+   this.editorContent.css({position: 'absolute', top: '50px', bottom: 0, width: '100%'});
    this.iFrame = $("<iframe src='app-admin/Tools/EWEditor/editor.html'>");
    this.editorWindow.css({backgroundColor: '#fff', position: 'absolute', left: '10px', top: '5px', right: '10px', bottom: '5px'});
    this.iFrame.css({width: '100%', height: '100%', border: '0px solid #000'});
@@ -69,6 +69,7 @@ EWEditor.prototype.init = function (settings)
       self.initPlugins(settings.plugins);
       self.initEventListeners();
       self.editorContentBody.html(self.editorValue);
+      self.iFrame[0].contentWindow.Editor.init();
    });
 
    //iFrame.css({height: editor.outerHeight()});
@@ -109,18 +110,16 @@ EWEditor.prototype.initPlugins = function (plugins)
       else
          self.sizeSlider.parent().hide();
    });
-   var ssp = $('<div class="row"><div class="col-xs-6 pull-right"></div></div>');
-   ssp.children().eq(0).append(this.sizeSlider);
-   this.editorToolbar.parent().append(ssp);
+   var ssp = $('<div class="col-xs-6 pull-right">');
+   ssp.append(this.sizeSlider);
+   this.editorToolbar.append(ssp);
 
    var cra = false;
    var currentElement;
 
-   this.controlRow.find('button').on('click', function ()
+   this.controlRow.find('.add-row').on('click', function ()
    {
-      if (!currentElement)
-         return;
-      if (currentElement.is('#container'))
+      if (!currentElement || currentElement.is('#container'))
       {
          frameEditor.addRow();
       }
@@ -133,46 +132,53 @@ EWEditor.prototype.initPlugins = function (plugins)
          frameEditor.addRow(currentElement);
       }
    });
-   this.controlRow.on('mouseenter', function ()
+
+   this.controlRow.find('.add-text').on('click', function ()
    {
-      cra = true;
+      if (!currentElement || currentElement.is('#container'))
+      {
+         frameEditor.addElement($('<p>Text</p>'));
+      }
+      else if (currentElement)
+      {
+         frameEditor.addElement($('<p>Text</p>'), currentElement);
+      }
+      /*else if (currentElement.is('.column'))
+       {
+       frameEditor.addRow(currentElement);
+       }*/
    });
-   this.controlRow.on('mouseleave', function ()
-   {
-      cra = false;
-   });
+
 
    var oldStyle = {};
    var target = {};
-
-   setInterval(function ()
-   {
-      if (currentElement)
-      {
-         target.offset = currentElement.offset();
-         target.size = {width: currentElement.outerWidth(), height: currentElement.outerHeight()};
-         if (JSON.stringify(target) === JSON.stringify(oldStyle))
-         {
-            return;
-         }
-         self.controlRow.css({top: currentElement.offset().top + currentElement.outerHeight() - 28,
-            left: currentElement.offset().left+2, width: currentElement.outerWidth() - 4});
-         oldStyle.offset = currentElement.offset();
-         oldStyle.size = {width: currentElement.outerWidth(), height: currentElement.outerHeight()};
-         //console.log("sssssssss");
-      }
-   }, 50);
    frameEditor.on('element-select', function (element)
    {
       if (element/* && element.is('.column, .row')*/)
       {
-         //console.log(element);
          currentElement = element;
-         //self.controlRow.show();
       }
-      //else if (!cra)
-      //self.controlRow.hide();
+
    });
+   /*setInterval(function ()
+    {//console.log(currentElement);
+    if (currentElement)
+    {
+    target.offset = currentElement.offset();
+    target.size = {width: currentElement.outerWidth(), height: currentElement.outerHeight()};
+    if (JSON.stringify(target) === JSON.stringify(oldStyle))
+    {
+    
+    return;
+    }
+    self.controlRow.css({top: currentElement.offset().top + currentElement.outerHeight(),
+    left: currentElement.offset().left + ((currentElement.outerWidth() - 500) / 2), width: '500px'});
+    oldStyle.offset = currentElement.offset();
+    oldStyle.size = {width: currentElement.outerWidth(), height: currentElement.outerHeight()};
+    
+    }
+    }, 50);*/
+
 }
 
 EWEditor.prototype.initEventListeners = function ()
@@ -182,70 +188,19 @@ EWEditor.prototype.initEventListeners = function ()
    var frameWindow = this.iFrame[0].contentWindow;
    var frameDoc = this.iFrame[0].contentDocument;
 
-   /*this.editorContentBody.on('focus', function (e)
-    {
-    //self.editorContentBody.attr('contenteditable', true);
-    // self.iFrame[0].contentWindow.Editor.selectElement(self.editorContentBody);
-    //self.editorContentBody.focus();
-    if (self.activeElement)
-    self.activeElement.removeClass('active');
-    self.activeElement = self.editorContentBody;
-    self.triggerSelectElement();
-    });
-    this.editorContentBody.on('blur', function (e)
-    {
-    //self.editorContentBody.attr('contenteditable', false);
-    //self.activeElement = null;
-    //self.triggerSelectElement();
-    });
-    this.editorContentBody.on('keydown', function (e) {
-    //e.preventDefault();
-    });*/
-}
-
-EWEditor.prototype.getSelection = function ()
-{
-   var frameWindow = this.iFrame[0].contentWindow;
-   var frameDoc = this.iFrame[0].contentDocument;
-
-   var range = frameDoc.createRange();
-   var sel = frameWindow.getSelection();
-   return sel;
-}
-
-EWEditor.prototype.focusElement = function (node)
-{
-   //this.editorContentBody.append(node);
-   var frameWindow = this.iFrame[0].contentWindow;
-   var frameDoc = this.iFrame[0].contentDocument;
-
-   var range = frameDoc.createRange();
-   var sel = frameWindow.getSelection();
-
-   range.selectNodeContents(node);
-   //range.setEnd(node, 1);
-   //range.collapse(false);
-   sel.removeAllRanges();
-   sel.addRange(range);
-}
-
-EWEditor.prototype.addRow = function (col)
-{
-
-}
-
-EWEditor.prototype.addColumn = function (row)
-{
-
 }
 
 EWEditor.prototype.setContent = function (content)
 {
    this.editorValue = content;
-   //this.editorContentBody.html(content);
+   if (this.editorContentBody)
+      this.editorContentBody.html(content);
 }
 
-EWEditor.prototype.triggerSelectElement = function (content)
+EWEditor.prototype.getContent = function ()
 {
+   if (this.editorContentBody)
+      this.editorValue = this.editorContentBody.html();
+   return this.editorValue;
 }
 
