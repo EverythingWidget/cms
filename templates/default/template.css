@@ -117,7 +117,7 @@ root{display:block;}
    .actions-bar > button,.actions-bar > .btn-group{margin-right:10px;margin-bottom:8px;float:left;}
    .top-pane .form-content{bottom:51px;}
    .top-pane .footer-pane, #main-content .footer-pane{height:52px;}
-   
+
 }
 @media (min-width: 1360px) 
 {
@@ -267,9 +267,9 @@ button{padding:0px;margin:0px;border:none;background-color:transparent;white-spa
 #header-pane > .bar:last-child .comp-btn{height:40px;margin:4px 0px;border:0px solid rgba(0,0,0,.2);border-radius:4px;border-bottom-left-radius:0px;border-top-left-radius:0px;background-color:#4f5f6f;color:#fff;}
 #header-pane > .bar:last-child .comp-btn:focus{background-color:rgba(0,0,0,.1);}
 .actions-bar{height:50px;padding:8px;padding-bottom:0px;display:block;overflow:auto;}
-h2.actions-bar{height:auto;}
-h2.actions-bar span{float:left;margin-right:15px;}
-h2.actions-bar > button{margin-top:3px;}
+h2.actions-bar{min-height:54px;}
+h2.actions-bar span{float:left;margin-right:15px;line-height:34px;}
+//h2.actions-bar > button{margin-top:3px;}
 ul.actions-bar {height:34px;margin:0px;padding:8px;display:block;list-style:none;}
 ul.actions-bar li{margin-right:10px;padding:0px;float:left;overflow:hidden;height:34px;}
 ul.actions-bar li a.button{display:block;white-space:nowrap;}
@@ -525,9 +525,9 @@ table.contents td{padding:5px;vertical-align:top;max-width: 100px;min-width: 100
 .icon.incorrect{background-image:url('incorrect-small-icon.png')}
 .close-icon:hover{opacity:.9}
 .x-icon{background-image:url('cross16.png');}
-.btn i{cursor:pointer;background-position:center center;background-repeat:no-repeat;margin:0px -4px}
-.uis-icon{background-image:url('uis-icon.png');}
-.link-icon{background-image:url('link-icon.png');}
+.btn i{cursor:pointer;background-position:center center;background-repeat:no-repeat;margin:0px -4px;}
+.uis-icon{background-image:url('uis-icon.png');min-width: 20px;  min-height: 20px;  display: block;}
+.link-icon{background-image:url('link-icon.png');min-width: 20px;  min-height: 20px;  display: block;}
 div.notification{min-height:40px;line-height:20px;margin:5px 0px 0px 5px;background-color:#ddd;display:block;padding:10px 40px 10px 10px;border-radius:4px;box-shadow:0px 1px 2px 0px rgba(0,0,0,.2);}
 div.notification .close{margin:-10px 0px;position:absolute;right:0px;height:40px;width:40px;}
 div.notification ul{padding:0px;margin-bottom:0px;}

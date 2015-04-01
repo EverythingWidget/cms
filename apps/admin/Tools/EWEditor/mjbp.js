@@ -644,6 +644,9 @@ function MJEditor(selector, opts) {
          return self;
       },
       backspaceHandler: function (e) {
+         var range = w.getSelection().getRangeAt(0);
+         console.log($(range));
+         //if(range.nodeName)
          if (!!toolkit.isChrome()) {
             this.cleanUp();
          }

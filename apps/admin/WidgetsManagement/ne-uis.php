@@ -717,7 +717,7 @@ session_start();
          });
       setTimeout(function () {
          self.relocateGlassPanes();
-      }, 500);
+      }, 1000);
    }
    /** Create a json string from current layout structure heirarchy 
     * 
