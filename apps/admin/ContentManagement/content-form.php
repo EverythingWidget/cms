@@ -34,7 +34,8 @@ function get_editor($form_config, $form_id)
 
          var ewEditor = new EWEditor({
             id: '#content-editor',
-            bootstrap: './core/css/bootstrap.min.css'
+            bootstrap: './core/css/bootstrap.min.css',
+            ew_media_url: "<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/Media.php",
          });
          contentEditor = ewEditor;
          $("#<?php echo $form_id ?>").on("refresh", function (e, formData)

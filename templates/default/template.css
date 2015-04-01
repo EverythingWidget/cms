@@ -525,7 +525,7 @@ table.contents td{padding:5px;vertical-align:top;max-width: 100px;min-width: 100
 .icon.incorrect{background-image:url('incorrect-small-icon.png')}
 .close-icon:hover{opacity:.9}
 .x-icon{background-image:url('cross16.png');}
-.btn i{width:20px;height:20px;cursor:pointer;background-position:center center;background-repeat:no-repeat;display:block;margin:0px -4px}
+.btn i{cursor:pointer;background-position:center center;background-repeat:no-repeat;margin:0px -4px}
 .uis-icon{background-image:url('uis-icon.png');}
 .link-icon{background-image:url('link-icon.png');}
 div.notification{min-height:40px;line-height:20px;margin:5px 0px 0px 5px;background-color:#ddd;display:block;padding:10px 40px 10px 10px;border-radius:4px;box-shadow:0px 1px 2px 0px rgba(0,0,0,.2);}

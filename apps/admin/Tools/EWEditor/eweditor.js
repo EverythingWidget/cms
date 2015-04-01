@@ -2,20 +2,21 @@
 
 function EWEditor(config)
 {
-   var settings = $.extend({id: null}, config);
+   this.settings = $.extend({id: null}, config);
    this.editorWindow;
    this.activeElement;
 
    this.editorToolbar;
    this.editorContent;
+   this.editorBottomToolbar;
    this.editorContentBody;
    this.editorContentHead;
    //this.editor = {};
    this.iFrame;
    this.editorValue;
-   this.controlRow;
+   //this.editorBottomToolbar;
 
-   this.init(settings);
+   this.init(this.settings);
 
 }
 
@@ -28,7 +29,9 @@ EWEditor.prototype.init = function (settings)
    this.editorValue = this.editorWindow.html();
    this.editorWindow.empty();
    this.editorToolbar = $("<div class='col-xs-12'><div class=row></div></div>").find('.row');
-   this.editorToolbar.parent().css({zIndex: 1, backgroundColor: '#e0e0e0', position: 'absolute', top: '0px', width: '100%', height: '50px', border: '0px solid #000', borderRadius: '6px'});
+   this.editorToolbar.parent().css({zIndex: 1, backgroundColor: '#e0e0e0', position: 'absolute', top: '0px', width: '100%', height: '50px', border: '0px solid #000', borderRadius: '2px'});
+   this.editorBottomToolbar = $("<div id='control-row' class='control-row actions-bar' >");
+   this.editorBottomToolbar.css({zIndex: 1, backgroundColor: '#fff', position: 'absolute', bottom: '0px', width: '100%', border: '0px solid #000'})
    this.editorContent = $("<div>");
    this.editorContent.css({position: 'absolute', top: '50px', bottom: 0, width: '100%'});
    this.iFrame = $("<iframe src='app-admin/Tools/EWEditor/editor.html'>");
@@ -36,36 +39,14 @@ EWEditor.prototype.init = function (settings)
    this.iFrame.css({width: '100%', height: '100%', border: '0px solid #000'});
    this.editorWindow.append(this.editorToolbar.parent());
    this.editorWindow.append(this.editorContent);
+   this.editorWindow.append(this.editorBottomToolbar);
    this.editorContent.html(this.iFrame);
    this.iFrame.contents().find("body").append("<div id='container' class='container'>");
 
-   //this.editorContentHead = this.iFrame.contents().find("head");
-   /* this.editorContentHead.append("<link rel='stylesheet' href='" + settings.bootstrap + "'/>");
-    this.editorContentHead.append("<style>\n\
-    html, body{padding:10px 2px;margin:0px} \n\
-    .container{width:100%} \n\
-    //p{outline:1px dashed #aaa} \n\
-    .row{border:2px solid #ccc;} \n\
-    .row:focus{outline:none;border-color:#888;}\n\
-    .row:before {content: 'ROW';line-height: 20px;display:block;padding:0px 4px;  font-size: 11px;  font-weight: bold;}\n\
-    .column{border:2px solid rgba(0,0,0,.1);padding-top:20px;min-height:44px;}\n\
-    .column:focus:before{background-color:#3cf;}\n\
-    .column:focus{border-color:#3cf;outline:none;}\n\
-    .column:before {content: 'COLUMN';line-height: 20px;display:block;padding:0px 4px;font-size: 11px;font-weight:bold;background-color: rgba(0,0,0,.1);margin:-20px -15px 0;}\n\
-    </style>");
-    
-    this.editorContentHead.append("<script src='app-admin/Tools/EWEditor/medium-editor.js'></script>");
-    this.editorContentHead.append("<script>\n\
-    setTimeout(function(){var editor = new MediumEditor('.column');},'500');\n\
-    \n\
-    </script>");*/
-
-   //this.editorContentBody.html(this.editorValue);
-   //alert(this.editorValue);
    this.iFrame.on('load', function ()
    {
       self.editorContentBody = self.iFrame.contents().find("#container");
-      self.controlRow = self.iFrame[0].contentWindow.Editor.controlRow;
+      //self.controlRow = self.iFrame[0].contentWindow.Editor.controlRow;
       self.initPlugins(settings.plugins);
       self.initEventListeners();
       self.editorContentBody.html(self.editorValue);
@@ -75,18 +56,21 @@ EWEditor.prototype.init = function (settings)
    //iFrame.css({height: editor.outerHeight()});
 
 }
-var EWEditorPlugin = {
-   plugins: [],
-   add: function (pluginName, pluginInit)
-   {
-      this.plugins[pluginName] = pluginInit;
-   }
-}
+EWEditor.prototype.PluginManager =
+        {
+           plugins: [],
+           register: function (pluginName, pluginInit)
+           {
+              this.plugins[pluginName] = pluginInit;
+           }
+
+        }
 EWEditor.prototype.initPlugins = function (plugins)
 {
    var self = this;
    var frameEditor = self.iFrame[0].contentWindow.Editor;
    var frameWindow = $(self.iFrame[0].contentDocument.body);
+
    //self.addRow();
 
    this.sizeSlider = $('<input class="col-xs-12" type="text" name="col-lg-" id="col-lg-" value="12" data-slider="true" data-slider-range="1,12" data-slider-snap="true" data-slider-highlight="true" data-slider-step="1" >');
@@ -116,8 +100,8 @@ EWEditor.prototype.initPlugins = function (plugins)
 
    var cra = false;
    var currentElement;
-
-   this.controlRow.find('.add-row').on('click', function ()
+   var addBlock = $("<button type='button' class='btn btn-info add-row'><i class='fa fa-plus fa-lg'></i></button>");
+   addBlock.on('click', function ()
    {
       if (!currentElement || currentElement.is('#container'))
       {
@@ -132,8 +116,48 @@ EWEditor.prototype.initPlugins = function (plugins)
          frameEditor.addRow(currentElement);
       }
    });
+   this.editorBottomToolbar.append(addBlock);
 
-   this.controlRow.find('.add-text').on('click', function ()
+   var addImage = $("<button type='button' class='btn btn-info add-photo'><i class='fa fa-picture-o fa-lg'></i></button>");
+   addImage.on('click', function (e)
+   {
+      EW.activeElement = addImage;
+      var dp = EW.createModal({});
+      $.post(self.settings.ew_media_url, function (data) {
+         dp.append("<div class='footer-pane row actions-bar action-bar-items' ></div>");
+         // create button to add photo to the editor
+         var bSelectPhoto = EW.addAction("Select Photo", function () {
+            EW.setHashParameter("select-photo", true, "Media");
+         }, {display: "none"}).addClass("btn-success");
+         // create handler to track selected
+         var EWhandler = function ()
+         {
+            var url = EW.getHashParameter("absUrl", "Media");
+            if (url)
+               bSelectPhoto.comeIn(300);
+            else
+               bSelectPhoto.comeOut(200);
+            if (EW.getHashParameter("select-photo", "Media"))
+            {
+               EW.setHashParameter("select-photo", null, "Media");
+               dp.dispose();
+               //if (EW.getHashParameter("url", "Media"))
+               editor.insertContent("<img src='" + EW.getHashParameter("absUrl", "Media") + "' alt=''>");
+            }
+         };
+         EW.addURLHandler(EWhandler, "Media");
+         // add the media section content to the dialog
+         // after the footer-pane because the buttons should be added to the dooter-pane instead of main actions bar
+         var d = $("<div class='form-content'></div>").append(data);
+         dp.prepend(d);
+         // add header at begining
+         dp.prepend("<h1>EW Media</h1>");
+      });
+   });
+   this.editorBottomToolbar.append(addImage);
+
+   var addText = $("<button type='button' class='btn btn-info add-text'><i class='fa fa-font fa-lg'></i></button>");
+   addText.on('click', function ()
    {
       if (!currentElement || currentElement.is('#container'))
       {
@@ -148,7 +172,7 @@ EWEditor.prototype.initPlugins = function (plugins)
        frameEditor.addRow(currentElement);
        }*/
    });
-
+   this.editorBottomToolbar.append(addText);
 
    var oldStyle = {};
    var target = {};
