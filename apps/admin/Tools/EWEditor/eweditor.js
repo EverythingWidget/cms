@@ -1,4 +1,32 @@
 
+var ImageEditor = {
+   img: null,
+   controlPanel: null,
+   init: function ()
+   {
+      var imgControlPanel = $("<div class='btn-group' data-toggle='buttons'></div>");
+      var left = $("<label class='btn btn-info left'><i class='fa fa-align-left'></i><input type='radio'/></label>");
+      left.on('click', $.proxy(this.setFloat, this, 'left'))
+      var center = $("<label class='btn btn-info none'><i class='fa fa-align-center'></i><input type='radio'/></label>");
+      center.on('click', $.proxy(this.setFloat, this, 'none'))
+      var right = $("<label class='btn btn-info right'><i class='fa fa-align-right'></i><input type='radio'/></label>");
+      right.on('click', $.proxy(this.setFloat, this, 'right'))
+      imgControlPanel.append([left, center, right]);
+      this.controlPanel = imgControlPanel;
+   },
+   setImage: function (img)
+   {
+      this.img = img;
+      this.controlPanel.find(".center").click();
+      if (this.img.css('float'))
+         this.controlPanel.find("." + this.img.css('float')).click();
+
+   },
+   setFloat: function (float)
+   {
+      this.img.css({float: float, margin: '0 auto', maxWidth: '100%'});
+   }
+}
 
 function EWEditor(config)
 {
@@ -14,6 +42,7 @@ function EWEditor(config)
    //this.editor = {};
    this.iFrame;
    this.editorValue;
+   this.nodeCP;
    //this.editorBottomToolbar;
 
    this.init(this.settings);
@@ -28,18 +57,20 @@ EWEditor.prototype.init = function (settings)
    this.editorComponent = $(settings.id);
    this.editorValue = this.editorComponent.html();
    this.editorComponent.empty();
-   this.editorToolbar = $("<div class='col-xs-12'><div class=row></div></div>").find('.row');
-   this.editorToolbar.parent().css({zIndex: 1, backgroundColor: '#e0e0e0', position: 'absolute', top: '0px', width: '100%', height: '50px', border: '0px solid #000', borderRadius: '2px'});
+   this.nodeCP = $('<div class="col-xs-6 pull-right">');
+   this.editorToolbar = $("<div class='row'></div>");
+   this.editorToolbar.css({zIndex: 1, backgroundColor: '#e0e0e0', position: 'absolute', top: '0px', width: '100%', height: '64px', border: '0px solid #000', borderRadius: '2px', margin: '0px', padding: '10px 0px'});
    this.editorBottomToolbar = $("<div id='control-row' class='control-row actions-bar' >");
    this.editorBottomToolbar.css({zIndex: 1, backgroundColor: '#fff', position: 'absolute', bottom: '0px', width: '100%', border: '0px solid #000'})
    this.editorContent = $("<div>");
-   this.editorContent.css({position: 'absolute', top: '50px', bottom: 0, width: '100%'});
+   this.editorContent.css({position: 'absolute', top: '68px', bottom: 0, width: '100%'});
    this.iFrame = $("<iframe src='app-admin/Tools/EWEditor/editor.html'>");
    this.editorComponent.css({backgroundColor: '#fff', position: 'absolute', left: '10px', top: '5px', right: '10px', bottom: '5px'});
    this.iFrame.css({width: '100%', height: '100%', border: '0px solid #000'});
-   this.editorComponent.append(this.editorToolbar.parent());
+   this.editorToolbar.append(this.nodeCP);
+   this.editorComponent.append(this.editorToolbar);
    this.editorComponent.append(this.editorContent);
-   this.editorComponent.append(this.editorBottomToolbar);
+   //this.editorComponent.append(this.editorBottomToolbar);
    this.editorContent.html(this.iFrame);
    this.iFrame.contents().find("body").append("<div id='container' class='container'>");
 
@@ -93,10 +124,11 @@ EWEditor.prototype.initPlugins = function (plugins)
    var self = this;
    //var self.editorFrame = self.iFrame[0].contentWindow.Editor;
    var frameWindow = $(self.iFrame[0].contentDocument.body);
-
+   var buttons = $('<div class="col-xs-6 col-btn-row">');
    //self.addRow();
 
    this.sizeSlider = $('<input class="col-xs-12" type="text" name="col-lg-" id="col-lg-" value="12" data-slider="true" data-slider-range="1,12" data-slider-snap="true" data-slider-highlight="true" data-slider-step="1" >');
+   //this.sizeSlider.css({marginTop: '-5px'});
    this.sizeSlider.on('change', function ()
    {
       self.Util.setColumnSize(self.editorFrame.activeElement, self.sizeSlider.val());
@@ -111,11 +143,8 @@ EWEditor.prototype.initPlugins = function (plugins)
       else
          self.sizeSlider.parent().hide();
    });
-   var ssp = $('<div class="col-xs-6 pull-right">');
-   ssp.append(this.sizeSlider);
-   this.editorToolbar.append(ssp);
+   this.nodeCP.append(this.sizeSlider);
 
-   var cra = false;
    var currentElement;
    var addBlock = $("<button type='button' class='btn btn-info add-row'><i class='fa fa-plus fa-lg'></i></button>");
    addBlock.on('click', function ()
@@ -133,7 +162,8 @@ EWEditor.prototype.initPlugins = function (plugins)
          self.editorFrame.addRow(currentElement);
       }
    });
-   this.editorBottomToolbar.append(addBlock);
+   buttons.append(addBlock);
+
 
    var addImage = $("<button type='button' class='btn btn-info add-photo'><i class='fa fa-picture-o fa-lg'></i></button>");
    addImage.on('click', function (e)
@@ -154,13 +184,14 @@ EWEditor.prototype.initPlugins = function (plugins)
                bSelectPhoto.comeIn(300);
             else
                bSelectPhoto.comeOut(200);
-            if (EW.getHashParameter("select-photo", "Media"))
+
+            if (EW.getHashParameter("select-photo", "Media") || EW.getHashParameter("cmd", "Media") == "preview")
             {
                EW.setHashParameter("select-photo", null, "Media");
                dp.dispose();
-               EW.setHashParameters({"albumId": null});
-               //if (EW.getHashParameter("url", "Media"))
-               self.editorFrame.addElement($("<img src='" + EW.getHashParameter("absUrl", "Media") + "' alt=''>"), currentElement);
+               EW.setHashParameters({"albumId": null, perview: null});
+
+               self.editorFrame.addImage(currentElement, EW.getHashParameter("absUrl", "Media"));
             }
          };
          EW.addURLHandler(EWhandler, "Media");
@@ -172,7 +203,21 @@ EWEditor.prototype.initPlugins = function (plugins)
          dp.prepend("<h1>EW Media</h1>");
       });
    });
-   this.editorBottomToolbar.append(addImage);
+   ImageEditor.init();
+   ImageEditor.controlPanel.hide();
+   this.nodeCP.append(ImageEditor.controlPanel);
+   self.editorFrame.on('element-select', function (element)
+   {
+      if (element && element.is('img'))
+      {
+         ImageEditor.setImage(element);
+         ImageEditor.controlPanel.show();
+         //self.sizeSlider.val(self.Util.getColumnSize(element)).change();
+      }
+      else
+         ImageEditor.controlPanel.hide();
+   });
+   buttons.append(addImage);
 
    var addText = $("<button type='button' class='btn btn-info add-text'><i class='fa fa-font fa-lg'></i></button>");
    addText.on('click', function ()
@@ -190,7 +235,8 @@ EWEditor.prototype.initPlugins = function (plugins)
        frameEditor.addRow(currentElement);
        }*/
    });
-   this.editorBottomToolbar.append(addText);
+   buttons.append(addText);
+   this.editorToolbar.append(buttons);
 
    var oldStyle = {};
    var target = {};
@@ -244,6 +290,7 @@ EWEditor.prototype.getContent = function ()
    if (this.editorContentBody)
    {
       this.editorContentBody.find('.active').removeClass('active');
+      this.editorContentBody.find("[contenteditable]").attr('contenteditable', null);
       this.editorValue = this.editorContentBody.html();
    }
    return this.editorValue;

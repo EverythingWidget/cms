@@ -141,7 +141,13 @@ function MJEditor(selector, opts) {
 
          guiLeft = guiLeft < limit ? limit : guiLeft > limitR ? limitR : guiLeft;
 
-         this.gui.style.top = boundary.top - (this.gui.clientHeight + 8) + window.pageYOffset + "px";
+         var temp = boundary.top - (this.gui.clientHeight + 8) + window.pageYOffset;
+         this.gui.style.top = temp + "px";
+         if (temp < 0)
+         {
+            this.gui.style.top = boundary.bottom + 8 + window.pageYOffset + "px";
+         }
+
          this.gui.style.left = guiLeft + "px";
          return this;
       },

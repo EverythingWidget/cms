@@ -135,6 +135,8 @@ root{display:block;}
    .top-pane .form-content{bottom:51px;}
    .top-pane .footer-pane, #main-content .footer-pane{height:52px;}
 }
+//.col-btn-row{padding-top:10px;}
+.col-btn-row .btn{margin-right:5px;}
 .top-pane .form-content{background-color:#fff;padding:0px;top:50px;position:absolute;overflow:auto;overflow-x:hidden;left:0px;right:0px;margin:0px;}
 #main-content .form-content{background-color:transparent;left:0px;margin-left:0px;width:100%;}
 .top-pane .footer-pane, #main-content .footer-pane{border-top:1px solid rgba(0,0,0,.1);background-clip:padding-box;background-color:#eee;z-index:5;}
