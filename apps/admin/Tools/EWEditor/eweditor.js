@@ -155,7 +155,7 @@ EWEditor.prototype.initPlugins = function (plugins)
       }
       else if (currentElement.is('.row'))
       {
-         self.editorFrame.addColumn(currentElement, 12 - self.Util.getColumnSize(currentElement.find(".column:last-child")));
+         self.editorFrame.addColumn(currentElement, 12 - self.Util.getColumnSize(currentElement.find(".column").last()));
       }
       else if (currentElement.is('.column'))
       {

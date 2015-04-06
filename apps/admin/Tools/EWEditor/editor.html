@@ -14,7 +14,7 @@
          html, body{padding:0px;margin:0px;height:100%;} 
          body{padding-top:30px;}
          .container{width:100%;height:100%;}
-         #container{height:auto;border:2px solid #aaa;width:100%;top:0px;bottom:10px;position:absolute;overflow:auto;}
+         #container{height:auto;border:2px solid transparent;width:100%;top:0px;bottom:10px;position:absolute;overflow:auto;}
          img.active,div.active,#container.active{outline:none;border-color:#333;box-shadow:0px 2px 5px -1px rgba(0,0,0,.5);}
          div.active:before{color:#fff;background-color:#333;}
          div.active:hover{border-color:#333}
@@ -23,12 +23,13 @@
          .column{border:2px solid rgba(0,0,0,.1);padding-top:20px;min-height:44px;padding-bottom:30px;position:relative;}
          .column:before {content: 'COLUMN';line-height: 20px;display:block;padding:0px 4px;font-size: 11px;font-weight:bold;background-color: rgba(0,0,0,.1);margin:-20px -15px 0;cursor:pointer;}
          .column:hover{border-color:rgba(0,0,0,.3)}
-         .ew-block-remove {display:none;z-index:100;font-family:'FontAwesome';position:absolute;right:0px; top:0px;text-align:center;cursor:pointer;}
+         .ew-block-remove {display:none;z-index:100;font-family:'FontAwesome';position:absolute;right:0px; top:0px;text-align:center;cursor:pointer;color:#F44336;}
          .ew-block-remove i{display:block;width:20px;height:20px;font-size:15px;font-weight:normal;line-height:20px;}
          .active > .ew-block-remove{display:block;}
          .control-row{width:100%;padding:10px;background-color:rgba(255,255,255,.5);position:absolute;z-index:5;margin-top: -56px;text-align:center;position:absolute;bottom:0px;}
          .control-row .btn{float:none;margin:0px 5px;display:inline-block;}
          img{display:block;margin:0px auto;max-width:100%;border:2px solid transparent;}
+         p{background-color:#eee;}
       </style>
 
       <script>
@@ -60,14 +61,14 @@
                           }
                           if (target.is('div'))
                              target.attr('contenteditable', true);
-                          /*if (target.is(".row, .column"))
-                           {
-                           target.append("<div class='ew-block-remove' contenteditable='false'><i class='fa fa-times'></i></div>");
-                           target.find('.ew-block-remove').on('click', function ()
-                           {
-                           target.remove();
-                           });
-                           }*/
+                          if (target.is(".row, .column"))
+                          {
+                             target.append("<div class='ew-block-remove' contenteditable='false'><i class='fa fa-times'></i></div>");
+                             target.find('.ew-block-remove').on('click', function ()
+                             {
+                                target.remove();
+                             });
+                          }
                           self.activeElement = target;
 
                           var targetElement = target[0];
