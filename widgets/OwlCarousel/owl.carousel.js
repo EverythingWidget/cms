@@ -323,7 +323,7 @@
 
             css = {'width': this.settings.autoWidth ? 'auto' : width - this.settings.margin};
             css[this.settings.rtl ? 'margin-left' : 'margin-right'] = this.settings.margin;
-
+            //console.log(this);
             if (!this.settings.autoWidth && $.grep(this._mergers, function (v) {
                return v > 1
             }).length > 0) {
@@ -413,24 +413,31 @@
       // append content
       this.replace(this.$element.children().not(this.$stage.parent()));
 
-      // set view width
-      this._width = this.$element.width();
-
-      // update view
-      this.refresh();
-
       this.$element.removeClass('owl-loading').addClass('owl-loaded');
+      var self = this;
+      self._width = self.$element.width();
+
+      // set view width
+      self._width = self.$element.width();
+
+      // update view      
+      self.refresh();
 
       // attach generic events
-      this.eventsCall();
+      self.eventsCall();
 
       // attach generic events
-      this.internalEvents();
+      self.internalEvents();
 
       // attach custom control events
-      this.addTriggerableEvents();
+      self.addTriggerableEvents();
 
-      this.trigger('initialized');
+      self.trigger('initialized');
+      setTimeout(function () {
+         self._width = self.$element.width();
+         self.invalidate('width');
+         self.refresh();
+      }, 100);
    };
 
    /**

@@ -1126,7 +1126,7 @@ class EWCore
                      }
                      //if(admin\UsersManagement::user_has_permission($settings["app"], $settings["section"], $permission_id))
                      //$permissions_titles[$app_name]["section"][$section_name]["permission"][$permission_name] = array("parent" => "$app_name.$section_name", "title" => $permission_name, "description" => $permission_info["description"]);
-                     $allowed_activities["app-$app_name/$section_name/$method"] = array(
+                     $allowed_activities["app-$app_name.$section_name.$method"] = array(
                          "activityTitle" => $title,
                          "app" => $app_name,
                          "appTitle" => "tr:$app_name{" . $sections["appTitle"] . "}",

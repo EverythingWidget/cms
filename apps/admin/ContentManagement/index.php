@@ -32,44 +32,6 @@ function script()
       {
       };
       var oldLib = "";
-      /*$(document).ready(function () {
-         var contentManagement = new ContentManagement();
-         EW.addURLHandler(function () {
-            var lib = EW.getHashParameter("lib");
-            if (contentManagement.oldLib !== lib)
-            {
-               if (contentManagement.currentLib) 
-               {
-                  if (contentManagement.currentLib.dispose) 
-                  {
-                     contentManagement.currentLib.dispose();
-                  }
-                  $("#action-bar-items").find("button").remove();
-               }
-               if (lib == "documents") 
-               {
-                  EW.lock($("#main-content"), "");
-                  $.post('<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/Documents.php', function (data) {
-                     EW.unlock($("#main-content"));
-                     $("#main-content").html(data);
-                     contentManagement.currentLib = documents;
-                  });
-                  contentManagement.oldLib = "documents";
-               } 
-               else 
-               {
-                  EW.lock($("#main-content"), "");
-                  $.post('<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/Media.php', function (data) {
-                     EW.unlock($("#main-content"));
-                     $("#main-content").html(data);
-                     contentManagement.currentLib = media;
-                  });
-                  contentManagement.oldLib = "media";
-               }
-            }
-            return "ContentManagementHandler";
-         });
-      });*/
    </script>
    <?php
    return ob_get_clean();

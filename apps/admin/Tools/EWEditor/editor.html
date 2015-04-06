@@ -16,15 +16,13 @@
          .container{width:100%;height:100%;}
          #container{height:auto;border:2px solid #aaa;width:100%;top:0px;bottom:10px;position:absolute;overflow:auto;}
          img.active,div.active,#container.active{outline:none;border-color:#333;box-shadow:0px 2px 5px -1px rgba(0,0,0,.5);}
-         //p{outline:1px dashed #aaa} 
+         div.active:before{color:#fff;background-color:#333;}
+         div.active:hover{border-color:#333}
          .row{border:2px solid #ccc;min-height:20px;position:relative;} 
-         //.row:focus{outline:none;border-color:#333;}
          .row:before {content: 'ROW';line-height: 20px;display:block;padding:0px 4px;  font-size: 11px;  font-weight: bold;}
          .column{border:2px solid rgba(0,0,0,.1);padding-top:20px;min-height:44px;padding-bottom:30px;position:relative;}
-         //.column:focus:before{background-color:#3cf;}
-         //.column:focus{border-color:#3cf;outline:none;}
          .column:before {content: 'COLUMN';line-height: 20px;display:block;padding:0px 4px;font-size: 11px;font-weight:bold;background-color: rgba(0,0,0,.1);margin:-20px -15px 0;cursor:pointer;}
-         .column:hover:before{background-color: rgba(0,0,0,.16);}
+         .column:hover{border-color:rgba(0,0,0,.3)}
          .ew-block-remove {display:none;z-index:100;font-family:'FontAwesome';position:absolute;right:0px; top:0px;text-align:center;cursor:pointer;}
          .ew-block-remove i{display:block;width:20px;height:20px;font-size:15px;font-weight:normal;line-height:20px;}
          .active > .ew-block-remove{display:block;}
@@ -165,14 +163,11 @@
                        triggerSelectElement: function (content)
                        {
                           $(document.body).trigger('element-select', [this.activeElement]);
-                          //console.log("sss");
+
                           for (var i = 0; i < this.eventHandlers.length; i++)
                           {
                              this.eventHandlers[i].action.call(this, this.activeElement);
                           }
-                          //if (this.activeElement)
-                          //this.iFrame[0].contentWindow.Editor.selectElement(this.activeElement);
-
                        },
                        on: function (name, action)
                        {
@@ -184,7 +179,6 @@
                           var ce = $("#container")[0];
                           $("#container").on('click', $.proxy(this.clickHandler, self));
                           $("#container").click();
-
                        }
                     }
 

@@ -88,7 +88,10 @@ $page = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 <link rel="stylesheet" type="text/css" href="widgets/OwlCarousel/owl.theme.default.css"/>
 <script>
    $(document).ready(function () {
+
       $.getScript("widgets/OwlCarousel/owl.carousel.js", function () {
+
+         //$("div[data-widget-id='{$widget_id}'] > .owl-carousel").hide();
          $("div[data-widget-id='{$widget_id}'] > .owl-carousel").owlCarousel({responsiveClass: true,
             autoHeight:<?php echo $auto_height ?>,
             loop:<?php echo $loop ?>,
@@ -112,6 +115,7 @@ $page = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
                   items:<?php echo $item_per_slide_lg ?>
                }
             }});
+
       });
    });
 </script>

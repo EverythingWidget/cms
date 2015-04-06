@@ -377,7 +377,7 @@ if (!isset($_SESSION['login']))
                      event.preventDefault();
                      if (a.attr("data-ew-nav"))
                      {
-                        EW.setHashParameter("nav", a.attr("data-ew-nav"));
+                        EW.setHashParameters({"nav": a.attr("data-ew-nav")}, null, true);
                      }
                      else
                      {

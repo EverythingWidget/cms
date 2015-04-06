@@ -13,21 +13,16 @@ if (!$form_config["contentType"])
 if (!$form_config["formTitle"])
    $form_config["formTitle"] = "Article";
 
-//$content_type = ($form_config["contentType"]) ? $form_config["contentType"] : "article";
-//echo $content_data;
 function get_editor($form_config, $form_id)
 {
    ob_start();
    ?>
-
    <div  id="content-editor" style="" ></div>
    <!--<div class="col-lg-12 mar-top">
       <textarea  id="content" name="content" style="" ></textarea>
    </div>-->
 
-            <!--<script src="<?php echo EW_ROOT_URL ?>app-admin/Tools/tinymce/tinymce.min.js"></script>-->
    <script src="<?php echo EW_ROOT_URL ?>app-admin/Tools/EWEditor/eweditor.js"></script>
-   <!--<script src="<?php echo EW_ROOT_URL ?>app-admin/Tools/ckeditor/ckeditor.js"></script>-->
    <script>
       var contentEditor;
       $(document).ready(function () {
@@ -35,7 +30,7 @@ function get_editor($form_config, $form_id)
          var ewEditor = new EWEditor({
             id: '#content-editor',
             bootstrap: './core/css/bootstrap.min.css',
-            ew_media_url: "<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/Media.php",
+            ew_media_url: "<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/link-chooser-media.php",
          });
          contentEditor = ewEditor;
          $("#<?php echo $form_id ?>").on("refresh", function (e, formData)
@@ -177,8 +172,6 @@ function get_properties($form_config, $form_id)
    return ob_get_clean();
 }
 
-//EWCore::register_form("ew-article-form-default", "article-properties", "Properties", get_ew_article_properties_form());
-//EWCore::register_form("ew-article-form-default", "article-content", "Content", get_editor());
 $tabsDefault = EWCore::read_registry("ew-article-form-default");
 $tabs = EWCore::read_registry("ew-article-form-tab");
 ?>
@@ -328,7 +321,7 @@ $tabs = EWCore::read_registry("ew-article-form-tab");
          delete formData.key;
          delete formData.value;
          formData['labels'] = this.getLabels();
-         if(contentEditor)
+         if (contentEditor)
             formData["content"] = contentEditor.getContent();
          //formData["content"] = CKEDITOR.instances.content.getData();
          /*if (tinymce && tinymce.activeEditor)

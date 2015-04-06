@@ -1,7 +1,7 @@
 <?php
 
 //session_start();
-//$albumInfo = EWCore::process_command("admin", "ContentManagement", "get_album", array("albumId" => $_REQUEST["albumId"]));
+$albumInfo = EWCore::process_command("admin", "ContentManagement", "get_album", array("albumId" => $_REQUEST["albumId"]));
 
 function inputs()
 {
@@ -57,7 +57,7 @@ function scripts()
          });
       }
       var AlbumForm = new AlbumForm();
-      $("#title").focus();
+      //$("#title").focus();
    </script>
    <?php
 

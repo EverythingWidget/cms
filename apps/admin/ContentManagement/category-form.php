@@ -1,10 +1,8 @@
 <?php
-
-session_start();
 $categoryInfo = array();
 if ($_REQUEST["categoryId"])
 {
-   $categoryInfo = EWCore::process_command("admin", "ContentManagement", "get_category", array("id" => $_REQUEST["categoryId"]));
+   $categoryInfo = EWCore::process_command("admin", "ContentManagement", "get_category", array("id" => $_REQUEST["folderId"]));
 }
 else
 {

@@ -222,10 +222,10 @@ class ContentManagement extends \Section
    {
       if (preg_match('/\$content\.(\w*)/', $content_id))
          return [];
-      
+
       if (!$content_id)
          return [];
-      
+
       if (!$value)
          $value = '%';
 
@@ -392,7 +392,7 @@ class ContentManagement extends \Section
 
       return ['title' => ['link' => '', 'icon' => '']];
    }
-   
+
    public function ew_menu_feeder_cp_languages($parameters)
    {
       //$this->v
@@ -442,10 +442,10 @@ class ContentManagement extends \Section
       $container_id = ew_contents::find($parent_id);
       $container_id = $container_id['parent_id'];
       $folders = ew_contents::where('parent_id', '=', $parent_id)->where('type', 'folder')->get(['*', \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
-      
+
       $rows = array();
       $folders_ar = $folders->toArray();
-      
+
       foreach ($folders_ar as $i)
       {
          $i["parent_id"] = $container_id;
@@ -794,21 +794,18 @@ class ContentManagement extends \Section
       {
          $files = array();
          // Folder
-         $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents WHERE type = 'album' AND parent_id = '$parent_id' ORDER BY title") or die("safasfasf");
-         while ($r = $result->fetch_assoc())
-         {
-            $files[] = array(title => $r["title"], type => "folder", size => "", ext => "", "parentId" => 0, "id" => $r["id"]);
-         }
+         $files = ew_contents::where('type', 'album')->where('parent_id', $parent_id)->orderBy('title')->get(['*', \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")])->toArray();
+         /* $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents WHERE type = 'album' AND parent_id = '$parent_id' ORDER BY title") or die("safasfasf");
+           while ($r = $result->fetch_assoc())
+           {
+           $files[] = array(title => $r["title"], type => "folder", size => "", ext => "", "parentId" => 0, "id" => $r["id"]);
+           } */
 
          // images
          $result = $db->query("SELECT *,ew_contents.id AS content_id, DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents, ew_images WHERE ew_contents.id = ew_images.content_id AND parent_id = '$parent_id' ORDER BY title") or die("safasfasf");
          while ($r = $result->fetch_assoc())
          {
             $file = $r["source"];
-            /* while ($file = readdir($dir_contents))
-              {
-              if (strpos($file, '.') === 0 || strpos($file, '.thumb.'))
-              continue; */
             $file_path = $root . $path . $file;
             $file_info = pathinfo($file_path);
 
@@ -1071,7 +1068,7 @@ class ContentManagement extends \Section
                }
 
                $this->create_image_thumb($foo->file_dst_pathname, 140);
-               $succeed++;  
+               $succeed++;
             }
             else
             {

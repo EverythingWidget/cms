@@ -1,17 +1,17 @@
 <?php ?>
 <div class="row">
    <div class="col-xs-12">
-      <input class="text-field" name="webroot/web-title" id="web-title" data-label="tr{Website Tite}">
+      <input class="text-field" name="webroot.web-title" id="web-title" data-label="tr{Website Tite}">
    </div>
 </div>
 <div class="row">
    <div class="col-xs-12">
-      <textarea class="text-field" name="webroot/web-description" id="web-description" data-label="tr{Website Description}"></textarea>
+      <textarea class="text-field" name="webroot.web-description" id="web-description" data-label="tr{Website Description}"></textarea>
    </div>
 </div>
 <div class="row">
    <div class="col-xs-12">
-      <textarea class="text-field" name="webroot/web-keywords" id="web-keywords" data-label="tr{Website Keywords}"></textarea>
+      <textarea class="text-field" name="webroot.web-keywords" id="web-keywords" data-label="tr{Website Keywords}"></textarea>
       <label class="small">Seperate with comma (,)</label>
    </div>
 </div>
@@ -27,6 +27,7 @@
       {
          $.post('<?php echo EW_ROOT_URL; ?>app-admin/Settings/read_settings',{app:"webroot"}, function (data)
          {
+            console.log(data);
             EW.setFormData("#settings-form", data);
          }, "json");
       };

@@ -174,27 +174,27 @@ EWEditor.prototype.initPlugins = function (plugins)
          dp.append("<div class='footer-pane row actions-bar action-bar-items' ></div>");
          // create button to add photo to the editor
          var bSelectPhoto = EW.addAction("Select Photo", function () {
-            EW.setHashParameter("select-photo", true, "Media");
+            EW.setHashParameter("select-photo", true, "media");
          }, {display: "none"}).addClass("btn-success");
          // create handler to track selected
          var EWhandler = function ()
          {
-            var url = EW.getHashParameter("absUrl", "Media");
+            var url = EW.getHashParameter("absUrl", "media");
             if (url)
                bSelectPhoto.comeIn(300);
             else
                bSelectPhoto.comeOut(200);
 
-            if (EW.getHashParameter("select-photo", "Media") || EW.getHashParameter("cmd", "Media") == "preview")
+            if (EW.getHashParameter("select-photo", "media") || EW.getHashParameter("cmd", "media") == "preview")
             {
-               EW.setHashParameter("select-photo", null, "Media");
+               EW.setHashParameter("select-photo", null, "media");
                dp.dispose();
                EW.setHashParameters({"albumId": null, perview: null});
 
-               self.editorFrame.addImage(currentElement, EW.getHashParameter("absUrl", "Media"));
+               self.editorFrame.addImage(currentElement, EW.getHashParameter("absUrl", "media"));
             }
          };
-         EW.addURLHandler(EWhandler, "Media");
+         EW.addURLHandler(EWhandler, "media");
          // add the media section content to the dialog
          // after the footer-pane because the buttons should be added to the dooter-pane instead of main actions bar
          var d = $("<div class='form-content'></div>").append(data);
@@ -248,24 +248,6 @@ EWEditor.prototype.initPlugins = function (plugins)
       }
 
    });
-   /*setInterval(function ()
-    {//console.log(currentElement);
-    if (currentElement)
-    {
-    target.offset = currentElement.offset();
-    target.size = {width: currentElement.outerWidth(), height: currentElement.outerHeight()};
-    if (JSON.stringify(target) === JSON.stringify(oldStyle))
-    {
-    
-    return;
-    }
-    self.controlRow.css({top: currentElement.offset().top + currentElement.outerHeight(),
-    left: currentElement.offset().left + ((currentElement.outerWidth() - 500) / 2), width: '500px'});
-    oldStyle.offset = currentElement.offset();
-    oldStyle.size = {width: currentElement.outerWidth(), height: currentElement.outerHeight()};
-    
-    }
-    }, 50);*/
 
 }
 

@@ -14,8 +14,6 @@ $.fn.serializeJSON = function ()
          o[this.name] = this.value || '';
       }
    });
-   //alert(JSON.stringify(o));
-   //alert(o);
    //console.log(o);
    if ($.isEmptyObject(o))
    {
@@ -119,7 +117,6 @@ EverythingWidgets.prototype.addListItem = function (text, handler, css)
    action.addClass("button");
    if (css)
       li.css(css);
-   //alert(handler);
    action.attr("type", "button");
    action.text(text).click(handler);
    li.append(action);
@@ -165,7 +162,6 @@ EverythingWidgets.prototype.addNotification = function (css)
    var notification = $(document.createElement("label"));
    if (css)
       li.css(css);
-   //alert(handler);
    //notification.text(text);
    li.append(notification);
    li.setText = function (text, time)
@@ -209,6 +205,8 @@ EverythingWidgets.prototype.getActivity = function (conf)
    var settings = {title: "", defaultClass: "btn-primary", activity: null};
    $.extend(settings, conf);
    var ac = 1;
+   settings.activity = settings.activity.replace(/\//g, ".");
+
    if (!self.activities[settings.activity])
    {
       console.log("activity does not exist: " + settings.activity);
@@ -234,13 +232,13 @@ EverythingWidgets.prototype.getActivity = function (conf)
 
    $.extend(self.activities[activityId], conf);
    var activityCaller = function (hash) {
+
       var hashParameters = {ew_activity: activityId};
       // Call hash if it is a function
       if (typeof hash == 'function')
       {
          hash = hash();
       }
-
       $.extend(hashParameters, hash);
 
       // if the activity contains a form then set a main hash parameter
@@ -452,7 +450,6 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler)
 EverythingWidgets.prototype.getParentDialog = function (element)
 {
    var parentDialog = element.closest(".top-pane");
-   //alert("ha");
    return parentDialog;
 };
 EverythingWidgets.prototype.createDropMenu = function (element, config)
@@ -750,7 +747,6 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
       self.addURLHandler(function () {
          if (self.getHashParameter(settings.hash.key, settings.hash.name) === settings.hash.value)
          {
-            //alert("ddddd");
             modalPane.trigger("open");
          }
          else
@@ -896,86 +892,20 @@ EverythingWidgets.prototype.setHashParameter = function (key, value, hashName)
    var data = {};
    if (key)
    {
-      //alert(key + " " + value)
       data[key] = value;
+      this.setHashParameters(data, hashName);
    }
-   this.setHashParameters(data, hashName);
-   /*var hashValue = window.location.hash;
-    
-    if (hashName)
-    {
-    // create new hash listener if new hash name has been passed
-    if (!customHashes[hashName])
-    {
-    //alert(hashName);
-    customHashes[hashName] = new HashListener(hashName);
-    hashValue = customHashes[hashName].hash;
-    }
-    else
-    {
-    this.removeURLHandler("", hashName);
-    hashValue = customHashes[hashName].hash;
-    }
-    }
-    if (hashValue.indexOf("#") !== -1)
-    {
-    hashValue = hashValue.substring(1);
-    }
-    var pairs = hashValue.split("&");
-    var newHash = "#";
-    var keyExisted = false;
-    var i = 0;
-    var and = false;
-    if (hashValue.indexOf(key) == -1 && value == null)
-    {
-    return;
-    }
-    //alert(pairs.length + " " + value);
-    $.each(pairs, function (i, v)
-    {
-    var keyAndValue = v.split("=");
-    if (keyAndValue[0] == key && value == null)
-    {
-    return;
-    }
-    if (and && !newHash.match(/&$/))
-    {
-    newHash += "&";
-    and = false;
-    }
-    if (keyAndValue[0] == key && value != null)
-    {
-    newHash += keyAndValue[0] + "=" + value;
-    keyExisted = true;
-    and = true;
-    }
-    
-    else if (keyAndValue[0])
-    {
-    newHash += keyAndValue[0] + "=" + keyAndValue[1];
-    and = true;
-    }
-    
-    });
-    if (!keyExisted && key && value != null)
-    {
-    if (newHash != "#" && !newHash.match(/&$/))
-    newHash += "&";
-    newHash += key + "=" + value;
-    }
-    // set newHash for corresponding hash name if it has been passed
-    if (hashName)
-    {
-    customHashes[hashName].hash = newHash;
-    //alert(customHashes[hashName].hash);
-    }
-    // set url hash if no hash name specified
-    else
-    window.location.hash = newHash;*/
-
 };
-EverythingWidgets.prototype.setHashParameters = function (parameters, hashName)
+
+EverythingWidgets.prototype.setHashParameters = function (parameters, hashName, clean)
 {
+   /*if (JSON.stringify(this.lastHashParams) == JSON.stringify(parameters) || $.isEmptyObject(parameters))
+    {
+    console.log("repeated params");
+    return;
+    }
+    console.log(parameters);*/
+   this.lastHashParams = parameters;
    var hashValue = window.location.hash;
    if (hashName)
    {
@@ -999,54 +929,73 @@ EverythingWidgets.prototype.setHashParameters = function (parameters, hashName)
    var pairs = hashValue.split("&");
    var newHash = "#";
    var and = false;
-   /*if (hashValue.indexOf(key) == -1 && value == null)
-    {
-    return;
-    }*/
-   //alert(pairs.length + " " + value);
-   // Existed keys
-   $.each(pairs, function (i, v)
+   hashValue.replace(/([^&]*)=([^&]*)/g, function (m, k, v)
    {
-      var keyAndValue = v.split("=");
-      var keyExisted = false;
-      // set new value for existed key
-      if (parameters[keyAndValue[0]] != null)
+
+      if (parameters[k] != null)
       {
-         if (and)
-         {
-            newHash += "&";
-            and = false;
-         }
-         newHash += keyAndValue[0] + "=" + parameters[keyAndValue[0]];
+         newHash += k + "=" + parameters[k];
+         newHash += '&';
          and = true;
-         delete parameters[keyAndValue[0]];
+         delete parameters[k];
       }
-      // Set pervious value for existed key
-      else if (!parameters.hasOwnProperty(keyAndValue[0]) && v)
+      else if (!parameters.hasOwnProperty(k) && !clean)
       {
-         if (and)
-         {
-            newHash += "&";
-            and = false;
-         }
-         newHash += keyAndValue[0] + "=" + keyAndValue[1];
+         newHash += k + "=" + v;
+         newHash += '&';
          and = true;
       }
-      //alert(newHash);
+      //if (and)
+
+      //console.log(m);
    });
+
+   // Existed keys
+   /*$.each(pairs, function (i, v)
+    {
+    var keyAndValue = v.split("=");
+    var keyExisted = false;
+    // set new value for existed key
+    if (parameters[keyAndValue[0]] != null)
+    {
+    if (and)
+    {
+    newHash += "/";
+    and = false;
+    }
+    newHash += keyAndValue[0] + "=" + parameters[keyAndValue[0]];
+    and = true;
+    delete parameters[keyAndValue[0]];
+    }
+    // Set pervious value for existed key
+    else if (!parameters.hasOwnProperty(keyAndValue[0]) && v && !clean)
+    {
+    
+    if (and)
+    {
+    newHash += "/";
+    and = false;
+    }
+    newHash += keyAndValue[0] + "=" + keyAndValue[1];
+    and = true;
+    }
+    //alert(newHash);
+    });*/
+
    // New keys
    $.each(parameters, function (key, value)
    {
       if (key && value)
       {
-         if (and && !newHash.match(/&$/))
-         {
-            newHash += "&";
-         }
-         newHash += key + "=" + value;
+         /* if (and && !newHash.match(/\/$/))
+          {
+          newHash += "/";
+          }*/
+         newHash += key + "=" + value + "&";
          and = true;
       }
    });
+
    // set newHash for corresponding hash name if it has been passed
    if (hashName)
    {
@@ -1075,13 +1024,111 @@ EverythingWidgets.prototype.getHashParameter = function (key, hashName)
    var pairs = hashValue.split("&");
    for (test in pairs)
    {
-      var keyAndValue = pairs[test].split("=");
-      if (keyAndValue[0] === key)
+      var keyAndValue = pairs[test].match(/([^&]*)=([^&]*)/);
+      //console.log(keyAndValue);
+      if (keyAndValue && keyAndValue[1] === key)
       {
-         return keyAndValue[1];
+         return keyAndValue[2];
       }
    }
    return null;
+};
+
+EverythingWidgets.prototype.Router = {
+   baseURL: "#",
+   routers: [],
+   routes: [],
+   /*registerRouter: function (baseURL)
+    {
+    var clonedRouter = $.extend({}, this);
+    clonedRouter.baseURL = this.baseURL + baseURL;
+    clonedRouter.routes = [];
+    for (var i = 0; i < this.routers.length; i++)
+    {
+    if (this.routers[i].baseURL == baseURL)
+    {
+    
+    this.routers[i] = clonedRouter;
+    return this.routers[i];
+    }
+    }
+    this.addRouter(clonedRouter);
+    return clonedRouter;
+    },*/
+   getInstance: function (baseURL)
+   {
+      var clonedRouter = $.extend({}, this);
+      clonedRouter.baseURL = this.baseURL + baseURL;
+      clonedRouter.routes = [];
+      /*for (var i = 0; i < this.routers.length; i++)
+       {
+       if (this.routers[i].baseURL == baseURL)
+       {
+       this.routers[i] = clonedRouter;
+       return this.routers[i];
+       }
+       }*/
+      return clonedRouter;
+   },
+   addRouter: function (router)
+   {
+      this.routers.push(router);
+   },
+   on: function (url, callback)
+   {
+      for (var i = 0; i < this.routes.length; i++)
+      {
+         if (this.routes[i].url == url)
+         {
+            this.routes[i].callback = callback;
+            EW.newHandler = true;
+            return null;
+         }
+      }
+      EW.newHandler = true;
+      this.routes.push({url: url, callback: callback});
+
+   },
+   notifyRoutes: function ()
+   {
+      var self = this;
+      var url = window.location.hash;
+      //url = window.location.hash.replace(this.baseURL, "");
+      url = url || "/";
+      for (var i = 0; i < this.routes.length; i++)
+      {
+         if ($.type(this.routes[i].url) === "string")
+         {
+            //alert(window.location.hash + ">" + this.baseURL + "+" + this.routes[i].url);
+            var patt = new RegExp("^" + this.baseURL + this.routes[i].url);
+            if (this.routes[i].url == "/" && window.location.hash == this.baseURL + this.routes[i].url)
+            {
+               url.replace(this.routes[i].url, this.routes[i].callback);
+               continue;
+            }
+            if (this.routes[i].url != "/" && patt.test(url))
+            {
+               url.replace(this.routes[i].url, function ()
+               {
+                  arguments = Array.prototype.slice.call(arguments, 1);
+                  var temp = self.getInstance(self.routes[i].url);
+                  self.routes[i].callback.apply(temp, arguments);
+                  temp.notifyRoutes();
+               });
+            }
+         }
+         else if ($.type(this.routes[i].url) === "regexp")
+         {
+            url.replace(this.routes[i].url, function (url)
+            {
+               arguments = Array.prototype.slice.call(arguments, 1);
+               var temp = self.getInstance(url);
+               self.routes[i].callback.apply(temp, arguments);
+               temp.notifyRoutes();
+            });
+         }
+      }
+   }
 };
 EverythingWidgets.prototype.loadMainContent = function (url)
 {
@@ -1537,7 +1584,6 @@ EverythingWidgets.prototype.addURLHandler = function (handler, hashName)
       {
          if (" " + handlers[i] == " " + handler)
          {
-            //alert("rep");
             //console.log(handler.toString());
             handlers[i] = null;
             handlers[i] = handler;
@@ -1585,11 +1631,16 @@ function hashHandler()
    {
       if (this.oldHash !== window.location.hash || EW.newHandler)
       {
+         //if (EW.newHandler != true)
+         //{
+         EW.Router.notifyRoutes();
+         //}
          EW.newHandler = false;
          this.oldHash = window.location.hash;
          for (var i = 0; i < EW.urlHandlers.length; i++)
          {
             EW.urlHandlers[i].call();
+
          }
       }
    };
@@ -1940,7 +1991,6 @@ function EWFormValidator(element, options)
                errors++;
             }
          });
-         //alert($currentElement.data("validate"));
       }
    });
 
@@ -2195,10 +2245,8 @@ ew_plugins = {
                right: $element.css("padding-right")
             });
             $element.attr("data-active-plugin-input-button", true);
-            //alert();
             $element.css("padding-right", buttonsPanel.outerWidth() + (parseInt($element.css("padding-right")) * 2));
          }
-         //alert("ha");
          inputBtn.click(function ()
          {
             EW.activeElement = inputBtn;
@@ -2216,7 +2264,7 @@ EverythingWidgets.prototype.initPlugins = function ($element)
 {
    if ($element.is("input"))
    {
-      $element.attr("dir", "auto");     
+      $element.attr("dir", "auto");
       if ($element.is("[data-ew-plugin='link-chooser']"))
          $element.EW().linkChooser();
       if ($element.is("[data-label]"))
@@ -2280,7 +2328,6 @@ $(document).ready(function () {
                      modal.html(result.responseText);
                      if (result.responseJSON)
                         alert(result.responseJSON.message);
-                     //alert("sss");
                      EW.customAjaxErrorHandler = true;
                   }
                });
@@ -2316,7 +2363,7 @@ $(document).ready(function () {
          }
          else
          {
-            alert("Activity not found");
+            alert("Activity not found: " + activity);
             EW.setHashParameters({ew_activity: null});
          }
          oldEWActivity = activity;
