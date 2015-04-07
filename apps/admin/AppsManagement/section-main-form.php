@@ -5,18 +5,20 @@
  * and open the template in the editor.
  */
 
-$app_main_form = EWCore::read_registry("ew-app-main-form");
+$app_main_form = EWCore::read_registry("ew-section-main-form");
+$app_main_form = array_merge_recursive($app_main_form, $form_config);
+
 if ($app_main_form["sidebar"])
 {
-   echo '<div id="sidebar" class="sidebar">'
+   echo '<div ng-controller="Sidebar" id="sidebar" class="sidebar">'
    . $app_main_form["sidebar"]["content"]
    . '</div>';
 }
 ?>
 
-<div id="main-content" class="col-xs-12" role="main">
+<div ng-controller="MainContent" id="main-content" class="col-xs-12" role="main">
    <?php
-   //$main_content = EWCore::read_registry("ew-app-main-form");
+   //$main_content = EWCore::read_registry("ew-section-main-form");
    if ($app_main_form["content"])
    {
       echo $app_main_form["content"]["content"];
@@ -24,4 +26,4 @@ if ($app_main_form["sidebar"])
    ?>
 </div>
 <?php
-echo $form_config["script"];
+echo $app_main_form["script"];

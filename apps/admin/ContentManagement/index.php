@@ -1,20 +1,32 @@
 <?php
+
 session_start();
+
 function sidebar()
 {
    // ew-contents-main-form, sidebar
    $html = '<label>tr{Libraries}</label><ul>'
-           . '<li><a rel="ajax" data-default="true" data-ew-nav="documents" href="'.EW_ROOT_URL.'app-admin/ContentManagement/Documents.php" />tr{Documents}</a></li>'
-           . '<li><a rel="ajax" data-ew-nav="media" href="'.EW_ROOT_URL.'app-admin/ContentManagement/Media.php">tr{Media}</a></li></ul>';
+           . '<li><a rel="ajax" data-default="true" data-ew-nav="documents" href="' . EW_ROOT_URL . 'app-admin/ContentManagement/Documents.php" />tr{Documents}</a></li>'
+           . '<li><a rel="ajax" data-ew-nav="media" href="' . EW_ROOT_URL . 'app-admin/ContentManagement/Media.php">tr{Media}</a></li></ul>';
 
    return $html;
 }
 
-function script()
-{
-   ob_start();
-   ?>
-   <script>
+
+EWCore::register_form("ew-section-main-form", "sidebar", ["content" => sidebar()]);
+//EWCore::register_form("ew-section-main-form", "content", ["content" => content()]);
+echo admin\AppsManagement::create_section_main_form();
+?>
+<script>
+      moduleAdmin.controller('Sidebar', function ($scope)
+      {
+
+      });
+      moduleAdmin.controller('MainContent', function ($scope)
+      {
+
+      });
+
       function ContentManagement()
       {
          this.parentId = null;
@@ -33,11 +45,3 @@ function script()
       };
       var oldLib = "";
    </script>
-   <?php
-   return ob_get_clean();
-}
-
-EWCore::register_form("ew-app-main-form", "sidebar", ["content" => sidebar()]);
-//EWCore::register_form("ew-app-main-form", "content", ["content" => content()]);
-echo admin\AppsManagement::create_app_main_form(["script" => script()]);
-

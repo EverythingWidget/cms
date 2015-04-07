@@ -69,10 +69,10 @@ class AppsManagement extends Section
     * </p>
     * @return string
     */
-   public static function create_app_main_form($form_config = null)
+   public static function create_section_main_form($form_config = null)
    {
       ob_start();
-      include 'app-main-form.php';
+      include 'section-main-form.php';
       return ob_get_clean();
    }
 

@@ -8,7 +8,7 @@ if (!isset($_SESSION['login']))
 }
 ?> 
 <!DOCTYPE html>
-<html>
+<html ng-app="admin">
    <head>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -24,6 +24,7 @@ if (!isset($_SESSION['login']))
       <link type="text/css" href="<?php echo EW_ROOT_URL ?>core/css/bootstrap.css" rel="stylesheet" >  
       <link type="text/css" href="<?php echo EW_ROOT_URL ?>core/css/simple-slider.css" rel="stylesheet" >  
       <link href="<?php echo EW_ROOT_URL ?>templates/default/template.css" rel="stylesheet" type="text/css">
+      <script src="<?php echo EW_ROOT_URL ?>core/js/angular/angular.min.js"></script>
       <script src="<?php echo EW_ROOT_URL ?>core/js/jquery/jquery-2.1.1.min.js"></script>        
       <script src="<?php echo EW_ROOT_URL ?>core/js/jquery/sortable.js"></script>      
       <script src="<?php echo EW_ROOT_URL ?>core/js/bootstrap-datepicker.js"></script>
@@ -36,6 +37,7 @@ if (!isset($_SESSION['login']))
       <script src="<?php echo EW_ROOT_URL ?>core/js/gsap/jquery.gsap.min.js"></script>
       <!--<script type="text/javascript" src="<?php echo EW_ROOT_URL ?>core/js/jquery/jquery-ui-1.10.3.custom.js"></script>-->
       <script>
+         var moduleAdmin = angular.module("admin",[]);
          //var EW = new EverythingWidgets();
          EverythingWidgets.prototype.loadSections = function ()
          {

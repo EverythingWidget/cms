@@ -28,31 +28,14 @@ function script()
    ob_start();
    ?>
    <script  type="text/javascript">
+      moduleAdmin.controller('Sidebar', function ($scope)
+      {
 
+      });
+      moduleAdmin.controller('MainContent', function ($scope)
+      {
 
-      /*Settings.prototype.readConfig = function ()
-       {
-       /*$.post('<?php echo EW_ROOT_URL; ?>app-admin/Settings/read_settings', function(data)
-       {
-       EW.setFormData("#settings-form", data);
-       }, "json");
-       };
-          
-       Settings.prototype.saveConfig = function ()
-       {
-          
-       /*d = $("#settings-form").serializeJSON();
-       $.post('<?php echo EW_ROOT_URL; ?>app-admin/Settings/save_settings', {
-       params: d
-       },
-       function(data)
-       {
-       $("body").EW().notify(data).show();
-       }, "json");
-       };
-          
-       var settings = new Settings();*/
-      //settings.readConfig();
+      });
       $(document).ready(function () {
          if (!EW.getHashParameter("nav"))
             EW.setHashParameter("nav", "general");
@@ -62,7 +45,7 @@ function script()
    return ob_get_clean();
 }
 
-EWCore::register_form("ew-app-main-form", "sidebar", ["content" => sidebar()]);
-//EWCore::register_form("ew-app-main-form", "content", ["content" => content()]);
-echo admin\AppsManagement::create_app_main_form(["script" => script()]);
+EWCore::register_form("ew-section-main-form", "sidebar", ["content" => sidebar()]);
+//EWCore::register_form("ew-section-main-form", "content", ["content" => content()]);
+echo admin\AppsManagement::create_section_main_form(["script" => script()]);
 

@@ -22,6 +22,14 @@ function script()
    ob_start();
    ?>
    <script >
+      moduleAdmin.controller('Sidebar', function ($scope)
+      {
+
+      });
+      moduleAdmin.controller('MainContent', function ($scope)
+      {
+
+      });
       function UserManagement()
       {
       }
@@ -44,6 +52,6 @@ function script()
    return ob_get_clean();
 }
 
-EWCore::register_form("ew-app-main-form", "sidebar", ["content" => sidebar()]);
-//EWCore::register_form("ew-app-main-form", "content", ["content" => content()]);
-echo admin\AppsManagement::create_app_main_form(["script" => script()]);
+EWCore::register_form("ew-section-main-form", "sidebar", ["content" => sidebar()]);
+//EWCore::register_form("ew-section-main-form", "content", ["content" => content()]);
+echo admin\AppsManagement::create_section_main_form(["script" => script()]);
