@@ -6,7 +6,8 @@
  */
 
 $app_main_form = EWCore::read_registry("ew-section-main-form");
-$app_main_form = array_merge_recursive($app_main_form, $form_config);
+if ($app_main_form && $form_config)
+   $app_main_form = array_merge_recursive($app_main_form, $form_config);
 
 if ($app_main_form["sidebar"])
 {
