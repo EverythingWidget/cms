@@ -22,9 +22,10 @@ EWCore::set_default_locale("admin");
 //EWCore::set_db_connection(get_db_connection());
 
 $path = ltrim($_SERVER['REQUEST_URI'], '/');    // Trim leading slash(es)
+
 // Decode url to a normal string
 $path = urldecode($path);
-if (strpos($path, '?'))
+if (strpos($path, '?') !== false)
    $path = substr($path, 0, strpos($path, '?'));
 $elements = explode('/', $path);
 $parameter_index = 0;
@@ -125,7 +126,7 @@ if ($root_dir == str_replace("/", "", $r_uri))
 // Check if UI structure is specified
 if (!isset($_REQUEST["_uis"]))
 {
-   
+
    if ($section_name)
       $r_uri = "/" . $section_name;
    if ($_file)

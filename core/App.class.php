@@ -81,12 +81,12 @@ class App
 
       $pages_feeders = EWCore::read_registry("ew-widget-feeder");
       if ($class_exist)
-      {
+      { 
          $RESULT_CONTENT = $app_section_object->process_request($method_name, $parameters);
       }
       else if (EWCore::is_widget_feeder("*", "*", $section_name))
       {
-         
+        
          // Show index if the URL contains a page feeder
          $path = EW_APPS_DIR . '/' . $app_name . '/index.php';
       }
