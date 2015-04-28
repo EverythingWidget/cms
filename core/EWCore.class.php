@@ -1455,7 +1455,10 @@ class EWCore
    public static function translate_to_locale($match, $language)
    {
       global $app_name;
-
+      if ($language == "en")
+      {
+         return $match[2];
+      }
       $source_app_name = self::$apps_locales;
       $not_translated = array();
       if ($match[1])

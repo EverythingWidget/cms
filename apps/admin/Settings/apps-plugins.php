@@ -43,7 +43,8 @@
 
                         foreach ($app_langs as $key => $lang)
                         {
-                           echo "<li><a rel='ajax' class='link' href='app=$app_root,lang=$key,form=lang-editor'>{$lang["name"]}</a></li>";
+                           $lang_name = $lang["name"] ? $lang["name"] : "UNDEFINED";
+                           echo "<li><a rel='ajax' class='link' href='app=$app_root,lang=$key,form=lang-editor'>$lang_name</a></li>";
                         }
                         ?>
                      </ul>

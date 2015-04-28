@@ -72,7 +72,7 @@ EverythingWidgets.prototype.showAllComponents = function ()
    //$("#components-pane").show();
    $("#components-pane").css({
       //top: "-100px",
-      left: "-100%",
+      left: "-100%"
       //opacity: 0
    });
 
@@ -83,8 +83,10 @@ EverythingWidgets.prototype.showAllComponents = function ()
       display: "block"
    },
    500, "Power3.easeOut").addClass("in");
+   $("#base-pane").addClass("blur");
    this.lock("body", " ");
    $(".glass-pane-lock").bind("click", function (e) {
+      
       if ($('#components-pane').hasClass('in'))
       {
          $("#components-pane").stop().animate({
@@ -97,6 +99,7 @@ EverythingWidgets.prototype.showAllComponents = function ()
             //$("#components-pane").hide(0);
          }).removeClass("in");
          self.unlock("body");
+         $("#base-pane").removeClass("blur");
          //$("#components-pane").animate({top: -200}, 300);
          $(".glass-pane-lock").unbind("click");
       }
