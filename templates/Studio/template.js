@@ -199,7 +199,7 @@
             mainMenu.find("li a[href='#" + (next.attr("data-container-id")) + "']").parent().addClass("active");
          }
 
-         if (history.replaceState && settings.updateURL == true) 
+         if (history.replaceState && settings.updateURL == true)
          {
             var href = window.location.href.substr(0, window.location.href.indexOf('#')) + "#" + (index + 1);
             history.pushState({}, document.title, href);
@@ -236,7 +236,7 @@
             $(".onepage-pagination li a" + "[data-index='" + index + "']").removeClass("active");
             $(".onepage-pagination li a" + "[data-index='" + next.data("index") + "']").addClass("active");
          }
-         
+
          if (mainMenu)
          {
             mainMenu.find("li.active").removeClass("active");
@@ -372,7 +372,8 @@
       }
 
 
-      function init_scroll(event, delta) {
+      function init_scroll(event, delta)
+      {
          deltaOfInterest = delta;
          var timeNow = new Date().getTime();
          // Cancel scroll if currently animating or within quiet period
@@ -403,6 +404,12 @@
          });
          el.css("min-height", $(window).height());
          //el.css("height", $(document).height());
+      }
+
+      if (settings.mainMenu)
+      {
+         mainMenu = $(settings.mainMenu);
+         var menus = mainMenu.find("li a");
       }
       $.each(sections, function (i) {
          $(this).css({
@@ -461,10 +468,7 @@
          $('ul.onepage-pagination').html(paginationList);
       }
 
-      if (settings.mainMenu)
-      {
-         mainMenu = $(settings.mainMenu);
-      }
+
 
       if (window.location.hash != "" && window.location.hash != "#1")
       {
@@ -518,10 +522,12 @@
       {
          mainMenu.find("li a").click(function (e)
          {
-            var page_index = $(this).data("index");
-            //alert("d");
+            //var page_index = $(this).data("index");
+            var index = $(this).attr("href");
+            index = index.substr(index.indexOf('#') + 1);
+            //alert(index);
             //alert($(this).attr("href"));
-            moveTo($(this).attr("href").replace("#", ""));
+            moveTo(index);
             //e.preventDefault();
          });
       }

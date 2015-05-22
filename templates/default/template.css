@@ -219,7 +219,7 @@ body.Admin{background-image:none;}
 .top-pane.show{/*-webkit-transform: scale(1);*/}
 /*.header-pane{height:50px;font-size:15px;}*/
 .header-pane h1{white-space:nowrap;text-overflow:ellipsis;overflow:hidden;}
-.header-pane h1 span,span.header-label{/*float:left;*/line-height:30px;padding-right:10px;border-right:0px solid #999;font-weight:normal;}
+.header-pane h1 span,span.header-label{float:left;line-height:30px;padding-right:10px;border-right:0px solid #999;font-weight:normal;}
 h2 > span.header-label{line-height:40px;}
 .header-pane.tabs-bar{overflow:auto;}
 .top-pane .header-pane.tabs-bar{height:105px;}
