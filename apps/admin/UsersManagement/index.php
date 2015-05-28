@@ -22,14 +22,14 @@ function script()
    ob_start();
    ?>
    <script >
-      moduleAdmin.controller('Sidebar', function ($scope)
+      /*moduleAdmin.controller('Sidebar', function ($scope)
       {
 
       });
       moduleAdmin.controller('MainContent', function ($scope)
       {
 
-      });
+      });*/
       function UserManagement()
       {
       }

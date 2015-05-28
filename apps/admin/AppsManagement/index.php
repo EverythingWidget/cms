@@ -49,14 +49,14 @@ function script()
    ob_start();
    ?>
    <script >
-      moduleAdmin.controller('Sidebar', function ($scope)
-      {
-
-      });
-      moduleAdmin.controller('MainContent', function ($scope)
-      {
-
-      });
+      /*moduleAdmin.controller('Sidebar', function ($scope)
+       {
+       
+       });
+       moduleAdmin.controller('MainContent', function ($scope)
+       {
+       
+       });*/
       var sectionManagement = (function () {
          var appContent = $("#main-content").html();
          //$("#main-content").empty();
@@ -68,7 +68,10 @@ function script()
 
          SectionManagement.prototype.getAppConf = function (app)
          {
-            $.post('<?php echo EW_ROOT_URL; ?>app-admin/AppsManagement/AppInfo.php', {appDir: app}, function (data)
+            $.post('<?php echo EW_ROOT_URL; ?>app-admin/AppsManagement/AppInfo.php', {
+               appDir: app
+            },
+            function (data)
             {
 
                $("#app-conf").html(data);
@@ -83,7 +86,10 @@ function script()
             EW.lock($("#main-content"));
             $("#main-content").empty();
             $("#main-content").html(appContent);
-            $.post('<?php echo EW_ROOT_URL; ?>app-admin/AppsManagement/get_app_sections', {appDir: app}, function (data)
+            $.post('<?php echo EW_ROOT_URL; ?>app-admin/AppsManagement/get_app_sections', {
+               appDir: app
+            },
+            function (data)
             {
                $.each(data, function (k, v) {
                   var li = $("<li></li>");
@@ -219,10 +225,10 @@ function script()
                   sectionManagement.getAppSections(app);
                   sectionManagement.oldApp = app;
                   return;
-                  /*if (EW.getHashParameter("section", app))
-                   sec = EW.getHashParameter("section", app);
-                   else
-                   sec = "app-conf";*/
+                  //if (EW.getHashParameter("section", app))
+                  //sec = EW.getHashParameter("section", app);
+                  //else
+                  //sec = "app-conf";
                }
                sectionManagement.oldApp = app;
             }

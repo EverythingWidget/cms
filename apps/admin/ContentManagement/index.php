@@ -16,14 +16,14 @@ EWCore::register_form("ew-section-main-form", "sidebar", ["content" => sidebar()
 echo admin\AppsManagement::create_section_main_form();
 ?>
 <script>
-   moduleAdmin.controller('Sidebar', function ($scope)
+   /*moduleAdmin.controller('Sidebar', function ($scope)
    {
 
    });
    moduleAdmin.controller('MainContent', function ($scope)
    {
 
-   });
+   });*/
 
    function ContentManagement()
    {

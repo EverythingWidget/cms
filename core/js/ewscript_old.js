@@ -141,10 +141,10 @@ EverythingWidgets.prototype.addAction = function (text, handler, css, parent)
 
    action.attr("type", "button");
    action.click(handler);
-   var parentElement = $("#" + parent);
-   if (parentElement.length != 0)
+
+   if ($("#" + parent).length != 0)
    {
-      parentElement.append(action);
+      $("#" + parent).append(action);
    }
    else
    {
@@ -247,7 +247,7 @@ EverythingWidgets.prototype.getActivity = function (conf)
          ew_activity: activityId
       };
       // Call hash if it is a function
-      if (typeof hash === 'function')
+      if (typeof hash == 'function')
       {
          hash = hash();
       }
@@ -289,25 +289,26 @@ EverythingWidgets.prototype.addActivity = function (conf)
       //var emptyObj = $().data("activityCaller", null);
       return $();
    }
-   //var li = $(document.createElement("li"));
+   var li = $(document.createElement("li"));
    var action = $("<button>" + settings.title + "</button>");
-   action.attr("data-label", settings.title).addClass("btn " + settings.defaultClass + " " + settings.class);
+   action.attr("data-label", settings.title);
+   action.addClass("btn " + settings.defaultClass + " " + settings.class);
 
    action.attr("type", "button");
    action.click(function () {
       activityCaller(settings.hash);
    });
    action.data("activity", activityCaller);
-   var parentE = $("#" + settings.parent);
-   if (parentE.length !== 0)
+
+   if ($("#" + settings.parent).length != 0)
    {
-      parentE.append(action);
+      $("#" + settings.parent).append(action);
    }
    else
    {
       $(".action-bar-items").last().append(action);
    }
-   if (typeof settings.css !== "string" && settings.css)
+   if (typeof settings.css != "string" && settings.css)
    {
       action.css(settings.css);
       return action;
@@ -346,7 +347,6 @@ EverythingWidgets.prototype.getHashParameters = function (hashName)
 
 EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler)
 {
-   var form = $(formId);
    if (jsonData && jsonData["statusCode"] != 200 && jsonData["message"])
    {
       jsonData["status"] = "error";
@@ -357,36 +357,31 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler)
    }
    //alert(JSON.stringify(jsonData));
    //jsonData = $.parseJSON(JSON.stringify(jsonData));
-   var setInputData = function (key, val, form)
+   var setInputData = function (key, val)
    {
       //alert(typeof (val)) ;
       //alert(JSON.stringify(val));
 
       if (handler)
       {
-         //$(formId + " [id='" + key + "']").val(handler(key, val));
-         form.find("[id='" + key + "']").val(handler(key, val));
+         $(formId + " [id='" + key + "']").val(handler(key, val));
       }
       else
       {
          var elm = $();
-         try
-         {
-            //elm = $(formId + " :input[name='" + key + "'][value='" + val + "']");
-            elm = form.find(" :input[name='" + key + "'][value='" + val + "']");
+         try {
+            elm = $(formId + " :input[name='" + key + "'][value='" + val + "']");
          } catch (e)
          {
 
          }
-         if (elm.length === 0)
+         if (elm.length == 0)
          {
-            //elm = $(formId + " :input[name='" + key + "']");
-            elm = form.find(":input[name='" + key + "']");
+            elm = $(formId + " :input[name='" + key + "']");
          }
-         if (elm.length === 0)
+         if (elm.length == 0)
          {
-            //elm = $(formId + " #" + key);
-            elm = form.find("#" + key);
+            elm = $(formId + " #" + key);
          }
          else
          {
@@ -446,8 +441,8 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler)
          else
             field.text("");
       });
-      form.data("form-data", {});
-      form.trigger("refresh", [{}]);
+      $(formId).data("form-data", {});
+      $(formId).trigger("refresh", [{}]);
       return;
    }
 
@@ -455,16 +450,17 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler)
       //alert(typeof(val) + " " + key);
       if (typeof (val) == "object" && typeof (key) && val)
       {
+
          $.each(val, function (key1, val1) {
-            setInputData(key1, val1, form);
+            setInputData(key1, val1);
          });
       }
       else
-         setInputData(key, val, form);
+         setInputData(key, val);
    });
    //alert(formId);
-   form.data("form-data", jsonData);
-   form.trigger("refresh", [jsonData]);
+   $(formId).data("form-data", jsonData);
+   $(formId).trigger("refresh", [jsonData]);
 };
 
 EverythingWidgets.prototype.getParentDialog = function (element)
@@ -534,7 +530,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
 {
    var self = this;
    var originElement;
-   var animationDiv = $("<div class='s-to-d-scale-anim'>");
+   var animationDiv;
    var xButton;
    var methods = {
       // Set X button at the top tight corner
@@ -566,7 +562,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
       //closeAction: "hide",
       autoOpen: true
    };
-   if (typeof (onClose) === "object")
+   if (typeof (onClose) == "object")
    {
       // If hash is set, change default behaviors
       if (onClose.hash)
@@ -587,7 +583,8 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
    //var animationDuration = 600;
    this.isOpen = false;
    var modalPane = $(document.createElement("div"));
-   modalPane.addClass("top-pane col-xs-12").addClass(settings.class);
+   modalPane.addClass("top-pane col-xs-12");
+   modalPane.addClass(settings.class);
    xButton = $("<a class='close-button x-icon'>");
    xButton.css({
       position: "absolute",
@@ -621,21 +618,19 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
          if (modalPane.isOpen)
          {
             //$("#header-pane").off("mouseenter.ew mouseleave.ew");
-            //if (!animationDiv)
-            //animationDiv = $("<div class='s-to-d-scale-anim'>").css({
-            var modalOffset = modalPane.offset();
-            animationDiv.css({
-               width: modalPane.outerWidth(),
-               height: modalPane.outerHeight(),
-               top: modalOffset.top,
-               left: modalOffset.left,
-               position: "absolute",
-               //backgroundColor: "#aaa",
-               zIndex: modalPane.css("z-index")
-            });
+            if (!animationDiv)
+               animationDiv = $("<div class='s-to-d-scale-anim'>").css({
+                  width: modalPane.outerWidth(),
+                  height: modalPane.outerHeight(),
+                  top: modalPane.offset().top,
+                  left: modalPane.offset().left,
+                  position: "absolute",
+                  backgroundColor: "#aaa",
+                  zIndex: modalPane.css("z-index")
+               });
             modalPane.before(animationDiv);
             //animationDiv.text("");
-            if (settings.class !== "full")
+            if (settings.class != "full")
                self.unlock($("body"));
             // Detach the modal if close action is hide
             if (settings.closeAction === "hide")
@@ -677,11 +672,10 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
             }
             else
             {
-               var originOffset = originElement.offset();
                animationDiv.css("textShadow", "");
                animationDiv.animate({
-                  top: originOffset.top,
-                  left: originOffset.left,
+                  top: originElement.offset().top,
+                  left: originElement.offset().left,
                   width: originElement.outerWidth(),
                   height: originElement.outerHeight(),
                   lineHeight: originElement.outerHeight() + "px",
@@ -704,23 +698,24 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
       // Open the modal if it is not open
       if (!modalPane.isOpen)
       {
-         if (settings.class !== "full")
+         if (settings.class != "full")
          {
             self.lock($("body"), " ");
          }
 
-         modalPane.show().css({
+         modalPane.show();
+         modalPane.css({
             opacity: "0"
          });
          //xButton.hide();
          if (!$.contains(document.body, modalPane))
          {
             xButton.hide();
-            $("body").append(modalPane,xButton);
-            //$("body").append(xButton);
+            $("body").append(modalPane);
+            $("body").append(xButton);
          }
          originElement = self.activeElement;
-         if (settings.initElement && originElement && originElement.parent().length !== 0)
+         if (settings.initElement && originElement && originElement.parent().length != 0)
          {
             if (originElement.is("p,h1,h2,h3,h4,h5,h6,span"))
                originElement = originElement.parent();
@@ -732,9 +727,8 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
             //if (originElement.is("a"))
             //bgColor = "#26C6DA";
             var loadingLabel = originElement.data("label");
-            var eOffset = originElement.offset();
             bgColor = (bgColor == "rgba(0, 0, 0, 0)" || bgColor == "transparent") ? "#aaa" : bgColor;
-            animationDiv.css({
+            animationDiv = $("<div class='s-to-d-scale-anim'>").css({
                overflow: "hidden",
                whiteSpace: "nowrap",
                color: "#fff",
@@ -742,25 +736,22 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
                lineHeight: originElement.outerHeight(),
                fontWeight: "300",
                fontSize: originElement.css("font-size"),
-               top: eOffset.top,
-               left: eOffset.left,
+               top: originElement.offset().top,
+               left: originElement.offset().left,
                position: "absolute",
                backgroundColor: bgColor,
-               zIndex: modalPane.css("z-index"),
-               width: originElement.outerWidth(),
-               height: originElement.outerHeight()
+               zIndex: modalPane.css("z-index")
             });
             animationDiv.text(loadingLabel);
             modalPane.before(animationDiv);
-            /*animationDiv.css({
-             width: originElement.outerWidth(),
-             height: originElement.outerHeight()
-             });*/
+            animationDiv.css({
+               width: originElement.outerWidth(),
+               height: originElement.outerHeight()
+            });
             //tempDiv.animate({top: modalPane.offset().top + modalPane.outerHeight() / 6, left: modalPane.offset().left + modalPane.outerWidth() / 6, width: modalPane.outerWidth() / 1.5, height: modalPane.outerHeight() / 1.5}, {duration:420,queue:false});
-            var mpOffset = modalPane.offset();
             animationDiv.animate({
-               top: mpOffset.top,
-               left: mpOffset.left,
+               top: modalPane.offset().top,
+               left: modalPane.offset().left,
                width: modalPane.outerWidth(),
                height: modalPane.outerHeight(),
                lineHeight: modalPane.outerHeight() + "px",
@@ -802,18 +793,18 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
          else
          {
             modalPane.animate({
-               left: "-=25%"
+               left: "-=10%"
             },
-            0);
+            1);
             modalPane.animate({
                opacity: "1",
-               left: "+=25%"
+               left: "+=10%"
             },
-            520, "Power3.easeOut", function () {
+            420, "Power3.easeOut", function () {
                modalPane.css("left", "");
                methods.setCloseButton();
                modalPane.isOpen = true;
-               if (settings.class === "full")
+               if (settings.class == "full")
                {
                   $("#header-pane").off("mouseenter.ew mouseleave.ew");
                   $("#header-pane").on("mouseleave.ew", function () {
@@ -946,7 +937,6 @@ JSON.stringify = JSON.stringify || function (obj) {
       return (arr ? "[" : "{") + String(json) + (arr ? "]" : "}");
    }
 };
-
 function HashListener(name)
 {
    this.name = name;
@@ -1045,6 +1035,7 @@ EverythingWidgets.prototype.setHashParameters = function (parameters, hashName, 
    var and = false;
    hashValue.replace(/([^&]*)=([^&]*)/g, function (m, k, v)
    {
+
       if (parameters[k] != null)
       {
          newHash += k + "=" + parameters[k];
@@ -1062,6 +1053,7 @@ EverythingWidgets.prototype.setHashParameters = function (parameters, hashName, 
 
       //console.log(m);
    });
+
    // Existed keys
    /*$.each(pairs, function (i, v)
     {
@@ -1134,7 +1126,7 @@ EverythingWidgets.prototype.getHashParameter = function (key, hashName)
       hashValue = hashValue.substring(1);
    }
    var pairs = hashValue.split("&");
-   for (var test in pairs)
+   for (test in pairs)
    {
       var keyAndValue = pairs[test].match(/([^&]*)=([^&]*)/);
       //console.log(keyAndValue);
@@ -1290,7 +1282,7 @@ EverythingWidgets.prototype.lock = function (obj, string)
    else
       glass.html("<span>" + string + "</span>");
    $(obj).append(glass);
-   //var height = $(obj).outerHeight(true) === 0 ? "100%" : $(obj).outerHeight(true) - 20;
+   var height = $(obj).outerHeight(true) === 0 ? "100%" : $(obj).outerHeight(true) - 20;
    glass.animate({
       opacity: 1
    },
@@ -1381,17 +1373,13 @@ function EWTable(config)
 EWTable.prototype.createHeadersRow = function (headers)
 {
    var tr = $(document.createElement("tr"));
-   var ths = [];
    $.each(headers, function (k, v) {
-      ths.push('<th style=width:', v.width, 'px;display:', v.display, '>', k, '</th>');
-      //alert(k);
-      /*var th = $(document.createElement("th"));
-       th.css("width", v.width);
-       th.css("display", v.display);
-       th.html(k);
-       tr.append(th);*/
+      var th = $(document.createElement("th"));
+      th.css("width", v.width);
+      th.css("display", v.display);
+      th.html(k);
+      tr.append(th);
    });
-   tr.append(ths.join(''));
    return tr;
 };
 EWTable.prototype.createRow = function (val, rc)
