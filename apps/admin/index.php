@@ -30,7 +30,7 @@ if (!isset($_SESSION['login']))
       <script src="<?php echo EW_ROOT_URL ?>core/js/bootstrap-datepicker.js"></script>
       <script src="<?php echo EW_ROOT_URL ?>core/js/autocomplete.js"></script>
       <script src="<?php echo EW_ROOT_URL ?>core/js/floatlabels.min.js" ></script>
-      <script src="<?php echo EW_ROOT_URL ?>core/js/ewscript.min.js"></script>      
+      <script src="<?php echo EW_ROOT_URL ?>core/js/ewscript.js"></script>      
       <script src="<?php echo EW_ROOT_URL ?>core/js/simple-slider.js"></script>
       <script src="<?php echo EW_ROOT_URL ?>core/js/gsap/plugins/CSSPlugin.min.js"></script>
       <script src="<?php echo EW_ROOT_URL ?>core/js/gsap/TweenLite.min.js" ></script>

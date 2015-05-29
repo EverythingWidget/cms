@@ -32,7 +32,7 @@ function EverythingWidgets()
    this.currentTab = null;
    this.widget_data = [];
    this.activityCounter = [];
-   $("#components-pane").hide();
+   //$("#components-pane").hide();
    var oldSize = "";
    $(document).mousedown(function (event) {
       //console.log("clicked: " + $(event.target).text());
@@ -70,38 +70,44 @@ EverythingWidgets.prototype.showAllComponents = function ()
 {
    var self = this;
    //$("#components-pane").show();
-   $("#components-pane").css({
-      //top: "-100px",
-      left: "-100%"
-              //opacity: 0
-   });
+   /*$("#components-pane").css({
+    //top: "-100px",
+    //left: "-100%"
+    //opacity: 0
+    zindex:"-1"
+    });*/
 
-   $("#components-pane").stop().animate({
-      //top: "0px",
-      left: "0px",
-      //opacity: 1,
-      display: "block"
+   /*$("#components-pane").stop().animate({
+    //top: "0px",
+    left: "0px",
+    //opacity: 1,
+    display: "block"
+    },
+    500, "Power3.easeOut").addClass("in");*/
+   $("#base-pane").animate({
+      top: "100%"
    },
-   500, "Power3.easeOut").addClass("in");
-   $("#base-pane").addClass("blur");
-   this.lock("body", " ");
+   500);
+   //this.lock("body", " ");
    $(".glass-pane-lock").bind("click", function (e) {
 
-      if ($('#components-pane').hasClass('in'))
+      //if ($('#components-pane').hasClass('in'))
       {
-         $("#components-pane").stop().animate({
-            //top: "-100px",
-            left: -$("#components-pane").outerWidth(),
-            //opacity: 0,
-            display: "none"
-         },
-         500, "Power3.easeOut", function () {
-            //$("#components-pane").hide(0);
-         }).removeClass("in");
-         self.unlock("body");
-         $("#base-pane").removeClass("blur");
+         /*$("#components-pane").stop().animate({
+          //top: "-100px",
+          left: -$("#components-pane").outerWidth(),
+          },
+          500, "Power3.easeOut", function () {
+          //$("#components-pane").hide(0);
+          }).removeClass("in");
+          self.unlock("body");*/
+         //$("#base-pane").removeClass("blur");
          //$("#components-pane").animate({top: -200}, 300);
          $(".glass-pane-lock").unbind("click");
+         $("#base-pane").animate({
+            top: "0"
+         },
+         500);
       }
    });
 }
@@ -716,7 +722,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
          if (!$.contains(document.body, modalPane))
          {
             xButton.hide();
-            $("body").append(modalPane,xButton);
+            $("body").append(modalPane, xButton);
             //$("body").append(xButton);
          }
          originElement = self.activeElement;
@@ -748,7 +754,8 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
                backgroundColor: bgColor,
                zIndex: modalPane.css("z-index"),
                width: originElement.outerWidth(),
-               height: originElement.outerHeight()
+               height: originElement.outerHeight(),
+               borderRadius: originElement.css('borderRadius')
             });
             animationDiv.text(loadingLabel);
             modalPane.before(animationDiv);
@@ -1289,7 +1296,25 @@ EverythingWidgets.prototype.lock = function (obj, string)
    }
    else
       glass.html("<span>" + string + "</span>");
+
    $(obj).append(glass);
+   var of = {
+      top: 0,
+      left: 0
+   };
+   if (EW.activeElement)
+   {
+      of = EW.activeElement.offset();
+   }
+   if ($(obj).is("body"))
+   {
+      //$("html").css({perspectiveOrigin: of.left + "px " + of.top + "px"});
+      $("#base-pane").animate({
+         transform: "translateZ(-50px)"
+
+      },
+      460, "Power3.easeInOut");
+   }
    //var height = $(obj).outerHeight(true) === 0 ? "100%" : $(obj).outerHeight(true) - 20;
    glass.animate({
       opacity: 1
@@ -1299,6 +1324,12 @@ EverythingWidgets.prototype.lock = function (obj, string)
 };
 EverythingWidgets.prototype.unlock = function (obj)
 {
+   if ($(obj).is("body"))
+      $("#base-pane").animate({
+         transform: "none"
+      },
+      360);
+
    var ll = $(obj).children(".glass-pane-lock:not(.unlock)").last();
    ll.addClass("unlock").animate({
       opacity: 0
@@ -1306,6 +1337,7 @@ EverythingWidgets.prototype.unlock = function (obj)
    0, function ()
    {
       $(this).remove();
+
    });
 };
 function EWTable(config)
