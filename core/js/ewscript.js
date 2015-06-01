@@ -69,48 +69,60 @@ function EverythingWidgets()
 EverythingWidgets.prototype.showAllComponents = function ()
 {
    var self = this;
+   var cPane = $("#components-pane");
    //$("#components-pane").show();
-   /*$("#components-pane").css({
-    //top: "-100px",
-    //left: "-100%"
-    //opacity: 0
-    zindex:"-1"
-    });*/
-
-   /*$("#components-pane").stop().animate({
-    //top: "0px",
-    left: "0px",
-    //opacity: 1,
-    display: "block"
-    },
-    500, "Power3.easeOut").addClass("in");*/
-   $("#base-pane").animate({
-      top: "100%"
+   //$("#components-pane").addClass("trans zoom-out");
+   cPane.show().css({
+      transfom: "translateZ(150px)",
+      opacity: 0
+   });
+   cPane.stop().animate({
+      //top: "0px",
+      transform: "translateZ(0)",
+      opacity: 1
    },
-   500);
-   //this.lock("body", " ");
+   500, "Power3.easeOut").addClass("in");
+   /*$("#base-pane").animate({
+    top: "100%"
+    },
+    500);*/
+   $("#base-pane").stop().animate({
+      //top: "0px",
+      transform: "translateZ(-150px)"
+   },
+   500, "Power3.easeOut");
+   this.lock("body", " ");
    $(".glass-pane-lock").bind("click", function (e) {
 
       //if ($('#components-pane').hasClass('in'))
       {
-         /*$("#components-pane").stop().animate({
-          //top: "-100px",
-          left: -$("#components-pane").outerWidth(),
-          },
-          500, "Power3.easeOut", function () {
-          //$("#components-pane").hide(0);
-          }).removeClass("in");
-          self.unlock("body");*/
-         //$("#base-pane").removeClass("blur");
+         cPane.stop().animate({
+            //top: "-100px",
+            //left: -$("#components-pane").outerWidth()
+            transform: "translateZ(150px)",
+            opacity: 0,
+            display: "none"
+         },
+         500, "Power3.easeOut", function () {
+            //$("#components-pane").hide(0);
+         }).removeClass("in");
+         $("#base-pane").stop().animate({
+            //top: "0px",
+            transform: "translateZ(0px)"
+         },
+         500, "Power3.easeOut");
+         //cPane.removeClass("zoom-out")
+         self.unlock("body");
+         $("#base-pane").removeClass("blur");
          //$("#components-pane").animate({top: -200}, 300);
          $(".glass-pane-lock").unbind("click");
-         $("#base-pane").animate({
-            top: "0"
-         },
-         500);
+         /*$("#base-pane").animate({
+          top: "0"
+          },
+          500);*/
       }
    });
-}
+};
 /**
  * @syntax addAction(text, handler, css)
  * @param {String} text title of button
@@ -642,7 +654,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
             modalPane.before(animationDiv);
             //animationDiv.text("");
             if (settings.class !== "full")
-               self.unlock($("body"));
+               self.unlock($("#base-pane"));
             // Detach the modal if close action is hide
             if (settings.closeAction === "hide")
             {
@@ -677,7 +689,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
                },
                360, "Power1.easeOut", function () {
                   if (originElement)
-                     originElement.css("visibility", "");
+                     originElement.css("opacity", "1");
                   animationDiv.remove();
                });
             }
@@ -695,7 +707,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
                   borderRadius: originElement.css("border-radius")
                },
                360, "Power2.easeOut", function () {
-                  originElement.css("visibility", "");
+                  originElement.css("opacity", "1");
                   animationDiv.fadeOut(120, function () {
                      animationDiv.remove();
                   });
@@ -707,12 +719,13 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
    // Open event
    modalPane.on("open", function ()
    {
+      var basePane = $("#base-pane");
       // Open the modal if it is not open
       if (!modalPane.isOpen)
       {
          if (settings.class !== "full")
          {
-            self.lock($("body"), " ");
+            self.lock(basePane, " ");
          }
 
          modalPane.show().css({
@@ -722,16 +735,16 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
          if (!$.contains(document.body, modalPane))
          {
             xButton.hide();
-            $("body").append(modalPane, xButton);
+            basePane.append(modalPane, xButton);
             //$("body").append(xButton);
          }
          originElement = self.activeElement;
-         if (settings.initElement && originElement && originElement.parent().length !== 0)
+         if (settings.initElement && originElement && originElement.parent().length !== 0 && $.contains(document, originElement[0]))
          {
             if (originElement.is("p,h1,h2,h3,h4,h5,h6,span"))
                originElement = originElement.parent();
             // Get current element background color
-            originElement.css("visibility", "hidden");
+            originElement.css("opacity", ".2");
             var bgColor = originElement.css("backgroundColor");
             if (originElement.is("tr"))
                bgColor = "#78909C";
@@ -745,6 +758,8 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
                whiteSpace: "nowrap",
                color: "#fff",
                textAlign: "center",
+               opacity: "1",
+               display: "block",
                lineHeight: originElement.outerHeight(),
                fontWeight: "300",
                fontSize: originElement.css("font-size"),
@@ -808,16 +823,15 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
          }
          else
          {
-            modalPane.animate({
-               left: "-=25%"
-            },
-            0);
+            modalPane.css({
+               transform: "translateZ(100px)"
+            });
             modalPane.animate({
                opacity: "1",
-               left: "+=25%"
+               transform: "translateZ(0)"
             },
             520, "Power3.easeOut", function () {
-               modalPane.css("left", "");
+               //modalPane.css("left", "");
                methods.setCloseButton();
                modalPane.isOpen = true;
                if (settings.class === "full")
@@ -825,8 +839,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
                   $("#header-pane").off("mouseenter.ew mouseleave.ew");
                   $("#header-pane").on("mouseleave.ew", function () {
                      modalPane.stop().animate({
-                        top: "10px",
-                        bottom: "0px"
+                        top: "10px"
                      },
                      200, "Power3,easeOut");
                      xButton.show();
@@ -834,8 +847,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
                   });
                   $("#header-pane").on("mouseenter.ew", function () {
                      modalPane.stop().animate({
-                        top: "45px",
-                        bottom: "-45px"
+                        top: "45px"
                      },
                      200, "Power3,easeOut");
                      xButton.hide();
@@ -1306,15 +1318,15 @@ EverythingWidgets.prototype.lock = function (obj, string)
    {
       of = EW.activeElement.offset();
    }
-   if ($(obj).is("body"))
-   {
-      //$("html").css({perspectiveOrigin: of.left + "px " + of.top + "px"});
-      $("#base-pane").animate({
-         transform: "translateZ(-50px)"
-
-      },
-      460, "Power3.easeInOut");
-   }
+   /*if ($(obj).is("body"))
+    {
+    //$("html").css({perspectiveOrigin: of.left + "px " + of.top + "px"});
+    $("#base-pane").animate({
+    transform: "translateZ(-50px)"
+    
+    },
+    460, "Power3.easeInOut");
+    }*/
    //var height = $(obj).outerHeight(true) === 0 ? "100%" : $(obj).outerHeight(true) - 20;
    glass.animate({
       opacity: 1
@@ -1324,11 +1336,11 @@ EverythingWidgets.prototype.lock = function (obj, string)
 };
 EverythingWidgets.prototype.unlock = function (obj)
 {
-   if ($(obj).is("body"))
-      $("#base-pane").animate({
-         transform: "none"
-      },
-      360);
+   /*if ($(obj).is("body"))
+    $("#base-pane").animate({
+    transform: "none"
+    },
+    360);*/
 
    var ll = $(obj).children(".glass-pane-lock:not(.unlock)").last();
    ll.addClass("unlock").animate({
@@ -1415,7 +1427,7 @@ EWTable.prototype.createHeadersRow = function (headers)
    var tr = $(document.createElement("tr"));
    var ths = [];
    $.each(headers, function (k, v) {
-      ths.push('<th style=width:', v.width, 'px;display:', v.display, '>', k, '</th>');
+      ths.push('<th style=width:', v.width || 0, 'px;display:', v.display, '>', k, '</th>');
       //alert(k);
       /*var th = $(document.createElement("th"));
        th.css("width", v.width);
@@ -1683,6 +1695,7 @@ EWTable.prototype.read = function (customURLData)
 EWTable.prototype.refresh = function (data)
 {
    this.read(data);
+   
 };
 EWTable.prototype.removeRow = function (dataId)
 {

@@ -22,18 +22,46 @@
       this.articleId = 0;
       this.preParentId = -1;
       this.currentItem;
-      this.bUp = EW.addAction("tr{Up}", $.proxy(this.preCategory, this), {display: "none"});
+      this.bUp = EW.addAction("tr{Up}", $.proxy(this.preCategory, this), {
+         display: "none"
+      });
       this.bUp.css("float", "right");
-      this.bNewFolder = EW.addActivity({title: "tr{New Folder}", activity: "app-admin/ContentManagement/category-form.php", parent: "action-bar-items", hash: {folderId: null}}).hide();
-      this.bNewFile = EW.addActivity({title: "tr{New Article}", activity: "app-admin/ContentManagement/article-form.php", parent: "action-bar-items", hash: {articleId: null}}).hide().comeIn(300);
-      this.seeFolderActivity = EW.getActivity({activity: "app-admin/ContentManagement/category-form.php_see", onDone: function ()
+      this.bNewFolder = EW.addActivity({
+         title: "tr{New Folder}",
+         activity: "app-admin/ContentManagement/category-form.php",
+         parent: "action-bar-items",
+         hash: {
+            folderId: null
+         }
+      });
+      this.bNewFile = EW.addActivity({
+         title: "tr{New Article}",
+         activity: "app-admin/ContentManagement/article-form.php",
+         parent: "action-bar-items",
+         hash: {
+            articleId: null
+         }
+      });
+      this.seeFolderActivity = EW.getActivity({
+         activity: "app-admin/ContentManagement/category-form.php_see",
+         onDone: function ()
          {
-            EW.setHashParameters({folderId: null, articleId: null});
-         }});
-      this.seeArticleActivity = EW.getActivity({activity: "app-admin/ContentManagement/article-form.php_see", onDone: function ()
+            EW.setHashParameters({
+               folderId: null,
+               articleId: null
+            });
+         }
+      });
+      this.seeArticleActivity = EW.getActivity({
+         activity: "app-admin/ContentManagement/article-form.php_see",
+         onDone: function ()
          {
-            EW.setHashParameters({folderId: null, articleId: null});
-         }});
+            EW.setHashParameters({
+               folderId: null,
+               articleId: null
+            });
+         }
+      });
       if (this.seeArticleActivity || this.seeFolderActivity)
          this.bSee = EW.addAction("tr{See}", $.proxy(this.seeDetails, this), null, "action-bar-items").hide();
       else
@@ -45,9 +73,17 @@
          if (eventData)
          {
             if (eventData.data.type == "article")
-               EW.setHashParameters({folderId: null, articleId: eventData.data.id}, "document");
+               EW.setHashParameters({
+                  folderId: null,
+                  articleId: eventData.data.id
+               },
+               "document");
             if (eventData.data.type == "folder")
-               EW.setHashParameters({folderId: eventData.data.id, articleId: null}, "document");
+               EW.setHashParameters({
+                  folderId: eventData.data.id,
+                  articleId: null
+               },
+               "document");
          }
       });
       /*$(document).off("category-list");
@@ -58,7 +94,9 @@
 
    Documents.prototype.preCategory = function ()
    {
-      EW.setHashParameters({"parent": this.preParentId});
+      EW.setHashParameters({
+         "parent": this.preParentId
+      });
    };
    Documents.prototype.seeDetails = function ()
    {
@@ -68,20 +106,28 @@
       if (tFolderId)
       {
          this.folderId = tFolderId;
-         this.seeFolderActivity({folderId: tFolderId});
+         this.seeFolderActivity({
+            folderId: tFolderId
+         });
       }
       else if (tArticleId)
       {
          this.articleId = tArticleId;
-         this.seeArticleActivity({articleId: tArticleId});
+         this.seeArticleActivity({
+            articleId: tArticleId
+         });
       }
    };
    Documents.prototype.listCategories = function ()
    {
       var pId = 0;
       var hasNode = false;
+      var aId = EW.getHashParameter("articleId", "document");
       $("#categories-list").html("<div class='col-xs-12'><h2 >Loading Folders</h2></div>");
-      $.post('app-admin/ContentManagement/get_categories_list', {parent_id: documents.parentId}, function (data)
+      $.post('app-admin/ContentManagement/get_categories_list', {
+         parent_id: documents.parentId
+      },
+      function (data)
       {
          $("#categories-list").html("<h2 id='cate-title'>tr{Folders}</h2><div class='row box-content'></div>");
          //$("#cate-title").loadingText();
@@ -105,10 +151,13 @@
          }
       }, "json");
       $("#articles-list").html("<div class='col-xs-12'><h2>Loading Article</h2></div>");
-      $.post('app-admin/ContentManagement/get_articles_list', {parent_id: documents.parentId}, function (data)
+      $.post('app-admin/ContentManagement/get_articles_list', {
+         parent_id: documents.parentId
+      },
+      function (data)
       {
          $("#articles-list").html("<h2>tr{Articles}</h2><div class='row box-content'></div>");
-         var aId = EW.getHashParameter("articleId", "document");
+         
          var articlesPane = $("#articles-list .box-content");
          $.each(data.result, function (index, element)
          {
@@ -137,7 +186,11 @@
       });
       div.on('focus', function ()
       {
-         EW.setHashParameters({"articleId": null, "folderId": id}, "document");
+         EW.setHashParameters({
+            "articleId": null,
+            "folderId": id
+         },
+         "document");
          $(self.currentItem).removeClass("selected");
          $(div).addClass("selected");
          self.currentItem = div;
@@ -149,11 +202,17 @@
       var self = this;
       var div = $("<div tabindex='1' class='content-item article' data-article-id='{id}'><span></span><p>{title}</p><p class='date'>{round_date_created}</p></div>").EW().createView(model);
       div.dblclick(function () {
-         self.seeArticleActivity({articleId: id});
+         self.seeArticleActivity({
+            articleId: id
+         });
       });
       div.on('click focus', function ()
       {
-         EW.setHashParameters({folderId: null, articleId: id}, "document");
+         EW.setHashParameters({
+            folderId: null,
+            articleId: id
+         },
+         "document");
          $(self.currentItem).removeClass("selected");
          $(div).addClass("selected");
          self.currentItem = div;
@@ -161,19 +220,20 @@
       return div;
    };
    var documents = new Documents();
-   
+
    documents.handler = EW.addURLHandler(function ()
    {
       var itemId = EW.getHashParameter("articleId", "document") || EW.getHashParameter("folderId", "document") || null;
 
       if (!itemId)
       {
-         documents.bSee.comeOut(200);
+
+         documents.bSee.comeOut();
          $(documents.currentItem).removeClass("selected");
       }
       if (itemId)
       {
-         documents.bSee.comeIn(300);
+         documents.bSee.comeIn();
       }
    }, "document");
    EW.addURLHandler(function ()
@@ -185,8 +245,9 @@
       }
       else
       {
-         documents.bNewFolder.comeIn(300);
+         documents.bNewFolder.comeIn();
       }
+
       if (parent && documents.parentId !== parent)
       {
          documents.preParentId = documents.parentId;

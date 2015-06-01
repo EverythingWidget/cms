@@ -28,14 +28,14 @@ function script()
    ob_start();
    ?>
    <script  type="text/javascript">
-      moduleAdmin.controller('Sidebar', function ($scope)
+      /*moduleAdmin.controller('Sidebar', function ($scope)
       {
 
       });
       moduleAdmin.controller('MainContent', function ($scope)
       {
 
-      });
+      });*/
       $(document).ready(function () {
          if (!EW.getHashParameter("nav"))
             EW.setHashParameter("nav", "general");
