@@ -769,7 +769,9 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
                backgroundColor: bgColor,
                zIndex: modalPane.css("z-index"),
                width: originElement.outerWidth(),
+               //width: modalPane.outerWidth()/1.5,
                height: originElement.outerHeight(),
+               //height: modalPane.outerHeight()/1.5,
                borderRadius: originElement.css('borderRadius')
             });
             animationDiv.text(loadingLabel);
@@ -788,7 +790,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
                lineHeight: modalPane.outerHeight() + "px",
                fontSize: "4em"
             },
-            460, "Power3.easeInOut", function () {
+            460, "Power4.easeInOut", function () {
                modalPane.isOpen = true;
                modalPane.delay((!loadingLabel) ? 0 : 120).animate({
                   opacity: "1"
@@ -1444,16 +1446,17 @@ EWTable.prototype.createRow = function (val, rc)
    var tableRow = $(document.createElement("tr"));
    tableRow.data("field-id", val.id);
    tableRow.attr("data-field-id", val.id);
+   var fieldId = val.id;
    if (ewTable.config.onClick)
    {
       tableRow.click(function () {
-         ewTable.config.onClick(tableRow.data("field-id"));
+         ewTable.config.onClick(fieldId);
       });
    }
    if (ewTable.config.ondblClick)
    {
       tableRow.dblclick(function () {
-         ewTable.config.ondblClick(tableRow.data("field-id"));
+         ewTable.config.ondblClick(fieldId);
       });
    }
 
@@ -1468,7 +1471,7 @@ EWTable.prototype.createRow = function (val, rc)
       {
          EW.activeElement = tableRow;
          //EW.activeElement.attr("data-label", tableRow.data("row-title"));
-         ewTable.config.onEdit.apply(tableRow, new Array(tableRow.data("field-id")));
+         ewTable.config.onEdit.apply(tableRow, new Array(fieldId));
       });
       actionsCell.append(edit);
    }
@@ -1498,9 +1501,9 @@ EWTable.prototype.createRow = function (val, rc)
             messageRow.append(delBtn);
             delBtn.on("click", function () {
 
-               if (delFunction.apply(tableRow, new Array(tableRow.data("field-id"))))
+               if (delFunction.apply(tableRow, new Array(fieldId)))
                {
-                  ewTable.removeRow(tableRow.data("field-id"));
+                  ewTable.removeRow(fieldId);
                }
             });
             var cancelBtn = $("<button type=button class='btn btn-default btn-text' style='float:right'>Cancel</button>");
@@ -1531,8 +1534,8 @@ EWTable.prototype.createRow = function (val, rc)
             },
             300, "Power3.easeOut");
          };
-         if (ewTable.config.onDelete.apply(tableRow, new Array(tableRow.data("field-id"))))
-            tableRow.removeRow(tableRow.data("field-id"));
+         if (ewTable.config.onDelete.apply(tableRow, new Array(fieldId)))
+            tableRow.removeRow(fieldId);
       });
       actionsCell.append(del);
    }
@@ -1590,13 +1593,14 @@ EWTable.prototype.createRow = function (val, rc)
    else
    {
 
-      $.each(val, function (k, v) {
-
+      $.each(val, function (k, v)
+      {
          if (ewTable.headers.children().eq(index).css("display") !== "none")
          {
             //alert(k+" "+index);
             tableRow.data("field-" + k, v);
-            $('<td>' + v + '</td>').appendTo(tableRow);
+            //$('<td>' + v + '</td>').appendTo(tableRow);
+            tableRow[0].innerHTML += '<td>' + v + '</td>';
          }
          index++;
       });
@@ -1695,7 +1699,7 @@ EWTable.prototype.read = function (customURLData)
 EWTable.prototype.refresh = function (data)
 {
    this.read(data);
-   
+
 };
 EWTable.prototype.removeRow = function (dataId)
 {
@@ -2053,12 +2057,12 @@ EWNotification.prototype.show = function ()
    }
    this.$note.css({
       top: top,
-      marginLeft: "+=25",
+      marginLeft: "+=50",
       left: left
    });
    var $this = this;
    this.$note.stop().animate({
-      marginLeft: "-=25",
+      marginLeft: "-=50",
       opacity: "1"
    },
    300, function () {

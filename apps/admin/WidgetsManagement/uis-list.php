@@ -131,7 +131,7 @@ if (!$_SESSION['login'])
       self.currentTopPane = tp;
       EW.lock(tp);
 
-      $.post('<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/ne-uis.php', function (data) {
+      $.post('<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/ne-uis_1.php', function (data) {
          tp.html(data);
          //neuis.newUISForm();
       });

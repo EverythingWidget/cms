@@ -348,13 +348,13 @@ $tabs = EWCore::read_registry("ew-article-form-tab");
       {
          //console.log(e.find(".label-control-button"));
          var label = e.find(".label-control-button").next("span");
+         var p = e.find(".label-control-button").parent();
          if (e.find(".label-control-button").is(":checked"))
          {
             e.attr("data-activated", true);
             label.text("Turned On");
             //alert("click: "+e.attr("data-activated"));
-            e.find(".label-control-button").parent().addClass("btn-success");
-            e.find(".label-control-button").parent().removeClass("btn-default");
+            p.addClass("btn-success").removeClass("btn-default");
             e.stop().animate({className: "box box-grey content-label"}, 200);
          }
          else
@@ -362,8 +362,7 @@ $tabs = EWCore::read_registry("ew-article-form-tab");
             e.attr("data-activated", false);
             //alert("click: "+e.attr("data-activated"));
             label.text("Turned Off");
-            e.find(".label-control-button").parent().removeClass("btn-success");
-            e.find(".label-control-button").parent().addClass("btn-default");
+            p.removeClass("btn-success").addClass("btn-default");
             e.stop().animate({className: "box box-grey content-label disabled"}, 200);
          }
       });
