@@ -224,11 +224,11 @@ EWEditor.prototype.initPlugins = function (plugins)
    {
       if (!currentElement || currentElement.is('#container'))
       {
-         self.editorFrame.addElement($('<p>Text</p>'));
+         self.editorFrame.addTextElement($('<p>Text</p>'));
       }
       else if (currentElement)
       {
-         self.editorFrame.addElement($('<p>Text</p>'), currentElement);
+         self.editorFrame.addTextElement($('<p>Text</p>'), currentElement);
       }
       /*else if (currentElement.is('.column'))
        {

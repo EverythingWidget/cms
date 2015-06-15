@@ -30,6 +30,7 @@
          .control-row .btn{float:none;margin:0px 5px;display:inline-block;}
          img{display:block;margin:0px auto;max-width:100%;border:2px solid transparent;}
          p{background-color:#eee;}
+         p.active{background-color:#daeaff;}
       </style>
 
       <script>
@@ -41,15 +42,13 @@
                        activeElement: null,
                        controlRow: $("#control-row"),
                        eventHandlers: [],
-                       clickHandler: function (e)
+                       /*textNodeHandler: function (e)
                        {
                           e.preventDefault();
                           var self = this;
                           var target = $(e.target);
-                          if (target.is(self.activeElement) || !target.is('div,img'))
-                             return;
 
-                          target.focus();
+                          //target.focus();
                           target.addClass('active');
                           if (self.activeElement)
                           {
@@ -59,7 +58,31 @@
                              self.activeElement.on('click', $.proxy(self.clickHandler, self));
                              self.activeElement.attr('contenteditable', false);
                           }
-                          if (target.is('div'))
+                          target.attr('contenteditable', true);
+                          //target.focus();
+                          self.activeElement = target;
+                       },*/
+                       clickHandler: function (e)
+                       {
+                          e.preventDefault();
+                          var self = this;
+                          var target = $(e.target);
+                          console.log(target);
+                          //return;
+                          if (target.is(self.activeElement) /*|| !target.is('div,img')*/)
+                             return;
+
+                          target.focus();
+                          target.addClass('active');
+                          if (self.activeElement && !self.activeElement.is('#container'))
+                          {
+                             target.children(".ew-block-remove").remove();
+                             //self.activeElement.off('click');
+                             self.activeElement.removeClass('active');
+                             //self.activeElement.on('click', $.proxy(self.clickHandler, self));
+                             //self.activeElement.attr('contenteditable', false);
+                          }
+                          if (!target.is('#container'))
                              target.attr('contenteditable', true);
                           if (target.is(".row, .column"))
                           {
@@ -95,7 +118,7 @@
                           var col = $("<div class='column' contenteditable='true'></div>");
                           col.addClass("col-xs-" + (size || 12));
 
-                          col.on('click', $.proxy(this.clickHandler, self));
+                          //col.on('click', $.proxy(this.clickHandler, self));
 
                           this.addElement(col, row);
                           col.click();
@@ -105,8 +128,8 @@
                        {
                           var self = this;
                           var row = $("<div class='row' contenteditable='true'>");
-                          row.focus();
-                          row.on('click', $.proxy(this.clickHandler, self));
+                          //row.focus();
+                          //row.on('click', $.proxy(this.clickHandler, self));
                           /*row.append("<div class='ew-block-remove' contenteditable='false'><i class='fa fa-times'></i></div>");
                            row.find('.ew-block-remove').on('click', function ()
                            {
@@ -122,7 +145,10 @@
                           var self = this;
                           var img = $("<img>");
                           img.attr('src', src);
-                          img.css({margin: '0px auto', display: 'block'});
+                          img.css({
+                             margin: '0px auto',
+                             display: 'block'
+                          });
                           img.on('click', $.proxy(this.clickHandler, self));
 
 
@@ -134,31 +160,42 @@
                        {
 
                        },
+                       addTextElement: function (e, p)
+                       {
+                          //$(e).on('click', $.proxy(this.textNodeHandler, this));
+                          this.addElement(e, p);
+                          $(e).click();
+                       },
                        addElement: function (e, p)
                        {
-                          var parent = p || $("#container")
+                          var parent = p || $("#container");
 
                           parent.append(e);
 
-
                           var ce = $("#container")[0];
-                          if (e[0].setSelectionRange) {
-                             ce.focus();
-                             ce.setSelectionRange(0, 0);
-                          }
-                          else {
-                             var selection = window.getSelection();
-                             var range = document.createRange();
-                             //selection.collapse(ce,0);
 
-                             range.selectNodeContents(e[0]);
-                             //console.log($(range));
-                             //range.collapse(false);
-                             selection.removeAllRanges();
-                             selection.addRange(range);
-
-                          }
-                          $("#container").focus();
+                          setTimeout(function ()
+                          {
+                             if (e[0].setSelectionRange) {
+                                ce.focus();
+                                ce.setSelectionRange(0, 0);
+                             }
+                             else 
+                             {
+                                var selection = window.getSelection();
+                                var range = document.createRange();
+                                //selection.collapse(ce,0);
+                                range.selectNodeContents(e[0]);
+                                //console.log($(range));
+                                //range.collapse(false);
+                                selection.removeAllRanges();
+                                selection.addRange(range);
+                             }
+                             //e.focus();
+                             $("#container").focus();
+                             //alert();
+                          }, 1);
+                          //$("#container").focus();
                           return e;
                        },
                        triggerSelectElement: function (content)
@@ -172,7 +209,10 @@
                        },
                        on: function (name, action)
                        {
-                          this.eventHandlers.push({name: name, action: action});
+                          this.eventHandlers.push({
+                             name: name,
+                             action: action
+                          });
                        },
                        init: function ()
                        {
@@ -220,7 +260,7 @@
             </div>
          </div>
       </div>
-      <div id='container' class='container'>
+      <div id='container' class='container' contenteditable="true">
 
       </div>
    </body>

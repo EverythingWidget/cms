@@ -651,7 +651,8 @@ function MJEditor(selector, opts) {
       },
       backspaceHandler: function (e) {
          var range = w.getSelection().getRangeAt(0);
-         console.log($(range));
+         //console.log($(range));
+         console.log(e);
          //if(range.nodeName)
          if (!!toolkit.isChrome()) {
             this.cleanUp();
@@ -815,9 +816,9 @@ function MJEditor(selector, opts) {
                  headerAttribute = toolkit.isChrome() ? 'plaintext-only' : true;
          for (i = 0; i < l; i += 1) {
             if (this.elements[i].className.indexOf('editor-heading') > -1) {
-               this.elements[i].setAttribute('contentEditable', headerAttribute);
+               //this.elements[i].setAttribute('contentEditable', headerAttribute);
             } else {
-               this.elements[i].setAttribute('contentEditable', true);
+               //this.elements[i].setAttribute('contentEditable', true);
             }
          }
          return this;
