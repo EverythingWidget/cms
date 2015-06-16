@@ -19,8 +19,8 @@ if (!isset($_SESSION['login']))
          ?>            
       </title>    
       <base href="<?php echo EW_ROOT_URL ?>">
-      <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-      <!--<link type="text/css" href="<?php echo EW_ROOT_URL ?>core/css/custom-theme/jquery-ui-1.8.21.custom.css" rel="Stylesheet" />	-->
+      <!--<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+      <link type="text/css" href="<?php echo EW_ROOT_URL ?>core/css/custom-theme/jquery-ui-1.8.21.custom.css" rel="Stylesheet" />	-->
       <link type="text/css" href="<?php echo EW_ROOT_URL ?>core/css/bootstrap.css" rel="stylesheet" >  
       <link type="text/css" href="<?php echo EW_ROOT_URL ?>core/css/simple-slider.css" rel="stylesheet" >  
       <link href="<?php echo EW_ROOT_URL ?>templates/default/template.css" rel="stylesheet" type="text/css">

@@ -1340,7 +1340,8 @@ session_start();
    EW.addURLHandler(function ()
    {
       var screen = EW.getHashParameter("screen", "neuis");
-      var windowWidth = $(window).width() - 300;
+      var sidebarWidth = 301;
+      var windowWidth = $(window).width() - sidebarWidth;
 
       var defScreen = "large";
       var left = 0;
@@ -1348,26 +1349,26 @@ session_start();
       if (screen == "normal" && windowWidth >= 1100)
       {
          defScreen = "normal";
-         left = ((windowWidth - 1100) / 2) + 300;
+         left = ((windowWidth - 1100) / 2) + sidebarWidth;
          width = 1100;
       }
       if (screen == "tablet" && windowWidth >= 800)
       {
          defScreen = "tablet";
-         left = ((windowWidth - 800) / 2) + 300;
+         left = ((windowWidth - 800) / 2) + sidebarWidth;
          width = 800;
       }
       if (screen == "mobile" && windowWidth >= 420)
       {
          defScreen = "mobile";
-         left = ((windowWidth - 420) / 2) + 300;
+         left = ((windowWidth - 420) / 2) + sidebarWidth;
          width = 420;
       }
 
       if (defScreen == "large")
       {
          screen = "large";
-         left = 300;
+         left = sidebarWidth;
          width = windowWidth;
       }
       if (uisForm.oldScreem != screen)
