@@ -119,13 +119,13 @@ session_start();
    .focus-current-item .current-item, .current-item  {/*  visibility:hidden;  */}
    .current-element
    {
-   border:3px solid #3cf;
+   border:2px solid #3cf;
    border-radius:0px;
    background-color:rgba(240,240,240,.3);
    z-index:15;
    position:absolute;
    display:none;
-   box-shadow:0px 0px 10px 0px rgba(0,0,0,.5)
+   box-shadow:0px 0px 3px 1px rgba(0,0,0,.9)
    }
    .highlight
    {
@@ -164,7 +164,7 @@ session_start();
    .blue-shadow
    {
    background-color:#ddd;
-   box-shadow: 0px 0px 5px 4px #3bd;
+   box-shadow: 0px 0px 5px 3px #3bd;
    }
 </div>
 <script  type="text/javascript">
@@ -361,12 +361,12 @@ session_start();
       var result = new Array();
       var skipBoxBlock = false;
       var skipChildren = false;
-      var liUl = null;
+      //var liUl = null;
       var itemLabel;
       $.each(children, function (k, v)
       {
          v = $(v);
-         liUl = null;
+         var liUl = null;
          //var div = $("<div></div>");
          if (v.hasClass("panel") || v.hasClass("block"))
          {
@@ -440,7 +440,7 @@ session_start();
                   frameBody.stop().animate({
                      scrollTop: panel.offset().top
                   },
-                  'slow');
+                  500);
                }
 
                self.currentElementHighlight.css({
@@ -707,7 +707,7 @@ session_start();
    };
 
    /**
-    * Relocate all the widget's glasspanes every half a second to keep them over their corresponding widget
+    * Relocate all the widget's glasspanes every second to keep them over their corresponding widget
     
     */
    var repTimeout = repTimeout || null;
@@ -1287,7 +1287,7 @@ session_start();
    UISForm.prototype.editWidget = function (wId)
    {
       var self = this;
-      var d = EW.createModal();
+      var d = EW.createModal({class:"left"});
       self.currentDialog = d;
       var w = self.getEditorItem(wId);
       //console.log(w);

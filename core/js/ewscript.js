@@ -905,7 +905,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
          //{
          if (!modalPane.isOpen)
          {
-            setTimeout(withTillModalOpen, 20)
+            setTimeout(withTillModalOpen, 32);
             return;
          }
          modalPane.html(data);
