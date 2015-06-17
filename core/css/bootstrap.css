@@ -1547,7 +1547,7 @@ input[type="button"].btn-block {width: 100%;}
    .nav-tabs.nav-justified > .active > a:hover,
    .nav-tabs.nav-justified > .active > a:focus {border-bottom-color: #ffffff;}
 }
-.nav-pills{background-color:#B0BEC5;margin:0px;padding:0px;}
+.nav-pills{/*background-color:#B0BEC5;*/background-color:rgba(255,255,255,.5);margin:0px;padding:0px;}
 .nav-pills.dropdown{position:absolute;padding:0px;z-index:5;overflow:hidden;width: auto;left:200px;right:200px;height:38px;}
 .nav-pills.dropdown li{visibility:hidden;}
 .nav-pills.dropdown li.dropdown{visibility:visible;}
