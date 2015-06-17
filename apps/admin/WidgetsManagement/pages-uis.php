@@ -105,7 +105,7 @@ $default_page = json_decode($wm->get_path_uis("@DEFAULT"), true);
          }
 
       });
-      this.allUISList.container.css({margin: "5px 15px"});
+      //this.allUISList.container.css({margin: "5px 15px"});
       $("#uis_list").append(this.allUISList.container);
       // Register event listener for all-uis-list table
       $(document).off("all-uis-list.refresh");
