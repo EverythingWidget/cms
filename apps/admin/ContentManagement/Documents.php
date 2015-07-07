@@ -38,6 +38,7 @@
          title: "tr{New Article}",
          activity: "app-admin/ContentManagement/article-form.php",
          parent: "action-bar-items",
+         modal: {class: "full"},
          hash: {
             articleId: null
          }
@@ -157,7 +158,7 @@
       function (data)
       {
          $("#articles-list").html("<h2>tr{Articles}</h2><div class='row box-content'></div>");
-         
+
          var articlesPane = $("#articles-list .box-content");
          $.each(data.result, function (index, element)
          {
