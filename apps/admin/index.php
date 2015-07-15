@@ -501,7 +501,7 @@ if (!isset($_SESSION['login']))
             {
                //event.preventDefault();
                sidebar.css({maxHeight: $(window).height() - 100});
-               $("#sidebar:not(.in)").stop().animate({className: "sidebar in", width: "220px"}, 360, "Power4.easeOut", function () {
+               $("#sidebar:not(.in)").stop().animate({className: "sidebar in", width: "250px"}, 360, "Power4.easeOut", function () {
                   sidebar.stop().css({overflowY: "auto"});
                   if (event.type == 'focus')
                   {
