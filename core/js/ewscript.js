@@ -564,7 +564,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
          xButton.css({
             left: modalPane.offset().left + modalPane.width() - 10,
             //right:"10px",
-            top: parseInt(modalPane.css("top")) + 10,
+            top: parseInt(modalPane.css("top")) + 13,
             zIndex: modalPane.css("z-index")
          });
          xButton.show();
@@ -800,22 +800,22 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
                   animationDiv.remove();
                   if (settings.class == "full")
                   {
-                     $("#header-pane").off("mouseenter.ew mouseleave.ew");
-                     $("#header-pane").on("mouseleave.ew", function () {
+                     $("#nav-bar").off("mouseenter.ew mouseleave.ew");
+                     $("#nav-bar").on("mouseleave.ew", function () {
                         modalPane.stop().animate({
-                           top: "10px",
+                           top: "24px",
                            bottom: "0px"
                         },
-                        200, "Power3,easeOut");
+                        100, "Power3,easeOut");
                         xButton.show();
 
                      });
-                     $("#header-pane").on("mouseenter.ew", function () {
+                     $("#nav-bar").on("mouseenter.ew", function () {
                         modalPane.stop().animate({
-                           top: "45px",
-                           bottom: "-45px"
+                           top: "46px",
+                           bottom: "-22px"
                         },
-                        200, "Power3,easeOut");
+                        100, "Power3,easeOut");
                         xButton.hide();
                      });
                   }
@@ -838,20 +838,22 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
                modalPane.isOpen = true;
                if (settings.class === "full")
                {
-                  $("#header-pane").off("mouseenter.ew mouseleave.ew");
-                  $("#header-pane").on("mouseleave.ew", function () {
+                  $("#nav-bar").off("mouseenter.ew mouseleave.ew");
+                  $("#nav-bar").on("mouseleave.ew", function () {
                      modalPane.stop().animate({
-                        top: "10px"
+                        top: "24px",
+                        bottom: "0px"
                      },
-                     200, "Power3,easeOut");
+                     100, "Power3,easeOut");
                      xButton.show();
 
                   });
-                  $("#header-pane").on("mouseenter.ew", function () {
+                  $("#nav-bar").on("mouseenter.ew", function () {
                      modalPane.stop().animate({
-                        top: "45px"
+                        top: "46px",
+                        bottom: "-22px"
                      },
-                     200, "Power3,easeOut");
+                     100, "Power3,easeOut");
                      xButton.hide();
                   });
                }

@@ -82,6 +82,7 @@ class App
       $pages_feeders = EWCore::read_registry("ew-widget-feeder");
       if ($class_exist)
       { 
+         
          $RESULT_CONTENT = $app_section_object->process_request($method_name, $parameters);
       }
       else if (EWCore::is_widget_feeder("*", "*", $section_name))
@@ -100,10 +101,12 @@ class App
             return ob_get_clean();
          }
          $path = EW_APPS_DIR . '/' . $app_name . '/' . $method_name . '.php';
+         
          //echo "here is app-in $path";
       }
       else
       {
+         
          // Refer to app section index
          $path = EW_APPS_DIR . '/' . $app_name . '/' . $section_name . '/' . $method_name;
       }
@@ -163,7 +166,8 @@ class App
    {
       if ($view_data)
          extract($view_data);
-      $path = $this->get_root() . '/' . $path;
+      $path = EW_APPS_DIR.'/'.$this->get_root() . '/' . $path;
+
       include $path;
    }
 

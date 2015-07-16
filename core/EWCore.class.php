@@ -128,10 +128,11 @@ class EWCore
       // show index.php of app
       if (!$function_name)
       {
+         
          $function_name = "index";
          $parameters['_function_name'] = $function_name;
+         
       }
-
       if ($section_name == "EWCore")
       {
          $EW = new \EWCore();
@@ -143,6 +144,7 @@ class EWCore
          //var_dump(class_exists($app_name.'\\'.  ucfirst($app_name)));
          if (class_exists($real_class_name))
          {
+            
             // Create an instance of section with its parent App
             $app_object = new $real_class_name;
             $class_exist = true;

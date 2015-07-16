@@ -16,4 +16,3 @@ RewriteRule ^(.*)$ $1 [L]
 RewriteRule ^$ apps/ [L]
 RewriteRule (.*) apps/$1 [L]
 
-

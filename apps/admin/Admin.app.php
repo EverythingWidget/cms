@@ -36,7 +36,7 @@ class Admin extends App
       $cmd = $_REQUEST['cmd'];
       $compPage = null;
       $pageTitle = 'Administration';
-$view_data = [];
+      $view_data = [];
       $sectionTitle = '';
       if (!$compId)
       {
@@ -58,10 +58,10 @@ $view_data = [];
             header('Content-Type: text/html');
             $compPage = "<div class='box box-error'><h2>{$temp["statusCode"]}</h2>{$temp["message"]}</div>";
          }
-         $pageTitle = "tr{{$sc->get_title()}}";
+         $pageTitle = "tr{" . $sc->get_title() . "}";
       }
 
-      $this->load_view('index.php', compact(['compPage', 'pageTitle','compId']));
+      $this->load_view('index.php', compact(['compPage', 'pageTitle', 'compId']));
    }
 
 }

@@ -41,7 +41,10 @@ if (!isset($_SESSION['login']))
          //var EW = new EverythingWidgets();
          EverythingWidgets.prototype.loadSections = function ()
          {
-            $.get('app-admin/AppsManagement/get_app_sections', {appDir: "admin"}, function (data)
+            $.get('app-admin/AppsManagement/get_app_sections', {
+               appDir: "admin"
+            },
+            function (data)
             {
                var items = [];
                $.each(data, function (key, val) {
@@ -76,7 +79,10 @@ if (!isset($_SESSION['login']))
                $(this).css({
                   display: ""
                });
-               $(this).animate({className: orgClass}, t || 300, "Power2.easeOut");
+               $(this).animate({
+                  className: orgClass
+               },
+               t || 300, "Power2.easeOut");
             }
             return this;
             // Open popup code.
@@ -86,7 +92,10 @@ if (!isset($_SESSION['login']))
             if (!this.hasClass("btn-hide"))
             {
                $(this).stop(true, true);
-               $(this).animate({className: $(this).prop("class") + " btn-hide"}, t || 300, "Power3.easeOut", function () {
+               $(this).animate({
+                  className: $(this).prop("class") + " btn-hide"
+               },
+               t || 300, "Power3.easeOut", function () {
                   $(this).hide();
                });
             }
@@ -379,7 +388,10 @@ if (!isset($_SESSION['login']))
                      event.preventDefault();
                      if (a.attr("data-ew-nav"))
                      {
-                        EW.setHashParameters({"nav": a.attr("data-ew-nav")}, null, true);
+                        EW.setHashParameters({
+                           "nav": a.attr("data-ew-nav")
+                        },
+                        null, true);
                      }
                      else
                      {
@@ -488,8 +500,14 @@ if (!isset($_SESSION['login']))
             //sidebar.attr("tabindex", 1);
             sidebar.on("mouseleave", function ()
             {
-               sidebar.stop().css({overflowY: "hidden"});
-               $("#sidebar.in").stop().animate({className: "sidebar", width: $("#side-bar-btn").outerWidth()}, 360, "Power3.easeOut");
+               sidebar.stop().css({
+                  overflowY: "hidden"
+               });
+               $("#sidebar.in").stop().animate({
+                  className: "sidebar",
+                  //width: $("#side-bar-btn").outerWidth()
+               },
+                       360, "Power3.easeOut");
                //$("#sidebar").fadeOut(300);
             });
             sidebar.on("click", function (e)
@@ -500,9 +518,17 @@ if (!isset($_SESSION['login']))
             $("#side-bar-btn").on("click mouseenter focus", function (event)
             {
                //event.preventDefault();
-               sidebar.css({maxHeight: $(window).height() - 100});
-               $("#sidebar:not(.in)").stop().animate({className: "sidebar in", width: "250px"}, 360, "Power4.easeOut", function () {
-                  sidebar.stop().css({overflowY: "auto"});
+               sidebar.css({
+                  maxHeight: $(window).height() - 100
+               });
+               $("#sidebar:not(.in)").stop().animate({
+                  className: "sidebar in",
+                  width: "250px"
+               },
+               360, "Power4.easeOut", function () {
+                  sidebar.stop().css({
+                     overflowY: "auto"
+                  });
                   if (event.type == 'focus')
                   {
                      sidebar.find("a:first").focus();
@@ -539,7 +565,9 @@ if (!isset($_SESSION['login']))
                         nav.data("button").remove();
                         nav.attr("class", $(e).data("oldClass"));
                         nav.find(".dropdown").remove();
-                        nav.css({top: ""});
+                        nav.css({
+                           top: ""
+                        });
                         nav.data("nav-xs-btn", null);
                      }
                   });
@@ -561,7 +589,9 @@ if (!isset($_SESSION['login']))
                   nav.prepend(dropdownNavBtn);
 
                   var xsNavBarBtn = xsNavbar.find("li");
-                  nav.css({top: xsNavBarBtn.offset().top});
+                  nav.css({
+                     top: xsNavBarBtn.offset().top
+                  });
                   nav.hide();
 
                   xsNavBarBtn.hover(function () {
@@ -571,12 +601,18 @@ if (!isset($_SESSION['login']))
                   });
                   nav.hover(function (e)
                   {
-                     nav.stop().animate({className: "nav nav-pills xs-nav-tabs-active nav-stacked dropdown in"}, 300, "Power3.easeOut");
+                     nav.stop().animate({
+                        className: "nav nav-pills xs-nav-tabs-active nav-stacked dropdown in"
+                     },
+                     300, "Power3.easeOut");
                      e.preventDefault();
                   },
                           function ()
                           {
-                             nav.stop().animate({className: "nav nav-pills xs-nav-tabs-active nav-stacked dropdown"}, 300, "Power3.easeOut", function () {
+                             nav.stop().animate({
+                                className: "nav nav-pills xs-nav-tabs-active nav-stacked dropdown"
+                             },
+                             300, "Power3.easeOut", function () {
                                 nav = nav.detach();
                              });
                           });
@@ -605,32 +641,27 @@ if (!isset($_SESSION['login']))
       </div>
 
       <div id="base-pane" class="container">      
-         <div id="component-content" class="row" style="">
-            <div id="header-pane" class="col-xs-12">
-               <div  class="row bar">
-                  <button type="button" id="component-chooser-btn" class="btn btn-text component-chooser comp-btn" id="" onclick="EW.showAllComponents();" >
-                     <?php
-                     echo $pageTitle;
-                     ?>
-                  </button>                     
-                  <div  class="col-xs-2 col-sm-2 col-md-2 col-lg-1 pull-right">
-                     <?php
-                     if ($_SESSION['login'])
-                     {
-                        echo '<a class="ExitBtn" href="./app-admin/UsersManagement/logout?url=' . EW_DIR_URL . 'app-admin/" ></a>';
-                     }
-                     ?>
-                  </div>
-               </div>
-               <div  class="row bar">
-                  <button class="btn sidebar comp-btn" id="side-bar-btn" >  
-                  </button>   
-                  <div class="action-pane" >
-                     <div  class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <div id="action-bar-items" class="actions-bar action-bar-items" style="display:block;float:none;">
-                        </div>
-                     </div>
-
+         <div id="app-content" class="row" style="">
+            <div id="nav-bar" class="nav-bar">
+               <button type="button" id="component-chooser-btn" class="btn btn-text component-chooser comp-btn" id="" onclick="EW.showAllComponents();" >
+                  <?php
+                  echo $pageTitle;
+                  ?>
+               </button>                     
+               <div  class="col-xs-2 col-sm-2 col-md-2 col-lg-1 pull-right">
+                  <?php
+                  if ($_SESSION['login'])
+                  {
+                     echo '<a class="ExitBtn" href="./app-admin/UsersManagement/logout?url=' . EW_DIR_URL . 'app-admin/" ></a>';
+                  }
+                  ?>
+               </div>            
+            </div>
+            <div id="app-bar" class="app-bar">
+               <button class="btn sidebar comp-btn" id="side-bar-btn" >  
+               </button>   
+               <div class="action-pane" >
+                  <div id="action-bar-items" class="actions-bar action-bar-items" style="display:block;float:none;">
                   </div>
                </div>
             </div>
