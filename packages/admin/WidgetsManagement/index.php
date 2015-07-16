@@ -2,12 +2,12 @@
    <ul>        
       <li>      
          <a rel="ajax" data-default="true" data-ew-nav="uis-list" href="<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/uis-list.php">      
-            tr{UI Structures}   
+            tr{Layouts}   
          </a>     
       </li>   
       <li>       
          <a rel="ajax" data-ew-nav="pages-uis" href="<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/pages-uis.php">        
-            tr{Pages and UIS}        
+            tr{Layouts and Contents}        
          </a>        
       </li>    
       <li>         

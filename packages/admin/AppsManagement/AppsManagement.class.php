@@ -22,7 +22,7 @@ class AppsManagement extends Section
    {
       $tempEW = new EWCore($appDir . '/');
 
-      $path = EW_APPS_DIR . '/' . $appDir . '/';
+      $path = EW_PACKAGES_DIR . '/' . $appDir . '/';
 
       $section_dirs = opendir($path);
       $sections = array();

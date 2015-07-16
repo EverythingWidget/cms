@@ -10,10 +10,10 @@ if ($_REQUEST["appDir"])
    $app = json_decode(EWCore::get_app_config($_REQUEST["appDir"]), true);
    $class = $_REQUEST["appDir"];
    $config = "<label>Nothing to configure</label>";
-   $config_file_path = EW_APPS_DIR . "/" . $class . "/core/app_config.php";
+   $config_file_path = EW_PACKAGES_DIR . "/" . $class . "/core/app_config.php";
    if (!file_exists($config_file_path))
    {
-      $config_file_path = EW_APPS_DIR . "/" . $class . "/app_config.php";
+      $config_file_path = EW_PACKAGES_DIR . "/" . $class . "/app_config.php";
    }
 
    if (file_exists($config_file_path))

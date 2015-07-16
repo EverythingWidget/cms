@@ -74,7 +74,7 @@ class Section
                // Check if the method has title
                if (strpos($method_name, ':'))
                   $method_name = explode(':', $method_name, 2)[0];
-               $path = EW_APPS_DIR . '/' . $this->app->get_root() . '/' . $this->current_class->getShortName() . '/' . $method_name;
+               $path = EW_PACKAGES_DIR . '/' . $this->app->get_root() . '/' . $this->current_class->getShortName() . '/' . $method_name;
                //echo$path;
             }
             else if ($method_name && method_exists($this, $method_name))
@@ -93,7 +93,7 @@ class Section
       {
          if (preg_match('/(.*)\.(.*)?/', $method_name))
          {
-            $path = EW_APPS_DIR . '/' . $this->app->get_root() . '/' . $this->current_class->getShortName() . '/' . $method_name;
+            $path = EW_PACKAGES_DIR . '/' . $this->app->get_root() . '/' . $this->current_class->getShortName() . '/' . $method_name;
          }
          else if ($method_name && method_exists($this, $method_name))
          {

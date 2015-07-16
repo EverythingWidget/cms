@@ -25,13 +25,13 @@ class EWCore
    public function __construct()
    {
       static::$languages = include('config/languages.php');
-      $this->apps_root = EW_APPS_DIR . '/';
+      $this->apps_root = EW_PACKAGES_DIR . '/';
       $this->request = $_REQUEST;
       //$this->registry = array();
       //$this->action_registry = array();
       spl_autoload_register(array($this, 'autoload_sections'));
       spl_autoload_register(array($this, 'autoload_core'));
-      spl_autoload_register(array($this, 'autoload_apps'));
+      spl_autoload_register(array($this, 'autoload_packages'));
 
       $database_config = include('config/database_config.php');
 
@@ -128,10 +128,9 @@ class EWCore
       // show index.php of app
       if (!$function_name)
       {
-         
+
          $function_name = "index";
          $parameters['_function_name'] = $function_name;
-         
       }
       if ($section_name == "EWCore")
       {
@@ -144,7 +143,7 @@ class EWCore
          //var_dump(class_exists($app_name.'\\'.  ucfirst($app_name)));
          if (class_exists($real_class_name))
          {
-            
+
             // Create an instance of section with its parent App
             $app_object = new $real_class_name;
             $class_exist = true;
@@ -174,18 +173,18 @@ class EWCore
          /* else if (EWCore::is_widget_feeder("page", "*", $section_name))
            {
            // Show index if the URL contains a page feeder
-           $path = EW_APPS_DIR . '/' . $app_name . '/index.php';
+           $path = EW_PACKAGES_DIR . '/' . $app_name . '/index.php';
            }
            else if (!$section_name)
            {
            // Refer to app index
-           $path = EW_APPS_DIR . '/' . $app_name . '/' . $function_name;
+           $path = EW_PACKAGES_DIR . '/' . $app_name . '/' . $function_name;
            }
            else
            {
 
            // Refer to app section index
-           $path = EW_APPS_DIR . '/' . $app_name . '/' . $section_name . '/' . $function_name;
+           $path = EW_PACKAGES_DIR . '/' . $app_name . '/' . $section_name . '/' . $function_name;
            } */
       }
 
@@ -318,7 +317,7 @@ class EWCore
 
    public static function get_apps($type = "app")
    {
-      $path = EW_APPS_DIR . '/';
+      $path = EW_PACKAGES_DIR . '/';
 
       $apps_dirs = opendir($path);
       $apps = array();
@@ -359,9 +358,9 @@ class EWCore
 
             if (strpos($file, ".app.php") != 0)
             {
-               require_once EW_APPS_DIR . "/" . $app_dir . "/" . $file;
+               require_once EW_PACKAGES_DIR . "/" . $app_dir . "/" . $file;
                $app_class_name = $app_dir . "\\" . substr($file, 0, strpos($file, "."));
-               //echo EW_APPS_DIR . "/" . $app_dir . "/" . $file;
+               //echo EW_PACKAGES_DIR . "/" . $app_dir . "/" . $file;
                $app_object = new $app_class_name();
                if ($type == "all")
                {
@@ -384,7 +383,7 @@ class EWCore
     */
    public static function get_app_instance($appDir)
    {
-      $path = EW_APPS_DIR . "/$appDir";
+      $path = EW_PACKAGES_DIR . "/$appDir";
 
       $app_dir_content = opendir($path);
 
@@ -397,9 +396,9 @@ class EWCore
 
          if (strpos($file, ".app.php") != 0)
          {
-            require_once EW_APPS_DIR . "/" . $appDir . "/" . $file;
+            require_once EW_PACKAGES_DIR . "/" . $appDir . "/" . $file;
             $app_class_name = $appDir . "\\" . substr($file, 0, strpos($file, "."));
-            //echo EW_APPS_DIR . "/" . $app_dir . "/" . $file;
+            //echo EW_PACKAGES_DIR . "/" . $app_dir . "/" . $file;
             return new $app_class_name();
          }
       }
@@ -409,7 +408,7 @@ class EWCore
 
    public static function get_app_config($appDir)
    {
-      $path = EW_APPS_DIR . "/$appDir";
+      $path = EW_PACKAGES_DIR . "/$appDir";
 
       $app_dir_content = opendir($path);
 
@@ -422,9 +421,9 @@ class EWCore
 
          if (strpos($file, ".app.php") != 0)
          {
-            require_once EW_APPS_DIR . "/" . $appDir . "/" . $file;
+            require_once EW_PACKAGES_DIR . "/" . $appDir . "/" . $file;
             $app_class_name = $appDir . "\\" . substr($file, 0, strpos($file, "."));
-            //echo EW_APPS_DIR . "/" . $app_dir . "/" . $file;
+            //echo EW_PACKAGES_DIR . "/" . $app_dir . "/" . $file;
             $app_object = new $app_class_name();
 
             return json_encode($app_object->get_app_details());
@@ -507,7 +506,7 @@ class EWCore
    public static function get_app_sections($app_dir)
    {
 
-      $path = EW_APPS_DIR . '/' . $app_dir . '/sections/';
+      $path = EW_PACKAGES_DIR . '/' . $app_dir . '/sections/';
 
       $section_dirs = opendir($path);
       $sections = array();
@@ -541,7 +540,7 @@ class EWCore
    public function get_sections()
    {
 
-      $path = EW_APPS_DIR . '/' . $this->request["_app_name"] . '/sections/';
+      $path = EW_PACKAGES_DIR . '/' . $this->request["_app_name"] . '/sections/';
 
       $section_dirs = opendir($path);
       $sections = array();
@@ -590,7 +589,7 @@ class EWCore
          return;
       }
 
-      $apps_dirs = opendir(EW_APPS_DIR);
+      $apps_dirs = opendir(EW_PACKAGES_DIR);
       $apps = array();
       while ($app_dir = readdir($apps_dirs))
       {
@@ -610,7 +609,7 @@ class EWCore
             {
                try
                {
-                  require_once EW_APPS_DIR . "/" . $app_dir . "/" . $file;
+                  require_once EW_PACKAGES_DIR . "/" . $app_dir . "/" . $file;
                   $app_class_name = $app_dir . "\\" . substr($file, 0, strpos($file, "."));
                   $app_object = new $app_class_name();
                   $app_object->init_app();
@@ -684,7 +683,7 @@ class EWCore
 
    public function get_page()
    {
-      $path = EW_APPS_DIR . '/' . $this->request["_app_name"] . '/sections/' . $this->request["page"];
+      $path = EW_PACKAGES_DIR . '/' . $this->request["_app_name"] . '/sections/' . $this->request["page"];
       //echo $path;
       include_once $path;
    }
@@ -692,16 +691,16 @@ class EWCore
    public function get_page_from_url($app_name, $section_name, $page_name)
    {
       // Search in the app's root's directory
-      $path = EW_APPS_DIR . '/' . $app_name . '/' . $section_name . '/' . $page_name;
+      $path = EW_PACKAGES_DIR . '/' . $app_name . '/' . $section_name . '/' . $page_name;
       if (!file_exists($path))
-         $path = EW_APPS_DIR . '/' . $app_name . '/sections/' . $section_name . '/' . $page_name;
+         $path = EW_PACKAGES_DIR . '/' . $app_name . '/sections/' . $section_name . '/' . $page_name;
       //echo $path;
       include_once $path;
    }
 
    private static function autoload_sections($class_name)
    {
-      $apps_dir = opendir(EW_APPS_DIR);
+      $apps_dir = opendir(EW_PACKAGES_DIR);
       //echo $class_name.":";
       while ($app_root = readdir($apps_dir))
       {
@@ -716,20 +715,20 @@ class EWCore
 
          //Classes in the app's root's folder are in praiority
          //Search inside the app's root's directory
-         $app_root_dir = opendir(EW_APPS_DIR . "/" . $app_root);
-         //echo  EW_APPS_DIR.$app_root."<br/>";
+         $app_root_dir = opendir(EW_PACKAGES_DIR . "/" . $app_root);
+         //echo  EW_PACKAGES_DIR.$app_root."<br/>";
          //while ($folder_name = readdir($app_root_dir))
          //{
          if (strpos($folder_name, '.') === 0)
             continue;
-         $file = EW_APPS_DIR . '/' . $app_root . '/' . $class_name . '/' . $class_name . '.class.php';
+         $file = EW_PACKAGES_DIR . '/' . $app_root . '/' . $class_name . '/' . $class_name . '.class.php';
          if (file_exists($file))
          {//echo $file . "<br/>";
             require_once $file;
          }
          //}
          // Search inside the sections directory
-         $file = EW_APPS_DIR . '/' . $app_root . '/sections/' . $class_name . '/' . $class_name . '.class.php';
+         $file = EW_PACKAGES_DIR . '/' . $app_root . '/sections/' . $class_name . '/' . $class_name . '.class.php';
 
          if (file_exists($file))
          {
@@ -747,13 +746,13 @@ class EWCore
       }
    }
 
-   private static function autoload_apps($class_name)
+   private static function autoload_packages($class_name)
    {
       if (strpos($class_name, '\\'))
       {
          $class_name = end(explode('\\', $class_name));
       }
-      $file = EW_APPS_DIR . '/' . $class_name . '/' . $class_name . '.app.php';
+      $file = EW_PACKAGES_DIR . '/' . $class_name . '/' . $class_name . '.app.php';
 
       if (file_exists($file))
       {
@@ -916,8 +915,10 @@ class EWCore
          self::$registry["ew-widget-feeder"][$app] = array();
 
       if (!is_array(self::$registry["ew-widget-feeder"][$app][$type]))
+      {
          self::$registry["ew-widget-feeder"][$app][$type] = array();
-
+      }
+//echo "$app $type $id- ";
       self::$registry["ew-widget-feeder"][$app][$type][$id] = $function;
 
       EWCore::register_object("ew-widget-feeder", $app, self::$registry["ew-widget-feeder"][$app]);
@@ -1048,10 +1049,11 @@ class EWCore
 
          foreach ($feeder_type as $feeder_type_name => $id)
          {
-            //print_r($id);
-            //echo $id[0];
-            if (!$type || $type == "all" || $type == $feeder_type_name)
-               $list["result"][] = array("name" => array_keys($id)[0], "type" => $feeder_type_name, "app" => $app_name);
+            foreach ($id as $feeder => $f)
+            {
+               if (!$type || $type == "all" || $type == $feeder_type_name)
+                  $list["result"][] = array("name" => $feeder, "type" => $feeder_type_name, "app" => $app_name);
+            }
          }
       }
       return json_encode($list);
@@ -1334,7 +1336,7 @@ class EWCore
       }
       if (!isset($app_dir))
          $app_dir = $this->request['appDir'];
-      $path = EW_APPS_DIR . '/';
+      $path = EW_PACKAGES_DIR . '/';
       $file_path = $path . $app_dir . '/config.ini';
       $oldConf = json_decode($this->get_app_config($app_dir), true);
       $arr = json_decode($assoc_arr, true);
@@ -1431,7 +1433,7 @@ class EWCore
 
    public static function get_app_languages($app)
    {
-      $path = EW_APPS_DIR . "/" . $app . "/locale/";
+      $path = EW_PACKAGES_DIR . "/" . $app . "/locale/";
 //echo $path;
       if (!file_exists($path))
          return;
@@ -1444,7 +1446,7 @@ class EWCore
             continue;
          if (strpos($language_file, ".json"))
          {
-            $lang_file = json_decode(file_get_contents(EW_APPS_DIR . '/' . $app . '/locale/' . $language_file), true);
+            $lang_file = json_decode(file_get_contents(EW_PACKAGES_DIR . '/' . $app . '/locale/' . $language_file), true);
             $languages[$language_file] = $lang_file["conf"];
             //echo $lang_file["conf"]["name"];
          }
@@ -1468,10 +1470,10 @@ class EWCore
          $source_app_name = substr($match[1], 1);
       }
       //echo ("-$source_app_name-");
-      if (!self::$languages_strings && file_exists(EW_APPS_DIR . '/' . $source_app_name . '/locale/' . $language . '.json'))
+      if (!self::$languages_strings && file_exists(EW_PACKAGES_DIR . '/' . $source_app_name . '/locale/' . $language . '.json'))
       {
-         //$lang_file = parse_ini_file(EW_APPS_DIR . '/' . $app_name . '/locale/' . $language . '.ini', true);
-         $lang_file = json_decode(file_get_contents(EW_APPS_DIR . '/' . $source_app_name . '/locale/' . $language . '.json'), true);
+         //$lang_file = parse_ini_file(EW_PACKAGES_DIR . '/' . $app_name . '/locale/' . $language . '.ini', true);
+         $lang_file = json_decode(file_get_contents(EW_PACKAGES_DIR . '/' . $source_app_name . '/locale/' . $language . '.json'), true);
 
          self::$languages_strings = $lang_file["strings"];
       }
@@ -1482,7 +1484,7 @@ class EWCore
          //$not_translated[] = $match[2];
          self::$languages_strings[$match[2]] = "";
          $lang_file["strings"] = self::$languages_strings;
-         $fp = file_put_contents(EW_APPS_DIR . '/' . $source_app_name . '/locale/' . $language . '.json', json_encode($lang_file, JSON_UNESCAPED_UNICODE));
+         $fp = file_put_contents(EW_PACKAGES_DIR . '/' . $source_app_name . '/locale/' . $language . '.json', json_encode($lang_file, JSON_UNESCAPED_UNICODE));
       }
       else if (self::$languages_strings[$match[2]])
       {

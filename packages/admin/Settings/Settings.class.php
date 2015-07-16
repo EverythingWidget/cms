@@ -100,7 +100,7 @@ class Settings extends Section
 
    public static function get_language_strings($app, $language)
    {
-      $path = EW_APPS_DIR . "/$app/locale/$language";
+      $path = EW_PACKAGES_DIR . "/$app/locale/$language";
 //echo $path;
       if (!file_exists($path))
          return;
@@ -109,7 +109,7 @@ class Settings extends Section
 
       if (strpos($language, ".json"))
       {
-         $lang_file = json_decode(file_get_contents(EW_APPS_DIR . '/' . $app . '/locale/' . $language), true);
+         $lang_file = json_decode(file_get_contents(EW_PACKAGES_DIR . '/' . $app . '/locale/' . $language), true);
       }
 
       return json_encode(array("id" => array_keys($lang_file["strings"]), "text" => array_values($lang_file["strings"])));
@@ -117,7 +117,7 @@ class Settings extends Section
 
    public function update_language($app, $language, $id, $text)
    {
-      $path = EW_APPS_DIR . "/$app/locale/$language";
+      $path = EW_PACKAGES_DIR . "/$app/locale/$language";
       if (file_exists($path))
       {
          $lang_file = json_decode(file_get_contents($path), true);

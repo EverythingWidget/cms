@@ -70,9 +70,16 @@ class ContentManagement extends \Section
           "album-form.php:tr{New Album}"));
       $this->register_content_label("document", ["title" => "Document", "description" => "Attach this content to other content", "type" => "data_url", "value" => "app-admin/ContentManagement/get_articles_llist"]);
       $this->register_content_label("language", ["title" => "Language", "description" => "Language of the content"]);
+      //$this->register_widget_feeder("page", "ssss");
       $this->register_widget_feeder("page", "article");
+      
       $this->register_widget_feeder("list", "folder");
       $this->register_widget_feeder("menu", "languages");
+   }
+   
+   public function ew_page_feeder_ssss($id, $language)
+   {
+      return null;
    }
 
    public function ew_label_document($key, $value, $data, $form_id)
@@ -134,7 +141,7 @@ class ContentManagement extends \Section
          }
          else
          {
-            $file = EW_APPS_DIR . "/admin/ContentManagement/no-image.png";
+            $file = EW_PACKAGES_DIR . "/admin/ContentManagement/no-image.png";
             /* $apps_dir = opendir("/is/htdocs/wp1067381_3GN1OJU4CE/www/culturenights/app/webroot/img/logos/");
               while ($app_root = readdir($apps_dir))
               {

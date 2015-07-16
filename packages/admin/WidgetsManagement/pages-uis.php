@@ -10,8 +10,8 @@ $default_page = json_decode($wm->get_path_uis("@DEFAULT"), true);
 ?>
 <div class="tab-pane-xs tab-pane-sm header-pane tabs-bar row">
    <ul class="nav nav-pills">
-      <li class="active"><a href="#uis_list" data-toggle="tab">All UIS</a></li>
-      <li><a href="#pages-uis" data-toggle="tab">Pages UIS</a></li>
+      <li class="active"><a href="#uis_list" data-toggle="tab">All Layouts</a></li>
+      <li><a href="#pages-uis" data-toggle="tab">Contents Layouts</a></li>
    </ul>
 </div>
 <div class="tab-pane-xs tab-pane-sm form-content tabs-bar no-footer tab-content row">
@@ -22,30 +22,31 @@ $default_page = json_decode($wm->get_path_uis("@DEFAULT"), true);
       <form id="apps-page-uis" onsubmit="return false;">         
          <div class="box box-white">
             <div class="col-xs-12">
-               <h2>Pages UIS's</h2>
+               <h2>Contents Layouts</h2>
             </div>
             <div class="col-xs-12">
                <div class="row">
                   <div class="col-xs-12 mar-bot">
                      <input type="hidden" class=""  name="@DEFAULTuisId" id="DEFAULT" value="<?php echo $default_page["id"] ?>">
-                     <input class="text-field app-page-uis" data-label="Default UIS" name="@DEFAULT" id="DEFAULT" value="<?php echo $default_page["name"] ?>">
+                     <input class="text-field app-page-uis" data-label="Default Layout" name="@DEFAULT" id="DEFAULT" value="<?php echo $default_page["name"] ?>">
                   </div>
                </div>
                <div class="row">
                   <div class="col-xs-12 mar-bot">
                      <input type="hidden" class=""  name="@HOME_PAGEuisId" id="HOME_PAGE" value="<?php echo $home_page["id"] ?>">
-                     <input class="text-field app-page-uis" data-label="Homepage UIS" name="@HOME_PAGE" id="HOME_PAGE" value="<?php echo $home_page["name"] ?>">
+                     <input class="text-field app-page-uis" data-label="Homepage Layout" name="@HOME_PAGE" id="HOME_PAGE" value="<?php echo $home_page["name"] ?>">
                   </div>
                </div>
                <div class="row">
                   <div class="col-xs-12 mar-bot">
                      <input type="hidden" class=""  name="@USER_HOME_PAGEuisId" id="USER_HOME_PAGE" value="<?php echo $user_home_page["id"] ?>">
-                     <input class="text-field app-page-uis" data-label="User's Homepage UIS" name="@USER_HOME_PAGE" id="USER_HOME_PAGE" value="<?php echo $user_home_page["name"] ?>">
+                     <input class="text-field app-page-uis" data-label="User's Homepage Layout" name="@USER_HOME_PAGE" id="USER_HOME_PAGE" value="<?php echo $user_home_page["name"] ?>">
                   </div>
                </div>
                <?php
                $widgets_types_list = json_decode(EWCore::get_widget_feeders("page"), true);
                $widgets_types_list = $widgets_types_list["result"];
+               //print_r($widgets_types_list);
                //Show list of pages and their layouts
                foreach ($widgets_types_list as $page)
                {   
@@ -81,7 +82,7 @@ $default_page = json_decode($wm->get_path_uis("@DEFAULT"), true);
          columns: ["path", "name"],
          headers: {
             Path: {},
-            "UIS Name": {}
+            "Layout Name": {}
          },
          rowCount: true,
          url: "<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/get_all_pages_uis_list",
@@ -152,7 +153,7 @@ if ($path_uis_list)
          }
          dp.dispose();
       });
-      dp.append("<div class='header-pane row'><h1 id='' class='col-xs-12'> UIS List: Select UIS</h1></div>");
+      dp.append("<div class='header-pane row'><h1 id='' class='col-xs-12'> Layouts List: Select a layout</h1></div>");
       var d = $("<div id='' class='form-content'></div>");
       d.append(this.table.container);
       dp.append(d);

@@ -30,7 +30,7 @@ class App
    protected function init_plugins()
    {
       $app_root = $this->get_root();
-      $path = EW_APPS_DIR . '/' . $app_root . '/';
+      $path = EW_PACKAGES_DIR . '/' . $app_root . '/';
 
       $section_dirs = opendir($path);
       $sections = array();
@@ -89,7 +89,7 @@ class App
       {
         
          // Show index if the URL contains a page feeder
-         $path = EW_APPS_DIR . '/' . $app_name . '/index.php';
+         $path = EW_PACKAGES_DIR . '/' . $app_name . '/index.php';
       }
       else if (!$section_name)
       {
@@ -100,7 +100,7 @@ class App
             $this->index();
             return ob_get_clean();
          }
-         $path = EW_APPS_DIR . '/' . $app_name . '/' . $method_name . '.php';
+         $path = EW_PACKAGES_DIR . '/' . $app_name . '/' . $method_name . '.php';
          
          //echo "here is app-in $path";
       }
@@ -108,7 +108,7 @@ class App
       {
          
          // Refer to app section index
-         $path = EW_APPS_DIR . '/' . $app_name . '/' . $section_name . '/' . $method_name;
+         $path = EW_PACKAGES_DIR . '/' . $app_name . '/' . $section_name . '/' . $method_name;
       }
 
 
@@ -166,7 +166,7 @@ class App
    {
       if ($view_data)
          extract($view_data);
-      $path = EW_APPS_DIR.'/'.$this->get_root() . '/' . $path;
+      $path = EW_PACKAGES_DIR.'/'.$this->get_root() . '/' . $path;
 
       include $path;
    }

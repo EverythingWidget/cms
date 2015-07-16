@@ -584,7 +584,7 @@ div.notification p,div.notification h4{margin:0px;}
 .box.box-grey.disabled{height:40px;}
 .box.box-error{padding:20px;color:#cc0000;margin:15px 0px;background-color:#fff;text-align:center;font-size:1.5em;}
 .box h3{margin:0px;font-size:14px;}
-.box h2{font-size:1.6em;line-height:normal;margin:0px;padding:10px 15px;}
+.box h2{font-size:1.6em;line-height:normal;margin:0px;padding:10px 0;}
 *.pop-up{position:absolute;z-index:10;background-color:#fff;border:1px solid #ccc;overflow:auto;width:800px;min-height:400px;box-shadow:0px 1px 5px #bbb;top:10px;left:50%;margin-left:-411px;padding:10px;}
 .vertical{position:absolute;top:0px;bottom:0px;}
 .dashed-box{border:1px dashed #aaa;overflow:hidden;}
