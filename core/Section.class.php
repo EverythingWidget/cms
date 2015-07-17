@@ -312,6 +312,14 @@ class Section
       //echo $command . "_listener";
       EWCore::register_object($command . "_listener", $this->app->get_root() . "/" . $this->current_class->getShortName() . "/" . $function, array("function" => $function, "object" => $object));
    }
+   
+   public function register_content_component($key, $comp_object)
+   {
+      //$ro = new ReflectionClass($this);
+      //$defaults = ["componentObject" => $comp_object];
+      //$defaults = array_merge($defaults, $comp_object);
+      EWCore::register_object("ew-content-labels", $this->app->get_root() . '_' . $this->get_section_name() . '_' . $key, $comp_object);
+   }
 
    /**
     * 

@@ -125,38 +125,41 @@ function get_properties($form_config, $form_id)
             <?php
             // Load content labels
             $content_labels = EWCore::read_registry("ew-content-labels");
-            foreach ($content_labels as $key => $value)
-            {
+
+            foreach ($content_labels as $comp_id => $label_object)
+            {//print_r($value);
                $data_array = json_decode($form_config["data"], true);
                $labels = $data_array["labels"];
+               //print_r($labels);
                //$labels = json_decode($data_array["labels"], true);
-               foreach ($labels as $label_data)
+               foreach ($labels as $label)
                {
-                  if ($label_data["key"] == $key)
+                  if ($label["key"] == $comp_id)
                   {
-                     $label_value = $label_data["value"];
+                     $value = $label["value"];
                      break;
                   }
                }
+               $form = $label_object->get_form($comp_id, compact("comp_id", "value", "form_id"));
                //$listener_method_object = new ReflectionMethod($value["object"], $value["function"]);
                // Call label method and pass key and content data to it
-               $label = json_decode(EWCore::process_command($value["app"], $value["section"], $value["command"], ["key" => $key, "value" => $label_value, "data" => ($form_config["data"]), "form_id" => $form_id]), true);
+               //$label = [] /* json_decode(EWCore::process_command($value["app"], $value["section"], $value["command"], ["key" => $key, "value" => $label_value, "data" => ($form_config["data"]), "form_id" => $form_id]), true) */;
                ?>
                <div class=row>
                   <div class='col-xs-12'>
                      <div class='box box-grey content-label disabled' data-activated="false">
                         <div class='row'>
                            <div class='col-xs-12'>
-                              <h3 class="pull-left"><?php echo $value["title"] ?></h3>
+                              <h3 class="pull-left"><?php echo $form["title"] ?></h3>
                               <div class="btn-group pull-right" data-toggle="buttons">
                                  <label class="btn btn-default btn-sm">
-                                    <input type="checkbox" id="<?php echo $key ?>_control_button" class="label-control-button"  ><span>Turned Off</span>
+                                    <input type="checkbox" id="<?php echo $comp_id ?>_control_button" class="label-control-button"  ><span>Turned Off</span>
                                  </label>
                               </div>
                            </div>
                         </div>
                         <div class='row'>
-                           <?php echo $label["html"] ?>
+                           <?php echo $form["html"] ?>
                         </div>
                      </div>
                   </div>
@@ -355,7 +358,10 @@ $tabs = EWCore::read_registry("ew-article-form-tab");
             label.text("Turned On");
             //alert("click: "+e.attr("data-activated"));
             p.addClass("btn-success").removeClass("btn-default");
-            e.stop().animate({className: "box box-grey content-label"}, 200);
+            e.stop().animate({
+               className: "box box-grey content-label"
+            },
+            200);
          }
          else
          {
@@ -363,7 +369,10 @@ $tabs = EWCore::read_registry("ew-article-form-tab");
             //alert("click: "+e.attr("data-activated"));
             label.text("Turned Off");
             p.removeClass("btn-success").addClass("btn-default");
-            e.stop().animate({className: "box box-grey content-label disabled"}, 200);
+            e.stop().animate({
+               className: "box box-grey content-label disabled"
+            },
+            200);
          }
       });
    });

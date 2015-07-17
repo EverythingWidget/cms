@@ -32,6 +32,7 @@ class EWCore
       spl_autoload_register(array($this, 'autoload_sections'));
       spl_autoload_register(array($this, 'autoload_core'));
       spl_autoload_register(array($this, 'autoload_packages'));
+      spl_autoload_register(array($this, 'autoload_content_component'));
 
       $database_config = include('config/database_config.php');
 
@@ -579,7 +580,8 @@ class EWCore
       {
          spl_autoload_register(array(self, 'autoload_sections'));
          spl_autoload_register(array(self, 'autoload_core'));
-         spl_autoload_register(array(self, 'autoload_apps'));
+         spl_autoload_register(array(self, 'autoload_packages'));
+         spl_autoload_register(array(self, 'autoload_content_component'));
          self::$loaders_installed = true;
 
          //echo "sdfsdfsd";
@@ -701,34 +703,35 @@ class EWCore
    private static function autoload_sections($class_name)
    {
       $apps_dir = opendir(EW_PACKAGES_DIR);
-      //echo $class_name.":";
-      while ($app_root = readdir($apps_dir))
-      {
-         if (strpos($app_root, '.') === 0)
-            continue;
 
+      //while ($app_root = readdir($apps_dir))
+      {
+         //if (strpos($app_root, '.') === 0)
+         //  continue;
          //$new = "NULL";
          if (strpos($class_name, '\\'))
          {
-            $class_name = end(explode('\\', $class_name));
+            $comp = explode('\\', $class_name);
+            $app_name = $comp[0];
+            $class_name = $comp[1];
          }
 
          //Classes in the app's root's folder are in praiority
          //Search inside the app's root's directory
-         $app_root_dir = opendir(EW_PACKAGES_DIR . "/" . $app_root);
+         //$app_root_dir = opendir(EW_PACKAGES_DIR . "/" . $app_root);
          //echo  EW_PACKAGES_DIR.$app_root."<br/>";
          //while ($folder_name = readdir($app_root_dir))
          //{
-         if (strpos($folder_name, '.') === 0)
-            continue;
-         $file = EW_PACKAGES_DIR . '/' . $app_root . '/' . $class_name . '/' . $class_name . '.class.php';
+         // if (strpos($folder_name, '.') === 0)
+         // continue;
+         $file = EW_PACKAGES_DIR . '/' . $app_name . '/' . $class_name . '/' . $class_name . '.class.php';
          if (file_exists($file))
          {//echo $file . "<br/>";
             require_once $file;
          }
          //}
          // Search inside the sections directory
-         $file = EW_PACKAGES_DIR . '/' . $app_root . '/sections/' . $class_name . '/' . $class_name . '.class.php';
+         $file = EW_PACKAGES_DIR . '/' . $app_name . '/sections/' . $class_name . '/' . $class_name . '.class.php';
 
          if (file_exists($file))
          {
@@ -748,6 +751,7 @@ class EWCore
 
    private static function autoload_packages($class_name)
    {
+
       if (strpos($class_name, '\\'))
       {
          $class_name = end(explode('\\', $class_name));
@@ -758,6 +762,25 @@ class EWCore
       {
          require_once $file;
       }
+   }
+
+   private static function autoload_content_component($class_name)
+   {/*echo $class_name."dsfsdfsd";
+      //$file = EW_PACKAGES_DIR . '/' . $app_root . '/' . $class_name . '/' . $class_name . '.class.php';
+      if (strpos($class_name, '\\'))
+      {
+         $comp = explode('\\', $class_name);
+         $app_name = $comp[0];
+         $class_name = $comp[1];
+      }
+
+      $file = EW_PACKAGES_DIR . '/' . $app_name . '/components/' . $class_name . '.app.php';
+      
+      if (file_exists($file))
+      {
+         // require_once $file;
+      }*/
+      //echo $class_name." -";
    }
 
    public static function my_str_split($string)
@@ -1560,6 +1583,11 @@ class EWCore
          $row = $uis->fetch_assoc();
       }
       return array("uis_id" => $row["ui_structure_id"], "uis_template" => $row["template"], "uis_template_settings" => $row["template_settings"]);
+   }
+
+   public static function process_content_component($action, $id, $content_id, $content_data, $label_data)
+   {
+//      if(class_exists($class_name))
    }
 
 }

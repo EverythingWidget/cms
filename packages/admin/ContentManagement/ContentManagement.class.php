@@ -68,9 +68,11 @@ class ContentManagement extends \Section
           "article-form.php:tr{New Article}",
           "category-form.php:tr{New Folder}",
           "album-form.php:tr{New Album}"));
-      $this->register_content_label("document", ["title" => "Document", "description" => "Attach this content to other content", "type" => "data_url", "value" => "app-admin/ContentManagement/get_articles_llist"]);
-      $this->register_content_label("language", ["title" => "Language", "description" => "Language of the content"]);
+      //$this->register_content_label("document", ["title" => "Document", "description" => "Attach this content to other content", "type" => "data_url", "value" => "app-admin/ContentManagement/get_articles_llist"]);
+      //$this->register_content_label("language", ["title" => "Language", "description" => "Language of the content"]);
       //$this->register_widget_feeder("page", "ssss");
+      $this->register_content_component("document", new DocumentComponent());
+      $this->register_content_component("language", new LanguageComponent());
       $this->register_widget_feeder("page", "article");
       
       $this->register_widget_feeder("list", "folder");
@@ -192,9 +194,10 @@ class ContentManagement extends \Section
          EWCore::log_error(400, 'tr{Content Id is requierd}');
       $content = ew_contents::find($content_id)->toArray();
 
-      $value = preg_replace_callback('/\$content\.(\w*)/', function($m) use ($content) {
+      /*$value = preg_replace_callback('/\$content\.(\w*)/', function($m) use ($content) {
          return $content[$m[1]];
-      }, $value);
+      }, $value);*/
+      
       $label = \ew_contents_labels::firstOrNew(['content_id' => $content_id, 'key' => $key]);
 
       if ($value)

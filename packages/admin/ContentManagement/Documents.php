@@ -30,18 +30,20 @@
          title: "tr{New Folder}",
          activity: "app-admin/ContentManagement/category-form.php",
          parent: "action-bar-items",
-         hash: {
-            folderId: null
-         }
+         hash:
+                 {
+                    folderId: null
+                 }
       });
       this.bNewFile = EW.addActivity({
          title: "tr{New Article}",
          activity: "app-admin/ContentManagement/article-form.php",
          parent: "action-bar-items",
-         modal: {class: "full"},
-         hash: {
-            articleId: null
-         }
+         //modal: {class: "full"},
+         hash:
+                 {
+                    articleId: null
+                 }
       });
       this.seeFolderActivity = EW.getActivity({
          activity: "app-admin/ContentManagement/category-form.php_see",
