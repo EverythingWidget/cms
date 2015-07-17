@@ -2498,6 +2498,8 @@ EverythingWidgets.prototype.initPlugins = function ($element)
 var EW;
 $(document).ready(function () {
    EW = new EverythingWidgets();
+   //EW.sibebar = $("#sidebar");
+   EW.sidebarButton = $("#side-bar-btn").detach();
    // ew_activity handler
    var oldEWActivity = null;
    var modal = null;

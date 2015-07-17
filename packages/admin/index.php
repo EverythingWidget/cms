@@ -50,10 +50,27 @@ if (!isset($_SESSION['login']))
                $.each(data, function (key, val) {
                   var selected = ("<?php echo ($compId) ?>" == val['className']) ? "selected" : "";
                   items.push('<li class="col-xs-12 col-sm-6 ' + selected + '"><a href="<?php echo EW_ROOT_URL; ?>app-admin/index.php?compId=' + val['className'] + '"><label>' + val['title'] + '</label><p>' + val['description'] + '</p></a></li>');
+
                });
                $(items.join('')).appendTo("#components-pane ul");
+               $("#components-pane ul a").click(function (e)
+               {
+                  e.preventDefault();
+                  $.post("app-admin/ContentManagement/index.php",
+                          {},
+                          function (response)
+                          {
+                             //alert(response);
+                             $("#base-pane").append(response);
+                             initSideBar();
+                          });
+               });
                //alert($(items.join('')).html());
             }, "json");
+         };
+
+         EverythingWidgets.prototype.loadApp = function ()
+         {
          };
 
          $.fn.textWidth = function () {
@@ -332,6 +349,57 @@ if (!isset($_SESSION['login']))
 
          function initSideBar()
          {
+            var sidebar = $("#sidebar");
+            //var sbb = $("#side-bar-btn");
+            sidebar.prepend(EW.sidebarButton);
+            //sidebar.attr("tabindex", 1);
+            sidebar.off("mouseleave");
+            sidebar.on("mouseleave", function ()
+            {
+               sidebar.stop().css({
+                  overflowY: "hidden"
+               });
+               $("#sidebar.in").stop().animate({
+                  className: "sidebar",
+                  //width: $("#side-bar-btn").outerWidth()
+               },
+                       360, "Power3.easeOut");
+               //$("#sidebar").fadeOut(300);
+            });
+            sidebar.off("click");
+            sidebar.on("click", function (e)
+            {
+               e.stopPropagation();
+            });
+            EW.sidebarButton.off("click mouseenter focus");
+            EW.sidebarButton.on("click mouseenter focus", function (event)
+            {
+               //event.preventDefault();
+               sidebar.css({
+                  maxHeight: $(window).height() - 100
+               });
+               $("#sidebar:not(.in)").stop().animate({
+                  className: "sidebar in",
+                  width: "250px"
+               },
+               360, "Power4.easeOut", function () {
+                  sidebar.stop().css({
+                     overflowY: "auto"
+                  });
+                  if (event.type == 'focus')
+                  {
+                     sidebar.find("a:first").focus();
+                  }
+               });
+               event.stopPropagation();
+               $(window).on("click.sidebar", function ()
+               {
+                  $("#sidebar").trigger("mouseleave");
+                  $(window).off("click.sidebar");
+               });
+            });
+            //sbb = $("#side-bar-btn").detach();
+            //sidebar.prepend(sbb);
             this.currentTab = null;
             var oldHref = null
             var oldRequest = null
@@ -347,7 +415,7 @@ if (!isset($_SESSION['login']))
 
                   if (element !== this.currentTab)
                   {
-                     $("#side-bar-btn").text(element.text());
+                     EW.sidebarButton.text(element.text());
                      if (element.attr("data-ew-nav") && element.attr("href") != oldHref)
                      {
                         //alert(element.prop("href"));
@@ -371,11 +439,11 @@ if (!isset($_SESSION['login']))
             var base = this;
             if ($("#sidebar").length == 0)
             {
-               //$("#side-bar-btn").remove();
+               //sbb.hide();
             }
             if ($("#components-list").length == 1)
             {
-               $("#component-chooser-btn").remove();
+               //$("#component-chooser-btn").remove();
             }
             $("#sidebar a, .sidebar a").each(function ()
             {
@@ -408,7 +476,7 @@ if (!isset($_SESSION['login']))
                   if (a.attr("data-default") && !EW.getHashParameter(kv[0]))
                   {
                      EW.setHashParameter(kv[0], kv[1]);
-                     base.setCurrentTab(a);
+                     //base.setCurrentTab(a);
                   }
                   /*var defaultLink = EW.getHashParameter(kv[0]);
                    if (window.location.hash.indexOf(a.attr("href")) != -1 || defaultLink === kv[1])
@@ -433,7 +501,7 @@ if (!isset($_SESSION['login']))
          $(document).ready(function ()
          {
             var hashDetection = new hashHandler();
-            EW.activities = <?php echo json_encode(EWCore::read_activities()); ?>;
+            EW.activities = <?php echo json_encode(EWCore::read_activities()); ?>;            
             console.log(EW.activities);
 
             // Init EW plugins
@@ -496,52 +564,8 @@ if (!isset($_SESSION['login']))
                container: "body"
             });
             //$("#sidebar").hide();
-            var sidebar = $("#sidebar");
-            //sidebar.attr("tabindex", 1);
-            sidebar.on("mouseleave", function ()
-            {
-               sidebar.stop().css({
-                  overflowY: "hidden"
-               });
-               $("#sidebar.in").stop().animate({
-                  className: "sidebar",
-                  //width: $("#side-bar-btn").outerWidth()
-               },
-                       360, "Power3.easeOut");
-               //$("#sidebar").fadeOut(300);
-            });
-            sidebar.on("click", function (e)
-            {
-               e.stopPropagation();
-            });
 
-            $("#side-bar-btn").on("click mouseenter focus", function (event)
-            {
-               //event.preventDefault();
-               sidebar.css({
-                  maxHeight: $(window).height() - 100
-               });
-               $("#sidebar:not(.in)").stop().animate({
-                  className: "sidebar in",
-                  width: "250px"
-               },
-               360, "Power4.easeOut", function () {
-                  sidebar.stop().css({
-                     overflowY: "auto"
-                  });
-                  if (event.type == 'focus')
-                  {
-                     sidebar.find("a:first").focus();
-                  }
-               });
-               event.stopPropagation();
-               $(window).on("click.sidebar", function ()
-               {
-                  $("#sidebar").trigger("mouseleave");
-                  $(window).off("click.sidebar");
-               });
-            });
-            $("#sidebar").prepend($("#side-bar-btn").detach());
+            //$("#sidebar").prepend(sbb);
 
             document.addEventListener("DOMNodeInserted", function (event)
             {
@@ -666,7 +690,7 @@ if (!isset($_SESSION['login']))
                </div>
             </div>
             <?php
-            echo ($compPage);
+            //echo ($compPage);
             ?>
          </div>
       </div>

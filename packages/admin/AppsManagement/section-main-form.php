@@ -17,7 +17,7 @@ if ($app_main_form["sidebar"])
 }
 ?>
 
-<div ng-controller="MainContent" id="main-content" class="col-xs-12" role="main">
+<div id="main-content" class="col-xs-12" role="main">
    <?php
    //$main_content = EWCore::read_registry("ew-section-main-form");
    if ($app_main_form["content"])

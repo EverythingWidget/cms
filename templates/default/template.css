@@ -305,6 +305,13 @@ button{padding:0px;margin:0px;border:none;background-color:transparent;white-spa
    top: 0;
    width: 100%;
    z-index: 5;
+   transition: all .3s ease-out;
+}
+
+.app-bar.in
+{
+   
+   top: 0;
 }
 
 .app-bar .action-pane
@@ -366,7 +373,7 @@ div#components-pane{background-color:transparent;position:relative;width:840px;m
 div.sidebar .button{margin:6px 8px;border:1px solid #666;background-color:rgba(0,0,0,.5);box-shadow:0px 0px 3px 1px #000;float:none;display:block;line-height:28px;width:38px;padding:5px;font-family:Roboto}
 div.sidebar .button:hover{background-color:rgba(0,0,0,.8)}
 div.sidebar .button:active{background-color:rgba(30,50,70,.8)}
-div.sidebar{background-color:#fff;position:absolute;top:46px;left:0px;width:auto;height:56px;border-radius:0;overflow:hidden;font-size:13px;margin:0;z-index:5;padding:2px 0;}
+div.sidebar{background-color:#fff;position:absolute;top:46px;left:0px;width: 250px;height:56px;border-radius:0;overflow:hidden;font-size:13px;margin:0;z-index: 5;padding:2px 0;}
 div.sidebar > label,div.sidebar > *{display:none;}
 div.sidebar.in > *{display:inherit;}
 div.sidebar .comp-btn{width:250px;background-color:transparent;height:52px;color:#444;padding:0px 30px;padding-left:54px;font-size: 15px;float:left;display:inline;font-weight:bold;box-shadow:none;text-align: left;}
@@ -384,11 +391,13 @@ div.sidebar label
    overflow:hidden;
    border-left-width:0px;
    color:#039BE5;
-   margin-top: -11px;
+   
+   display: block;
 }
+div.sidebar label:first-child{margin-top: -11px;}
 div.sidebar ul{font-size: 15px;font-weight:bold;list-style:none;padding:0px;margin:0px 0px;min-width:250px;}
 div.sidebar ul + ul{list-style:none;padding:0px;margin: 15px 0px 0px;min-width:250px;border-top: 1px solid #eee;}
-div.sidebar ul + ul > label{margin-top: 15px;}
+div.sidebar ul + ul label:first-child{margin-top: 15px;}
 div.sidebar li{padding:0px;display:block;overflow:hidden;}
 div.sidebar li a{background-position:right center;background-repeat:no-repeat;color:#444;text-decoration:none;padding:16px 10px;padding-left: 56px;display:block;line-height:20px;min-height:42px;vertical-align:middle;}
 div.sidebar li a img{max-height:28px;float:left;margin:0px}

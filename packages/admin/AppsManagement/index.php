@@ -27,7 +27,7 @@ function sidebar()
    </ul>
 
    <?php
-   return ob_get_clean();
+    ob_get_clean();
 }
 
 function content()
