@@ -54,6 +54,7 @@ class Section
    public function process_request($method_name, $parameters = null)
    {
       //echo $method_name;
+      //echo $method_name;
       if (!$method_name)
       {
          return EWCore::log_error(400, "Wrong command: {$this->app->get_root()}/{$this->current_class->getShortName()}. Method can not be null.");
@@ -86,7 +87,8 @@ class Section
          }
          else
          {
-            return EWCore::log_error(403, "tr{You do not have permission for this command}", array("Access Denied" => "{$this->app->get_root()}/{$this->current_class->getShortName()}/$method_name"));
+            return EWCore::log_error(403, "tr{You do not have permission for this command}", array(
+                        "Access Denied" => "{$this->app->get_root()}/{$this->current_class->getShortName()}/$method_name"));
          }
       }
       else
@@ -112,6 +114,10 @@ class Section
       else if ($path)
       {
          return EWCore::log_error(404, "<h4>{$path}</h4><p>FILE NOT FOUND</p>");
+      }
+      else
+      {
+         return EWCore::log_error(404, "<h4>{$method_name}</h4><p>COMMAND NOT FOUND</p>");
       }
    }
 
@@ -310,9 +316,11 @@ class Section
          $object = $this;
       }
       //echo $command . "_listener";
-      EWCore::register_object($command . "_listener", $this->app->get_root() . "/" . $this->current_class->getShortName() . "/" . $function, array("function" => $function, "object" => $object));
+      EWCore::register_object($command . "_listener", $this->app->get_root() . "/" . $this->current_class->getShortName() . "/" . $function, array(
+          "function" => $function,
+          "object" => $object));
    }
-   
+
    public function register_content_component($key, $comp_object)
    {
       //$ro = new ReflectionClass($this);
@@ -329,14 +337,18 @@ class Section
    public function register_content_label($key, $default_value)
    {
       //$ro = new ReflectionClass($this);
-      $defaults = ["app" => $this->app->get_root(), "section" => $this->get_section_name(), "command" => 'ew_label_' . $key];
+      $defaults = ["app" => $this->app->get_root(),
+          "section" => $this->get_section_name(),
+          "command" => 'ew_label_' . $key];
       $defaults = array_merge($defaults, $default_value);
       EWCore::register_object("ew-content-labels", $this->app->get_root() . '_' . $this->get_section_name() . '_' . $key, $defaults);
    }
 
    public function register_form($name, $id, $default_value)
    {
-      $defaults = ["app" => $this->app->get_root(), "section" => $this->get_section_name(), "command" => 'ew_form_' . $id];
+      $defaults = ["app" => $this->app->get_root(),
+          "section" => $this->get_section_name(),
+          "command" => 'ew_form_' . $id];
       $defaults = array_merge($defaults, $default_value);
       EWCore::register_object($name, $this->app->get_root() . '_' . $this->get_section_name() . '_' . $id, $defaults);
    }
@@ -356,7 +368,9 @@ class Section
       //EWCore::register_object("ew-widget-feeder", "$type:$app", array($this, "ew_" . $type . "_feeder_" . $function_name));
       if (!strpos($function_name, ".php"))
       {
-         $function_name = array($this, "ew_" . $type . "_feeder_" . $function_name);
+         $function_name = array(
+             $this,
+             "ew_" . $type . "_feeder_" . $function_name);
       }
       EWCore::register_widget_feeder($type, $this->app->get_root(), $id, $function_name);
    }
@@ -421,7 +435,8 @@ class Section
       {
          //echo $key . " " . $value;
          if (!$this->save_setting($key, $value))
-            return EWCore::log_error(400, "The configuration has not been saved", ["key" => $key, "value" => $value]);
+            return EWCore::log_error(400, "The configuration has not been saved", ["key" => $key,
+                        "value" => $value]);
       }
    }
 

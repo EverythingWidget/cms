@@ -30,6 +30,7 @@ if (!isset($_SESSION['login']))
       <script src="<?php echo EW_ROOT_URL ?>core/js/bootstrap-datepicker.js"></script>
       <script src="<?php echo EW_ROOT_URL ?>core/js/autocomplete.js"></script>
       <script src="<?php echo EW_ROOT_URL ?>core/js/floatlabels.min.js" ></script>
+      <script src="<?php echo EW_ROOT_URL ?>core/js/router.js"></script>
       <script src="<?php echo EW_ROOT_URL ?>core/js/ewscript.js"></script>      
       <script src="<?php echo EW_ROOT_URL ?>core/js/simple-slider.js"></script>
       <script src="<?php echo EW_ROOT_URL ?>core/js/gsap/plugins/CSSPlugin.min.js"></script>
@@ -41,38 +42,86 @@ if (!isset($_SESSION['login']))
          //var EW = new EverythingWidgets();
          EverythingWidgets.prototype.loadSections = function ()
          {
-            $.get('app-admin/AppsManagement/get_app_sections', {
-               appDir: "admin"
-            },
+            var self = this;
+            this.apps = [];
+            $.get('app-admin/AppsManagement/get_app_sections',
+                    {
+                       appDir: "admin"
+                    },
             function (data)
             {
-               var items = [];
-               $.each(data, function (key, val) {
-                  var selected = ("<?php echo ($compId) ?>" == val['className']) ? "selected" : "";
-                  items.push('<li class="col-xs-12 col-sm-6 ' + selected + '"><a href="<?php echo EW_ROOT_URL; ?>app-admin/index.php?compId=' + val['className'] + '"><label>' + val['title'] + '</label><p>' + val['description'] + '</p></a></li>');
 
+               var items = ['<ul class="apps-list">'];
+               $.each(data, function (key, val)
+               {
+                  var selected = ("<?php echo ($compId) ?>" == val['className']) ? "selected" : "";
+//                  items.push('<li class="col-xs-12 col-sm-6 ' + selected + '"><a href="<?php echo EW_ROOT_URL; ?>app-admin/index.php?compId=' + val['className'] + '"><label>' + val['title'] + '</label><p>' + val['description'] + '</p></a></li>');
+                  items.push('<li class="' + selected + '"><a data-app="' + val['className'] + '"><label>' + val['title'] + '</label><p>' + val['description'] + '</p></a></li>');
+                  self.apps[val['className']] = val;
                });
-               $(items.join('')).appendTo("#components-pane ul");
-               $("#components-pane ul a").click(function (e)
+               items.push('</ul>');
+               $(items.join('')).appendTo("#home-pane");
+               $("#home-pane .apps-list a").click(function (e)
                {
                   e.preventDefault();
-                  $.post("app-admin/ContentManagement/index.php",
-                          {},
-                          function (response)
-                          {
-                             //alert(response);
-                             $("#base-pane").append(response);
-                             initSideBar();
-                          });
+                  EW.setHashParameters({app: $(this).attr("data-app")}, null, true);
+                  //Router.navigate("/" + $(this).attr("data-app") );
+                  //alert(this.href);
+                  /*$.post("app-admin/" + $(this).attr("data-app") + "/index.php",
+                   {},
+                   function (response)
+                   {
+                   //alert(response);
+                   $("#main-content").remove();
+                   $("#app-bar-nav").remove();
+                   $("#app-content").append(response);
+                   initSideBar();
+                   });*/
+               });
+               EW.addHashHandler(function (data)
+               {
+                  EW.loadApp(data);
                });
                //alert($(items.join('')).html());
             }, "json");
          };
-
-         EverythingWidgets.prototype.loadApp = function ()
+         EverythingWidgets.prototype.loadApp = function (data)
          {
-         };
+            if (data.app !== this.oldApp)
+            {
+               this.oldApp = data.app;
+               if (!data.app)
+               {
+                  $("#apps").hide();
+                  //$("#action-bar-items").empty();
+                  $("#main-content").remove();
+                  $("#app-bar-nav").remove();
+                  //$("#app-bar").removeClass("in");
 
+                  $("#app-bar").animate({className: "app-bar"}, 500, "Power2.easeOut");
+                  $("#home-pane").animate({className: "home-pane in"}, 500, "Power2.easeOut");
+                  return;
+               }
+               $("#apps").text(this.apps[data.app].title).show();
+               $("#action-bar-items").empty();
+               $("#app-bar").animate({className: "app-bar in"}, 500, "Power2.easeOut");
+               $("#home-pane").animate({className: "home-pane"}, 500, "Power2.easeOut");
+               setTimeout(function () {
+
+                  $.post("app-admin/" + data.app + "/index.php",
+                          {},
+                          function (response)
+                          {
+                             //alert(response);
+
+                             $("#main-content").remove();
+                             $("#app-bar-nav").remove();
+                             $("#app-content").append(response);
+                             initSideBar();
+                          });
+               }, 500);
+            }
+         };
          $.fn.textWidth = function () {
             var html_org = $(this).html();
             var html_calc = '<span style="white-space:nowrap">' + html_org + '</span>';
@@ -81,7 +130,6 @@ if (!isset($_SESSION['login']))
             $(this).html(html_org);
             return width;
          };
-
          $.fn.comeIn = function (t) {
 
             if (!this.is(":visible") || this.css("visibility") != "visible")
@@ -92,7 +140,6 @@ if (!isset($_SESSION['login']))
                if ($(this).prop("class"))
                   orgClass = $(this).prop("class").replace('btn-hide', '');
                $(this).addClass("btn-hide");
-
                $(this).css({
                   display: ""
                });
@@ -104,7 +151,6 @@ if (!isset($_SESSION['login']))
             return this;
             // Open popup code.
          };
-
          $.fn.comeOut = function (t) {
             if (!this.hasClass("btn-hide"))
             {
@@ -119,11 +165,9 @@ if (!isset($_SESSION['login']))
             return this;
             // Close popup code.
          };
-
          $.fn.loadingText = function (t) {
             return this;
          };
-
          ew_plugins.linkChooser = function (options)
          {
             var defaults = {
@@ -142,12 +186,10 @@ if (!isset($_SESSION['login']))
                this.$element = $(element);
                var settings = $.extend({
                }, defaults, options);
-
                //$element.EW().putInWrapper();
                //var wrapper = this.$element.parent();
                if (linkChooserDialog)
                   linkChooserDialog.remove();
-
                $element.EW().inputButton({
                   title: '<i class="link-icon"></i>',
                   label: 'tr{Link Chooser}',
@@ -180,7 +222,6 @@ if (!isset($_SESSION['login']))
                }
             });
          };
-
          ew_plugins.imageChooser = function (options)
          {
             var ACTIVE_PLUGIN_ATTR = "data-active-plugin-image-chooser";
@@ -206,16 +247,13 @@ if (!isset($_SESSION['login']))
                //this.$element = $(element);
                var settings = $.extend({
                }, defaults, options);
-
                if (!$element.parent().attr("data-element-wrapper"))
                   $element.wrap('<div class="element-wrapper" style="position:relative;padding-bottom:30px;" data-element-wrapper="true"><div style="border:1px dashed #ddd;background-color:#eee;display:block;overflow:hidden;" data-element-wrapper="true"></div></div>');
                $element.attr("type", "hidden");
-
                var wrapper = $element.parent().parent();
                if (imageChooserDialog)
                   imageChooserDialog.remove();
                var image = wrapper.find("img");
-
                if (image.length <= 0)
                {
                   image = $("<img>");
@@ -249,9 +287,7 @@ if (!isset($_SESSION['login']))
                      right: "2px",
                      bottom: "2px"
                   });
-
                   wrapper.append(imageChooserBtn);
-
                   //wrapper.append(dashed);
                   $element.attr(ACTIVE_PLUGIN_ATTR, true);
                }
@@ -265,7 +301,6 @@ if (!isset($_SESSION['login']))
                         autoOpen: false,
                         class: "center-big"
                      });
-
                      imageChooserDialog.append("<div class='form-content'></div><div class='footer-pane row actions-bar action-bar-items' ></div>");
                      $.post("<?php echo EW_DIR ?>app-admin/ContentManagement/Media.php", {
                         callback: settings.callbackName
@@ -313,14 +348,12 @@ if (!isset($_SESSION['login']))
                }
             });
          };
-
          function initPlugins(element)
          {
             if (!element.innerHTML && element.nodeName.toLowerCase() != 'input' && element.nodeName.toLowerCase() != 'textarea')
                return;
             var $element = $(element);
             EW.initPlugins($element);
-
             // Bootstraps Plugins
             // Begin
             //$("[data-toggle='tooltip'],[data-tooltip]").tooltip();
@@ -349,7 +382,7 @@ if (!isset($_SESSION['login']))
 
          function initSideBar()
          {
-            var sidebar = $("#sidebar");
+            var sidebar = $("#app-bar-nav");
             //var sbb = $("#side-bar-btn");
             sidebar.prepend(EW.sidebarButton);
             //sidebar.attr("tabindex", 1);
@@ -359,8 +392,8 @@ if (!isset($_SESSION['login']))
                sidebar.stop().css({
                   overflowY: "hidden"
                });
-               $("#sidebar.in").stop().animate({
-                  className: "sidebar",
+               $("#app-bar-nav.in").stop().animate({
+                  className: "app-bar-nav",
                   //width: $("#side-bar-btn").outerWidth()
                },
                        360, "Power3.easeOut");
@@ -378,8 +411,8 @@ if (!isset($_SESSION['login']))
                sidebar.css({
                   maxHeight: $(window).height() - 100
                });
-               $("#sidebar:not(.in)").stop().animate({
-                  className: "sidebar in",
+               $("#app-bar-nav:not(.in)").stop().animate({
+                  className: "app-bar-nav in",
                   width: "250px"
                },
                360, "Power4.easeOut", function () {
@@ -394,7 +427,7 @@ if (!isset($_SESSION['login']))
                event.stopPropagation();
                $(window).on("click.sidebar", function ()
                {
-                  $("#sidebar").trigger("mouseleave");
+                  sidebar.trigger("mouseleave");
                   $(window).off("click.sidebar");
                });
             });
@@ -421,7 +454,7 @@ if (!isset($_SESSION['login']))
                         //alert(element.prop("href"));
                         $("#action-bar-items").find("button,div").remove();
                         $("#main-content").empty();
-                        EW.lock($("#main-content"), "");
+                        //EW.lock($("#main-content"), "");
                         if (oldRequest)
                            oldRequest.abort();
                         oldRequest = $.post(element.prop("href"), function (data) {
@@ -437,7 +470,7 @@ if (!isset($_SESSION['login']))
                this.currentTab = element;
             };
             var base = this;
-            if ($("#sidebar").length == 0)
+            if ($("#app-bar-nav").length == 0)
             {
                //sbb.hide();
             }
@@ -445,12 +478,12 @@ if (!isset($_SESSION['login']))
             {
                //$("#component-chooser-btn").remove();
             }
-            $("#sidebar a, .sidebar a").each(function ()
+            $("#app-bar-nav a, .app-bar-nav a").each(function ()
             {
                var a = $(this);
                if (a.attr("rel") === "ajax")
                {
-                  var kv = a.attr("href").split("=");
+
                   a.click(function (event)
                   {
                      event.preventDefault();
@@ -458,11 +491,11 @@ if (!isset($_SESSION['login']))
                      {
                         EW.setHashParameters({
                            "nav": a.attr("data-ew-nav")
-                        },
-                        null, true);
+                        }, null);
                      }
                      else
                      {
+                        var kv = a.attr("href").split("=");
                         EW.setHashParameter(kv[0], kv[1]);
                      }
 
@@ -473,10 +506,11 @@ if (!isset($_SESSION['login']))
                   {
                      base.setCurrentTab(a);
                   }
-                  if (a.attr("data-default") && !EW.getHashParameter(kv[0]))
+                  //alert(currentNav);
+                  if (a.attr("data-default") && !currentNav)
                   {
-                     EW.setHashParameter(kv[0], kv[1]);
-                     //base.setCurrentTab(a);
+                     //EW.setHashParameter(kv[0], kv[1]);
+                     base.setCurrentTab(a);
                   }
                   /*var defaultLink = EW.getHashParameter(kv[0]);
                    if (window.location.hash.indexOf(a.attr("href")) != -1 || defaultLink === kv[1])
@@ -485,7 +519,6 @@ if (!isset($_SESSION['login']))
                    }*/
                }
             });
-
             // Init nav bar handler
             EW.addURLHandler(function ()
             {
@@ -501,14 +534,13 @@ if (!isset($_SESSION['login']))
          $(document).ready(function ()
          {
             var hashDetection = new hashHandler();
-            EW.activities = <?php echo json_encode(EWCore::read_activities()); ?>;            
+            EW.activities = <?php echo json_encode(EWCore::read_activities()); ?>;
             console.log(EW.activities);
+            EW.oldApp = null;
 
             // Init EW plugins
             initPlugins(document);
-
             initSideBar() & EW.loadSections();
-
             var currentButton = null;
             var buttons = null;
             var currentBtnForm = null;
@@ -518,14 +550,14 @@ if (!isset($_SESSION['login']))
                {
                }
             });
-
             $(document).ajaxComplete(function (event, data)
             {
             });
-
             // Notify error if an ajax request fail
             $(document).ajaxError(function (event, data)
             {
+               //if (data && data.statusText === "abort")
+               //return;
                if (EW.customAjaxErrorHandler)
                {
                   EW.customAjaxErrorHandler = false;
@@ -559,7 +591,6 @@ if (!isset($_SESSION['login']))
                // this code is buggy
                //EW.unlock($(".glass-pane-lock").parent());
             });
-
             $('select').selectpicker({
                container: "body"
             });
@@ -595,7 +626,6 @@ if (!isset($_SESSION['login']))
                         nav.data("nav-xs-btn", null);
                      }
                   });
-
                   nav.data("oldClass", nav.attr("class"));
                   nav.data("nav-xs-btn", true);
                   nav.data("menu", nav);
@@ -603,21 +633,17 @@ if (!isset($_SESSION['login']))
                   $(e).prop("class", "nav nav-pills xs-nav-tabs-active nav-stacked dropdown col-xs-10");
                   //nav.hide();
                   $(e).data("element-id", $(e).attr("id"));
-
                   var xsNavbar = $("<ul class='nav nav-pills'><li class='dropdown'><a id='tabs-btn' data-toggle='tab' href='#'></a></li></ul>");
                   xsNavbar.data("nav-xs-btn", true);
                   nav.before(xsNavbar);
                   nav.data("button", xsNavbar);
-
                   var dropdownNavBtn = $("<li class='dropdown'><a id='tabs-btn' data-toggle='tab' href='#'></a></li>")
                   nav.prepend(dropdownNavBtn);
-
                   var xsNavBarBtn = xsNavbar.find("li");
                   nav.css({
                      top: xsNavBarBtn.offset().top
                   });
                   nav.hide();
-
                   xsNavBarBtn.hover(function () {
                      nav.show();
                      nav = nav.detach();
@@ -647,15 +673,12 @@ if (!isset($_SESSION['login']))
                }
             });
          });
-
          $(window).on("ew.screen.xs", function ()
          {
             $(".nav.xs-nav-tabs:not(.xs-nav-tabs-active)").each(function (i) {
                $(this).data("xs-nav-bar-active")(this);
             });
-         });
-
-      </script>
+         });</script>
    </head>
    <body class="Admin <?php echo EWCore::get_language_dir($_REQUEST["_language"]) ?>" >
 
@@ -665,13 +688,9 @@ if (!isset($_SESSION['login']))
       </div>
 
       <div id="base-pane" class="container">      
-         <div id="app-content" class="row" style="">
+         <div id="app-content" >
             <div id="nav-bar" class="nav-bar">
-               <button type="button" id="component-chooser-btn" class="btn btn-text component-chooser comp-btn" id="" onclick="EW.showAllComponents();" >
-                  <?php
-                  echo $pageTitle;
-                  ?>
-               </button>                     
+               <a type="button" id="apps" class="btn btn-text component-chooser comp-btn" href="./app-admin/">tr{Apps}</a>                     
                <div  class="col-xs-2 col-sm-2 col-md-2 col-lg-1 pull-right">
                   <?php
                   if ($_SESSION['login'])
@@ -682,15 +701,17 @@ if (!isset($_SESSION['login']))
                </div>            
             </div>
             <div id="app-bar" class="app-bar">
-               <button class="btn sidebar comp-btn" id="side-bar-btn" >  
+               <button class="btn comp-btn" id="side-bar-btn" >  
                </button>   
                <div class="action-pane" >
                   <div id="action-bar-items" class="actions-bar action-bar-items" style="display:block;float:none;">
                   </div>
                </div>
             </div>
+            <div id="home-pane" class="home-pane" >
+            </div>
             <?php
-            //echo ($compPage);
+//echo ($compPage);
             ?>
          </div>
       </div>

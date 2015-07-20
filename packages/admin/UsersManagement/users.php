@@ -1,4 +1,3 @@
-<?php ?>
 <script >
    var Users = (function () {
       function Users()

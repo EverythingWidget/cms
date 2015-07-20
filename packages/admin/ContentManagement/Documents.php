@@ -34,7 +34,7 @@
                  {
                     folderId: null
                  }
-      });
+      }).hide().comeIn();
       this.bNewFile = EW.addActivity({
          title: "tr{New Article}",
          activity: "app-admin/ContentManagement/article-form.php",
@@ -44,7 +44,7 @@
                  {
                     articleId: null
                  }
-      });
+      }).hide().comeIn();
       this.seeFolderActivity = EW.getActivity({
          activity: "app-admin/ContentManagement/category-form.php_see",
          onDone: function ()

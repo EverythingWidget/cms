@@ -654,7 +654,9 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
             modalPane.before(animationDiv);
             //animationDiv.text("");
             if (settings.class !== "full")
+            {
                self.unlock($("#base-pane"));
+            }
             // Detach the modal if close action is hide
             if (settings.closeAction === "hide")
             {
@@ -726,7 +728,10 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
          if (settings.class !== "full")
          {
             self.lock(basePane, " ");
+            $("#apps").attr("target", "_self");
          }
+         else
+            $("#apps").attr("target", "_blank");
 
          modalPane.show().css({
             opacity: "0"
@@ -1134,12 +1139,12 @@ EverythingWidgets.prototype.setHashParameters = function (parameters, hashName, 
    // set newHash for corresponding hash name if it has been passed
    if (hashName)
    {
-      customHashes[hashName].hash = newHash;
+      customHashes[hashName].hash = newHash.replace(/\&$/, '');
       //alert(customHashes[hashName].hash);
    }
    // set url hash if no hash name specified
    else
-      window.location.hash = newHash;
+      window.location.hash = newHash.replace(/\&$/, '');
 };
 EverythingWidgets.prototype.getHashParameter = function (key, hashName)
 {
@@ -1287,12 +1292,13 @@ EverythingWidgets.prototype.setCurrentTab = function (obj)
 EverythingWidgets.prototype.lock = function (obj, string)
 {
    var self = this;
-   var settings = {
-      class: "",
-      text: ""
-   };
+   var settings =
+           {
+              class: "",
+              text: ""
+           };
    var glass = $(document.createElement("div"));
-   glass.addClass("glass-pane-lock");
+   glass.addClass("glass-pane-lock " + $(obj).attr("class"));
    glass.css({
       position: "absolute",
       top: "0px",
@@ -1686,7 +1692,7 @@ EWTable.prototype.read = function (customURLData)
       },
       error: function (o)
       {
-         //console.log(o);
+        //console.log(o);
          self.data = {
             result: []
          };
@@ -1759,7 +1765,7 @@ EverythingWidgets.prototype.createTable = function (conf)
    ewTable.read();
    return ewTable;
 };
-EverythingWidgets.prototype.addURLHandler = function (handler, hashName)
+EverythingWidgets.prototype.addHashHandler = EverythingWidgets.prototype.addURLHandler = function (handler, hashName)
 {
    var handlers = this.urlHandlers;
    //var newAdded = EW.newHandler;
@@ -1829,12 +1835,25 @@ function hashHandler()
          EW.Router.notifyRoutes();
          //}
          EW.newHandler = false;
-         this.oldHash = window.location.hash;
+         var hashValue = window.location.hash;
+         if (hashValue.indexOf("#") !== -1)
+         {
+            hashValue = hashValue.substring(1);
+         }
+         //var pairs = hashValue.split("&");
+         //var newHash = "#";
+         //var and = false;
+         var data = {};
+
+         hashValue.replace(/([^&]*)=([^&]*)/g, function (m, k, v)
+         {
+            data[k] = v;
+         });
          for (var i = 0; i < EW.urlHandlers.length; i++)
          {
-            EW.urlHandlers[i].call();
-
+            EW.urlHandlers[i].call({}, data);
          }
+         this.oldHash = window.location.hash;
       }
    };
    this.Check = setInterval(function ()

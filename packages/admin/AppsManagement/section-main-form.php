@@ -11,7 +11,7 @@ if ($app_main_form && $form_config)
 
 if ($app_main_form["sidebar"])
 {
-   echo '<div ng-controller="Sidebar" id="sidebar" class="sidebar">'
+   echo '<div id="app-bar-nav" class="app-bar-nav">'
    . $app_main_form["sidebar"]["content"]
    . '</div>';
 }

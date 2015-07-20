@@ -10,7 +10,7 @@ function sidebar()
    ?>
    <ul>
       <li>
-         <a rel="ajax" data-ew-nav="general" href="<?php echo EW_ROOT_URL; ?>app-admin/Settings/general.php">General</a>
+         <a rel="ajax" data-default="true" data-ew-nav="general" href="<?php echo EW_ROOT_URL; ?>app-admin/Settings/general.php">General</a>
       </li>     
       <li>
          <a rel="ajax" data-ew-nav="apps-plugins" href="<?php echo EW_ROOT_URL; ?>app-admin/Settings/apps-plugins.php">Apps & Plugins</a>
@@ -27,19 +27,8 @@ function script()
 {
    ob_start();
    ?>
-   <script  type="text/javascript">
-      /*moduleAdmin.controller('Sidebar', function ($scope)
-      {
+   <script  >
 
-      });
-      moduleAdmin.controller('MainContent', function ($scope)
-      {
-
-      });*/
-      $(document).ready(function () {
-         if (!EW.getHashParameter("nav"))
-            EW.setHashParameter("nav", "general");
-      });
    </script>
    <?php
    return ob_get_clean();
