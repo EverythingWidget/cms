@@ -1129,9 +1129,10 @@ button
    position: absolute;
    overflow: auto;   
    padding-top: 50px;
-   top:100%;
+   top: 100%;
    bottom: auto; 
    /*transition:all .3s ease-out;*/
+   /* background-color: red; */
 }
 
 .home-pane.in
