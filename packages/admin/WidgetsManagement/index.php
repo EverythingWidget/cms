@@ -36,6 +36,7 @@ function script()
       {
          this.sections = $('#sections').html();
          this.oldRow;
+         
       }
       WidgetsManagement.prototype.selectRow = function (obj) {
          $(widgetsManagement.oldRow).removeClass("selected");

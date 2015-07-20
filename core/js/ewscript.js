@@ -32,6 +32,7 @@ function EverythingWidgets()
    this.currentTab = null;
    this.widget_data = [];
    this.activityCounter = [];
+   this.originalActivity = [];
    //$("#components-pane").hide();
    var oldSize = "";
    $(document).mousedown(function (event) {
@@ -239,26 +240,34 @@ EverythingWidgets.prototype.getActivity = function (conf)
    }
    var activityId = settings.activity;
    // create new activity from the original activity in the case where there is more than one action for one activity
-   if (self.activityCounter[settings.activity])
-   {
-      ac = self.activityCounter[settings.activity];
-      ac++;
-      activityId = settings.activity + "-" + ac;
-   }
+   // removed for improvment
+   /*if (self.activityCounter[settings.activity] && JSON.stringify(self.activities[activityId].settings) !== JSON.stringify(settings))
+    {
+    ac = self.activityCounter[settings.activity];
+    ac++;
+    activityId = settings.activity + "-" + ac;
+    
+    }*/
+   if (!self.originalActivity[activityId])
+      self.originalActivity[activityId] = self.activities[activityId];
+   //self.activityCounter[activityId] = ac;
 
-   self.activityCounter[settings.activity] = ac;
-
-   self.activities[activityId] = $.extend(true, {}, self.activities[settings.activity]);
+   //self.activities[activityId] = $.extend(true, {}, self.activities[settings.activity]);
+   //self.activities[activityId].settings = settings;
 
    if (self.activities[activityId].modalObject && settings.modal && settings.modal.class)
    {
       self.activities[activityId].modalObject.animate({
          className: "top-pane col-xs-12 " + settings.modal.class
       },
-      300);
+      300,function()
+      {
+         self.activities[activityId].modalObject.methods.setCloseButton();
+      });
    }
 
-   $.extend(self.activities[activityId], conf);
+   self.activities[activityId] = $.extend({}, self.originalActivity[activityId], conf);
+   //alert(self.activities[activityId].modal.class)
    var activityCaller = function (hash) {
 
       var hashParameters = {
@@ -605,6 +614,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
    //var animationDuration = 600;
    this.isOpen = false;
    var modalPane = $(document.createElement("div"));
+   modalPane.methods = methods;
    modalPane.addClass("top-pane col-xs-12").addClass(settings.class);
    xButton = $("<a class='close-button x-icon'>");
    xButton.css({
@@ -653,15 +663,12 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
             });
             modalPane.before(animationDiv);
             //animationDiv.text("");
+            //alert(settings.class)
             if (settings.class !== "full")
             {
                self.unlock($("#base-pane"));
-               $("#apps").attr("target", "_blank");
             }
-            else
-            {
-               $("#apps").attr("target", "_self");
-            }
+            $("#apps").attr("target", "");
             // Detach the modal if close action is hide
             if (settings.closeAction === "hide")
             {
