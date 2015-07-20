@@ -322,13 +322,11 @@ root
 
    .top-pane .form-content
    {
-      bottom:51px
-   }
+      bottom: 55px;}
 
    .top-pane .footer-pane,#main-content .footer-pane
    {
-      height:52px
-   }
+      height: 56px;}
 }
 
 @media (min-width: 1360px) {
@@ -1050,17 +1048,17 @@ button
 #nav-bar > .comp-btn
 {
    float:left;
-   min-width:50px;
+   width: 36px;
    height:inherit;
    border:0;
    margin:0;
-   margin-left:-10px;
-   padding:0 30px;
-   padding-left:56px;
+   margin-left: 4px;
+   padding: 0;
+   /* padding-left: 54px; */
    font-weight:400;
    border-radius:0;
-   font-size:18px;
-   line-height:45px;
+   font-size: 30px;
+   line-height: 46px;
    color:#fff
 }
 
@@ -1077,6 +1075,18 @@ button
 #nav-bar .comp-btn:focus
 {
    outline:1px dotted rgba(0,0,0,.3)
+}
+
+.nav-bar h1
+{
+   float: left;
+   margin: 0;
+   height: 46px;
+   padding: 8px 8px;
+   color: #fff;
+   font-size: 18px;
+   font-weight: normal;
+   line-height: 30px;
 }
 
 .app-bar
@@ -1160,6 +1170,8 @@ button
    border-radius:16px;
    overflow:hidden;
    margin:30px;
+   box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+   transition: all .3s ease-out;
 }
 
 .apps-list li a label
@@ -1188,13 +1200,13 @@ button
 
 .apps-list li a:hover
 {
-   box-shadow:0 2px 10px rgba(0,0,0,.45)
+    box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
 }
 
 .apps-list li a:hover label
 {
-   color:#39f
-}
+   /* color:#39f
+ */}
 
 .apps-list li a:active label, .apps-list li a.selected label
 {
@@ -1605,7 +1617,7 @@ div#components-pane
    height:52px;
    color:#444;
    padding:0 30px;
-   padding-left:54px;
+   padding-left: 56px;
    font-size:15px;
    float:left;
    display:inline;
@@ -2629,23 +2641,25 @@ table.data tr:nth-of-type(even)
 
 table.data tr .row-block
 {
-   height:42px;
+   height: 42px;
    line-height:30px;
-   padding:5px 10px;
+   padding: 5px 10px;
    text-align:center;
-   border:1px solid transparent;
+   border: 0px solid rgba(0,0,0,.1);
    overflow:hidden;
-   box-shadow:0 2px 8px -1px rgba(0,0,0,.32);
-   -webkit-transition:box-shadow .3s;
+   /* box-shadow: 0 1px 6px 0px rgba(0,0,0,.1); */
+   /* -webkit-transition: all .3s; */
    border-radius:0
+;
+   border-width: 1px 0;
+   margin-top: -1px;
 }
 
 table.data tr .row-block:hover
 {
-   border-top-color:rgba(255,255,255,.06);
+   border-color: rgba(0,0,0,.3);
    z-index:2;
-   box-shadow:0 2px 16px 0 rgba(0,0,0,0.36)
-}
+   box-shadow: 0 4px 12px 0 rgba(0,0,0,0.24);}
 
 table.data tr .row-block span
 {
@@ -2727,7 +2741,7 @@ table.data td
    line-height:32px;
    padding:4px 10px;
    color:#333;
-   border:0 solid transparent;
+   border: 0 solid transparentr;
    border-width:1px 0;
    border-left:1px solid #fff
 }
@@ -2812,8 +2826,8 @@ table.contents td
 .content-item.selected/*,.content-item:focus*/
 {
    background-color:#80CBC4;
-   box-shadow:0 3px 18px -3px rgba(0,0,0,.32);
-   -webkit-transition:all .12s;
+   box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+   -webkit-transition: all .3s;
    outline:none
 }
 

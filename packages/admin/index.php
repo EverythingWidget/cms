@@ -21,6 +21,7 @@ if (!isset($_SESSION['login']))
       <base href="<?php echo EW_ROOT_URL ?>">
       <!--<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
       <link type="text/css" href="<?php echo EW_ROOT_URL ?>core/css/custom-theme/jquery-ui-1.8.21.custom.css" rel="Stylesheet" />	-->
+      <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
       <link type="text/css" href="<?php echo EW_ROOT_URL ?>core/css/bootstrap.css" rel="stylesheet" >  
       <link type="text/css" href="<?php echo EW_ROOT_URL ?>core/css/simple-slider.css" rel="stylesheet" >  
       <link href="<?php echo EW_ROOT_URL ?>templates/default/template.css" rel="stylesheet" type="text/css">
@@ -54,9 +55,9 @@ if (!isset($_SESSION['login']))
                var items = ['<ul class="apps-list">'];
                $.each(data, function (key, val)
                {
-                  var selected = ("<?php echo ($compId) ?>" == val['className']) ? "selected" : "";
+                 // var selected = ("<?php echo ($compId) ?>" == val['className']) ? "selected" : "";
 //                  items.push('<li class="col-xs-12 col-sm-6 ' + selected + '"><a href="<?php echo EW_ROOT_URL; ?>app-admin/index.php?compId=' + val['className'] + '"><label>' + val['title'] + '</label><p>' + val['description'] + '</p></a></li>');
-                  items.push('<li class="' + selected + '"><a data-app="' + val['className'] + '"><label>' + val['title'] + '</label><p>' + val['description'] + '</p></a></li>');
+                  items.push('<li class=""><a data-app="' + val['className'] + '"><label>' + val['title'] + '</label><p>' + val['description'] + '</p></a></li>');
                   self.apps[val['className']] = val;
                });
                items.push('</ul>');
@@ -92,6 +93,7 @@ if (!isset($_SESSION['login']))
                this.oldApp = data.app;
                if (!data.app)
                {
+                  $("#app-title").text("Home");
                   $("#apps").hide();
                   //$("#action-bar-items").empty();
                   $("#main-content").remove();
@@ -102,7 +104,8 @@ if (!isset($_SESSION['login']))
                   $("#home-pane").animate({className: "home-pane in"}, 500, "Power2.easeOut");
                   return;
                }
-               $("#apps").text(this.apps[data.app].title).show();
+               $("#apps").show();
+               $("#app-title").text(this.apps[data.app].title);
                $("#action-bar-items").empty();
                $("#app-bar").animate({className: "app-bar in"}, 500, "Power2.easeOut");
                $("#home-pane").animate({className: "home-pane"}, 500, "Power2.easeOut");
@@ -690,7 +693,8 @@ if (!isset($_SESSION['login']))
       <div id="base-pane" class="container">      
          <div id="app-content" >
             <div id="nav-bar" class="nav-bar">
-               <a type="button" id="apps" class="btn btn-text component-chooser comp-btn" href="./app-admin/">tr{Apps}</a>                     
+               <a type="button" id="apps" class="btn btn-text  comp-btn" data-ew-nav="" href="./app-admin/#"><i class="fa fa-angle-left"></i></a>
+               <h1 id="app-title">tr{Apps}</h1>
                <div  class="col-xs-2 col-sm-2 col-md-2 col-lg-1 pull-right">
                   <?php
                   if ($_SESSION['login'])

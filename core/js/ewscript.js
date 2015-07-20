@@ -656,6 +656,11 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
             if (settings.class !== "full")
             {
                self.unlock($("#base-pane"));
+               $("#apps").attr("target", "_blank");
+            }
+            else
+            {
+               $("#apps").attr("target", "_self");
             }
             // Detach the modal if close action is hide
             if (settings.closeAction === "hide")
@@ -1692,7 +1697,7 @@ EWTable.prototype.read = function (customURLData)
       },
       error: function (o)
       {
-        //console.log(o);
+         //console.log(o);
          self.data = {
             result: []
          };
