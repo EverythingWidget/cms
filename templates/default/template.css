@@ -2742,7 +2742,7 @@ table.data td
    line-height:32px;
    padding:4px 10px;
    color:#333;
-   border: 0 solid transparentr;
+   border: 0 solid transparent;
    border-width:1px 0;
    border-left:1px solid #fff
 }
