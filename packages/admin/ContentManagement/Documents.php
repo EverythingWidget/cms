@@ -14,6 +14,7 @@
 </div>
 
 <script>
+   // System.app.ContentManagement.module('Document',
    function Documents()
    {
       var self = this;

@@ -436,8 +436,7 @@ root
    background-color:transparent;
    left:0;
    margin-left:0;
-   width:100%
-}
+   width:100%}
 
 .top-pane .footer-pane,#main-content .footer-pane
 {
@@ -511,11 +510,11 @@ root
 {
    display:inherit
 }
-
-.form-content.tab-content .tab-pane.static-block,.static-block
+.form-content.tab-content .tab-pane.static-block, .static-block
 {
-   position:fixed;
-   top:102px;
+
+   position: fixed;
+   top: 102px; 
    bottom:0
 }
 
@@ -534,8 +533,7 @@ root
 {
    position:static;
    overflow:hidden;
-   padding:0 15px
-}
+   padding:0 15px}
 
 ul.component li a
 {
@@ -670,8 +668,7 @@ body.Admin
    box-shadow:0 2px 12px -1px #666;
    position:absolute;
    z-index:1;
-   perspective:600px
-}
+   /* perspective:600px */}
 
 .top-pane
 {
@@ -844,13 +841,11 @@ body.Admin
 
 #main-content > .header-pane.tabs-bar
 {
-   height:50px
-}
+   height:50px}
 
 #main-content > .form-content.tabs-bar
 {
-   /*top:55px*/
-}
+   /* top:55px */}
 
 .top-pane.full
 {
@@ -1016,8 +1011,7 @@ button
    width:100%;
    padding:0 10px;
    z-index:10;
-   position:relative
-}
+   position:relative}
 
 #nav-bar a.tab
 {
@@ -1201,13 +1195,13 @@ button
 
 .apps-list li a:hover
 {
-    box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
+   box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
 }
 
 .apps-list li a:hover label
 {
    /* color:#39f
- */}
+   */}
 
 .apps-list li a:active label, .apps-list li a.selected label
 {
@@ -1579,8 +1573,7 @@ div#components-pane
    padding:0;
    border:0 solid #eaeaea;
    display:none;
-   transform:translateZ(150px)
-}
+   transform:translateZ(150px)}
 
 .app-bar-nav
 {
@@ -2651,7 +2644,7 @@ table.data tr .row-block
    /* box-shadow: 0 1px 6px 0px rgba(0,0,0,.1); */
    /* -webkit-transition: all .3s; */
    border-radius:0
-;
+      ;
    border-width: 1px 0;
    margin-top: -1px;
 }

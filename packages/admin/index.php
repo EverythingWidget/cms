@@ -37,14 +37,49 @@ if (!isset($_SESSION['login']))
       <script src="<?php echo EW_ROOT_URL ?>core/js/gsap/plugins/CSSPlugin.min.js"></script>
       <script src="<?php echo EW_ROOT_URL ?>core/js/gsap/TweenLite.min.js" ></script>
       <script src="<?php echo EW_ROOT_URL ?>core/js/gsap/jquery.gsap.min.js"></script>
+      <script src="<?php echo EW_ROOT_URL ?>core/js/system.js"></script>
       <!--<script type="text/javascript" src="<?php echo EW_ROOT_URL ?>core/js/jquery/jquery-ui-1.10.3.custom.js"></script>-->
       <script>
          //var moduleAdmin = angular.module("admin",[]);
          //var EW = new EverythingWidgets();
+         System.onLoadApp = function (app)
+         {
+            if (app.id === "Home")
+            {
+               $("#app-title").text("Home");
+               $("#apps").hide();
+               //$("#action-bar-items").empty();
+               $("#main-content").remove();
+               $("#app-bar-nav").remove();
+               //$("#app-bar").removeClass("in");
+
+               $("#app-bar").animate({className: "app-bar"}, 500, "Power2.easeOut");
+               $("#home-pane").animate({className: "home-pane in"}, 500, "Power2.easeOut");
+               return false;
+            }
+            return true;
+         };
+         System.onAppLoaded = function (app, response)
+         {
+
+            $("#apps").show();
+            $("#app-title").text(app.title);
+            $("#action-bar-items").empty();
+            $("#app-bar").animate({className: "app-bar in"}, 500, "Power2.easeOut");
+            $("#home-pane").animate({className: "home-pane"}, 500, "Power2.easeOut");
+            $("#main-content").remove();
+            $("#app-bar-nav").remove();
+            setTimeout(function ()
+            {
+               $("#app-content").append(response);
+               initSideBar();
+            }, 500);
+
+         };
          EverythingWidgets.prototype.loadSections = function ()
          {
             var self = this;
-            this.apps = [];
+            this.apps = {Home: {id: "Home"}};
             $.get('app-admin/AppsManagement/get_app_sections',
                     {
                        appDir: "admin"
@@ -55,16 +90,27 @@ if (!isset($_SESSION['login']))
                var items = ['<ul class="apps-list">'];
                $.each(data, function (key, val)
                {
-                 // var selected = ("<?php echo ($compId) ?>" == val['className']) ? "selected" : "";
+                  // var selected = ("<?php echo ($compId) ?>" == val['className']) ? "selected" : "";
 //                  items.push('<li class="col-xs-12 col-sm-6 ' + selected + '"><a href="<?php echo EW_ROOT_URL; ?>app-admin/index.php?compId=' + val['className'] + '"><label>' + val['title'] + '</label><p>' + val['description'] + '</p></a></li>');
                   items.push('<li class=""><a data-app="' + val['className'] + '"><label>' + val['title'] + '</label><p>' + val['description'] + '</p></a></li>');
+                  val.package = "app-admin";
+                  val.file = "index.php";
+                  val.id = val['className'];
                   self.apps[val['className']] = val;
+
+                  //console.log(val);
                });
                items.push('</ul>');
                $(items.join('')).appendTo("#home-pane");
                $("#home-pane .apps-list a").click(function (e)
                {
                   e.preventDefault();
+                  /*System.openApp(
+                   {
+                   id: $(this).attr("data-app"),
+                   package: "app-admin",
+                   file: "index.php"
+                   });*/
                   EW.setHashParameters({app: $(this).attr("data-app")}, null, true);
                   //Router.navigate("/" + $(this).attr("data-app") );
                   //alert(this.href);
@@ -81,7 +127,14 @@ if (!isset($_SESSION['login']))
                });
                EW.addHashHandler(function (data)
                {
-                  EW.loadApp(data);
+                  //EW.loadApp(data);
+                  if (!data.app)
+                     data.app = "Home";
+                  if (data.app !== EW.oldApp)
+                  {
+                     EW.oldApp = data.app;
+                     System.openApp(EW.apps[data.app]);
+                  }
                });
                //alert($(items.join('')).html());
             }, "json");

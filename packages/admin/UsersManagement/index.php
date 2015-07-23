@@ -22,31 +22,44 @@ function script()
    ob_start();
    ?>
    <script >
-      /*moduleAdmin.controller('Sidebar', function ($scope)
-      {
-
-      });
-      moduleAdmin.controller('MainContent', function ($scope)
-      {
-
-      });*/
-      function UserManagement()
-      {
-      }
-      UserManagement.prototype.listUsers = function (query, pageNumber)
-      {
-         $.post("UsersManagement/UsersList.php", {cmd: "UsersList", query: query, pageNumber: pageNumber}, function (data)
-         {
-            $("#main-content").html(data);
-         });
-         //loadPage('UsersManagement/UsersList.php', 'UsersList', 'cmd=UsersList');          
-      };
-      var userManagement;
-      ////userManagement.listUsers();   
-      $(document).ready(function ()
-      {
-         userManagement = new UserManagement();
-      });
+      (function () {
+         var app =
+                 {
+                    listUsers: function (query, pageNumber)
+                    {
+                       $.post("UsersManagement/UsersList.php", {cmd: "UsersList", query: query, pageNumber: pageNumber}, function (data)
+                       {
+                          $("#main-content").html(data);
+                       });
+                    }
+                 };
+         /*moduleAdmin.controller('Sidebar', function ($scope)
+          {
+          
+          });
+          moduleAdmin.controller('MainContent', function ($scope)
+          {
+          
+          });*/
+         /*function UsersManagement()
+          {
+          }
+          UsersManagement.prototype.listUsers = function (query, pageNumber)
+          {
+          $.post("UsersManagement/UsersList.php", {cmd: "UsersList", query: query, pageNumber: pageNumber}, function (data)
+          {
+          $("#main-content").html(data);
+          });
+          //loadPage('UsersManagement/UsersList.php', 'UsersList', 'cmd=UsersList');          
+          };*/
+         System.registerApp("UsersManagement", app);
+      }());
+      /* var userManagement;
+       ////userManagement.listUsers();   
+       $(document).ready(function ()
+       {
+       userManagement = new UserManagement();
+       });*/
    </script>
    <?php
    return ob_get_clean();

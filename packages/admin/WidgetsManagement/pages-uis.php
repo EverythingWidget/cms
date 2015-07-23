@@ -221,10 +221,10 @@ if ($path_uis_list)
       }
    };
 
-   widgetsManagement.onBackToWM = function ()
+   /*widgetsManagement.onBackToWM = function ()
    {
       //pageUIS.bSelect.remove();
-   };
+   };*/
    var pageUIS;
    $(document).ready(function () {
       pageUIS = new PageUIS();

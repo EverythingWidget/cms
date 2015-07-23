@@ -169,14 +169,14 @@
       }, "json");
    };
 
-   widgetsManagement.onBackToWM = function ()
+   /*widgetsManagement.onBackToWM = function ()
    {
       var self = this;
       self.bNewUIS.remove();
       EW.removeURLHandler(self.handler);
       //uisList.bEditUIS.remove();
       EW.setHashParameter('ui_structure_id', null);
-   };
+   };*/
 
    UIStructureList.prototype.listUIStructures = function ()
    {
