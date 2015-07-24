@@ -5,36 +5,39 @@ var System = System ||
            appPathfiledName: null,
            activityTree: [],
            onLoadQueue: [],
-           activeHashHandler: function () {
-           },
-           appAbstract:
+           activeModule: null,
+           /*activeHashHandler: function () {
+            },*/
+           module:
                    {
+                      activeModule: null,
                       init: function ()
                       {
 
                       },
                       focus: function ()
                       {
-                         System.activityTree.unshift(this);
+                         //System.activityTree.unshift(this);
                          System.activeHashHandler = this.hashHandler;
                       },
                       blur: function ()
                       {
-                         System.activityTree.splice(0, 1);
+                         //System.activityTree.splice(0, 1);
                       },
                       dispose: function ()
                       {
 
                       },
-                      hashHandler: function ()
+                      hashHandler: function (e, data)
                       {
-
+                         if (this.activeModule && !e.isDefaultPrevented())
+                            this.activeModule.hashHandler(e, data);
                       }
                    },
            // Apps Management
            registerApp: function (id, object)
            {
-              this.apps[id] = $.extend({}, System.appAbstract, object);
+              this.apps[id] = $.extend({}, System.module, object);
            },
            // Open app
            openApp: function (app, reload)
@@ -66,7 +69,7 @@ var System = System ||
                           window.location.hash = self.appHashes[id];
                        var html = $(response).filter(":not(script)");
                        //var html = res;
-                       System.apps[id] = $.extend({}, System.appAbstract, self.apps[id]);
+                       System.apps[id] = $.extend({}, System.module, self.apps[id]);
                        self.onAppLoaded(self.apps[id], html);
                        //
                        System.apps[id].init();
@@ -121,6 +124,10 @@ var System = System ||
            },
            appHashes: [],
            hashChecker: null,
+           hashHandler: function (nav, data)
+           {
+
+           },
            startHashListener: function ()
            {
               var self = this;
@@ -133,10 +140,17 @@ var System = System ||
                     //EW.Router.notifyRoutes();
                     //}
                     //EW.newHandler = false;
+                    //nav #([^&]*)&?
+
                     var hashValue = window.location.hash;
+                    var navigation = [];
                     if (hashValue.indexOf("#") !== -1)
                     {
-                       hashValue = hashValue.substring(1);
+                       var nav = hashValue.match(/#([^&]*)&?/);
+                       hashValue = hashValue.replace(/#([^&]*)&?/, "");
+                       if (nav[0])
+                          navigation = nav[0].split("/");
+                       //hashValue = hashValue.substring(1);
                     }
                     //var pairs = hashValue.split("&");
                     //var newHash = "#";
@@ -149,8 +163,8 @@ var System = System ||
                     });
                     //for (var i = 0; i < EW.urlHandlers.length; i++)
                     //{
-                    self.hashHandler.call({}, data); // System
-                    self.activeHashHandler.call({}, data); // App
+                    self.hashHandler.call({}, navigation, data); // System
+                    //self.activeHashHandler.call({},navigation, data); // App
                     // ---- // Nav
 
                     //}
