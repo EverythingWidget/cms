@@ -245,21 +245,19 @@ root
 
    .top-pane .form-content
    {
-      bottom:51px
-   }
+      bottom: 55px;}
 
    .top-pane .footer-pane,#main-content .footer-pane
    {
-      height:52px
-   }
+      height: 56px;}
 }
 
 @media (min-width: 992px) and (max-width: 1359px) {
    .top-pane.center
    {
       position:absolute;
-      top:10px;
-      bottom:14px;
+      top: 10px;
+      bottom: 18px;
       right:0;
       max-width:992px;
       width:100%;
@@ -333,8 +331,8 @@ root
    .top-pane.center
    {
       position:absolute;
-      top:46px;
-      bottom:0;
+      top: 10px;
+      bottom: 18px;
       right:0;
       left:50%;
       margin-left:-640px;
@@ -1233,6 +1231,7 @@ button
    padding-bottom:0;
    display:block;
    overflow:auto
+      ;overflow-x: hidden;
 }
 
 h2.actions-bar
@@ -1714,7 +1713,7 @@ div#components-pane
    color:#444;
    text-decoration:none;
    padding:16px 10px;
-   padding-left:56px;
+   padding-left: 58px;
    display:block;
    line-height:20px;
    min-height:42px;
@@ -1758,8 +1757,7 @@ div#components-pane
    color:#03A9F4;
    border-left:6px solid #03A9F4;
    cursor:default;
-   padding-left:50px
-}
+   padding-left: 52px;}
 
 .texture
 {
@@ -2165,19 +2163,20 @@ label.label-float.focused
    font-size:14px
 }
 
-.label-float-input
+.label-float-input, .text-field.label-float-input
 {
-   -webkit-transition:padding 300ms ease;
-   -moz-transition:padding 300ms ease;
-   -ms-transition:padding 300ms ease;
-   -o-transition:padding 300ms ease;
-   transition:padding 300ms ease
+   margin-top:16px;
+   margin-bottom:20px;
+   -webkit-transition:padding .3s ease;
+   -moz-transition:padding .3s ease;
+   -ms-transition:padding .3s ease;
+   -o-transition:padding .3s ease;
+   transition: padding .3s ease;
 }
 
 .label-float-input.valued,.label-float-input:focus
 {
-   padding-top:12px
-}
+   padding-top: 12px;}
 
 label.small
 {
@@ -2276,12 +2275,6 @@ textarea.text-field
    background-color:rgba(0,0,0,.04);
    border-color:transparent;
    box-shadow:none
-}
-
-.label-float-input
-{
-   margin-top:16px;
-   margin-bottom:20px
 }
 
 .text-field > select
@@ -2507,7 +2500,7 @@ textarea.text-field
    top:0;
    left:0;
    right:0;
-   height:42px;
+   height: 42px;
    background-color:#fff;
    border:0 solid #ccc
 }
@@ -2635,12 +2628,12 @@ table.data tr:nth-of-type(even)
 
 table.data tr .row-block
 {
-   height: 42px;
+   height: 44px;
    line-height:30px;
-   padding: 5px 10px;
+   padding: 6px 10px;
    text-align:center;
    border: 0px solid rgba(0,0,0,.1);
-   overflow:hidden;
+   overflow: hidden;
    /* box-shadow: 0 1px 6px 0px rgba(0,0,0,.1); */
    /* -webkit-transition: all .3s; */
    border-radius:0

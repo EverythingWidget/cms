@@ -186,7 +186,7 @@
       var self = this;
       var div = $("<div tabindex='1' class='content-item folder' data-category-id='{id}'><span></span><p>{title}</p><p class='date'>{round_date_created}</p></div>").EW().createView(model);
       div.dblclick(function () {
-         EW.setHashParameter("parent", id);
+         System.setHashParameters({"parent": id});
       });
       div.on('focus', function ()
       {

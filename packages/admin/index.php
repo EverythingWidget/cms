@@ -8,39 +8,34 @@ if (!isset($_SESSION['login']))
 }
 ?> 
 <!DOCTYPE html>
-<html ng-app="admin">
+<html>
    <head>
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <link rel="shortcut icon" href="<?php echo EW_ROOT_URL ?>templates/default/favicon.ico">  
       <title>
          <?php
          echo $pageTitle;
          ?>            
-      </title>    
+      </title> 
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="shortcut icon" href="<?php echo EW_ROOT_URL ?>templates/default/favicon.ico">  
+
       <base href="<?php echo EW_ROOT_URL ?>">
-      <!--<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-      <link type="text/css" href="<?php echo EW_ROOT_URL ?>core/css/custom-theme/jquery-ui-1.8.21.custom.css" rel="Stylesheet" />	-->
       <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
       <link type="text/css" href="<?php echo EW_ROOT_URL ?>core/css/bootstrap.css" rel="stylesheet" >  
       <link type="text/css" href="<?php echo EW_ROOT_URL ?>core/css/simple-slider.css" rel="stylesheet" >  
       <link href="<?php echo EW_ROOT_URL ?>templates/default/template.css" rel="stylesheet" type="text/css">
-      <!--<script src="<?php echo EW_ROOT_URL ?>core/js/angular/angular.min.js"></script>--> 
       <script src="<?php echo EW_ROOT_URL ?>core/js/jquery/jquery-2.1.1.min.js"></script>       
       <script src="<?php echo EW_ROOT_URL ?>core/js/jquery/sortable.js"></script>      
       <script src="<?php echo EW_ROOT_URL ?>core/js/bootstrap-datepicker.js"></script>
       <script src="<?php echo EW_ROOT_URL ?>core/js/autocomplete.js"></script>
       <script src="<?php echo EW_ROOT_URL ?>core/js/floatlabels.min.js" ></script>
-      <script src="<?php echo EW_ROOT_URL ?>core/js/router.js"></script>
       <script src="<?php echo EW_ROOT_URL ?>core/js/ewscript.js"></script>      
       <script src="<?php echo EW_ROOT_URL ?>core/js/simple-slider.js"></script>
       <script src="<?php echo EW_ROOT_URL ?>core/js/gsap/plugins/CSSPlugin.min.js"></script>
       <script src="<?php echo EW_ROOT_URL ?>core/js/gsap/TweenLite.min.js" ></script>
       <script src="<?php echo EW_ROOT_URL ?>core/js/gsap/jquery.gsap.min.js"></script>
       <script src="<?php echo EW_ROOT_URL ?>core/js/system.js"></script>
-      <!--<script type="text/javascript" src="<?php echo EW_ROOT_URL ?>core/js/jquery/jquery-ui-1.10.3.custom.js"></script>-->
       <script>
-         //var moduleAdmin = angular.module("admin",[]);
          //var EW = new EverythingWidgets();
          System.onLoadApp = function (app)
          {
@@ -63,7 +58,7 @@ if (!isset($_SESSION['login']))
          {
 
             $("#apps").show();
-            $("#app-title").text(app.title);
+//            $("#app-title").text(app.title);
             $("#action-bar-items").empty();
             $("#app-bar").animate({className: "app-bar in"}, 500, "Power2.easeOut");
             $("#home-pane").animate({className: "home-pane"}, 500, "Power2.easeOut");
@@ -72,10 +67,29 @@ if (!isset($_SESSION['login']))
             setTimeout(function ()
             {
                $("#app-content").append(response);
-               initSideBar();
+               EW.initSideBar();
             }, 500);
 
          };
+         System.hashHandler = function (nav, params)
+         {
+            if (!nav.app)
+               nav.app = ["Home"];
+            if (nav.app[0] !== EW.oldApp)
+            {
+               EW.oldApp = nav.app[0];
+               $("#app-title").text(EW.apps[nav.app[0]].title);
+               System.openApp(EW.apps[nav.app[0]]);
+               return;
+            }
+            if (nav.app[1])
+            {
+               //alert(nav.app[1])
+               EW.appNav.setCurrentTab($("a[data-ew-nav='" + nav.app[1] + "']"));
+            }
+            //base.setCurrentTab($("a[data-ew-nav='" + EW.getHashParameter("nav") + "']"));
+         };
+
          EverythingWidgets.prototype.loadSections = function ()
          {
             var self = this;
@@ -111,7 +125,7 @@ if (!isset($_SESSION['login']))
                    package: "app-admin",
                    file: "index.php"
                    });*/
-                  EW.setHashParameters({app: $(this).attr("data-app")}, null, true);
+                  System.setHashParameters({app: $(this).attr("data-app")}, null);
                   //Router.navigate("/" + $(this).attr("data-app") );
                   //alert(this.href);
                   /*$.post("app-admin/" + $(this).attr("data-app") + "/index.php",
@@ -125,18 +139,19 @@ if (!isset($_SESSION['login']))
                    initSideBar();
                    });*/
                });
-               EW.addHashHandler(function (data)
-               {
-                  //EW.loadApp(data);
-                  if (!data.app)
-                     data.app = "Home";
-                  if (data.app !== EW.oldApp)
-                  {
-                     EW.oldApp = data.app;
-                     System.openApp(EW.apps[data.app]);
-                  }
-               });
+               /*EW.addHashHandler(function (data)
+                {
+                //EW.loadApp(data);
+                if (!data.app)
+                data.app = "Home";
+                if (data.app !== EW.oldApp)
+                {
+                EW.oldApp = data.app;
+                System.openApp(EW.apps[data.app]);
+                }
+                });*/
                //alert($(items.join('')).html());
+               System.start();
             }, "json");
          };
          EverythingWidgets.prototype.loadApp = function (data)
@@ -173,7 +188,7 @@ if (!isset($_SESSION['login']))
                              $("#main-content").remove();
                              $("#app-bar-nav").remove();
                              $("#app-content").append(response);
-                             initSideBar();
+                             EW.initSideBar();
                           });
                }, 500);
             }
@@ -435,17 +450,17 @@ if (!isset($_SESSION['login']))
                }
             });
          }
-
-         function initSideBar()
+         EverythingWidgets.prototype.initSideBar = function ()
          {
-            var sidebar = $("#app-bar-nav");
+            this.appNav = this.appNav || {};
+            var $sidebar = $("#app-bar-nav");
             //var sbb = $("#side-bar-btn");
-            sidebar.prepend(EW.sidebarButton);
+            $sidebar.prepend(EW.sidebarButton);
             //sidebar.attr("tabindex", 1);
-            sidebar.off("mouseleave");
-            sidebar.on("mouseleave", function ()
+            $sidebar.off("mouseleave");
+            $sidebar.on("mouseleave", function ()
             {
-               sidebar.stop().css({
+               $sidebar.stop().css({
                   overflowY: "hidden"
                });
                $("#app-bar-nav.in").stop().animate({
@@ -455,8 +470,8 @@ if (!isset($_SESSION['login']))
                        360, "Power3.easeOut");
                //$("#sidebar").fadeOut(300);
             });
-            sidebar.off("click");
-            sidebar.on("click", function (e)
+            $sidebar.off("click");
+            $sidebar.on("click", function (e)
             {
                e.stopPropagation();
             });
@@ -464,7 +479,7 @@ if (!isset($_SESSION['login']))
             EW.sidebarButton.on("click mouseenter focus", function (event)
             {
                //event.preventDefault();
-               sidebar.css({
+               $sidebar.css({
                   maxHeight: $(window).height() - 100
                });
                $("#app-bar-nav:not(.in)").stop().animate({
@@ -472,27 +487,27 @@ if (!isset($_SESSION['login']))
                   width: "250px"
                },
                360, "Power4.easeOut", function () {
-                  sidebar.stop().css({
+                  $sidebar.stop().css({
                      overflowY: "auto"
                   });
                   if (event.type == 'focus')
                   {
-                     sidebar.find("a:first").focus();
+                     $sidebar.find("a:first").focus();
                   }
                });
                event.stopPropagation();
                $(window).on("click.sidebar", function ()
                {
-                  sidebar.trigger("mouseleave");
+                  $sidebar.trigger("mouseleave");
                   $(window).off("click.sidebar");
                });
             });
             //sbb = $("#side-bar-btn").detach();
             //sidebar.prepend(sbb);
-            this.currentTab = null;
+            this.appNav.currentTab = null;
             var oldHref = null
             var oldRequest = null
-            this.setCurrentTab = function (element)
+            this.appNav.setCurrentTab = function (element)
             {
                if (this.currentTab)
                {
@@ -501,7 +516,6 @@ if (!isset($_SESSION['login']))
                }
                if (element)
                {
-
                   if (element !== this.currentTab)
                   {
                      EW.sidebarButton.text(element.text());
@@ -525,7 +539,7 @@ if (!isset($_SESSION['login']))
                element.addClass("selected");
                this.currentTab = element;
             };
-            var base = this;
+            //var base = this;
             if ($("#app-bar-nav").length == 0)
             {
                //sbb.hide();
@@ -545,8 +559,8 @@ if (!isset($_SESSION['login']))
                      event.preventDefault();
                      if (a.attr("data-ew-nav"))
                      {
-                        EW.setHashParameters({
-                           "nav": a.attr("data-ew-nav")
+                        System.setHashParameters({
+                           "app": System.getHashNav("app")[0] + '/' + a.attr("data-ew-nav")
                         }, null);
                      }
                      else
@@ -555,18 +569,22 @@ if (!isset($_SESSION['login']))
                         EW.setHashParameter(kv[0], kv[1]);
                      }
 
-                     base.setCurrentTab(a);
+                     //base.setCurrentTab(a);
                   });
-                  var currentNav = EW.getHashParameter("nav");
+                  var currentNav = System.getHashNav("app")[1];
                   if (window.location.hash.indexOf(a.attr("href")) != -1 || currentNav === a.attr("data-ew-nav"))
                   {
-                     base.setCurrentTab(a);
+                     System.hashChanged();
+                     //base.setCurrentTab(a);
                   }
                   //alert(currentNav);
                   if (a.attr("data-default") && !currentNav)
                   {
-                     //EW.setHashParameter(kv[0], kv[1]);
-                     base.setCurrentTab(a);
+//alert()
+                     System.setHashParameters({
+                        "app": System.getHashNav("app")[0] + '/' + a.attr("data-ew-nav")
+                     });
+                     System.hashChanged();
                   }
                   /*var defaultLink = EW.getHashParameter(kv[0]);
                    if (window.location.hash.indexOf(a.attr("href")) != -1 || defaultLink === kv[1])
@@ -576,13 +594,13 @@ if (!isset($_SESSION['login']))
                }
             });
             // Init nav bar handler
-            EW.addURLHandler(function ()
-            {
-               if (EW.getHashParameter("nav"))
-               {
-                  base.setCurrentTab($("a[data-ew-nav='" + EW.getHashParameter("nav") + "']"));
-               }
-            });
+            /*EW.addURLHandler(function ()
+             {
+             if (EW.getHashParameter("nav"))
+             {
+             base.setCurrentTab($("a[data-ew-nav='" + EW.getHashParameter("nav") + "']"));
+             }
+             });*/
          }
 
          // Plugins which initilize when document is ready
@@ -596,7 +614,7 @@ if (!isset($_SESSION['login']))
 
             // Init EW plugins
             initPlugins(document);
-            initSideBar() & EW.loadSections();
+            EW.initSideBar() & EW.loadSections();
             var currentButton = null;
             var buttons = null;
             var currentBtnForm = null;
@@ -610,10 +628,11 @@ if (!isset($_SESSION['login']))
             {
             });
             // Notify error if an ajax request fail
-            $(document).ajaxError(function (event, data)
+            $(document).ajaxError(function (event, data, status)
             {
-               //if (data && data.statusText === "abort")
-               //return;
+               // Added to ignore aborted request and don't show them as a error
+               if (data && data.statusText === "abort")
+                  return;
                if (EW.customAjaxErrorHandler)
                {
                   EW.customAjaxErrorHandler = false;
@@ -734,9 +753,10 @@ if (!isset($_SESSION['login']))
             $(".nav.xs-nav-tabs:not(.xs-nav-tabs-active)").each(function (i) {
                $(this).data("xs-nav-bar-active")(this);
             });
-         });</script>
+         });
+      </script>
    </head>
-   <body class="Admin <?php echo EWCore::get_language_dir($_REQUEST["_language"]) ?>" >
+   <body class="Admin <?php echo EWCore::get_language_dir($_REQUEST["_language"]); ?>" >
 
       <div id="components-pane" class="col-xs-12" >
          <ul class="component row">           

@@ -260,7 +260,7 @@ EverythingWidgets.prototype.getActivity = function (conf)
       self.activities[activityId].modalObject.animate({
          className: "top-pane col-xs-12 " + settings.modal.class
       },
-      300,function()
+      300, function ()
       {
          self.activities[activityId].modalObject.methods.setCloseButton();
       });
@@ -820,7 +820,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
                      $("#nav-bar").off("mouseenter.ew mouseleave.ew");
                      $("#nav-bar").on("mouseleave.ew", function () {
                         modalPane.stop().animate({
-                           top: "24px",
+                           top: "15px",
                            bottom: "0px"
                         },
                         100, "Power3,easeOut");
@@ -858,7 +858,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
                   $("#nav-bar").off("mouseenter.ew mouseleave.ew");
                   $("#nav-bar").on("mouseleave.ew", function () {
                      modalPane.stop().animate({
-                        top: "24px",
+                        top: "15px",
                         bottom: "0px"
                      },
                      100, "Power3,easeOut");
@@ -868,7 +868,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
                   $("#nav-bar").on("mouseenter.ew", function () {
                      modalPane.stop().animate({
                         top: "46px",
-                        bottom: "-22px"
+                        bottom: "-31px"
                      },
                      100, "Power3,easeOut");
                      xButton.hide();
@@ -1402,11 +1402,12 @@ function EWTable(config)
    this.tableContainer.append(this.tableBodyDiv);
    this.container.append(this.controls);
    this.container.append(this.tableContainer);
-   this.tableHeaderDiv.css({
-      position: "absolute",
-      display: "none",
-      zIndex: "2"
-   });
+   this.tableHeaderDiv.css(
+           {
+              position: "absolute",
+              display: "none",
+              zIndex: "2"
+           });
    this.tableBodyDiv.scroll(function ()
    {
       if ($(this).scrollTop() > 0 && !$base.tableHeaderDiv.is(":visible"))
@@ -1457,7 +1458,7 @@ EWTable.prototype.createHeadersRow = function (headers)
        th.html(k);
        tr.append(th);*/
    });
-   tr.append(ths.join(''));
+   tr[0].innerHTML = ths.join('');
    return tr;
 };
 EWTable.prototype.createRow = function (val, rc)
@@ -1481,6 +1482,7 @@ EWTable.prototype.createRow = function (val, rc)
    }
 
    var actionsCell = $(document.createElement("td"));
+   var actionsCellBtns = [];
    if (ewTable.config.onEdit)
    {
       var edit = $(document.createElement("button"));
@@ -1493,7 +1495,8 @@ EWTable.prototype.createRow = function (val, rc)
          //EW.activeElement.attr("data-label", tableRow.data("row-title"));
          ewTable.config.onEdit.apply(tableRow, new Array(fieldId));
       });
-      actionsCell.append(edit);
+      actionsCellBtns.push(edit);
+      //actionsCell.append(edit);
    }
    if (ewTable.config.onDelete)
    {
@@ -1505,7 +1508,8 @@ EWTable.prototype.createRow = function (val, rc)
          tableRow.confirm = function (text, delFunction)
          {
             var oldCells = null;
-            var messageRow = $("<div class='row-block label label-danger'>");
+            var messageRow = $(document.createElement("div"));
+            messageRow[0].className = "row-block label label-danger";
             //messageRow.attr("colspan", tableRow.children().length);
             messageRow.append("<span>" + text + "</span>");
             tableRow.css({
@@ -1533,11 +1537,14 @@ EWTable.prototype.createRow = function (val, rc)
                   position: ""
                });
                messageRow.empty();
+               //alert()
                messageRow.animate({
-                  width: del.outerWidth(),
-                  left: del.position().left
+                  padding: 0,
+                  width: 0,
+                  left: del.position().left + (del.outerWidth() / 2)
                },
-               300, "Power3.easeOut").fadeOut(120, function () {
+               300, "Power2.easeOut", function ()
+               {
                   messageRow.remove()
                });
             });
@@ -1552,12 +1559,13 @@ EWTable.prototype.createRow = function (val, rc)
                width: "100%",
                left: "0px"
             },
-            300, "Power3.easeOut");
+            420, "Power2.easeOut");
          };
          if (ewTable.config.onDelete.apply(tableRow, new Array(fieldId)))
             tableRow.removeRow(fieldId);
       });
-      actionsCell.append(del);
+      actionsCellBtns.push(del);
+      //actionsCell.append(del);
    }
 
    if (ewTable.config.buttons)
@@ -1575,8 +1583,8 @@ EWTable.prototype.createRow = function (val, rc)
          action.click(function () {
             btnAction.apply(ewTable, new Array(tableRow));
          });
-
-         actionsCell.append(action);
+         actionsCellBtns.push(action);
+         //actionsCell.append(action);
       });
    }
    delete val.id;
@@ -1605,7 +1613,8 @@ EWTable.prototype.createRow = function (val, rc)
        if (ewTable.config.rowLabel == k)
        tableRow.data("label", v);
        });*/
-      $(row).appendTo(tableRow);
+         tableRow.html(row);
+      //$(row).appendTo(tableRow);
 //alert(row);
       //index++;
       //});
@@ -1625,8 +1634,9 @@ EWTable.prototype.createRow = function (val, rc)
          index++;
       });
    }
-   if (actionsCell.children().length > 0)
+   if (actionsCellBtns.length > 0)
    {
+      actionsCell.html(actionsCellBtns);
       tableRow.append(actionsCell);
    }
    return tableRow;
@@ -1639,25 +1649,25 @@ EWTable.prototype.listRows = function ()
    var rows = new Array();
    if (self.config.rowCount)
    {
-      $.each(self.data.result, function (k, v)
+      for (var i = 0, len = self.data.result.length; i < len; i++)
       {
-         var row = self.createRow(v, 1);
+         var row = self.createRow(self.data.result[i], 1);
          row.prepend("<td>" + rc + "</td>");
          rows.push(row);
          rc++;
-      });
+      }
    }
    // Without row number
    else
    {
-      $.each(self.data.result, function (k, v)
+      for (var i = 0, len = self.data.result.length; i < len; i++)
       {
-         var row = self.createRow(v, 0);
+         var row = self.createRow(self.data.result[i], 0);
          rows.push(row);
-      });
+      }
    }
-   self.table.empty();
-   self.table.append(rows);
+   //self.table.empty();
+   self.table.html(rows);
 };
 // read the table data from given url
 EWTable.prototype.read = function (customURLData)

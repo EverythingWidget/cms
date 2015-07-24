@@ -10,10 +10,18 @@ var System = System ||
             },*/
            module:
                    {
+                      modules: {},
                       activeModule: null,
                       init: function ()
                       {
 
+                      },
+                      input: function (data)
+                      {
+
+                      },
+                      output: function ()
+                      {
                       },
                       focus: function ()
                       {
@@ -32,6 +40,10 @@ var System = System ||
                       {
                          if (this.activeModule && !e.isDefaultPrevented())
                             this.activeModule.hashHandler(e, data);
+                      },
+                      module: function (id, object)
+                      {
+                         this.modules[id] = $.extend({}, System.module, object);
                       }
                    },
            // Apps Management
@@ -65,11 +77,12 @@ var System = System ||
                  {
                     $.get(package + '/' + id + '/' + file, data).done(function (response, status)
                     {
-                       if (self.appHashes[id])
-                          window.location.hash = self.appHashes[id];
+                       if (self.navHashes[id])
+                          window.location.hash = self.navHashes[id];
                        var html = $(response).filter(":not(script)");
                        //var html = res;
                        System.apps[id] = $.extend({}, System.module, self.apps[id]);
+                       //System.activityTree.unshift(System.apps[id]);
                        self.onAppLoaded(self.apps[id], html);
                        //
                        System.apps[id].init();
@@ -122,53 +135,54 @@ var System = System ||
            {
               return true;
            },
-           appHashes: [],
+           navHashes: {},
            hashChecker: null,
-           hashHandler: function (nav, data)
+           hashChanged: function ()
+           {
+              console.log(this.navigation);
+              console.log(this.params);
+              var e = $.Event("hashchange");
+              this.hashHandler.call(e, this.navigation, this.params);
+           },
+           hashHandler: function (nav, params)
            {
 
            },
-           startHashListener: function ()
+           navigation: {},
+           params: {},
+           start: function ()
            {
               var self = this;
               var detect = function ()
               {
-                 if (this.oldHash !== window.location.hash || self.newHandler)
+                 if (self.oldHash !== window.location.hash || self.newHandler)
                  {
-                    //if (EW.newHandler != true)
-                    //{
-                    //EW.Router.notifyRoutes();
-                    //}
-                    //EW.newHandler = false;
-                    //nav #([^&]*)&?
-
+                    self.oldHash = window.location.hash;
+                    self.newHandler = false;
                     var hashValue = window.location.hash;
-                    var navigation = [];
+
                     if (hashValue.indexOf("#") !== -1)
                     {
-                       var nav = hashValue.match(/#([^&]*)&?/);
-                       hashValue = hashValue.replace(/#([^&]*)&?/, "");
-                       if (nav[0])
-                          navigation = nav[0].split("/");
+                       hashValue = hashValue.substring(1);
+
+                       /*var nav = hashValue.match(/#([^&]*)&?/);
+                        hashValue = hashValue.replace(/#([^&]*)&?/, "");
+                        
+                        if (nav[0])
+                        navigation = nav[1].split("/").filter(Boolean);*/
                        //hashValue = hashValue.substring(1);
                     }
-                    //var pairs = hashValue.split("&");
-                    //var newHash = "#";
-                    //var and = false;
-                    var data = {};
+                    self.navigation = {};
+                    self.params = {};
 
                     hashValue.replace(/([^&]*)=([^&]*)/g, function (m, k, v)
                     {
-                       data[k] = v;
+                       self.navigation[k] = v.split("/").filter(Boolean);
+                       self.params[k] = v;
                     });
-                    //for (var i = 0; i < EW.urlHandlers.length; i++)
-                    //{
-                    self.hashHandler.call({}, navigation, data); // System
-                    //self.activeHashHandler.call({},navigation, data); // App
-                    // ---- // Nav
 
-                    //}
-                    this.oldHash = window.location.hash;
+                    self.hashChanged(); // System
+                    //self.oldHash = window.location.hash;
                  }
               };
               clearInterval(this.hashChecker);
@@ -177,24 +191,21 @@ var System = System ||
                  detect();
               }, 50);
            },
+           getHashNav: function (key, hashName)
+           {
+              return this.navigation[key];
+           },
            setHashParameters: function (parameters, appId, clean)
            {
               this.lastHashParams = parameters;
               var hashValue = window.location.hash;
-              if (appId)
+              var app = parameters.app || this.params.app;
+              //alert(app)
+              if (app)
               {
-                 // create new hash listener if new hash name has been passed
-                 if (!this.appHashes[appId])
-                 {
-                    //alert(hashName);
-                    this.appHashes[appId] = new HashListener(appId);
-                    hashValue = this.appHashes[appId].hash;
-                 }
-                 else
-                 {
-                    this.removeURLHandler("", appId);
-                    hashValue = this.appHashes[appId].hash;
-                 }
+                 if (!this.navHashes[app])
+                    this.navHashes[app] = app;
+                 hashValue = this.navHashes[app];
               }
               if (hashValue.indexOf("#") !== -1)
               {
@@ -230,14 +241,14 @@ var System = System ||
               });
 
               // set newHash for corresponding hash name if it has been passed
-              if (appId)
+              if (app)
               {
-                 this.appHashes[appId].hash = newHash.replace(/\&$/, '');
+                 this.navHashes[app] = newHash.replace(/\&$/, '');
                  //alert(customHashes[hashName].hash);
               }
               // set url hash if no hash name specified
-              else
-                 window.location.hash = newHash.replace(/\&$/, '');
+              //else
+              window.location.hash = newHash.replace(/\&$/, '');
            }
 
         };
