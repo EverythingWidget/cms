@@ -2574,13 +2574,13 @@ textarea.text-field
    margin-top:8px
 }
 
-table.data.header
+.data.header
 {
    background-color:#fff;
    font-size:16px
 }
 
-table.data tr .btn
+.data .btn , .row-block .btn
 {
    float:left;
    line-height:16px;
@@ -2593,7 +2593,7 @@ table.data tr .btn
    padding:6px 12px
 }
 
-table.data tr .btn.delete
+.data .btn.delete
 {
    background-image:url(delete.png);
    background-position:0 0;
@@ -2602,12 +2602,12 @@ table.data tr .btn.delete
    margin-top:0
 }
 
-table.data tr .btn.delete:active
+.data .btn.delete:active
 {
    background-position:0 -28px
 }
 
-table.data tr .btn.edit
+.data .btn.edit
 {
    background-image:url(edit.png);
    background-position:0 0;
@@ -2616,54 +2616,53 @@ table.data tr .btn.edit
    margin-top:0
 }
 
-table.data tr .btn.edit:active
+.data .btn.edit:active
 {
    background-position:0 -28px
 }
 
-table.data tr:nth-of-type(even)
+.data tr:nth-of-type(even)
 {
    background-color:rgba(0,0,0,.06)
 }
 
-table.data tr .row-block
+.row-block
 {
+   width: 100%;
    height: 44px;
    line-height:30px;
    padding: 6px 10px;
    text-align:center;
    border: 0px solid rgba(0,0,0,.1);
    overflow: hidden;
-   /* box-shadow: 0 1px 6px 0px rgba(0,0,0,.1); */
-   /* -webkit-transition: all .3s; */
-   border-radius:0
-      ;
+   border-radius:0      ;
    border-width: 1px 0;
    margin-top: -1px;
 }
 
-table.data tr .row-block:hover
+.row-block:hover
 {
    border-color: rgba(0,0,0,.3);
    z-index:2;
    box-shadow: 0 4px 12px 0 rgba(0,0,0,0.24);}
 
-table.data tr .row-block span
+.row-block-p
 {
    float:left;
    padding:0 10px;
+   margin: 0;
    font-weight:300;
    font-size:16px
 }
 
-table.data tr .row-block .btn
+.row-block .btn
 {
    float:left;
    visibility:visible;
    margin:0 10px
 }
 
-table.data
+.data
 {
    width:100%;
    border-spacing:0;
@@ -2674,7 +2673,7 @@ table.data
    border-collapse:separate
 }
 
-table.data th
+.data th
 {
    cursor:default;
    height:40px;
@@ -2684,25 +2683,25 @@ table.data th
    font-size:16px
 }
 
-table.data th.actions
+.data th.actions
 {
    min-width:80px
 }
 
-table.data th.no
+.data th.no
 {
    min-width:50px;
    width:50px;
    max-width:50px
 }
 
-table.data tr
+.data tr
 {
    color:#000;
    outline:none
 }
 
-table.data tr:hover td
+.data tr:hover td
 {
    background-color:#fff;
    color:#000;
@@ -2711,18 +2710,18 @@ table.data tr:hover td
    padding-left:11px
 }
 
-table.data tr:hover td .btn
+.data tr:hover td .btn
 {
    visibility:visible
 }
 
-table.data tr.selected td/*,table.data tr:focus*/
+.data tr.selected td/*,table.data tr:focus*/
 {
    background-color:#ffc;
    color:#000
 }
 
-table.data td
+.data td
 {
    min-height:32px;
    line-height:32px;

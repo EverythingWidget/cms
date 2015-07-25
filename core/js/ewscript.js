@@ -701,7 +701,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
                   height: "-=10%",
                   opacity: 0
                },
-               360, "Power1.easeOut", function () {
+               500, "Power4.easeInOut", function () {
                   if (originElement)
                      originElement.css("opacity", "1");
                   animationDiv.remove();
@@ -807,7 +807,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
                lineHeight: modalPane.outerHeight() + "px",
                fontSize: "4em"
             },
-            460, "Power4.easeInOut", function () {
+            500, "Power4.easeInOut", function () {
                modalPane.isOpen = true;
                modalPane.delay((!loadingLabel) ? 0 : 120).animate({
                   opacity: "1"
@@ -1511,19 +1511,23 @@ EWTable.prototype.createRow = function (val, rc)
             var messageRow = $(document.createElement("div"));
             messageRow[0].className = "row-block label label-danger";
             //messageRow.attr("colspan", tableRow.children().length);
-            messageRow.append("<span>" + text + "</span>");
-            tableRow.css({
-               position: "relative"
-            });
+            messageRow.append("<p class='row-block-p'>" + text + "</p>");
+            /*tableRow.css({
+             position: "relative"
+             });*/
             // CSS properties are in the template
             messageRow.css({
                position: "absolute",
-               width: del.outerWidth(),
-               left: del.position().left
+               transform: "scale(0,1)",
+               left: "0px",
+               top: tableRow.position().top,
+               //width: del.outerWidth(),
+               transformOrigin: del.position().left + (del.outerWidth() / 2) + "px 0px"
             });
             var delBtn = $("<button type=button class='btn btn-white'>Delete</button>");
             messageRow.append(delBtn);
-            delBtn.on("click", function () {
+            delBtn.on("click", function ()
+            {
 
                if (delFunction.apply(tableRow, new Array(fieldId)))
                {
@@ -1532,34 +1536,38 @@ EWTable.prototype.createRow = function (val, rc)
             });
             var cancelBtn = $("<button type=button class='btn btn-default btn-text' style='float:right'>Cancel</button>");
             messageRow.append(cancelBtn);
-            cancelBtn.on("click", function () {
-               tableRow.css({
-                  position: ""
-               });
-               messageRow.empty();
+            cancelBtn.on("click", function ()
+            {
+               /*tableRow.css(
+                       {
+                          position: ""
+                       });*/
+               //messageRow.empty();
                //alert()
-               messageRow.animate({
-                  padding: 0,
-                  width: 0,
-                  left: del.position().left + (del.outerWidth() / 2)
-               },
-               300, "Power2.easeOut", function ()
-               {
-                  messageRow.remove()
-               });
+               messageRow.animate(
+                       {
+                          transform: "scale(0,1)"
+                          //left: del.position().left + (del.outerWidth() / 2)
+                       },
+                       400, "Power3.easeInOut", function ()
+                       {
+                          messageRow.remove();
+                       });
             });
             $(document).one("keydown", function (e)
             {
-               if (e.keyCode == 27) {
+               if (e.keyCode === 27)
+               {
                   cancelBtn.click();
                }   // esc
             });
-            tableRow.append(messageRow);
-            messageRow.animate({
-               width: "100%",
-               left: "0px"
-            },
-            420, "Power2.easeOut");
+            ewTable.tableBodyDiv.append(messageRow);
+            messageRow.animate(
+                    {
+                       transform: "scale(1,1)"
+                       //left: "0px"
+                    },
+                    400, "Power2.easeInOut");
          };
          if (ewTable.config.onDelete.apply(tableRow, new Array(fieldId)))
             tableRow.removeRow(fieldId);
@@ -1613,7 +1621,7 @@ EWTable.prototype.createRow = function (val, rc)
        if (ewTable.config.rowLabel == k)
        tableRow.data("label", v);
        });*/
-         tableRow.html(row);
+      tableRow.html(row);
       //$(row).appendTo(tableRow);
 //alert(row);
       //index++;
