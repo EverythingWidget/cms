@@ -858,8 +858,7 @@ body.Admin
 
 .top-pane .row h3
 {
-   margin:25px 0 0
-}
+   /* margin:25px 0 0 */}
 
 .footer-pane
 {
@@ -1436,8 +1435,8 @@ ul.list.arrangeable li span
 
 ul.list li h1,ul.list li h2,ul.list li h3,ul.list li h4,ul.list li h5
 {
-   margin:0
-}
+   /* margin:0
+ */}
 
 ul.list li ul
 {
@@ -1490,7 +1489,7 @@ ul.list.tree label
    border-left-width:1px;
    margin:-1px 0;
    border-radius:0;
-   font-size:13px;
+   font-size: 14px;
    position:relative;
    padding:10px;
    color:#444;
@@ -3397,4 +3396,10 @@ a.link.active,.active > a.link
 {
    margin:1px 2px;
    float:left
+}
+
+li h3.icon-header
+{
+   margin: 0;
+   margin-bottom: 0px;
 }

@@ -98,7 +98,8 @@
 
    Documents.prototype.preCategory = function ()
    {
-      EW.setHashParameters({
+      System.setHashParameters({
+         //app:System.navigation[0],
          "parent": this.preParentId
       });
    };

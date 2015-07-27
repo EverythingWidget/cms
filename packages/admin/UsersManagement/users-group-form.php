@@ -35,13 +35,13 @@ function get_ew_users_permissions_form()
             foreach ($permissions_titles as $app_name => $sections)
             {
                ?>
-            <li  ><label data-value="<?php echo $app_name ?>"><i class="icon  pull-left"></i><h3><?php echo $sections["appTitle"]; ?></h3></label>
+            <li  ><label data-value="<?php echo $app_name ?>"><i class="icon  pull-left"></i><h3 class="icon-header"><?php echo $sections["appTitle"]; ?></h3></label>
                <ul class="row">
                      <?php
                      foreach ($sections["section"] as $section_name => $sections_permissions)
                      {
                         ?>
-                        <li class="col-xs-6"><label data-value="<?php echo "$app_name.$section_name" ?>"><i class="icon  pull-left"></i><h3><?php echo $sections_permissions["sectionTitle"]; ?></h3></label>
+                  <li class="col-xs-6"><label data-value="<?php echo "$app_name.$section_name" ?>"><i class="icon  pull-left"></i><h3 class="icon-header"><?php echo $sections_permissions["sectionTitle"]; ?></h3></label>
                            <ul>
                               <?php
                               foreach ($sections_permissions["permission"] as $permission_name => $permission_info)
@@ -50,7 +50,7 @@ function get_ew_users_permissions_form()
                                  <li class="permission-item">
                                     <label  data-value="<?php echo "$app_name.$section_name.$permission_name" ?>">
                                        <i class="icon  pull-left"></i>
-                                       <h3><?php echo $permission_info["title"] ?></h3>
+                                       <h3 class="icon-header"><?php echo $permission_info["title"] ?></h3>
                                        <?php echo $permission_info["description"] ?>
                                     </label>
                                  </li>

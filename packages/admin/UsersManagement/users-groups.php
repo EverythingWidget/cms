@@ -48,15 +48,16 @@
             pageSize: 30,
             onDelete: function (id)
             {
-               if (confirm("Are you sure of deleting of this group?"))
+               this.confirm("tr{Are you sure of deleting of this group?}", function ()
                {
-                  EW.lock($("#main-content"));
-                  $.post('<?php echo EW_ROOT_URL; ?>app-admin/UsersManagement/delete_group', {id: id}, function (data) {
-                     self.usersGroupsList();
+                  //EW.lock($("#main-content"));
+                  $.post('<?php echo EW_ROOT_URL; ?>app-admin/UsersManagement/delete_group', {id: id}, function (data)
+                  {
+                     UsersGroups.usersGroupsList();
                      $("body").EW().notify(data).show();
-                     EW.unlock($("#main-content"));
+                     //EW.unlock($("#main-content"));
                   }, "json");
-               }
+               });
             },
             onEdit: function (id)
             {

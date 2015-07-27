@@ -35,16 +35,16 @@
             pageSize: 30,
             onDelete: function (id)
             {
-               if (confirm("Are you sure of deleting of this user?"))
+               this.confirm("tr{Are you sure of deleting of this user?}", function ()
                {
-                  EW.lock($("#main-content"));
-                  $.post('<?php echo EW_ROOT_URL; ?>app-admin/UsersManagement/delete_user', {id: id}, function (data) {
+                  //EW.lock($("#main-content"));
+                  $.post('<?php echo EW_ROOT_URL; ?>app-admin/UsersManagement/delete_user', {id: id}, function (data)
+                  {
                      $(document).trigger("users-list.refresh");
                      $("body").EW().notify(data).show();
-
-                     EW.unlock($("#main-content"));
+                     //EW.unlock($("#main-content"));
                   }, "json");
-               }
+               });
             },
             onEdit: ((editActivity = EW.getActivity({activity: "app-admin/UsersManagement/user-form.php_see", onDone: function (hash) {
                   hash["userId"] = null;
