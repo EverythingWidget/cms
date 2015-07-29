@@ -64,7 +64,6 @@ var System = System ||
               var self = this;
               if (self.currentOnLoad)
                  return;
-
               if (self.onLoadQueue[0] && self.currentOnLoad != self.onLoadQueue[0])
               {
                  self.currentOnLoad = self.onLoadQueue[0];
@@ -160,11 +159,9 @@ var System = System ||
                     self.oldHash = window.location.hash;
                     self.newHandler = false;
                     var hashValue = window.location.hash;
-
                     if (hashValue.indexOf("#") !== -1)
                     {
                        hashValue = hashValue.substring(1);
-
                        /*var nav = hashValue.match(/#([^&]*)&?/);
                         hashValue = hashValue.replace(/#([^&]*)&?/, "");
                         
@@ -174,13 +171,11 @@ var System = System ||
                     }
                     self.navigation = {};
                     self.params = {};
-
                     hashValue.replace(/([^&]*)=([^&]*)/g, function (m, k, v)
                     {
                        self.navigation[k] = v.split("/").filter(Boolean);
                        self.params[k] = v;
                     });
-
                     self.hashChanged(); // System
                     //self.oldHash = window.location.hash;
                  }
@@ -191,16 +186,21 @@ var System = System ||
                  detect();
               }, 50);
            },
+           getHashParam: function (key, hashName)
+           {
+
+           },
            getHashNav: function (key, hashName)
            {
               return this.navigation[key];
            },
+           // Set parameters for current app/nav if not specified
            setHashParameters: function (parameters, appId, clean)
            {
               this.lastHashParams = parameters;
               var hashValue = window.location.hash;
               var app = parameters.app || this.params.app;
-              //alert(app)
+              //alert(app)              
               if (app)
               {
                  if (!this.navHashes[app])
@@ -239,7 +239,6 @@ var System = System ||
                     and = true;
                  }
               });
-
               // set newHash for corresponding hash name if it has been passed
               if (app)
               {
