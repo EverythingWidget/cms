@@ -83,7 +83,7 @@ session_start();
       <input style="margin-top:20px;" class="text-field" data-label="UIS Perview URL" name="perview_url" id="perview_url">
    </div>
    <div id="editor-window" style="position:absolute;right:0px;top:62px;bottom:0px;overflow:hidden;left:300px;border:0px solid #ccc;">
-      <form id="neuis" style="overflow:auto;display:block;height:100%;width: 100%;z-index:0;" class="col-xs-12">
+      <form id="neuis" style="overflow:auto;display:block;height:100%;width: 100%;z-index:0;overflow:hidden;" class="col-xs-12">
          <iframe id="fr" style="position:absolute;top:0px;right:0px;bottom:0px;left:0px;border:none;min-width:410px;width:100%;height:100%;overflow:scroll;background-image: url('./templates/default/glass-pane-bg-small.png');padding:0px;"                               
                  src="">
          </iframe>
@@ -179,6 +179,7 @@ session_start();
       this.uisTemplate = "";
       self.oldStructure = "{}";
       this.inlineEditor = {};
+      this.editorWindow = $("#editor-window");
       /*this.bAdd = EW.addAction("Save and Start Editing", this.addUIS, {
        display: "none"
        });*/
@@ -255,7 +256,7 @@ session_start();
          self.changeTemplate();
       });
 
-      // Adjust the width of preview window accorfing to the screen resolution
+      // Adjust the width of preview window according to the screen resolution
       $(window).resize(function () {
          var eww = $(window).width() - 300;
          var screen = "large";
@@ -729,10 +730,11 @@ session_start();
             });
 
          });
-
-      repTimeout = setTimeout(function () {
-         self.relocateGlassPanes();
-      }, 1000);
+      if (!repTimeout)
+         repTimeout = setTimeout(function () {
+            repTimeout = null;
+            self.relocateGlassPanes();
+         }, 1000);
    };
    /** Create a json string from current layout structure heirarchy 
     * 
@@ -1284,14 +1286,47 @@ session_start();
       return false;
    };
 
+   function scale(full, target, base)
+   {
+      //console.log(target + " " + full + " " + base)
+      return Math.floor((target / full) * 100) / 100;
+   }
+
+   function scaleBy(target, ratio)
+   {
+      return Math.floor(target * ratio);
+   }
+
    UISForm.prototype.editWidget = function (wId)
    {
       var self = this;
-      var d = EW.createModal({class:"left"});
+      var d = EW.createModal({class: "left",
+         lockUI: false,
+         /*onClose: function ()
+          {
+          $('#fr').contents().find('body').stop().animate({
+          transform: '',
+          //left: (wi/2) +301
+          }, 500, "Power3.easeOut");
+          EW.setHashParameter("screen", null, "neuis");
+          }*/});
       self.currentDialog = d;
+
       var w = self.getEditorItem(wId);
       //console.log(w);
-      EW.lock(d);
+      //EW.setHashParameter("screen", null, "neuis");
+      var wi = $("#editor-window").width() * .2;
+
+      /*$('#fr').stop().animate({
+       transform: 'scale(.8)',
+       //left: (wi/2) +301
+       }, 500, "Power3.easeOut");
+       $("#editor-window").stop().animate({
+       width: $("#editor-window").width() - wi,
+       left: wi + 301
+       }, 500, "Power3.easeOut");*/
+      //this.relocateGlassPanes();
+      //EW.lock(d);
       $.post("<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/uis-prewidget-form.php", {
          template: self.uisTemplate,
          widgetId: wId,
@@ -1328,7 +1363,7 @@ session_start();
 
    function setView()
    {
-      //obj('<?php // echo $styleId ? $styleId : 'testDiv'                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              ?>').style.cssText = obj('style').value;
+      //obj('<?php // echo $styleId ? $styleId : 'testDiv'                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     ?>').style.cssText = obj('style').value;
       //obj('fr').contentDocument.body.innerHTML = '<link href="../templates/SpapcoDefault/template.css" rel="stylesheet" type="text/css">';
       $('#fr').contentDocument.getElementById('dynamicStyle').innerHTML = $('#style').value;
       $('#fr').contentDocument.getElementById('<?php echo $name ?>').className = 'Panel <?php echo $class ?> ' + $('#class').value;
@@ -1344,31 +1379,47 @@ session_start();
       var windowWidth = $(window).width() - sidebarWidth;
 
       var defScreen = "large";
-      var left = 0;
-      var width = 0;
-      if (screen == "normal" && windowWidth >= 1100)
+      var left = sidebarWidth;
+      var width = windowWidth;
+      var simWidth = 1920;
+      if (screen == "normal" /*&& windowWidth >= 1100*/)
       {
          defScreen = "normal";
-         left = ((windowWidth - 1100) / 2) + sidebarWidth;
+         //left = ((windowWidth - 1100) / 2) + sidebarWidth;
          width = 1100;
+         simWidth = 1100;
       }
-      if (screen == "tablet" && windowWidth >= 800)
+      if (screen == "tablet" /*&& windowWidth >= 800*/)
       {
          defScreen = "tablet";
-         left = ((windowWidth - 800) / 2) + sidebarWidth;
+         //left = ((windowWidth - 800) / 2) + sidebarWidth;
          width = 800;
+         simWidth = 800;
       }
-      if (screen == "mobile" && windowWidth >= 420)
+      if (screen == "mobile" /*&& windowWidth >= 420*/)
       {
          defScreen = "mobile";
-         left = ((windowWidth - 420) / 2) + sidebarWidth;
+         //left = ((windowWidth - 420) / 2) + sidebarWidth;
          width = 420;
+         simWidth = 420;
       }
 
       if (defScreen == "large")
       {
          screen = "large";
-         left = sidebarWidth;
+         simWidth = 1920;
+         //left = sidebarWidth;
+         //width = windowWidth;
+      }
+
+      if (windowWidth >= width)
+      {
+         left = ((windowWidth - width) / 2) + sidebarWidth;
+
+         //width = windowWidth;
+      }
+      else
+      {
          width = windowWidth;
       }
       if (uisForm.oldScreem != screen)
@@ -1382,6 +1433,26 @@ session_start();
             uisForm.loadInspectorEditor();
             $(document.getElementById("fr").contentDocument.body).find(".widget-glass-pane").show();
          });
+
+         var fh = uisForm.editorWindow.height();
+         var newHeight = (fh * simWidth) / width;
+         var leftOffset = width - simWidth;
+         var topOffset = fh - newHeight;
+
+         $("#fr").stop().animate({
+            //left: left,
+            width: simWidth,
+            transform: "scale(" + scale(simWidth, width) + ")",
+            top: topOffset / 2,
+            left: leftOffset / 2,
+            height: newHeight
+         },
+         500, "Power3.easeOut", function () {
+            uisForm.loadInspectorEditor();
+            $(document.getElementById("fr").contentDocument.body).find(".widget-glass-pane").show();
+            uisForm.relocateGlassPanes();
+         });
+
       }
       uisForm.oldScreen = screen;
 
@@ -1396,6 +1467,7 @@ session_start();
 
    $(document).ready(function ()
    {
+
       uisForm = new UISForm();
       EW.uisForm = uisForm;
 <?php

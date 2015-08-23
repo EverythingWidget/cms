@@ -586,6 +586,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
    var settings = {
       class: "center",
       initElement: true,
+      lockUI: true,
       beforeClose: function ()
       {
          return true;
@@ -609,7 +610,8 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
          closeAction: closeAction,
          autoOpen: true,
          initElement: true,
-         class: "center"
+         class: "center",
+         lockUI: true
       };
    //var animationDuration = 600;
    this.isOpen = false;
@@ -737,7 +739,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
       // Open the modal if it is not open
       if (!modalPane.isOpen)
       {
-         if (settings.class !== "full")
+         if (settings.class !== "full" && settings.lockUI)
          {
             self.lock(basePane, " ");
             $("#apps").attr("target", "_self");
@@ -793,11 +795,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
             });
             animationDiv.text(loadingLabel);
             modalPane.before(animationDiv);
-            /*animationDiv.css({
-             width: originElement.outerWidth(),
-             height: originElement.outerHeight()
-             });*/
-            //tempDiv.animate({top: modalPane.offset().top + modalPane.outerHeight() / 6, left: modalPane.offset().left + modalPane.outerWidth() / 6, width: modalPane.outerWidth() / 1.5, height: modalPane.outerHeight() / 1.5}, {duration:420,queue:false});
+
             var mpOffset = modalPane.offset();
             animationDiv.animate({
                top: mpOffset.top,
@@ -842,39 +840,39 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
          }
          else
          {
-            modalPane.css({
-               transform: "translateZ(100px)"
-            });
+            /*modalPane.css({
+             transform: "translateZ(100px)"
+             });*/
             modalPane.animate({
                opacity: "1",
-               transform: "translateZ(0)"
+               //transform: "translateZ(0)"
             },
-            520, "Power3.easeOut", function () {
-               //modalPane.css("left", "");
-               methods.setCloseButton();
-               modalPane.isOpen = true;
-               if (settings.class === "full")
-               {
-                  $("#nav-bar").off("mouseenter.ew mouseleave.ew");
-                  $("#nav-bar").on("mouseleave.ew", function () {
-                     modalPane.stop().animate({
-                        top: "15px",
-                        bottom: "0px"
-                     },
-                     100, "Power3,easeOut");
-                     xButton.show();
+                    520, "Power3.easeOut", function () {
+                       //modalPane.css("left", "");
+                       methods.setCloseButton();
+                       modalPane.isOpen = true;
+                       if (settings.class === "full")
+                       {
+                          $("#nav-bar").off("mouseenter.ew mouseleave.ew");
+                          $("#nav-bar").on("mouseleave.ew", function () {
+                             modalPane.stop().animate({
+                                top: "15px",
+                                bottom: "0px"
+                             },
+                             100, "Power3,easeOut");
+                             xButton.show();
 
-                  });
-                  $("#nav-bar").on("mouseenter.ew", function () {
-                     modalPane.stop().animate({
-                        top: "46px",
-                        bottom: "-31px"
-                     },
-                     100, "Power3,easeOut");
-                     xButton.hide();
-                  });
-               }
-            });
+                          });
+                          $("#nav-bar").on("mouseenter.ew", function () {
+                             modalPane.stop().animate({
+                                top: "46px",
+                                bottom: "-31px"
+                             },
+                             100, "Power3,easeOut");
+                             xButton.hide();
+                          });
+                       }
+                    });
             //animationDuration = 252;
          }
          //xButton.show();
@@ -1539,20 +1537,20 @@ EWTable.prototype.createRow = function (val, rc)
             cancelBtn.on("click", function ()
             {
                /*tableRow.css(
-                       {
-                          position: ""
-                       });*/
+                {
+                position: ""
+                });*/
                //messageRow.empty();
                //alert()
                messageRow.animate(
                        {
                           transform: "scale(0,1)"
-                          //left: del.position().left + (del.outerWidth() / 2)
+                                  //left: del.position().left + (del.outerWidth() / 2)
                        },
-                       400, "Power3.easeInOut", function ()
-                       {
-                          messageRow.remove();
-                       });
+               400, "Power3.easeInOut", function ()
+               {
+                  messageRow.remove();
+               });
             });
             $(document).one("keydown", function (e)
             {
@@ -1565,9 +1563,9 @@ EWTable.prototype.createRow = function (val, rc)
             messageRow.animate(
                     {
                        transform: "scale(1,1)"
-                       //left: "0px"
+                               //left: "0px"
                     },
-                    400, "Power2.easeInOut");
+            400, "Power2.easeInOut");
          };
          if (ewTable.config.onDelete.apply(tableRow, new Array(fieldId)))
             tableRow.removeRow(fieldId);
