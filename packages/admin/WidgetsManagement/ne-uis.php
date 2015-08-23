@@ -82,8 +82,8 @@ session_start();
    <div style="position:absolute;right:15px;top:0px;overflow:hidden;left:315px;" >
       <input style="margin-top:20px;" class="text-field" data-label="UIS Perview URL" name="perview_url" id="perview_url">
    </div>
-   <div id="editor-window" style="position:absolute;right:0px;top:62px;bottom:0px;overflow:hidden;left:300px;border:0px solid #ccc;">
-      <form id="neuis" style="overflow:auto;display:block;height:100%;width: 100%;z-index:0;overflow:hidden;" class="col-xs-12">
+   <div id="editor-window" style="position:absolute;right:0px;top:72px;bottom:1px;overflow:hidden;left:auto;border:0px solid #aaa;border-width:1px 0 1px 1px;">
+      <form id="neuis" style="overflow:auto;display:block;height:100%;width: 100%;z-index:0;overflow:hidden;padding:0;" class="col-xs-12">
          <iframe id="fr" style="position:absolute;top:0px;right:0px;bottom:0px;left:0px;border:none;min-width:410px;width:100%;height:100%;overflow:scroll;background-image: url('./templates/default/glass-pane-bg-small.png');padding:0px;"                               
                  src="">
          </iframe>
@@ -91,7 +91,7 @@ session_start();
       </form>
    </div>
 </div>
-<div class="footer-pane row actions-bar action-bar-items">
+<div class="footer-pane row actions-bar action-bar-items" style="border: none;">
    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 pull-right" >
       <div class="btn-group btn-group-justified" data-toggle="buttons">
          <label class="btn btn-default ">
@@ -140,7 +140,7 @@ session_start();
    {
    position:absolute;
    border: 1px solid #222;
-   outline: 1px dashed #ddd;
+   outline: 1px solid #ddd;
    outline-offset: -1px;
    z-index:10;
    }
@@ -180,6 +180,8 @@ session_start();
       self.oldStructure = "{}";
       this.inlineEditor = {};
       this.editorWindow = $("#editor-window");
+      //this.editorFrame = $(document.getElementById("fr").contentDocument.body);
+      this.editorFrame = $(document.getElementById("fr")).contents().find("body");
       /*this.bAdd = EW.addAction("Save and Start Editing", this.addUIS, {
        display: "none"
        });*/
@@ -1363,7 +1365,7 @@ session_start();
 
    function setView()
    {
-      //obj('<?php // echo $styleId ? $styleId : 'testDiv'                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     ?>').style.cssText = obj('style').value;
+      //obj('<?php // echo $styleId ? $styleId : 'testDiv'                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ?>').style.cssText = obj('style').value;
       //obj('fr').contentDocument.body.innerHTML = '<link href="../templates/SpapcoDefault/template.css" rel="stylesheet" type="text/css">';
       $('#fr').contentDocument.getElementById('dynamicStyle').innerHTML = $('#style').value;
       $('#fr').contentDocument.getElementById('<?php echo $name ?>').className = 'Panel <?php echo $class ?> ' + $('#class').value;
@@ -1371,11 +1373,59 @@ session_start();
 
    }
 
+   /*UISForm.prototype.setMode = function (mode)
+    {
+    switch (mode)
+    {
+    case "edit":
+    this.resizeEditorFrame(this.simulatorWidth, )
+    break;
+    }
+    };*/
+
+   UISForm.prototype.resizeEditorFrame = function (simWidth, width)
+   {
+      this.simulatorWidth = simWidth;
+      this.editorFrame = $(document.getElementById("fr")).contents().find("body");
+      var self = this;
+      var left = (($(window).width() - width) / 2);
+      //var width = $(window).width() - sidebarWidth;
+      self.editorFrame.find(".widget-glass-pane").hide();
+      //console.log(self.editorFrame)
+      $("#editor-window").stop().animate({
+         //left: left,
+         width: width
+      },
+      500, "Power1.easeInOut", function () {
+         self.loadInspectorEditor();
+         self.editorFrame.find(".widget-glass-pane").show();
+      });
+
+      var fh = self.editorWindow.height();
+      var newHeight = (fh * simWidth) / width;
+      var leftOffset = width - simWidth;
+      var topOffset = fh - newHeight;
+
+      $("#fr").stop().animate({
+         //left: left,
+         width: simWidth,
+         transform: "scale(" + scale(simWidth, width) + ")",
+         top: topOffset / 2,
+         left: leftOffset / 2,
+         height: newHeight
+      },
+      500, "Power1.easeInOut", function () {
+         self.loadInspectorEditor();
+         self.editorFrame.find(".widget-glass-pane").show();
+         self.relocateGlassPanes();
+      });
+   };
+
    EW.setHashParameter("screen", null, "neuis");
    EW.addURLHandler(function ()
    {
       var screen = EW.getHashParameter("screen", "neuis");
-      var sidebarWidth = 301;
+      var sidebarWidth = 501;
       var windowWidth = $(window).width() - sidebarWidth;
 
       var defScreen = "large";
@@ -1424,35 +1474,7 @@ session_start();
       }
       if (uisForm.oldScreem != screen)
       {
-         $(document.getElementById("fr").contentDocument.body).find(".widget-glass-pane").hide();
-         $("#editor-window").stop().animate({
-            left: left,
-            width: width
-         },
-         500, "Power3.easeOut", function () {
-            uisForm.loadInspectorEditor();
-            $(document.getElementById("fr").contentDocument.body).find(".widget-glass-pane").show();
-         });
-
-         var fh = uisForm.editorWindow.height();
-         var newHeight = (fh * simWidth) / width;
-         var leftOffset = width - simWidth;
-         var topOffset = fh - newHeight;
-
-         $("#fr").stop().animate({
-            //left: left,
-            width: simWidth,
-            transform: "scale(" + scale(simWidth, width) + ")",
-            top: topOffset / 2,
-            left: leftOffset / 2,
-            height: newHeight
-         },
-         500, "Power3.easeOut", function () {
-            uisForm.loadInspectorEditor();
-            $(document.getElementById("fr").contentDocument.body).find(".widget-glass-pane").show();
-            uisForm.relocateGlassPanes();
-         });
-
+         uisForm.resizeEditorFrame(simWidth, width);
       }
       uisForm.oldScreen = screen;
 
