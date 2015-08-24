@@ -698,7 +698,7 @@ body.Admin
 .header-pane h1 span,span.header-label
 {
    float:left;
-   line-height:30px;
+   line-height: 46px;
    padding-right:10px;
    border-right:0 solid #999;
    font-weight:400
@@ -711,13 +711,11 @@ body.Admin
 
 .top-pane .header-pane.tabs-bar
 {
-   height:122px
-}
+   height: 103px;}
 
 .top-pane .form-content.tabs-bar
 {
-   top:118px
-}
+   top: 103px;}
 
 #app-content
 {
@@ -920,10 +918,10 @@ body.Admin
 
 h1
 {
-   margin:10px 0;
+   margin: 0;
    display:block;
    font-size:24px;
-   line-height:30px;
+   line-height: 46px;
    font-weight:300;
    color:#000;
    min-height:30px
@@ -2112,8 +2110,7 @@ ul.errors-list li
 
 .row h1,.row h3
 {
-   margin:14px 0 24px
-}
+   /* margin: 8px 0 19px; */}
 
 .row h2,.row h4
 {
@@ -3200,6 +3197,8 @@ div.notification p,div.notification h4
    padding:0 10px;
    position:relative;
    z-index:2
+;
+   margin: 7px 0 0;
 }
 
 .btn-refresh

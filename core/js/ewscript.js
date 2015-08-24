@@ -573,7 +573,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
          xButton.css({
             left: modalPane.offset().left + modalPane.width() - 10,
             //right:"10px",
-            top: parseInt(modalPane.css("top")) + 13,
+            top: parseInt(modalPane.css("top")) + 8,
             zIndex: modalPane.css("z-index")
          });
          xButton.show();
