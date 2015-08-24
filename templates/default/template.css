@@ -1844,6 +1844,13 @@ ul.items li.panel
    margin-right:0
 }
 
+ul.items li.panel > ul
+{
+   padding: 0;
+   padding-left: 4px;
+   padding-bottom: 4px;
+}
+
 ul.items li.widget
 {
    border:none;
@@ -1853,7 +1860,7 @@ ul.items li.widget
 ul.items li.widget div > a.item-label
 {
    background-color:#3399cf;
-   border-radius:2px;
+   /* border-radius:2px; */
    color:#fff;
    float:none;
    display:block;
@@ -1869,8 +1876,7 @@ ul.items li.widget div > a.item-label:hover
 
 ul.items li.widget .close-icon
 {
-   right:15px
-}
+   right: 11px;}
 
 ul.items li a img
 {
@@ -1897,7 +1903,16 @@ ul.items li > div
    top:0;
    display:block;
    position:relative;
-   padding:5px
+}
+
+ul.items li > .title
+{
+   overflow:hidden;
+   top:0;
+   display:block;
+   position:relative;
+   padding:5px;
+   padding-left: 10px;
 }
 
 ul.items li a.btn
@@ -1917,7 +1932,7 @@ ul.items li .close-icon
    position:absolute;
    background-color:transparent;
    right:10px;
-   top:12px;
+   top: 7px;
    float:right
 }
 
@@ -1938,7 +1953,7 @@ ul.active
 
 ul.items ul
 {
-   padding:0 0 10px 10px;
+   padding: 0 0 10px 15px;
    overflow:hidden;
    margin-right:-1px
 }

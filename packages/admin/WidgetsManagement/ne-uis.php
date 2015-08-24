@@ -11,16 +11,16 @@ session_start();
    </h1>  
 </div>
 <div id="ew-uis-editor" class="form-content row" style="padding:0px;">
-   <div class="list-modal" style="width:300px;z-index:3;background-color:#fff;left:-300px;" id="items-list">      
+   <div class="list-modal" style="width:400px;z-index:3;background-color:#fff;left:-400px;" id="items-list">      
       <h1 class="pull-left">Select an item</h1><a href='javascript:void(0)' class='close-icon pull-right' style="margin:5px;"></a>      
       <div  id="items-list-content" ></div>
    </div>
-   <ul id="ew-uis-editor-tabs" class="nav nav-tabs xs-nav-tabs nav-sm" style="width:300px;float:left;margin: 0px;">
+   <ul id="ew-uis-editor-tabs" class="nav nav-tabs xs-nav-tabs nav-sm" style="width:400px;float:left;margin: 0px;">
       <li class="active"><a href="#inspector" data-toggle='tab'>tr{Structure}</a></li>
       <li class="disable"><a href="#template-control" data-toggle='tab'>tr{Template}</a></li>
       <li class=""><a href="#pref" data-toggle='tab'>tr{Settings}</a></li>
    </ul>
-   <div class="tab-content fix" style="width:300px;top:40px;">
+   <div class="tab-content fix" style="width:400px;top:40px;">
       <div class="tab-pane active" id="inspector">
          <form name="inspector-editor" id="inspector-editor" onsubmit="return false">
 
@@ -78,13 +78,13 @@ session_start();
             <div id="uis-preference-actions" class="actions-bar action-bar-items" ></div>
          </form>
       </div>
+   </div>   
+   <div style="position:absolute;right:15px;top:0px;overflow:hidden;left:415px;" >
+      <input class="text-field" data-label="UIS Perview URL" name="perview_url" id="perview_url">
    </div>
-   <div style="position:absolute;right:15px;top:0px;overflow:hidden;left:315px;" >
-      <input style="margin-top:20px;" class="text-field" data-label="UIS Perview URL" name="perview_url" id="perview_url">
-   </div>
-   <div id="editor-window" style="position:absolute;right:0px;top:72px;bottom:1px;overflow:hidden;left:auto;border:0px solid #aaa;border-width:1px 0 1px 1px;">
-      <form id="neuis" style="overflow:auto;display:block;height:100%;width: 100%;z-index:0;overflow:hidden;padding:0;" class="col-xs-12">
-         <iframe id="fr" style="position:absolute;top:0px;right:0px;bottom:0px;left:0px;border:none;min-width:410px;width:100%;height:100%;overflow:scroll;background-image: url('./templates/default/glass-pane-bg-small.png');padding:0px;"                               
+   <div id="editor-window" style="position:absolute;right:0px;top:68px;bottom:1px;overflow:hidden;left:auto;">
+      <form id="neuis" style="position:absolute;overflow:auto;display:block;top:0px;height:100%;width: 100%;z-index:0;overflow:hidden;padding:0;border:0px solid #aaa;border-width:1px 0 1px 1px;" class="col-xs-12">
+         <iframe id="fr" style="position:absolute;top:0px;left:0px;border:none;min-width:410px;width:1920px;height:100%;overflow:scroll;background-image: url('./templates/default/glass-pane-bg-small.png');padding:0px;"                               
                  src="">
          </iframe>
          <input type="submit" style="display: none;" value="ثبت">
@@ -180,6 +180,7 @@ session_start();
       self.oldStructure = "{}";
       this.inlineEditor = {};
       this.editorWindow = $("#editor-window");
+      this.editorWindow.width($(window).width() - 400);
       //this.editorFrame = $(document.getElementById("fr").contentDocument.body);
       this.editorFrame = $(document.getElementById("fr")).contents().find("body");
       /*this.bAdd = EW.addAction("Save and Start Editing", this.addUIS, {
@@ -220,7 +221,7 @@ session_start();
       $("#items-list a.close-icon").on("click", function (e) {
          e.preventDefault();
          $("#items-list").animate({
-            left: -300
+            left: -400
          },
          200);
       });
@@ -260,7 +261,7 @@ session_start();
 
       // Adjust the width of preview window according to the screen resolution
       $(window).resize(function () {
-         var eww = $(window).width() - 300;
+         var eww = $(window).width() - 400;
          var screen = "large";
          if (eww >= 420)
          {
@@ -1229,7 +1230,7 @@ session_start();
    {
       var self = this;
       $("#items-list").stop().animate({
-         left: "-300px"
+         left: "-400px"
       },
       300);
       var d = EW.createModal({
@@ -1270,7 +1271,7 @@ session_start();
    {
       var self = this;
       $("#items-list").stop().animate({
-         left: "-300px"
+         left: "-400px"
       },
       300);
       var d = EW.createModal();
@@ -1365,7 +1366,7 @@ session_start();
 
    function setView()
    {
-      //obj('<?php // echo $styleId ? $styleId : 'testDiv'                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ?>').style.cssText = obj('style').value;
+      //obj('<?php // echo $styleId ? $styleId : 'testDiv'                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ?>').style.cssText = obj('style').value;
       //obj('fr').contentDocument.body.innerHTML = '<link href="../templates/SpapcoDefault/template.css" rel="stylesheet" type="text/css">';
       $('#fr').contentDocument.getElementById('dynamicStyle').innerHTML = $('#style').value;
       $('#fr').contentDocument.getElementById('<?php echo $name ?>').className = 'Panel <?php echo $class ?> ' + $('#class').value;
@@ -1401,7 +1402,8 @@ session_start();
          self.editorFrame.find(".widget-glass-pane").show();
       });
 
-      var fh = self.editorWindow.height();
+      var fh = self.editorWindow.outerHeight() ;
+      $("#neuis").css("height", fh);
       var newHeight = (fh * simWidth) / width;
       var leftOffset = width - simWidth;
       var topOffset = fh - newHeight;
@@ -1465,8 +1467,6 @@ session_start();
       if (windowWidth >= width)
       {
          left = ((windowWidth - width) / 2) + sidebarWidth;
-
-         //width = windowWidth;
       }
       else
       {
