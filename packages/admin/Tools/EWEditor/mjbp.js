@@ -560,14 +560,16 @@ function MJEditor(selector, opts) {
          var headings = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
          return headings.indexOf(el.toLowerCase()) !== -1 ? true : false;
       },
-      enterHandler: function (e) {
+      enterHandler: function (e) 
+      {
          var range, parentNode, postRange, rangeParent, previousNode, previousElement, currentNode, nextNode, nextElement, newRange, newEl, sel,
                  self = this;
-
 
          range = self.selection.getRangeAt(0);
          parentNode = range.startContainer.parentNode;
          currentNode = range.startContainer;
+         //console.log(parentNode)
+//         console.log(currentNode)
          //console.log(self.isList(parentNode));
          var listItem = self.isList(parentNode);
          if (!listItem)
@@ -585,7 +587,7 @@ function MJEditor(selector, opts) {
                   {
                      e.preventDefault();
                      self.cleanUp();
-                     self.newParagraph();
+                     self.newParagraph(parentNode.parentNode);
                   }
                   else
                   {
@@ -646,6 +648,7 @@ function MJEditor(selector, opts) {
             e.preventDefault();
             self.cleanUp();
             self.newParagraph();
+            //alert();
          }
          return self;
       },
@@ -658,37 +661,49 @@ function MJEditor(selector, opts) {
             this.cleanUp();
          }
       },
-      newParagraph: function (target, parent, place) {
-         var currentNode, range, newEl, newRange, liveP;
+      newParagraph: function (target, parent, place) 
+      {         
+         console.log(this.activeComponent)
+         var currentNode, range, paragraph, newRange, liveP;
          target = target || undefined;
          this.selection = w.getSelection();
          range = this.selection.getRangeAt(0);
          currentNode = range.startContainer;
 
-         newEl = d.createElement('p');
+         paragraph = d.createElement('p');
          liveP = d.getElementById('editor-new-p');
 
          if (liveP) {
             liveP.removeAttribute('id');
          }
-         newEl.id = 'editor-new-p';
-         newEl.innerHTML = '\u00a0';
-         if (parent)
+         paragraph.id = 'editor-new-p';
+         paragraph.innerHTML = '&nbsp;';
+         if(this.activeComponent)
          {
+            //this.activeComponent[0].innerHTML = this.activeComponent[0].innerHTML.replace('&nbsp;','');
+            //console.log(this.activeComponent[0].innerHTML)
+            this.activeComponent[0].appendChild(paragraph);
+         }
+         /*if (parent)
+         {
+            parent.innerHTML = parent.innerHTML.replace('&nbsp;','');
             parent.insertBefore(newEl, place);
          }
-         else if (target === undefined) {
-            this.liveElement.appendChild(newEl);
-         }
-
-         else {
+         else if (target) 
+         {
+            target.appendChild(newEl);
+            //this.liveElement.appendChild(newEl);
+         }*/
+         /*else 
+         {
             this.liveElement.insertBefore(newEl, target);
-         }
+         }*/
          newRange = d.createRange();
          //newRange.selectNodeContents(newEl);
          //console.log('para');
          //console.log(parent);
-         newRange.setStart(newEl, 0);
+         newRange.setStart(paragraph, 0);
+         newRange.setEnd(paragraph, 0);
          this.selection = w.getSelection();
          this.selection.collapse(false);
          this.selection.removeAllRanges();

@@ -364,6 +364,7 @@ class ContentManagement extends \Section
 
       $articles = $this->get_content_with_label($id, "admin_ContentManagement_language", $language);
       $article = [];
+      //print_r($articles);
       //echo count($articles['result']);
       if ($articles)
       {

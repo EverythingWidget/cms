@@ -1244,10 +1244,10 @@ h2.actions-bar span
    line-height:34px
 }
 
-h2.actions-bar > button
+/*h2.actions-bar > button
 {
    margin-top:3px
-}
+}*/
 
 ul.actions-bar
 {
@@ -2987,7 +2987,7 @@ div.notification p,div.notification h4
 
 .alert.alert-success
 {
-   background-color:#9acd32;
+   background-color:#4CAF50;
    color:#fff
 }
 
@@ -3417,4 +3417,9 @@ li h3.icon-header
 {
    margin: 0;
    margin-bottom: 0px;
+}
+
+.box-title
+{
+   
 }

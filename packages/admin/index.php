@@ -20,7 +20,7 @@ if (!isset($_SESSION['login']))
       <link rel="shortcut icon" href="<?php echo EW_ROOT_URL ?>templates/default/favicon.ico">  
 
       <base href="<?php echo EW_ROOT_URL ?>">
-      <!--<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">-->
+      <link rel="stylesheet" href="<?php echo EW_ROOT_URL ?>core/css/font-awesome.min.css">
       <link type="text/css" href="<?php echo EW_ROOT_URL ?>core/css/bootstrap.css" rel="stylesheet" >  
       <link type="text/css" href="<?php echo EW_ROOT_URL ?>core/css/simple-slider.css" rel="stylesheet" >  
       <link href="<?php echo EW_ROOT_URL ?>templates/default/template.css" rel="stylesheet" type="text/css">

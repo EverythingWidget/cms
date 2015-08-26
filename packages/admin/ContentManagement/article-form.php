@@ -39,6 +39,7 @@ function script()
             },
             onDone: function (data)
             {
+               
                $.EW("getParentDialog", $("#article-form")).trigger("close");
                $("body").EW().notify(data).show();
                $(document).trigger("article-list.refresh", [data]);
@@ -58,7 +59,7 @@ function script()
             {
                $("body").EW().notify(data).show();
                ContentForm.setData(data.data);
-               $.EW("getParentDialog", $("#article-form")).trigger("close");
+               $.EW("getParentDialog", $("#article-form")).trigger("close");               
                $(document).trigger("article-list.refresh");               
             }}).hide();
 

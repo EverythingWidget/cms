@@ -241,28 +241,30 @@ EverythingWidgets.prototype.getActivity = function (conf)
    var activityId = settings.activity;
    // create new activity from the original activity in the case where there is more than one action for one activity
    // removed for improvment
-   /*if (self.activityCounter[settings.activity] && JSON.stringify(self.activities[activityId].settings) !== JSON.stringify(settings))
-    {
-    ac = self.activityCounter[settings.activity];
-    ac++;
-    activityId = settings.activity + "-" + ac;
-    
-    }*/
+   if (self.activityCounter[settings.activity] && JSON.stringify(self.activities[activityId].settings) !== JSON.stringify(settings))
+   {
+      ac = self.activityCounter[settings.activity];
+      ac++;
+      activityId = settings.activity + "-" + ac;
+      //self.activityCounter[settings.activity] = ac;
+      //alert()
+   }
    if (!self.originalActivity[activityId])
-      self.originalActivity[activityId] = self.activities[activityId];
-   //self.activityCounter[activityId] = ac;
+      self.originalActivity[activityId] = self.activities[settings.activity];
+   self.activityCounter[activityId] = ac;
+   var activity = self.originalActivity[activityId];
 
    //self.activities[activityId] = $.extend(true, {}, self.activities[settings.activity]);
    //self.activities[activityId].settings = settings;
 
-   if (self.activities[activityId].modalObject && settings.modal && settings.modal.class)
+   if (activity.modalObject && settings.modal && settings.modal.class)
    {
-      self.activities[activityId].modalObject.animate({
+      activity.modalObject.animate({
          className: "top-pane col-xs-12 " + settings.modal.class
       },
       300, function ()
       {
-         self.activities[activityId].modalObject.methods.setCloseButton();
+         activity.modalObject.methods.setCloseButton();
       });
    }
 

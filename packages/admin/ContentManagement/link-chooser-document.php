@@ -4,7 +4,7 @@
 <div  class="row">
    <div class="col-xs-12" >            
       <div id="categories-list"  class="box">
-         <h2 id='cate-title' class="actions-bar action-bar-items">
+         <h2 id='cate-title' class="box-title actions-bar action-bar-items">
             <span>tr{Folders}</span>
             <button class='button' id='documents-up-btn' type='button' style='display:none;float:right;'>UP</button>
          </h2>

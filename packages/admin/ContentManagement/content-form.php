@@ -326,6 +326,7 @@ $tabs = EWCore::read_registry("ew-article-form-tab");
          formData['labels'] = this.getLabels();
          if (contentEditor)
             formData["content"] = contentEditor.getContent();
+         
          //formData["content"] = CKEDITOR.instances.content.getData();
          /*if (tinymce && tinymce.activeEditor)
           formData["content"] = tinymce.activeEditor.getContent();*/
