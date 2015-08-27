@@ -1,16 +1,17 @@
 
 var System = System ||
         {
-           apps: {},
+           modules: {},
            appPathfiledName: null,
            activityTree: [],
            onLoadQueue: [],
            activeModule: null,
            /*activeHashHandler: function () {
             },*/
-           module:
+           MODULE_ABSTRACT:
                    {
-                      modules: {},
+                      navigation: {},
+                      params: {},
                       activeModule: null,
                       init: function ()
                       {
@@ -36,20 +37,25 @@ var System = System ||
                       {
 
                       },
-                      hashHandler: function (e, data)
+                      hashChanged: function ()
                       {
-                         if (this.activeModule && !e.isDefaultPrevented())
-                            this.activeModule.hashHandler(e, data);
+                         var e = $.Event("hashchange");
+                         this.hashHandler.call(e, this.navigation, this.params);
                       },
-                      module: function (id, object)
+                      hashHandler: function (nav, params)
                       {
-                         this.modules[id] = $.extend({}, System.module, object);
+                         /*if (this.activeModule && !e.isDefaultPrevented())
+                          this.activeModule.hashHandler(e, data);*/
                       }
                    },
            // Apps Management
            registerApp: function (id, object)
            {
-              this.apps[id] = $.extend({}, System.module, object);
+              this.modules[id] = $.extend({}, System.MODULE_ABSTRACT, object);
+           },
+           mod: function (id, object)
+           {
+              this.modules[id] = $.extend({}, System.MODULE_ABSTRACT, object);
            },
            // Open app
            openApp: function (app, reload)
@@ -78,14 +84,16 @@ var System = System ||
                     {
                        if (self.navHashes[id])
                           window.location.hash = self.navHashes[id];
-                       var html = $(response).filter(":not(script)");
+                       var scripts = $(response).filter("script").detach();
+                       var html = $(response);
+                       $("body").append(scripts);
                        //var html = res;
-                       System.apps[id] = $.extend({}, System.module, self.apps[id]);
+                       //System.apps[id] = $.extend({}, System.module, self.apps[id]);
                        //System.activityTree.unshift(System.apps[id]);
-                       self.onAppLoaded(self.apps[id], html);
+                       self.onAppLoaded(self.modules[id], html);
                        //
-                       System.apps[id].init();
-                       System.apps[id].focus();
+                       System.modules[id].init();
+                       System.modules[id].focus();
                        //
                        self.currentOnLoad = null;
                        self.onLoadQueue.shift();
@@ -116,14 +124,14 @@ var System = System ||
            // Close App
            closeApp: function (appId)
            {
-              if (this.onCloseApp(System.apps[appId]))
+              if (this.onCloseApp(System.modules[appId]))
               {
-                 System.apps[appId].blur();
+                 System.modules[appId].blur();
                  var pos = this.activityTree.lastIndexOf(appId);
                  if (pos !== -1)
                     this.activityTree.splice(pos, 1);
-                 System.apps[appId].dispose();
-                 this.onAppClosed(System.apps[appId]);
+                 System.modules[appId].dispose();
+                 this.onAppClosed(System.modules[appId]);
               }
            },
            onCloseApp: function (app)
@@ -141,7 +149,19 @@ var System = System ||
               console.log(this.navigation);
               console.log(this.params);
               var e = $.Event("hashchange");
+              //console.log("---->"+this.navigation.app[0]);
+              if (this.navigation.app)
+                 this.activeModule = this.modules[this.navigation.app[0]];
+              if (this.activeModule)
+              {
+                 this.activeModule.navigation = this.navigation;
+                 this.activeModule.params = this.params;
+                 this.activeModule.hashChanged();
+              }
+              //this.activeModule.hashHandler(this.navigation, this.params);
               this.hashHandler.call(e, this.navigation, this.params);
+              //if (this.activeModule)
+              //this.activeModule.hashHandler(this.navigation, this.params);
            },
            hashHandler: function (nav, params)
            {
@@ -204,9 +224,10 @@ var System = System ||
               if (app)
               {
                  if (!this.navHashes[app])
-                    this.navHashes[app] = app;
+                    this.navHashes[app] = "app=" + app;
                  hashValue = this.navHashes[app];
               }
+
               if (hashValue.indexOf("#") !== -1)
               {
                  hashValue = hashValue.substring(1);

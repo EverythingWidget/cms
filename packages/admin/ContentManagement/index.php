@@ -50,4 +50,22 @@ echo admin\AppsManagement::create_section_main_form();
    {
    };
    var oldLib = "";
+
+   (function ()
+   {
+      System.mod("ContentManagement",
+              {
+                 init: function ()
+                 {
+                 },
+                 start: function ()
+                 {
+
+                 },
+                 hashHandler: function (parameters)
+                 {
+                    alert();
+                 }
+              });
+   }());
 </script>
