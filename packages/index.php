@@ -22,7 +22,6 @@ EWCore::set_default_locale("admin");
 //EWCore::set_db_connection(get_db_connection());
 
 $path = ltrim($_SERVER['REQUEST_URI'], '/');    // Trim leading slash(es)
-
 // Decode url to a normal string
 $path = urldecode($path);
 if (strpos($path, '?') !== false)
@@ -59,20 +58,29 @@ define('EW_ROOT_URL', $u);
 
 // Check the app parameter
 $app_name = "webroot";
-if (preg_match("/^app-([^\/]*)$/", $elements[$parameter_index], $match))
+$default_recourse = "html";
+
+if ($elements[$parameter_index])
 {
-   $app_name = $match[1];
+   $app_resource_path = explode('-', $elements[$parameter_index]);
+   if (count($app_resource_path) === 1)
+   {
+      $app_resource_path[] = $default_recourse;
+   }
+   $app_name = implode('/', $app_resource_path);
    $parameter_index++;
 }
+
+//$resource_path = "$app_name-$default_recourse";
 $_REQUEST["_app_name"] = $app_name;
 
 // Check the asset parameter
-if ($elements[$parameter_index] == 'asset')
-{
-   $app_name = 'asset';
-   $_REQUEST["_app_name"] = $app_name;
-   $parameter_index++;
-}
+/* if ($elements[$parameter_index] == 'asset')
+  {
+  $app_name = 'asset';
+  $_REQUEST["_app_name"] = $app_name;
+  $parameter_index++;
+  } */
 
 // Read the section name parameter
 $section_name = null;
@@ -114,7 +122,8 @@ if (!isset($_SESSION["EW.USERS_GROUP"]))
 // If app name is asset then call get_resource
 if ($app_name == "asset")
 {
-   EWCore::get_resource($section_name, array($_file));
+   EWCore::get_resource($section_name, array(
+       $_file));
    return;
 }
 
@@ -157,8 +166,9 @@ $GLOBALS["page_parameters"] = explode("/", $_REQUEST["_parameters"]);
 $RESULT_CONTENT = "RESULT_CONTENT: EMPTY";
 
 $real_class_name = $app_name . '\\' . $section_name;
+print_r($_REQUEST);
 
-$RESULT_CONTENT = EWCore::process_command($app_name, $section_name, $function_name, $_REQUEST);
+//$RESULT_CONTENT = EWCore::process_command($app_name, $section_name, $function_name, $_REQUEST);
 
 function translate($match)
 {

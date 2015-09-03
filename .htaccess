@@ -13,6 +13,5 @@ RewriteCond %{REQUEST_FILENAME} -f
 RewriteRule ^(.*)$ $1 [L]
 
 # 2: when I go to www.mysite.com/dir_name/, I should see packages/index.php?_app_name=dir_name
-RewriteRule ^$ packages/ [L]
-RewriteRule (.*) packages/$1 [L]
-
+RewriteRule ^$ packages/index.php [L]
+RewriteRule (.*) packages/index.php/$1 [L]

@@ -19,6 +19,7 @@ class App
    protected $description = "This is a ew app";
    protected $version = "0.1";
    protected $type = "app";
+   protected $namespace = "";
 
    //put your code here
 
