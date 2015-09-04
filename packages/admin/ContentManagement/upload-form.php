@@ -79,7 +79,7 @@
 
       // Make the ajax call
       $.ajax({
-         url: '<?php echo EW_ROOT_URL ?>app-admin/ContentManagement/upload_file',
+         url: '<?php echo EW_ROOT_URL ?>admin-api/ContentManagement/upload_file',
          type: 'POST',
          dataType: "json",
          xhr: function () {

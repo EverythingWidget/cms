@@ -21,7 +21,7 @@ class DocumentComponent implements \ContentComponent
       $form = [
           "title" => "Document",
           "description" => "Language of the content",
-          "url" => "app-admin/ContentManagement/explorer-document.php"
+          "url" => "admin-api/ContentManagement/explorer-document.php"
       ];
       return $form;
    }

@@ -22,6 +22,7 @@ class App
    protected $version = "0.1";
    protected $type = "app";
    protected $namespace = "";
+   protected $default_resource = "html";
 
    //put your code here
 
@@ -29,7 +30,7 @@ class App
    {
       //
       $this->init_api();
-      $this->init_plugins();
+      //$this->init_plugins();
    }
 
    protected function init_api()
@@ -143,28 +144,28 @@ class App
       }
 
       $pages_feeders = \EWCore::read_registry("ew-widget-feeder");
-      /*if ($class_exist)
-      {
+      /* if ($class_exist)
+        {
 
-         $RESULT_CONTENT = $app_section_object->process_request($method_name, $parameters);
-      }
-      else */if (\EWCore::is_widget_feeder("*", "*", $section_name))
+        $RESULT_CONTENT = $app_section_object->process_request($method_name, $parameters);
+        }
+        else */if (\EWCore::is_widget_feeder("*", "*", $section_name))
       {
 
          // Show index if the URL contains a page feeder
          $path = EW_PACKAGES_DIR . '/' . $app_name . '/index.php';
       }
-      else if (!$section_name && $app_resource_path[1] === "html")
+      else if (!$section_name)
       {
 
          // Refer to app index
-         if ($method_name == 'index')
+         if ($method_name == 'index' && $app_resource_path[1] === $this->default_resource)
          {
             ob_start();
             $this->index();
             return ob_get_clean();
          }
-         $path = EW_PACKAGES_DIR . '/' . $app_name . '/' . $method_name . '.php';
+         $path = EW_PACKAGES_DIR . '/' . implode('/', $app_resource_path) . '/' . $method_name . '.php';
 
          //echo "here is app-in $path";
       }
@@ -172,7 +173,7 @@ class App
       {
 
          // Refer to app section index
-         $path = EW_PACKAGES_DIR . '/' . $app_name . '/' . $section_name . '/' . $method_name;
+         $path = EW_PACKAGES_DIR . '/' . implode('/', $app_resource_path) . '/' . $section_name . '/' . $method_name;
       }
 
 
@@ -180,7 +181,7 @@ class App
       {
          ob_start();
          include $path;
-         $RESULT_CONTENT = ob_get_clean();
+         return ob_get_clean();
       }
       else if ($path)
       {

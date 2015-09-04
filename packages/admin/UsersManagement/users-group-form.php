@@ -178,7 +178,7 @@ function get_ew_users_permissions_form()
                var formParams = $.parseJSON($("#users-group-form").serializeJSON());
                formParams["permission"] = $self.readPermission().toString();
                EW.lock($("#users-group-form"), "Saving...");
-               $.post('<?php echo EW_ROOT_URL; ?>app-admin/UsersManagement/update_group', formParams, function (data) {
+               $.post('<?php echo EW_ROOT_URL; ?>admin-api/UsersManagement/update_group', formParams, function (data) {
                   UsersGroups.usersGroupsList();
                   $("body").EW().notify(data).show();
 
@@ -195,7 +195,7 @@ function get_ew_users_permissions_form()
                var formParams = $.parseJSON($("#users-group-form").serializeJSON());
                formParams["permission"] = $self.readPermission().toString();
                EW.lock($("#users-group-form"), "Saving...");
-               $.post('<?php echo EW_ROOT_URL; ?>app-admin/UsersManagement/add_group', formParams, function (data) {
+               $.post('<?php echo EW_ROOT_URL; ?>admin-api/UsersManagement/add_group', formParams, function (data) {
                   $.EW("getParentDialog", $("#users-group-form")).trigger("close");
                   UsersGroups.usersGroupsList();
                   $("body").EW().notify(data).show();
@@ -212,7 +212,7 @@ function get_ew_users_permissions_form()
             {
                var formParams = $.parseJSON($("#users-group-form").serializeJSON());
                EW.lock($("#users-group-form"));
-               $.post('<?php echo EW_ROOT_URL; ?>app-admin/UsersManagement/delete_group', formParams, function (data) {
+               $.post('<?php echo EW_ROOT_URL; ?>admin-api/UsersManagement/delete_group', formParams, function (data) {
                   $.EW("getParentDialog", $("#users-group-form")).trigger("close");
                   UsersGroups.usersGroupsList();
                   $("body").EW().notify(data).show();

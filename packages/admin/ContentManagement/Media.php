@@ -35,10 +35,10 @@ if (!$_SESSION['login'])
          //var preParentId = EW.getHashParameter("preParentId");
          EW.setHashParameter("parent", null);
       }, {float: "right", display: "none"});
-      this.newAlbumActivity = EW.addActivity({title: "tr{New Album}", activity: "app-admin/ContentManagement/album-form.php"}).hide();
-      this.uploadFileActivity = EW.addActivity({title: "tr{Upload Photo}", activity: "app-admin/ContentManagement/upload-form.php"}).hide();
-      this.seeAlbumActivity = EW.getActivity({activity: "app-admin/ContentManagement/album-form.php_see"});
-      //this.seeArticleActivity = EW.getActivity({activity: "app-admin/ContentManagement/article-form.php_see"});
+      this.newAlbumActivity = EW.addActivity({title: "tr{New Album}", activity: "admin-api/ContentManagement/album-form.php"}).hide();
+      this.uploadFileActivity = EW.addActivity({title: "tr{Upload Photo}", activity: "admin-api/ContentManagement/upload-form.php"}).hide();
+      this.seeAlbumActivity = EW.getActivity({activity: "admin-api/ContentManagement/album-form.php_see"});
+      //this.seeArticleActivity = EW.getActivity({activity: "admin-api/ContentManagement/article-form.php_see"});
 
       if (this.seeAlbumActivity)
          this.seeAction = EW.addAction("tr{See}", $.proxy(this.seeDetails, this)).hide();
@@ -85,7 +85,7 @@ if (!$_SESSION['login'])
       $("#folders-list").append(albums);
       $("#files-list").html("<h2>Loading Images</h2>");
       $("#files-list").append(images);
-      $.post('<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/get_media_list', {parent_id: self.parentId}, function (data)
+      $.post('<?php echo EW_ROOT_URL; ?>admin-api/ContentManagement/get_media_list', {parent_id: self.parentId}, function (data)
       {
          $("#folders-list > h2").html("tr{Albums}");
          $("#files-list > h2").html("tr{Images}");

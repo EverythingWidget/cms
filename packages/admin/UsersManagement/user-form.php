@@ -56,7 +56,7 @@ function get_ew_user_form()
                //alert(media.itemId);
                var formParams = $.parseJSON($("#user-form").serializeJSON());
                EW.lock($("#user-form"), "Saving...");
-               $.post('<?php echo EW_ROOT_URL; ?>app-admin/UsersManagement/add_user', formParams, function (data) {
+               $.post('<?php echo EW_ROOT_URL; ?>admin-api/UsersManagement/add_user', formParams, function (data) {
                   if (data.status === "success")
                   {
                      $.EW("getParentDialog", $("#user-form")).trigger("close");
@@ -78,7 +78,7 @@ function get_ew_user_form()
                //alert(media.itemId);
                var formParams = $.parseJSON($("#user-form").serializeJSON());
                EW.lock($("#user-form"), "Saving...");
-               $.post('<?php echo EW_ROOT_URL; ?>app-admin/UsersManagement/update_user', formParams, function (data) {
+               $.post('<?php echo EW_ROOT_URL; ?>admin-api/UsersManagement/update_user', formParams, function (data) {
                   if (data.status === "success")
                   {
                      $(document).trigger("users-list.refresh");

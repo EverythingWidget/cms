@@ -198,12 +198,12 @@ session_start();
       },
       "uis-preference-actions").addClass("btn-success");
 
-      //this.bExportUIS = EW.addActivity({title: "tr{Export UIS}", activity: "app-admin/WidgetsManagement/export_uis", hash: {uis_id: this.uisId}});
+      //this.bExportUIS = EW.addActivity({title: "tr{Export UIS}", activity: "admin-api/WidgetsManagement/export_uis", hash: {uis_id: this.uisId}});
       if (EW.getActivity({
-         activity: "app-admin/WidgetsManagement/export_uis"
+         activity: "admin-api/WidgetsManagement/export_uis"
       }))
       {
-         $("#uis-preference-actions").append("<a class='btn btn-link pull-right export-btn' href=app-admin/WidgetsManagement/export_uis?uis_id=" + this.uisId + ">Export Layout</a>");
+         $("#uis-preference-actions").append("<a class='btn btn-link pull-right export-btn' href=admin-api/WidgetsManagement/export_uis?uis_id=" + this.uisId + ">Export Layout</a>");
          this.bExportLayout = $("#uis-preference-actions a.export-btn");
          this.bExportLayout.hide();
       }
@@ -305,7 +305,7 @@ session_start();
             $('#form-title').html('<span>tr{Edit}</span>' + data.name);
             //alert(JSON.stringify(data));
             self.uisId = data.id;
-            $("#uis-preference-actions .export-btn").attr("href", "app-admin/WidgetsManagement/export_uis?uis_id=" + self.uisId);
+            $("#uis-preference-actions .export-btn").attr("href", "admin-api/WidgetsManagement/export_uis?uis_id=" + self.uisId);
             self.uisTemplate = data.template;
             if (data.template_settings)
                self.templateSettings = $.parseJSON(data.template_settings);
@@ -865,7 +865,7 @@ session_start();
       var self = this;
       if ($("#template").val())
       {
-         $.post("<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/get_template_settings_form", {
+         $.post("<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/get_template_settings_form", {
             path: $("#template").val()
          },
          function (data)
@@ -885,7 +885,7 @@ session_start();
    {
       /*$("#cai").html("");
        if ($("#template").val())
-       $.post("<?php echo EW_ROOT_URL; ?>app-admin/EWCore/parse_css", {
+       $.post("<?php echo EW_ROOT_URL; ?>admin-api/EWCore/parse_css", {
        path: $("#template").val() + "/template.css"
        },
        function (data)
@@ -911,7 +911,7 @@ session_start();
       self.templateSettings = $("#template_settings_form").serializeJSON();
       $("#template_settings_form").trigger("getData");
 
-      $.post('<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/add_uis', {
+      $.post('<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/add_uis', {
          name: $('#name').val(),
          template: $('#template').val(),
          template_settings: JSON.stringify(self.templateSettings),
@@ -957,7 +957,7 @@ session_start();
       //if(!self.templateSettings)
       //alert(JSON.stringify(self.templateSettings));
       $("#template_settings_form").trigger("getData");
-      $.post('<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/update_uis', {
+      $.post('<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/update_uis', {
          name: $('#name').val(),
          template: $('#template').val(),
          template_settings: JSON.stringify(self.templateSettings),
@@ -993,7 +993,7 @@ session_start();
       //var originalTemplateSettings = self.templateSettings;
       // Read template settings from template settings form
       $("#template_settings_form").trigger("getData");
-      $.post('<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/get_layout', {
+      $.post('<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/get_layout', {
          uisId: self.uisId,
          template: self.uisTemplate,
          template_settings: JSON.stringify(self.templateSettings)
@@ -1151,7 +1151,7 @@ session_start();
     var self = this;
     $("#items-list").stop().animate({left: "0px"}, 300);
     $("#items-list #items-list-content").html("<h2 style='text-align:center;'>Please Wait</h2>");
-    $.post('<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/get_blocks', {
+    $.post('<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/get_blocks', {
     template: self.uisTemplate,
     uisId: self.uisId
     },
@@ -1180,7 +1180,7 @@ session_start();
       300);
       var listItemContent = $("#items-list #items-list-content");
       listItemContent.html("<h2 style='text-align:center;'>Please Wait</h2>");
-      $.post('<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/get_widgets_types', {
+      $.post('<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/get_widgets_types', {
          template: self.uisTemplate,
          uisId: self.uisId
       },
@@ -1210,7 +1210,7 @@ session_start();
          class: "left"
       });
       self.currentDialog = d;
-      $.post('<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/block-form.php', {
+      $.post('<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/block-form.php', {
          template: self.uisTemplate,
          uisId: self.uisId,
          id: id
@@ -1232,7 +1232,7 @@ session_start();
          class: "left"
       });
       self.currentDialog = d;
-      $.post('<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/UISPanel.php', {
+      $.post('<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/UISPanel.php', {
          template: self.uisTemplate,
          uisId: self.uisId,
          containerId: containerId
@@ -1250,7 +1250,7 @@ session_start();
          class: "left"
       });
       self.currentDialog = d;
-      $.post('<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/UISPanel.php', {
+      $.post('<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/UISPanel.php', {
          template: self.uisTemplate,
          uisId: self.uisId,
          panelId: pid,
@@ -1271,7 +1271,7 @@ session_start();
       300);
       var d = EW.createModal();
       self.currentDialog = d;
-      $.post("<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/uis-prewidget-form.php", {
+      $.post("<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/uis-prewidget-form.php", {
          template: self.uisTemplate,
          widgetType: widgetType,
          feederType: feederType,
@@ -1292,7 +1292,7 @@ session_start();
       var w = self.getEditorItem(wId);
       //console.log(w);
       EW.lock(d);
-      $.post("<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/uis-prewidget-form.php", {
+      $.post("<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/uis-prewidget-form.php", {
          template: self.uisTemplate,
          widgetId: wId,
          widgetType: w.attr("data-widget-type"),

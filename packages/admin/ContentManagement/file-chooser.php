@@ -50,7 +50,7 @@ function custom_widget_feeder_tab()
    ob_start();
    ?>  
    <script>
-      var feedersList = EW.createTable({name: "feeders-list", headers: {Name: {}, Type: {}}, rowCount: true, url: "<?php echo EW_ROOT_URL; ?>app-admin/EWCore/get_widget_feeders", urlData: {type: "all"}, pageSize: 30
+      var feedersList = EW.createTable({name: "feeders-list", headers: {Name: {}, Type: {}}, rowCount: true, url: "<?php echo EW_ROOT_URL; ?>admin-api/EWCore/get_widget_feeders", urlData: {type: "all"}, pageSize: 30
          , buttons: {"Select": function (rowId) {
    <?php
 //Call the function which has been attached to the function reference element

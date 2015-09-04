@@ -25,7 +25,7 @@ function script()
    ob_start();
    ?>
    <script >
-      var bSave = EW.addActivity({title: "tr{Save}", defaultClass: "btn-success", activity: "app-admin/ContentManagement/add_category",
+      var bSave = EW.addActivity({title: "tr{Save}", defaultClass: "btn-success", activity: "admin-api/ContentManagement/add_category",
          postData: function ()
          {
             if (!$("#category-form").EW().validate())
@@ -43,7 +43,7 @@ function script()
             $.EW("getParentDialog", $("#category-form")).trigger("close");
          }}).hide();
 
-      var bEdit = EW.addActivity({title: "tr{Save Changes}", defaultClass: "btn-success", activity: "app-admin/ContentManagement/update_category",
+      var bEdit = EW.addActivity({title: "tr{Save Changes}", defaultClass: "btn-success", activity: "admin-api/ContentManagement/update_category",
          postData: function ()
          {
             if (!$("#category-form").EW().validate())
@@ -60,7 +60,7 @@ function script()
             $(document).trigger("article-list.refresh");
          }}).hide();
 
-      var bDelete = EW.addActivity({title: "tr{Delete}", defaultClass: "btn-danger", activity: "app-admin/ContentManagement/delete_category",
+      var bDelete = EW.addActivity({title: "tr{Delete}", defaultClass: "btn-danger", activity: "admin-api/ContentManagement/delete_category",
          postData: function ()
          {
             if (!confirm("tr{Are you sure of deleting this folder?}"))

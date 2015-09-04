@@ -7,10 +7,10 @@ function sidebar()
    ?>
    <ul>  
       <li>   
-         <a rel="ajax" data-default="true" data-ew-nav="users" href="<?php echo EW_ROOT_URL; ?>app-admin/UsersManagement/users.php">tr{Users}</a> 
+         <a rel="ajax" data-default="true" data-ew-nav="users" href="<?php echo EW_ROOT_URL; ?>admin-api/UsersManagement/users.php">tr{Users}</a> 
       </li>     
       <li>      
-         <a rel="ajax" data-ew-nav="users_groups" href="<?php echo EW_ROOT_URL; ?>app-admin/UsersManagement/users-groups.php">tr{Users Groups}</a>       
+         <a rel="ajax" data-ew-nav="users_groups" href="<?php echo EW_ROOT_URL; ?>admin-api/UsersManagement/users-groups.php">tr{Users Groups}</a>       
       </li>    
    </ul>   
    <?php

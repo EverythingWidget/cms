@@ -40,16 +40,16 @@ class WidgetsManagement extends Section
       //EWCore::register_action("ew-category-action-add", "WidgetsManagement.category_action_add", "category_action_update", $this);
       //EWCore::register_action("ew-category-action-update", "WidgetsManagement.category_action_update", "category_action_update", $this);
       //EWCore::register_action("ew-category-action-get", "WidgetsManagement.category_action_get", "category_action_get", $this);
-      $this->add_listener("app-admin/ContentManagement/add_category", "category_action_update");
-      $this->add_listener("app-admin/ContentManagement/update_category", "category_action_update");
-      $this->add_listener("app-admin/ContentManagement/get_category", "category_action_get");
+      $this->add_listener("admin-api/ContentManagement/add_category", "category_action_update");
+      $this->add_listener("admin-api/ContentManagement/update_category", "category_action_update");
+      $this->add_listener("admin-api/ContentManagement/get_category", "category_action_get");
 
       //EWCore::register_action("ew-article-action-add", "WidgetsManagement.article_action_add", "article_action_update", $this);
       //EWCore::register_action("ew-article-action-update", "WidgetsManagement.article_action_update", "article_action_update", $this);
       //EWCore::register_action("ew-article-action-get", "WidgetsManagement.article_action_get", "article_action_get", $this);
-      $this->add_listener("app-admin/ContentManagement/add_article", "article_action_update");
-      $this->add_listener("app-admin/ContentManagement/update_article", "article_action_update");
-      $this->add_listener("app-admin/ContentManagement/get_article", "article_action_get");
+      $this->add_listener("admin-api/ContentManagement/add_article", "article_action_update");
+      $this->add_listener("admin-api/ContentManagement/update_article", "article_action_update");
+      $this->add_listener("admin-api/ContentManagement/get_article", "article_action_get");
 
       $this->register_permission("export-uis", "User can export UIS", array("export_uis", "ne-uis.php_see"));
       $this->register_permission("import-uis", "User can import UIS", array("import_uis", "ne-uis.php_see"));

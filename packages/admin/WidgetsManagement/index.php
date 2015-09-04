@@ -7,17 +7,17 @@ function sidebar()
    ?>
    <ul>        
       <li>      
-         <a rel="ajax" data-default="true" data-ew-nav="uis-list" href="<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/uis-list.php">      
+         <a rel="ajax" data-default="true" data-ew-nav="uis-list" href="<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/uis-list.php">      
             tr{Layouts}   
          </a>     
       </li>   
       <li>       
-         <a rel="ajax" data-ew-nav="pages-uis" href="<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/pages-uis.php">        
+         <a rel="ajax" data-ew-nav="pages-uis" href="<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/pages-uis.php">        
             tr{Layouts and Contents}        
          </a>        
       </li>    
       <li>         
-         <a rel="ajax" data-ew-nav="widgets" href="<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/widgets.php">         
+         <a rel="ajax" data-ew-nav="widgets" href="<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/widgets.php">         
             tr{Widgets Types}   
          </a>      
       </li>   
@@ -47,7 +47,7 @@ function script()
          };
          WidgetsManagement.prototype.uisList = function () {
             EW.lock('#main-content');
-            $.post('<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/uis-list.php', function (data) {
+            $.post('<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/uis-list.php', function (data) {
                $('#main-content').html(data);
             });
          };
@@ -59,7 +59,7 @@ function script()
          };
          WidgetsManagement.prototype.widgetsTypesList = function () {
             EW.lock('#main-content');
-            var t = EW.createTable({name: "widgets-types-list", headers: {Name: {}, Description: {}}, columns: ["name", "description"], rowCount: true, url: "<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/get_widgets_types", pageSize: 30});
+            var t = EW.createTable({name: "widgets-types-list", headers: {Name: {}, Description: {}}, columns: ["name", "description"], rowCount: true, url: "<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/get_widgets_types", pageSize: 30});
             $('#main-content').html(t.container);
          };
          WidgetsManagement.prototype.widgetsList = function () {
@@ -70,7 +70,7 @@ function script()
          };
          WidgetsManagement.prototype.pagesUISList = function () {
             EW.lock('#main-content');
-            $.post('<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/pages-uis.php', function (data) {
+            $.post('<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/pages-uis.php', function (data) {
                $('#main-content').html(data);
             });
          };

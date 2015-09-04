@@ -3,7 +3,7 @@
       function Users()
       {
          this.table = null;
-         this.bAddUser = EW.addActivity({title: "tr{New User}", activity: "app-admin/UsersManagement/user-form.php", hash: {userId: null}}).hide().comeIn(300);
+         this.bAddUser = EW.addActivity({title: "tr{New User}", activity: "admin-api/UsersManagement/user-form.php", hash: {userId: null}}).hide().comeIn(300);
 
 
          this.usersList();
@@ -31,14 +31,14 @@
                }
             },
             rowCount: true,
-            url: "<?php echo EW_ROOT_URL; ?>app-admin/UsersManagement/get_users_list",
+            url: "<?php echo EW_ROOT_URL; ?>admin-api/UsersManagement/get_users_list",
             pageSize: 30,
             onDelete: function (id)
             {
                this.confirm("tr{Are you sure of deleting of this user?}", function ()
                {
                   //EW.lock($("#main-content"));
-                  $.post('<?php echo EW_ROOT_URL; ?>app-admin/UsersManagement/delete_user', {id: id}, function (data)
+                  $.post('<?php echo EW_ROOT_URL; ?>admin-api/UsersManagement/delete_user', {id: id}, function (data)
                   {
                      $(document).trigger("users-list.refresh");
                      $("body").EW().notify(data).show();
@@ -46,7 +46,7 @@
                   }, "json");
                });
             },
-            onEdit: ((editActivity = EW.getActivity({activity: "app-admin/UsersManagement/user-form.php_see", onDone: function (hash) {
+            onEdit: ((editActivity = EW.getActivity({activity: "admin-api/UsersManagement/user-form.php_see", onDone: function (hash) {
                   hash["userId"] = null;
                }})) ? function (id) {
                editActivity({userId: id});

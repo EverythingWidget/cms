@@ -13,7 +13,7 @@
          self.userGroupModal = EW.createModal({hash: {key: "form", value: "group"}, onOpen: function () {
                EW.lock(this);
                var groupId = EW.getHashParameter("groupId");
-               $.post("<?php echo EW_ROOT_URL; ?>app-admin/UsersManagement/users-group-form.php", {groupId: groupId}, function (data) {
+               $.post("<?php echo EW_ROOT_URL; ?>admin-api/UsersManagement/users-group-form.php", {groupId: groupId}, function (data) {
                   self.userGroupModal.html(data);
                });
             },
@@ -44,14 +44,14 @@
                }
             },
             rowCount: true,
-            url: "<?php echo EW_ROOT_URL; ?>app-admin/UsersManagement/get_users_groups_list",
+            url: "<?php echo EW_ROOT_URL; ?>admin-api/UsersManagement/get_users_groups_list",
             pageSize: 30,
             onDelete: function (id)
             {
                this.confirm("tr{Are you sure of deleting of this group?}", function ()
                {
                   //EW.lock($("#main-content"));
-                  $.post('<?php echo EW_ROOT_URL; ?>app-admin/UsersManagement/delete_group', {id: id}, function (data)
+                  $.post('<?php echo EW_ROOT_URL; ?>admin-api/UsersManagement/delete_group', {id: id}, function (data)
                   {
                      UsersGroups.usersGroupsList();
                      $("body").EW().notify(data).show();

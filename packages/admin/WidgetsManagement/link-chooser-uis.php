@@ -14,7 +14,7 @@ session_start();
           {
           EW.setHashParameter('cmd', "new-uis");
           }, {display: "none"});
-          if (EW.getActivity({activity: "app-admin/WidgetsManagement/import_uis"}))
+          if (EW.getActivity({activity: "admin-api/WidgetsManagement/import_uis"}))
           {
           var fi = $("<input type=file id=uis_file name=uis_file accept='.json'/>");
           $(".action-bar-items").append($("<button type=button class='btn btn-file btn-primary' >tr{Import Layout}</button>").append(fi));
@@ -29,7 +29,7 @@ session_start();
           
           // Make the ajax call
           $.ajax({
-          url: '<?php echo EW_ROOT_URL ?>app-admin/WidgetsManagement/import_uis',
+          url: '<?php echo EW_ROOT_URL ?>admin-api/WidgetsManagement/import_uis',
           type: 'POST',
           dataType: "json",
           //xhr: function () {
@@ -62,7 +62,7 @@ session_start();
           });
           this.bNewUIS.comeIn(300);*/
          this.uis = {};
-         this.table = EW.createTable({name: "uis-list", rowLabel: "{name}", columns: ["name", "template"], headers: {Name: {}, Template: {}}, rowCount: true, url: "<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/get_uis_list", pageSize: 30
+         this.table = EW.createTable({name: "uis-list", rowLabel: "{name}", columns: ["name", "template"], headers: {Name: {}, Template: {}}, rowCount: true, url: "<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/get_uis_list", pageSize: 30
             , buttons: {"Select": function (row)
                {
                   self.uis = {type: "uis", id: row.data("field-id")};

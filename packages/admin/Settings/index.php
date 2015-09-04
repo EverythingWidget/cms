@@ -10,13 +10,13 @@ function sidebar()
    ?>
    <ul>
       <li>
-         <a rel="ajax" data-default="true" data-ew-nav="general" href="<?php echo EW_ROOT_URL; ?>app-admin/Settings/general.php">General</a>
+         <a rel="ajax" data-default="true" data-ew-nav="general" href="<?php echo EW_ROOT_URL; ?>admin-api/Settings/general.php">General</a>
       </li>     
       <li>
-         <a rel="ajax" data-ew-nav="apps-plugins" href="<?php echo EW_ROOT_URL; ?>app-admin/Settings/apps-plugins.php">Apps & Plugins</a>
+         <a rel="ajax" data-ew-nav="apps-plugins" href="<?php echo EW_ROOT_URL; ?>admin-api/Settings/apps-plugins.php">Apps & Plugins</a>
       </li>     
       <li>
-         <a rel="ajax" data-ew-nav="preference" href="<?php echo EW_ROOT_URL; ?>app-admin/Settings/perference.php">Preference</a>
+         <a rel="ajax" data-ew-nav="preference" href="<?php echo EW_ROOT_URL; ?>admin-api/Settings/perference.php">Preference</a>
       </li>     
    </ul>
    <?php

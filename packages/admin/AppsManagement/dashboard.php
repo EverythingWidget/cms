@@ -21,7 +21,7 @@
       {
          if (!$par["form"])
             continue;
-         $href = EW_ROOT_URL . "app-admin/index.php?compId={$par["compId"]}#";
+         $href = EW_ROOT_URL . "admin-api/index.php?compId={$par["compId"]}#";
          foreach ($par as $key => $val)
          {
             if ($key == "compId")

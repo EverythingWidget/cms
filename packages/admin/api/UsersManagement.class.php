@@ -16,7 +16,7 @@ class UsersManagement extends Section
       $this->register_permission("manipulate-users", "User can add, edit delete users", array("add_user", "update_user", "delete_user", "user-form.php:tr{New User}", $this->get_index()));
       $this->register_permission("see-groups", "User can see user groups list", array("get_users_groups_list", "get_user_group_by_id", "get_users_group_by_type", "users-group-form.php_see", $this->get_index()));
       $this->register_permission("manipulate-groups", "User can add, edit delete user group", array("add_group", "update_group", "delete_group", "users-group-form.php:tr{New Group}", $this->get_index()));
-      $this->add_listener("app-admin/UsersManagement/get_user_by_id", "test_plugin");
+      $this->add_listener("admin-api/UsersManagement/get_user_by_id", "test_plugin");
    }
 
    public function get_title()

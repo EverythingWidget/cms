@@ -5,8 +5,8 @@ function sidebar()
 {
    // ew-contents-main-form, sidebar
    $html = '<ul><label>tr{Libraries}</label>'
-           . '<li><a rel="ajax" data-default="true" data-ew-nav="documents" href="' . EW_ROOT_URL . 'app-admin/ContentManagement/Documents.php">tr{Explorer}</a></li>'
-           . '<li><a rel="ajax" data-ew-nav="media" href="' . EW_ROOT_URL . 'app-admin/ContentManagement/Media.php">tr{Media}</a></li>';
+           . '<li><a rel="ajax" data-default="true" data-ew-nav="documents" href="' . EW_ROOT_URL . 'admin-api/ContentManagement/Documents.php">tr{Explorer}</a></li>'
+           . '<li><a rel="ajax" data-ew-nav="media" href="' . EW_ROOT_URL . 'admin-api/ContentManagement/Media.php">tr{Media}</a></li>';
    $html.= '</ul><ul><label>tr{Apps}</label>';
    $content_labels = EWCore::read_registry("ew-content-labels");
 

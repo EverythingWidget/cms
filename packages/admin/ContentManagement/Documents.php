@@ -29,7 +29,7 @@
       this.bUp.css("float", "right");
       this.bNewFolder = EW.addActivity({
          title: "tr{New Folder}",
-         activity: "app-admin/ContentManagement/category-form.php",
+         activity: "admin-api/ContentManagement/category-form.php",
          parent: "action-bar-items",
          hash:
                  {
@@ -38,7 +38,7 @@
       }).hide().comeIn();
       this.bNewFile = EW.addActivity({
          title: "tr{New Article}",
-         activity: "app-admin/ContentManagement/article-form.php",
+         activity: "admin-api/ContentManagement/article-form.php",
          parent: "action-bar-items",
          //modal: {class: "full"},
          hash:
@@ -47,7 +47,7 @@
                  }
       }).hide().comeIn();
       this.seeFolderActivity = EW.getActivity({
-         activity: "app-admin/ContentManagement/category-form.php_see",
+         activity: "admin-api/ContentManagement/category-form.php_see",
          onDone: function ()
          {
             EW.setHashParameters({
@@ -57,7 +57,7 @@
          }
       });
       this.seeArticleActivity = EW.getActivity({
-         activity: "app-admin/ContentManagement/article-form.php_see",
+         activity: "admin-api/ContentManagement/article-form.php_see",
          onDone: function ()
          {
             EW.setHashParameters({
@@ -129,7 +129,7 @@
       var hasNode = false;
       var aId = EW.getHashParameter("articleId", "document");
       $("#categories-list").html("<div class='col-xs-12'><h2 >Loading Folders</h2></div>");
-      $.post('app-admin/ContentManagement/get_categories_list', {
+      $.post('admin-api/ContentManagement/get_categories_list', {
          parent_id: documents.parentId
       },
       function (data)
@@ -156,7 +156,7 @@
          }
       }, "json");
       $("#articles-list").html("<div class='col-xs-12'><h2>Loading Article</h2></div>");
-      $.post('app-admin/ContentManagement/get_articles_list', {
+      $.post('admin-api/ContentManagement/get_articles_list', {
          parent_id: documents.parentId
       },
       function (data)

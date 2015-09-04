@@ -21,7 +21,7 @@ class LanguageComponent implements \ContentComponent
       $form = [
           "title" => "Language",
           "description" => "Language of the content",
-          "url"=>"app-admin/ContentManagement/explorer-language.php"
+          "url"=>"admin-api/ContentManagement/explorer-language.php"
       ];
       return $form;
    }

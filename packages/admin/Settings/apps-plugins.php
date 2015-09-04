@@ -73,7 +73,7 @@
          var lang = EW.getHashParameter("lang");
          var app = EW.getHashParameter("app");
 
-         $.post("<?php echo EW_ROOT_URL; ?>app-admin/Settings/lanuage-editor-form.php", {app: app, lang: lang}, function (data) {
+         $.post("<?php echo EW_ROOT_URL; ?>admin-api/Settings/lanuage-editor-form.php", {app: app, lang: lang}, function (data) {
             modal.html(data);
          });
       },

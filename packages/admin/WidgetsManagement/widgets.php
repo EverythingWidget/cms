@@ -9,7 +9,7 @@
 
    var t = EW.createTable({name: "widgets-types-list", 
       headers: {Name: {}, Description: {}}, 
-      columns: ["title", "description"], rowCount: true, url: "<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/get_widgets_types", pageSize: 30});
+      columns: ["title", "description"], rowCount: true, url: "<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/get_widgets_types", pageSize: 30});
    $('#main-content').html(t.container);
 
 

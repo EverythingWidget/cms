@@ -58,7 +58,7 @@
          }
          this.bSelect.hide();
          //$("#link-chooser #categories-list").html("<div class='col-xs-12'><h2 >Loading Folders</h2></div>");
-         $.post('<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/get_categories_list', {parent_id: parentId}, function (data)
+         $.post('<?php echo EW_ROOT_URL; ?>admin-api/ContentManagement/get_categories_list', {parent_id: parentId}, function (data)
          {
             //$("#cate-title").loadingText();
             var cId = EW.getHashParameter("categoryId");
@@ -78,7 +78,7 @@
 
          }, "json");
          $("#link-chooser #articles-list").html("<div class='col-xs-12'><h2>Loading Article</h2></div>");
-         $.post('<?php echo EW_ROOT_URL; ?>app-admin/ContentManagement/get_articles_list', {parent_id: parentId}, function (data)
+         $.post('<?php echo EW_ROOT_URL; ?>admin-api/ContentManagement/get_articles_list', {parent_id: parentId}, function (data)
          {
             $("#link-chooser #articles-list").html("<h2>tr{Articles}</h2><div class='row box-content'></div>");
             var aId = EW.getHashParameter("articleId");

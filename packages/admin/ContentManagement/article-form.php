@@ -26,7 +26,7 @@ function script()
       function Article()
       {
          var self = this;
-         this.bAdd = EW.addActivity({title: "tr{Save}", defaultClass: "btn-success", activity: "app-admin/ContentManagement/add_article",
+         this.bAdd = EW.addActivity({title: "tr{Save}", defaultClass: "btn-success", activity: "admin-api/ContentManagement/add_article",
             postData: function ()
             {
                if (!$("#article-form").EW().validate())
@@ -45,7 +45,7 @@ function script()
                $(document).trigger("article-list.refresh", [data]);
             }}).hide();
 
-         this.bEditAndClose = EW.addActivity({title: "tr{Save and Close}", defaultClass: "btn-success pull-right", activity: "app-admin/ContentManagement/update_article",
+         this.bEditAndClose = EW.addActivity({title: "tr{Save and Close}", defaultClass: "btn-success pull-right", activity: "admin-api/ContentManagement/update_article",
             postData: function ()
             {
                if (!$("#article-form").EW().validate())
@@ -63,7 +63,7 @@ function script()
                $(document).trigger("article-list.refresh");               
             }}).hide();
 
-         this.bEdit = EW.addActivity({title: "tr{Save}", defaultClass: "btn-success", activity: "app-admin/ContentManagement/update_article",
+         this.bEdit = EW.addActivity({title: "tr{Save}", defaultClass: "btn-success", activity: "admin-api/ContentManagement/update_article",
             postData: function ()
             {
                if (!$("#article-form").EW().validate())
@@ -83,7 +83,7 @@ function script()
                $(document).trigger("article-list.refresh");
             }}).hide();
 
-         this.bDelete = EW.addActivity({title: "tr{Delete}", defaultClass: "btn-danger", activity: "app-admin/ContentManagement/delete_article",
+         this.bDelete = EW.addActivity({title: "tr{Delete}", defaultClass: "btn-danger", activity: "admin-api/ContentManagement/delete_article",
             postData: function ()
             {
                if (confirm("tr{Delete this article?}"))

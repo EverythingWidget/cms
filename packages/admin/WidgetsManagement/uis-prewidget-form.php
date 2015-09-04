@@ -122,7 +122,7 @@ $WM = new admin\WidgetsManagement();
       var styleClass = $("#used-classes").text();
       var widgetStyleClass = $("#style_class").val();
 
-      $.post('<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/create_widget', {widget_type: uisWidget.widgetType, style_class: styleClass,
+      $.post('<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/create_widget', {widget_type: uisWidget.widgetType, style_class: styleClass,
          widget_style_class: widgetStyleClass, style_id: styleId, widget_parameters: wp},
       function (data) {
          EW.lock($.EW("getParentDialog", $("#uis-widget-form")));
@@ -159,7 +159,7 @@ $WM = new admin\WidgetsManagement();
       var styleClass = $("#used-classes").text();
       var widgetStyleClass = $("#style_class").val();
 
-      $.post('<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/create_widget', {widget_id: this.widgetId, widget_type: uisWidget.widgetType, style_class: styleClass,
+      $.post('<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/create_widget', {widget_id: this.widgetId, widget_type: uisWidget.widgetType, style_class: styleClass,
          widget_style_class: widgetStyleClass, style_id: styleId, widget_parameters: wp},
       function (data) {
          EW.lock($.EW("getParentDialog", $("#uis-widget-form")));
@@ -200,7 +200,7 @@ $WM = new admin\WidgetsManagement();
       $('#uis-widget-form').show();
       $("#widgets-list-form").hide();
       EW.lock($('#uis-widget-form'));
-      $.post('<?php echo EW_ROOT_URL; ?>app-admin/WidgetsManagement/uis-widget-form.php', {widgetType: widgetType, template: self.template, widgetParameters: JSON.stringify(self.widgetParameters)},
+      $.post('<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/uis-widget-form.php', {widgetType: widgetType, template: self.template, widgetParameters: JSON.stringify(self.widgetParameters)},
       function (data) {
          $('#uis-widget-form').stop().hide();
          $('#uis-widget-form').html(data);
