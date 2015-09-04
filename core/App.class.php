@@ -1,5 +1,7 @@
 <?php
 
+namespace ew;
+
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -25,7 +27,52 @@ class App
 
    public function init_app()
    {
+      //
+      $this->init_api();
       $this->init_plugins();
+   }
+
+   protected function init_api()
+   {
+      $app_root = $this->get_root();
+      $path = EW_PACKAGES_DIR . '/' . $app_root . '/api/';
+      $sections = scandir($path);
+      //$section_dir = readdir($section_dirs);
+      //echo count($sections);
+      for ($in = 0, $len = count($sections); $in < $len; $in++)
+      //while ($section_dir = readdir($section_dirs))
+      {
+         $section_name = $sections[$in];
+         if (strpos($section_name, '.') === 0)
+         {
+            continue;
+         }
+
+         if (!$i = strpos($section_name, '.class.php'))
+         {
+            continue;
+         }
+
+         require_once $path . $section_name;
+
+         $section_class_name = substr($section_name, 0, $i);
+         $real_class_name = "$app_root\\$section_class_name";
+         //echo $real_class_name;
+         $sc = new $real_class_name($this);
+         /* if (method_exists($sc, "init_plugin"))
+           {
+           try
+           {
+           call_user_func(array(
+           $sc,
+           "init_plugin"));
+           }
+           catch (Exception $e)
+           {
+           echo $e;
+           }
+           } */
+      }
    }
 
    protected function init_plugins()
@@ -34,7 +81,7 @@ class App
       $path = EW_PACKAGES_DIR . '/' . $app_root . '/';
 
       $section_dirs = opendir($path);
-      $sections = array();
+      //$sections = array();
       while ($section_dir = readdir($section_dirs))
       {
          if (strpos($section_dir, '.') === 0)
@@ -68,34 +115,48 @@ class App
       }
    }
 
-   public function process_command($section_name, $method_name, $parameters = null)
+   public function process_command($app_resource_path, $section_name, $method_name, $parameters = null)
    {
       $app_name = $this->get_root();
       $real_class_name = $app_name . '\\' . $section_name;
 
       $class_exist = false;
+      //print_r($app_resource_path);
+      //echo $real_class_name;
       // If class has namespace
-      if ($section_name && class_exists($real_class_name))
+      if ($app_resource_path[1] === "api")
       {
          // Create an instance of section with its parent App
-         $app_section_object = new $real_class_name($this);
-         $class_exist = true;
+         if (!$section_name)
+         {
+            return \EWCore::log_error(400, "<h4>$app_name-api </h4><p>Please specify the api command</p>");
+         }
+         if (class_exists($real_class_name))
+         {
+            $app_section_object = new $real_class_name($this);
+            return $app_section_object->process_request($method_name, $parameters);
+         }
+         else
+         {
+            return \EWCore::log_error(404, "<h4>$app_name-api </h4><p>Section `$section_name` not found</p>");
+         }
       }
 
-      $pages_feeders = EWCore::read_registry("ew-widget-feeder");
-      if ($class_exist)
+      $pages_feeders = \EWCore::read_registry("ew-widget-feeder");
+      /*if ($class_exist)
       {
 
          $RESULT_CONTENT = $app_section_object->process_request($method_name, $parameters);
       }
-      else if (EWCore::is_widget_feeder("*", "*", $section_name))
+      else */if (\EWCore::is_widget_feeder("*", "*", $section_name))
       {
 
          // Show index if the URL contains a page feeder
          $path = EW_PACKAGES_DIR . '/' . $app_name . '/index.php';
       }
-      else if (!$section_name)
+      else if (!$section_name && $app_resource_path[1] === "html")
       {
+
          // Refer to app index
          if ($method_name == 'index')
          {
@@ -123,14 +184,14 @@ class App
       }
       else if ($path)
       {
-         $RESULT_CONTENT = EWCore::log_error(404, "<h4>{$path}</h4><p>$app_name: FILE NOT FOUND</p>");
+         $RESULT_CONTENT = \EWCore::log_error(404, "<h4>{$path}</h4><p>$app_name: FILE NOT FOUND</p>");
       }
-      return $RESULT_CONTENT;
+      //return $RESULT_CONTENT;
    }
 
    public function get_root()
    {
-      $ro = new ReflectionClass($this);
+      $ro = new \ReflectionClass($this);
       return $ro->getNamespaceName();
    }
 
@@ -185,7 +246,7 @@ class App
       ob_start();
       include $path;
       $res = ob_get_clean();
-      
+
       return preg_replace_callback("/\{\{([\w]*)\}\}/", function($match) use ($view_data)
       {
          return $view_data[$match[1]];

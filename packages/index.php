@@ -57,8 +57,9 @@ $u = 'http://' . $_SERVER['SERVER_NAME'] . EW_DIR_URL . $url_language;
 define('EW_ROOT_URL', $u);
 
 // Check the app parameter
-$app_name = "webroot";
 $default_recourse = "html";
+$app_name = "webroot/" . $default_recourse;
+
 
 if ($elements[$parameter_index])
 {
@@ -166,9 +167,9 @@ $GLOBALS["page_parameters"] = explode("/", $_REQUEST["_parameters"]);
 $RESULT_CONTENT = "RESULT_CONTENT: EMPTY";
 
 $real_class_name = $app_name . '\\' . $section_name;
-print_r($_REQUEST);
+//print_r($_REQUEST);
 
-//$RESULT_CONTENT = EWCore::process_command($app_name, $section_name, $function_name, $_REQUEST);
+$RESULT_CONTENT = EWCore::process_request_command($app_name, $section_name, $function_name, $_REQUEST);
 
 function translate($match)
 {

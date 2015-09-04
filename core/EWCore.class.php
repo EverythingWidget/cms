@@ -112,7 +112,7 @@ class EWCore
       }
       return ob_get_clean();
    }
-   
+
    public static function process_request_command($app_name, $section_name, $function_name, $parameters)
    {
       if (!$app_name /* || !$section_name || !$function_name */)
@@ -120,9 +120,11 @@ class EWCore
          $RESULT_CONTENT = EWCore::log_error(400, "Wrong command");
          return $RESULT_CONTENT;
       }
-      
+
       //echo " $app_name  $section_name  $function_name";
-      $real_class_name = $app_name . '\\' . ucfirst($app_name);
+      $app_namespace = explode('/', $app_name);
+      $real_class_name = $app_namespace[0] . '\\App';
+      //echo $real_class_name;
       $parameters["_app_name"] = $app_name;
       $parameters["_section_name"] = $section_name;
       $parameters['_function_name'] = $function_name;
@@ -154,10 +156,10 @@ class EWCore
          $pages_feeders = EWCore::read_registry("ew-widget-feeder");
          if ($class_exist)
          {
-            $RESULT_CONTENT = $app_object->process_command($section_name, $function_name, $parameters);
+            $RESULT_CONTENT = $app_object->process_command($app_namespace, $section_name, $function_name, $parameters);
          }
       }
-      
+
       $actions = EWCore::read_registry("ew_command_listener");
       if (isset($actions) && !is_array($RESULT_CONTENT))
       {
@@ -730,29 +732,45 @@ class EWCore
             continue;
 
          $app_dir_content = opendir($path . $app_dir);
-
-         while ($file = readdir($app_dir_content))
+         if (is_dir($path . $app_dir))
          {
-
-            if (strpos($file, '.') === 0)
+            //echo EW_PACKAGES_DIR . '/' . $app_dir . "\\App" . "<br/>";
+            if (!file_exists(EW_PACKAGES_DIR . "/" . $app_dir . "/App.app.php"))
                continue;
-            //$i = strpos($file, '.ini');
-
-            if (strpos($file, ".app.php") != 0)
+            try
             {
-               try
-               {
-                  require_once EW_PACKAGES_DIR . "/" . $app_dir . "/" . $file;
-                  $app_class_name = $app_dir . "\\" . substr($file, 0, strpos($file, "."));
-                  $app_object = new $app_class_name();
-                  $app_object->init_app();
-               }
-               catch (Exception $ex)
-               {
-                  echo $ex->getTraceAsString();
-               }
+               require_once EW_PACKAGES_DIR . "/" . $app_dir . "/App.app.php";
+               $app_class_name = $app_dir . "\\App";
+               $app_object = new $app_class_name();
+               $app_object->init_app();
+            }
+            catch (Exception $ex)
+            {
+               echo $ex->getTraceAsString();
             }
          }
+         /* while ($file = readdir($app_dir_content))
+           {
+
+           if (strpos($file, '.') === 0)
+           continue;
+           //$i = strpos($file, '.ini');
+           echo $path . $app_dir . $file . "<br/>";
+           if (strpos($file, ".app.php") != 0)
+           {
+           try
+           {
+           require_once EW_PACKAGES_DIR . "/" . $app_dir . "/" . $file;
+           $app_class_name = $app_dir . "\\" . substr($file, 0, strpos($file, "."));
+           $app_object = new $app_class_name();
+           $app_object->init_app();
+           }
+           catch (Exception $ex)
+           {
+           echo $ex->getTraceAsString();
+           }
+           }
+           } */
          // Optimization tip
          self::$plugins_initialized = true;
       }
@@ -835,6 +853,7 @@ class EWCore
 
    private static function autoload_sections($class_name)
    {
+      //echo $class_name."<br>";
       $apps_dir = opendir(EW_PACKAGES_DIR);
 
       //while ($app_root = readdir($apps_dir))
@@ -875,7 +894,12 @@ class EWCore
 
    private static function autoload_core($class_name)
    {
+      if (strpos($class_name, '\\'))
+      {
+         $class_name = end(explode('\\', $class_name));
+      }
       $file = EW_ROOT_DIR . 'core/' . $class_name . '.class.php';
+      //echo $file."<br>";
       if (file_exists($file))
       {
          require_once $file;

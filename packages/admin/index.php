@@ -654,6 +654,7 @@ if (!isset($_SESSION['login']))
                {
                   console.log("ajaxError:");
                   console.log(e);
+                  console.log(data);
                }
                $("body").EW().notify({
                   "message": {

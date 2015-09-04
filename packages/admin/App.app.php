@@ -1,9 +1,6 @@
 <?php
 
 namespace admin;
-
-use App;
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -15,7 +12,7 @@ use App;
  *
  * @author Eeliya
  */
-class App extends App
+class App extends \ew\App
 {
 
    protected $name = "EW Admin";
@@ -60,8 +57,9 @@ class App extends App
          }
          $pageTitle = "tr{" . $sc->get_title() . "}";
       }
-
-      $this->load_view('index.php', compact(['compPage', 'pageTitle', 'compId']));
+      $this->load_view('index.php', compact(['compPage',
+          'pageTitle',
+          'compId']));
    }
 
 }
