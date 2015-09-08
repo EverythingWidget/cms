@@ -31,7 +31,7 @@ function get_ew_users_permissions_form()
       <div class="col-xs-12 content" id="all-permissions"  >
          <ul class="list permissions tree" data-toggle="buttons">
             <?php
-            $permissions_titles = EWCore::read_permissions_titles();
+            $permissions_titles = \EWCore::read_permissions_titles();
             foreach ($permissions_titles as $app_name => $sections)
             {
                ?>

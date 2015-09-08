@@ -19,28 +19,38 @@ class ContentManagement extends \Section
    public function __construct($app)
    {
       parent::__construct($app);
-      require_once('ew_contents.php');
-      require_once('ew_contents_labels.php');
+      require_once('asset/ew_contents.php');
+      require_once('asset/ew_contents_labels.php');
+      require_once 'asset/DocumentComponent.class.php';
+      require_once 'asset/LanguageComponent.class.php';
    }
 
-   private $file_types = array("jpeg" => "image",
+   private $file_types = array(
+       "jpeg" => "image",
        "jpg" => "image",
        "png" => "image",
        "gif" => "image",
        "txt" => "text",
        "mp3" => "sound",
        "mp4" => "video");
-   private $images_resources = array("/is/htdocs/wp1067381_3GN1OJU4CE/www/culturenights/app/webroot/img/logos/");
+   private $images_resources = array(
+       "/is/htdocs/wp1067381_3GN1OJU4CE/www/culturenights/app/webroot/img/logos/");
 
    public function init_plugin()
    {
       ob_start();
       include 'link-chooser-document.php';
       $lcd = ob_get_clean();
-      EWCore::register_form("ew-link-chooser-form-default", "contents-list", ["title" => "Contents", "content" => $lcd]);
+      EWCore::register_form("ew-link-chooser-form-default", "contents-list", ["title" => "Contents",
+          "content" => $lcd]);
       // $this->file_types 
-      EWCore::register_resource("images", array($this, "image_loader"));
-      $this->register_permission("see-content", "User can see the contents", array('index.php', 'index', "get_content",
+      EWCore::register_resource("images", array(
+          $this,
+          "image_loader"));
+      $this->register_permission("see-content", "User can see the contents", array(
+          'index.php',
+          'index',
+          "get_content",
           "get_category",
           "get_article",
           "get_album",
@@ -51,7 +61,10 @@ class ContentManagement extends \Section
           "category-form.php_see",
           "album-form.php_see"));
 
-      $this->register_permission("manipulate-content", "User can add new, edit, delete contents", array('index.php', 'index', "add_content",
+      $this->register_permission("manipulate-content", "User can add new, edit, delete contents", array(
+          'index.php',
+          'index',
+          "add_content",
           "add_category",
           "add_article",
           "add_album",
@@ -74,11 +87,11 @@ class ContentManagement extends \Section
       $this->register_content_component("document", new DocumentComponent());
       $this->register_content_component("language", new LanguageComponent());
       $this->register_widget_feeder("page", "article");
-      
+
       $this->register_widget_feeder("list", "folder");
       $this->register_widget_feeder("menu", "languages");
    }
-   
+
    public function ew_page_feeder_ssss($id, $language)
    {
       return null;
@@ -194,11 +207,12 @@ class ContentManagement extends \Section
          EWCore::log_error(400, 'tr{Content Id is requierd}');
       $content = ew_contents::find($content_id)->toArray();
 
-      /*$value = preg_replace_callback('/\$content\.(\w*)/', function($m) use ($content) {
-         return $content[$m[1]];
-      }, $value);*/
-      
-      $label = \ew_contents_labels::firstOrNew(['content_id' => $content_id, 'key' => $key]);
+      /* $value = preg_replace_callback('/\$content\.(\w*)/', function($m) use ($content) {
+        return $content[$m[1]];
+        }, $value); */
+
+      $label = \ew_contents_labels::firstOrNew(['content_id' => $content_id,
+                  'key' => $key]);
 
       if ($value)
       {
@@ -210,7 +224,8 @@ class ContentManagement extends \Section
          $label->delete();
       }
 
-      return json_encode(["status" => "success", "id" => $label->id]);
+      return json_encode(["status" => "success",
+          "id" => $label->id]);
    }
 
    /**
@@ -240,12 +255,15 @@ class ContentManagement extends \Section
          $value = '%';
 
       $rows = \Illuminate\Database\Capsule\Manager::table('ew_contents_labels')->join('ew_contents', 'ew_contents_labels.content_id', '=', 'ew_contents.id')
-                      ->where(function($query) use ($content_id) {
-                         $query->whereIn('content_id', function($query) use ($content_id) {
+                      ->where(function($query) use ($content_id)
+                      {
+                         $query->whereIn('content_id', function($query) use ($content_id)
+                         {
                             $query->select('content_id')
                             ->from('ew_contents_labels')
                             ->where('content_id', '=', $content_id);
-                         })->orWhereIn('content_id', function($query) use ($content_id) {
+                         })->orWhereIn('content_id', function($query) use ($content_id)
+                         {
                             $query->select('content_id')
                             ->from('ew_contents_labels')
                             ->where('key', '=', 'admin_ContentManagement_document')
@@ -254,7 +272,9 @@ class ContentManagement extends \Section
                       })
                       ->where('key', 'LIKE', $key)
                       ->where('value', 'LIKE', $value)->orderBy('value');
-      return ["totalRows" => $rows->count(), "result" => $rows->get(['*', \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")])];
+      return ["totalRows" => $rows->count(),
+          "result" => $rows->get(['*',
+              \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")])];
    }
 
    /**
@@ -272,7 +292,9 @@ class ContentManagement extends \Section
     */
    public function add_content($type, $title, $parent_id, $keywords, $description, $html_content, $featured_image, $labels, $date_created, $date_modified)
    {
-      $validator = \SimpleValidator\Validator::validate(compact(['title', 'type', 'parent_id']), ew_contents::$rules);
+      $validator = \SimpleValidator\Validator::validate(compact(['title',
+                  'type',
+                  'parent_id']), ew_contents::$rules);
       if (!$validator->isSuccess())
          return EWCore::log_error("400", "tr{Content has not been added}", $validator->getErrors());
 
@@ -292,7 +314,8 @@ class ContentManagement extends \Section
 
       if ($content->id)
       {
-         $res = ["status" => "success", "data" => $content->toArray()];
+         $res = ["status" => "success",
+             "data" => $content->toArray()];
          $id = $content->id;
          $labels = json_decode($labels, true);
          foreach ($labels as $key => $value)
@@ -305,7 +328,9 @@ class ContentManagement extends \Section
 
    public function update_content($id, $title, $type, $parent_id, $keywords, $description, $html_content, $featured_image, $labels)
    {
-      $validator = \SimpleValidator\Validator::validate(compact(['title', 'type', 'parent_id']), ew_contents::$rules);
+      $validator = \SimpleValidator\Validator::validate(compact(['title',
+                  'type',
+                  'parent_id']), ew_contents::$rules);
       if (!$validator->isSuccess())
          return EWCore::log_error("400", "tr{Content has not been added}", $validator->getErrors());
 
@@ -323,14 +348,17 @@ class ContentManagement extends \Section
 
       if ($content->id)
       {
-         $res = ["status" => "success", "data" => $content->toArray()];
+         $res = ["status" => "success",
+             "data" => $content->toArray()];
          $id = $content->id;
          $labels = json_decode($labels, true);
          foreach ($labels as $key => $value)
          {
             $this->update_label($id, $key, $value);
          }
-         return json_encode([status => "success", message => "tr{The content has been updated successfully}", "data" => $content->toArray()]);
+         return json_encode([status => "success",
+             message => "tr{The content has been updated successfully}",
+             "data" => $content->toArray()]);
       }
       return EWCore::log_error("400", "Something went wrong, content has not been updated");
    }
@@ -352,7 +380,11 @@ class ContentManagement extends \Section
 
       if ($result["data"]["id"])
       {
-         return json_encode(["status" => "success", "title" => $title, "message" => "tr{The new article has been added succesfully}", "data" => ["id" => $result["data"]["id"], "type" => "article"]]);
+         return json_encode(["status" => "success",
+             "title" => $title,
+             "message" => "tr{The new article has been added succesfully}",
+             "data" => ["id" => $result["data"]["id"],
+                 "type" => "article"]]);
          // End of plugins actions call
       }
       return $result;
@@ -401,7 +433,8 @@ class ContentManagement extends \Section
       if (!$size)
          $size = 30;
 
-      return ['title' => ['link' => '', 'icon' => '']];
+      return ['title' => ['link' => '',
+              'icon' => '']];
    }
 
    public function ew_menu_feeder_cp_languages($parameters)
@@ -416,7 +449,8 @@ class ContentManagement extends \Section
       {
          return EWCore::log_error(400, 'tr{Article Id is requierd}');
       }
-      $article = ew_contents::find($articleId, ['*', \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")])->toArray();
+      $article = ew_contents::find($articleId, ['*',
+                  \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")])->toArray();
       $article["labels"] = ContentManagement::get_content_labels($articleId);
       return $article;
    }
@@ -426,7 +460,8 @@ class ContentManagement extends \Section
       $v = new \Valitron\Validator($this->get_current_command_args());
 
 
-      $v->rule('required', ["title", "parent_id"])->message(' {field} is required');
+      $v->rule('required', ["title",
+          "parent_id"])->message(' {field} is required');
       $v->rule('integer', "parent_id")->message(' {field} should be integer');
       $v->labels(array(
           "title" => 'tr{Title}',
@@ -452,7 +487,8 @@ class ContentManagement extends \Section
    {
       $container_id = ew_contents::find($parent_id);
       $container_id = $container_id['parent_id'];
-      $folders = ew_contents::where('parent_id', '=', $parent_id)->where('type', 'folder')->get(['*', \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
+      $folders = ew_contents::where('parent_id', '=', $parent_id)->where('type', 'folder')->get(['*',
+          \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
 
       $rows = array();
       $folders_ar = $folders->toArray();
@@ -462,7 +498,9 @@ class ContentManagement extends \Section
          $i["parent_id"] = $container_id;
          $rows[] = $i;
       }
-      $out = array("totalRows" => $folders->count(), "result" => $rows);
+      $out = array(
+          "totalRows" => $folders->count(),
+          "result" => $rows);
       return json_encode($out);
    }
 
@@ -480,14 +518,17 @@ class ContentManagement extends \Section
       // if there is no parent_id then select all the articles
       if (is_null($parent_id) && $parent_id != 0)
       {
-         $articles = ew_contents::where('type', 'article')->orderBy('title')->get(['*', \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
-         return ["totalRows" => $articles->count(), "result" => $articles->toArray()];
+         $articles = ew_contents::where('type', 'article')->orderBy('title')->get(['*',
+             \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
+         return ["totalRows" => $articles->count(),
+             "result" => $articles->toArray()];
       }
       else
       {
          $container_id = ew_contents::find($parent_id);
          $container_id = $container_id['parent_id'];
-         $articles = ew_contents::where('parent_id', '=', $parent_id)->where('type', 'article')->take($size)->skip($token)->get(['*', \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
+         $articles = ew_contents::where('parent_id', '=', $parent_id)->where('type', 'article')->take($size)->skip($token)->get(['*',
+             \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
          $rows = array();
          $articles_ar = $articles->toArray();
          foreach ($articles_ar as $i)
@@ -495,7 +536,8 @@ class ContentManagement extends \Section
             $i["pre_parent_id"] = $container_id;
             $rows[] = $i;
          }
-         return ["totalRows" => $articles->count(), "result" => $rows];
+         return ["totalRows" => $articles->count(),
+             "result" => $rows];
       }
 
       return \EWCore::log_error(400, 'tr{Something went wrong}');
@@ -505,7 +547,8 @@ class ContentManagement extends \Section
    {
       if (!isset($id))
          return \EWCore::log_error(400, 'tr{Content Id is requird}');
-      $content = ew_contents::find($id, ['*', \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
+      $content = ew_contents::find($id, ['*',
+                  \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
       return $content->toArray();
    }
 
@@ -525,9 +568,11 @@ class ContentManagement extends \Section
 
       $contents = ew_contents::where('type', 'LIKE', $type)
                       ->where(\Illuminate\Database\Capsule\Manager::raw("`title` COLLATE UTF8_GENERAL_CI"), 'LIKE', $title_filter . '%')
-                      ->orderBy('title')->take($size)->skip($token)->get($id, ['*', \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
+                      ->orderBy('title')->take($size)->skip($token)->get($id, ['*',
+          \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
       //print_r($contents);
-      return ["totalRows" => $contents->count(), "result" => $contents->toArray()];
+      return ["totalRows" => $contents->count(),
+          "result" => $contents->toArray()];
    }
 
    public function add_category($title, $parent_id, $keywords, $description, $labels)
@@ -548,7 +593,11 @@ class ContentManagement extends \Section
       if ($result['data']["id"])
       {
          $content_id = $result['data']["id"];
-         $res = array("status" => "success", "message" => "Folder has been added successfully", "data" => ["id" => $content_id, "type" => "folder"]);
+         $res = array(
+             "status" => "success",
+             "message" => "Folder has been added successfully",
+             "data" => ["id" => $content_id,
+                 "type" => "folder"]);
          return json_encode($res);
       }
       return $result;
@@ -581,7 +630,8 @@ class ContentManagement extends \Section
       //print_r($this->get_current_method_args());
       //$db = \EWCore::get_db_connection();
       //print_r(func_get_args());     
-      $v->rule('required', ["title", "parent_id"])->message(' {field} is required');
+      $v->rule('required', ["title",
+          "parent_id"])->message(' {field} is required');
       $v->rule('integer', "parent_id")->message(' {field} should be integer');
       $v->labels(array(
           "title" => 'tr{Title}',
@@ -626,7 +676,9 @@ class ContentManagement extends \Section
       $result = $db->query("SELECT * FROM ew_contents WHERE parent_id = '$id' LIMIT 1");
       if ($result->fetch_assoc())
       {
-         return json_encode(array(status => "unable", status_code => 2));
+         return json_encode(array(
+             status => "unable",
+             status_code => 2));
          return;
       }
       $result = $db->query("SELECT * FROM ew_contents, ew_images WHERE ew_contents.id = ew_images.content_id AND ew_contents.id = '$id' LIMIT 1");
@@ -640,11 +692,17 @@ class ContentManagement extends \Section
       $db->close();
       if ($result)
       {
-         return json_encode(array("status" => "success", "status_code" => 1, "message" => ""));
+         return json_encode(array(
+             "status" => "success",
+             "status_code" => 1,
+             "message" => ""));
       }
       else
       {
-         return json_encode(array("status" => "unsuccess", "status_code" => 0, "message" => ""));
+         return json_encode(array(
+             "status" => "unsuccess",
+             "status_code" => 0,
+             "message" => ""));
       }
    }
 
@@ -664,7 +722,10 @@ class ContentManagement extends \Section
       $result = $db->query("DELETE FROM ew_contents WHERE type = '$type' AND id = '$id'");
       if ($result)
       {
-         return array("status" => "success", "status_code" => 1, "message" => "Content has been deleted successfully");
+         return array(
+             "status" => "success",
+             "status_code" => 1,
+             "message" => "Content has been deleted successfully");
       }
       else
       {
@@ -701,7 +762,9 @@ class ContentManagement extends \Section
       $db->close();
       if ($result)
       {
-         echo json_encode(array(status => "success", "message" => "tr{Article has been deleted succesfully}"));
+         echo json_encode(array(
+             status => "success",
+             "message" => "tr{Article has been deleted succesfully}"));
       }
       else
       {
@@ -740,7 +803,9 @@ class ContentManagement extends \Section
       }
       $documents = array_merge($categories, $articles);
       $db->close();
-      $out = array("totalRows" => count($documents), "result" => $documents);
+      $out = array(
+          "totalRows" => count($documents),
+          "result" => $documents);
       return json_encode($out);
    }
 
@@ -805,7 +870,8 @@ class ContentManagement extends \Section
       {
          $files = array();
          // Folder
-         $files = ew_contents::where('type', 'album')->where('parent_id', $parent_id)->orderBy('title')->get(['*', \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")])->toArray();
+         $files = ew_contents::where('type', 'album')->where('parent_id', $parent_id)->orderBy('title')->get(['*',
+                     \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")])->toArray();
          /* $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents WHERE type = 'album' AND parent_id = '$parent_id' ORDER BY title") or die("safasfasf");
            while ($r = $result->fetch_assoc())
            {
@@ -835,9 +901,13 @@ class ContentManagement extends \Section
             }
 //echo $file_info["extension"]." ".$this->file_types["jpg"];
 //print_r($this->file_types);
-            $files[] = array("id" => $r["content_id"], title => $r["title"], "parentId" => $container_id,
+            $files[] = array(
+                "id" => $r["content_id"],
+                title => $r["title"],
+                "parentId" => $container_id,
                 type => $this->file_types[$file_info["extension"]] ? $this->file_types[$file_info["extension"]] : "unknown",
-                size => round(filesize($file_path) / 1024), ext => $file_info["extension"],
+                size => round(filesize($file_path) / 1024),
+                ext => $file_info["extension"],
                 url => 'asset/images' . $path . $file,
                 absUrl => EW_ROOT_URL . "asset/images/$file",
                 originalUrl => EW_ROOT_URL . "media/$file",
@@ -912,11 +982,14 @@ class ContentManagement extends \Section
          $stm->close();
          $db->close();
 
-         echo json_encode(array(status => "success", title => $title));
+         echo json_encode(array(
+             status => "success",
+             title => $title));
       }
       else
       {
-         echo json_encode(array(status => "unsuccess"));
+         echo json_encode(array(
+             status => "unsuccess"));
       }
    }
 
@@ -930,17 +1003,25 @@ class ContentManagement extends \Section
       $output = array();
       if ($result->fetch_assoc())
       {
-         return json_encode(array(status => "unable", status_code => 2));
+         return json_encode(array(
+             status => "unable",
+             status_code => 2));
       }
       $result = $db->query("DELETE FROM ew_contents WHERE id = '$id'");
       $db->close();
       if ($result)
       {
-         return json_encode(array("status" => "success", "status_code" => 1, "message" => ""));
+         return json_encode(array(
+             "status" => "success",
+             "status_code" => 1,
+             "message" => ""));
       }
       else
       {
-         return json_encode(array("status" => "unsuccess", "status_code" => 0, "message" => ""));
+         return json_encode(array(
+             "status" => "unsuccess",
+             "status_code" => 0,
+             "message" => ""));
       }
       //return json_encode(array("status" => "success", "status_code" => 1, "message" => ""));
    }
@@ -1072,7 +1153,9 @@ class ContentManagement extends \Section
                   $stm->bind_param("sss", $content_id, $image_path, $alt_text) or die($db->error);
                   if ($stm->execute())
                   {
-                     $res = array("status" => "success", "id" => $stm->insert_id);
+                     $res = array(
+                         "status" => "success",
+                         "id" => $stm->insert_id);
                      //$stm->close();
                      //$db->close();
                   }
@@ -1092,7 +1175,9 @@ class ContentManagement extends \Section
          }
       }
 
-      return json_encode(array(status => "success", message => "Uploaded: " . $succeed . " Error: " . $error . ' ' . $foo->error));
+      return json_encode(array(
+          status => "success",
+          message => "Uploaded: " . $succeed . " Error: " . $error . ' ' . $foo->error));
    }
 
    /**
@@ -1104,9 +1189,7 @@ class ContentManagement extends \Section
     */
    public static function create_content_form($form_config = null)
    {
-      ob_start();
-      include 'content-form.php';
-      return ob_get_clean();
+      return \EWCore::load_file("admin/html/ContentManagement/content-form.php", $form_config);
    }
 
 }

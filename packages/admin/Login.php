@@ -17,7 +17,7 @@ if ($_POST['username'] && !$_SESSION['login'])
 if (isset($_SESSION['login']))
 {
    //echo $_SESSION['login'];
-   header('Location: ' . EW_DIR_URL . 'admin-api/');
+   header('Location: ' . EW_DIR_URL . 'admin/');
    return;
 }
 /* $db = \EWCore::get_db_connection();
@@ -27,7 +27,7 @@ if (isset($_SESSION['login']))
 
 
 
-$tabs = EWCore::read_registry("ew-login-form");
+$tabs = \EWCore::read_registry("ew-login-form");
 ?>
 <!DOCTYPE html>
 <html style="height:100%;">

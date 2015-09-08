@@ -2,7 +2,6 @@
 
 namespace webroot;
 
-use App;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -15,7 +14,7 @@ use App;
  *
  * @author Eeliya
  */
-class Webroot extends App
+class App extends \ew\App
 {
 
    protected $name = "Webroot";

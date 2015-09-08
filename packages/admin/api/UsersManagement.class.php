@@ -12,10 +12,31 @@ class UsersManagement extends Section
 
    public function init_plugin()
    {
-      $this->register_permission("see-users", "User can see users list", array("get_users_list", "get_user_by_id", "get_user_by_email", "user-form.php_see", $this->get_index()));
-      $this->register_permission("manipulate-users", "User can add, edit delete users", array("add_user", "update_user", "delete_user", "user-form.php:tr{New User}", $this->get_index()));
-      $this->register_permission("see-groups", "User can see user groups list", array("get_users_groups_list", "get_user_group_by_id", "get_users_group_by_type", "users-group-form.php_see", $this->get_index()));
-      $this->register_permission("manipulate-groups", "User can add, edit delete user group", array("add_group", "update_group", "delete_group", "users-group-form.php:tr{New Group}", $this->get_index()));
+      //echo "asdasd";
+      $this->register_permission("see-users", "User can see users list", array(
+          "get_users_list",
+          "get_user_by_id",
+          "get_user_by_email",
+          "user-form.php_see",
+          $this->get_index()));
+      $this->register_permission("manipulate-users", "User can add, edit delete users", array(
+          "add_user",
+          "update_user",
+          "delete_user",
+          "user-form.php:tr{New User}",
+          $this->get_index()));
+      $this->register_permission("see-groups", "User can see user groups list", array(
+          "get_users_groups_list",
+          "get_user_group_by_id",
+          "get_users_group_by_type",
+          "users-group-form.php_see",
+          $this->get_index()));
+      $this->register_permission("manipulate-groups", "User can add, edit delete user group", array(
+          "add_group",
+          "update_group",
+          "delete_group",
+          "users-group-form.php:tr{New Group}",
+          $this->get_index()));
       $this->add_listener("admin-api/UsersManagement/get_user_by_id", "test_plugin");
    }
 
@@ -64,7 +85,7 @@ class UsersManagement extends Section
    {
       unset($_SESSION['login']);
       session_destroy();
-      if(!$url)
+      if (!$url)
          $url = '/';
       header("Location: $url");
    }
@@ -82,14 +103,18 @@ class UsersManagement extends Section
             {
                if (method_exists($data["class"], $data["function"]))
                {
-                  $function_result = call_user_func(array($data["class"], $data["function"]), $user_id);
+                  $function_result = call_user_func(array(
+                      $data["class"],
+                      $data["function"]), $user_id);
                   if ($function_result != true)
                   {
                      $message.=$function_result . "<br/>";
                   }
                }
             }
-            $resullt = array("status" => "success", "error_message" => $message);
+            $resullt = array(
+                "status" => "success",
+                "error_message" => $message);
          }
          catch (Exception $e)
          {
@@ -149,7 +174,9 @@ class UsersManagement extends Section
          $rows[] = $r;
       }
       $db->close();
-      $out = array("totalRows" => $totalRows['COUNT(*)'], "result" => $rows);
+      $out = array(
+          "totalRows" => $totalRows['COUNT(*)'],
+          "result" => $rows);
       return json_encode($out);
    }
 
@@ -178,7 +205,9 @@ class UsersManagement extends Section
          $rows[] = $r;
       }
       $db->close();
-      $out = array("totalRows" => $totalRows['COUNT(*)'], "result" => $rows);
+      $out = array(
+          "totalRows" => $totalRows['COUNT(*)'],
+          "result" => $rows);
       return json_encode($out);
    }
 
@@ -265,9 +294,16 @@ class UsersManagement extends Section
 
            } */
 
-         return json_encode(array(status => "success", title => $title, message => "Users group '$title' has been added successfully", "id" => $db->insert_id));
+         return json_encode(array(
+             status => "success",
+             title => $title,
+             message => "Users group '$title' has been added successfully",
+             "id" => $db->insert_id));
       }
-      return json_encode(array(status => "unsuccess", title => "Update Group Unsuccessfull", message => "Users group has been NOT added"));
+      return json_encode(array(
+          status => "unsuccess",
+          title => "Update Group Unsuccessfull",
+          message => "Users group has been NOT added"));
    }
 
    public function update_group($id = null, $title = null, $description = null, $permission = null)
@@ -301,7 +337,10 @@ class UsersManagement extends Section
 
            } */
 
-         return json_encode(array(status => "success", title => $title, message => "tr{Users group} '$title' tr{has been updated successfully}"));
+         return json_encode(array(
+             status => "success",
+             title => $title,
+             message => "tr{Users group} '$title' tr{has been updated successfully}"));
       }
       return EWCore::log_error("400", "Users group has been NOT updated", $db->error_list);
       //return json_encode(array(status => "unsuccess", title => "Update Group Unsuccessfull", message => "Users group has been NOT updated"));
@@ -338,7 +377,10 @@ class UsersManagement extends Section
 
            } */
 
-         return json_encode(array(status => "success", title => $group_info["title"], message => "tr{Users group} '{$group_info["title"]}' tr{has been deleted successfully}"));
+         return json_encode(array(
+             status => "success",
+             title => $group_info["title"],
+             message => "tr{Users group} '{$group_info["title"]}' tr{has been deleted successfully}"));
       }
       return EWCore::log_error("400", "tr{Users group has been NOT deleted}", $db->error_list);
    }
@@ -354,24 +396,21 @@ class UsersManagement extends Section
       if ($rows = $result->fetch_assoc())
       {
          $db->close();
+         return json_encode($rows);
+      }
+   }
+   
+   public static function get_user($userId = null)
+   {
+      $db = \EWCore::get_db_connection();
+      if (!$userId)
+         $userId = $db->real_escape_string($_REQUEST["userId"]);
 
-         /* $actions = EWCore::read_actions_registry("ew-article-action-get");
-           try
-           {
-           foreach ($actions as $userId => $data)
-           {
-           if (method_exists($data["class"], $data["function"]))
-           {
-           $func_result = call_user_func(array($data["class"], $data["function"]), $rows);
-           if ($func_result)
-           $rows = $func_result;
-           }
-           }
-           } catch (Exception $e)
-           {
+      $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_users WHERE id = '$userId'") or $db->error;
 
-           } */
-
+      if ($rows = $result->fetch_assoc())
+      {
+         $db->close();
          return json_encode($rows);
       }
    }
@@ -424,7 +463,9 @@ class UsersManagement extends Section
 
       if (self::get_user_by_email($email) != NULL)
       {
-         return json_encode(array(status => "duplicate", error_message => "An  account with this email address is already exist"));
+         return json_encode(array(
+             status => "duplicate",
+             error_message => "An  account with this email address is already exist"));
       }
       $stm = $db->prepare("INSERT INTO ew_users (email, first_name, last_name, password, group_id, date_created)
             VALUES (?, ?, ?, ?, ? ,?)") or die($db->error);
@@ -433,9 +474,15 @@ class UsersManagement extends Section
       if ($stm->execute())
       {
          $db->close();
-         return json_encode(array(status => "success", email => $email, message => "New user '$email' has been added successfully", "id" => $db->insert_id));
+         return json_encode(array(
+             status => "success",
+             email => $email,
+             message => "New user '$email' has been added successfully",
+             "id" => $db->insert_id));
       }
-      return json_encode(array(status => "unsuccess", message => "New User has been NOT added"));
+      return json_encode(array(
+          status => "unsuccess",
+          message => "New User has been NOT added"));
    }
 
    public static function add_user_skip($email, $first_name, $last_name, $password)
@@ -465,7 +512,12 @@ class UsersManagement extends Section
          {
             $db->close();
             //return json_encode(array(status => "success", email => $email, message => "New user '$email' has been added successfully", "id" => $db->insert_id));
-            $user_info = array("id" => $db->insert_id, "email" => $email, "first_name" => $first_name, "last_name" => $last_name, "password" => $password);
+            $user_info = array(
+                "id" => $db->insert_id,
+                "email" => $email,
+                "first_name" => $first_name,
+                "last_name" => $last_name,
+                "password" => $password);
          }
       }
       return json_encode($user_info);
@@ -495,9 +547,15 @@ class UsersManagement extends Section
       if ($stm->execute())
       {
          $db->close();
-         return json_encode(array(status => "success", email => $email, message => "New user '$email' has been added successfully", "id" => $db->insert_id));
+         return json_encode(array(
+             status => "success",
+             email => $email,
+             message => "New user '$email' has been added successfully",
+             "id" => $db->insert_id));
       }
-      return json_encode(array(status => "unsuccess", message => "New User has been NOT added"));
+      return json_encode(array(
+          status => "unsuccess",
+          message => "New User has been NOT added"));
    }
 
    public static function delete_user($userId = null)
@@ -514,9 +572,15 @@ class UsersManagement extends Section
       {
          $db->close();
 
-         return json_encode(array(status => "success", title => $user_info["email"], message => "User  '{$user_info["email"]}' has been deleted successfully"));
+         return json_encode(array(
+             status => "success",
+             title => $user_info["email"],
+             message => "User  '{$user_info["email"]}' has been deleted successfully"));
       }
-      return json_encode(array(status => "unsuccess", title => "Update user Unsuccessfull", message => "User has been NOT deleted"));
+      return json_encode(array(
+          status => "unsuccess",
+          title => "Update user Unsuccessfull",
+          message => "User has been NOT deleted"));
    }
 
 }

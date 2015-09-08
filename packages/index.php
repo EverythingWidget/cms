@@ -16,7 +16,7 @@ if (ob_get_level())
    ob_end_clean();
 
 error_reporting(E_ERROR);
-ini_set('display_errors', '1');
+//ini_set('display_errors', '1');
 
 EWCore::set_default_locale("admin");
 //EWCore::set_db_connection(get_db_connection());

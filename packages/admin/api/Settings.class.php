@@ -16,7 +16,7 @@ class Settings extends Section
    public function __construct($app)
    {
       parent::__construct($app);
-      include_once 'ew_settings.php';
+      include_once 'asset/ew_settings.php';
    }
 
    public function get_title()

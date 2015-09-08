@@ -53,7 +53,7 @@ var System = System ||
            {
               this.modules[id] = $.extend({}, System.MODULE_ABSTRACT, object);
            },
-           mod: function (id, object)
+           module: function (id, object)
            {
               this.modules[id] = $.extend({}, System.MODULE_ABSTRACT, object);
            },

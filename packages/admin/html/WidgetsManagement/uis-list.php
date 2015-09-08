@@ -122,7 +122,7 @@
       self.currentTopPane = tp;
       EW.lock(tp);
 
-      $.post('<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/ne-uis_1.php', function (data) {
+      $.post('<?php echo EW_ROOT_URL; ?>admin/WidgetsManagement/ne-uis.php', function (data) {
          tp.html(data);
          //neuis.newUISForm();
       });
@@ -146,7 +146,7 @@
       self.currentTopPane = tp;
       tp.addClass("full");
       EW.lock(tp);
-      $.post('<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/ne-uis.php', {uisId: EW.getHashParameter("uis-id")}, function (data) {
+      $.post('<?php echo EW_ROOT_URL; ?>admin/WidgetsManagement/ne-uis.php', {uisId: EW.getHashParameter("uis-id")}, function (data) {
          tp.html(data);
          //neuis.editUISForm();
 

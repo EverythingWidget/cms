@@ -236,6 +236,7 @@ EverythingWidgets.prototype.getActivity = function (conf)
    if (!self.activities[settings.activity])
    {
       console.log("activity does not exist: " + settings.activity);
+      console.log(self.activities);
       return null;
    }
    var activityId = settings.activity;

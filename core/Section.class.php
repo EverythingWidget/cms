@@ -31,7 +31,7 @@ class Section
 
    /**
     * Return the app instance that used to create section instance
-    * @return App The app of this section
+    * @return \ew\App The app of this section
     */
    public function get_app()
    {
@@ -113,7 +113,8 @@ class Section
       }
       else if ($path)
       {
-         return EWCore::log_error(404, "<h4>{$path}</h4><p>FILE NOT FOUND</p>");
+         $tp = $this->app->get_root() . '/' . $this->current_class->getShortName() . '/' . $method_name;
+         return EWCore::log_error(404, "<h4>API not found</h4><p>API call: {$tp}</p>");
       }
       else
       {

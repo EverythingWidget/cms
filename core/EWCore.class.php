@@ -29,9 +29,9 @@ class EWCore
       $this->request = $_REQUEST;
       //$this->registry = array();
       //$this->action_registry = array();
-      spl_autoload_register(array(
-          $this,
-          'autoload_sections'));
+      /* spl_autoload_register(array(
+        $this,
+        'autoload_sections')); */
       spl_autoload_register(array(
           $this,
           'autoload_core'));
@@ -113,26 +113,25 @@ class EWCore
       return ob_get_clean();
    }
 
-   public static function process_request_command($app_name, $section_name, $function_name, $parameters)
+   public static function process_request_command($resource_path, $section_name, $function_name, $parameters)
    {
-      if (!$app_name /* || !$section_name || !$function_name */)
+      if (!$resource_path /* || !$section_name || !$function_name */)
       {
          $RESULT_CONTENT = EWCore::log_error(400, "Wrong command");
          return $RESULT_CONTENT;
       }
 
       //echo " $app_name  $section_name  $function_name";
-      $app_namespace = explode('/', $app_name);
+      $app_namespace = explode('/', $resource_path);
       $real_class_name = $app_namespace[0] . '\\App';
       //echo $real_class_name;
-      $parameters["_app_name"] = $app_name;
+      $parameters["_app_name"] = $resource_path;
       $parameters["_section_name"] = $section_name;
       $parameters['_function_name'] = $function_name;
       //print_r($parameters);
       // show index.php of app
       if (!$function_name)
       {
-
          $function_name = "index";
          $parameters['_function_name'] = $function_name;
       }
@@ -147,17 +146,20 @@ class EWCore
          //var_dump(class_exists($app_name.'\\'.  ucfirst($app_name)));
          if (class_exists($real_class_name))
          {
-
             // Create an instance of section with its parent App
             $app_object = new $real_class_name;
             $class_exist = true;
-         }
-
-         $pages_feeders = EWCore::read_registry("ew-widget-feeder");
-         if ($class_exist)
-         {
             $RESULT_CONTENT = $app_object->process_command($app_namespace, $section_name, $function_name, $parameters);
          }
+         else
+         {
+            return \EWCore::log_error(404, "<h4>App not found</h4><p>Requested app `$app_namespace[0]`, not found</p>");
+         }
+
+         //$pages_feeders = EWCore::read_registry("ew-widget-feeder");
+         //if ($class_exist)
+         //{
+         //}
       }
 
       $actions = EWCore::read_registry("ew_command_listener");
@@ -703,9 +705,9 @@ class EWCore
    {
       if (!self::$loaders_installed)
       {
-         spl_autoload_register(array(
-             self,
-             'autoload_sections'));
+         /* spl_autoload_register(array(
+           self,
+           'autoload_sections')); */
          spl_autoload_register(array(
              self,
              'autoload_core'));
@@ -853,7 +855,7 @@ class EWCore
 
    private static function autoload_sections($class_name)
    {
-      //echo $class_name."<br>";
+      echo $class_name . "----<br>";
       $apps_dir = opendir(EW_PACKAGES_DIR);
 
       //while ($app_root = readdir($apps_dir))
@@ -1789,25 +1791,24 @@ class EWCore
       EWCore::init_sections_plugins();
       $pers = self::$permissions_groups;
       $allowed_activities = array();
-      $permissions_titles = array();
+      //$permissions_titles = array();
       //$temp_permissions = array();
       foreach ($pers as $app_name => $sections)
       {
-         $permissions_titles[$app_name] = array(
-             "appTitle" => $sections["appTitle"]);
+         //$permissions_titles[$app_name] = [ "appTitle" => $sections["appTitle"]];
+
          foreach ($sections["section"] as $section_name => $sections_permissions)
          {
-            $permissions_titles[$app_name]["section"][$section_name] = array(
-                "sectionTitle" => $sections_permissions["sectionTitle"]);
+            //echo $app_name . '/' . $section_name . "<br>";
+            //$permissions_titles[$app_name]["section"][$section_name] = [ "sectionTitle" => $sections_permissions["sectionTitle"]];
             foreach ($sections_permissions["permission"] as $permission_name => $permission_info)
             {
-               //echo "$app_name.$section_name.$permission_name ";
-               if (admin\UsersManagement::user_has_permission($app_name, $section_name, array(
-                           $permission_name)))
+               //echo "$app_name.$section_name.$permission_name <br>";
+               if (admin\UsersManagement::user_has_permission($app_name, $section_name, [$permission_name]))
                {
-                  //$temp_permissions[$permission_name] = true;
                   foreach ($permission_info["methods"] as $method)
                   {
+                     //echo "$method <br>";
                      $title = $method;
                      if (strpos($method, ':'))
                      {
@@ -1815,22 +1816,24 @@ class EWCore
                         $method = $temp[0];
                         $title = $temp[1];
                      }
-                     //if(admin\UsersManagement::user_has_permission($settings["app"], $settings["section"], $permission_id))
-                     //$permissions_titles[$app_name]["section"][$section_name]["permission"][$permission_name] = array("parent" => "$app_name.$section_name", "title" => $permission_name, "description" => $permission_info["description"]);
-                     $allowed_activities["app-$app_name.$section_name.$method"] = array(
+
+                     $is_form = (strpos($method, '.php') && $method !== "index.php") ? true : false;
+                     $url = $is_form ? EW_ROOT_URL . $app_name . "/" . $section_name . "/" . $method : EW_ROOT_URL . $app_name . "-api/" . $section_name . "/" . $method;
+                     $allowed_activities["$app_name-api.$section_name.$method"] = [
                          "activityTitle" => $title,
                          "app" => $app_name,
                          "appTitle" => "tr:$app_name{" . $sections["appTitle"] . "}",
                          "section" => $section_name,
                          "sectionTitle" => "tr:$app_name{" . $sections_permissions["sectionTitle"] . "}",
-                         "url" => EW_ROOT_URL . "app-" . $app_name . "/" . $section_name . "/" . $method,
-                         "form" => (strpos($method, '.php') && $method !== "index.php") ? true : false);
+                         "url" => $url,
+                         "form" => $is_form
+                     ];
                   }
                }
             }
          }
       }
-      return $allowed_activities;
+      return json_encode($allowed_activities);
    }
 
    public static function register_object($name, $id, $object = array())
@@ -1882,6 +1885,7 @@ class EWCore
       $permissions_titles = array();
       foreach ($pers as $app_name => $sections)
       {
+
          $permissions_titles[$app_name] = array(
              "appTitle" => $sections["appTitle"]);
          foreach ($sections["section"] as $section_name => $sections_permissions)
@@ -2269,6 +2273,18 @@ class EWCore
    public static function process_content_component($action, $id, $content_id, $content_data, $label_data)
    {
 //      if(class_exists($class_name))
+   }
+
+   public static function load_file($path, $form_config = null)
+   {
+      $full_path = EW_PACKAGES_DIR . '/' . $path;
+      if (!file_exists($path))
+      {
+         return \EWCore::log_error(404, "<h4>File not found</h4><p>File `$path`, not found</p>");
+      }
+      ob_start();
+      include $full_path;
+      return ob_get_clean();
    }
 
 }

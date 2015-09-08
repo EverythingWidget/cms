@@ -183,9 +183,7 @@ session_start();
       this.editorWindow.width($(window).width() - 400);
       //this.editorFrame = $(document.getElementById("fr").contentDocument.body);
       this.editorFrame = $(document.getElementById("fr")).contents().find("body");
-      /*this.bAdd = EW.addAction("Save and Start Editing", this.addUIS, {
-       display: "none"
-       });*/
+      this.bExportLayout = $();
       this.bSaveChanges = EW.addAction("Save Layout", $.proxy(this.updateUIS, this)).hide().addClass("btn-success");
       this.bPreview = EW.addAction("Preview Layout", $.proxy(this.previewLayout, this)).hide().addClass("btn-info");
       //this.bApply = EW.addAction("Apply Changes", this.editUIS, {display: "none"});
@@ -1366,7 +1364,7 @@ session_start();
 
    function setView()
    {
-      //obj('<?php // echo $styleId ? $styleId : 'testDiv'                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ?>').style.cssText = obj('style').value;
+      //obj('<?php // echo $styleId ? $styleId : 'testDiv'                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ?>').style.cssText = obj('style').value;
       //obj('fr').contentDocument.body.innerHTML = '<link href="../templates/SpapcoDefault/template.css" rel="stylesheet" type="text/css">';
       $('#fr').contentDocument.getElementById('dynamicStyle').innerHTML = $('#style').value;
       $('#fr').contentDocument.getElementById('<?php echo $name ?>').className = 'Panel <?php echo $class ?> ' + $('#class').value;
@@ -1402,7 +1400,7 @@ session_start();
          self.editorFrame.find(".widget-glass-pane").show();
       });
 
-      var fh = self.editorWindow.outerHeight() ;
+      var fh = self.editorWindow.outerHeight();
       $("#neuis").css("height", fh);
       var newHeight = (fh * simWidth) / width;
       var leftOffset = width - simWidth;
@@ -1493,7 +1491,7 @@ session_start();
       uisForm = new UISForm();
       EW.uisForm = uisForm;
 <?php
-$uis_info = EWCore::process_command("admin", "WidgetsManagement", "get_uis", ["uisId" => $_REQUEST['uisId']]);
+$uis_info = \EWCore::process_request_command("admin/api", "WidgetsManagement", "get_uis", ["uisId" => $_REQUEST['uisId']]);
 echo 'EW.setFormData("#uis-preference",' . (($uis_info != null) ? ($uis_info) : "null") . ');';
 ?>
 

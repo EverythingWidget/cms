@@ -332,6 +332,7 @@ class WidgetsManagement extends Section
 
    public static function get_uis($uisId = null)
    {
+      
       $db = \EWCore::get_db_connection();
 
       if (!$uisId)

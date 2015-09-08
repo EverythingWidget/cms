@@ -23,12 +23,81 @@ class App
    protected $type = "app";
    protected $namespace = "";
    protected $default_resource = "html";
+   private $resources = [];
+
+   public function __construct()
+   {
+      $this->addResource("api", function($app_resource_path, $section_name, $method_name, $parameters = null)
+      {
+         $app_name = $this->get_root();
+         $real_class_name = $app_name . '\\' . $section_name;
+         if (!$section_name)
+         {
+            return \EWCore::log_error(400, "<h4>$app_name-api </h4><p>Please specify the api command</p>");
+         }
+         if (class_exists($real_class_name))
+         {
+            $app_section_object = new $real_class_name($this);
+            return $app_section_object->process_request($method_name, $parameters);
+         }
+         else
+         {
+            return \EWCore::log_error(404, "<h4>$app_name-api </h4><p>Section `$section_name` not found</p>");
+         }
+      });
+
+      $this->addResource($this->default_resource, function($app_resource_path, $section_name, $method_name, $parameters = null)
+      {
+         if (\EWCore::is_widget_feeder("*", "*", $section_name))
+         {
+            // Show index if the URL contains a page feeder
+            ob_start();
+            $this->index();
+            return ob_get_clean();
+         }
+         else if ($section_name)
+         {
+            if ($parameters["_file"])
+            {
+               $path = implode('/', $app_resource_path) . '/' . $section_name . '/' . $parameters["_file"];
+               //echo EW_PACKAGES_DIR . '/' .$path;
+            }
+            else
+            {
+               $path = implode('/', $app_resource_path) . '/' . $section_name . '/index.php';
+            }
+         }
+         else
+         {
+            if (!$parameters["_file"])
+            {
+               // Refer to app index
+               ob_start();
+               $this->index();
+               return ob_get_clean();
+            }
+            // Refer to app section index
+            $path = implode('/', $app_resource_path) . '/' . $parameters["_file"];
+         }
+
+         if ($path && file_exists(EW_PACKAGES_DIR . '/' . $path))
+         {
+            ob_start();
+            include EW_PACKAGES_DIR . '/' . $path;
+            return ob_get_clean();
+         }
+         else if ($path)
+         {
+            return \EWCore::log_error(404, "<h4>File not found</h4><p>File `$path`, not found</p>");
+         }
+      });
+   }
 
    //put your code here
 
    public function init_app()
    {
-      //
+
       $this->init_api();
       //$this->init_plugins();
    }
@@ -58,21 +127,21 @@ class App
 
          $section_class_name = substr($section_name, 0, $i);
          $real_class_name = "$app_root\\$section_class_name";
-         //echo $real_class_name;
+         //echo $real_class_name .' loaded <br>';
          $sc = new $real_class_name($this);
-         /* if (method_exists($sc, "init_plugin"))
-           {
-           try
-           {
-           call_user_func(array(
-           $sc,
-           "init_plugin"));
-           }
-           catch (Exception $e)
-           {
-           echo $e;
-           }
-           } */
+         //if (method_exists($sc, "init_plugin"))
+         //{
+         try
+         {
+            call_user_func(array(
+                $sc,
+                "init_plugin"));
+         }
+         catch (Exception $e)
+         {
+            echo $e;
+         }
+         //}
       }
    }
 
@@ -125,68 +194,40 @@ class App
       //print_r($app_resource_path);
       //echo $real_class_name;
       // If class has namespace
-      if ($app_resource_path[1] === "api")
-      {
-         // Create an instance of section with its parent App
-         if (!$section_name)
-         {
-            return \EWCore::log_error(400, "<h4>$app_name-api </h4><p>Please specify the api command</p>");
-         }
-         if (class_exists($real_class_name))
-         {
-            $app_section_object = new $real_class_name($this);
-            return $app_section_object->process_request($method_name, $parameters);
-         }
-         else
-         {
-            return \EWCore::log_error(404, "<h4>$app_name-api </h4><p>Section `$section_name` not found</p>");
-         }
-      }
 
-      $pages_feeders = \EWCore::read_registry("ew-widget-feeder");
+      if ($this->resources[$app_resource_path[1]])
+      {
+         return $this->resources[$app_resource_path[1]]($app_resource_path, $section_name, $method_name, $parameters);
+      }
+      else
+      {
+         return \EWCore::log_error(404, "<h4>Resource not found</h4><p>Resource `$app_resource_path[1]/$section_name/$method_name`, not found</p>");
+      }
+      /* if ($app_resource_path[1] === "api")
+        {
+        // Create an instance of section with its parent App
+        if (!$section_name)
+        {
+        return \EWCore::log_error(400, "<h4>$app_name-api </h4><p>Please specify the api command</p>");
+        }
+        if (class_exists($real_class_name))
+        {
+        $app_section_object = new $real_class_name($this);
+        return $app_section_object->process_request($method_name, $parameters);
+        }
+        else
+        {
+        return \EWCore::log_error(404, "<h4>$app_name-api </h4><p>Section `$section_name` not found</p>");
+        }
+        } */
+
+      //$pages_feeders = \EWCore::read_registry("ew-widget-feeder");
       /* if ($class_exist)
         {
 
         $RESULT_CONTENT = $app_section_object->process_request($method_name, $parameters);
         }
-        else */if (\EWCore::is_widget_feeder("*", "*", $section_name))
-      {
-
-         // Show index if the URL contains a page feeder
-         $path = EW_PACKAGES_DIR . '/' . $app_name . '/index.php';
-      }
-      else if (!$section_name)
-      {
-
-         // Refer to app index
-         if ($method_name == 'index' && $app_resource_path[1] === $this->default_resource)
-         {
-            ob_start();
-            $this->index();
-            return ob_get_clean();
-         }
-         $path = EW_PACKAGES_DIR . '/' . implode('/', $app_resource_path) . '/' . $method_name . '.php';
-
-         //echo "here is app-in $path";
-      }
-      else
-      {
-
-         // Refer to app section index
-         $path = EW_PACKAGES_DIR . '/' . implode('/', $app_resource_path) . '/' . $section_name . '/' . $method_name;
-      }
-
-
-      if ($path && file_exists($path))
-      {
-         ob_start();
-         include $path;
-         return ob_get_clean();
-      }
-      else if ($path)
-      {
-         $RESULT_CONTENT = \EWCore::log_error(404, "<h4>{$path}</h4><p>$app_name: FILE NOT FOUND</p>");
-      }
+        else */
       //return $RESULT_CONTENT;
    }
 
@@ -243,9 +284,13 @@ class App
 
    public function get_view($path, $view_data)
    {
-      $path = EW_PACKAGES_DIR . '/' . $this->get_root() . '/' . $path;
+      $full_path = EW_PACKAGES_DIR . '/' . $this->get_root() . '/' . $path;
+      if (!file_exists($path))
+      {
+         return \EWCore::log_error(404, "<h4>File not found</h4><p>File `$path`, not found</p>");
+      }
       ob_start();
-      include $path;
+      include $full_path;
       $res = ob_get_clean();
 
       return preg_replace_callback("/\{\{([\w]*)\}\}/", function($match) use ($view_data)
@@ -258,6 +303,11 @@ class App
    {
       $path = $this->get_path('index.php');
       include $path;
+   }
+
+   public function addResource($name, $func)
+   {
+      $this->resources[$name] = $func;
    }
 
 }

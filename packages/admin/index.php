@@ -107,7 +107,7 @@ if (!isset($_SESSION['login']))
                   // var selected = ("<?php echo ($compId) ?>" == val['className']) ? "selected" : "";
 //                  items.push('<li class="col-xs-12 col-sm-6 ' + selected + '"><a href="<?php echo EW_ROOT_URL; ?>admin-api/index.php?compId=' + val['className'] + '"><label>' + val['title'] + '</label><p>' + val['description'] + '</p></a></li>');
                   items.push('<li class=""><a data-app="' + val['className'] + '"><label>' + val['title'] + '</label><p>' + val['description'] + '</p></a></li>');
-                  val.package = "admin-api";
+                  val.package = "admin";
                   val.file = "index.php";
                   val.id = val['className'];
                   self.apps[val['className']] = val;
@@ -608,7 +608,7 @@ if (!isset($_SESSION['login']))
          $(document).ready(function ()
          {
             var hashDetection = new hashHandler();
-            EW.activities = <?php echo json_encode(EWCore::read_activities()); ?>;
+            EW.activities = <?php echo EWCore::read_activities(); ?>;
             console.log(EW.activities);
             EW.oldApp = null;
 
@@ -773,7 +773,7 @@ if (!isset($_SESSION['login']))
                   <?php
                   if ($_SESSION['login'])
                   {
-                     echo '<a class="ExitBtn" href="./admin-api/UsersManagement/logout?url=' . EW_DIR_URL . 'admin-api/" ></a>';
+                     echo '<a class="ExitBtn" href="./admin-api/UsersManagement/logout?url=' . EW_DIR_URL . 'admin/" ></a>';
                   }
                   ?>
                </div>            

@@ -3,6 +3,7 @@ session_start();
 global $rootAddress, $pageAddress;
 
 $app = "webroot";
+
 $currentAppConf = json_decode(admin\Settings::read_settings(), true);
 
 $website_title = $currentAppConf["webroot/web-title"];
