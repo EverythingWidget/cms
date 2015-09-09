@@ -1659,13 +1659,61 @@ div#components-pane
 {
    min-width:200px;
    line-height:20px;
-   font-size:21px;
-   font-weight:400;
-   padding:16px 10px 16px 56px;
+   /* font-size: 14px; */
+   font-weight: bold;
+   padding: 16px 10px 16px 18px;
    overflow:hidden;
    border-left-width:0;
-   color:#039BE5;
+   color: #777;
    display:block
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 .app-bar-nav label:first-child
@@ -1675,12 +1723,45 @@ div#components-pane
 
 .app-bar-nav ul
 {
-   font-size:15px;
-   font-weight:700;
+   font-size: 16px;
+   font-weight: 500;
    list-style:none;
    padding:0;
    margin:0;
    min-width:250px
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 .app-bar-nav ul + ul
@@ -1694,7 +1775,7 @@ div#components-pane
 
 .app-bar-nav ul + ul label:first-child
 {
-   margin-top:15px
+ margin-top: 0px;
 }
 
 .app-bar-nav li
@@ -1711,11 +1792,25 @@ div#components-pane
    color:#444;
    text-decoration:none;
    padding:16px 10px;
-   padding-left: 58px;
+   padding-left: 72px;
    display:block;
    line-height:20px;
    min-height:42px;
    vertical-align:middle
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 .app-bar-nav li a img
@@ -1755,7 +1850,8 @@ div#components-pane
    color:#03A9F4;
    border-left:6px solid #03A9F4;
    cursor:default;
-   padding-left: 52px;}
+   padding-left: 66px;
+   }
 
 .texture
 {

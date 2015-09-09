@@ -14,7 +14,7 @@ requirejs.config({
 // Start the main app logic.
 require(['grid-on-air'], function (goa)
 {
-   
+
    goa.addRange(
            {
               prefix: 'col-xs-',
@@ -40,8 +40,8 @@ require(['grid-on-air'], function (goa)
               columns: 12
 
            });
-           
-           goa.addRange(
+
+   goa.addRange(
            {
               prefix: 'col-lg-',
               min: 1340,
