@@ -40,6 +40,17 @@ function script()
             this.oldRow;
 
          }
+
+         WidgetsManagement.prototype.init = function ()
+         {
+            
+         };
+
+         WidgetsManagement.prototype.start = function ()
+         {
+
+         };
+
          WidgetsManagement.prototype.selectRow = function (obj) {
             $(widgetsManagement.oldRow).removeClass("selected");
             $(obj).addClass("selected");

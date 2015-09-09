@@ -24,6 +24,39 @@ class App
    protected $namespace = "";
    protected $default_resource = "html";
    private $resources = [];
+   // our list of mime types
+   private $mime_types = array(
+       "pdf" => "application/pdf",
+       "exe" => "application/octet-stream",
+       "zip" => "application/zip",
+       "docx" => "application/msword",
+       "doc" => "application/msword",
+       "xls" => "application/vnd.ms-excel",
+       "ppt" => "application/vnd.ms-powerpoint",
+       "gif" => "image/gif",
+       "png" => "image/png",
+       "jpeg" => "image/jpg",
+       "jpg" => "image/jpg",
+       "mp3" => "audio/mpeg",
+       "wav" => "audio/x-wav",
+       "mpeg" => "video/mpeg",
+       "mpg" => "video/mpeg",
+       "mpe" => "video/mpeg",
+       "mov" => "video/quicktime",
+       "avi" => "video/x-msvideo",
+       "3gp" => "video/3gpp",
+       "css" => "text/css",
+       "jsc" => "application/javascript",
+       "js" => "application/javascript",
+       "php" => "text/html",
+       "htm" => "text/html",
+       "html" => "text/html");
+
+   public function get_mime_type($path)
+   {
+      $extension = strtolower(end(explode('.', $path)));
+      return $this->mime_types[$extension];
+   }
 
    public function __construct()
    {
@@ -59,6 +92,8 @@ class App
          {
             if ($parameters["_file"])
             {
+               //$content_type = substr($parameters["_file"], strripos($parameters["_file"], '.') + 1);
+
                $path = implode('/', $app_resource_path) . '/' . $section_name . '/' . $parameters["_file"];
                //echo EW_PACKAGES_DIR . '/' .$path;
             }
@@ -82,6 +117,10 @@ class App
 
          if ($path && file_exists(EW_PACKAGES_DIR . '/' . $path))
          {
+            //$finfo = \finfo::file( EW_PACKAGES_DIR . '/' . $path,FILEINFO_MIME_TYPE);
+            //$content_type = \finfo_file($finfo, EW_PACKAGES_DIR . '/' . $path);
+            //\finfo_close($finfo);
+            header("Content-Type: " . $this->get_mime_type($path));
             ob_start();
             include EW_PACKAGES_DIR . '/' . $path;
             return ob_get_clean();

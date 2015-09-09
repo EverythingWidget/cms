@@ -105,7 +105,7 @@ if (isset($elements[$parameter_index]))
    $file_uri = implode('/', $rest_of_elements);
    //if (strpos($file_uri, '?'))
    //$file_uri = substr($file_uri, 0, strpos($file_uri, '?'));
-   $_file = $file_uri;
+   $_file = preg_replace('{/$}', '', $file_uri);
    $_REQUEST["_file"] = $_file;
 
    $parameter_index++;
