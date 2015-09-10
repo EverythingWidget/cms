@@ -9,6 +9,7 @@
 define({
    ranges: {},
    allColumnsNames: [],
+   outputTo: null,
    addRange: function (range)
    {
       //console.log(range)
@@ -17,7 +18,7 @@ define({
       //this.allColumnsNames.push(range.columnsNames);
       //range.columnsBaseCSS = this.generateColumnsCSS(range.columnsNames);
       range.columnsCSS = this.generateColumnsCSS(range);
-      this.updateCSS();
+      //this.createGrid();
    },
    generateColumns: function (prefix, columns)
    {
@@ -35,15 +36,32 @@ define({
    },
    generateBaseCSS: function (range)
    {
-      var columnsBaseCSS = " { position:relative; float:left; min-height: 1px;";
+      var baseCSS = "\n{\n " + (range.baseStyle || '');
+      baseCSS += "padding-left: " + range.gutter + "; ";
+      baseCSS += "padding-right: " + range.gutter + "; \n}\n";
+      return '.' + range.base + baseCSS;
+      //return range.columnsNames.join(',') + columnsBaseCSS;
+   },
+   generateColumnsBaseCSS: function (range)
+   {
+      var columnsBaseCSS = "\n{\n " + (range.columnBaseStyle || '');
       columnsBaseCSS += "padding-left: " + range.gutter + "; ";
-      columnsBaseCSS += "padding-right: " + range.gutter + "; }\n";
+      columnsBaseCSS += "padding-right: " + range.gutter + "; \n}\n";
+      //return '.' + range.base + baseCSS;
       return range.columnsNames.join(',') + columnsBaseCSS;
    },
    generateColumnsCSS: function (range)
    {
-      var columnsCSS = [this.generateBaseCSS(range)];
-      columnsCSS.push("@media (min-width: " + range.min + "px) {");
+      var columnsCSS = [];
+      if (range.base)
+      {
+         columnsCSS = [this.generateBaseCSS(range)];
+      }
+      else
+      {
+         columnsCSS = [this.generateColumnsBaseCSS(range)];
+      }
+      columnsCSS.push("@media (min-width: " + range.min + "px)\n{\n");
 
       var baseSize = 100 / range.columns;
       for (var i = 0, len = range.columns; i < len; i++)
@@ -57,15 +75,23 @@ define({
    {
 
    },
-   updateCSS: function ()
+   createGrid: function ()
    {
-      var styleElement = document.getElementById("grid_on_air");
-      if (!styleElement)
+      if (!this.outputTo)
       {
-         styleElement = document.createElement("style");
-         styleElement.id = "grid_on_air";
-         document.getElementsByTagName('head')[0].appendChild(styleElement);
+         for (var r in this.ranges)
+         {
+            console.log(this.ranges[r]);
+         }
+         return;
       }
+      var styleElement = document.getElementById(this.outputTo);
+      /*if (!styleElement)
+       {
+       styleElement = document.createElement("style");
+       styleElement.id = "grid_on_air";
+       document.getElementsByTagName('head')[0].appendChild(styleElement);
+       }*/
       styleElement.innerHTML = "";
 
       for (var r in this.ranges)
