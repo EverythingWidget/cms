@@ -50,7 +50,7 @@ require(['grid-on-air'], function (goa)
     gutter: '15px',
     columns: 12
     
-    });*/
+    });
    goa.addRange(
            {
               base: 'col',
@@ -88,7 +88,7 @@ require(['grid-on-air'], function (goa)
               min: 1340,
               gutter: '15px',
               columns: 12
-           });
+           });*/
 
    //goa.createGrid();
 });
@@ -96,8 +96,37 @@ require(['grid-on-air'], function (goa)
 
 var EW = function ()
 {
-   var ew =
+   var EW =
            {
+              DEFAULTS:
+                      {
+                         animationDuration: 1
+                      },
+              COMPONENT_STRUCTURE:
+                      {
+                         el: null,
+                         events: {},
+                         on: function (event, handler)
+                         {
+                            this.events[event] = handler;
+                         },
+                         trigger: function (event)
+                         {
+                            if (this.events[event])
+                               this.events[event].apply(this, Array.prototype.slice.call(arguments, 1));
+                         }
+                      },
+              clone: function (obj)
+              {
+                 var target = {};
+                 for (var i in obj) {
+                    if (obj.hasOwnProperty(i))
+                    {
+                       target[i] = obj[i];
+                    }
+                 }
+                 return target;
+              },
               body: document.getElementsByTagName("body")[0],
               getCenterPoint: function (rect)
               {
@@ -106,119 +135,303 @@ var EW = function ()
                     left: rect.left + (rect.width / 2),
                     top: rect.top + (rect.height / 2)
                  };
+
               },
-              createModal: function (parameters)
+              createModal: function (ori)
               {
-                 var lockPane = ew.lock(document.getElementsByClassName("app-pane")[0]);
-
-                 var modal = document.createElement("div"); //or use jQuery's $("#photo")
-                 modal.classList.add("dialog", "center", "open");
-                 modal.innerHTML = "<h1 class='dialog-header-bar'>This is the Dialog Title</h1><div class='dialog-content-pane'></div><div class='dialog-action-bar'></div>";
-                 document.getElementsByTagName("body")[0].appendChild(modal);
-
-                 var origin = document.activeElement;
-                 EW.animation.transform(origin, modal, .5, function ()
+                 var lockPane;
+                 var modal = EW.clone(EW.COMPONENT_STRUCTURE);
+                 modal.close = function ()
                  {
-                    origin.display = "none";
-                    modal.style.display = "";
+
+                 };
+
+                 modal.dispose = function ()
+                 {
+
+                 };
+
+                 modal.remove = function ()
+                 {
+                    this.el.parentNode.removeChild(this.el);
+                 }
+
+                 modal.el = document.createElement("div"); //or use jQuery's $("#photo")
+                 modal.el.className = "dialog center open";
+                 modal.el.innerHTML = "<h1 class='dialog-header-bar'>This is the Dialog Title</h1><div class='dialog-content-pane'></div><div class='dialog-action-bar'></div>";
+                 var origin = ori || document.activeElement;
+
+                 var loadModal = setTimeout(function ()
+                 {
+                    lockPane = EW.lock(document.getElementsByClassName("app-pane")[0]);
+                    document.getElementsByTagName("body")[0].appendChild(modal.el);
+                    EW.animation.transform({
+                       from: loader.el,
+                       to: modal.el,
+                       el: modal.el,
+                       time: .4,
+                       flow: true,
+                       onComplete: function ()
+                       {
+                          loader.dispose();
+                          origin.style.visibility = "hidden";
+
+                       }
+                    });
+
+                 }, 18000);
+
+                 var loader = EW.animation.toLoader(origin, "btn-loader");
+                 loader.on("cancel", function ()
+                 {
+                    clearTimeout(loadModal);
                  });
-                 modal.style.display = "none";
-                 origin.style.opacity = "0";
-                 modal.addEventListener("click", function ()
+
+                 //origin.style.opacity = "0";
+                 modal.el.addEventListener("click", function ()
                  {
                     lockPane.dispose();
-                    EW.animation.transform(modal, origin, .3, function ()
-                    {
-                       origin.style.opacity = "";
+                    EW.animation.transform({
+                       from: modal.el,
+                       to: origin,
+                       time: .3,
+                       onComplete: function ()
+                       {
+                          origin.style.visibility = "";
+                       }
                     });
-                    modal.parentNode.removeChild(modal);
+                    modal.remove();
                  });
               },
-              lock: function (e)
+              lock: function (e, t)
               {
+                 t = t || EW.DEFAULTS.animationDuration;
                  var sourceRect = e.getBoundingClientRect();
                  var ss = window.getComputedStyle(e);
                  var lockPane = document.createElement("div");
-                 lockPane.classList.add("lock-pane");
+                 lockPane.className = "lock-pane";
                  lockPane.style.position = "absolute";
                  lockPane.style.left = sourceRect.left;
                  lockPane.style.top = sourceRect.top;
                  lockPane.style.width = sourceRect.width + "px";
                  lockPane.style.height = sourceRect.height + "px";
                  lockPane.style.zIndex = (ss.zIndex === "0" || ss.zIndex === "auto") ? 1 : ss.zIndex;
+                 lockPane.style.transition = "opacity " + t + "s";
 
                  e.parentNode.insertBefore(lockPane, e.nextSibling);
                  setTimeout(function ()
                  {
                     lockPane.classList.add("show");
-                 }, 1);
-                 //console.log(sourceRect)
-                 /*TweenLite.fromTo(lockPane, .5,
-                  {
-                  opacity: 0
-                  },
-                  {
-                  opacity: 1
-                  });*/
+                 }, 0);
                  lockPane.dispose = function ()
                  {
                     lockPane.parentNode.removeChild(lockPane);
                  };
                  return lockPane;
+              }
+              ,
+              rgbToHex: function (rgb)
+              {
+                 rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
+                 return (rgb && rgb.length === 4) ? "#" +
+                         ("0" + parseInt(rgb[1], 10).toString(16)).slice(-2) +
+                         ("0" + parseInt(rgb[2], 10).toString(16)).slice(-2) +
+                         ("0" + parseInt(rgb[3], 10).toString(16)).slice(-2) : null;
               },
               animation:
                       {
-                         transform: function (fromE, toE, t, onComplete, ease)
+                         transformBetween: function (conf)
                          {
-                            t = t || 1;
-                            var sourceRect = fromE.getBoundingClientRect();
-                            var distRect = toE.getBoundingClientRect();
+                            var t = conf.time || EW.DEFAULTS.animationDuration;
+                            var sourceRect = conf.from.getBoundingClientRect();
+                            var distRect = conf.to.getBoundingClientRect();
                             //toE.style.opacity = '0';
-                            var transformBox = document.createElement("div");
-                            var ss = window.getComputedStyle(fromE);
-                            var ds = window.getComputedStyle(toE);
-                            transformBox.style.position = "absolute";
-                            transformBox.style.backgroundColor = ss.backgroundColor;
-                            transformBox.style.boxShadow = ds.boxShadow;
-                            transformBox.style.borderRadius = ds.borderRadius;
-                            transformBox.style.zIndex = (ds.zIndex === "0" || ds.zIndex === "auto") ? 1 : ds.zIndex;
-                            ew.body.appendChild(transformBox);
-                            //console.log(ds.zIndex);
-                            //var c = ew.getCenterPoint(sourceRect);
                             //console.log(sourceRect);
-                            TweenLite.fromTo(transformBox, t,
+
+                            //console.log(sourceRect.width / distRect.width + "," + sourceRect.height / distRect.height)
+                            var ss = window.getComputedStyle(conf.from);
+                            var ds = window.getComputedStyle(conf.to);
+                            //console.log(distRect.width * parseInt(ss.borderRadius, 10) / sourceRect.width);
+
+                            TweenLite.fromTo(conf.el, t,
                                     {
-                                       width: distRect.width,
-                                       height: distRect.height,
+                                       opacity: .1,
                                        left: sourceRect.left,
                                        top: sourceRect.top,
-                                       /*width: sourceRect.width,
-                                        height: sourceRect.height*/
-                                       //transform: "scale(.5,1)",
+                                       borderRadius: distRect.width * parseInt(ss.borderRadius, 10) / sourceRect.width,
+                                       margin: 0,
                                        transform: "scale(" + sourceRect.width / distRect.width + "," + sourceRect.height / distRect.height + ")",
+                                       boxShadow: ss.boxShadow,
                                        transformOrigin: "0 0"
                                     },
                             {
-                               left: distRect.left,
-                               top: distRect.top,
-                               //width: distRect.width,
-                               //height: distRect.height,
-                               //boxShadow: ds.boxShadow,
-                               backgroundColor: ds.backgroundColor,
+                               opacity: 1,
+                               left: ds.left,
+                               top: ds.top,
+                               margin: ds.margin,
                                transform: "scale(1,1)",
-                               //borderRadius: ds.borderRadius,
-                               ease: ease || "Power2.easeInOut",
+                               borderRadius: ds.borderRadius,
+                               boxShadow: ds.boxShadow,
+                               ease: conf.ease || "Power2.easeInOut",
                                onComplete: function ()
                                {
-                                  //toE.style.opacity = '';
-                                  transformBox.parentNode.removeChild(transformBox);
-                                  if (onComplete)
-                                     onComplete();
+                                  if (conf.onComplete)
+                                     conf.onComplete();
                                }
                             });
+                         },
+                         transform: function (conf)
+                         {
+                            var t = conf.time || EW.DEFAULTS.animationDuration;
+                            var sourceRect = conf.from.getBoundingClientRect();
+                            var distRect = conf.to.getBoundingClientRect();
+                            //toE.style.opacity = '0';
+                            var transformBox = document.createElement("div");
+                            var ss = window.getComputedStyle(conf.from, null);
+                            //console.log(ss);
+                            var ds = window.getComputedStyle(conf.to, null);
+                            transformBox.style.position = "absolute";
+                            transformBox.style.backgroundColor = (ss.backgroundColor.indexOf("rgba") !== -1 ||
+                                    ss.backgroundColor === "transparent") ? "rgb(190,190,190)" : ss.backgroundColor;
+                            transformBox.style.boxShadow = ss.boxShadow;
+                            transformBox.style.borderRadius = conf.from.style.borderRadius;
+                            transformBox.style.padding = ss.padding;
+                            transformBox.style.color = ss.color;
+                            transformBox.style.fontSize = ss.fontSize;
+                            transformBox.style.zIndex = (ds.zIndex === "0" || ds.zIndex === "auto") ? 1 : ds.zIndex;
+                            //transformBox.innerHTML = conf.title || "";
+                            //console.log(ss)
+                            EW.body.appendChild(transformBox);
+                            conf.to.style.visibility = "hidden";
+                            if (conf.flow)
+                               conf.from.style.visibility = "hidden";
+
+                            TweenLite.fromTo(transformBox, t,
+                                    {
+                                       width: sourceRect.width,
+                                       height: sourceRect.height,
+                                       left: sourceRect.left,
+                                       top: sourceRect.top,
+                                       //transform: "scale(" + sourceRect.width / distRect.width + "," + sourceRect.height / distRect.height + ")",
+                                       //transformOrigin: "0 0"
+                                    },
+                                    {
+                                       width: distRect.width,
+                                       height: distRect.height,
+                                       left: distRect.left,
+                                       top: distRect.top,
+                                       backgroundColor: (ds.backgroundColor.indexOf("rgba") !== -1 ||
+                                               ds.backgroundColor === "transparent") ? "rgb(190,190,190)" : ds.backgroundColor,
+                                       boxShadow: ds.boxShadow,
+                                       //transform: "scale(1,1)",
+                                       borderRadius: ds.borderRadius,
+                                       ease: conf.ease || "Power2.easeInOut",
+                                       onComplete: function ()
+                                       {
+                                          conf.to.style.visibility = "";
+                                          TweenLite.to(transformBox, .2, {opacity: 0, onComplete: function ()
+                                             {
+                                                transformBox.parentNode.removeChild(transformBox);
+                                                if (conf.onComplete)
+                                                   conf.onComplete();
+                                             }})
+
+                                       }
+                                    });
+                         },
+                         toLoader: function (el, loaderClass)
+                         {
+                            var loader = EW.clone(EW.COMPONENT_STRUCTURE);
+
+                            loader.el = document.createElement("div");
+                            loader.cancel = function ()
+                            {
+                               this.trigger("cancel");
+                               this.dispose();
+                            };
+                            loader.dispose = function ()
+                            {
+                               TweenLite.fromTo(el, .15, {opacity: 0}, {opacity: 1});
+                               el.style.visibility = "";
+                               this.disposed = true;
+                               loader.el.parentNode.removeChild(loader.el);
+                               this.trigger('dispose');
+                            };
+
+
+                            var elemStyle = window.getComputedStyle(el);
+                            var elemRect = el.getBoundingClientRect();
+                            var elemCent = EW.getCenterPoint(elemRect);
+                            loader.el.className = loaderClass;
+                            EW.body.appendChild(loader.el);
+
+                            var loaderStyle = window.getComputedStyle(loader.el);
+                            var loaderRect = loader.el.getBoundingClientRect();
+
+                            loader.el.style.position = "absolute";
+                            loader.el.style.width = elemRect.width + "px";
+                            loader.el.style.height = elemRect.height + "px";
+                            loader.el.style.top = elemRect.top + 'px';
+                            loader.el.style.left = elemRect.left + 'px';
+                            loader.el.style.zIndex = (elemStyle.zIndex === "0" || elemStyle.zIndex === "auto") ? 1 : elemStyle.zIndex;
+
+                            var animProperties = (loaderClass) ?
+                                    {
+                                       top: elemCent.top - loaderRect.width / 2,
+                                       left: elemCent.left - loaderRect.height / 2,
+                                       width: loaderRect.width,
+                                       height: loaderRect.height,
+                                       borderRadius: loaderStyle.borderRadius,
+                                       //backgroundColor: loaderStyle.backgroundColor,
+                                       boxShadow: loaderStyle.boxShadow,
+                                       ease: "Power3.easeOut",
+                                    } :
+                                    {
+                                       top: elemCent.top - 30,
+                                       left: elemCent.left - 30,
+                                       width: 60,
+                                       height: 60,
+                                       borderRadius: 30,
+                                       ease: "Power2.easeOut",
+                                    };
+                            /*animProperties.onComplete = function ()
+                             {
+                             
+                             }*/
+                            loader.el.style.visibility = "hidden";
+                            setTimeout(function ()
+                            {
+                               loader.el.className = "";
+                               loader.el.style.visibility = "";
+                               loader.el.style.borderRadius = elemStyle.borderRadius;
+                               loader.el.style.backgroundColor = (elemStyle.backgroundColor.indexOf("rgba") !== -1 ||
+                                       elemStyle.backgroundColor === "transparent" || elemStyle.backgroundColor === "rgb(255, 255, 255)") ? elemStyle.color : elemStyle.backgroundColor;
+                               el.style.visibility = "hidden";
+                               TweenLite.to(loader.el, .15,
+                                       {
+                                          top: elemCent.top - 14,
+                                          left: elemCent.left - 14,
+                                          width: 28,
+                                          height: 28,
+                                          borderRadius: 28,
+                                          ease: "Power4.easeOut",
+                                          onComplete: function ()
+                                          {
+                                             loader.el.className = loaderClass;
+                                          }
+                                       });
+
+                               animProperties.delay = .15;
+                               TweenLite.to(loader.el, .3, animProperties);
+                               loader.el.addEventListener("click", function ()
+                               {
+                                  loader.cancel();
+                               });
+                            }, 0);
+                            return loader;
                          }
                       }
 
-           }
-   return ew;
+           };
+   return EW;
 }();

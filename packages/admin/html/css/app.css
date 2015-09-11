@@ -73,6 +73,7 @@ body, button
    border-radius: 2px;
    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
    background-color: #fff;
+   color:#888;
 }
 
 .card-title
@@ -82,6 +83,7 @@ body, button
    padding: 24px 16px 16px;
    margin: 0;
    font-weight: normal;
+   color:#000;
 }
 
 .card-title p
@@ -99,6 +101,7 @@ body, button
    padding: 16px;
    margin: 0;
    font-weight: normal;
+   color:#000;
 }
 
 .card-header p
@@ -169,6 +172,7 @@ body, button
    background-color: #fff;
    position: absolute;
    z-index: 30;   
+   overflow: hidden;
 }
 
 .dialog.open
@@ -189,7 +193,7 @@ body, button
 .dialog.center.open
 {
    top: 0;
-   bottom: 0;
+   height: 100%;
    margin: 0 -480px;
 }
 
@@ -201,9 +205,10 @@ body, button
 
 .dialog.full.open
 {
-   top: 0;
-   bottom: 0;
+   top: 0;   
    left: 0;
+   width: 100%;
+   height: 100%;
    margin: 0 ;
 }
 
@@ -244,12 +249,65 @@ body, button
 {
    background-color: rgba(33,33,33,.48);
    opacity: 0;
-   transition: opacity .5s ease-in-out;
 }
 
 .lock-pane.show
 {
    opacity: 1;
+}
+
+@-webkit-keyframes load8 
+{
+   0% {
+      -webkit-transform: rotate(0deg);
+      transform: rotate(0deg);
+   }
+   100% {
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg);
+   }
+}
+@keyframes load8 
+{
+   0% {
+      -webkit-transform: rotate(0deg);
+      transform: rotate(0deg);
+   }
+   100% {
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg);
+   }
+}
+
+
+.btn-loader
+{
+   background-image: url('images/cancel-24.png');
+   background-repeat: no-repeat;
+   background-position: center center;
+   background-size: 30%;
+   width: 56px;
+   height: 56px;
+   box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+   border-radius: 28px;
+   /*overflow: hidden;*/
+
+}
+.btn-loader:after 
+{
+   content:'';
+   display: block;
+   width: 80%;
+   height: 80%;
+   margin: 10%;
+   border-radius: 28px;
+   border: .3em solid transparent;
+   border-left-color: #fff;
+   -webkit-transform: translateZ(0);
+   -ms-transform: translateZ(0);
+   transform: translateZ(0);
+   -webkit-animation: load8 1s infinite linear;
+   animation: load8 1s infinite linear;
 }
 
 button
@@ -303,12 +361,12 @@ button.text
 
 button.text:hover
 {
-   background-color: rgba(0,0,0,.1);
+   background-color: rgba(33,33,33,.1);
 }
 
 button.text:active
 {
-   background-color: rgba(0,0,0,.28);
+   background-color: rgba(33,33,33,.28);
 }
 
 .primary
@@ -335,6 +393,11 @@ button.text:active
 {  
    //background-color: transparent;
    color:#4CAF50;
+}
+
+.text.success:active
+{
+   background-color: #C8E6C9;
 }
 
 .success:hover
