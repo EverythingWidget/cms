@@ -77,7 +77,7 @@ define(function ()
                        to: this,
                        origin: this,
                        time: .2});
-                    document.body.removeChild(this.listEl);
+                    this.appendChild(this.listEl);
                     setTimeout(function ()
                     {
                        self.addEventListener("mouseenter", self.open);

@@ -179,7 +179,7 @@ var EW = function ()
                        }
                     });
 
-                 }, 1800);
+                 }, 1000);
 
                  var loader = EW.animation.toLoader(origin, "btn-loader");
                  loader.on("cancel", function ()
@@ -191,7 +191,7 @@ var EW = function ()
                  modal.el.addEventListener("click", function ()
                  {
                     lockPane.dispose();
-                    EW.animation.transform({
+                    EW.animation.scaleTransform({
                        from: modal.el,
                        to: origin,
                        time: .3,
@@ -336,18 +336,24 @@ var EW = function ()
                             var ss = window.getComputedStyle(conf.from, null);
                             //console.log(ss);
                             var ds = window.getComputedStyle(conf.to, null);
-                            //transformBox.style.cssText = document.defaultView.getComputedStyle(conf.origin, "").cssText;
+                            //distBox.style.cssText = document.defaultView.getComputedStyle(conf.to, "").cssText;
                             distBox.style.position = "absolute";
                             distBox.style.backgroundColor = (ds.backgroundColor.indexOf("rgba") !== -1 ||
-                                    ds.backgroundColor === "transparent") ? "rgb(190,190,190)" : ds.backgroundColor;
+                                    ds.backgroundColor === "transparent") ? "rgb(255,255,255)" : ds.backgroundColor;
                             distBox.style.boxShadow = ds.boxShadow;
                             distBox.style.borderRadius = conf.to.style.borderRadius;
                             distBox.style.padding = ds.padding;
                             distBox.style.color = ds.color;
                             distBox.style.fontSize = ds.fontSize;
+                            distBox.style.fontWeight = ds.fontWeight;
+                            distBox.style.textAlign = ds.textAlign;
+                            distBox.style.textTransform = ds.textTransform;
                             distBox.style.zIndex = (ds.zIndex === "0" || ds.zIndex === "auto") ? 1 : ds.zIndex;
                             distBox.style.width = distRect.width + "px";
                             distBox.style.height = distRect.height + "px";
+                            distBox.style.lineHeight = ds.lineHeight;
+                            distBox.style.border = ds.border;
+                            distBox.style.borderRadius = ds.borderRadius;
                             distBox.style.margin = "0px";
                             distBox.innerHTML = conf.to.innerHTML;
                             distBox.className = conf.to.className;
@@ -356,20 +362,25 @@ var EW = function ()
                             var originBox = document.createElement("div");
                             originBox.style.position = "absolute";
                             originBox.style.backgroundColor = (ss.backgroundColor.indexOf("rgba") !== -1 ||
-                                    ss.backgroundColor === "transparent") ? "rgb(190,190,190)" : ss.backgroundColor;
-                            originBox.style.boxShadow = ss.boxShadow;
+                                    ss.backgroundColor === "transparent") ? "rgb(255,255,255)" : ss.backgroundColor;
+                            originBox.style.boxShadow = 'none';
                             //origin.style.borderRadius = conf.from.style.borderRadius;
                             originBox.style.padding = ss.padding;
                             originBox.style.color = ss.color;
                             originBox.style.fontSize = ss.fontSize;
+                            originBox.style.fontWeight = ss.fontWeight;
+                            originBox.style.textAlign = ss.textAlign;
+                            originBox.style.textDecoration = ss.textDecoration;
                             originBox.style.zIndex = (ds.zIndex === "0" || ds.zIndex === "auto") ? 1 : ds.zIndex;
                             originBox.style.margin = "0px";
                             originBox.style.width = sourceRect.width + "px";
                             originBox.style.height = sourceRect.height + "px";
+                            originBox.style.lineHeight = ss.lineHeight;
+                            originBox.style.border = ss.border;
                             originBox.innerHTML = conf.from.innerHTML;
                             originBox.className = conf.from.className;
                             EW.body.appendChild(originBox);
-
+                            var ease = conf.ease || "Power2.easeInOut";
 
                             conf.to.style.visibility = "hidden";
                             if (conf.flow)
@@ -377,21 +388,21 @@ var EW = function ()
 
                             TweenLite.fromTo(originBox, t,
                                     {
-                                       //opacity: 1,
-                                       //width: sourceRect.width,
-                                       //height: sourceRect.height,
+                                       //boxShadow: 'none',
                                        left: sourceRect.left,
                                        top: sourceRect.top,
-                                       transform: "scale(1,1)",
+                                       //transform: "scale(1,1)",
                                        transformOrigin: "0 0"
                                     },
                             {
                                left: distRect.left,
                                top: distRect.top,
+                               borderRadius: ds.borderRadius,
                                opacity: 0,
+                               //boxShadow: ss.boxShadow,
                                //margin:0,
                                transform: "scale(" + distRect.width / sourceRect.width + "," + distRect.height / sourceRect.height + ")",
-                               ease: conf.ease || "Power2.easeOut",
+                               ease: ease,
                                onComplete: function ()
                                {
                                   originBox.parentNode.removeChild(originBox);
@@ -401,6 +412,7 @@ var EW = function ()
 
                             TweenLite.fromTo(distBox, t,
                                     {
+                                       //boxShadow:'none',
                                        left: sourceRect.left,
                                        top: sourceRect.top,
                                        margin: 0,
@@ -414,7 +426,7 @@ var EW = function ()
                                left: distRect.left,
                                top: distRect.top,
                                transform: "scale(1,1)",
-                               ease: conf.ease || "Power2.easeOut",
+                               ease: ease,
                                onComplete: function ()
                                {
                                   conf.to.style.visibility = "";
