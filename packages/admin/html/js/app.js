@@ -12,7 +12,7 @@ requirejs.config({
 });
 
 // Start the main app logic.
-require(['grid-on-air'], function (goa)
+require(['grid-on-air', 'ew-tags'], function (goa)
 {
 
    goa.outputTo = "result_css";
@@ -51,44 +51,44 @@ require(['grid-on-air'], function (goa)
     columns: 12
     
     });
-   goa.addRange(
-           {
-              base: 'col',
-              baseStyle: "position:relative; float:left; min-height: 1px;",
-              prefix: 'xs-',
-              min: 0,
-              gutter: '5px',
-              columns: 3
-           });
-
-   goa.addRange(
-           {
-              //base: 'sm',
-              //columnBaseStyle: "position:relative; float:left; min-height: 1px;",
-              prefix: 'sm-',
-              min: 600,
-              gutter: '10px',
-              columns: 12
-           });
-   goa.addRange(
-           {
-              //base: 'md',
-              //columnBaseStyle: "position:relative; float:left; min-height: 1px;",
-              prefix: 'md-',
-              min: 960,
-              gutter: '15px',
-              columns: 12
-           });
-
-   goa.addRange(
-           {
-              //base: 'lg',
-              //columnBaseStyle: "position:relative; float:left; min-height: 1px;",
-              prefix: 'lg-',
-              min: 1340,
-              gutter: '15px',
-              columns: 12
-           });*/
+    goa.addRange(
+    {
+    base: 'col',
+    baseStyle: "position:relative; float:left; min-height: 1px;",
+    prefix: 'xs-',
+    min: 0,
+    gutter: '5px',
+    columns: 3
+    });
+    
+    goa.addRange(
+    {
+    //base: 'sm',
+    //columnBaseStyle: "position:relative; float:left; min-height: 1px;",
+    prefix: 'sm-',
+    min: 600,
+    gutter: '10px',
+    columns: 12
+    });
+    goa.addRange(
+    {
+    //base: 'md',
+    //columnBaseStyle: "position:relative; float:left; min-height: 1px;",
+    prefix: 'md-',
+    min: 960,
+    gutter: '15px',
+    columns: 12
+    });
+    
+    goa.addRange(
+    {
+    //base: 'lg',
+    //columnBaseStyle: "position:relative; float:left; min-height: 1px;",
+    prefix: 'lg-',
+    min: 1340,
+    gutter: '15px',
+    columns: 12
+    });*/
 
    //goa.createGrid();
 });
@@ -179,7 +179,7 @@ var EW = function ()
                        }
                     });
 
-                 }, 18000);
+                 }, 1800);
 
                  var loader = EW.animation.toLoader(origin, "btn-loader");
                  loader.on("cancel", function ()
@@ -228,8 +228,7 @@ var EW = function ()
                     lockPane.parentNode.removeChild(lockPane);
                  };
                  return lockPane;
-              }
-              ,
+              },
               rgbToHex: function (rgb)
               {
                  rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
@@ -245,13 +244,8 @@ var EW = function ()
                             var t = conf.time || EW.DEFAULTS.animationDuration;
                             var sourceRect = conf.from.getBoundingClientRect();
                             var distRect = conf.to.getBoundingClientRect();
-                            //toE.style.opacity = '0';
-                            //console.log(sourceRect);
-
-                            //console.log(sourceRect.width / distRect.width + "," + sourceRect.height / distRect.height)
                             var ss = window.getComputedStyle(conf.from);
                             var ds = window.getComputedStyle(conf.to);
-                            //console.log(distRect.width * parseInt(ss.borderRadius, 10) / sourceRect.width);
 
                             TweenLite.fromTo(conf.el, t,
                                     {
@@ -299,8 +293,7 @@ var EW = function ()
                             transformBox.style.color = ss.color;
                             transformBox.style.fontSize = ss.fontSize;
                             transformBox.style.zIndex = (ds.zIndex === "0" || ds.zIndex === "auto") ? 1 : ds.zIndex;
-                            //transformBox.innerHTML = conf.title || "";
-                            //console.log(ss)
+                            transformBox.style.overflow = "hidden";
                             EW.body.appendChild(transformBox);
                             conf.to.style.visibility = "hidden";
                             if (conf.flow)
@@ -312,8 +305,7 @@ var EW = function ()
                                        height: sourceRect.height,
                                        left: sourceRect.left,
                                        top: sourceRect.top,
-                                       //transform: "scale(" + sourceRect.width / distRect.width + "," + sourceRect.height / distRect.height + ")",
-                                       //transformOrigin: "0 0"
+                                       //opacity: 1
                                     },
                                     {
                                        width: distRect.width,
@@ -323,21 +315,114 @@ var EW = function ()
                                        backgroundColor: (ds.backgroundColor.indexOf("rgba") !== -1 ||
                                                ds.backgroundColor === "transparent") ? "rgb(190,190,190)" : ds.backgroundColor,
                                        boxShadow: ds.boxShadow,
-                                       //transform: "scale(1,1)",
                                        borderRadius: ds.borderRadius,
                                        ease: conf.ease || "Power2.easeInOut",
                                        onComplete: function ()
                                        {
                                           conf.to.style.visibility = "";
-                                          TweenLite.to(transformBox, .2, {opacity: 0, onComplete: function ()
-                                             {
-                                                transformBox.parentNode.removeChild(transformBox);
-                                                if (conf.onComplete)
-                                                   conf.onComplete();
-                                             }})
-
+                                          transformBox.parentNode.removeChild(transformBox);
+                                          if (conf.onComplete)
+                                             conf.onComplete();
                                        }
                                     });
+                         },
+                         scaleTransform: function (conf)
+                         {
+                            var t = conf.time || EW.DEFAULTS.animationDuration;
+                            var sourceRect = conf.from.getBoundingClientRect();
+                            var distRect = conf.to.getBoundingClientRect();
+                            //toE.style.opacity = '0';
+                            var distBox = document.createElement("div");
+                            var ss = window.getComputedStyle(conf.from, null);
+                            //console.log(ss);
+                            var ds = window.getComputedStyle(conf.to, null);
+                            //transformBox.style.cssText = document.defaultView.getComputedStyle(conf.origin, "").cssText;
+                            distBox.style.position = "absolute";
+                            distBox.style.backgroundColor = (ds.backgroundColor.indexOf("rgba") !== -1 ||
+                                    ds.backgroundColor === "transparent") ? "rgb(190,190,190)" : ds.backgroundColor;
+                            distBox.style.boxShadow = ds.boxShadow;
+                            distBox.style.borderRadius = conf.to.style.borderRadius;
+                            distBox.style.padding = ds.padding;
+                            distBox.style.color = ds.color;
+                            distBox.style.fontSize = ds.fontSize;
+                            distBox.style.zIndex = (ds.zIndex === "0" || ds.zIndex === "auto") ? 1 : ds.zIndex;
+                            distBox.style.width = distRect.width + "px";
+                            distBox.style.height = distRect.height + "px";
+                            distBox.style.margin = "0px";
+                            distBox.innerHTML = conf.to.innerHTML;
+                            distBox.className = conf.to.className;
+                            EW.body.appendChild(distBox);
+
+                            var originBox = document.createElement("div");
+                            originBox.style.position = "absolute";
+                            originBox.style.backgroundColor = (ss.backgroundColor.indexOf("rgba") !== -1 ||
+                                    ss.backgroundColor === "transparent") ? "rgb(190,190,190)" : ss.backgroundColor;
+                            originBox.style.boxShadow = ss.boxShadow;
+                            //origin.style.borderRadius = conf.from.style.borderRadius;
+                            originBox.style.padding = ss.padding;
+                            originBox.style.color = ss.color;
+                            originBox.style.fontSize = ss.fontSize;
+                            originBox.style.zIndex = (ds.zIndex === "0" || ds.zIndex === "auto") ? 1 : ds.zIndex;
+                            originBox.style.margin = "0px";
+                            originBox.style.width = sourceRect.width + "px";
+                            originBox.style.height = sourceRect.height + "px";
+                            originBox.innerHTML = conf.from.innerHTML;
+                            originBox.className = conf.from.className;
+                            EW.body.appendChild(originBox);
+
+
+                            conf.to.style.visibility = "hidden";
+                            if (conf.flow)
+                               conf.from.style.visibility = "hidden";
+
+                            TweenLite.fromTo(originBox, t,
+                                    {
+                                       //opacity: 1,
+                                       //width: sourceRect.width,
+                                       //height: sourceRect.height,
+                                       left: sourceRect.left,
+                                       top: sourceRect.top,
+                                       transform: "scale(1,1)",
+                                       transformOrigin: "0 0"
+                                    },
+                            {
+                               left: distRect.left,
+                               top: distRect.top,
+                               opacity: 0,
+                               //margin:0,
+                               transform: "scale(" + distRect.width / sourceRect.width + "," + distRect.height / sourceRect.height + ")",
+                               ease: conf.ease || "Power2.easeOut",
+                               onComplete: function ()
+                               {
+                                  originBox.parentNode.removeChild(originBox);
+                               }
+                            });
+
+
+                            TweenLite.fromTo(distBox, t,
+                                    {
+                                       left: sourceRect.left,
+                                       top: sourceRect.top,
+                                       margin: 0,
+                                       //opacity: .5,
+                                       transform: "scale(" + sourceRect.width / distRect.width + "," + sourceRect.height / distRect.height + ")",
+                                       //transform: "scale(" + sourceRect.width / distRect.width + "," + sourceRect.height / distRect.height + ")",
+                                       transformOrigin: "0 0"
+                                    },
+                            {
+                               //opacity: 1,
+                               left: distRect.left,
+                               top: distRect.top,
+                               transform: "scale(1,1)",
+                               ease: conf.ease || "Power2.easeOut",
+                               onComplete: function ()
+                               {
+                                  conf.to.style.visibility = "";
+                                  distBox.parentNode.removeChild(distBox);
+                                  if (conf.onComplete)
+                                     conf.onComplete();
+                               }
+                            });
                          },
                          toLoader: function (el, loaderClass)
                          {

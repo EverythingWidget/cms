@@ -54,7 +54,7 @@ body, button
 {
    position: absolute;
    width: 100%;
-   top: 110px;
+   top: 88px;
    bottom: 0;   
    z-index: 1;
    overflow: auto;
@@ -74,6 +74,12 @@ body, button
    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
    background-color: #fff;
    color:#888;
+   margin-top: 16px;
+}
+
+.card:last-child
+{
+   margin-bottom: 16px;
 }
 
 .card-title
@@ -117,6 +123,7 @@ body, button
    padding: 16px;
    margin: 0;
    font-size: 14px;
+   line-height: 16px;
    color: #444;
 }
 
@@ -188,6 +195,7 @@ body, button
 {
    width: 960px; 
    border-radius: 0;
+   margin: 0 -480px;
 }
 
 .dialog.center.open
@@ -290,16 +298,19 @@ body, button
    height: 56px;
    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
    border-radius: 28px;
-   /*overflow: hidden;*/
+   overflow: hidden;
 
 }
 .btn-loader:after 
 {
    content:'';
+   position: relative;
    display: block;
    width: 80%;
    height: 80%;
-   margin: 10%;
+   left: 10%;
+   top: 10%;
+   margin: 0;
    border-radius: 28px;
    border: .3em solid transparent;
    border-left-color: #fff;
@@ -310,7 +321,7 @@ body, button
    animation: load8 1s infinite linear;
 }
 
-button
+button, .btn
 {
    background-color: #607D8B;
    color: #fff;
@@ -339,17 +350,17 @@ button
    box-shadow: 0px 1px 3px -1px rgba(0,0,0,.34); 
 }
 
-button:hover
+button:hover , .btn:hover
 {
    background-color: #546E7A;
 }
 
-button:active
+button:active,  .btn:active
 {
    background-color: #455A64;
 }
 
-button.text
+button.text,  .btn.text
 {
    min-width: 64px;
    padding: 6px 8px;
@@ -359,12 +370,12 @@ button.text
    color: #444;
 }
 
-button.text:hover
+button.text:hover,  .btn.text:hover
 {
    background-color: rgba(33,33,33,.1);
 }
 
-button.text:active
+button.text:active, .btn.text:active
 {
    background-color: rgba(33,33,33,.28);
 }
@@ -423,4 +434,199 @@ button.text:active
 .danger:active
 {
    background-color:#B71C1C;
+}
+
+.list
+{
+   list-style: none;
+   padding: 0;
+   margin: 8px 0;
+}
+
+.list.with-divider li:after
+{
+   content: '';
+   border-bottom: 1px solid #e0e0e0;
+   display: block;
+   margin-bottom: -1px;
+}
+
+.list.with-divider li:last-child:after
+{
+   display: none;
+}
+
+.list li
+{
+   min-height: 48px;
+   display: block;
+}
+
+.list-item-icon
+{
+   padding: 0;
+   margin: 8px 16px 0;
+   width: 40px;
+   height: 40px;
+   background-color: #ccc;
+   overflow: hidden;
+   float: left;
+   border-radius: 100%;
+}
+
+.list-item-title
+{
+   padding: 16px 16px 0;
+   margin: 0;
+   font-size: 16px;
+   line-height: 16px;
+   font-weight: normal;
+   color: #444;
+}
+
+.list-item-title:last-child
+{
+   padding-bottom: 16px;
+}
+
+.list-item-text
+{
+   padding: 0 16px;
+   margin: 0;
+   font-size: 14px;
+   line-height: 16px;
+   font-weight: normal;
+   color: #888;
+}
+
+.list-item-multiline  .list-item-icon
+{
+   margin-top: 16px;
+}
+
+.subheader
+{
+   padding: 16px;
+   margin: 0;
+   margin-bottom: -8px;
+   font-size: 14px;
+   line-height: 16px;
+   font-weight: 600;
+   color: #888;
+}
+
+.list-item-text:last-child
+{
+   padding-bottom: 20px;
+}
+
+.list.text-only .list-item-title , .list.icon-text .list-item-title
+{
+   padding-top: 20px;
+}
+
+.list.text-only .list-item-title:last-child , .list.icon-text .list-item-title:last-child
+{
+   padding-bottom: 20px;
+}
+
+.list.icon-text .list-item-title, .list.icon-text .list-item-text
+{
+   margin-left: 56px;
+}
+
+.menu
+{
+   float: left;
+   padding: 0px;
+   transition: height .5s ease-in-out;
+   /*height: 48px;*/
+   position: relative;
+   margin: 0 8px;
+}
+
+.menu ul
+{
+   display: none;
+}
+
+
+.menu-list
+{
+   background-color: #fff;
+   box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 2px 8px rgba(0,0,0,0.23);
+   margin: 0;
+   z-index: 10;
+}
+
+.menu-list a
+{
+   text-decoration: none;
+   display: block;
+}
+
+.menu-list a:hover
+{
+   background-color: #eaeaea;
+}
+
+.menu-title
+{
+   font-size: 16px;
+   line-height: 16px;
+   font-weight: bold;
+   padding: 14px 0px;
+   margin: 0 16px;
+   margin-left: 56px;
+   display: block;
+   float: none;
+   text-align: left;
+}
+
+.data-table
+{
+   width: 100%;
+   padding: 8px 0;   
+   border-spacing: 0;
+   color:#333;
+   border: none;
+   font-weight: 500;
+}
+
+.data-table td, .data-table th
+{
+   line-height: 16px;
+   padding: 16px 0;
+   border-bottom: 1px solid #e0e0e0;
+   text-align: left;
+   font-size: 14px;
+}
+
+.data-table td:first-child, .data-table th:first-child
+{
+   padding-left: 16px;
+}
+
+.data-table td:last-child, .data-table th:last-child
+{
+   padding-right: 10px;
+}
+
+.data-table th
+{
+   padding: 20px;
+   font-size: 13px;
+   font-weight: 700;
+   color:#888;
+}
+
+.data-table tr:last-child td
+{
+   border-bottom: none;
+}
+
+.data-table tr:hover td
+{
+   background: #eee;
+   color: #000;
 }
