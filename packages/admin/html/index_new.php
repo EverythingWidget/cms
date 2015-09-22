@@ -1,20 +1,21 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="app">
    <head>
       <meta charset="UTF-8">
       <title></title>
       <link rel="stylesheet" href="js/xtag/x-tag-components.min.css" />
       <link rel="stylesheet" href="css/grid.css" />
       <link rel="stylesheet" href="css/app.css" />
-      <script src="js/xtag/x-tag-components.min.js"></script>
+<!--      <script src="js/xtag/x-tag-components.min.js"></script>-->
       <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/latest/plugins/CSSPlugin.min.js"></script>
       <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/latest/easing/EasePack.min.js"></script>
       <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenLite.min.js"></script>
-      <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-      <script data-main="js/app.js" src="js/require.js"></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.6/angular.min.js"></script>
+
+<!--      <script data-main="js/app.js" src="js/require.js"></script>-->
 
    </head>
-   <body>
+   <body ng-controller="Main">
 
 
 
@@ -25,13 +26,13 @@
          <div  class="app-nav-bar extend row">
             <button> New </button>
             <button>Edit</button>
-            <button onclick="EW.createModal()">Link to somewhere</button>
+            <button ew-modal="This is link to somewhere">Link to somewhere</button>
          </div>
          <div class="app-content row">
 
             <div class="col xs-3 sm-6 md-3 lg-3">
                <div class="card" >
-                  <h1 class="card-title" onclick="EW.createModal(this.parentNode)" >
+                  <h1 class="card-title" ew-modal="Card to Modal">
                      Card Title
                      <p>Card Subtitle</p>
                   </h1>
@@ -40,7 +41,7 @@
                   </p>
                   <div class="action-row">
 
-                     <div is="ew-menu" class="menu btn success">
+                     <ew-menu class="menu btn success" >
                         <h1 class="menu-title">
                            MENU
                         </h1>
@@ -97,15 +98,15 @@
                               <button class="text success" >Action Button</button>         
                            </li>
                         </ul>
-                     </div>
+                     </ew-menu>
                   </div>
                   <div class="action-row">
-                     <button class="primary" onclick="EW.createModal()">Call Me</button>
+                     <button class="primary" ew-modal="Call me dialog :)">Call Me</button>
                   </div>
                </div>
             </div>
             <div class="col xs-3 sm-6 md-4 lg-3">
-               <div class="card">
+               <ew-card class="card" >
                   <h1 class="card-header">
                      Card Header
                      <p>Card Subhead</p>
@@ -143,14 +144,10 @@
                   <div class="action-bar">
                      <button class="success" onclick="EW.createModal(this.parentNode)">Confirm</button>
                   </div>
-               </div>
+               </ew-card>
             </div>
             <div class="col xs-3 sm-12 md-5 lg-6">
-               <div class="card">
-                  <h1 class="card-title" onclick="EW.createModal(this)">
-                     EW Administration Statistic
-                     <p>Update yesterday</p>
-                  </h1>
+               <ew-card class="card" title="This is EW Card Title" sec-title="its working">                  
                   <p class="card-text" onclick="EW.createModal(this)">
                      Lorem ipsum nibh eleifend augue tincidunt donec viverra vitae urna est, malesuada tortor suspendisse etiam mollis lorem feugiat enim lacus habitasse, consectetur id ultrices est nostra pretium pellentesque vitae volutpat.
                   </p>
@@ -203,14 +200,11 @@
                   <div class="action-bar">
                      <button onclick="EW.createModal()">refresh</button>
                   </div>
-               </div>
+               </ew-card>
             </div>
 
             <div class="col xs-3 sm-12 md-6 lg-5">
-               <div class="card">
-                  <h1 class="card-title" onclick="EW.createModal(this)">
-                     Employees List
-                  </h1>
+               <ew-card class="card" title="Employees List" ew-modal="Employee's List Modal"> 
                   <table class="data-table">
                      <tr>
                         <th>Name</th>
@@ -243,14 +237,14 @@
                         <td>41</td>   
                      </tr>
                   </table>
-               </div>
+               </ew-card>
             </div>
 
          </div>
       </div>
+
+
+      <script src="js/app.js"></script>
+      <script src="js/lib/ew-tags.js"></script>
    </body>
-
-
-
-
 </html>
