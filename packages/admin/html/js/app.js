@@ -1,102 +1,102 @@
-requirejs.config({
-   //By default load any module IDs from js/lib
-   baseUrl: 'js/lib',
-   //except, if the module ID starts with "app",
-   //load it from the js/app directory. paths
-   //config is relative to the baseUrl, and
-   //never includes a ".js" extension since
-   //the paths config could be for a directory.
-   //paths: {
-   //    app: '../app'
-   //}
-});
+/*requirejs.config({
+ //By default load any module IDs from js/lib
+ baseUrl: 'js/lib',
+ //except, if the module ID starts with "app",
+ //load it from the js/app directory. paths
+ //config is relative to the baseUrl, and
+ //never includes a ".js" extension since
+ //the paths config could be for a directory.
+ //paths: {
+ //    app: '../app'
+ //}
+ });
+ 
+ // Start the main app logic.
+ require(['grid-on-air', 'ew-tags'], function (goa)
+ {
+ 
+ goa.outputTo = "result_css";
+ /*goa.addRange(
+ {
+ base: 'col',
+ prefix: 'xs-',
+ min: 0,
+ gutter: '5px',
+ columns: 3
+ 
+ });
+ 
+ goa.addRange(
+ {
+ prefix: 'sm-',
+ min: 600,
+ gutter: '10px',
+ columns: 12
+ 
+ });
+ goa.addRange(
+ {
+ prefix: 'md-',
+ min: 960,
+ gutter: '15px',
+ columns: 12
+ 
+ });
+ 
+ goa.addRange(
+ {
+ prefix: 'lg-',
+ min: 1340,
+ gutter: '15px',
+ columns: 12
+ 
+ });
+ goa.addRange(
+ {
+ base: 'col',
+ baseStyle: "position:relative; float:left; min-height: 1px;",
+ prefix: 'xs-',
+ min: 0,
+ gutter: '5px',
+ columns: 3
+ });
+ 
+ goa.addRange(
+ {
+ //base: 'sm',
+ //columnBaseStyle: "position:relative; float:left; min-height: 1px;",
+ prefix: 'sm-',
+ min: 600,
+ gutter: '10px',
+ columns: 12
+ });
+ goa.addRange(
+ {
+ //base: 'md',
+ //columnBaseStyle: "position:relative; float:left; min-height: 1px;",
+ prefix: 'md-',
+ min: 960,
+ gutter: '15px',
+ columns: 12
+ });
+ 
+ goa.addRange(
+ {
+ //base: 'lg',
+ //columnBaseStyle: "position:relative; float:left; min-height: 1px;",
+ prefix: 'lg-',
+ min: 1340,
+ gutter: '15px',
+ columns: 12
+ });
+ 
+ //goa.createGrid();
+ });*/
 
-// Start the main app logic.
-require(['grid-on-air', 'ew-tags'], function (goa)
+
+(function ()
 {
-
-   goa.outputTo = "result_css";
-   /*goa.addRange(
-    {
-    base: 'col',
-    prefix: 'xs-',
-    min: 0,
-    gutter: '5px',
-    columns: 3
-    
-    });
-    
-    goa.addRange(
-    {
-    prefix: 'sm-',
-    min: 600,
-    gutter: '10px',
-    columns: 12
-    
-    });
-    goa.addRange(
-    {
-    prefix: 'md-',
-    min: 960,
-    gutter: '15px',
-    columns: 12
-    
-    });
-    
-    goa.addRange(
-    {
-    prefix: 'lg-',
-    min: 1340,
-    gutter: '15px',
-    columns: 12
-    
-    });
-    goa.addRange(
-    {
-    base: 'col',
-    baseStyle: "position:relative; float:left; min-height: 1px;",
-    prefix: 'xs-',
-    min: 0,
-    gutter: '5px',
-    columns: 3
-    });
-    
-    goa.addRange(
-    {
-    //base: 'sm',
-    //columnBaseStyle: "position:relative; float:left; min-height: 1px;",
-    prefix: 'sm-',
-    min: 600,
-    gutter: '10px',
-    columns: 12
-    });
-    goa.addRange(
-    {
-    //base: 'md',
-    //columnBaseStyle: "position:relative; float:left; min-height: 1px;",
-    prefix: 'md-',
-    min: 960,
-    gutter: '15px',
-    columns: 12
-    });
-    
-    goa.addRange(
-    {
-    //base: 'lg',
-    //columnBaseStyle: "position:relative; float:left; min-height: 1px;",
-    prefix: 'lg-',
-    min: 1340,
-    gutter: '15px',
-    columns: 12
-    });*/
-
-   //goa.createGrid();
-});
-
-
-var EW = function ()
-{
-   var EW =
+   EW =
            {
               DEFAULTS:
                       {
@@ -137,7 +137,7 @@ var EW = function ()
                  };
 
               },
-              createModal: function (ori)
+              createModal: function (ori, text)
               {
                  var lockPane;
                  var modal = EW.clone(EW.COMPONENT_STRUCTURE);
@@ -158,7 +158,7 @@ var EW = function ()
 
                  modal.el = document.createElement("div"); //or use jQuery's $("#photo")
                  modal.el.className = "dialog center open";
-                 modal.el.innerHTML = "<h1 class='dialog-header-bar'>This is the Dialog Title</h1><div class='dialog-content-pane'></div><div class='dialog-action-bar'></div>";
+                 modal.el.innerHTML = "<h1 class='dialog-header-bar'>" + text + "</h1><div class='dialog-content-pane'></div><div class='dialog-action-bar'></div>";
                  var origin = ori || document.activeElement;
 
                  var loadModal = setTimeout(function ()
@@ -194,7 +194,7 @@ var EW = function ()
                     EW.animation.scaleTransform({
                        from: modal.el,
                        to: origin,
-                       time: .3,
+                       time: .6,
                        onComplete: function ()
                        {
                           origin.style.visibility = "";
@@ -530,5 +530,4 @@ var EW = function ()
                       }
 
            };
-   return EW;
-}();
+}());
