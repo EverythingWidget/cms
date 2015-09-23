@@ -146,9 +146,27 @@ var System = System ||
            hashChecker: null,
            hashChanged: function ()
            {
-              console.log([this.navigation,this.params]);
+              var self = this;
+              console.log([this.navigation, this.params]);
               var e = $.Event("hashchange");
               //console.log("---->"+this.navigation.app[0]);
+              $.each(this.navigation, function (key, value)
+              {
+                 var navHandler = null;
+                 if (navHandler = self.navs[key])
+                 {
+                    var args = [];
+                    args.push(value);
+                    for (var i = 0; i < value.length; ++i)
+                    {
+                       //i is always valid index in the arguments object
+                       args.push(value[i]);
+                    }
+                    //value.unshift(value);
+                    navHandler.apply(null, args);
+                 }
+              });
+
               if (this.navigation.app)
                  this.activeModule = this.modules[this.navigation.app[0]];
               if (this.activeModule)
@@ -161,6 +179,11 @@ var System = System ||
               this.hashHandler.call(e, this.navigation, this.params);
               //if (this.activeModule)
               //this.activeModule.hashHandler(this.navigation, this.params);
+           },
+           navs: {},
+           on: function (id, handler)
+           {
+              this.navs[id] = handler;
            },
            hashHandler: function (nav, params)
            {
@@ -178,16 +201,17 @@ var System = System ||
                     self.oldHash = window.location.hash;
                     self.newHandler = false;
                     var hashValue = window.location.hash;
-                    if (hashValue.indexOf("#") !== -1)
-                    {
-                       hashValue = hashValue.substring(1);
-                       /*var nav = hashValue.match(/#([^&]*)&?/);
-                        hashValue = hashValue.replace(/#([^&]*)&?/, "");
-                        
-                        if (nav[0])
-                        navigation = nav[1].split("/").filter(Boolean);*/
-                       //hashValue = hashValue.substring(1);
-                    }
+                    hashValue = hashValue.replace(/^#\/?/igm, '');
+                    /*if (hashValue.indexOf("#") !== -1)
+                     {
+                     hashValue = hashValue.substring(1);
+                     /*var nav = hashValue.match(/#([^&]*)&?/);
+                     hashValue = hashValue.replace(/#([^&]*)&?/, "");
+                     
+                     if (nav[0])
+                     navigation = nav[1].split("/").filter(Boolean);
+                     //hashValue = hashValue.substring(1);
+                     }*/
                     self.navigation = {};
                     self.params = {};
                     hashValue.replace(/([^&]*)=([^&]*)/g, function (m, k, v)

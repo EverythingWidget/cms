@@ -57,7 +57,7 @@ class App extends \ew\App
          }
          $pageTitle = "tr{" . $sc->get_title() . "}";
       }
-      $this->load_view('html/index.php', compact(['compPage',
+      $this->load_view('html/index_new.php', compact(['compPage',
           'pageTitle',
           'compId']));
    }

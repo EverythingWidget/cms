@@ -6,11 +6,14 @@
       <link rel="stylesheet" href="js/xtag/x-tag-components.min.css" />
       <link rel="stylesheet" href="css/grid.css" />
       <link rel="stylesheet" href="css/app.css" />
-<!--      <script src="js/xtag/x-tag-components.min.js"></script>-->
+      <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+      <script src="js/xtag/x-tag-components.min.js"></script>
       <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/latest/plugins/CSSPlugin.min.js"></script>
       <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/latest/easing/EasePack.min.js"></script>
       <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenLite.min.js"></script>
       <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.6/angular.min.js"></script>
+      
+
 
 <!--      <script data-main="js/app.js" src="js/require.js"></script>-->
 
@@ -106,7 +109,7 @@
                </div>
             </div>
             <div class="col xs-3 sm-6 md-4 lg-3">
-               <ew-card class="card" >
+               <div class="card" >
                   <h1 class="card-header">
                      Card Header
                      <p>Card Subhead</p>
@@ -144,10 +147,14 @@
                   <div class="action-bar">
                      <button class="success" onclick="EW.createModal(this.parentNode)">Confirm</button>
                   </div>
-               </ew-card>
+               </div>
             </div>
             <div class="col xs-3 sm-12 md-5 lg-6">
-               <ew-card class="card" title="This is EW Card Title" sec-title="its working">                  
+               <div class="card" title="This is EW Card Title" sec-title="its working"> 
+                  <h1  class="card-title" >
+                     This is EW Card Title
+                     <p >its working</p>
+                  </h1>
                   <p class="card-text" onclick="EW.createModal(this)">
                      Lorem ipsum nibh eleifend augue tincidunt donec viverra vitae urna est, malesuada tortor suspendisse etiam mollis lorem feugiat enim lacus habitasse, consectetur id ultrices est nostra pretium pellentesque vitae volutpat.
                   </p>
@@ -200,11 +207,15 @@
                   <div class="action-bar">
                      <button onclick="EW.createModal()">refresh</button>
                   </div>
-               </ew-card>
+               </div>
             </div>
 
             <div class="col xs-3 sm-12 md-6 lg-5">
-               <ew-card class="card" title="Employees List" ew-modal="Employee's List Modal"> 
+               <div class="card" title="Employees List" ew-modal="Employee's List Modal"> 
+                  <h1  class="card-title" >
+                     Employees List
+                     <p >Employee's List Modal</p>
+                  </h1>
                   <table class="data-table">
                      <tr>
                         <th>Name</th>
@@ -237,7 +248,7 @@
                         <td>41</td>   
                      </tr>
                   </table>
-               </ew-card>
+               </div>
             </div>
 
          </div>
@@ -246,5 +257,19 @@
 
       <script src="js/app.js"></script>
       <script src="js/lib/ew-tags.js"></script>
+      <script src="js/system.js"></script>
+      <script type="text/javascript">
+                              (function () {
+                                 System.on("app", function (path, appId, sectionId)
+                                 {
+                                    console.log("Load app: " + path.join(" > "));
+                                 });
+                                 System.on("alert", function (path, message)
+                                 {
+                                    alert("Message: " + message);
+                                 });
+                                 System.start();
+                              })();
+      </script>
    </body>
 </html>
