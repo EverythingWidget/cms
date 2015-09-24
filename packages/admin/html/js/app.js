@@ -413,6 +413,7 @@
                             TweenLite.fromTo(distBox, t,
                                     {
                                        //boxShadow:'none',
+                                       //borderRadius: ss.borderRadius,
                                        left: sourceRect.left,
                                        top: sourceRect.top,
                                        margin: 0,
@@ -423,6 +424,7 @@
                                     },
                             {
                                //opacity: 1,
+                               //borderRadius: ds.borderRadius,
                                left: distRect.left,
                                top: distRect.top,
                                transform: "scale(1,1)",

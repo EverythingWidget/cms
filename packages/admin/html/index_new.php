@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="app">
+<html >
    <head>
       <meta charset="UTF-8">
       <title></title>
@@ -12,17 +12,12 @@
       <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/latest/easing/EasePack.min.js"></script>
       <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenLite.min.js"></script>
       <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.6/angular.min.js"></script>
-      
 
 
 <!--      <script data-main="js/app.js" src="js/require.js"></script>-->
-
    </head>
-   <body ng-controller="Main">
-
-
-
-      <div class="app-pane container">
+   <body >
+      <div class="app-pane containe, path, widgetsManagementr">
 
          <div class="system-nav-bar row" ></div>
 
@@ -34,7 +29,7 @@
          <div class="app-content row">
 
             <div class="col xs-3 sm-6 md-3 lg-3">
-               <div class="card" >
+               <div id="card" class="card" >
                   <h1 class="card-title" ew-modal="Card to Modal">
                      Card Title
                      <p>Card Subtitle</p>
@@ -50,26 +45,25 @@
                         </h1>
                         <ul class="list icon-text">                                            
                            <li>
-                              <a href="#item-1">
+                              <a href="#app=WidgetsManagement">
                                  <i class="list-item-icon"></i>
                                  <h1 class="list-item-title" >
-                                    Item 1 with text
+                                    Widget Management
                                  </h1>
                               </a>
                            </li>
                            <li>
-                              <a href="#item-2">
+                              <a href="#app=WidgetsManagement/widgets">
                                  <i class="list-item-icon"></i>
                                  <h1 class="list-item-title" >
-                                    Item 2
-                                 </h1>
+                                    Widgets                                 </h1>
                               </a>
                            </li>
                            <li>
-                              <a href="#item-3">
+                              <a href="#app=WidgetsManagement/widgets/list">
                                  <i class="list-item-icon"></i>
                                  <h1 class="list-item-title" >
-                                    Item 3
+                                    Widgets List
                                  </h1>
                               </a>
                            </li>
@@ -258,18 +252,48 @@
       <script src="js/app.js"></script>
       <script src="js/lib/ew-tags.js"></script>
       <script src="js/system.js"></script>
-      <script type="text/javascript">
-                              (function () {
-                                 System.on("app", function (path, appId, sectionId)
-                                 {
-                                    console.log("Load app: " + path.join(" > "));
-                                 });
-                                 System.on("alert", function (path, message)
-                                 {
-                                    alert("Message: " + message);
-                                 });
-                                 System.start();
-                              })();
+      <script>
+                        /* global System */
+                        (function () {
+                           System.init();
+
+                           System.on("app", function (path, appId)
+                           {
+                              //alert("Load app: " + path.join(" > "));
+                           });
+
+                           var widgetsManagement = System.module("WidgetsManagement");
+
+                           widgetsManagement.init = function ()
+                           {
+                              //alert("WidgetsManagement loaded");
+                           };
+
+                           widgetsManagement.on("app", function (p, sectionName, command)
+                           {
+                              if (!sectionName)
+                                 return;
+                              command = command || "list";
+                              //alert("Section called " + sectionName);
+                           });
+
+                           var widgets = widgetsManagement.module("widgets");
+
+                           widgets.init = function ()
+                           {
+
+                           };
+
+                           widgets.on("app", function (p, command)
+                           {
+                              if (!command)
+                                 return;
+                              EW.createModal(document.getElementById("card"));
+                              //alert("Command called " + command);
+                           });
+
+                           System.start();
+                        })();
       </script>
    </body>
 </html>

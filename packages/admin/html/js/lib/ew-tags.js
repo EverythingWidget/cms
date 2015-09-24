@@ -61,6 +61,7 @@ xtag.register('ew-menu', {
                     from: this,
                     to: this.listEl,
                     origin: this,
+                    ease:"Power2.easeOut",
                     time: .3});
                  this.opened = true;
               },
