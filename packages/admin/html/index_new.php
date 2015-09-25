@@ -17,7 +17,7 @@
 <!--      <script data-main="js/app.js" src="js/require.js"></script>-->
    </head>
    <body >
-      <div class="app-pane containe, path, widgetsManagementr">
+      <div class="app-pane container">
 
          <div class="system-nav-bar row" ></div>
 
@@ -45,10 +45,10 @@
                         </h1>
                         <ul class="list icon-text">                                            
                            <li>
-                              <a href="#app=WidgetsManagement">
+                              <a href="#app=ContentManagement">
                                  <i class="list-item-icon"></i>
                                  <h1 class="list-item-title" >
-                                    Widget Management
+                                    Content Management
                                  </h1>
                               </a>
                            </li>
@@ -68,10 +68,10 @@
                               </a>
                            </li>
                            <li>
-                              <a href="#item-4">
+                              <a href="#app=google">
                                  <i class="list-item-icon"></i>
                                  <h1 class="list-item-title" >
-                                    Item 4 new
+                                    Google
                                  </h1>
                               </a>
                            </li>
@@ -205,7 +205,7 @@
             </div>
 
             <div class="col xs-3 sm-12 md-6 lg-5">
-               <div class="card" title="Employees List" ew-modal="Employee's List Modal"> 
+               <div class="card" title="Employees List" ew-modal="Employee's List Modal" > 
                   <h1  class="card-title" >
                      Employees List
                      <p >Employee's List Modal</p>
@@ -253,6 +253,10 @@
       <script src="js/lib/ew-tags.js"></script>
       <script src="js/system.js"></script>
       <script>
+                        $(".card").on("click", function (e)
+                        {
+                           console.log(e);
+                        });
                         /* global System */
                         (function () {
                            System.init();
@@ -260,21 +264,56 @@
                            System.on("app", function (path, appId)
                            {
                               //alert("Load app: " + path.join(" > "));
+                              if (this.modules[appId])
+                              {
+
+                              }
+                              else
+                              {
+                                 console.log("Section `" + appId + "` does not exist");
+                                 System.openApp(
+                                         {
+                                            package: ".",
+                                            id: appId,
+                                            file: "index.php"
+                                         });
+                              }
                            });
+
+                           System.onLoadApp = function (app)
+                           {
+                              console.log("App `" + app.id + "` is going to be loaded");
+                              return true;
+                           };
+
+                           System.onAppLoaded = function (app)
+                           {
+                              console.log("App `" + app.id + "` is loaded");
+                           };
 
                            var widgetsManagement = System.module("WidgetsManagement");
 
                            widgetsManagement.init = function ()
                            {
-                              //alert("WidgetsManagement loaded");
+                              this.data.oldSection = null;
                            };
 
                            widgetsManagement.on("app", function (p, sectionName, command)
                            {
                               if (!sectionName)
                                  return;
-                              command = command || "list";
-                              //alert("Section called " + sectionName);
+                              if (this.data.oldSection === sectionName)
+                                 return;
+                              this.data.oldSection = sectionName;
+                              if (widgetsManagement.modules[sectionName])
+                              {
+
+                              }
+                              else
+                              {
+                                 alert("Section `" + sectionName + "` does not exist");
+
+                              }
                            });
 
                            var widgets = widgetsManagement.module("widgets");
@@ -291,6 +330,8 @@
                               EW.createModal(document.getElementById("card"));
                               //alert("Command called " + command);
                            });
+
+                           var google = System.module("google");
 
                            System.start();
                         })();

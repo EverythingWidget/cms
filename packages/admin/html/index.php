@@ -34,7 +34,7 @@ if (!isset($_SESSION['login']))
       <script src="<?php echo EW_ROOT_URL ?>core/js/gsap/plugins/CSSPlugin.min.js"></script>
       <script src="<?php echo EW_ROOT_URL ?>core/js/gsap/TweenLite.min.js" ></script>
       <script src="<?php echo EW_ROOT_URL ?>core/js/gsap/jquery.gsap.min.js"></script>
-      <script src="<?php echo EW_ROOT_URL ?>core/js/system.js"></script>
+      <script src="<?php echo EW_ROOT_URL ?>core/js/system_1.js"></script>
       <script>
          //var EW = new EverythingWidgets();
          System.onLoadApp = function (app)

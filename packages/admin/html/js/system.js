@@ -1,6 +1,6 @@
 /**
  * 
- * @type @exp;System
+ * @type Object
  */
 var System = System ||
         {
@@ -33,7 +33,7 @@ var System = System ||
                       focus: function ()
                       {
                          //System.activityTree.unshift(this);
-                         System.activeHashHandler = this.hashHandler;
+                         //System.activeHashHandler = this.hashHandler;
                       },
                       blur: function ()
                       {
@@ -43,27 +43,42 @@ var System = System ||
                       {
 
                       },
+                      /**
+                       * 
+                       * @param {String} id
+                       * @param {Object} object
+                       * @returns {System.MODULE_ABSTRACT}
+                       */
                       module: function (id, object)
                       {
+                         if (!object && this.modules[id])
+                            return this.modules[id];
                          this.modules[id] = $.extend(true, {}, System.MODULE_ABSTRACT, object || {});
-                         this.modules[id].name = id;
+                         this.modules[id].id = id;
                          return this.modules[id];
                       },
                       hash: {},
+                      data: {},
+                      /**
+                       * 
+                       * @param {String} id
+                       * @param {Function} handler
+                       * @returns {undefined}
+                       */
                       on: function (id, handler)
                       {
                          this.hash[id] = handler;
                          //System.main.newHandler = true;
-                         if (this.navigation[id])
-                         {
-                            var args = [];
-                            args.push(this.navigation[id]);
-                            for (var i = 0; i < this.navigation[id].length; ++i)
-                            {
-                               args.push(this.navigation[id][i]);
-                            }
-                            handler.apply(null, args);
-                         }
+                         /*if (this.navigation[id])
+                          {
+                          var args = [];
+                          args.push(this.navigation[id]);
+                          for (var i = 0; i < this.navigation[id].length; ++i)
+                          {
+                          args.push(this.navigation[id][i]);
+                          }
+                          handler.apply(this, args);
+                          }*/
                       },
                       hashChanged: function (navigation, params)
                       {
@@ -88,11 +103,11 @@ var System = System ||
                                //value.unshift(value);
                                //alert(self.name + " " + JSON.stringify(value) + " " + JSON.stringify(self.navigation[key]))
                                //if (JSON.stringify(value) !== JSON.stringify(self.navigation[key]))
-                               navHandler.apply(null, args);
+                               navHandler.apply(self, args);
                             }
                          });
 
-                         console.log(this.name, this.modules, this.moduleIdentifier)
+                         //console.log(this.id, this.modules, this.moduleIdentifier)
 
                          if (this.moduleIdentifier && navigation[this.moduleIdentifier])
                          {
@@ -103,15 +118,17 @@ var System = System ||
                             this.activeModule = null;
                          if (this.activeModule)
                          {
-                            if (!this.activeModule.inited)
-                            {
-                               this.activeModule.inited = true;
-                               this.activeModule.init.call(this.activeModule);
-                            }
-
                             var modNav = navigation[this.moduleIdentifier].slice(1);
                             newNav = $.extend(true, {}, navigation);
                             newNav[this.moduleIdentifier] = modNav;
+
+                            if (!this.activeModule.inited)
+                            {
+                               this.activeModule.inited = true;
+                               this.activeModule.init.call(this.activeModule, newNav, this.params);
+                            }
+
+
 
                             //if (JSON.stringify(this.activeModule.navigation) !== JSON.stringify(newNav) || JSON.stringify(this.activeModule.params) !== JSON.stringify(this.params))
                             //{
@@ -136,6 +153,12 @@ var System = System ||
            {
               this.modules[id] = $.extend(true, {}, System.MODULE_ABSTRACT, object);
            },
+           /**
+            * 
+            * @param {String} id
+            * @param {Object} object
+            * @returns {System.ABSTRACT_MODULE}
+            */
            module: function (id, object)
            {
               return this.main.module(id, object);
@@ -173,10 +196,19 @@ var System = System ||
                        //var html = res;
                        //System.apps[id] = $.extend({}, System.module, self.apps[id]);
                        //System.activityTree.unshift(System.apps[id]);
-                       self.onAppLoaded(self.modules[id], html);
+                       var m = System.module(id);
+                       self.onAppLoaded(m, html);
                        //
-                       System.modules[id].init();
-                       System.modules[id].focus();
+                       /*var modNav = self.main.navigation[m.moduleIdentifier].slice(1);
+                       var newNav = $.extend(true, {}, self.main.navigation);
+                       newNav[m.moduleIdentifier] = modNav;
+
+                       if (!this.activeModule.inited)
+                       {
+                          this.activeModule.inited = true;
+                          this.activeModule.init.call(m, newNav, self.main.params);
+                          this.activeModule.hashChanged(newNav, self.main.params);
+                       }*/
                        //
                        self.currentOnLoad = null;
                        self.onLoadQueue.shift();
@@ -195,6 +227,11 @@ var System = System ||
                  self.appLoaderService();
               }, 1);
            },
+           /** This method will be called whenever System attempts to load an app
+            * 
+            * @param {Object} app
+            * @returns {Boolean} True if the app should be loaded and false if the app may not be loaded
+            */
            onLoadApp: function (app)
            {
               // Example: show a loading animation
@@ -263,6 +300,11 @@ var System = System ||
             this.hashHandler.call(e, this.navigation, this.params);
             },
             navs: {},*/
+           /**
+            * 
+            * @param {String} id
+            * @param {Function} handler
+            */
            on: function (id, handler)
            {
               this.main.on.call(this.main, id, handler);
@@ -383,7 +425,7 @@ var System = System ||
            {
               this.main = $.extend(true, {}, System.MODULE_ABSTRACT);
               this.main.moduleIdentifier = this.moduleIdentifier;
-              this.main.name = "main";
+              this.main.id = "main";
            }
 
         };
