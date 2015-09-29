@@ -39,7 +39,7 @@
                   </p>
                   <div class="action-row">
 
-                     <ew-menu class="menu btn success" >
+                     <div is="ew-menu" class=" btn success" >
                         <h1 class="menu-title">
                            MENU
                         </h1>
@@ -95,7 +95,7 @@
                               <button class="text success" >Action Button</button>         
                            </li>
                         </ul>
-                     </ew-menu>
+                     </div>
                   </div>
                   <div class="action-row">
                      <button class="primary" ew-modal="Call me dialog :)">Call Me</button>

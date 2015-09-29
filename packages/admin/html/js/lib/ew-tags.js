@@ -1,18 +1,20 @@
 
 xtag.register('ew-menu', {
    // extend existing elements
-   //extends: 'div',
+   extends: 'div',
    lifecycle: {
       created: function ()
       {
          var self = this;
+         console.log("aaaaa")
          // fired once at the time a component
          // is initially created or parsed
          this.listEl = this.getElementsByTagName("ul")[0];
          this.listEl.style.position = "absolute";
+         this.listEl.style.display = "none";
          this.listEl.classList.add("menu-list");
-
-         this.updatePosition();
+         //this.listEl.parentNode.removeChild(this.listEl);
+         //this.updatePosition();
 
          this.addEventListener("mouseenter", self.open);
          this.addEventListener("click", self.open);
@@ -20,20 +22,19 @@ xtag.register('ew-menu', {
          {
             self.close(e, true);
          });
-         this.listEl.addEventListener("click", function (e)
-         {
-            self.close(e);
-         });
-         ;
       },
-      inserted: function ()
+      inserted: function (e)
       {
+         console.log($("body").html())
+         console.log(this);
          //console.log(this.events)
          // fired each time a component
          // is inserted into the DOM
       },
-      removed: function ()
+      removed: function (e)
       {
+         console.log(arguments);
+         //this.appendChild(this.listEl);
          // fired each time an element
          // is removed from DOM
       },
@@ -56,12 +57,14 @@ xtag.register('ew-menu', {
                  this.removeEventListener("mouseenter", this.open);
                  this.removeEventListener("click", this.open);
                  this.updatePosition();
+                 this.listEl.style.display = "";
                  document.body.appendChild(this.listEl);
+
                  EW.animation.scaleTransform({
                     from: this,
                     to: this.listEl,
                     origin: this,
-                    ease:"Power2.easeOut",
+                    ease: "Power2.easeOut",
                     time: .3});
                  this.opened = true;
               },
@@ -76,6 +79,8 @@ xtag.register('ew-menu', {
                     origin: this,
                     time: .2});
                  this.appendChild(this.listEl);
+                 //this.listEl.parentNode.removeChild(this.listEl);
+                 this.listEl.style.display = "none";
                  setTimeout(function ()
                  {
                     self.addEventListener("mouseenter", self.open);
@@ -104,12 +109,12 @@ xtag.register('ew-menu', {
 
            });
    /*app.service("ewTests", function ($window)
-   {
-      return function ()
-      {
-         //console.log($window);
-      }
-   });*/
+    {
+    return function ()
+    {
+    //console.log($window);
+    }
+    });*/
 
    app.service("ewModal", function ($window)
    {
@@ -143,99 +148,99 @@ xtag.register('ew-menu', {
       };
    });
    /*app.directive("ewMenu", function ()
-   {
-      var c =
-              {
-                 restrict: 'E',
-                 transclude: false,
-                 scope: {
-                    animSpeed: '='
-                 },
-                 controller: function ($scope, $element)
-                 {
-                    $scope.title = $element.find("h1")[0];
-                    $element.one("mouseenter", function ()
-                    {
-                       $scope.open();
-                    });
-
-                    $scope.list = angular.element($element.find("ul")[0]);
-                    $scope.list.css("position", "absolute");
-                    $scope.list.addClass("menu-list");
-
-                    $scope.open = function ()
-                    {
-                       $scope.updatePosition();
-                       document.body.appendChild($scope.list[0]);
-                       EW.animation.scaleTransform({
-                          from: $element[0],
-                          to: $scope.list[0],
-                          time: .3});
-                       $scope.list.one("mouseleave", function ()
-                       {
-                          $scope.close(true);
-                       });
-                       $scope.list.one("click", function ()
-                       {
-                          $scope.close();
-                       });
-                       $scope.opened = true;
-                    };
-
-                    $scope.close = function (fast)
-                    {
-                       var self = this;
-                       if (!$scope.opened)
-                          return;
-                       EW.animation.scaleTransform({
-                          from: $scope.list[0],
-                          to: $element[0],
-                          time: .2});
-                       $scope.list.detach();
-                       setTimeout(function ()
-                       {
-                          $element.one("mouseenter", function ()
-                          {
-                             $scope.open();
-                          });
-                       }, fast ? 0 : 800);
-                       this.opened = false;
-                    };
-
-                    $scope.updatePosition = function ()
-                    {
-                       var dim = $element[0].getBoundingClientRect();
-                       $scope.list.css(
-                               {
-                                  minWidth: dim.width + 'px',
-                                  left: dim.left + 'px',
-                                  top: dim.top + 'px'
-                               });
-                    };
-
-                 },
-                 //template: "<div></div>",
-                 replace: true
-              };
-      return c;
-   });
-
-   app.directive("ewCard", function ()
-   {
-      var c =
-              {
-                 restrict: 'E',
-                 transclude: true,
-                 scope:
-                         {
-                            title: '@',
-                            secTitle: '@'
-                         },
-                 controller: function ($scope, $element, $attrs)
-                 {
-                 },
-                 templateUrl: "js/lib/EWCard.html"
-              };
-      return c;
-   });*/
+    {
+    var c =
+    {
+    restrict: 'E',
+    transclude: false,
+    scope: {
+    animSpeed: '='
+    },
+    controller: function ($scope, $element)
+    {
+    $scope.title = $element.find("h1")[0];
+    $element.one("mouseenter", function ()
+    {
+    $scope.open();
+    });
+    
+    $scope.list = angular.element($element.find("ul")[0]);
+    $scope.list.css("position", "absolute");
+    $scope.list.addClass("menu-list");
+    
+    $scope.open = function ()
+    {
+    $scope.updatePosition();
+    document.body.appendChild($scope.list[0]);
+    EW.animation.scaleTransform({
+    from: $element[0],
+    to: $scope.list[0],
+    time: .3});
+    $scope.list.one("mouseleave", function ()
+    {
+    $scope.close(true);
+    });
+    $scope.list.one("click", function ()
+    {
+    $scope.close();
+    });
+    $scope.opened = true;
+    };
+    
+    $scope.close = function (fast)
+    {
+    var self = this;
+    if (!$scope.opened)
+    return;
+    EW.animation.scaleTransform({
+    from: $scope.list[0],
+    to: $element[0],
+    time: .2});
+    $scope.list.detach();
+    setTimeout(function ()
+    {
+    $element.one("mouseenter", function ()
+    {
+    $scope.open();
+    });
+    }, fast ? 0 : 800);
+    this.opened = false;
+    };
+    
+    $scope.updatePosition = function ()
+    {
+    var dim = $element[0].getBoundingClientRect();
+    $scope.list.css(
+    {
+    minWidth: dim.width + 'px',
+    left: dim.left + 'px',
+    top: dim.top + 'px'
+    });
+    };
+    
+    },
+    //template: "<div></div>",
+    replace: true
+    };
+    return c;
+    });
+    
+    app.directive("ewCard", function ()
+    {
+    var c =
+    {
+    restrict: 'E',
+    transclude: true,
+    scope:
+    {
+    title: '@',
+    secTitle: '@'
+    },
+    controller: function ($scope, $element, $attrs)
+    {
+    },
+    templateUrl: "js/lib/EWCard.html"
+    };
+    return c;
+    });*/
 })();
