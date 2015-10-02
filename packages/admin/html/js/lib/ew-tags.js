@@ -25,8 +25,8 @@ xtag.register('ew-menu', {
       },
       inserted: function (e)
       {
-         console.log($("body").html())
-         console.log(this);
+         //console.log($("body").html())
+         //console.log(this);
          //console.log(this.events)
          // fired each time a component
          // is inserted into the DOM

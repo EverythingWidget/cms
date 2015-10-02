@@ -29,19 +29,24 @@ $content_labels = EWCore::read_registry("ew-content-labels");
    {
       var ContentManagement = System.module("ContentManagement");
 
-      ContentManagement.init = function ()
+      ContentManagement.init = function (nav)
       {
          //alert('<?php echo json_encode($content_labels) ?>');
-         alert("a");
+         //alert("a");
+         console.log("ContentManagement is here :)");
       };
 
       ContentManagement.initNav = function ()
       {
 
       };
-      ContentManagement.on("app", function (p, a)
+
+      ContentManagement.on("app", function (p, section)
       {
-         alert("b");
+         if (!section || section === this.data.tab)
+            return;
+         this.data.tab = section;
+         alert(section);
       });
 
    }());
