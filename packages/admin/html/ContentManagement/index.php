@@ -43,11 +43,14 @@ $content_labels = EWCore::read_registry("ew-content-labels");
 
       ContentManagement.on("app", function (p, section)
       {
-         if (!section || section === this.data.tab)
+         if (!section /*|| section === this.data.tab*/)
             return;
          this.data.tab = section;
-         alert(section);
+         
+         EW.appNav.setCurrentTab($("a[data-ew-nav='" + section + "']"));
+
       });
+
 
    }());
 </script>

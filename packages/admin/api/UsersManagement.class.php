@@ -151,7 +151,7 @@ class UsersManagement extends Section
       return FALSE;
    }
 
-   public function get_users_list($token = null, $size = null)
+   public function get_users_list($token = 0, $size = 999999)
    {
       $db = \EWCore::get_db_connection();
 
@@ -159,13 +159,15 @@ class UsersManagement extends Section
       {
          $token = 0;
       }
-      if ($size)
+      if (!isset($size))
       {
-         $size = ", $size";
+         $size = '18446744073709551610';
       }
+      $size = ", $size";
+
       $totalRows = $db->query("SELECT COUNT(*) FROM ew_users, ew_users_groups WHERE ew_users.group_id = ew_users_groups.id") or die(error_reporting());
       $totalRows = $totalRows->fetch_assoc();
-
+      //echo $size;
       $result = $db->query("SELECT ew_users.id,email, first_name, last_name,ew_users_groups.title, DATE_FORMAT(ew_users.date_created,'%Y-%m-%d') AS round_date_created FROM ew_users, ew_users_groups WHERE ew_users.group_id = ew_users_groups.id ORDER BY ew_users.id LIMIT $token $size") or die($db->error);
 
       $rows = array();
@@ -399,7 +401,7 @@ class UsersManagement extends Section
          return json_encode($rows);
       }
    }
-   
+
    public static function get_user($userId = null)
    {
       $db = \EWCore::get_db_connection();

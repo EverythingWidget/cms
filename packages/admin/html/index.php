@@ -34,8 +34,10 @@ if (!isset($_SESSION['login']))
       <script src="<?php echo EW_ROOT_URL ?>core/js/gsap/plugins/CSSPlugin.min.js"></script>
       <script src="<?php echo EW_ROOT_URL ?>core/js/gsap/TweenLite.min.js" ></script>
       <script src="<?php echo EW_ROOT_URL ?>core/js/gsap/jquery.gsap.min.js"></script>
-      <script src="<?php echo EW_ROOT_URL ?>core/js/system_1.js"></script>
+      <script src="admin/js/system.js"></script>
+<!--      <script src="<?php echo EW_ROOT_URL ?>core/js/system_1.js"></script>-->
       <script>
+         System.init();
          //var EW = new EverythingWidgets();
          System.onLoadApp = function (app)
          {
@@ -67,28 +69,44 @@ if (!isset($_SESSION['login']))
             setTimeout(function ()
             {
                $("#app-content").append(response);
+
                EW.initSideBar();
+               app.start();
             }, 500);
 
          };
-         System.hashHandler = function (nav, params)
+
+         System.main.hashHandler = function (nav, params)
          {
-            if (!nav.app)
-               nav.app = ["Home"];
-            if (nav.app[0] !== EW.oldApp)
+            if (!nav["app"] && "Home" !== EW.oldApp)
             {
-               EW.oldApp = nav.app[0];
-               $("#app-title").text(EW.apps[nav.app[0]].title);
-               System.openApp(EW.apps[nav.app[0]]);
+               EW.oldApp = "Home";
+               $("#app-title").text(EW.apps["Home"].title);
+               System.openApp(EW.apps["Home"]);
+            }
+         }
+
+         System.on('app', function (path, app, sec)
+         {
+            if (!app)
+               app = "Home";
+
+            if (app !== EW.oldApp)
+            {
+               //alert("app: ha>"+path)
+               EW.oldApp = app;
+               $("#app-title").text(EW.apps[app].title);
+               System.openApp(EW.apps[app]);
                return;
             }
-            if (nav.app[1])
-            {
-               //alert(nav.app[1])
-               EW.appNav.setCurrentTab($("a[data-ew-nav='" + nav.app[1] + "']"));
-            }
+            /*if (app && System.main.modules[app])
+             {
+             alert("call to sec: "+path);
+             //EW.appNav.setCurrentTab($("a[data-ew-nav='" + sec + "']"));
+             }*/
+
             //base.setCurrentTab($("a[data-ew-nav='" + EW.getHashParameter("nav") + "']"));
-         };
+         });
 
          EverythingWidgets.prototype.loadSections = function ()
          {
@@ -152,8 +170,11 @@ if (!isset($_SESSION['login']))
                 });*/
                //alert($(items.join('')).html());
                System.start();
+               /* if (!System.getHashNav("app"))
+                System.setHashParameters({app: "Home"});*/
             }, "json");
          };
+
          EverythingWidgets.prototype.loadApp = function (data)
          {
             if (data.app !== this.oldApp)
@@ -572,19 +593,22 @@ if (!isset($_SESSION['login']))
                      //base.setCurrentTab(a);
                   });
                   var currentNav = System.getHashNav("app")[1];
+
                   if (window.location.hash.indexOf(a.attr("href")) != -1 || currentNav === a.attr("data-ew-nav"))
                   {
-                     System.hashChanged();
+                     //System.hashChanged();
                      //base.setCurrentTab(a);
                   }
                   //alert(currentNav);
                   if (a.attr("data-default") && !currentNav)
                   {
-//alert()
-                     System.setHashParameters({
-                        "app": System.getHashNav("app")[0] + '/' + a.attr("data-ew-nav")
-                     });
-                     System.hashChanged();
+                     if (System.getHashNav("app")[1] !== a.attr("data-ew-nav"))
+                     {
+                        System.setHashParameters(
+                                {
+                                   app: System.getHashNav("app")[0] + '/' + a.attr("data-ew-nav")
+                                }, true);
+                     }
                   }
                   /*var defaultLink = EW.getHashParameter(kv[0]);
                    if (window.location.hash.indexOf(a.attr("href")) != -1 || defaultLink === kv[1])
@@ -796,6 +820,7 @@ if (!isset($_SESSION['login']))
 
       <div id="notifications-panel"></div>   
       <script src="<?php echo EW_ROOT_URL ?>core/js/bootstrap.min.js" ></script>
+
 
    </body>
 </html>

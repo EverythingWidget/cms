@@ -33,85 +33,19 @@ function script()
    <script>
       (function ()
       {
-         var oldSection;
-         function WidgetsManagement()
-         {
-            this.sections = $('#sections').html();
-            this.oldRow;
+         var WidgetsManagement = System.module("WidgetsManagement");
 
-         }
-
-         WidgetsManagement.prototype.init = function ()
-         {
-            
-         };
-
-         WidgetsManagement.prototype.start = function ()
+         WidgetsManagement.init = function ()
          {
 
          };
-
-         WidgetsManagement.prototype.selectRow = function (obj) {
-            $(widgetsManagement.oldRow).removeClass("selected");
-            $(obj).addClass("selected");
-            widgetsManagement.oldRow = obj;
-         };
-         WidgetsManagement.prototype.uisList = function () {
-            EW.lock('#main-content');
-            $.post('<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/uis-list.php', function (data) {
-               $('#main-content').html(data);
-            });
-         };
-         WidgetsManagement.prototype.panelsList = function () {
-            EW.lock('#main-content');
-            $.post('sections/WidgetsManagement/PanelsList.php', function (data) {
-               $('#main-content').html(data);
-            });
-         };
-         WidgetsManagement.prototype.widgetsTypesList = function () {
-            EW.lock('#main-content');
-            var t = EW.createTable({name: "widgets-types-list", headers: {Name: {}, Description: {}}, columns: ["name", "description"], rowCount: true, url: "<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/get_widgets_types", pageSize: 30});
-            $('#main-content').html(t.container);
-         };
-         WidgetsManagement.prototype.widgetsList = function () {
-            EW.lock('#main-content');
-            $.post('sections/WidgetsManagement/WidgetsList.php', function (data) {
-               $('#main-content').html(data);
-            });
-         };
-         WidgetsManagement.prototype.pagesUISList = function () {
-            EW.lock('#main-content');
-            $.post('<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/pages-uis.php', function (data) {
-               $('#main-content').html(data);
-            });
-         };
-
-         WidgetsManagement.prototype.onBackToWM = function () {
-         };
-
-         WidgetsManagement.prototype.backToWM = function () {
-            EW.setHashParameter('section', null);
-         }
-
-         WidgetsManagement.prototype.showWidgetsManagement = function ()
+         WidgetsManagement.on("app", function (p, section)
          {
-            widgetsManagement.bBack.animate({width: "0px"}, 300);
-            $('#component-title').html("Widgets");
-            //$('#component-content').css({display: "none"});      
-            ////$('#component-content').html(widgetsManagement.sections);      
-            ////$('#component-content').fadeIn(500);      
-            widgetsManagement.onBackToWM();
-            widgetsManagement.onBackToWM = function ()
-            {
-            };
-            widgetsManagement.onCommand = function ()
-            {
-            };
-         };
-         WidgetsManagement.prototype.onCommand = function () {
-         };
-         var widgetsManagement = new WidgetsManagement();
-         System.registerApp("WidgetsManagement", widgetsManagement);
+            if (!section || section === this.data.tab)
+               return;
+            this.data.tab = section;
+            EW.appNav.setCurrentTab($("a[data-ew-nav='" + section + "']"));
+         });
       }());
    </script>
    <?php

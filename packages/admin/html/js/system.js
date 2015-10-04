@@ -24,6 +24,10 @@ var System = System ||
                       {
 
                       },
+                      start: function ()
+                      {
+                         this.hashChanged(this.navigation, this.params);
+                      },
                       input: function (data)
                       {
 
@@ -177,6 +181,7 @@ var System = System ||
                     {
                        if (self.navHashes[id])
                           window.location.hash = self.navHashes[id];
+                       //alert("app current nav hash: "+self.navHashes[id]);
                        var scripts = $(response).filter("script").detach();
                        var html = $(response);
                        $("body").append(scripts);
@@ -194,8 +199,10 @@ var System = System ||
                        if (!this.activeModule.inited)
                        {
                           this.activeModule.inited = true;
+                          this.activeModule.navigation = newNav;
+                          this.activeModule.params = self.main.params;
                           this.activeModule.init.call(module, newNav, self.main.params);
-                          this.activeModule.hashChanged(newNav, self.main.params);
+                          //this.activeModule.hashChanged(newNav, self.main.params);
                        }
                        //
                        self.currentOnLoad = null;
@@ -205,7 +212,7 @@ var System = System ||
                  }
                  else
                  {
-                    window.location.hash = '';
+                    //window.location.hash = '';
                     self.currentOnLoad = null;
                     self.onLoadQueue.shift();
                  }
@@ -349,21 +356,24 @@ var System = System ||
            },
            getHashNav: function (key, hashName)
            {
-              return this.navigation[key];
+              return this.main.navigation[key];
            },
            // Set parameters for current app/nav if not specified
-           setHashParameters: function (parameters, appId, clean)
+           setHashParameters: function (parameters, replace, clean)
            {
+
               this.lastHashParams = parameters;
               var hashValue = window.location.hash;
-              var app = parameters[this.main.moduleIdentifier] || this.params[this.main.moduleIdentifier];
+
+              var app = parameters[this.main.moduleIdentifier].split('/')[0] || this.params[this.main.moduleIdentifier];
               var mI = this.main.moduleIdentifier;
               //if (this.modules[app])
               //mI = this.modules[app].moduleIdentifier;
+              //alert("navHAsh: " + app + " > " + parameters[this.main.moduleIdentifier])
               if (app)
               {
-                 if (!this.navHashes[app])
-                    this.navHashes[app] = mI + "=" + app;
+                 //if (!this.navHashes[app])
+                 this.navHashes[app] = mI + "=" + parameters[this.main.moduleIdentifier];
                  hashValue = this.navHashes[app];
               }
 
@@ -399,15 +409,21 @@ var System = System ||
                     and = true;
                  }
               });
+              newHash = newHash.replace(/\&$/, '');
               // set newHash for corresponding hash name if it has been passed
               if (app)
               {
-                 this.navHashes[app] = newHash.replace(/\&$/, '');
+                 //this.navHashes[app] = newHash.replace(/\&$/, '');
                  //alert(customHashes[hashName].hash);
               }
               // set url hash if no hash name specified
               //else
-              window.location.hash = newHash.replace(/\&$/, '');
+              if (replace)
+              {
+                 window.location.replace(('' + window.location).split('#')[0] + newHash);
+              }
+              else
+                 window.location.hash = newHash.replace(/\&$/, '');
            },
            init: function ()
            {
