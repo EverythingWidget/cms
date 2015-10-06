@@ -23,21 +23,27 @@ function script()
    ?>
    <script >
       (function () {
-         var app =
-                 {
-                    init: function ()
-                    {
+         var UserManagement = System.module("UsersManagement");
 
-                    },
-                    listUsers: function (query, pageNumber)
-                    {
-                       $.post("UsersManagement/UsersList.php", {cmd: "UsersList", query: query, pageNumber: pageNumber}, function (data)
-                       {
-                          $("#main-content").html(data);
-                       });
-                    }
-                 };
-         System.module("UsersManagement", app);
+         UserManagement.onInit = function ()
+         {
+            //System.setHashParameters({app:"UsersManagement",test: "dsfsdfsfd"})
+         }
+
+         UserManagement.onStart = function ()
+         {
+            this.data.tab = null;
+
+         }
+
+         UserManagement.on("app", function (p, section)
+         {
+            if (!section || section === this.data.tab)
+               return;
+            this.data.tab = section;
+            EW.appNav.setCurrentTab($("a[data-ew-nav='" + section + "']"));
+         });
+
       }());
    </script>
    <?php

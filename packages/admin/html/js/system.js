@@ -12,6 +12,7 @@ var System = System ||
            activeModule: null,
            /*activeHashHandler: function () {
             },*/
+           UI: {},
            MODULE_ABSTRACT:
                    {
                       inited: false,
@@ -22,24 +23,13 @@ var System = System ||
                       activeModule: null,
                       init: function ()
                       {
-
+                         this.inited = true;
+                         this.trigger("onInit");
                       },
                       start: function ()
                       {
+                         this.trigger("onStart");
                          this.hashChanged(this.navigation, this.params);
-                      },
-                      input: function (data)
-                      {
-
-                      },
-                      output: function ()
-                      {
-                      },
-                      focus: function ()
-                      {
-                      },
-                      blur: function ()
-                      {
                       },
                       dispose: function ()
                       {
@@ -81,6 +71,20 @@ var System = System ||
                           }
                           handler.apply(this, args);
                           }*/
+                      },
+                      /**
+                       * Call the event function if exist and pass the args to it
+                       * 
+                       * @param {String} event
+                       * @param {Array} args
+                       * @returns {undefined}
+                       */
+                      trigger: function (event, args)
+                      {
+                         if (typeof (this[event]) === "function")
+                         {
+                            this[event].apply(this, args);
+                         }
                       },
                       hashChanged: function (navigation, params)
                       {
@@ -125,8 +129,7 @@ var System = System ||
 
                             if (!this.activeModule.inited)
                             {
-                               this.activeModule.inited = true;
-                               this.activeModule.init.call(this.activeModule, newNav, this.params);
+                               this.activeModule.init(newNav, this.params);
                             }
 
                             // Call module level events handlers
@@ -181,6 +184,7 @@ var System = System ||
                     {
                        if (self.navHashes[id])
                           window.location.hash = self.navHashes[id];
+
                        //alert("app current nav hash: "+self.navHashes[id]);
                        var scripts = $(response).filter("script").detach();
                        var html = $(response);
@@ -198,12 +202,13 @@ var System = System ||
 
                        if (!this.activeModule.inited)
                        {
-                          this.activeModule.inited = true;
+                          //this.activeModule.inited = true;
                           this.activeModule.navigation = newNav;
                           this.activeModule.params = self.main.params;
                           this.activeModule.init.call(module, newNav, self.main.params);
                           //this.activeModule.hashChanged(newNav, self.main.params);
                        }
+                       this.activeModule.trigger("onActive");
                        //
                        self.currentOnLoad = null;
                        self.onLoadQueue.shift();
@@ -323,6 +328,13 @@ var System = System ||
                     var hashValue = window.location.hash;
                     hashValue = hashValue.replace(/^#\/?/igm, '');
 
+
+                    /*if (self.main.activeModule)
+                    {
+                       self.navHashes[self.main.activeModule.id] = hashValue;
+                       
+                    }*/
+
                     /*self.main.navigation = {};
                      self.main.params = {};
                      hashValue.replace(/([^&]*)=([^&]*)/g, function (m, k, v)
@@ -365,15 +377,19 @@ var System = System ||
               this.lastHashParams = parameters;
               var hashValue = window.location.hash;
 
-              var app = parameters[this.main.moduleIdentifier].split('/')[0] || this.params[this.main.moduleIdentifier];
+              // if the app found then set the params for app otherwise set the param for default app (main.mainModule)
+              var app = (''+parameters[this.main.moduleIdentifier]).split('/')[0] || this.main.activeModule.id;
               var mI = this.main.moduleIdentifier;
               //if (this.modules[app])
               //mI = this.modules[app].moduleIdentifier;
               //alert("navHAsh: " + app + " > " + parameters[this.main.moduleIdentifier])
               if (app)
               {
-                 //if (!this.navHashes[app])
-                 this.navHashes[app] = mI + "=" + parameters[this.main.moduleIdentifier];
+                 if (!this.navHashes[app])
+                 {
+                    //this.navHashes[app] = mI + "=" + parameters[this.main.moduleIdentifier];
+                    this.navHashes[app] = hashValue;
+                 }
                  hashValue = this.navHashes[app];
               }
 
@@ -411,13 +427,18 @@ var System = System ||
               });
               newHash = newHash.replace(/\&$/, '');
               // set newHash for corresponding hash name if it has been passed
-              if (app)
-              {
+             // if (app)
+              //{
                  //this.navHashes[app] = newHash.replace(/\&$/, '');
                  //alert(customHashes[hashName].hash);
-              }
+              //}
               // set url hash if no hash name specified
               //else
+              if (app)
+              {
+                 this.navHashes[app] = newHash;
+                 
+              }
               if (replace)
               {
                  window.location.replace(('' + window.location).split('#')[0] + newHash);
