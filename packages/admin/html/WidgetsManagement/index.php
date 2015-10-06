@@ -35,10 +35,20 @@ function script()
       {
          var WidgetsManagement = System.module("WidgetsManagement");
 
-         WidgetsManagement.init = function ()
+         WidgetsManagement.onInit = function ()
          {
 
          };
+
+         WidgetsManagement.onStart = function ()
+         {
+            this.data.tab = null;           
+         };
+         
+         WidgetsManagement.onActive = function ()
+         {
+         };
+
          WidgetsManagement.on("app", function (p, section)
          {
             if (!section || section === this.data.tab)
@@ -46,6 +56,8 @@ function script()
             this.data.tab = section;
             EW.appNav.setCurrentTab($("a[data-ew-nav='" + section + "']"));
          });
+
+
       }());
    </script>
    <?php
