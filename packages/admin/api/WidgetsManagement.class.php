@@ -1041,6 +1041,7 @@ class WidgetsManagement extends Section
    public static function get_layout($uisId, $template = null, $template_settings = null)
    {
       $layout = WidgetsManagement::generate_view($uisId);
+      //echo "asd$uisId";
       $template_body = $layout["body_html"];
       $widget_data = $layout["widget_data"];
       if (!$template)

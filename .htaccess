@@ -12,7 +12,8 @@ RewriteCond %{REQUEST_URI} !\.(php)$
 RewriteCond %{REQUEST_FILENAME} -f
 RewriteRule ^(.*)$ $1 [L]
 
-RewriteCond %{REQUEST_URI} !\.(.{2,4})$
+RewriteCond %{REQUEST_URI} !\.(.{2,4})$ [NC]
+RewriteCond %{THE_REQUEST} ^(GET|HEAD) [NC]
 RewriteRule ^(.*[^/])$ %{REQUEST_URI}/ [L,R=302]
 
 # 2: when I go to www.mysite.com/dir_name/, I should see packages/index.php?_app_name=dir_name

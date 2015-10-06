@@ -183,6 +183,7 @@ session_start();
       this.editorWindow.width($(window).width() - 400);
       //this.editorFrame = $(document.getElementById("fr").contentDocument.body);
       this.editorFrame = $(document.getElementById("fr")).contents().find("body");
+      this.templateSettingsForm = $("#template_settings_form");
       this.bExportLayout = $();
       this.bSaveChanges = EW.addAction("Save Layout", $.proxy(this.updateUIS, this)).hide().addClass("btn-success");
       this.bPreview = EW.addAction("Preview Layout", $.proxy(this.previewLayout, this)).hide().addClass("btn-info");
@@ -866,17 +867,17 @@ session_start();
    UISForm.prototype.changeTemplate = function ()
    {
       var self = this;
-      if ($("#template").val())
+      var template = $("#template").val();
+      if (template)
       {
          $.post("<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/get_template_settings_form", {
-            path: $("#template").val()
+            path: template
          },
          function (data)
          {
-            self.uisTemplate = $("#template").val();
-            $("#template_settings_form").off("getData");
-            $("#template_settings_form").empty();
-            $("#template_settings_form").html(data);
+            self.uisTemplate = template;
+            self.templateSettingsForm.off("getData");
+            self.templateSettingsForm.html(data);
             EW.setFormData("#template_settings_form", self.templateSettings);
             self.updateTemplateBody();
          });
@@ -911,8 +912,8 @@ session_start();
       //EW.lock(self.dpPreference, "Saving...");
       var defaultUIS = $("#uis-default").is(":checked");
       var homeUIS = $("#uis-home-page").is(":checked");
-      self.templateSettings = $("#template_settings_form").serializeJSON();
-      $("#template_settings_form").trigger("getData");
+      self.templateSettings = self.templateSettingsForm.serializeJSON();
+      self.templateSettingsForm.trigger("getData");
 
       $.post('<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/add_uis', {
          name: $('#name').val(),
@@ -956,10 +957,10 @@ session_start();
       var structure = self.createContentHeirarchy();
       var defaultUIS = $("#uis-default").is(":checked");
       var homeUIS = $("#uis-home-page").is(":checked");
-      self.templateSettings = $("#template_settings_form").serializeJSON();
+      self.templateSettings = self.templateSettingsForm.serializeJSON();
       //if(!self.templateSettings)
       //alert(JSON.stringify(self.templateSettings));
-      $("#template_settings_form").trigger("getData");
+      self.templateSettingsForm.trigger("getData");
       $.post('<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/update_uis', {
          name: $('#name').val(),
          template: $('#template').val(),
@@ -991,18 +992,20 @@ session_start();
    {
       // Update template body with current template settings
       var self = this;
-      EW.lock($("#editor-window"));
+      EW.lock(this.editorWindow);
 
       //var originalTemplateSettings = self.templateSettings;
       // Read template settings from template settings form
-      $("#template_settings_form").trigger("getData");
-      $.post('<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/get_layout', {
-         uisId: self.uisId,
-         template: self.uisTemplate,
-         template_settings: JSON.stringify(self.templateSettings)
-      },
+      self.templateSettingsForm.trigger("getData");
+
+      $.post('admin-api/WidgetsManagement/get_layout',
+              {
+                 uisId: self.uisId,
+                 template: self.uisTemplate,
+                 template_settings: JSON.stringify(self.templateSettings)
+              },
       function (data) {
-         EW.unlock($("#editor-window"));
+         EW.unlock(self.editorWindow);
          //console.log(data);
          var myIframe = document.getElementById("fr");
          //$(myIframe.contentWindow.document).off();
@@ -1364,7 +1367,7 @@ session_start();
 
    function setView()
    {
-      //obj('<?php // echo $styleId ? $styleId : 'testDiv'                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ?>').style.cssText = obj('style').value;
+      //obj('<?php // echo $styleId ? $styleId : 'testDiv'                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ?>').style.cssText = obj('style').value;
       //obj('fr').contentDocument.body.innerHTML = '<link href="../templates/SpapcoDefault/template.css" rel="stylesheet" type="text/css">';
       $('#fr').contentDocument.getElementById('dynamicStyle').innerHTML = $('#style').value;
       $('#fr').contentDocument.getElementById('<?php echo $name ?>').className = 'Panel <?php echo $class ?> ' + $('#class').value;
