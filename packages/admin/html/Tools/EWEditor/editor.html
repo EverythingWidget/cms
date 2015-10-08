@@ -18,7 +18,8 @@
          img.active,div.active,#container.active{outline-color:#333;border-color:#333;}
          div.active:before{color:#fff;background-color:#333;}
          div.active:hover{border-color:#333}
-         .row{border:2px dashed #ccc;min-height:20px;position:relative;min-height: 24px;} 
+         .row{border:3px solid #ddd;border-top-width:10px;position:relative;min-height: 33px;} 
+         /*.row:hover{min-height:40px;padding-top: 16px;margin-bottom: -16px;}*/
          /*.row:before {content: 'ROW';line-height: 20px;display:block;padding:0px 4px;  font-size: 11px;  font-weight: bold;}*/
          .column{border:0px solid #ccc;min-height:20px;position:relative;background-color: #eee;outline-offset: -1px;outline:1px solid #ccc;}
          //.column:before {content: 'COLUMN';line-height: 20px;display:block;padding:0px 4px;font-size: 11px;font-weight:bold;background-color: rgba(0,0,0,.1);margin:-20px -15px 0;cursor:pointer;}
@@ -69,25 +70,27 @@
                           var target = $(e.target);
                           console.log(target);
                           //return;
+                          editor.activeComponent = target;
                           if (!target.is(".e-e"))
                           {
                              target = target.closest(".e-e");
                              if (target.length === 0 && target === editor.activeComponent)
+                             {
+                                //console.log("ret")
                                 return;
+                             }
                           }
 
-
-                          target.focus();
-                          target.addClass('active');
                           if (self.activeElement/* && !self.activeElement.is('#container')*/)
                           {
                              target.children(".ew-block-remove").remove();
                              //self.activeElement.off('click');
                              self.activeElement.removeClass('active');
-                             editor.activeComponent = target;
+                             //editor.activeComponent = target;
                              //self.activeElement.on('click', $.proxy(self.clickHandler, self));
                              //self.activeElement.attr('contenteditable', false);
                           }
+
                           //if (!target.is('#container'))
                           //target.attr('contenteditable', true);
                           if (target.is(".row, .column"))
@@ -97,28 +100,41 @@
                              {
                                 target.remove();
                              });
-                             editor.activeComponent = target;
+
+                          }
+                          if (target.is('#container'))
+                          {
+                             var selection = window.getSelection();
+                             var range = document.createRange();
+                             range.selectNode(target[0])
+                             range.collapse();
+                             selection.addRange(range);
                           }
                           self.activeElement = target;
+                          self.activeElement.addClass('active');
+                          target.focus();
 
-                          var targetElement = target[0];
 
-                          var selection = window.getSelection();
-                          var range = document.createRange();
+                          //var targetElement = target[0];
+
+
+                          //var range = document.createRange();
                           /*if (targetElement.lastChild)
                            range.setStart(targetElement.lastChild, 0)
                            else*/
-                          range.setStart(targetElement, 0)
-                          selection.addRange(range);
 
-                          targetElement.focus();
+                          //range.setStart(targetElement, 0);
+
+                          //selection.addRange(range);
+
+                          //targetElement.focus();
 
                           self.triggerSelectElement();
                        },
                        addColumn: function (row, size)
                        {
                           var self = this;
-                          var col = $("<div class='column e-e' contenteditable='true'>&nbsp</div>");
+                          var col = $("<div class='column e-e' contenteditable='true'>&nbsp;</div>");
                           col.addClass("col-xs-" + (size || 12));
 
                           //col.on('click', $.proxy(this.clickHandler, self));
@@ -188,11 +204,14 @@
                              var range = document.createRange();
                              //range.selectNodeContents(e[0]);
                              range.setStart(e[0], 0);
+                             range.selectNode(e[0]);
+                             //range.setEnd(e[0], 0);
                              //range.setStart(e[0],0);
                              selection.removeAllRanges();
+                             //range.selectNode(e[0]);
                              selection.addRange(range);
-                             //}
 
+                             //}
                              $("#container").focus();
                              e[0].innerHTML = '';
                           }, 1);

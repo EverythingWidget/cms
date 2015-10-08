@@ -22,7 +22,7 @@ function get_editor($form_config, $form_id)
       <textarea  id="content" name="content" style="" ></textarea>
    </div>-->
 
-   <script src="<?php echo EW_ROOT_URL ?>admin-api/Tools/EWEditor/eweditor.js"></script>
+   <script src="<?php echo EW_ROOT_URL ?>admin/Tools/EWEditor/eweditor.js"></script>
    <script>
       var contentEditor;
       $(document).ready(function () {
@@ -30,7 +30,7 @@ function get_editor($form_config, $form_id)
          var ewEditor = new EWEditor({
             id: '#content-editor',
             bootstrap: './core/css/bootstrap.min.css',
-            ew_media_url: "<?php echo EW_ROOT_URL; ?>admin-api/ContentManagement/link-chooser-media.php",
+            ew_media_url: "<?php echo EW_ROOT_URL; ?>admin/ContentManagement/link-chooser-media.php",
          });
          contentEditor = ewEditor;
          $("#<?php echo $form_id ?>").on("refresh", function (e, formData)

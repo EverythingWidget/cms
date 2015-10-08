@@ -64,7 +64,7 @@ EWEditor.prototype.init = function (settings)
    this.editorBottomToolbar.css({zIndex: 1, backgroundColor: '#fff', position: 'absolute', bottom: '0px', width: '100%', border: '0px solid #000'})
    this.editorContent = $("<div>");
    this.editorContent.css({position: 'absolute', top: '68px', bottom: 0, width: '100%'});
-   this.iFrame = $("<iframe src='admin-api/Tools/EWEditor/editor.html'>");
+   this.iFrame = $("<iframe src='admin/Tools/EWEditor/editor.html'>");
    this.editorComponent.css({backgroundColor: '#fff', position: 'absolute', left: '10px', top: '5px', right: '10px', bottom: '5px'});
    this.iFrame.css({width: '100%', height: '100%', border: '0px solid #000'});
    this.editorToolbar.append(this.nodeCP);

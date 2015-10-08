@@ -28,7 +28,7 @@ class LanguageComponent implements \ContentComponent
 
    public function get_form($key, $data)
    {
-      $admin = new \admin\Admin();
+      $admin = new \admin\App();
       $form = [
           "title" => "Language",
           "description" => "Language of the content",

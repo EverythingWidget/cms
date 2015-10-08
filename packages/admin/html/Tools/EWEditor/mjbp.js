@@ -560,7 +560,11 @@ function MJEditor(selector, opts) {
          var headings = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
          return headings.indexOf(el.toLowerCase()) !== -1 ? true : false;
       },
-      enterHandler: function (e) 
+      isListItem: function (el) {
+         var list = ['li', 'ul', 'ol'];
+         return list[el.toLowerCase()] ? true : false;
+      },
+      enterHandler: function (e)
       {
          var range, parentNode, postRange, rangeParent, previousNode, previousElement, currentNode, nextNode, nextElement, newRange, newEl, sel,
                  self = this;
@@ -568,66 +572,76 @@ function MJEditor(selector, opts) {
          range = self.selection.getRangeAt(0);
          parentNode = range.startContainer.parentNode;
          currentNode = range.startContainer;
+         //console.log(this.selection.anchorNode.nodeType == 3 ? this.selection.anchorNode.parentNode : this.selection.anchorNode);
+         currentNode = this.selection.anchorNode.nodeType == 3 ? this.selection.anchorNode.parentNode : this.selection.anchorNode;
          //console.log(parentNode)
 //         console.log(currentNode)
          //console.log(self.isList(parentNode));
          var listItem = self.isList(parentNode);
          if (!listItem)
          {
+
             if (self.isHeading(parentNode.nodeName) || parentNode.nodeName === 'BLOCKQUOTE')
             {
                e.preventDefault();
                self.newParagraph(null, parentNode.parentNode, parentNode.nextSibling);
+               console.log('sssssssssss');
             }
             else
             {
-               if ((range.startOffset === 0 || !!toolkit.selection.atEndOfNode(range)) && !self.isList(currentNode))
+               if (!self.isList(currentNode))
                {
-                  if (currentNode.textContent.trim() === '')
+                  // Enter on a empty p
+                  /*if (currentNode.textContent.trim() === '')
+                   {
+                   e.preventDefault();
+                   self.cleanUp();
+                   self.newParagraph(parentNode.parentNode);
+                   console.log('aaaaaaaaa');
+                   }
+                   else
+                   {*/
+
+                  if (/^1\.\s/.test(currentNode.textContent))
                   {
                      e.preventDefault();
-                     self.cleanUp();
-                     self.newParagraph(parentNode.parentNode);
+                     //console.log(currentNode.textContent.replace(/^1\.\s/, 'xxxxx'));
+                     currentNode.textContent = currentNode.textContent.replace(/^1\.\s/, '');
+                     self.executeCommand('ol');
                   }
                   else
                   {
-                     if (/^1\.\s/.test(currentNode.textContent))
+                     if (/^-\s/.test(currentNode.textContent))
                      {
                         e.preventDefault();
-                        //console.log(currentNode.textContent.replace(/^1\.\s/, 'xxxxx'));
-                        currentNode.textContent = currentNode.textContent.replace(/^1\.\s/, '');
-                        self.executeCommand('ol');
+                        currentNode.textContent = currentNode.textContent.replace(/^-?\s/, '');
+                        self.executeCommand('ul');
+
                      }
+                     /* else if (parentNode.tagName === 'P')
+                      {
+                      console.log('dsfsdgfsdg');
+                      e.preventDefault();
+                      self.cleanUp();
+                      //console.log($(parentNode.parentNode));
+                      //console.log($(currentNode));
+                      /*if (currentNode.insertBefore)
+                      self.newParagraph(null, currentNode);
+                      else
+                      
+                      self.newParagraph(null, parentNode.parentNode, parentNode.nextSibling);
+                      }*/
                      else
                      {
-                        if (/^-\s/.test(currentNode.textContent))
-                        {
-                           e.preventDefault();
-                           currentNode.textContent = currentNode.textContent.replace(/^-?\s/, '');
-                           self.executeCommand('ul');
+                        console.log('normal para');
+                        e.preventDefault();
+                        self.cleanUp();
 
-                        }
-                        else if (parentNode.tagName === 'P')
-                        {
-                           e.preventDefault();
-                           self.cleanUp();
-                           //console.log($(parentNode.parentNode));
-                           //console.log($(currentNode));
-                           /*if (currentNode.insertBefore)
-                            self.newParagraph(null, currentNode);
-                            else*/
-                           self.newParagraph(null, parentNode.parentNode, parentNode.nextSibling);
-                        }
-                        else
-                        {
-                           e.preventDefault();
-                           self.cleanUp();
-                           console.log('normal para');
-                           self.newParagraph();
-                        }
+                        self.newParagraph(currentNode);
                      }
                   }
                }
+               //}
             }
          }
          else if (listItem.firstChild)
@@ -648,6 +662,7 @@ function MJEditor(selector, opts) {
             e.preventDefault();
             self.cleanUp();
             self.newParagraph();
+            console.log('mjbp: New paragraph on enter');
             //alert();
          }
          return self;
@@ -661,53 +676,74 @@ function MJEditor(selector, opts) {
             this.cleanUp();
          }
       },
-      newParagraph: function (target, parent, place) 
-      {         
-         console.log(this.activeComponent)
+      newParagraph: function (target, parent, place)
+      {
+         //console.log(this.activeComponent);
+         console.log("NEW P");
+         var self = this;
          var currentNode, range, paragraph, newRange, liveP;
-         target = target || undefined;
+         target = target || this.activeComponent[0];
          this.selection = w.getSelection();
          range = this.selection.getRangeAt(0);
-         currentNode = range.startContainer;
+         var disallowedParents = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p'];
+         //currentNode = range.startContainer;
+         //currentNode = (this.selection.anchorNode.nodeType == 3 ? this.selection.anchorNode.parentNode : this.selection.anchorNode);
 
          paragraph = d.createElement('p');
          liveP = d.getElementById('editor-new-p');
 
-         if (liveP) {
-            liveP.removeAttribute('id');
+         if (liveP)
+         {
+            //liveP.removeAttribute('id');
+            liveP.id = "";
          }
          paragraph.id = 'editor-new-p';
          paragraph.innerHTML = '&nbsp;';
-         if(this.activeComponent)
+         console.log(target)
+         if (target)
          {
             //this.activeComponent[0].innerHTML = this.activeComponent[0].innerHTML.replace('&nbsp;','');
             //console.log(this.activeComponent[0].innerHTML)
-            this.activeComponent[0].appendChild(paragraph);
+            // if activeComponent is a disallowed parent then add the new p next to it
+            //console.log(disallowedParents[this.activeComponent[0].nodeName.toLowerCase()])
+            if (disallowedParents.indexOf(target.nodeName.toLowerCase()) !== -1)
+            {
+
+               target.parentNode.insertBefore(paragraph, target.nextSibling);
+            }
+            // else append the p to the activeComponent
+            else
+               target.appendChild(paragraph);
          }
          /*if (parent)
-         {
-            parent.innerHTML = parent.innerHTML.replace('&nbsp;','');
-            parent.insertBefore(newEl, place);
-         }
-         else if (target) 
-         {
-            target.appendChild(newEl);
-            //this.liveElement.appendChild(newEl);
-         }*/
+          {
+          parent.innerHTML = parent.innerHTML.replace('&nbsp;','');
+          parent.insertBefore(newEl, place);
+          }
+          else if (target) 
+          {
+          target.appendChild(newEl);
+          //this.liveElement.appendChild(newEl);
+          }*/
          /*else 
-         {
-            this.liveElement.insertBefore(newEl, target);
-         }*/
-         newRange = d.createRange();
+          {
+          this.liveElement.insertBefore(newEl, target);
+          }*/
+
          //newRange.selectNodeContents(newEl);
          //console.log('para');
          //console.log(parent);
-         newRange.setStart(paragraph, 0);
-         newRange.setEnd(paragraph, 0);
-         this.selection = w.getSelection();
-         this.selection.collapse(false);
-         this.selection.removeAllRanges();
-         this.selection.addRange(newRange);
+         newRange = d.createRange();
+         //newRange.setStart(paragraph, 0);
+         //newRange.setEnd(paragraph, 0);  
+         // set new added paragraph as the activeComponent
+         this.activeComponent = $(paragraph);
+         newRange.selectNode(paragraph.childNodes[0]);
+         //newRange.collapse();
+         self.selection = w.getSelection();
+         self.selection.removeAllRanges();
+         self.selection.addRange(newRange);
+
          //document.execCommand('delete', false, null);
       },
       initListeners: function () {
@@ -763,13 +799,26 @@ function MJEditor(selector, opts) {
                  },
                  keyDownListener = function (e) {
                     var sel = d.getSelection();
+
                     var range;
 
                     if (!sel.anchorNode)
                        return;
                     range = sel.getRangeAt(0);
-                    self.currentNode = range.startContainer;
+                    //console.log(sel)
+                    /*if (range.startContainer.childNodes[range.startOffset])
+                     {
+                     self.currentNode = (range.startContainer.childNodes[range.startOffset].nodeName != "#text") ? range.startContainer.childNodes[range.startOffset] : range.startContainer;
+                     }
+                     else
+                     {
+                     //console.log(range.startContainer.parentNode);
+                     self.currentNode = range.startContainer.parentNode;
+                     
+                     }*/
 
+                    self.currentNode = (sel.anchorNode.nodeType == 3 ? sel.anchorNode.parentNode : sel.anchorNode);
+                    //console.log(sel);
                     if (e.keyCode === 13)
                     {
                        self.enterHandler(e);
@@ -781,15 +830,15 @@ function MJEditor(selector, opts) {
                        }
                        else
                        {
-                          if (self.liveElement.className.indexOf('editor-heading') === -1 && self.currentNode === self.liveElement)
+                          if (/*self.liveElement.className.indexOf('editor-heading') === -1 */!self.isHeading(self.currentNode.nodeName) && self.currentNode.nodeName !== 'P')
                           {
-                             console.log('no heading');
-                             self.newParagraph();
+                             console.log(self.currentNode);
+                             self.newParagraph(self.currentNode);
                           }
-                          else if (self.currentNode.parentNode && !self.isHeading(self.currentNode.parentNode.nodeName) && self.currentNode.parentNode.tagName !== 'P' && self.currentNode.tagName !== 'P')
+                          else if (self.isListItem(self.currentNode.parentNode.tagName) && self.currentNode.parentNode && !self.isHeading(self.currentNode.parentNode.nodeName) && self.currentNode.parentNode.tagName !== 'P' && self.currentNode.tagName !== 'P')
                           {
                              console.log($(self.currentNode));
-                             console.log('inja');
+                             console.log('inja' + self.currentNode.parentNode.tagName);
                              self.newParagraph(null, self.currentNode);
                           }
                           else
