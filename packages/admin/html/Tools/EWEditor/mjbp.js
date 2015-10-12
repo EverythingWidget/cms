@@ -130,7 +130,8 @@ function MJEditor(selector, opts) {
    MJEditor.prototype = {
       defaults: {
          delay: 0,
-         buttons: ['b', 'i', 'blockquote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'a', 'cancel']
+         buttons: ['b', 'i', 'blockquote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'a', 'cancel'],
+         nonBreakable: ['a', 'i', 'b', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li']
       },
       placeUI: function () {
          this.range = this.selection.getRangeAt(0);
@@ -357,12 +358,8 @@ function MJEditor(selector, opts) {
             },
             'list': function (listType)
             {
-               var parentNodes = self.findParentNodes(self.selection.anchorNode),
-                       updatedNodes,
-                       startNode,
-                       range,
-                       frag,
-                       endNode,
+               var currentNode = self.selection.anchorNode.nodeType == 3 ? self.selection.anchorNode.parentNode : self.selection.anchorNode;
+               var parentNodes = self.findParentNodes(currentNode),
                        incompatibles = incompatibleElements[listType],
                        execList = function (cmd)
                        {
@@ -552,8 +549,9 @@ function MJEditor(selector, opts) {
          }
          return nodeNames;
       },
-      isList: function () {
-         var parentNodes = this.findParentNodes(this.selection.focusNode);
+      isList: function (node) {
+         //var parentNodes = this.findParentNodes(this.selection.focusNode);
+         var parentNodes = this.findParentNodes(node);
          return parentNodes.LI;
       },
       isHeading: function (el) {
@@ -577,15 +575,13 @@ function MJEditor(selector, opts) {
          //console.log(parentNode)
 //         console.log(currentNode)
          //console.log(self.isList(parentNode));
-         var listItem = self.isList(parentNode);
+         var listItem = self.isList(currentNode);
          if (!listItem)
          {
-
             if (self.isHeading(parentNode.nodeName) || parentNode.nodeName === 'BLOCKQUOTE')
             {
                e.preventDefault();
                self.newParagraph(null, parentNode.parentNode, parentNode.nextSibling);
-               console.log('sssssssssss');
             }
             else
             {
@@ -613,30 +609,20 @@ function MJEditor(selector, opts) {
                   {
                      if (/^-\s/.test(currentNode.textContent))
                      {
+                        //alert()
+                        
                         e.preventDefault();
-                        currentNode.textContent = currentNode.textContent.replace(/^-?\s/, '');
+                                  
+                        //currentNode.parentNode.removeChild(currentNode);
                         self.executeCommand('ul');
-
+                        console.log(currentNode)
+                        currentNode.textContent = currentNode.textContent.replace(/^-\s/, '');              
                      }
-                     /* else if (parentNode.tagName === 'P')
-                      {
-                      console.log('dsfsdgfsdg');
-                      e.preventDefault();
-                      self.cleanUp();
-                      //console.log($(parentNode.parentNode));
-                      //console.log($(currentNode));
-                      /*if (currentNode.insertBefore)
-                      self.newParagraph(null, currentNode);
-                      else
-                      
-                      self.newParagraph(null, parentNode.parentNode, parentNode.nextSibling);
-                      }*/
                      else
                      {
                         console.log('normal para');
                         e.preventDefault();
                         self.cleanUp();
-
                         self.newParagraph(currentNode);
                      }
                   }
@@ -646,16 +632,28 @@ function MJEditor(selector, opts) {
          }
          else if (listItem.firstChild)
          {
-//            console.log($(self.isList(parentNode)));
-            var li = d.createElement('li');
-            self.isList(parentNode).parentNode.insertBefore(li, null);
-            newRange = d.createRange();
-            //console.log(range);
-            newRange.selectNodeContents(li);
-            newRange.collapse(false);
-            //self.selection = w.getSelection();
-            self.selection.removeAllRanges();
-            self.selection.addRange(newRange);
+            //e.preventDefault();
+            console.log(currentNode.firstChild);
+            if (currentNode.firstChild.nodeName.toLowerCase() === "br")
+            {
+               e.preventDefault();
+               self.newParagraph(currentNode);
+               currentNode.parentNode.removeChild(currentNode);
+               //self.cleanUp();
+            }
+
+            /*var li = d.createElement('li');
+             currentNode.parentNode.insertBefore(li, currentNode.nextSibling);
+             newRange = d.createRange();
+             //console.log(range);
+             //newRange.selectNodeContents(li);
+             newRange.selectNode(li);
+             newRange.collapse();
+             //self.selection = w.getSelection();
+             //self.selection.removeAllRanges();
+             self.selection.addRange(newRange);*/
+            //if(!currentNode.parentNode)
+
          }
          else
          {
@@ -694,7 +692,7 @@ function MJEditor(selector, opts) {
          target = target || this.activeComponent[0];
          this.selection = w.getSelection();
          range = this.selection.getRangeAt(0);
-         var disallowedParents = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p'];
+         var disallowedParents = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'ul', 'ol'];
          //currentNode = range.startContainer;
          //currentNode = (this.selection.anchorNode.nodeType == 3 ? this.selection.anchorNode.parentNode : this.selection.anchorNode);
 
@@ -787,6 +785,9 @@ function MJEditor(selector, opts) {
                  },
                  highlightListener = function (e) {
                     var me = this;
+                    var sel = d.getSelection();
+                    var currentNode = (sel.anchorNode.nodeType == 3 ? sel.anchorNode.parentNode : sel.anchorNode);
+                    //console.log(currentNode)
                     w.setTimeout(function () {
                        self.selection = w.getSelection();
                        self.liveElement = me;
@@ -814,32 +815,21 @@ function MJEditor(selector, opts) {
                     if (!sel.anchorNode)
                        return;
                     range = sel.getRangeAt(0);
-                    //console.log(sel)
-                    /*if (range.startContainer.childNodes[range.startOffset])
-                     {
-                     self.currentNode = (range.startContainer.childNodes[range.startOffset].nodeName != "#text") ? range.startContainer.childNodes[range.startOffset] : range.startContainer;
-                     }
-                     else
-                     {
-                     //console.log(range.startContainer.parentNode);
-                     self.currentNode = range.startContainer.parentNode;
-                     
-                     }*/
 
                     self.currentNode = (sel.anchorNode.nodeType == 3 ? sel.anchorNode.parentNode : sel.anchorNode);
                     //console.log(self.currentNode);
-                    if (e.keyCode === 13)
-                    {
+                    if (e.keyCode === 13) {
                        self.enterHandler(e);
                     }
                     else
                     {
                        if (e.keyCode === 8) {
                           self.backspaceHandler(e);
+                       } else if (e.keyCode === 46) {
+                          // delete
                        } else {
-                          if (/*self.liveElement.className.indexOf('editor-heading') === -1 */!self.isHeading(self.currentNode.nodeName) && self.currentNode.nodeName !== 'P')
+                          if (self.defaults.nonBreakable.indexOf(self.currentNode.nodeName.toLowerCase()) === -1 && !self.isHeading(self.currentNode.nodeName))
                           {
-                             //console.log(self.currentNode);
                              self.newParagraph(self.currentNode);
                           }
                           else if (self.isListItem(self.currentNode.parentNode.tagName) && self.currentNode.parentNode && !self.isHeading(self.currentNode.parentNode.nodeName) && self.currentNode.parentNode.tagName !== 'P' && self.currentNode.tagName !== 'P')
