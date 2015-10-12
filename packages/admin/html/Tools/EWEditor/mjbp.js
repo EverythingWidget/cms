@@ -668,18 +668,27 @@ function MJEditor(selector, opts) {
          return self;
       },
       backspaceHandler: function (e) {
-         var range = w.getSelection().getRangeAt(0);
-         //console.log($(range));
-         console.log(e);
-         //if(range.nodeName)
-         if (!!toolkit.isChrome()) {
-            this.cleanUp();
-         }
+         var self = this;
+         setTimeout(function () {
+            var currentNode = self.selection.anchorNode.nodeType == 3 ? self.selection.anchorNode.parentNode : self.selection.anchorNode;
+            if ($(currentNode).is(".row") && currentNode.childNodes.length <= 1)
+            {
+               $(currentNode).remove();
+            }
+         }, 0);
+
+         /*var range = w.getSelection().getRangeAt(0);
+          //console.log($(range));
+          console.log(e);
+          //if(range.nodeName)
+          if (!!toolkit.isChrome()) {
+          this.cleanUp();
+          }*/
       },
       newParagraph: function (target, parent, place)
       {
          //console.log(this.activeComponent);
-         console.log("NEW P");
+         //console.log("NEW P");
          var self = this;
          var currentNode, range, paragraph, newRange, liveP;
          target = target || this.activeComponent[0];
@@ -699,7 +708,7 @@ function MJEditor(selector, opts) {
          }
          paragraph.id = 'editor-new-p';
          paragraph.innerHTML = '&nbsp;';
-         console.log(target)
+         //console.log(target)
          if (target)
          {
             //this.activeComponent[0].innerHTML = this.activeComponent[0].innerHTML.replace('&nbsp;','');
@@ -818,7 +827,7 @@ function MJEditor(selector, opts) {
                      }*/
 
                     self.currentNode = (sel.anchorNode.nodeType == 3 ? sel.anchorNode.parentNode : sel.anchorNode);
-                    //console.log(sel);
+                    //console.log(self.currentNode);
                     if (e.keyCode === 13)
                     {
                        self.enterHandler(e);
@@ -827,18 +836,16 @@ function MJEditor(selector, opts) {
                     {
                        if (e.keyCode === 8) {
                           self.backspaceHandler(e);
-                       }
-                       else
-                       {
+                       } else {
                           if (/*self.liveElement.className.indexOf('editor-heading') === -1 */!self.isHeading(self.currentNode.nodeName) && self.currentNode.nodeName !== 'P')
                           {
-                             console.log(self.currentNode);
+                             //console.log(self.currentNode);
                              self.newParagraph(self.currentNode);
                           }
                           else if (self.isListItem(self.currentNode.parentNode.tagName) && self.currentNode.parentNode && !self.isHeading(self.currentNode.parentNode.nodeName) && self.currentNode.parentNode.tagName !== 'P' && self.currentNode.tagName !== 'P')
                           {
-                             console.log($(self.currentNode));
-                             console.log('inja' + self.currentNode.parentNode.tagName);
+                             //console.log($(self.currentNode));
+                             //console.log('inja' + self.currentNode.parentNode.tagName);
                              self.newParagraph(null, self.currentNode);
                           }
                           else
