@@ -17,7 +17,10 @@ function get_editor($form_config, $form_id)
 {
    ob_start();
    ?>
-   <div  id="content-editor" style="" ></div>
+<div  id="content-editor" style="" data-editable data-name="main-content">
+   <p>Insert content here...</p>
+   
+</div>
    <!--<div class="col-lg-12 mar-top">
       <textarea  id="content" name="content" style="" ></textarea>
    </div>-->
@@ -27,16 +30,20 @@ function get_editor($form_config, $form_id)
       var contentEditor;
       $(document).ready(function () {
 
-         var ewEditor = new EWEditor({
-            id: '#content-editor',
-            bootstrap: './core/css/bootstrap.min.css',
-            ew_media_url: "<?php echo EW_ROOT_URL; ?>admin/ContentManagement/link-chooser-media.php",
-         });
-         contentEditor = ewEditor;
-         $("#<?php echo $form_id ?>").on("refresh", function (e, formData)
-         {
-            ewEditor.setContent(formData["content"]);
-         });
+         /*var ewEditor = new EWEditor({
+          id: '#content-editor',
+          bootstrap: './core/css/bootstrap.min.css',
+          ew_media_url: "<?php echo EW_ROOT_URL; ?>admin/ContentManagement/link-chooser-media.php",
+          });
+          contentEditor = ewEditor;
+          $("#<?php echo $form_id ?>").on("refresh", function (e, formData)
+          {
+          ewEditor.setContent(formData["content"]);
+          });*/
+
+         //var ewEditor = ContentTools.EditorApp.get();
+         //ewEditor.init('#content-editor', 'data-name');
+         var edi = new ContentEdit.Region(document.getElementById("content-editor"));
       });
       /*$(document).ready(function () {
        setTimeout(function () {
@@ -72,10 +79,10 @@ function get_editor($form_config, $form_id)
        ],
        toolbar: "undo redo | styleselect | forecolor backcolor bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image table charmap insertdatetime | ewimage | code | layer"
        // Example content CSS (should be your site CSS)
-       
+          
        });
-       
-       
+          
+          
        $("#<?php echo $form_id ?>").on("refresh", function (e, formData)
        {
        $(tinymce.get('content').getBody()).html(formData["content"]);
@@ -219,7 +226,8 @@ $tabs = EWCore::read_registry("ew-article-form-tab");
          }
          foreach ($tabs as $id => $tab)
          {
-            $tab_object = json_decode(EWCore::process_command($tab["app"], $tab["section"], $tab["command"], ["form_config" => $form_config, "form_id" => $form_id]), true);
+            $tab_object = json_decode(EWCore::process_command($tab["app"], $tab["section"], $tab["command"], ["form_config" => $form_config,
+                        "form_id" => $form_id]), true);
             echo "<div class='tab-pane' id='{$id}'>" . $tab_object["html"] . "</div>";
          }
          ?>
@@ -326,7 +334,7 @@ $tabs = EWCore::read_registry("ew-article-form-tab");
          formData['labels'] = this.getLabels();
          if (contentEditor)
             formData["content"] = contentEditor.getContent();
-         
+
          //formData["content"] = CKEDITOR.instances.content.getData();
          /*if (tinymce && tinymce.activeEditor)
           formData["content"] = tinymce.activeEditor.getContent();*/

@@ -35,6 +35,7 @@ if (!isset($_SESSION['login']))
       <script src="<?php echo EW_ROOT_URL ?>core/js/gsap/TweenLite.min.js" ></script>
       <script src="<?php echo EW_ROOT_URL ?>core/js/gsap/jquery.gsap.min.js"></script>
       <script src="admin/js/system.js"></script>
+      <link rel="stylesheet" type="text/css" href="admin/Tools/content-tools/content-tools.min.css">
 <!--      <script src="<?php echo EW_ROOT_URL ?>core/js/system_1.js"></script>-->
       <script>
          System.init();
@@ -821,6 +822,6 @@ if (!isset($_SESSION['login']))
       <div id="notifications-panel"></div>   
       <script src="<?php echo EW_ROOT_URL ?>core/js/bootstrap.min.js" ></script>
 
-
+      <script src="admin/Tools/content-tools/content-tools.min.js"></script>
    </body>
 </html>
