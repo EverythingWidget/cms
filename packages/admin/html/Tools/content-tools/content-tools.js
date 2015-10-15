@@ -4837,7 +4837,10 @@
 
    window.ContentTools = {
       Tools: {},
-      DEFAULT_TOOLS: [['bold', 'italic', 'link', 'align-left', 'align-center', 'align-right'], ['heading', 'subheading', 'paragraph', 'unordered-list', 'ordered-list', 'table', 'indent', 'unindent', 'line-break'], ['image', 'video', 'preformatted'], ['undo', 'redo', 'remove']],
+      DEFAULT_TOOLS: [['bold', 'italic', 'link', 'align-left', 'align-center', 'align-right'],
+         ['heading', 'subheading','smallheading', 'paragraph', 'unordered-list', 'ordered-list', 'table', 'indent', 'unindent', 'line-break'],
+         ['image', 'video', 'preformatted'],
+         ['undo', 'redo', 'remove']],
       DEFAULT_VIDEO_HEIGHT: 300,
       DEFAULT_VIDEO_WIDTH: 400,
       HIGHLIGHT_HOLD_DURATION: 2000,
@@ -5489,6 +5492,22 @@
          return ToolboxUI.__super__.hide.call(this);
       };
 
+      /*ToolboxUI.prototype.show = function ()
+       {
+       var fadeIn;
+       if (!this.isMounted()) {
+       this.mount();
+       }
+       fadeIn = (function (_this) {
+       return function () {
+       _this._handleResize();
+       console.log(_this.domElement().clientHeight )
+       return _this.addCSSClass('ct-widget--active');
+       };
+       })(this);
+       return setTimeout(fadeIn, 100);         
+       };*/
+
       ToolboxUI.prototype.tools = function (tools) {
          if (tools === void 0) {
             return this._tools;
@@ -5501,13 +5520,14 @@
       ToolboxUI.prototype.mount = function () {
          var coord, domToolGroup, i, position, restore, tool, toolGroup, toolName, _i, _j, _len, _len1, _ref;
          this._domElement = this.constructor.createDiv(['ct-widget', 'ct-toolbox']);
-         this.parent().domElement().appendChild(this._domElement);
-         console.log(this.parent())
+         //console.log(this.parent().domElement())
+         this.parent().domElement().insertBefore(this._domElement, this.parent()._domRegions[0]);
+         //console.log(this.parent())
          this._domGrip = this.constructor.createDiv(['ct-toolbox__grip', 'ct-grip']);
-         this._domElement.appendChild(this._domGrip);
-         this._domGrip.appendChild(this.constructor.createDiv(['ct-grip__bump']));
-         this._domGrip.appendChild(this.constructor.createDiv(['ct-grip__bump']));
-         this._domGrip.appendChild(this.constructor.createDiv(['ct-grip__bump']));
+         /*this._domElement.appendChild(this._domGrip);
+          this._domGrip.appendChild(this.constructor.createDiv(['ct-grip__bump']));
+          this._domGrip.appendChild(this.constructor.createDiv(['ct-grip__bump']));
+          this._domGrip.appendChild(this.constructor.createDiv(['ct-grip__bump']));*/
          _ref = this._tools;
          for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
             toolGroup = _ref[i];
@@ -5526,22 +5546,22 @@
                })(this));
             }
          }
-         restore = window.localStorage.getItem('ct-toolbox-position');
-         if (restore && /^\d+,\d+$/.test(restore)) {
-            position = (function () {
-               var _k, _len2, _ref1, _results;
-               _ref1 = restore.split(',');
-               _results = [];
-               for (_k = 0, _len2 = _ref1.length; _k < _len2; _k++) {
-                  coord = _ref1[_k];
-                  _results.push(parseInt(coord));
-               }
-               return _results;
-            })();
-            this._domElement.style.left = "" + position[0] + "px";
-            this._domElement.style.top = "" + position[1] + "px";
-            this._contain();
-         }
+         /*restore = window.localStorage.getItem('ct-toolbox-position');
+          if (restore && /^\d+,\d+$/.test(restore)) {
+          position = (function () {
+          var _k, _len2, _ref1, _results;
+          _ref1 = restore.split(',');
+          _results = [];
+          for (_k = 0, _len2 = _ref1.length; _k < _len2; _k++) {
+          coord = _ref1[_k];
+          _results.push(parseInt(coord));
+          }
+          return _results;
+          })();
+          this._domElement.style.left = "" + position[0] + "px";
+          this._domElement.style.top = "" + position[1] + "px";
+          this._contain();
+          }*/
          return this._addDOMEventListeners();
       };
 
@@ -5567,20 +5587,21 @@
       };
 
       ToolboxUI.prototype._addDOMEventListeners = function () {
-         this._domGrip.addEventListener('mousedown', this._onStartDragging);
-         this._handleResize = (function (_this) {
-            return function (ev) {
-               var containResize;
-               if (_this._resizeTimeout) {
-                  clearTimeout(_this._resizeTimeout);
-               }
-               containResize = function () {
-                  return _this._contain();
-               };
-               return _this._resizeTimeout = setTimeout(containResize, 250);
-            };
-         })(this);
-         window.addEventListener('resize', this._handleResize);
+         //this._domGrip.addEventListener('mousedown', this._onStartDragging);
+         /*this._handleResize = (function (_this) {
+          return function (ev) {
+          var containResize;
+          //if (_this._resizeTimeout) {
+          clearTimeout(_this._resizeTimeout);
+          //}
+          containResize = function () {
+          _this._parent._domRegions[0].style.top = _this._domElement.offsetHeight + 'px';
+          //return _this._contain();
+          };
+          _this._resizeTimeout = setTimeout(containResize, 250);
+          };
+          })(this);
+          window.addEventListener('resize', this._handleResize);*/
          this._updateTools = (function (_this) {
             return function () {
                var app, element, name, selection, toolUI, update, _ref, _results;
@@ -5615,7 +5636,7 @@
                return _results;
             };
          })(this);
-         this._updateToolsTimeout = setInterval(this._updateTools, 100);
+         this._updateToolsTimeout = setInterval(this._updateTools, 200);
          this._handleKeyDown = (function (_this) {
             return function (ev) {
                var element, os, redo, undo, version;
@@ -7202,9 +7223,7 @@
          //}
          this.config = config;
          this._namingProp = 'id';
-         this._domRegions = [this.constructor.createDiv(["ct-app"], {
-               contenteditable: true
-            })];
+         this._domRegions = [this.constructor.createDiv(["ct-app"])];
          if (queryOrDOMElements.length > 0 && queryOrDOMElements[0].nodeType === Node.ELEMENT_NODE) {
             this.editorContainer = queryOrDOMElements;
          } else {
@@ -7415,6 +7434,7 @@
       };
 
       _EditorApp.prototype.revert = function () {
+
          if (ContentEdit.Root.get().lastModified() && !window.confirm(ContentEdit._('Your changes have not been saved, do you really want to lose them?'))) {
             return false;
          }
@@ -7554,7 +7574,8 @@
          document.addEventListener('keyup', this._handleHighlightOff);
          window.onbeforeunload = (function (_this) {
             return function (ev) {
-               if (_this._state === ContentTools.EditorApp.EDITING) {
+               //console.log(ContentEdit.Root.get().lastModified() )
+               if (_this._state === ContentTools.EditorApp.EDITING && ContentEdit.Root.get().lastModified()) {
                   return ContentEdit._('Your changes have not been saved, do you really want to lose them?');
                }
             };
@@ -7716,7 +7737,7 @@
                }
             };
          })(this);
-         return this._watchInterval = setInterval(watch, 50);
+         return this._watchInterval = setInterval(watch, 100);
       };
 
       History.prototype._store = function () {
@@ -8080,10 +8101,18 @@
       Heading.icon = 'heading';
 
       Heading.tagName = 'h1';
+      Heading.applied = false;
 
       Heading.canApply = function (element, selection) {
          return element.content !== void 0 && element.parent().constructor.name === 'Region';
       };
+      Heading.isApplied = function (element, selection) {
+         if (element._tagName.toLowerCase() === this.tagName) {
+            return true;
+         }
+         return false;
+      };
+
 
       Heading.apply = function (element, selection, callback) {
          var content, insertAt, parent, textElement;
@@ -8125,6 +8154,25 @@
       Subheading.tagName = 'h2';
 
       return Subheading;
+
+   })(ContentTools.Tools.Heading);
+   
+   ContentTools.Tools.Smallheading = (function (_super) {
+      __extends(Smallheading, _super);
+
+      function Smallheading() {
+         return Smallheading.__super__.constructor.apply(this, arguments);
+      }
+
+      ContentTools.ToolShelf.stow(Smallheading, 'smallheading');
+
+      Smallheading.label = 'Smallheading';
+
+      Smallheading.icon = 'smallheading';
+
+      Smallheading.tagName = 'h3';
+
+      return Smallheading;
 
    })(ContentTools.Tools.Heading);
 

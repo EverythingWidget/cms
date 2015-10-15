@@ -17,10 +17,7 @@ function get_editor($form_config, $form_id)
 {
    ob_start();
    ?>
-<div  id="content-editor" style="" data-name="main-content">
-   <p>Insert content here...</p>
-   
-</div>
+   <div  id="content-editor" style="" data-name="main-content"></div>
    <!--<div class="col-lg-12 mar-top">
       <textarea  id="content" name="content" style="" ></textarea>
    </div>-->
@@ -43,7 +40,12 @@ function get_editor($form_config, $form_id)
 
          var ewEditor = ContentTools.EditorApp.get();
          ewEditor.init('#content-editor');
-         ewEditor.start()
+         ewEditor.start();
+         EW.getParentDialog($("#<?php echo $form_id ?>")).on("beforeClose", function ()
+         {
+            ewEditor.stop();
+            ewEditor = null;
+         });
          //var edi = new ContentEdit.Region(document.getElementById("content-editor"));
       });
       /*$(document).ready(function () {
@@ -80,10 +82,10 @@ function get_editor($form_config, $form_id)
        ],
        toolbar: "undo redo | styleselect | forecolor backcolor bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image table charmap insertdatetime | ewimage | code | layer"
        // Example content CSS (should be your site CSS)
-          
+       
        });
-          
-          
+       
+       
        $("#<?php echo $form_id ?>").on("refresh", function (e, formData)
        {
        $(tinymce.get('content').getBody()).html(formData["content"]);

@@ -665,8 +665,8 @@ body.Admin
    background-color:#f0f0f0;
    box-shadow:0 2px 12px -1px #666;
    position:absolute;
-   z-index:1;
-   /* perspective:600px */}
+   z-index:1;/* perspective:600px */
+   }
 
 .top-pane
 {
