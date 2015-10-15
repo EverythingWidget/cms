@@ -822,6 +822,6 @@ if (!isset($_SESSION['login']))
       <div id="notifications-panel"></div>   
       <script src="<?php echo EW_ROOT_URL ?>core/js/bootstrap.min.js" ></script>
 
-      <script src="admin/Tools/content-tools/content-tools.min.js"></script>
+      <script src="admin/Tools/content-tools/content-tools.js"></script>
    </body>
 </html>

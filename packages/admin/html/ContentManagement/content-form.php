@@ -17,7 +17,7 @@ function get_editor($form_config, $form_id)
 {
    ob_start();
    ?>
-<div  id="content-editor" style="" data-editable data-name="main-content">
+<div  id="content-editor" style="" data-name="main-content">
    <p>Insert content here...</p>
    
 </div>
@@ -41,9 +41,10 @@ function get_editor($form_config, $form_id)
           ewEditor.setContent(formData["content"]);
           });*/
 
-         //var ewEditor = ContentTools.EditorApp.get();
-         //ewEditor.init('#content-editor', 'data-name');
-         var edi = new ContentEdit.Region(document.getElementById("content-editor"));
+         var ewEditor = ContentTools.EditorApp.get();
+         ewEditor.init('#content-editor');
+         ewEditor.start()
+         //var edi = new ContentEdit.Region(document.getElementById("content-editor"));
       });
       /*$(document).ready(function () {
        setTimeout(function () {
