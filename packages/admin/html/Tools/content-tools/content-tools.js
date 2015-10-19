@@ -4838,9 +4838,10 @@
    window.ContentTools = {
       Tools: {},
       DEFAULT_TOOLS: [['bold', 'italic', 'link', 'align-left', 'align-center', 'align-right'],
-         ['heading', 'subheading','smallheading', 'paragraph', 'unordered-list', 'ordered-list', 'table', 'indent', 'unindent', 'line-break'],
+         ['heading', 'subheading', 'smallheading', 'paragraph', 'unordered-list', 'ordered-list', 'table', 'indent', 'unindent', 'line-break'],
          ['image', 'video', 'preformatted'],
-         ['undo', 'redo', 'remove']],
+         ['undo', 'redo', 'remove'],
+         ['block']],
       DEFAULT_VIDEO_HEIGHT: 300,
       DEFAULT_VIDEO_WIDTH: 400,
       HIGHLIGHT_HOLD_DURATION: 2000,
@@ -8156,7 +8157,7 @@
       return Subheading;
 
    })(ContentTools.Tools.Heading);
-   
+
    ContentTools.Tools.Smallheading = (function (_super) {
       __extends(Smallheading, _super);
 
@@ -8218,6 +8219,78 @@
       return Paragraph;
 
    })(ContentTools.Tools.Heading);
+   
+    ContentEdit.Block = (function (_super) {
+      __extends(Block, _super);
+
+      function Block() {
+         return Block.__super__.constructor.apply(this, arguments);
+      }
+
+      
+      Block.prototype.cssTypeName = function () {
+         return "block-row";
+      };
+      
+      Block.prototype.typeName = function () {
+         return "Block";
+      };
+
+      return Block;
+
+   })(ContentEdit.ElementCollection);
+
+   ContentTools.Tools.Block = (function (_super) {
+      __extends(Block, _super);
+
+      function Block() {
+         return Block.__super__.constructor.apply(this, arguments);
+      }
+
+      ContentTools.ToolShelf.stow(Block, 'block');
+
+      Block.label = 'Block';
+
+      Block.icon = 'block';
+
+      Block.tagName = 'div';
+      
+      Block.cssTypeName = function () {
+         return "block-row";
+      };
+
+      Block.canApply = function (element, selection) {
+         return /*element.parent().constructor.name === 'Region'*/true;
+      };
+
+      Block.apply = function (element, selection, callback) {
+         var app, forceAdd, block, region;
+         app = ContentTools.EditorApp.get();
+         forceAdd = app.ctrlDown();
+         console.log(element)
+         //if (element._tagName.toLowerCase() !== this.tagName) {
+         //alert()
+         //return Block.__super__.constructor.apply.call(this, element, selection, callback);
+         //} else {
+         if (element.parent().constructor.name !== 'Region') {
+            element = element.closest(function (node) {
+               return node.parent().constructor.name === 'Region';
+            });
+         }
+         region = element.parent();
+         block = new ContentEdit.Block('div', {class: 'row'});
+         region.attach(block, region.children.indexOf(element) + 1);
+         var paragraph = new ContentEdit.Text('p');
+         block.attach(paragraph);
+         paragraph.focus();
+         console.log(block)
+         return callback(true);
+         //}
+      };
+
+      return Block;
+
+   })(ContentTools.Tool);
 
    ContentTools.Tools.Preformatted = (function (_super) {
       __extends(Preformatted, _super);

@@ -216,7 +216,7 @@ root
    {
       position:absolute;
       display:inherit!important;
-      top:50px!important
+      top: 60px!important
    }
 
    .form-content.tab-content.tab-pane-sm .tab-pane
@@ -737,7 +737,7 @@ body.Admin
    padding-left:15px;
    padding-right:15px;
    display:block;
-   top:102px;
+   top: 98px;
    left:0;
    bottom:0
 }
@@ -837,7 +837,8 @@ body.Admin
 
 #main-content > .header-pane.tabs-bar
 {
-   height:50px}
+   height:auto;
+}
 
 #main-content > .form-content.tabs-bar
 {
@@ -1002,7 +1003,7 @@ button
 
 #nav-bar
 {
-   height:46px;
+   height:42px;
    background-color:rgba(0,0,0,.5);
    width:100%;
    padding:0 10px;
@@ -1013,7 +1014,7 @@ button
 {
    height:20px;
    line-height:20px;
-   padding:10px;
+   padding:8px 10px;
    float:left;
    margin:5px;
    font-family:arial;
@@ -1048,7 +1049,7 @@ button
    font-weight:400;
    border-radius:0;
    font-size: 30px;
-   line-height: 46px;
+   line-height: 42px;
    color:#fff
 }
 
@@ -1071,8 +1072,8 @@ button
 {
    float: left;
    margin: 0;
-   height: 46px;
-   padding: 8px 8px;
+   height: 42px;
+   padding: 6px 8px;
    color: #fff;
    font-size: 18px;
    font-weight: normal;
@@ -1083,7 +1084,7 @@ button
 {
    background-color:#fff;
    box-shadow:0 10px 20px rgba(0,0,0,0.19),0 6px 6px rgba(0,0,0,0.23);
-   height:102px;
+   height:98px;
    position:absolute;
    top:-102px;
    width:100%;
@@ -1576,7 +1577,7 @@ div#components-pane
 {
    background-color:#fff;
    position:absolute;
-   top:46px;
+   top:42px;
    left:0;
    width:250px;
    height:56px;
@@ -1620,7 +1621,7 @@ div#components-pane
 .app-bar-nav.in
 {
    left:0;
-   top:46px;
+   top:42px;
    height:auto;
    width:250px;
    border-radius:0;
@@ -2477,7 +2478,7 @@ textarea.text-field
    width:32px;
    height:32px;
    float:right;
-   margin:7px;
+   margin:5px 0; 
    margin-left:20px;
    cursor:pointer
 }

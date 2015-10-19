@@ -15,6 +15,12 @@
 .ce--resizing {
    cursor: nwse-resize !important
 }
+
+.ce-element--type-block-row{
+   border: 0px dashed #888;
+   border-width: 2px 0;
+}
+
 .ce-element--type-image,
 .ce-element--type-video {
    background-repeat: no-repeat;
@@ -1712,6 +1718,9 @@ video.align-right,
 }
 .ct-widget .ct-tool--paragraph:before {
    content: "P"
+}
+.ct-widget .ct-tool--block:before {
+   content: "B"
 }
 .ct-widget .ct-tool--preformatted:before {
    content: "\ea80"
