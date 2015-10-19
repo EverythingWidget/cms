@@ -32,7 +32,7 @@ class LanguageComponent implements \ContentComponent
       $form = [
           "title" => "Language",
           "description" => "Language of the content",
-          "html" => $admin->get_view("ContentManagement/label_language.php", $data)
+          "html" => $admin->get_view("html/ContentManagement/label_language.php", $data)
       ];
 
       return $form;

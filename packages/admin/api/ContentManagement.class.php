@@ -57,9 +57,9 @@ class ContentManagement extends \Section
           "get_categories_list",
           "get_articles_list",
           "get_medias_list",
-          "article-form.php_see",
-          "category-form.php_see",
-          "album-form.php_see"));
+          "article-form.php",
+          "category-form.php",
+          "album-form.php"));
 
       $this->register_permission("manipulate-content", "User can add new, edit, delete contents", array(
           'index.php',

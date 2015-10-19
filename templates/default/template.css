@@ -1100,7 +1100,7 @@ button
 .app-bar .action-pane
 {
    display:block;
-   margin:46px 0 0 250px
+   margin: 42px 0 0 250px;
 }
 
 .overlay

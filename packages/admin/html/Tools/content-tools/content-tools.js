@@ -5048,6 +5048,24 @@
          return domElement;
       };
 
+      ComponentUI.createA = function (classNames, attributes, content) {
+         var domElement, name, value;
+         domElement = document.createElement('a');
+         if (classNames && classNames.length > 0) {
+            domElement.setAttribute('class', classNames.join(' '));
+         }
+         if (attributes) {
+            for (name in attributes) {
+               value = attributes[name];
+               domElement.setAttribute(name, value);
+            }
+         }
+         if (content) {
+            domElement.innerHTML = content;
+         }
+         return domElement;
+      };
+
       return ComponentUI;
 
    })();
@@ -5827,7 +5845,7 @@
          if (before == null) {
             before = null;
          }
-         this._domElement = this.constructor.createDiv(['ct-tool', "ct-tool--" + this.tool.icon]);
+         this._domElement = this.constructor.createA(['ct-tool', "ct-tool--" + this.tool.icon]);
          this._domElement.setAttribute('data-tooltip', ContentEdit._(this.tool.label));
          return ToolUI.__super__.mount.call(this, domParent, before);
       };
@@ -8154,6 +8172,10 @@
 
       Subheading.tagName = 'h2';
 
+      Subheading.canApply = function (element, selection) {
+         return element.content !== void 0;
+      };
+
       return Subheading;
 
    })(ContentTools.Tools.Heading);
@@ -8172,6 +8194,10 @@
       Smallheading.icon = 'smallheading';
 
       Smallheading.tagName = 'h3';
+
+      Smallheading.canApply = function (element, selection) {
+         return element.content !== void 0;
+      };
 
       return Smallheading;
 
@@ -8203,11 +8229,11 @@
          if (ContentTools.Tools.Heading.canApply(element) && !forceAdd) {
             return Paragraph.__super__.constructor.apply.call(this, element, selection, callback);
          } else {
-            if (element.parent().constructor.name !== 'Region') {
-               element = element.closest(function (node) {
-                  return node.parent().constructor.name === 'Region';
-               });
-            }
+            /*if (element.parent().constructor.name !== 'Region') {
+             element = element.closest(function (node) {
+             return node.parent().constructor.name === 'Region';
+             });
+             }*/
             region = element.parent();
             paragraph = new ContentEdit.Text('p');
             region.attach(paragraph, region.children.indexOf(element) + 1);
@@ -8219,19 +8245,18 @@
       return Paragraph;
 
    })(ContentTools.Tools.Heading);
-   
-    ContentEdit.Block = (function (_super) {
+
+   ContentEdit.Block = (function (_super) {
       __extends(Block, _super);
 
       function Block() {
          return Block.__super__.constructor.apply(this, arguments);
       }
 
-      
       Block.prototype.cssTypeName = function () {
          return "block-row";
       };
-      
+
       Block.prototype.typeName = function () {
          return "Block";
       };
@@ -8254,7 +8279,7 @@
       Block.icon = 'block';
 
       Block.tagName = 'div';
-      
+
       Block.cssTypeName = function () {
          return "block-row";
       };
@@ -8263,15 +8288,25 @@
          return /*element.parent().constructor.name === 'Region'*/true;
       };
 
+      Block.isApplied = function (element, selection)
+      {
+         return element._parent.constructor.name === "Block";
+      };
+
       Block.apply = function (element, selection, callback) {
          var app, forceAdd, block, region;
          app = ContentTools.EditorApp.get();
          forceAdd = app.ctrlDown();
-         console.log(element)
-         //if (element._tagName.toLowerCase() !== this.tagName) {
-         //alert()
-         //return Block.__super__.constructor.apply.call(this, element, selection, callback);
-         //} else {
+         if(element._parent.constructor.name === "Block"){
+            region = element._parent._parent;
+            console.log(element)
+            var  index = region.children.indexOf(element._parent);
+            element._parent.detach();
+            region.attach(element,  index);
+            element.focus();
+            return callback(true);
+         }
+            
          if (element.parent().constructor.name !== 'Region') {
             element = element.closest(function (node) {
                return node.parent().constructor.name === 'Region';
@@ -8281,9 +8316,8 @@
          block = new ContentEdit.Block('div', {class: 'row'});
          region.attach(block, region.children.indexOf(element) + 1);
          var paragraph = new ContentEdit.Text('p');
-         block.attach(paragraph);
-         paragraph.focus();
-         console.log(block)
+         block.attach(element);
+         element.focus();
          return callback(true);
          //}
       };

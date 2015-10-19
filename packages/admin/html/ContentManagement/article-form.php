@@ -4,7 +4,7 @@ session_start();
 $articleInfo = array();
 $articleInfo["parent_id"] = $_REQUEST["parent"];
 if ($_REQUEST["articleId"])
-   $articleInfo = (EWCore::process_command("admin", "ContentManagement", "get_article", array("articleId" => $_REQUEST["articleId"])));
+   $articleInfo = (EWCore::process_request_command("admin/api", "ContentManagement", "get_article", array("articleId" => $_REQUEST["articleId"])));
 else
    $articleInfo = json_encode($articleInfo);
 

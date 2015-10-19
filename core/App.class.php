@@ -93,7 +93,6 @@ class App
             if ($parameters["_file"])
             {
                //$content_type = substr($parameters["_file"], strripos($parameters["_file"], '.') + 1);
-
                $path = implode('/', $app_resource_path) . '/' . $section_name . '/' . $parameters["_file"];
                //echo EW_PACKAGES_DIR . '/' .$path;
             }
@@ -120,14 +119,18 @@ class App
             //$finfo = \finfo::file( EW_PACKAGES_DIR . '/' . $path,FILEINFO_MIME_TYPE);
             //$content_type = \finfo_file($finfo, EW_PACKAGES_DIR . '/' . $path);
             //\finfo_close($finfo);
-            header("Content-Type: " . $this->get_mime_type($path));
+            //echo "asdasd";
+            
+            if ($this->get_mime_type($path))
+               header("Content-Type: " . $this->get_mime_type($path));
+            //http_response_code(200);
             ob_start();
             include EW_PACKAGES_DIR . '/' . $path;
             return ob_get_clean();
          }
          else if ($path)
          {
-            return \EWCore::log_error(404, "<h4>File not found</h4><p>File `$path`, not found</p>");
+            return \EWCore::log_error(404, "<h4>Constract: File not found</h4><p>File `$path`, not found</p>");
          }
       });
    }
@@ -237,6 +240,7 @@ class App
       if ($this->resources[$app_resource_path[1]])
       {
          return $this->resources[$app_resource_path[1]]($app_resource_path, $section_name, $method_name, $parameters);
+         
       }
       else
       {
@@ -324,9 +328,9 @@ class App
    public function get_view($path, $view_data)
    {
       $full_path = EW_PACKAGES_DIR . '/' . $this->get_root() . '/' . $path;
-      if (!file_exists($path))
+      if (!file_exists($full_path))
       {
-         return \EWCore::log_error(404, "<h4>File not found</h4><p>File `$path`, not found</p>");
+         return \EWCore::log_error(404, "<h4>View: File not found</h4><p>File `$full_path`, not found</p>");
       }
       ob_start();
       include $full_path;

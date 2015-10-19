@@ -1634,41 +1634,25 @@ video.align-right,
    border-radius: 2px;
    color: white;
    content: attr(data-tooltip);
-   display: block;
    -webkit-hyphens: auto;
    -moz-hyphens: auto;
    -ms-hyphens: auto;
    hyphens: auto;
-   left: -26.5px;
+   left: -36.5px;
    line-height: 20px;
-   opacity: 0.0;
+   opacity: 0.8;
    padding: 0 8px;
    position: absolute;
-   bottom: -18px;
+   top: 33px;
    font-family: arial, sans-serif;
    font-size: 12px;
    line-height: 20px;
-   -webkit-font-smoothing: antialiased;
-   -moz-osx-font-smoothing: grayscale;
-   visibility: hidden;
-   width: 85px;
-   word-break: break-word
+   display: none;
+   width: 105px;
 }
 .ct-widget .ct-tool:hover:after {
-   opacity: 0.8;
-   visibility: visible;
-   -webkit-transition-property: opacity;
-   -moz-transition-property: opacity;
-   transition-property: opacity;
-   -webkit-transition-duration: 0s;
-   -moz-transition-duration: 0s;
-   transition-duration: 0s;
-   -webkit-transition-timing-function: ease-in;
-   -moz-transition-timing-function: ease-in;
-   transition-timing-function: ease-in;
-   -webkit-transition-delay: 2s;
-   -moz-transition-delay: 2s;
-   transition-delay: 2s
+   display: block;
+   
 }
 .ct-widget .ct-tool:before {
    line-height: 32px

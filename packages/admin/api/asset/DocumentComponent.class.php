@@ -32,7 +32,7 @@ class DocumentComponent implements \ContentComponent
       $form = [
           "title" => "Document",
           "description" => "Language of the content",
-          "html" => $admin->get_view("ContentManagement/label_document.php", $data)
+          "html" => $admin->get_view("html/ContentManagement/label_document.php", $data)
       ];
 
       return $form;

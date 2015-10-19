@@ -47,7 +47,7 @@
                  }
       }).hide().comeIn();
       this.seeFolderActivity = EW.getActivity({
-         activity: "admin-api/ContentManagement/category-form.php_see",
+         activity: "admin-api/ContentManagement/category-form.php",
          onDone: function ()
          {
             EW.setHashParameters({
@@ -57,7 +57,7 @@
          }
       });
       this.seeArticleActivity = EW.getActivity({
-         activity: "admin-api/ContentManagement/article-form.php_see",
+         activity: "admin-api/ContentManagement/article-form.php",
          onDone: function ()
          {
             EW.setHashParameters({
