@@ -1804,7 +1804,7 @@ class EWCore
             foreach ($sections_permissions["permission"] as $permission_name => $permission_info)
             {
                //echo "$app_name.$section_name.$permission_name <br>";
-               if (admin\UsersManagement::user_has_permission($app_name, $section_name, [$permission_name]))
+               if (admin\UsersManagement::user_has_permission($app_name, $section_name, [$permission_name], $_SESSION['EW.USER_ID']))
                {
                   foreach ($permission_info["methods"] as $method)
                   {

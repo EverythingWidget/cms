@@ -18,7 +18,14 @@
 
 .ce-element--type-block-row{
    border: 0px dashed #888;
-   border-width: 2px 0;
+   border-width: 3px 0;
+   padding-top: 2px;
+   padding-bottom: 2px;
+   margin: 3px 0;
+}
+
+.ce-element--type-block-column{
+   border: 1px solid rgba(0,0,0,.2);
 }
 
 .ce-element--type-image,
@@ -1705,6 +1712,9 @@ video.align-right,
 }
 .ct-widget .ct-tool--block:before {
    content: "B"
+}
+.ct-widget .ct-tool--block-column:before {
+   content: "C"
 }
 .ct-widget .ct-tool--preformatted:before {
    content: "\ea80"

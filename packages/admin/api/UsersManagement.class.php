@@ -123,14 +123,21 @@ class UsersManagement extends Section
       }
       return json_encode($resullt);
    }
-
+/**
+ * 
+ * @param string $app_name
+ * @param string $class_name
+ * @param string $permission_id
+ * @param string $user_id
+ * @return boolean
+ */
    public static function user_has_permission($app_name, $class_name, $permission_id, $user_id)
    {
       $db_con = \EWCore::get_db_connection();
-      if (!$user_id)
+      /*if (!$user_id)
          $user_id = $_SESSION['EW.USER_ID'];
       if (!$user_id)
-         $user_id = $db_con->real_escape_string($_REQUEST["userId"]);
+         $user_id = $db_con->real_escape_string($_REQUEST["userId"]);*/
 
       $user = $db_con->query("SELECT * FROM ew_users, ew_users_groups WHERE ew_users.group_id = ew_users_groups.id AND ew_users.id = '$user_id' LIMIT 1") or die($db_con->error);
       if ($user_info = $user->fetch_assoc())

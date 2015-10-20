@@ -59,8 +59,9 @@ class Section
       {
          return EWCore::log_error(400, "Wrong command: {$this->app->get_root()}/{$this->current_class->getShortName()}. Method can not be null.");
       }
+      
       // Get permission id for the requested method or FALSE in the case of no permission id available
-      $permission_id = EWCore::does_need_permission($this->app->get_root(), $this->current_class->getShortName(), $method_name);
+      /*$permission_id = EWCore::does_need_permission($this->app->get_root(), $this->current_class->getShortName(), $method_name);
       if ($permission_id && $permission_id !== FALSE)
       {
          // Check for user permission
@@ -92,7 +93,7 @@ class Section
          }
       }
       else
-      {
+      {*/
          if (preg_match('/(.*)\.(.*)?/', $method_name))
          {
             $path = EW_PACKAGES_DIR . '/' . $this->app->get_root() . '/' . $this->current_class->getShortName() . '/' . $method_name;
@@ -103,7 +104,7 @@ class Section
             echo $this->invoke_method($method_name, $parameters);
             return ob_get_clean();
          }
-      }
+      //}
       $this->current_method_args = NULL;
       if ($path && file_exists($path))
       {

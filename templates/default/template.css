@@ -838,6 +838,7 @@ body.Admin
 #main-content > .header-pane.tabs-bar
 {
    height:auto;
+   /* padding-top: 13px; */
 }
 
 #main-content > .form-content.tabs-bar
@@ -1048,9 +1049,15 @@ button
    /* padding-left: 54px; */
    font-weight:400;
    border-radius:0;
-   font-size: 30px;
+   font-size: 28px;
    line-height: 42px;
    color:#fff
+
+
+
+
+
+
 }
 
 #nav-bar > .comp-btn:hover
@@ -2475,22 +2482,28 @@ textarea.text-field
 {
    background-image:url(ExitBtn.png);
    background-repeat:no-repeat;
-   width:32px;
-   height:32px;
+   width: 28px;
+   height: 28px;
    float:right;
-   margin:5px 0; 
+   margin: 7px 0;
    margin-left:20px;
    cursor:pointer
+
+
+
+
+;
+   background-size: cover;
 }
 
 .ExitBtn:hover
 {
-   background-position:0 -32px
+   background-position: 0px -28px;
 }
 
 .ExitBtn:active
 {
-   background-position:0 -64px
+   background-position: 0 -56px;
 }
 
 .green,.green label,.green h1

@@ -51,7 +51,7 @@ class AppsManagement extends Section
             if ($permission_id && $permission_id !== FALSE)
             {
                // Check for user permission
-               if (!UsersManagement::user_has_permission($appDir, $class_name, $permission_id))
+               if (!UsersManagement::user_has_permission($appDir, $class_name, $permission_id, $_SESSION['EW.USER_ID']))
                {
                   continue;
                }
@@ -123,7 +123,7 @@ class AppsManagement extends Section
     */
    public static function create_section_main_form($form_config = null)
    {
-      return \EWCore::load_file('admin/html/AppsManagement/section-main-form.php',$form_config);
+      return \EWCore::load_file('admin/html/AppsManagement/section-main-form.php', $form_config);
    }
 
    public function get_description()

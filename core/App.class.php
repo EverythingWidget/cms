@@ -120,7 +120,7 @@ class App
             //$content_type = \finfo_file($finfo, EW_PACKAGES_DIR . '/' . $path);
             //\finfo_close($finfo);
             //echo "asdasd";
-            
+
             if ($this->get_mime_type($path))
                header("Content-Type: " . $this->get_mime_type($path));
             //http_response_code(200);
@@ -230,48 +230,41 @@ class App
    public function process_command($app_resource_path, $section_name, $method_name, $parameters = null)
    {
       $app_name = $this->get_root();
-      $real_class_name = $app_name . '\\' . $section_name;
+      $permission_id = \EWCore::does_need_permission($this->get_root(), $section_name, $method_name);
 
-      $class_exist = false;
-      //print_r($app_resource_path);
-      //echo $real_class_name;
-      // If class has namespace
-
-      if ($this->resources[$app_resource_path[1]])
+      // Get permission id for the requested method or FALSE in the case of no permission id available
+      if ($permission_id && $permission_id !== FALSE)
       {
-         return $this->resources[$app_resource_path[1]]($app_resource_path, $section_name, $method_name, $parameters);
+         // Check for user permission
          
+         if (\admin\UsersManagement::user_has_permission($this->get_root(), $section_name, $permission_id, $_SESSION['EW.USER_ID']))
+         {
+            if ($this->resources[$app_resource_path[1]])
+            {
+               return $this->resources[$app_resource_path[1]]($app_resource_path, $section_name, $method_name, $parameters);
+            }
+            else
+            {
+               return \EWCore::log_error(404, "<h4>Resource not found</h4><p>Resource `$app_resource_path[1]/$section_name/$method_name`, not found</p>");
+            }
+         }
+         else
+         {
+            return \EWCore::log_error(403, "tr{You do not have permission for this command}", array(
+                        "Access Denied" => "{$this->get_root()}/$section_name/$method_name"));
+         }
       }
       else
       {
-         return \EWCore::log_error(404, "<h4>Resource not found</h4><p>Resource `$app_resource_path[1]/$section_name/$method_name`, not found</p>");
+         if ($this->resources[$app_resource_path[1]])
+         {
+            return $this->resources[$app_resource_path[1]]($app_resource_path, $section_name, $method_name, $parameters);
+         }
+         else
+         {
+            return \EWCore::log_error(404, "<h4>Resource not found</h4><p>Resource `$app_resource_path[1]/$section_name/$method_name`, not found</p>");
+         }
       }
-      /* if ($app_resource_path[1] === "api")
-        {
-        // Create an instance of section with its parent App
-        if (!$section_name)
-        {
-        return \EWCore::log_error(400, "<h4>$app_name-api </h4><p>Please specify the api command</p>");
-        }
-        if (class_exists($real_class_name))
-        {
-        $app_section_object = new $real_class_name($this);
-        return $app_section_object->process_request($method_name, $parameters);
-        }
-        else
-        {
-        return \EWCore::log_error(404, "<h4>$app_name-api </h4><p>Section `$section_name` not found</p>");
-        }
-        } */
-
-      //$pages_feeders = \EWCore::read_registry("ew-widget-feeder");
-      /* if ($class_exist)
-        {
-
-        $RESULT_CONTENT = $app_section_object->process_request($method_name, $parameters);
-        }
-        else */
-      //return $RESULT_CONTENT;
    }
 
    public function get_root()
