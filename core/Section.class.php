@@ -9,7 +9,7 @@ class Section
 {
 
    var $sectionName;
-   protected $sectionDir;
+   protected $resource;
    var $pageTitles;
    var $page;
    var $command;
@@ -59,51 +59,51 @@ class Section
       {
          return EWCore::log_error(400, "Wrong command: {$this->app->get_root()}/{$this->current_class->getShortName()}. Method can not be null.");
       }
-      
+
       // Get permission id for the requested method or FALSE in the case of no permission id available
-      /*$permission_id = EWCore::does_need_permission($this->app->get_root(), $this->current_class->getShortName(), $method_name);
-      if ($permission_id && $permission_id !== FALSE)
+      /* $permission_id = EWCore::does_need_permission($this->app->get_root(), $this->current_class->getShortName(), $method_name);
+        if ($permission_id && $permission_id !== FALSE)
+        {
+        // Check for user permission
+        if (admin\UsersManagement::user_has_permission($this->app->get_root(), $this->current_class->getShortName(), $permission_id))
+        {
+        // Method name is a file name
+        if (preg_match('/(.*)\.(.*)?/', $method_name))
+        {
+        // Check if it is a extended method
+        if (strpos($method_name, '.php_'))
+        $method_name = substr($method_name, 0, strpos($method_name, '.php_') + 4);
+        // Check if the method has title
+        if (strpos($method_name, ':'))
+        $method_name = explode(':', $method_name, 2)[0];
+        $path = EW_PACKAGES_DIR . '/' . $this->app->get_root() . '/' . $this->current_class->getShortName() . '/' . $method_name;
+        //echo$path;
+        }
+        else if ($method_name && method_exists($this, $method_name))
+        {
+        ob_start();
+        echo $this->invoke_method($method_name, $parameters);
+        return ob_get_clean();
+        }
+        }
+        else
+        {
+        return EWCore::log_error(403, "tr{You do not have permission for this command}", array(
+        "Access Denied" => "{$this->app->get_root()}/{$this->current_class->getShortName()}/$method_name"));
+        }
+        }
+        else
+        { */
+      if (preg_match('/(.*)\.(.*)?/', $method_name))
       {
-         // Check for user permission
-         if (admin\UsersManagement::user_has_permission($this->app->get_root(), $this->current_class->getShortName(), $permission_id))
-         {
-            // Method name is a file name
-            if (preg_match('/(.*)\.(.*)?/', $method_name))
-            {
-               // Check if it is a extended method
-               if (strpos($method_name, '.php_'))
-                  $method_name = substr($method_name, 0, strpos($method_name, '.php_') + 4);
-               // Check if the method has title
-               if (strpos($method_name, ':'))
-                  $method_name = explode(':', $method_name, 2)[0];
-               $path = EW_PACKAGES_DIR . '/' . $this->app->get_root() . '/' . $this->current_class->getShortName() . '/' . $method_name;
-               //echo$path;
-            }
-            else if ($method_name && method_exists($this, $method_name))
-            {
-               ob_start();
-               echo $this->invoke_method($method_name, $parameters);
-               return ob_get_clean();
-            }
-         }
-         else
-         {
-            return EWCore::log_error(403, "tr{You do not have permission for this command}", array(
-                        "Access Denied" => "{$this->app->get_root()}/{$this->current_class->getShortName()}/$method_name"));
-         }
+         $path = EW_PACKAGES_DIR . '/' . $this->app->get_root() . '/' . $this->current_class->getShortName() . '/' . $method_name;
       }
-      else
-      {*/
-         if (preg_match('/(.*)\.(.*)?/', $method_name))
-         {
-            $path = EW_PACKAGES_DIR . '/' . $this->app->get_root() . '/' . $this->current_class->getShortName() . '/' . $method_name;
-         }
-         else if ($method_name && method_exists($this, $method_name))
-         {
-            ob_start();
-            echo $this->invoke_method($method_name, $parameters);
-            return ob_get_clean();
-         }
+      else if ($method_name && method_exists($this, $method_name))
+      {
+         ob_start();
+         echo $this->invoke_method($method_name, $parameters);
+         return ob_get_clean();
+      }
       //}
       $this->current_method_args = NULL;
       if ($path && file_exists($path))
@@ -382,9 +382,10 @@ class Section
       
    }
 
-   public function register_permission($id, $description, $permissions)
+   public function register_permission($id, $description, $permissions, $res = '')
    {
-      EWCore::register_permission($this->app->get_root(), $this->current_class->getShortName(), $id, $this->app->get_name(), $this->get_title(), $description, $permissions);
+
+      EWCore::register_permission($this->app->get_root() . $res, $this->current_class->getShortName(), $id, $this->app->get_name(), $this->get_title(), $description, $permissions);
    }
 
    /**

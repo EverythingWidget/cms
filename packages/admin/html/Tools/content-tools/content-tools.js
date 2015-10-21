@@ -3261,6 +3261,7 @@
 
       Text.prototype.html = function (indent) {
          var content;
+
          if (indent == null) {
             indent = '';
          }
@@ -3274,6 +3275,7 @@
       };
 
       Text.prototype.mount = function () {
+
          var name, value, _ref;
          this._domElement = document.createElement(this._tagName);
          _ref = this._attributes;
@@ -8247,43 +8249,202 @@
 
    })(ContentTools.Tools.Heading);
 
-   ContentEdit.BlockRow = (function (_super) {
-      __extends(BlockRow, _super);
+   // Eeliya GridLayout
 
-      function BlockRow() {
-         return BlockRow.__super__.constructor.apply(this, arguments);
+   ContentEdit.GridLayout = (function (_super) {
+      __extends(GridLayout, _super);
+
+      function GridLayout(tagName, attributes, content) {
+         return GridLayout.__super__.constructor.call(this, tagName, attributes);
+         this._content = content;
       }
 
-      BlockRow.prototype.cssTypeName = function () {
+      GridLayout.fromDOMElement = function (domElement) {
+         if (domElement.classList.contains("column")) {
+            console.log("column");
+            return new ContentEdit.GridLayout.Column(domElement);
+         } else if (domElement.classList.contains("row")) {
+            console.log("row");
+            //console.log(domElement);
+            return new ContentEdit.GridLayout.Row(domElement);
+         }
+         return domElement;
+      };
+
+      return GridLayout;
+
+   })(ContentEdit.ElementCollection);
+
+   ContentEdit.GridLayout.Row = (function (_super) {
+      __extends(Row, _super);
+
+      function Row(domElement) {
+         Row.__super__.constructor.call(this, domElement.tagName, ContentEdit.ElementCollection.getDOMElementAttributes(domElement));
+         var c, childNode, childNodes, cls, element, tagNames, _i, _len;
+         this._domElement = domElement;
+         tagNames = ContentEdit.TagNames.get();
+         childNodes = (function () {
+            var _i, _len, _ref, _results;
+            _ref = this._domElement.childNodes;
+            _results = [];
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+               c = _ref[_i];
+               _results.push(c);
+            }
+            return _results;
+         }).call(this);
+         for (_i = 0, _len = childNodes.length; _i < _len; _i++) {
+            childNode = childNodes[_i];
+            if (childNode.nodeType !== 1) {
+               continue;
+            }
+            if (childNode.getAttribute("data-ce-tag")) {
+               cls = tagNames.match(childNode.getAttribute("data-ce-tag"));
+            } else {
+               cls = tagNames.match(childNode.tagName);
+            }
+            element = cls.fromDOMElement(childNode);
+            this._domElement.removeChild(childNode);
+
+            if (element) {
+               this.attach(element);
+            }
+         }
+      }
+
+      Row.prototype.cssTypeName = function () {
          return "block-row";
       };
 
-      BlockRow.prototype.typeName = function () {
+      Row.prototype.typeName = function () {
          return "BlockRow";
       };
 
-      return BlockRow;
+      Row.prototype.mount = function () {
+         this.addCSSClass("row");
+
+         var child, name, value, _i, _len, _ref, _ref1, _results;
+         _ref = this._attributes;
+         for (name in _ref) {
+            value = _ref[name];
+            this._domElement.setAttribute(name, value);
+         }
+
+         ContentEdit.Element.prototype.mount.call(this);
+         _ref1 = this.children;
+         _results = [];
+         for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+            child = _ref1[_i];
+            if (!child.isMounted())
+               _results.push(child.mount());
+         }
+
+         this.overMenu = new ContentEdit.Static("static", {
+            class: "over-menu block-row"
+         }, "");
+         this.attach(this.overMenu);
+         return _results;
+      };
+
+      Row.prototype.html = function (indent) {
+         var self = this;
+         this.children = this.children.filter(function (e) {
+            return e !== self.overMenu;
+         });
+         return Row.__super__.html.call(this, indent);
+      };
+      return Row;
 
    })(ContentEdit.ElementCollection);
 
-   ContentEdit.BlockColumn = (function (_super) {
-      __extends(BlockColumn, _super);
+   ContentEdit.GridLayout.Column = (function (_super) {
+      __extends(Column, _super);
 
-      function BlockColumn() {
-         return BlockColumn.__super__.constructor.apply(this, arguments);
+      function Column(domElement) {
+         Column.__super__.constructor.call(this, domElement.tagName, ContentEdit.ElementCollection.getDOMElementAttributes(domElement));
+         this._domElement = domElement;
+         var c, childNode, childNodes, cls, element, tagNames, _i, _len;
+         tagNames = ContentEdit.TagNames.get();
+         childNodes = (function () {
+            var _i, _len, _ref, _results;
+            _ref = this._domElement.childNodes;
+            _results = [];
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+               c = _ref[_i];
+               _results.push(c);
+            }
+            return _results;
+         }).call(this);
+         for (_i = 0, _len = childNodes.length; _i < _len; _i++) {
+            childNode = childNodes[_i];
+            if (childNode.nodeType !== 1) {
+               continue;
+            }
+            if (childNode.getAttribute("data-ce-tag")) {
+               cls = tagNames.match(childNode.getAttribute("data-ce-tag"));
+            } else {
+               cls = tagNames.match(childNode.tagName);
+            }
+            element = cls.fromDOMElement(childNode);
+            this._domElement.removeChild(childNode);
+
+            if (element) {
+               this.attach(element);
+            }
+         }
+         console.log("inside col", domElement);
       }
 
-      BlockColumn.prototype.cssTypeName = function () {
+      Column.prototype.cssTypeName = function () {
          return "block-column";
       };
 
-      BlockColumn.prototype.typeName = function () {
+      Column.prototype.typeName = function () {
          return "BlockColumn";
       };
 
-      return BlockColumn;
+      Column.prototype.mount = function () {
+         this.addCSSClass("column");
+         this.addCSSClass("col-xs-12");
+         
+         var child, name, value, _i, _len, _ref, _ref1, _results;
+         _ref = this._attributes;
+         for (name in _ref) {
+            value = _ref[name];
+            this._domElement.setAttribute(name, value);
+         }
+
+         ContentEdit.Element.prototype.mount.call(this);
+         _ref1 = this.children;
+         _results = [];
+         for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+            child = _ref1[_i];
+            if (!child.isMounted())
+               _results.push(child.mount());
+         }
+
+         this.overMenu = new ContentEdit.Static("static", {
+            class: "over-menu block-column"
+         }, "");
+         this.attach(this.overMenu);
+         return _results;
+      };
+
+      Column.prototype.html = function (indent) {
+         var self = this;
+
+         this.children = this.children.filter(function (e) {
+            return e !== self.overMenu;
+         });
+
+         return Column.__super__.html.call(this, indent);
+      };
+
+      return Column;
 
    })(ContentEdit.ElementCollection);
+
+   ContentEdit.TagNames.get().register(ContentEdit.GridLayout, 'div');
 
    ContentTools.Tools.Block = (function (_super) {
       __extends(Block, _super);
@@ -8310,14 +8471,14 @@
 
       Block.isApplied = function (element, selection)
       {
-         return element._parent.constructor.name === "BlockRow";
+         return element._parent.constructor.name === "Row";
       };
 
       Block.apply = function (element, selection, callback) {
          var app, forceAdd, block, region, row;
          app = ContentTools.EditorApp.get();
          forceAdd = app.ctrlDown();
-         if (element._parent.constructor.name === "BlockRow") {
+         if (element._parent.constructor.name === "Row") {
             region = element._parent._parent;
             var index = region.children.indexOf(element._parent);
             //element._parent.detach();
@@ -8332,7 +8493,7 @@
                return node.parent().constructor.name === 'Region';
             });
             region = row.parent();
-            block = new ContentEdit.BlockRow('div', {class: 'row'});
+            block = new ContentEdit.GridLayout.Row(ContentTools.ComponentUI.createDiv({class: 'row'}));
             var index = region.children.indexOf(row);
             var paragraph = new ContentEdit.Text('p');
             region.attach(block, index + 1);
@@ -8340,11 +8501,10 @@
             paragraph.focus();
             return callback(true);
          }
-         
          region = element.parent();
          var index = region.children.indexOf(element);
          element.blur();
-         block = new ContentEdit.BlockRow('div', {class: 'row'});         
+         block = new ContentEdit.GridLayout.Row(ContentTools.ComponentUI.createDiv({class: 'row'}));
          block.attach(element);
          region.attach(block, index);
          element.focus();
@@ -8376,7 +8536,7 @@
       };
 
       BlockColumn.canApply = function (element, selection) {
-         return element.parent().constructor.name === 'BlockRow' || (element.parent().constructor.name === "BlockColumn");
+         return element.parent().constructor.name === 'Row' || (element.parent().constructor.name === "Column");
       };
 
       BlockColumn.isApplied = function (element, selection)
@@ -8388,7 +8548,7 @@
          var app, forceAdd, block, blockRow;
          app = ContentTools.EditorApp.get();
          forceAdd = app.ctrlDown();
-         if (element.parent().constructor.name === 'BlockColumn' && element.content.characters.length === 0) {
+         if (element.parent().constructor.name === 'Column' && element.content.characters.length === 0) {
 
             blockRow = element.parent().parent();
             var region = blockRow.parent();
@@ -8403,12 +8563,12 @@
             return callback(true);
          }
 
-         if (element.parent().constructor.name !== 'BlockRow') {
+         if (element.parent().constructor.name !== 'Row') {
             element = element.closest(function (node) {
-               return node.parent().constructor.name === 'BlockRow';
+               return node.parent().constructor.name === 'Row';
             });
             blockRow = element.parent();
-            block = new ContentEdit.BlockColumn('div', {class: 'col-xs-12'});
+            block = new ContentEdit.GridLayout.Column(ContentTools.ComponentUI.createDiv({class: 'column col-xs-12'}));
             blockRow.attach(block, blockRow.children.indexOf(element) + 1);
             var paragraph = new ContentEdit.Text('p');
             block.attach(paragraph);
@@ -8416,7 +8576,7 @@
             paragraph.focus();
          } else {
             blockRow = element.parent();
-            block = new ContentEdit.BlockColumn('div', {class: 'col-xs-12'});
+            block = new ContentEdit.GridLayout.Column(ContentTools.ComponentUI.createDiv({class: 'column col-xs-12'}));
             blockRow.attach(block, blockRow.children.indexOf(element) + 1);
             element.blur();
             block.attach(element);

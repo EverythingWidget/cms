@@ -34,16 +34,16 @@ function get_editor($form_config, $form_id)
          {
             //ewEditor.setContent(formData["content"]);
             $("#content-editor .ct-app").html(formData["content"]);
-            ewEditor.start();
+            contentEditor.start();
          });
 
-         var ewEditor = ContentTools.EditorApp.get();
-         ewEditor.init('#content-editor');
+         contentEditor = ContentTools.EditorApp.get();
+         contentEditor.init('#content-editor');
          //ewEditor.start();
          EW.getParentDialog($("#<?php echo $form_id ?>")).on("beforeClose", function ()
          {
-            ewEditor.stop();
-            ewEditor = null;
+            contentEditor.stop();
+            contentEditor = null;
          });
          //var edi = new ContentEdit.Region(document.getElementById("content-editor"));
       });
@@ -329,8 +329,9 @@ $tabs = EWCore::read_registry("ew-article-form-tab");
          delete formData.key;
          delete formData.value;
          formData['labels'] = this.getLabels();
-         if (contentEditor)
-            formData["content"] = contentEditor.getContent();
+         if (contentEditor.regions() && contentEditor.regions()[0])
+            formData["content"] = contentEditor.regions()[0].html();
+         //alert(contentEditor.regions()[0].html())
 
          //formData["content"] = CKEDITOR.instances.content.getData();
          /*if (tinymce && tinymce.activeEditor)
