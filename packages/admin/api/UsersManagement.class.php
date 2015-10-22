@@ -14,7 +14,7 @@ class UsersManagement extends Section
    {
       //echo "asdasd";
       $this->register_permission("see-users", "User can see users list", array(
-          "get_users_list",
+          //"get_users_list",
           "get_user_by_id",
           "get_user_by_email",
           "user-form.php_see",
@@ -158,7 +158,7 @@ class UsersManagement extends Section
       return FALSE;
    }
 
-   public function get_users_list($token = 0, $size = 999999)
+   public function get_users_list($_verb,$token = 0, $size = 999999)
    {
       $db = \EWCore::get_db_connection();
 
@@ -591,7 +591,11 @@ class UsersManagement extends Section
           title => "Update user Unsuccessfull",
           message => "User has been NOT deleted"));
    }
-
+   
+   public function get($_verb)
+   {
+      return \EWCore::log_error(400,"Not defined");
+   }
 }
 
 /*

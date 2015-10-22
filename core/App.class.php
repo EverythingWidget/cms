@@ -24,115 +24,11 @@ class App
    protected $namespace = "";
    protected $default_resource = "html";
    private $resources = [];
-   // our list of mime types
-   private $mime_types = array(
-       "pdf" => "application/pdf",
-       "exe" => "application/octet-stream",
-       "zip" => "application/zip",
-       "docx" => "application/msword",
-       "doc" => "application/msword",
-       "xls" => "application/vnd.ms-excel",
-       "ppt" => "application/vnd.ms-powerpoint",
-       "gif" => "image/gif",
-       "png" => "image/png",
-       "jpeg" => "image/jpg",
-       "jpg" => "image/jpg",
-       "mp3" => "audio/mpeg",
-       "wav" => "audio/x-wav",
-       "mpeg" => "video/mpeg",
-       "mpg" => "video/mpeg",
-       "mpe" => "video/mpeg",
-       "mov" => "video/quicktime",
-       "avi" => "video/x-msvideo",
-       "3gp" => "video/3gpp",
-       "css" => "text/css",
-       "jsc" => "application/javascript",
-       "js" => "application/javascript",
-       "php" => "text/html",
-       "htm" => "text/html",
-       "html" => "text/html");
-
-   public function get_mime_type($path)
-   {
-      $extension = strtolower(end(explode('.', $path)));
-      return $this->mime_types[$extension];
-   }
 
    public function __construct()
    {
-      $this->addResource("api", function($app_resource_path, $section_name, $method_name, $parameters = null)
-      {
-         $app_name = $this->get_root();
-         $real_class_name = $app_name . '\\' . $section_name;
-         if (!$section_name)
-         {
-            return \EWCore::log_error(400, "<h4>$app_name-api </h4><p>Please specify the api command</p>");
-         }
-         if (class_exists($real_class_name))
-         {
-            $app_section_object = new $real_class_name($this);
-            return $app_section_object->process_request($method_name, $parameters);
-         }
-         else
-         {
-            return \EWCore::log_error(404, "<h4>$app_name-api </h4><p>Section `$section_name` not found</p>");
-         }
-      });
-
-      $this->addResource($this->default_resource, function($app_resource_path, $section_name, $method_name, $parameters = null)
-      {
-         if (\EWCore::is_widget_feeder("*", "*", $section_name))
-         {
-            // Show index if the URL contains a page feeder
-            ob_start();
-            $this->index();
-            return ob_get_clean();
-         }
-         else if ($section_name)
-         {
-            if ($parameters["_file"])
-            {
-               //$content_type = substr($parameters["_file"], strripos($parameters["_file"], '.') + 1);
-               $path = implode('/', $app_resource_path) . '/' . $section_name . '/' . $parameters["_file"];
-               //echo EW_PACKAGES_DIR . '/' .$path;
-            }
-            else
-            {
-               $path = implode('/', $app_resource_path) . '/' . $section_name . '/index.php';
-            }
-         }
-         else
-         {
-            if (!$parameters["_file"])
-            {
-               // Refer to app index
-               ob_start();
-               $this->index();
-               return ob_get_clean();
-            }
-            // Refer to app section index
-            $path = implode('/', $app_resource_path) . '/' . $parameters["_file"];
-         }
-
-         if ($path && file_exists(EW_PACKAGES_DIR . '/' . $path))
-         {
-            //$finfo = \finfo::file( EW_PACKAGES_DIR . '/' . $path,FILEINFO_MIME_TYPE);
-            //$content_type = \finfo_file($finfo, EW_PACKAGES_DIR . '/' . $path);
-            //\finfo_close($finfo);
-            //echo "asdasd";
-
-            if ($this->get_mime_type($path))
-               header("Content-Type: " . $this->get_mime_type($path));
-            //http_response_code(200);
-            ob_start();
-            include EW_PACKAGES_DIR . '/' . $path;
-            return ob_get_clean();
-         }
-         else if ($path)
-         {
-            return \EWCore::log_error(404, "<h4>Constract: File not found</h4><p>File `$path`, not found</p>");
-         }
-      });
+      $this->addResource("api", new APIResourceHandler($this));
+      $this->addResource($this->default_resource, new HTMLResourceHandler($this));
    }
 
    //put your code here
@@ -236,12 +132,12 @@ class App
       if ($permission_id && $permission_id !== FALSE)
       {
          // Check for user permission
-         
+
          if (\admin\UsersManagement::user_has_permission($this->get_root(), $section_name, $permission_id, $_SESSION['EW.USER_ID']))
          {
             if ($this->resources[$app_resource_path[1]])
             {
-               return $this->resources[$app_resource_path[1]]($app_resource_path, $section_name, $method_name, $parameters);
+               return $this->resources[$app_resource_path[1]]->process($this, $app_resource_path, $section_name, $method_name, $parameters);
             }
             else
             {
@@ -258,7 +154,7 @@ class App
       {
          if ($this->resources[$app_resource_path[1]])
          {
-            return $this->resources[$app_resource_path[1]]($app_resource_path, $section_name, $method_name, $parameters);
+            return $this->resources[$app_resource_path[1]]->process($this, $app_resource_path, $section_name, $method_name, $parameters);
          }
          else
          {

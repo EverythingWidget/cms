@@ -73,7 +73,7 @@ if ($elements[$parameter_index])
 }
 
 //$resource_path = "$app_name-$default_recourse";
-$_REQUEST["_app_name"] = $app_name;
+//$_REQUEST["_app_name"] = $app_name;
 
 // Check the asset parameter
 /* if ($elements[$parameter_index] == 'asset')
@@ -98,7 +98,7 @@ $function_name = null;
 if (isset($elements[$parameter_index]))
 {
    $function_name = $elements[$parameter_index];
-   $function_name = ($function_name == 'index.php') ? 'index' : $function_name;
+   //$function_name = ($function_name == 'index.php') ? 'index' : $function_name;
    $_REQUEST["_function_name"] = $function_name;
 
    $rest_of_elements = array_slice($elements, $parameter_index);

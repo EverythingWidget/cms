@@ -51,8 +51,14 @@ class Section
       
    }
 
-   public function process_request($method_name, $parameters = null)
+   public function process_request($verb, $method_name, $parameters = null)
    {
+      if (!$verb)
+      {
+         return EWCore::log_error(400, "Wrong command: Request method is not defined");
+      }
+      $parameters['_verb'] = $verb;
+
       if (!$method_name)
       {
          return EWCore::log_error(400, "Wrong command: {$this->app->get_root()}/{$this->current_class->getShortName()}. Method can not be null.");
@@ -69,10 +75,12 @@ class Section
          return ob_get_clean();
       }
       //}
+
       $this->current_method_args = NULL;
       if ($path && file_exists($path))
       {
          ob_start();
+
          include $path;
          return ob_get_clean();
       }
@@ -83,7 +91,7 @@ class Section
       }
       else
       {
-         return EWCore::log_error(404, "<h4>{$method_name}</h4><p>COMMAND NOT FOUND</p>");
+         return EWCore::log_error(404, "API not found: {$method_name}");
       }
    }
 
@@ -92,6 +100,7 @@ class Section
       $db = \EWCore::get_db_connection();
       $method_object = new ReflectionMethod($this, $method_name);
       $params = $method_object->getParameters();
+
       $functions_arguments = array();
       $this->current_method_args = array();
       foreach ($params as $param)
@@ -183,10 +192,11 @@ class Section
 
       return $command_result;
    }
-/**
- * 
- * @param ew\PreProcess $preProcessObj An instance of pre process object
- */
+
+   /**
+    * 
+    * @param ew\PreProcess $preProcessObj An instance of pre process object
+    */
    public function registerPreProcesser($preProcessObj)
    {
       

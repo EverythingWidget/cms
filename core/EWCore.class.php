@@ -130,11 +130,11 @@ class EWCore
       $parameters['_function_name'] = $function_name;
       //print_r($parameters);
       // show index.php of app
-      if (!$function_name)
+      /*if (!$function_name)
       {
          $function_name = "index";
          $parameters['_function_name'] = $function_name;
-      }
+      }*/
       if ($section_name == "EWCore")
       {
          $EW = new \EWCore();
@@ -246,7 +246,6 @@ class EWCore
       // show index.php of app
       if (!$function_name)
       {
-
          $function_name = "index";
          $parameters['_function_name'] = $function_name;
       }
@@ -2230,7 +2229,8 @@ class EWCore
       }
       $error_content = array(
           "statusCode" => $header_code,
-          "url" => $_REQUEST["_app_name"] . "/" . $_REQUEST["_section_name"] . "/" . $_REQUEST["_function_name"],
+          //"url" => $_REQUEST["_app_name"] . "/" . $_REQUEST["_section_name"] . "/" . $_REQUEST["_function_name"],
+          "url" => $_SERVER["REQUEST_URI"],
           "message" => $message,
           "reason" => $reason);
       /* if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
