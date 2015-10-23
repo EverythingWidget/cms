@@ -2,7 +2,7 @@
 
 namespace admin;
 
-use Section;
+use Module;
 use EWCore;
 
 /**
@@ -10,7 +10,7 @@ use EWCore;
  *
  * @author Eeliya
  */
-class WidgetsManagement extends Section
+class WidgetsManagement extends \ew\Module
 {
 
    private static $panel_index = 0;
@@ -21,13 +21,16 @@ class WidgetsManagement extends Section
    private static $html_scripts = array();
    private static $html_keywords;
 
-   public function init_plugin()
+   public function install_permissions()
    {
       ob_start();
       include 'link-chooser-uis.php';
       $lcd = ob_get_clean();
-      EWCore::register_form("ew-link-chooser-form-default", "link-chooser-uis-list", ["title" => "UI Structures", "content" => $lcd]);
-      $this->register_permission("view", "User can view the widgets section", array($this->get_index(), "get_uis",
+      EWCore::register_form("ew-link-chooser-form-default", "link-chooser-uis-list", ["title" => "UI Structures",
+          "content" => $lcd]);
+      $this->register_permission("view", "User can view the widgets section", array(
+          $this->get_index(),
+          "get_uis",
           "get_uis_list",
           "get_widgets_types",
           "get_all_pages_uis_list",
@@ -51,8 +54,12 @@ class WidgetsManagement extends Section
       $this->add_listener("admin-api/ContentManagement/update_article", "article_action_update");
       $this->add_listener("admin-api/ContentManagement/get_article", "article_action_get");
 
-      $this->register_permission("export-uis", "User can export UIS", array("export_uis", "ne-uis.php_see"));
-      $this->register_permission("import-uis", "User can import UIS", array("import_uis", "ne-uis.php_see"));
+      $this->register_permission("export-uis", "User can export UIS", array(
+          "export_uis",
+          "ne-uis.php_see"));
+      $this->register_permission("import-uis", "User can import UIS", array(
+          "import_uis",
+          "ne-uis.php_see"));
 
       //$this->register_content_label("uis", "");
    }
@@ -140,7 +147,9 @@ class WidgetsManagement extends Section
          $rows[] = $r;
       }
       $db->close();
-      $out = array("totalRows" => $totalRows['COUNT(*)'], "result" => $rows);
+      $out = array(
+          "totalRows" => $totalRows['COUNT(*)'],
+          "result" => $rows);
       return ($out);
    }
 
@@ -154,7 +163,9 @@ class WidgetsManagement extends Section
       $rows = array();
       while ($r = $result->fetch_assoc())
       {
-         $rows[] = array($r["path"] . "_uisId" => $r["id"], $r["path"] => $r["name"]);
+         $rows[] = array(
+             $r["path"] . "_uisId" => $r["id"],
+             $r["path"] => $r["name"]);
       }
       $db->close();
       //$out = array(;
@@ -172,7 +183,9 @@ class WidgetsManagement extends Section
       }
       $db->close();
       //$out = array(;
-      return json_encode(array("totalRows" => $result->num_rows, "result" => $rows));
+      return json_encode(array(
+          "totalRows" => $result->num_rows,
+          "result" => $rows));
    }
 
    public function add_uis($name = null, $template = null, $template_settings = null, $structure = null)
@@ -181,7 +194,9 @@ class WidgetsManagement extends Section
 
       if (!$name)
       {
-         $res = array("status" => "unsuccess", "message" => "The field name is mandatory");
+         $res = array(
+             "status" => "unsuccess",
+             "message" => "The field name is mandatory");
          $db->close();
          return json_encode($res);
       }
@@ -196,7 +211,10 @@ class WidgetsManagement extends Section
       {
          $this->set_uis("@DEFAULT", $stm->insert_id);
       }
-      $res = array("status" => "success", "uisId" => $stm->insert_id, "name" => $name);
+      $res = array(
+          "status" => "success",
+          "uisId" => $stm->insert_id,
+          "name" => $name);
       $stm->close();
       $db->close();
       return json_encode($res);
@@ -210,7 +228,9 @@ class WidgetsManagement extends Section
 
       if (!$fileContent["name"])
       {
-         $res = array("status" => "unsuccess", "message" => "The field name is mandatory");
+         $res = array(
+             "status" => "unsuccess",
+             "message" => "The field name is mandatory");
          $db->close();
          return json_encode($res);
       }
@@ -225,7 +245,10 @@ class WidgetsManagement extends Section
         {
         $this->set_uis("@DEFAULT", $stm->insert_id);
         } */
-      $res = array("status" => "success", "uisId" => $stm->insert_id, "message" => "tr{The UIS has been imported succesfully}");
+      $res = array(
+          "status" => "success",
+          "uisId" => $stm->insert_id,
+          "message" => "tr{The UIS has been imported succesfully}");
       $stm->close();
       $db->close();
       return json_encode($res);
@@ -248,7 +271,11 @@ class WidgetsManagement extends Section
       $template = $original_record["template"];
       $structure = $original_record["structure"];
       $template_settings = $original_record["template_settings"];
-      $user_interface_structure = array("name" => $name, "template" => $template, "template_settings" => $template_settings, "structure" => $structure);
+      $user_interface_structure = array(
+          "name" => $name,
+          "template" => $template,
+          "template_settings" => $template_settings,
+          "structure" => $structure);
       $file = json_encode($user_interface_structure);
       //fwrite($file, $user_interface_structure);
       //fclose($file);
@@ -303,7 +330,9 @@ class WidgetsManagement extends Section
 
       if (!$name)
       {
-         $res = array("status" => "unsuccess", "message" => "The field name is mandatory");
+         $res = array(
+             "status" => "unsuccess",
+             "message" => "The field name is mandatory");
          $db->close();
          return json_encode($res);
       }
@@ -322,17 +351,22 @@ class WidgetsManagement extends Section
          }
          $stm->close();
          $db->close();
-         echo json_encode(array(status => "success", "message" => "tr{The layout has been saved successfully}", "data" => [title => $name]));
+         echo json_encode(array(
+             status => "success",
+             "message" => "tr{The layout has been saved successfully}",
+             "data" => [title => $name]));
       }
       else
       {
-         echo json_encode(array(status => "unsuccess", message => $error));
+         echo json_encode(array(
+             status => "unsuccess",
+             message => $error));
       }
    }
 
    public static function get_uis($uisId = null)
    {
-      
+
       $db = \EWCore::get_db_connection();
 
       if (!$uisId)
@@ -363,11 +397,13 @@ class WidgetsManagement extends Section
       $db->close();
       if ($result)
       {
-         echo json_encode(array(status => "success"));
+         echo json_encode(array(
+             status => "success"));
       }
       else
       {
-         echo json_encode(array(status => "unsuccess"));
+         echo json_encode(array(
+             status => "unsuccess"));
       }
    }
 
@@ -380,7 +416,9 @@ class WidgetsManagement extends Section
 
       if (!$uisId)
       {
-         $res = array("status" => "unsuccess", "message" => "The field UIS ID is mandatory");
+         $res = array(
+             "status" => "unsuccess",
+             "message" => "The field UIS ID is mandatory");
          $db->close();
          return json_encode($res);
       }
@@ -390,11 +428,16 @@ class WidgetsManagement extends Section
       $stm->bind_param("sssss", $uisId, $styleId, $styleClass, $parameters, $container_id);
       if ($stm->execute())
       {
-         $res = array("status" => "success", message => "Panel has been added successfully", "uisId" => $stm->insert_id);
+         $res = array(
+             "status" => "success",
+             message => "Panel has been added successfully",
+             "uisId" => $stm->insert_id);
       }
       else
       {
-         $res = array("status" => "error", message => "Panel has NOT been added, Please try again");
+         $res = array(
+             "status" => "error",
+             message => "Panel has NOT been added, Please try again");
       }
       $stm->close();
       $db->close();
@@ -411,7 +454,9 @@ class WidgetsManagement extends Section
       $parameters = $db->real_escape_string($_REQUEST["parameters"]);
       if (!$panelId)
       {
-         $res = array("status" => "unsuccess", "message" => "The field Panel ID is mandatory");
+         $res = array(
+             "status" => "unsuccess",
+             "message" => "The field Panel ID is mandatory");
          $db->close();
          return json_encode($res);
       }
@@ -419,11 +464,15 @@ class WidgetsManagement extends Section
       $stm->bind_param("ssss", $styleId, $styleClass, $parameters, $panelId);
       if ($stm->execute())
       {
-         $res = array("status" => "success", message => "Panel has been updated successfully");
+         $res = array(
+             "status" => "success",
+             message => "Panel has been updated successfully");
       }
       else
       {
-         $res = array("status" => "error", message => "Panel has NOT been updated, Please try again");
+         $res = array(
+             "status" => "error",
+             message => "Panel has NOT been updated, Please try again");
       }
       $stm->close();
       $db->close();
@@ -639,7 +688,11 @@ class WidgetsManagement extends Section
         $widget_data = reset(self::get_widget_data_object());
         } */
       $widget_script = self::get_html_scripts($widget_id);
-      return ["widget_html" => $widget_html, "widget_data" => ($widget_parameters), "widget_id" => $widget_id, "widget_script" => $widget_script, "widget_style" => ""];
+      return ["widget_html" => $widget_html,
+          "widget_data" => ($widget_parameters),
+          "widget_id" => $widget_id,
+          "widget_script" => $widget_script,
+          "widget_style" => ""];
    }
 
    public function get_widget($widgetId)
@@ -672,11 +725,16 @@ class WidgetsManagement extends Section
 
       if ($stm->execute())
       {
-         $res = array("status" => "success", message => "Widget has been updated successfully", "widgetType" => $widgetType);
+         $res = array(
+             "status" => "success",
+             message => "Widget has been updated successfully",
+             "widgetType" => $widgetType);
       }
       else
       {
-         $res = array("status" => "error", message => "Widget has NOT been updated, Please try again");
+         $res = array(
+             "status" => "error",
+             message => "Widget has NOT been updated, Please try again");
       }
       $stm->close();
       $db->close();
@@ -741,7 +799,9 @@ class WidgetsManagement extends Section
          $count++;
          $apps[] = WidgetsManagement::get_widget_details($widget_dir);
       }
-      $out = array("totalRows" => $count, "result" => $apps);
+      $out = array(
+          "totalRows" => $count,
+          "result" => $apps);
       return json_encode($out);
    }
 
@@ -756,7 +816,12 @@ class WidgetsManagement extends Section
       $description = EWCore::get_comment_parameter("description", $path);
       $feeder_type = EWCore::get_comment_parameter("feeder_type", $path);
 
-      return array("name" => $widget_type, "path" => $widget_type, "title" => $title, "description" => $description, "feeder_type" => $feeder_type);
+      return array(
+          "name" => $widget_type,
+          "path" => $widget_type,
+          "title" => $title,
+          "description" => $description,
+          "feeder_type" => $feeder_type);
    }
 
    function get_widget_cp($widgetName = null)
@@ -797,11 +862,17 @@ class WidgetsManagement extends Section
 
       if ($stm->execute())
       {
-         $res = array("status" => "success", message => "Widget has been added successfully", "wId" => $stm->insert_id, "widgetType" => $widgetType);
+         $res = array(
+             "status" => "success",
+             message => "Widget has been added successfully",
+             "wId" => $stm->insert_id,
+             "widgetType" => $widgetType);
       }
       else
       {
-         $res = array("status" => "error", message => "Widget has NOT been added, Please try again");
+         $res = array(
+             "status" => "error",
+             message => "Widget has NOT been added, Please try again");
       }
       $stm->close();
       $db->close();
@@ -819,11 +890,15 @@ class WidgetsManagement extends Section
 
       if ($stm->execute())
       {
-         $res = array("status" => "success", message => "Widget has been removed successfully",);
+         $res = array(
+             "status" => "success",
+             message => "Widget has been removed successfully",);
       }
       else
       {
-         $res = array("status" => "error", message => "Widget has NOT been removed, Please try again");
+         $res = array(
+             "status" => "error",
+             message => "Widget has NOT been removed, Please try again");
       }
       return json_encode($res);
    }
@@ -839,11 +914,15 @@ class WidgetsManagement extends Section
 
       if ($stm->execute())
       {
-         $res = array("status" => "success", message => "Panel has been removed successfully",);
+         $res = array(
+             "status" => "success",
+             message => "Panel has been removed successfully",);
       }
       else
       {
-         $res = array("status" => "error", message => "Panel has NOT been removed, Please try again");
+         $res = array(
+             "status" => "error",
+             message => "Panel has NOT been removed, Please try again");
       }
       return json_encode($res);
    }
@@ -916,7 +995,8 @@ class WidgetsManagement extends Section
          self::$panel_index++;
       }
       //$html = ob_get_clean();
-      return ["body_html" => $RESULT_HTML, "widget_data" => self::get_widget_data()];
+      return ["body_html" => $RESULT_HTML,
+          "widget_data" => self::get_widget_data()];
    }
 
    public static function get_html_styles()
@@ -926,7 +1006,9 @@ class WidgetsManagement extends Section
 
    public static function add_html_script($src, $script)
    {
-      self::$html_scripts[] = array("src" => $src, "script" => $script);
+      self::$html_scripts[] = array(
+          "src" => $src,
+          "script" => $script);
    }
 
    public static function get_html_scripts($element_id)
@@ -988,7 +1070,9 @@ class WidgetsManagement extends Section
       $path = ($path) ? $path : $_REQUEST["path"];
       $uis_id = ($uis_id) ? $uis_id : $_REQUEST["uisId"];
       $db = \EWCore::get_db_connection();
-      $res = array("status" => "success", message => "UIS has been set successfully for $path");
+      $res = array(
+          "status" => "success",
+          message => "UIS has been set successfully for $path");
       if (!$uis_id)
       {
          $result = $db->query("DELETE FROM ew_pages_ui_structures WHERE path = '$path'");
@@ -1005,16 +1089,23 @@ class WidgetsManagement extends Section
          $stm = $db->prepare("INSERT INTO ew_pages_ui_structures(path ,ui_structure_id ) VALUES(?,?)") or die($db->error);
          $stm->bind_param("ss", $path, $uis_id);
          if ($stm->execute())
-            $res = array("status" => "success", message => "UIS has been set successfully for $path ", "puisId" => $stm->insert_id);
+            $res = array(
+                "status" => "success",
+                message => "UIS has been set successfully for $path ",
+                "puisId" => $stm->insert_id);
          else
-            $res = array("status" => "error", message => "UIS has NOT been sat, Please try again");
+            $res = array(
+                "status" => "error",
+                message => "UIS has NOT been sat, Please try again");
       }
       else
       {
          $stm = $db->prepare("UPDATE ew_pages_ui_structures SET  ui_structure_id = ?  WHERE path = ?") or die($db->error);
          $stm->bind_param("ss", $uis_id, $path);
          if (!$stm->execute())
-            $res = array("status" => "error", message => "UIS has NOT been sat, Please try again");
+            $res = array(
+                "status" => "error",
+                message => "UIS has NOT been sat, Please try again");
       }
 
       $stm->close();
@@ -1066,7 +1157,9 @@ class WidgetsManagement extends Section
          $template_script = $template->get_template_script($settings);
       }
 
-      return ["template_body" => $template_body, "template_script" => $template_script, "widget_data" => $widget_data];
+      return ["template_body" => $template_body,
+          "template_script" => $template_script,
+          "widget_data" => $widget_data];
    }
 
    public function get_title()

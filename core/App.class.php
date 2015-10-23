@@ -35,15 +35,13 @@ class App
 
    public function init_app()
    {
-
-      $this->init_api();
-      //$this->init_plugins();
+      $this->load_modules("api/");
    }
 
-   protected function init_api()
+   public function load_modules($dir)
    {
       $app_root = $this->get_root();
-      $path = EW_PACKAGES_DIR . '/' . $app_root . '/api/';
+      $path = EW_PACKAGES_DIR . '/' . $app_root . '/' . $dir;
       $sections = scandir($path);
       //$section_dir = readdir($section_dirs);
       //echo count($sections);
@@ -65,101 +63,52 @@ class App
 
          $section_class_name = substr($section_name, 0, $i);
          $real_class_name = "$app_root\\$section_class_name";
-         //echo $real_class_name .' loaded <br>';
          $sc = new $real_class_name($this);
-         //if (method_exists($sc, "init_plugin"))
-         //{
          try
          {
-            call_user_func(array(
+            call_user_func([
                 $sc,
-                "init_plugin"));
+                "install_permissions"]);
          }
          catch (Exception $e)
          {
             echo $e;
          }
-         //}
       }
    }
 
-   protected function init_plugins()
-   {
-      $app_root = $this->get_root();
-      $path = EW_PACKAGES_DIR . '/' . $app_root . '/';
-
-      $section_dirs = opendir($path);
-      //$sections = array();
-      while ($section_dir = readdir($section_dirs))
-      {
-         if (strpos($section_dir, '.') === 0)
-            continue;
-         $section_files = opendir($path . $section_dir);
-
-         while ($file = readdir($section_files))
-         {
-            $i = strpos($file, '.class.php');
-            if (strpos($file, '.') === 0 || !$i)
-               continue;
-            //echo $path . $section_dir . $file;
-            require_once $path . $section_dir . '/' . $file;
-            $section_class_name = substr($file, 0, $i);
-            $real_class_name = "$app_root\\$section_class_name";
-            $sc = new $real_class_name($this);
-            if (method_exists($sc, "init_plugin"))
-            {
-               try
-               {
-                  call_user_func(array(
-                      $sc,
-                      "init_plugin"));
-               }
-               catch (Exception $e)
-               {
-                  echo $e;
-               }
-            }
-         }
-      }
-   }
-
-   public function process_command($app_resource_path, $section_name, $method_name, $parameters = null)
+   public function process_command($app_resource_path, $module_name, $method_name, $parameters = null)
    {
       $app_name = $this->get_root();
-      $permission_id = \EWCore::does_need_permission($this->get_root(), $section_name, $method_name);
-
+      $permission_id = \EWCore::does_need_permission($app_name);
       // Get permission id for the requested method or FALSE in the case of no permission id available
-      if ($permission_id && $permission_id !== FALSE)
+      if ($permission_id === true)
       {
-         // Check for user permission
-
-         if (\admin\UsersManagement::user_has_permission($this->get_root(), $section_name, $permission_id, $_SESSION['EW.USER_ID']))
+         if (\admin\UsersManagement::user_has_permission_for_resource($app_name, $_SESSION['EW.USER_ID']))
          {
             if ($this->resources[$app_resource_path[1]])
             {
-               return $this->resources[$app_resource_path[1]]->process($this, $app_resource_path, $section_name, $method_name, $parameters);
+               return $this->resources[$app_resource_path[1]]->process($this, $app_resource_path, $module_name, $method_name, $parameters);
             }
             else
             {
-               return \EWCore::log_error(404, "<h4>Resource not found</h4><p>Resource `$app_resource_path[1]/$section_name/$method_name`, not found</p>");
+               return \EWCore::log_error(404, "<h4>Resource not found</h4><p>Resource `$app_resource_path[1]/$module_name/$method_name`, not found</p>");
             }
          }
          else
          {
-            return \EWCore::log_error(403, "tr{You do not have permission for this command}", array(
-                        "Access Denied" => "{$this->get_root()}/$section_name/$method_name"));
+            return \EWCore::log_error(403, "tr{You do not have permission for this resource}", array(
+                        "Access Denied" => "$app_name/$module_name/$method_name"));
          }
+      }
+
+      if ($this->resources[$app_resource_path[1]])
+      {
+         return $this->resources[$app_resource_path[1]]->process($this, $app_resource_path, $module_name, $method_name, $parameters);
       }
       else
       {
-         if ($this->resources[$app_resource_path[1]])
-         {
-            return $this->resources[$app_resource_path[1]]->process($this, $app_resource_path, $section_name, $method_name, $parameters);
-         }
-         else
-         {
-            return \EWCore::log_error(404, "<h4>Resource not found</h4><p>Resource `$app_resource_path[1]/$section_name/$method_name`, not found</p>");
-         }
+         return \EWCore::log_error(404, "<h4>Resource not found</h4><p>Resource `$app_resource_path[1]/$module_name/$method_name`, not found</p>");
       }
    }
 

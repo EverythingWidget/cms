@@ -130,11 +130,11 @@ class EWCore
       $parameters['_function_name'] = $function_name;
       //print_r($parameters);
       // show index.php of app
-      /*if (!$function_name)
-      {
-         $function_name = "index";
-         $parameters['_function_name'] = $function_name;
-      }*/
+      /* if (!$function_name)
+        {
+        $function_name = "index";
+        $parameters['_function_name'] = $function_name;
+        } */
       if ($section_name == "EWCore")
       {
          $EW = new \EWCore();
@@ -496,7 +496,7 @@ class EWCore
    /**
     * 
     * @param type $appDir
-    * @return \Section
+    * @return \Module
     */
    public static function get_app_instance($appDir)
    {
@@ -1923,17 +1923,22 @@ class EWCore
    /**
     * Check if the command needs permission
     * @param type $app_name
-    * @param type $class_name
+    * @param type $module_name
     * @param type $method_name
     * @return mixed <b>FALSE</B> if there is no need for any permission or <b>permissionId</b> if there is need for permission
     */
-   public static function does_need_permission($app_name, $class_name, $method_name)
+   public static function does_need_permission($app_name, $module_name = null, $method_name = null)
    {
       EWCore::init_sections_plugins();
 
       $pers = self::$permissions_groups[$app_name]["section"];
+
+      if ($module_name === null)
+      {
+         return $pers ? true : false;
+      }
       if ($pers)
-         $pers = $pers[$class_name]["permission"];
+         $pers = $pers[$module_name]["permission"];
       //$permissions_titles = array();
 
       $result = array();

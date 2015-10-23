@@ -2,7 +2,7 @@
 
 namespace admin;
 
-use Section;
+use Module;
 
 /**
  * Description of Settings
@@ -10,7 +10,7 @@ use Section;
  * @author Eeliya
  */
 
-class Settings extends Section
+class Settings extends \ew\Module
 {
    
    public function __construct($app)

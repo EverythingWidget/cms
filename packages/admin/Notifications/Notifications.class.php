@@ -1,7 +1,7 @@
 <?php
 namespace admin;
 
-use Section;
+use Module;
 
 /*
  * To change this template, choose Tools | Templates
@@ -13,7 +13,7 @@ use Section;
  *
  * @author Eeliya
  */
-class Notifications extends Section
+class Notifications extends Module
 {
 
    public function get_title()

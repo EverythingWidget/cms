@@ -1,11 +1,13 @@
 <?php
 
+namespace ew;
+
 /**
  * Section main files must inherit this class
  *
  * @author Eeliya Rashidi
  */
-class Section
+class Module
 {
 
    var $sectionName;
@@ -17,6 +19,7 @@ class Section
    private $app;
    private $current_class;
    private $current_method_args;
+   protected $pre_processors = [];
 
    /**
     * 
@@ -26,7 +29,8 @@ class Section
    {
       $this->app = $app;
       $this->initParameters();
-      $this->current_class = new ReflectionClass($this);
+      $this->current_class = new \ReflectionClass($this);
+      $this->pre_processors = $this->get_pre_processors();
    }
 
    /**
@@ -46,32 +50,67 @@ class Section
    /**
     * Override this method to registare your plugins
     */
-   public function init_plugin()
+   public function install_permissions()
    {
       
+   }
+
+   /**
+    * Override this method and register your pre processors
+    */
+   protected function get_pre_processors()
+   {
+      return [];
+   }
+
+   public function add_pre_processor($pre_rocessor)
+   {
+      if (!in_array($pre_rocessor, $this->pre_processors))
+      {
+         $this->pre_processors[] = $pre_rocessor;
+      }
+   }
+
+   public function run_pre_processors($verb, $method_name, $parameters)
+   {
+      for ($i = 0, $len = count($this->pre_processors); $i < $len; $i++)
+      {
+         $result = $this->pre_processors[$i]->process($this, $verb, $method_name, $parameters);
+         if ($result === true)
+         {
+            continue;
+         }
+         else
+         {
+            return ($result === false || $result === null) ?
+                    \EWCore::log_error(400, "API request is not executed", ["Pre processor has stopped the process: " . get_class($this->pre_processors[$i])]) :
+                    $result;
+         }
+      }
+      return true;
    }
 
    public function process_request($verb, $method_name, $parameters = null)
    {
       if (!$verb)
       {
-         return EWCore::log_error(400, "Wrong command: Request method is not defined");
+         return \EWCore::log_error(400, "Wrong command: Request method is not defined");
       }
       $parameters['_verb'] = $verb;
 
       if (!$method_name)
       {
-         return EWCore::log_error(400, "Wrong command: {$this->app->get_root()}/{$this->current_class->getShortName()}. Method can not be null.");
+         return \EWCore::log_error(400, "Wrong command: {$this->app->get_root()}/{$this->current_class->getShortName()}. Method can not be null.");
       }
 
       if (preg_match('/(.*)\.(.*)?/', $method_name))
       {
          $path = EW_PACKAGES_DIR . '/' . $this->app->get_root() . '/' . $this->current_class->getShortName() . '/' . $method_name;
       }
-      else if ($method_name && method_exists($this, $method_name))
+      else if (method_exists($this, $method_name))
       {
          ob_start();
-         echo $this->invoke_method($method_name, $parameters);
+         echo $this->invoke_method($verb, $method_name, $parameters);
          return ob_get_clean();
       }
       //}
@@ -87,18 +126,24 @@ class Section
       else if ($path)
       {
          $tp = $this->app->get_root() . '/' . $this->current_class->getShortName() . '/' . $method_name;
-         return EWCore::log_error(404, "<h4>API not found</h4><p>API call: {$tp}</p>");
+         return \EWCore::log_error(404, "<h4>API not found</h4><p>API call: {$tp}</p>");
       }
       else
       {
-         return EWCore::log_error(404, "API not found: {$method_name}");
+         return \EWCore::log_error(404, "API not found: {$method_name}");
       }
    }
 
-   private function invoke_method($method_name, $parameters)
+   private function invoke_method($verb, $method_name, $parameters)
    {
+      $preProcessorsResult = $this->run_pre_processors($verb, $method_name, $parameters);
+      if ($preProcessorsResult !== true)
+      {
+         
+         return $preProcessorsResult;
+      }      
       $db = \EWCore::get_db_connection();
-      $method_object = new ReflectionMethod($this, $method_name);
+      $method_object = new \ReflectionMethod($this, $method_name);
       $params = $method_object->getParameters();
 
       $functions_arguments = array();
@@ -123,7 +168,7 @@ class Section
       $command_result = $method_object->invokeArgs($this, $functions_arguments);
 
       // Read the listeners for this command
-      $actions = EWCore::read_registry("app-" . $this->app->get_root() . "/" . $this->current_class->getShortName() . "/" . $method_name . "_listener");
+      $actions = \EWCore::read_registry("app-" . $this->app->get_root() . "/" . $this->current_class->getShortName() . "/" . $method_name . "_listener");
       if (isset($actions) && !is_array($command_result))
       {
 
@@ -290,7 +335,7 @@ class Section
     * The $function will be called after the command has been processed
     * @param string $command <p>A string that represent the command</p>
     * @param string $function <p>The name of function that should be triggered whenever the command called</p>
-    * @param Section $object [optional] <p><b>Section</b> object that contains the function</p>
+    * @param Module $object [optional] <p><b>Section</b> object that contains the function</p>
     */
    public function add_listener($command, $function, $object = null)
    {
@@ -300,7 +345,7 @@ class Section
          $object = $this;
       }
       //echo $command . "_listener";
-      EWCore::register_object($command . "_listener", $this->app->get_root() . "/" . $this->current_class->getShortName() . "/" . $function, array(
+      \EWCore::register_object($command . "_listener", $this->app->get_root() . "/" . $this->current_class->getShortName() . "/" . $function, array(
           "function" => $function,
           "object" => $object));
    }
@@ -310,7 +355,7 @@ class Section
       //$ro = new ReflectionClass($this);
       //$defaults = ["componentObject" => $comp_object];
       //$defaults = array_merge($defaults, $comp_object);
-      EWCore::register_object("ew-content-labels", $this->app->get_root() . '_' . $this->get_section_name() . '_' . $key, $comp_object);
+      \EWCore::register_object("ew-content-labels", $this->app->get_root() . '_' . $this->get_section_name() . '_' . $key, $comp_object);
    }
 
    /**
@@ -325,7 +370,7 @@ class Section
           "section" => $this->get_section_name(),
           "command" => 'ew_label_' . $key];
       $defaults = array_merge($defaults, $default_value);
-      EWCore::register_object("ew-content-labels", $this->app->get_root() . '_' . $this->get_section_name() . '_' . $key, $defaults);
+      \EWCore::register_object("ew-content-labels", $this->app->get_root() . '_' . $this->get_section_name() . '_' . $key, $defaults);
    }
 
    public function register_form($name, $id, $default_value)
@@ -334,7 +379,7 @@ class Section
           "section" => $this->get_section_name(),
           "command" => 'ew_form_' . $id];
       $defaults = array_merge($defaults, $default_value);
-      EWCore::register_object($name, $this->app->get_root() . '_' . $this->get_section_name() . '_' . $id, $defaults);
+      \EWCore::register_object($name, $this->app->get_root() . '_' . $this->get_section_name() . '_' . $id, $defaults);
    }
 
    /**
@@ -356,7 +401,7 @@ class Section
              $this,
              "ew_" . $type . "_feeder_" . $function_name);
       }
-      EWCore::register_widget_feeder($type, $this->app->get_root(), $id, $function_name);
+      \EWCore::register_widget_feeder($type, $this->app->get_root(), $id, $function_name);
    }
 
    public function register_content_type($type_name, $get, $get_list)
@@ -366,8 +411,7 @@ class Section
 
    public function register_permission($id, $description, $permissions, $res = '')
    {
-
-      EWCore::register_permission($this->app->get_root() . $res, $this->current_class->getShortName(), $id, $this->app->get_name(), $this->get_title(), $description, $permissions);
+      \EWCore::register_permission($this->app->get_root() . $res, $this->current_class->getShortName(), $id, $this->app->get_name(), $this->get_title(), $description, $permissions);
    }
 
    /**
@@ -389,7 +433,7 @@ class Section
       $parameters["appTitle"] = $this->app->get_name();
       $parameters["url"] = EW_ROOT_URL . "app-" . $this->app->get_root() . "/" . $this->current_class->getShortName() . "/" . $parameters["form"];
 
-      EWCore::register_object("ew-activity", "app-" . $this->app->get_root() . "/" . $this->current_class->getShortName() . "/" . $id, $parameters);
+      \EWCore::register_object("ew-activity", "app-" . $this->app->get_root() . "/" . $this->current_class->getShortName() . "/" . $id, $parameters);
    }
 
    private function save_setting($key = null, $value = null)
@@ -414,20 +458,20 @@ class Section
    {
       //$db = \EWCore::get_db_connection();
       if (!$params)
-         return EWCore::log_error(400, "Please specify the paramaters");
+         return \EWCore::log_error(400, "Please specify the paramaters");
       $params = json_decode($params, TRUE);
       foreach ($params as $key => $value)
       {
          //echo $key . " " . $value;
          if (!$this->save_setting($key, $value))
-            return EWCore::log_error(400, "The configuration has not been saved", ["key" => $key,
+            return \EWCore::log_error(400, "The configuration has not been saved", ["key" => $key,
                         "value" => $value]);
       }
    }
 
    public static function read_settings()
    {
-      return EWCore::read_settings($this->app->get_root());
+      return \EWCore::read_settings($this->app->get_root());
    }
 
 }

@@ -13,7 +13,7 @@ use EWCore;
  *
  * @author Eeliya
  */
-class ContentManagement extends \Section
+class ContentManagement extends \ew\Module
 {
 
    public function __construct($app)
@@ -36,7 +36,7 @@ class ContentManagement extends \Section
    private $images_resources = array(
        "/is/htdocs/wp1067381_3GN1OJU4CE/www/culturenights/app/webroot/img/logos/");
 
-   public function init_plugin()
+   public function install_permissions()
    {
       ob_start();
       include 'link-chooser-document.php';

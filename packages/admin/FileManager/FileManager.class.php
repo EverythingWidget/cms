@@ -1,7 +1,7 @@
 <?php
 namespace admin;
 
-use Section;
+use Module;
 
 /*
  * To change this template, choose Tools | Templates
@@ -13,7 +13,7 @@ use Section;
  *
  * @author Eeliya
  */
-class FileManager extends Section
+class FileManager extends Module
 {
 
   private $file_types;

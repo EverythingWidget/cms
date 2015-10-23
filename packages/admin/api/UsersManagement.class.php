@@ -2,41 +2,49 @@
 
 namespace admin;
 
-use Section;
+use Module;
 use EWCore;
 
 session_start();
 
-class UsersManagement extends Section
+class UsersManagement extends \ew\Module
 {
 
-   public function init_plugin()
+   protected function get_pre_processors()
    {
-      //echo "asdasd";
+      return [new UserValidator];
+   }
+
+   public function install_permissions()
+   {
       $this->register_permission("see-users", "User can see users list", array(
-          //"get_users_list",
+          "get_users_list",
           "get_user_by_id",
           "get_user_by_email",
           "user-form.php_see",
           $this->get_index()));
+
       $this->register_permission("manipulate-users", "User can add, edit delete users", array(
           "add_user",
           "update_user",
           "delete_user",
           "user-form.php:tr{New User}",
           $this->get_index()));
+
       $this->register_permission("see-groups", "User can see user groups list", array(
           "get_users_groups_list",
           "get_user_group_by_id",
           "get_users_group_by_type",
           "users-group-form.php_see",
           $this->get_index()));
+
       $this->register_permission("manipulate-groups", "User can add, edit delete user group", array(
           "add_group",
           "update_group",
           "delete_group",
           "users-group-form.php:tr{New Group}",
           $this->get_index()));
+
       $this->add_listener("admin-api/UsersManagement/get_user_by_id", "test_plugin");
    }
 
@@ -123,21 +131,22 @@ class UsersManagement extends Section
       }
       return json_encode($resullt);
    }
-/**
- * 
- * @param string $app_name
- * @param string $class_name
- * @param string $permission_id
- * @param string $user_id
- * @return boolean
- */
+
+   /**
+    * 
+    * @param string $app_name
+    * @param string $class_name
+    * @param string $permission_id
+    * @param string $user_id
+    * @return boolean
+    */
    public static function user_has_permission($app_name, $class_name, $permission_id, $user_id)
    {
       $db_con = \EWCore::get_db_connection();
-      /*if (!$user_id)
-         $user_id = $_SESSION['EW.USER_ID'];
-      if (!$user_id)
-         $user_id = $db_con->real_escape_string($_REQUEST["userId"]);*/
+      /* if (!$user_id)
+        $user_id = $_SESSION['EW.USER_ID'];
+        if (!$user_id)
+        $user_id = $db_con->real_escape_string($_REQUEST["userId"]); */
 
       $user = $db_con->query("SELECT * FROM ew_users, ew_users_groups WHERE ew_users.group_id = ew_users_groups.id AND ew_users.id = '$user_id' LIMIT 1") or die($db_con->error);
       if ($user_info = $user->fetch_assoc())
@@ -158,7 +167,42 @@ class UsersManagement extends Section
       return FALSE;
    }
 
-   public function get_users_list($_verb,$token = 0, $size = 999999)
+   /**
+    * 
+    * @param string $app_name
+    * @param string $class_name
+    * @param string $permission_id
+    * @param string $user_id
+    * @return boolean
+    */
+   public static function user_has_permission_for_resource($app_name, $user_id)
+   {
+      $db_con = \EWCore::get_db_connection();
+      //echo $user_id."asfdasd";
+
+      if (!$user_id)
+      {
+         $permissions = $db_con->query("SELECT permission FROM ew_users_groups WHERE type = 'default' LIMIT 1") or die($db_con->error);
+      }
+      else
+         $permissions = $db_con->query("SELECT ew_users_groups.permission FROM ew_users, ew_users_groups WHERE ew_users.group_id = ew_users_groups.id AND ew_users.id = '$user_id' LIMIT 1") or die($db_con->error);
+      if ($user_info = $permissions->fetch_assoc())
+      {
+         $user_permissions = explode(",", $user_info["permission"]);
+
+         foreach ($user_permissions as $permission)
+         {
+
+            if (strpos($permission, $app_name) !== false)
+            {
+               return true;
+            }
+         }
+      }
+      return FALSE;
+   }
+
+   public function get_users_list($_verb, $token = 0, $size = 999999)
    {
       $db = \EWCore::get_db_connection();
 
@@ -591,11 +635,12 @@ class UsersManagement extends Section
           title => "Update user Unsuccessfull",
           message => "User has been NOT deleted"));
    }
-   
+
    public function get($_verb)
    {
-      return \EWCore::log_error(400,"Not defined");
+      return \EWCore::log_error(400, "Not defined");
    }
+
 }
 
 /*

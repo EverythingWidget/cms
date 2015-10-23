@@ -2,7 +2,7 @@
 
 namespace admin;
 
-use Section;
+use Module;
 use EWCore;
 
 /**
@@ -10,7 +10,7 @@ use EWCore;
  *
  * @author Eeliya
  */
-class AppsManagement extends Section
+class AppsManagement extends \ew\Module
 {
 
    public function get_title()
@@ -42,7 +42,7 @@ class AppsManagement extends Section
             $section_class_name = $namespace_class_name;
          }
 
-         if (class_exists($section_class_name) && get_parent_class($section_class_name) == 'Section')
+         if (class_exists($section_class_name) && get_parent_class($section_class_name) == 'ew\Module')
          {
             $sc = new $section_class_name($section_class_name, $_REQUEST);
             //echo $appDir." ".$class_name;
