@@ -19,8 +19,8 @@ class ContentManagement extends \ew\Module
    public function __construct($app)
    {
       parent::__construct($app);
-      require_once('asset/ew_contents.php');
-      require_once('asset/ew_contents_labels.php');
+      require_once('models/ew_contents.php');
+      require_once('models/ew_contents_labels.php');
       require_once 'asset/DocumentComponent.class.php';
       require_once 'asset/LanguageComponent.class.php';
    }

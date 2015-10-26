@@ -16,7 +16,7 @@ class Settings extends \ew\Module
    public function __construct($app)
    {
       parent::__construct($app);
-      include_once 'asset/ew_settings.php';
+      include_once 'models/ew_settings.php';
    }
 
    public function get_title()

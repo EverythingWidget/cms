@@ -60,32 +60,55 @@ class UsersManagement extends \ew\Module
 
    public function test_plugin($_data)
    {
-      //$_data["first_name"] = "Jawady";
+//$_data["first_name"] = "Jawady";
       return json_encode($_data);
    }
 
    public static function login($username, $password)
    {
+      $user_info = null;
       $db = \EWCore::get_db_connection();
       if (!$username)
          $username = $db->real_escape_string($_POST["username"]);
       if (!$password)
          $password = $db->real_escape_string($_POST["password"]);
-//echo $username." ".$password;
-      $user = $db->query("SELECT * FROM ew_users WHERE email = '$username' AND password = '$password' LIMIT 1") or die($db->error);
-      /* $stm->execute();
 
-        $user = $db->query("SELECT COUNT(*)  FROM events ") or die($db->error); */
-      if ($user_info = $user->fetch_assoc())
+      $stm = $db->prepare("SELECT ew_users.id, group_id, email FROM ew_users, ew_users_groups WHERE ew_users.group_id = ew_users_groups.id AND ew_users.email = ? AND password = ? LIMIT 1") or die($db->error);
+      $stm->bind_param("ss", $username, $password);
+
+      $stm->execute();
+
+      //$stm->store_result();
+      $result = $stm->get_result() or die($stm->errno);
+
+      if ($user_info = $result->fetch_assoc())
       {
          $_SESSION['login'] = '1';
          $_SESSION['sesUserName'] = $username;
          $_SESSION['EW.USER_ID'] = $user_info["id"];
-         $_SESSION['EW.USERNAME'] = $user_info["username"];
-         //$_SESSION['EW.USER_PERMISSIONS'] = explode(",", $user_info["permission"]);
+         $_SESSION['EW.USER_GROUP_ID'] = $user_info["group_id"];
+         $_SESSION['EW.USERNAME'] = $user_info["email"];
+
+         $stm->free_result();
          return TRUE;
       }
 
+
+      /*  $user = $db->query("SELECT * FROM ew_users, ew_users_groups WHERE ew_users.group_id = ew_users_groups.id AND ew_users.email = '$username' AND password = '$password' LIMIT 1") or die($db->error);
+        /* $stm->execute();
+
+        $user = $db->query("SELECT COUNT(*)  FROM events ") or die($db->error);
+        if ($user_info = $user->fetch_assoc())
+        {
+        $_SESSION['login'] = '1';
+        $_SESSION['sesUserName'] = $username;
+        $_SESSION['EW.USER_ID'] = $user_info["ew_users.id"];
+        $_SESSION['EW.USER_GROUP_ID'] = $user_info["ew_users_groups.id"];
+        $_SESSION['EW.USERNAME'] = $user_info["username"];
+        //$_SESSION['EW.USER_PERMISSIONS'] = explode(",", $user_info["permission"]);
+        return TRUE;
+        }
+       */
       return FALSE;
    }
 
@@ -151,10 +174,10 @@ class UsersManagement extends \ew\Module
       $user = $db_con->query("SELECT * FROM ew_users, ew_users_groups WHERE ew_users.group_id = ew_users_groups.id AND ew_users.id = '$user_id' LIMIT 1") or die($db_con->error);
       if ($user_info = $user->fetch_assoc())
       {
-         //echo $user_info["permission"]."-----$app_name+$class_name+$permission_id-";
+//echo $user_info["permission"]."-----$app_name+$class_name+$permission_id-";
          $user_permissions = explode(",", $user_info["permission"]);
-         //if (is_array($permission_id))
-         //{
+//if (is_array($permission_id))
+//{
          foreach ($user_permissions as $permission)
          {
             foreach ($permission_id as $item)
@@ -172,27 +195,29 @@ class UsersManagement extends \ew\Module
     * @param string $app_name
     * @param string $class_name
     * @param string $permission_id
-    * @param string $user_id
+    * @param string $user_group_id
     * @return boolean
     */
-   public static function user_has_permission_for_resource($app_name, $user_id)
+   public static function user_has_permission_for_resource($app_name, $user_group_id)
    {
       $db_con = \EWCore::get_db_connection();
-      //echo $user_id."asfdasd";
+//echo $user_id."asfdasd";
 
-      if (!$user_id)
+      if (!$user_group_id)
       {
          $permissions = $db_con->query("SELECT permission FROM ew_users_groups WHERE type = 'default' LIMIT 1") or die($db_con->error);
       }
       else
-         $permissions = $db_con->query("SELECT ew_users_groups.permission FROM ew_users, ew_users_groups WHERE ew_users.group_id = ew_users_groups.id AND ew_users.id = '$user_id' LIMIT 1") or die($db_con->error);
+      {
+         $permissions = $db_con->query("SELECT ew_users_groups.permission FROM ew_users_groups WHERE id = '$user_group_id' LIMIT 1") or die($db_con->error);
+      }
+
       if ($user_info = $permissions->fetch_assoc())
       {
          $user_permissions = explode(",", $user_info["permission"]);
 
          foreach ($user_permissions as $permission)
          {
-
             if (strpos($permission, $app_name) !== false)
             {
                return true;
@@ -218,7 +243,7 @@ class UsersManagement extends \ew\Module
 
       $totalRows = $db->query("SELECT COUNT(*) FROM ew_users, ew_users_groups WHERE ew_users.group_id = ew_users_groups.id") or die(error_reporting());
       $totalRows = $totalRows->fetch_assoc();
-      //echo $size;
+//echo $size;
       $result = $db->query("SELECT ew_users.id,email, first_name, last_name,ew_users_groups.title, DATE_FORMAT(ew_users.date_created,'%Y-%m-%d') AS round_date_created FROM ew_users, ew_users_groups WHERE ew_users.group_id = ew_users_groups.id ORDER BY ew_users.id LIMIT $token $size") or die($db->error);
 
       $rows = array();
@@ -328,7 +353,7 @@ class UsersManagement extends \ew\Module
 
       if ($stm->execute())
       {
-         //$db->close();
+//$db->close();
 
          /* $actions = EWCore::read_actions_registry("ew-article-action-get");
            try
@@ -396,7 +421,7 @@ class UsersManagement extends \ew\Module
              message => "tr{Users group} '$title' tr{has been updated successfully}"));
       }
       return EWCore::log_error("400", "Users group has been NOT updated", $db->error_list);
-      //return json_encode(array(status => "unsuccess", title => "Update Group Unsuccessfull", message => "Users group has been NOT updated"));
+//return json_encode(array(status => "unsuccess", title => "Update Group Unsuccessfull", message => "Users group has been NOT updated"));
    }
 
    public function delete_group($groupId = null)
@@ -564,7 +589,7 @@ class UsersManagement extends \ew\Module
          if ($stm->execute())
          {
             $db->close();
-            //return json_encode(array(status => "success", email => $email, message => "New user '$email' has been added successfully", "id" => $db->insert_id));
+//return json_encode(array(status => "success", email => $email, message => "New user '$email' has been added successfully", "id" => $db->insert_id));
             $user_info = array(
                 "id" => $db->insert_id,
                 "email" => $email,

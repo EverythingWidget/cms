@@ -47,10 +47,11 @@ class AppsManagement extends \ew\Module
             $sc = new $section_class_name($section_class_name, $_REQUEST);
             //echo $appDir." ".$class_name;
             $permission_id = EWCore::does_need_permission($appDir, $class_name, $sc->get_index());
-
+            //var_dump($_SESSION['EW.USER_ID'])."<br>";
             if ($permission_id && $permission_id !== FALSE)
             {
                // Check for user permission
+               
                if (!UsersManagement::user_has_permission($appDir, $class_name, $permission_id, $_SESSION['EW.USER_ID']))
                {
                   continue;

@@ -17,7 +17,7 @@ class EWCore
    private static $permissions_groups = array();
    private static $loaders_installed = false;
    private static $plugins_initialized = false;
-   private static $db_connection;
+   private static $db_connection = null;
    private $current_method_args;
    public static $DB = null;
    public static $languages;
@@ -25,6 +25,7 @@ class EWCore
    public function __construct()
    {
       static::$languages = include('config/languages.php');
+      //static::$db_connection = new stdClass();
       $this->apps_root = EW_PACKAGES_DIR . '/';
       $this->request = $_REQUEST;
       //$this->registry = array();
@@ -66,7 +67,7 @@ class EWCore
       }
    }
 
-   public function load_modules($modules)
+   public function load_modules()
    {
       require 'modules/autoload.php';
    }
@@ -393,7 +394,7 @@ class EWCore
     */
    public static function get_db_connection()
    {
-      if (!self::$db_connection->host_info)
+      if (!self::$db_connection || !self::$db_connection->host_info)
       {
          $database_config = include('config/database_config.php');
          // default database connection
@@ -720,6 +721,7 @@ class EWCore
 
          //echo "sdfsdfsd";
       }
+
       if (self::$plugins_initialized)
       {
          return;
@@ -732,9 +734,10 @@ class EWCore
          if (strpos($app_dir, '.') === 0)
             continue;
 
-         $app_dir_content = opendir($path . $app_dir);
-         if (is_dir($path . $app_dir))
+
+         if (is_dir($app_dir))
          {
+            $app_dir_content = opendir($app_dir);
             //echo EW_PACKAGES_DIR . '/' . $app_dir . "\\App" . "<br/>";
             if (!file_exists(EW_PACKAGES_DIR . "/" . $app_dir . "/App.app.php"))
                continue;
@@ -743,6 +746,7 @@ class EWCore
                require_once EW_PACKAGES_DIR . "/" . $app_dir . "/App.app.php";
                $app_class_name = $app_dir . "\\App";
                $app_object = new $app_class_name();
+
                $app_object->init_app();
             }
             catch (Exception $ex)
@@ -1542,13 +1546,13 @@ class EWCore
    public static function register_permission($app_name, $class_name, $id, $app_title, $section_title, $description, $permissions = array())
    {
       $permission_group = "$app_name.$class_name";
-      if (!self::$permissions_groups[$app_name])
+      if (!array_key_exists($app_name, self::$permissions_groups))
       {
          self::$permissions_groups[$app_name] = array(
              "appTitle" => $app_title,
              "section" => array());
       }
-      if (!self::$permissions_groups[$app_name]["section"][$class_name])
+      if (!array_key_exists($class_name, self::$permissions_groups[$app_name]["section"]))
       {
          self::$permissions_groups[$app_name]["section"][$class_name] = array(
              "sectionTitle" => $section_title,
@@ -1558,7 +1562,7 @@ class EWCore
       $permission_info = array(
           "description" => $description,
           "methods" => array());
-      if (!self::$permissions_groups[$app_name]["section"][$class_name]["permission"][$id])
+      if (!array_key_exists($id, self::$permissions_groups[$app_name]["section"][$class_name]["permission"]))
       {
          self::$permissions_groups[$app_name]["section"][$class_name]["permission"][$id] = $permission_info;
       }
@@ -1582,8 +1586,7 @@ class EWCore
 
    public static function register_widget_feeder($type, $app, $id, $function)
    {
-      //EWCore::register_object("ew-widget-feeder", "$type:$id", $function);
-      if (!is_array(self::$registry["ew-widget-feeder"][$app]))
+      if (!self::$registry["ew-widget-feeder"] || !array_key_exists($app, self::$registry["ew-widget-feeder"]))
          self::$registry["ew-widget-feeder"][$app] = array();
 
       if (!is_array(self::$registry["ew-widget-feeder"][$app][$type]))
@@ -1837,7 +1840,7 @@ class EWCore
 
    public static function register_object($name, $id, $object = array())
    {
-      if (!is_array(self::$registry[$name]))
+      if (!array_key_exists($name, self::$registry))
       {
          self::$registry[$name] = array();
       }

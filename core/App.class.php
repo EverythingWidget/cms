@@ -35,16 +35,20 @@ class App
 
    public function init_app()
    {
-      $this->load_modules("api/");
+      $this->load_modules("api");
    }
 
    public function load_modules($dir)
    {
+
       $app_root = $this->get_root();
       $path = EW_PACKAGES_DIR . '/' . $app_root . '/' . $dir;
+      if (!file_exists($path))
+         return;
       $sections = scandir($path);
       //$section_dir = readdir($section_dirs);
       //echo count($sections);
+
       for ($in = 0, $len = count($sections); $in < $len; $in++)
       //while ($section_dir = readdir($section_dirs))
       {
@@ -59,16 +63,19 @@ class App
             continue;
          }
 
-         require_once $path . $section_name;
+         require_once $path . '/' . $section_name;
 
          $section_class_name = substr($section_name, 0, $i);
          $real_class_name = "$app_root\\$section_class_name";
          $sc = new $real_class_name($this);
          try
          {
-            call_user_func([
-                $sc,
-                "install_permissions"]);
+            if (get_parent_class($sc) === "ew\Module")
+            {
+               call_user_func([
+                   $sc,
+                   "install_permissions"]);
+            }
          }
          catch (Exception $e)
          {
@@ -79,12 +86,14 @@ class App
 
    public function process_command($app_resource_path, $module_name, $method_name, $parameters = null)
    {
+      //session_destroy();
       $app_name = $this->get_root();
       $permission_id = \EWCore::does_need_permission($app_name);
       // Get permission id for the requested method or FALSE in the case of no permission id available
       if ($permission_id === true)
       {
-         if (\admin\UsersManagement::user_has_permission_for_resource($app_name, $_SESSION['EW.USER_ID']))
+
+         if (\admin\UsersManagement::user_has_permission_for_resource($app_name, $_SESSION['EW.USER_GROUP_ID']))
          {
             if ($this->resources[$app_resource_path[1]])
             {

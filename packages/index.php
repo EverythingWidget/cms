@@ -74,7 +74,6 @@ if ($elements[$parameter_index])
 
 //$resource_path = "$app_name-$default_recourse";
 //$_REQUEST["_app_name"] = $app_name;
-
 // Check the asset parameter
 /* if ($elements[$parameter_index] == 'asset')
   {
@@ -115,9 +114,12 @@ global $EW;
 $EW = new \EWCore();
 
 // set default user group if no user group has been spacified
-if (!isset($_SESSION["EW.USERS_GROUP"]))
+if (!isset($_SESSION["EW.USER_GROUP_ID"]))
 {
-   $_SESSION["EW.USERS_GROUP"] = EWCore::get_default_users_group();
+   //echo EWCore::get_default_users_group();
+   //$_SESSION["EW.USERS_GROUP"] = EWCore::get_default_users_group();
+   //print_r(EWCore::get_default_users_group());
+   $_SESSION['EW.USER_GROUP_ID'] = json_decode(EWCore::get_default_users_group(), true)["id"];
 }
 
 // If app name is asset then call get_resource
