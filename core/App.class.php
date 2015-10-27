@@ -40,7 +40,6 @@ class App
 
    public function load_modules($dir)
    {
-
       $app_root = $this->get_root();
       $path = EW_PACKAGES_DIR . '/' . $app_root . '/' . $dir;
       if (!file_exists($path))
@@ -88,12 +87,12 @@ class App
    {
       //session_destroy();
       $app_name = $this->get_root();
+
       $permission_id = \EWCore::does_need_permission($app_name);
       // Get permission id for the requested method or FALSE in the case of no permission id available
       if ($permission_id === true)
       {
-
-         if (\admin\UsersManagement::user_has_permission_for_resource($app_name, $_SESSION['EW.USER_GROUP_ID']))
+         if (\admin\UsersManagement::user_has_permission_for_resource($app_name, $app_resource_path[1], $_SESSION['EW.USER_GROUP_ID']))
          {
             if ($this->resources[$app_resource_path[1]])
             {

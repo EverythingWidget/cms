@@ -20,6 +20,7 @@ class WidgetsManagement extends \ew\Module
    private static $title = "";
    private static $html_scripts = array();
    private static $html_keywords;
+   protected $resource = "api";
 
    public function install_permissions()
    {
@@ -28,14 +29,14 @@ class WidgetsManagement extends \ew\Module
       $lcd = ob_get_clean();
       EWCore::register_form("ew-link-chooser-form-default", "link-chooser-uis-list", ["title" => "UI Structures",
           "content" => $lcd]);
+
       $this->register_permission("view", "User can view the widgets section", array(
-          $this->get_index(),
-          "get_uis",
-          "get_uis_list",
-          "get_widgets_types",
-          "get_all_pages_uis_list",
-          "get_path_uis",
-          $this->get_index()));
+          "api/get_uis",
+          "api/get_uis_list",
+          "api/get_widgets_types",
+          "api/get_all_pages_uis_list",
+          "api/get_path_uis",
+          'html/' . $this->get_index()));
       //global $EW;
       $this->register_form("ew-article-form-tab", "uis_tab", ["title" => "UI"]);
       $this->register_form("ew-category-form-tab", "uis_tab", ["title" => "UI"]);
@@ -55,11 +56,11 @@ class WidgetsManagement extends \ew\Module
       $this->add_listener("admin-api/ContentManagement/get_article", "article_action_get");
 
       $this->register_permission("export-uis", "User can export UIS", array(
-          "export_uis",
-          "ne-uis.php_see"));
+          "api/export_uis",
+          "html/ne-uis.php_see"));
       $this->register_permission("import-uis", "User can import UIS", array(
-          "import_uis",
-          "ne-uis.php_see"));
+          "api/import_uis",
+          "html/ne-uis.php_see"));
 
       //$this->register_content_label("uis", "");
    }
@@ -479,7 +480,7 @@ class WidgetsManagement extends \ew\Module
       return json_encode($res);
    }
 
-   public static function create_panel_content($panel = array(), $container_id, $no_data)
+   public static function create_panel_content($panel = array(), $container_id, $no_data = null)
    {
       $result_html = '';
       foreach ($panel as $key => $value)
@@ -505,7 +506,7 @@ class WidgetsManagement extends \ew\Module
       return $result_html;
    }
 
-   public static function open_panel($panel_id, $container_id, $style_class, $style_id, $parameters, $row = TRUE, $block_name)
+   public static function open_panel($panel_id, $container_id, $style_class, $style_id, $parameters, $row = TRUE, $block_name = null)
    {
       $result_html = '';
       $param_json = $parameters;
@@ -1011,7 +1012,7 @@ class WidgetsManagement extends \ew\Module
           "script" => $script);
    }
 
-   public static function get_html_scripts($element_id)
+   public static function get_html_scripts($element_id = '')
    {
       $result = "";
       foreach (self::$html_scripts as $script)
@@ -1039,7 +1040,7 @@ class WidgetsManagement extends \ew\Module
       self::$html_keywords .= $keywords . ", ";
    }
 
-   public static function get_html_keywords($keywords)
+   public static function get_html_keywords()
    {
       return self::$html_keywords;
    }

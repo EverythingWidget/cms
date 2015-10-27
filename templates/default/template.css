@@ -666,7 +666,7 @@ body.Admin
    box-shadow:0 2px 12px -1px #666;
    position:absolute;
    z-index:1;/* perspective:600px */
-   }
+}
 
 .top-pane
 {
@@ -1170,7 +1170,12 @@ button
    overflow:hidden;
    margin:30px;
    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-   transition: all .3s ease-out;
+   transition: all .2s ease-out;
+   color: #111;
+}
+.apps-list li a:active
+{
+   background-color:#ddd;
 }
 
 .apps-list li a label
@@ -1183,7 +1188,6 @@ button
    cursor:inherit;
    font-weight:300;
    text-align:center;
-   color:#000
 }
 
 .apps-list li a p
@@ -1194,7 +1198,6 @@ button
    display:block;
    font-size:14px;
    text-align:center;
-   color:#333
 }
 
 .apps-list li a:hover
@@ -1206,12 +1209,6 @@ button
 {
    /* color:#39f
    */}
-
-.apps-list li a:active label, .apps-list li a.selected label
-{
-   color:#fff;
-   background-color:#39f
-}
 
 .apps-list li.selected a
 {
@@ -1443,7 +1440,7 @@ ul.list.arrangeable li span
 ul.list li h1,ul.list li h2,ul.list li h3,ul.list li h4,ul.list li h5
 {
    /* margin:0
- */}
+   */}
 
 ul.list li ul
 {
@@ -1783,7 +1780,7 @@ div#components-pane
 
 .app-bar-nav ul + ul label:first-child
 {
- margin-top: 0px;
+   margin-top: 0px;
 }
 
 .app-bar-nav li
@@ -1859,7 +1856,7 @@ div#components-pane
    border-left:6px solid #03A9F4;
    cursor:default;
    padding-left: 66px;
-   }
+}
 
 .texture
 {
@@ -2281,8 +2278,8 @@ label.label-float.focused
 
 .label-float-input, .text-field.label-float-input
 {
-   margin-top:16px;
-   margin-bottom:20px;
+   margin-top: 20px;
+   margin-bottom: 30px;
    -webkit-transition:padding .3s ease;
    -moz-transition:padding .3s ease;
    -ms-transition:padding .3s ease;
@@ -2292,7 +2289,8 @@ label.label-float.focused
 
 .label-float-input.valued,.label-float-input:focus
 {
-   padding-top: 12px;}
+   /* padding-top: 0px; */
+   }
 
 label.small
 {
@@ -2312,7 +2310,7 @@ textarea.text-field
    width:100%;
    min-height:28px;
    line-height:26px;
-   padding:5px 0;
+   padding: 5px 0;
    border:0 solid rgba(0,0,0,.1);
    border-bottom-width:2px;
    margin:0;
@@ -2325,6 +2323,14 @@ textarea.text-field
    border-radius:0;
    transition-property:border-color;
    transition-duration:300ms
+
+
+
+
+
+
+
+
 }
 
 .text-field.Radio
@@ -2492,7 +2498,7 @@ textarea.text-field
 
 
 
-;
+      ;
    background-size: cover;
 }
 
@@ -3307,7 +3313,7 @@ div.notification p,div.notification h4
    padding:0 10px;
    position:relative;
    z-index:2
-;
+      ;
    margin: 7px 0 0;
 }
 
@@ -3531,5 +3537,5 @@ li h3.icon-header
 
 .box-title
 {
-   
+
 }

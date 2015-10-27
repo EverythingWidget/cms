@@ -23,13 +23,6 @@ class APIResourceHandler extends ResourceHandler
        'DELETE' => 'delete'
    ];
 
-   private function hyphenToCamel($val)
-   {
-      $val = str_replace(' ', '', ucwords(str_replace('-', ' ', $val)));
-      $val = substr($val, 0);
-      return $val;
-   }
-
    protected function handle($app, $app_resource_path, $module_name, $method_name, $parameters = null)
    {
       $verb = $this->verbs[$_SERVER['REQUEST_METHOD']];
@@ -39,7 +32,7 @@ class APIResourceHandler extends ResourceHandler
       $method_name = str_replace('-', '_', $method_name);
 
       // Parse module name to a api module name
-      $module_name = $this->hyphenToCamel($module_name);
+      $module_name = \EWCore::hyphenToCamel($module_name);
 
       $app_name = $app->get_root();
       $real_class_name = $app_name . '\\' . $module_name;

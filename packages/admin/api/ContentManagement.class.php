@@ -16,6 +16,8 @@ use EWCore;
 class ContentManagement extends \ew\Module
 {
 
+   protected $resource = "api";
+
    public function __construct($app)
    {
       parent::__construct($app);
@@ -47,40 +49,41 @@ class ContentManagement extends \ew\Module
       EWCore::register_resource("images", array(
           $this,
           "image_loader"));
+      
       $this->register_permission("see-content", "User can see the contents", array(
-          'index.php',
-          'index',
-          "get_content",
-          "get_category",
-          "get_article",
-          "get_album",
-          "get_categories_list",
-          "get_articles_list",
-          "get_medias_list",
-          "article-form.php",
-          "category-form.php",
-          "album-form.php"));
+          'html/index.php',
+          'api/index',
+          "api/get_content",
+          "api/get_category",
+          "api/get_article",
+          "api/get_album",
+          "api/get_categories_list",
+          "api/get_articles_list",
+          "api/get_medias_list",
+          "html/article-form.php",
+          "html/category-form.php",
+          "html/album-form.php"));
 
       $this->register_permission("manipulate-content", "User can add new, edit, delete contents", array(
-          'index.php',
-          'index',
-          "add_content",
-          "add_category",
-          "add_article",
-          "add_album",
-          "upload-form.php",
-          "update_content",
-          "update_category",
-          "update_article",
-          "update_album",
-          "delete_content",
-          "delete_content_by_id",
-          "delete_category",
-          "delete_article",
-          "delete_album",
-          "article-form.php:tr{New Article}",
-          "category-form.php:tr{New Folder}",
-          "album-form.php:tr{New Album}"));
+          'html/index.php',
+          'api/index',
+          "api/add_content",
+          "api/add_category",
+          "api/add_article",
+          "api/add_album",
+          "html/upload-form.php",
+          "api/update_content",
+          "api/update_category",
+          "api/update_article",
+          "api/update_album",
+          "api/delete_content",
+          "api/delete_content_by_id",
+          "api/delete_category",
+          "api/delete_article",
+          "api/delete_album",
+          "html/article-form.php:tr{New Article}",
+          "html/category-form.php:tr{New Folder}",
+          "html/album-form.php:tr{New Album}"));
       //$this->register_content_label("document", ["title" => "Document", "description" => "Attach this content to other content", "type" => "data_url", "value" => "app-admin/ContentManagement/get_articles_llist"]);
       //$this->register_content_label("language", ["title" => "Language", "description" => "Language of the content"]);
       //$this->register_widget_feeder("page", "ssss");

@@ -3,9 +3,8 @@ session_start();
 
 if ($_POST['username'] && !$_SESSION['login'])
 {
-   if (admin\UsersManagement::login())
+   if (admin\UsersManagement::login($_POST["username"], $_POST["password"]))
    {
-      //return;
       // User has been logged in succefully
    }
    else
@@ -20,12 +19,6 @@ if (isset($_SESSION['login']))
    header('Location: ' . EW_DIR_URL . 'admin/');
    return;
 }
-/* $db = \EWCore::get_db_connection();
-  $username = $db->real_escape_string($_POST["UserName"]);
-  $password = $db->real_escape_string($_POST["Password"]); */
-//if(!isset($_POST['UserName']) )
-
-
 
 $tabs = \EWCore::read_registry("ew-login-form");
 ?>
@@ -84,12 +77,14 @@ $tabs = \EWCore::read_registry("ew-login-form");
                   <div class="row">
                      <?php
                      // Load registered login forms 
-                     foreach ($tabs as $id => $tab)
+                     if (isset($tabs))
                      {
-                        echo "<div class='tab-pane' id='{$id}'>{$tab["content"]}</div>";
+                        foreach ($tabs as $id => $tab)
+                        {
+                           echo "<div class='tab-pane' id='$id'>{$tab["content"]}</div>";
+                        }
                      }
                      ?>
-
                   </div>
                </div>
             </div>

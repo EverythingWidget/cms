@@ -74,7 +74,7 @@ class HTMLResourceHandler extends ResourceHandler
       }
       else
       {
-         if (!$parameters["_file"])
+         if (!isset($parameters["_file"]))
          {
             // Refer to app index
             ob_start();

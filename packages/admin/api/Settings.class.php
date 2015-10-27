@@ -11,7 +11,7 @@ use Module;
  */
 
 class Settings extends \ew\Module
-{
+{protected $resource = "api";
    
    public function __construct($app)
    {

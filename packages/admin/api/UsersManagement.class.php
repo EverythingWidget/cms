@@ -5,10 +5,12 @@ namespace admin;
 use Module;
 use EWCore;
 
-session_start();
+//session_start();
 
 class UsersManagement extends \ew\Module
 {
+
+   protected $resource = "api";
 
    protected function get_pre_processors()
    {
@@ -18,32 +20,32 @@ class UsersManagement extends \ew\Module
    public function install_permissions()
    {
       $this->register_permission("see-users", "User can see users list", array(
-          "get_users_list",
-          "get_user_by_id",
-          "get_user_by_email",
-          "user-form.php_see",
-          $this->get_index()));
+          "api/get_users_list",
+          "api/get_user_by_id",
+          "api/get_user_by_email",
+          "html/user-form.php_see",
+          'html/' . $this->get_index()));
 
       $this->register_permission("manipulate-users", "User can add, edit delete users", array(
-          "add_user",
-          "update_user",
-          "delete_user",
-          "user-form.php:tr{New User}",
-          $this->get_index()));
+          "api/add_user",
+          "api/update_user",
+          "api/delete_user",
+          "html/user-form.php:tr{New User}",
+          'html/' . $this->get_index()));
 
       $this->register_permission("see-groups", "User can see user groups list", array(
-          "get_users_groups_list",
-          "get_user_group_by_id",
-          "get_users_group_by_type",
-          "users-group-form.php_see",
-          $this->get_index()));
+          "api/get_users_groups_list",
+          "api/get_user_group_by_id",
+          "api/get_users_group_by_type",
+          "html/users-group-form.php_see",
+          'html/' . $this->get_index()));
 
       $this->register_permission("manipulate-groups", "User can add, edit delete user group", array(
-          "add_group",
-          "update_group",
-          "delete_group",
-          "users-group-form.php:tr{New Group}",
-          $this->get_index()));
+          "api/add_group",
+          "api/update_group",
+          "api/delete_group",
+          "html/users-group-form.php:tr{New Group}",
+          'html/' . $this->get_index()));
 
       $this->add_listener("admin-api/UsersManagement/get_user_by_id", "test_plugin");
    }
@@ -68,10 +70,10 @@ class UsersManagement extends \ew\Module
    {
       $user_info = null;
       $db = \EWCore::get_db_connection();
-      if (!$username)
+      /*if (!$username)
          $username = $db->real_escape_string($_POST["username"]);
       if (!$password)
-         $password = $db->real_escape_string($_POST["password"]);
+         $password = $db->real_escape_string($_POST["password"]);*/
 
       $stm = $db->prepare("SELECT ew_users.id, group_id, email FROM ew_users, ew_users_groups WHERE ew_users.group_id = ew_users_groups.id AND ew_users.email = ? AND password = ? LIMIT 1") or die($db->error);
       $stm->bind_param("ss", $username, $password);
@@ -198,7 +200,7 @@ class UsersManagement extends \ew\Module
     * @param string $user_group_id
     * @return boolean
     */
-   public static function user_has_permission_for_resource($app_name, $user_group_id)
+   public static function user_has_permission_for_resource($app_name, $resource_name, $user_group_id)
    {
       $db_con = \EWCore::get_db_connection();
 //echo $user_id."asfdasd";

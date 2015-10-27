@@ -32,39 +32,42 @@ function get_ew_users_permissions_form()
          <ul class="list permissions tree" data-toggle="buttons">
             <?php
             $permissions_titles = \EWCore::read_permissions_titles();
-            foreach ($permissions_titles as $app_name => $sections)
+            if (isset($permissions_titles))
             {
-               ?>
-            <li  ><label data-value="<?php echo $app_name ?>"><i class="icon  pull-left"></i><h3 class="icon-header"><?php echo $sections["appTitle"]; ?></h3></label>
-               <ul class="row">
-                     <?php
-                     foreach ($sections["section"] as $section_name => $sections_permissions)
-                     {
-                        ?>
-                  <li class="col-xs-6"><label data-value="<?php echo "$app_name.$section_name" ?>"><i class="icon  pull-left"></i><h3 class="icon-header"><?php echo $sections_permissions["sectionTitle"]; ?></h3></label>
-                           <ul>
-                              <?php
-                              foreach ($sections_permissions["permission"] as $permission_name => $permission_info)
-                              {
-                                 ?>
-                                 <li class="permission-item">
-                                    <label  data-value="<?php echo "$app_name.$section_name.$permission_name" ?>">
-                                       <i class="icon  pull-left"></i>
-                                       <h3 class="icon-header"><?php echo $permission_info["title"] ?></h3>
-                                       <?php echo $permission_info["description"] ?>
-                                    </label>
-                                 </li>
-                                 <?php
-                              }
-                              ?>
-                           </ul>
-                        </li>
+               foreach ($permissions_titles as $app_name => $sections)
+               {
+                  ?>
+                  <li><label data-value="<?php echo $app_name ?>"><i class="icon  pull-left"></i><h3 class="icon-header"><?php echo $sections["appTitle"]; ?></h3></label>
+                     <ul class="row">
                         <?php
-                     }
-                     ?>
-                  </ul>
-               </li>
-               <?php
+                        foreach ($sections["section"] as $section_name => $sections_permissions)
+                        {
+                           ?>
+                           <li class="col-xs-6"><label data-value="<?php echo "$app_name.$section_name" ?>"><i class="icon  pull-left"></i><h3 class="icon-header"><?php echo $sections_permissions["sectionTitle"]; ?></h3></label>
+                              <ul>
+                                 <?php
+                                 foreach ($sections_permissions["permission"] as $permission_name => $permission_info)
+                                 {
+                                    ?>
+                                    <li class="permission-item">
+                                       <label  data-value="<?php echo "$app_name.$section_name.$permission_name" ?>">
+                                          <i class="icon  pull-left"></i>
+                                          <h3 class="icon-header"><?php echo $permission_info["title"] ?></h3>
+                                          <?php echo $permission_info["description"] ?>
+                                       </label>
+                                    </li>
+                                    <?php
+                                 }
+                                 ?>
+                              </ul>
+                           </li>
+                           <?php
+                        }
+                        ?>
+                     </ul>
+                  </li>
+                  <?php
+               }
             }
             ?>
          </ul>
@@ -256,8 +259,10 @@ function get_ew_users_permissions_form()
    return ob_get_clean();
 }
 
-EWCore::register_form("ew-user-form-default", "ew-user-form", ["title" => "Group Info", "content" => get_ew_user_form()]);
-EWCore::register_form("ew-user-form-default", "ew-user-permissions", ["title" => "Permissions", "content" => get_ew_users_permissions_form()]);
+EWCore::register_form("ew-user-form-default", "ew-user-form", ["title" => "Group Info",
+    "content" => get_ew_user_form()]);
+EWCore::register_form("ew-user-form-default", "ew-user-permissions", ["title" => "Permissions",
+    "content" => get_ew_users_permissions_form()]);
 $tabsDefault = EWCore::read_registry("ew-user-form-default");
 $tabs = EWCore::read_registry("ew-user-form");
 ?>
@@ -275,9 +280,12 @@ $tabs = EWCore::read_registry("ew-user-form");
             else
                echo "<li ><a href='#{$id}' data-toggle='tab'>tr{" . $tab["title"] . "}</a></li>";
          }
-         foreach ($tabs as $id => $tab)
+         if (isset($tabs))
          {
-            echo "<li ><a href='#{$id}' data-toggle='tab'>tr{" . $tab["title"] . "}</a></li>";
+            foreach ($tabs as $id => $tab)
+            {
+               echo "<li ><a href='#{$id}' data-toggle='tab'>tr{" . $tab["title"] . "}</a></li>";
+            }
          }
          ?>
       </ul>
@@ -293,9 +301,12 @@ $tabs = EWCore::read_registry("ew-user-form");
             else
                echo "<div class='tab-pane' id='{$id}'>{$tab["content"]}</div>";
          }
-         foreach ($tabs as $id => $tab)
+         if (isset($tabs))
          {
-            echo "<div class='tab-pane' id='{$id}'>{$tab["content"]}</div>";
+            foreach ($tabs as $id => $tab)
+            {
+               echo "<div class='tab-pane' id='{$id}'>{$tab["content"]}</div>";
+            }
          }
          ?>
       </div>

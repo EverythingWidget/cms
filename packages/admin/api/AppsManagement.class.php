@@ -13,6 +13,8 @@ use EWCore;
 class AppsManagement extends \ew\Module
 {
 
+   protected $resource = "api";
+
    public function get_title()
    {
       return "Apps";
@@ -51,7 +53,7 @@ class AppsManagement extends \ew\Module
             if ($permission_id && $permission_id !== FALSE)
             {
                // Check for user permission
-               
+
                if (!UsersManagement::user_has_permission($appDir, $class_name, $permission_id, $_SESSION['EW.USER_ID']))
                {
                   continue;

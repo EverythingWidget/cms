@@ -15,7 +15,8 @@ ob_end_clean();
 if (ob_get_level())
    ob_end_clean();
 
-error_reporting(E_ERROR);
+$_file = null;
+error_reporting(E_WARNING);
 //ini_set('display_errors', '1');
 
 EWCore::set_default_locale("admin");
@@ -152,7 +153,7 @@ if (!isset($_REQUEST["_uis"]))
    $uis_data = EWCore::get_url_uis($r_uri);
    $_REQUEST["_uis"] = $uis_data["uis_id"];
    $_REQUEST["_uis_template"] = $uis_data["uis_template"];
-   if (!$_REQUEST["_uis_template_settings"])
+   if (!isset($_REQUEST["_uis_template_settings"]))
       $_REQUEST["_uis_template_settings"] = $uis_data["uis_template_settings"];
    //print_r($_REQUEST);
 }
@@ -164,12 +165,14 @@ else
    if (!$_REQUEST["_uis_template_settings"])
       $_REQUEST["_uis_template_settings"] = $uis_data["template_settings"];
 }
+if (isset($_REQUEST["_parameters"]))
+{
+   $GLOBALS["page_parameters"] = explode("/", $_REQUEST["_parameters"]);
+}
 
-$GLOBALS["page_parameters"] = explode("/", $_REQUEST["_parameters"]);
 $RESULT_CONTENT = "RESULT_CONTENT: EMPTY";
 
 $real_class_name = $app_name . '\\' . $section_name;
-//print_r($_REQUEST);
 
 $RESULT_CONTENT = EWCore::process_request_command($app_name, $section_name, $function_name, $_REQUEST);
 

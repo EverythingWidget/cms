@@ -1,6 +1,7 @@
 <?php
 
 namespace admin;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -27,7 +28,7 @@ class App extends \ew\App
 
    public function index()
    {
-      $compId = $_REQUEST['compId'];
+      $compId = isset($_REQUEST['compId']) ? $_REQUEST['compId'] : null;
       $secId = $_REQUEST['_section_name'];
       $className = $_REQUEST['className'];
       $cmd = $_REQUEST['cmd'];

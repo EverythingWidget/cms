@@ -175,44 +175,47 @@ class EWCore
       try
       {
          // Call the listeners with the same data as the command data
-         foreach ($actions as $id => $data)
+         if (isset($actions))
          {
-
-            if (method_exists($data["object"], $data["function"]))
+            foreach ($actions as $id => $data)
             {
-               $listener_method_object = new ReflectionMethod($data["object"], $data["function"]);
-               $params = $listener_method_object->getParameters();
-               $functions_arguments = array();
-               foreach ($params as $param)
-               {
-                  $temp = null;
-                  if ($param->getName() === "_data")
-                  {
-                     if ($RESULT_CONTENT["data"])
-                        $functions_arguments[] = $RESULT_CONTENT["data"];
-                     else
-                        $functions_arguments[] = $RESULT_CONTENT;
-                     continue;
-                  }
-                  if ($param->getName() === "_output")
-                  {
-                     $functions_arguments[] = $RESULT_CONTENT;
-                     continue;
-                  }
 
-                  if (is_array($parameters[$param->getName()]))
+               if (method_exists($data["object"], $data["function"]))
+               {
+                  $listener_method_object = new ReflectionMethod($data["object"], $data["function"]);
+                  $params = $listener_method_object->getParameters();
+                  $functions_arguments = array();
+                  foreach ($params as $param)
                   {
-                     $temp = $parameters[$param->getName()];
+                     $temp = null;
+                     if ($param->getName() === "_data")
+                     {
+                        if ($RESULT_CONTENT["data"])
+                           $functions_arguments[] = $RESULT_CONTENT["data"];
+                        else
+                           $functions_arguments[] = $RESULT_CONTENT;
+                        continue;
+                     }
+                     if ($param->getName() === "_output")
+                     {
+                        $functions_arguments[] = $RESULT_CONTENT;
+                        continue;
+                     }
+
+                     if (is_array($parameters[$param->getName()]))
+                     {
+                        $temp = $parameters[$param->getName()];
+                     }
+                     else
+                     {
+                        $temp = $parameters[$param->getName()];
+                     }
+                     $functions_arguments[] = $temp;
                   }
-                  else
-                  {
-                     $temp = $parameters[$param->getName()];
-                  }
-                  $functions_arguments[] = $temp;
+                  $lestiner_result = $listener_method_object->invokeArgs($data["object"], $functions_arguments);
+                  if ($lestiner_result)
+                     $RESULT_CONTENT = $lestiner_result;
                }
-               $lestiner_result = $listener_method_object->invokeArgs($data["object"], $functions_arguments);
-               if ($lestiner_result)
-                  $RESULT_CONTENT = $lestiner_result;
             }
          }
       }
@@ -231,7 +234,7 @@ class EWCore
     * @param type $parameters
     * @return type
     */
-   public static function process_command($app_name, $section_name, $function_name, $parameters)
+   public static function process_command($app_name, $section_name, $function_name, $parameters = [])
    {
       if (!$app_name /* || !$section_name || !$function_name */)
       {
@@ -330,44 +333,47 @@ class EWCore
       try
       {
          // Call the listeners with the same data as the command data
-         foreach ($actions as $id => $data)
+         if (isset($actions))
          {
-
-            if (method_exists($data["object"], $data["function"]))
+            foreach ($actions as $id => $data)
             {
-               $listener_method_object = new ReflectionMethod($data["object"], $data["function"]);
-               $params = $listener_method_object->getParameters();
-               $functions_arguments = array();
-               foreach ($params as $param)
-               {
-                  $temp = null;
-                  if ($param->getName() === "_data")
-                  {
-                     if ($RESULT_CONTENT["data"])
-                        $functions_arguments[] = $RESULT_CONTENT["data"];
-                     else
-                        $functions_arguments[] = $RESULT_CONTENT;
-                     continue;
-                  }
-                  if ($param->getName() === "_output")
-                  {
-                     $functions_arguments[] = $RESULT_CONTENT;
-                     continue;
-                  }
 
-                  if (is_array($parameters[$param->getName()]))
+               if (method_exists($data["object"], $data["function"]))
+               {
+                  $listener_method_object = new ReflectionMethod($data["object"], $data["function"]);
+                  $params = $listener_method_object->getParameters();
+                  $functions_arguments = array();
+                  foreach ($params as $param)
                   {
-                     $temp = $parameters[$param->getName()];
+                     $temp = null;
+                     if ($param->getName() === "_data")
+                     {
+                        if ($RESULT_CONTENT["data"])
+                           $functions_arguments[] = $RESULT_CONTENT["data"];
+                        else
+                           $functions_arguments[] = $RESULT_CONTENT;
+                        continue;
+                     }
+                     if ($param->getName() === "_output")
+                     {
+                        $functions_arguments[] = $RESULT_CONTENT;
+                        continue;
+                     }
+
+                     if (is_array($parameters[$param->getName()]))
+                     {
+                        $temp = $parameters[$param->getName()];
+                     }
+                     else
+                     {
+                        $temp = $parameters[$param->getName()];
+                     }
+                     $functions_arguments[] = $temp;
                   }
-                  else
-                  {
-                     $temp = $parameters[$param->getName()];
-                  }
-                  $functions_arguments[] = $temp;
+                  $lestiner_result = $listener_method_object->invokeArgs($data["object"], $functions_arguments);
+                  if ($lestiner_result)
+                     $RESULT_CONTENT = $lestiner_result;
                }
-               $lestiner_result = $listener_method_object->invokeArgs($data["object"], $functions_arguments);
-               if ($lestiner_result)
-                  $RESULT_CONTENT = $lestiner_result;
             }
          }
       }
@@ -394,10 +400,12 @@ class EWCore
     */
    public static function get_db_connection()
    {
-      if (!self::$db_connection || !self::$db_connection->host_info)
-      {
+      
+      //if (!isset(self::$db_connection) || !isset(self::$db_connection->host_info))
+      //{print_r(self::$db_connection);
          $database_config = include('config/database_config.php');
          // default database connection
+         
          $db = new mysqli($database_config['host'], $database_config['username'], $database_config['password'], $database_config['database']);
          if ($db->connect_errno)
          {
@@ -405,7 +413,7 @@ class EWCore
          }
          $db->set_charset("utf8");
          static::$db_connection = $db;
-      }
+      //}
       return self::$db_connection;
    }
 
@@ -1543,18 +1551,18 @@ class EWCore
       EWCore::register_object($name, $id, $conf);
    }
 
-   public static function register_permission($app_name, $class_name, $id, $app_title, $section_title, $description, $permissions = array())
+   public static function register_permission($app_pack_name, $module_name, $id, $app_title, $section_title, $description, $permissions = array())
    {
-      $permission_group = "$app_name.$class_name";
-      if (!array_key_exists($app_name, self::$permissions_groups))
+      $permission_group = "$app_pack_name.$module_name";
+      if (!array_key_exists($app_pack_name, self::$permissions_groups))
       {
-         self::$permissions_groups[$app_name] = array(
+         self::$permissions_groups[$app_pack_name] = array(
              "appTitle" => $app_title,
              "section" => array());
       }
-      if (!array_key_exists($class_name, self::$permissions_groups[$app_name]["section"]))
+      if (!array_key_exists($module_name, self::$permissions_groups[$app_pack_name]["section"]))
       {
-         self::$permissions_groups[$app_name]["section"][$class_name] = array(
+         self::$permissions_groups[$app_pack_name]["section"][$module_name] = array(
              "sectionTitle" => $section_title,
              "permission" => array());
       }
@@ -1562,21 +1570,13 @@ class EWCore
       $permission_info = array(
           "description" => $description,
           "methods" => array());
-      if (!array_key_exists($id, self::$permissions_groups[$app_name]["section"][$class_name]["permission"]))
+      if (!array_key_exists($id, self::$permissions_groups[$app_pack_name]["section"][$module_name]["permission"]))
       {
-         self::$permissions_groups[$app_name]["section"][$class_name]["permission"][$id] = $permission_info;
+         self::$permissions_groups[$app_pack_name]["section"][$module_name]["permission"][$id] = $permission_info;
       }
-      // If permission is an array then add it to the end of permissions
-      //if (is_array($permissions))
-      //{
+
       $permission_info["methods"] = array_merge($permission_info["methods"], $permissions);
-      //print_r($permissions);
-      //}
-      //else
-      //{
-      //   $permission_info["methods"][] = $permissions;
-      //}
-      self::$permissions_groups[$app_name]["section"][$class_name]["permission"][$id] = $permission_info;
+      self::$permissions_groups[$app_pack_name]["section"][$module_name]["permission"][$id] = $permission_info;
    }
 
    public static function register_category($id, $categories = array())
@@ -1586,10 +1586,10 @@ class EWCore
 
    public static function register_widget_feeder($type, $app, $id, $function)
    {
-      if (!self::$registry["ew-widget-feeder"] || !array_key_exists($app, self::$registry["ew-widget-feeder"]))
+      if (!isset(self::$registry["ew-widget-feeder"]) || !array_key_exists($app, self::$registry["ew-widget-feeder"]))
          self::$registry["ew-widget-feeder"][$app] = array();
 
-      if (!is_array(self::$registry["ew-widget-feeder"][$app][$type]))
+      if (!isset(self::$registry["ew-widget-feeder"][$app][$type]))
       {
          self::$registry["ew-widget-feeder"][$app][$type] = array();
       }
@@ -1621,7 +1621,7 @@ class EWCore
             {
                foreach ($item as $feeder => $p)
                {
-                  if ($p[$id])
+                  if (isset($p[$id]))
                   {
                      //echo $key." ".$feeder."  ".$id;
                      $result = true;
@@ -1643,7 +1643,7 @@ class EWCore
          $all_feeders = EWCore::read_registry("ew-widget-feeder");
          foreach ($all_feeders as $feeder => $p)
          {
-            if ($p[$type][$id])
+            if (isset($p[$type][$id]))
                return $feeder;
          }
          return FALSE;
@@ -1687,7 +1687,7 @@ class EWCore
          //$func = $func["$type:$id"];
       }
 
-      if (substr($func, -strlen(".php")) === ".php")
+      if (is_string($func) && substr($func, -strlen(".php")) === ".php")
       {
          if (!file_exists($func))
             return json_encode(array(
@@ -1770,58 +1770,39 @@ class EWCore
 
    public static function read_activities()
    {
-      /* EWCore::init_sections_plugins();
-        //return self::$registry[$name];
-        $allowed_activities = array();
-        foreach (self::$registry["ew-activity"] as $activity => $settings)
-        {
-        $permission_id = EWCore::does_need_permission($settings["app"], $settings["section"], $settings["form"]);
-
-        if ($permission_id && $permission_id !== FALSE)
-        {
-        // Check for user permission
-        if (admin\UsersManagement::user_has_permission($settings["app"], $settings["section"], $permission_id))
-        {
-        $allowed_activities[$activity] = $settings;
-        }
-        continue;
-        }
-
-        $allowed_activities[$activity] = $settings;
-        }
-        return $allowed_activities; */
       EWCore::init_sections_plugins();
       $pers = self::$permissions_groups;
       $allowed_activities = array();
-      //$permissions_titles = array();
-      //$temp_permissions = array();
+
       foreach ($pers as $app_name => $sections)
       {
-         //$permissions_titles[$app_name] = [ "appTitle" => $sections["appTitle"]];
-
          foreach ($sections["section"] as $section_name => $sections_permissions)
          {
-            //echo $app_name . '/' . $section_name . "<br>";
-            //$permissions_titles[$app_name]["section"][$section_name] = [ "sectionTitle" => $sections_permissions["sectionTitle"]];
             foreach ($sections_permissions["permission"] as $permission_name => $permission_info)
             {
-               //echo "$app_name.$section_name.$permission_name <br>";
                if (admin\UsersManagement::user_has_permission($app_name, $section_name, [$permission_name], $_SESSION['EW.USER_ID']))
                {
                   foreach ($permission_info["methods"] as $method)
                   {
-                     //echo "$method <br>";
-                     $title = $method;
+                     $parts = explode('/', $method, 2);
+                     if (count($parts) < 2)
+                     {
+                        //throw new Exception("Activity name is wrong");
+                        return EWCore::log_error('500', 'Wrong actovity name', ["$app_name | $section_name | $method_name"]);
+                     }
+                     $resource_name = $parts[0];
+                     $method_name = $parts[1];
+                     $title = $method_name;
                      if (strpos($method, ':'))
                      {
-                        $temp = explode(':', $method, 2);
+                        $temp = explode(':', $method_name, 2);
                         $method = $temp[0];
                         $title = $temp[1];
                      }
 
-                     $is_form = (strpos($method, '.php') && $method !== "index.php") ? true : false;
-                     $url = $is_form ? EW_ROOT_URL . $app_name . "/" . $section_name . "/" . $method : EW_ROOT_URL . $app_name . "-api/" . $section_name . "/" . $method;
-                     $allowed_activities["$app_name-api.$section_name.$method"] = [
+                     $is_form = (strpos($method_name, '.php') && $method_name !== "index.php") ? true : false;
+                     $url = $is_form ? EW_ROOT_URL . $app_name . '-' . $resource_name . "/" . $section_name . "/" . $method_name : EW_ROOT_URL . $app_name . "/" . $section_name . "/" . $method_name;
+                     $allowed_activities["$app_name-$resource_name|$section_name|$method_name"] = [
                          "activityTitle" => $title,
                          "app" => $app_name,
                          "appTitle" => "tr:$app_name{" . $sections["appTitle"] . "}",
@@ -1861,7 +1842,7 @@ class EWCore
    public static function read_registry($name)
    {
       EWCore::init_sections_plugins();
-      return self::$registry[$name];
+      return isset(self::$registry[$name]) ? self::$registry[$name] : null;
    }
 
    /**
@@ -1877,7 +1858,7 @@ class EWCore
    public static function read_permissions()
    {
       EWCore::init_sections_plugins();
-      return self::$permissions_groups;
+      return json_encode(self::$permissions_groups);
    }
 
    public static function read_permissions_titles()
@@ -1887,19 +1868,19 @@ class EWCore
       $permissions_titles = array();
       foreach ($pers as $app_name => $sections)
       {
-
-         $permissions_titles[$app_name] = array(
-             "appTitle" => $sections["appTitle"]);
+         $permissions_titles[$app_name] = [
+             "appTitle" => $sections["appTitle"]
+         ];
          foreach ($sections["section"] as $section_name => $sections_permissions)
          {
-            $permissions_titles[$app_name]["section"][$section_name] = array(
-                "sectionTitle" => $sections_permissions["sectionTitle"]);
+            $permissions_titles[$app_name]["section"][$section_name] = ["sectionTitle" => $sections_permissions["sectionTitle"]];
             foreach ($sections_permissions["permission"] as $permission_name => $permission_info)
             {
-               $permissions_titles[$app_name]["section"][$section_name]["permission"][$permission_name] = array(
+               $permissions_titles[$app_name]["section"][$section_name]["permission"][$permission_name] = [
                    "parent" => "$app_name.$section_name",
                    "title" => $permission_name,
-                   "description" => $permission_info["description"]);
+                   "description" => $permission_info["description"]
+               ];
             }
          }
       }
@@ -1934,32 +1915,37 @@ class EWCore
    {
       EWCore::init_sections_plugins();
 
-      $pers = self::$permissions_groups[$app_name]["section"];
+      $pers = isset(self::$permissions_groups[$app_name]) ? self::$permissions_groups[$app_name]["section"] : false;
 
       if ($module_name === null)
       {
          return $pers ? true : false;
       }
+
       if ($pers)
          $pers = $pers[$module_name]["permission"];
       //$permissions_titles = array();
 
       $result = array();
       $flag = false;
-      foreach ($pers as $key => $value)
+      if (is_array($pers))
       {
-         foreach ($value["methods"] as $method)
+         foreach ($pers as $key => $value)
          {
-            //if(strpos(':', $method))
-            //explode(':', $method);
-            if ($method_name === $method)
+            foreach ($value["methods"] as $method)
             {
-               $result[] = $key;
-               $flag = true;
-               //return $key;
+               //if(strpos(':', $method))
+               //explode(':', $method);
+               if ($method_name === $method)
+               {
+                  $result[] = $key;
+                  $flag = true;
+                  //return $key;
+               }
             }
          }
       }
+
       if ($flag)
       {
          return $result;
@@ -2293,6 +2279,18 @@ class EWCore
       ob_start();
       include $full_path;
       return ob_get_clean();
+   }
+
+   public static function hyphenToCamel($val)
+   {
+      $val = str_replace(' ', '', ucwords(str_replace('-', ' ', $val)));
+      $val = substr($val, 0);
+      return $val;
+   }
+
+   public static function camelToHyphen($val)
+   {
+      return str_replace('_', '-', strtolower(preg_replace('/([a-zA-Z])(?=[A-Z])/', '$1-', $val)));
    }
 
 }

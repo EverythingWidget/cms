@@ -11,7 +11,7 @@ class Module
 {
 
    var $sectionName;
-   protected $resource;
+   protected $resource = null;
    var $pageTitles;
    var $page;
    var $command;
@@ -31,6 +31,13 @@ class Module
       $this->initParameters();
       $this->current_class = new \ReflectionClass($this);
       $this->pre_processors = $this->get_pre_processors();
+   }
+
+   public function get_resource()
+   {
+      if (!isset($this->resource))
+         throw new \Exception("Resource can't be NULL");
+      return $this->resource;
    }
 
    /**
@@ -139,9 +146,9 @@ class Module
       $preProcessorsResult = $this->run_pre_processors($verb, $method_name, $parameters);
       if ($preProcessorsResult !== true)
       {
-         
+
          return $preProcessorsResult;
-      }      
+      }
       $db = \EWCore::get_db_connection();
       $method_object = new \ReflectionMethod($this, $method_name);
       $params = $method_object->getParameters();
@@ -183,48 +190,57 @@ class Module
       try
       {
          // Call the listeners with the same data as the command data
-         foreach ($actions as $id => $data)
+         if (isset($actions))
          {
-            if (method_exists($data["object"], $data["function"]))
+            foreach ($actions as $id => $data)
             {
-               $listener_method_object = new ReflectionMethod($data["object"], $data["function"]);
-               $params = $listener_method_object->getParameters();
-               $functions_arguments = array();
-               foreach ($params as $param)
+               if (method_exists($data["object"], $data["function"]))
                {
-                  $temp = null;
-                  //echo $command_result["data"];
-                  if ($param->getName() === "_data")
+                  $listener_method_object = new ReflectionMethod($data["object"], $data["function"]);
+                  $params = $listener_method_object->getParameters();
+                  $functions_arguments = array();
+                  foreach ($params as $param)
                   {
-                     // Command result must be an array
-                     if (is_array($command_result))
+                     $temp = null;
+                     //echo $command_result["data"];
+                     if ($param->getName() === "_data")
                      {
-                        if ($command_result["data"])
-                           $functions_arguments[] = $command_result["data"];
-                        else
-                           $functions_arguments[] = $command_result;
+                        // Command result must be an array
+                        if (is_array($command_result))
+                        {
+                           if ($command_result["data"])
+                           {
+                              $functions_arguments[] = $command_result["data"];
+                           }
+                           else
+                           {
+                              $functions_arguments[] = $command_result;
+                           }
+                        }
+                        continue;
                      }
-                     continue;
-                  }
-                  if ($param->getName() === "_output")
-                  {
-                     $functions_arguments[] = $command_result;
-                     continue;
-                  }
+                     if ($param->getName() === "_output")
+                     {
+                        $functions_arguments[] = $command_result;
+                        continue;
+                     }
 
-                  if (is_array($parameters[$param->getName()]))
-                  {
-                     $temp = $parameters[$param->getName()];
+                     if (is_array($parameters[$param->getName()]))
+                     {
+                        $temp = $parameters[$param->getName()];
+                     }
+                     else
+                     {
+                        $temp = $parameters[$param->getName()];
+                     }
+                     $functions_arguments[] = $temp;
                   }
-                  else
+                  $plugin_result = $listener_method_object->invokeArgs($data["object"], $functions_arguments);
+                  if ($plugin_result)
                   {
-                     $temp = $parameters[$param->getName()];
+                     $command_result = $plugin_result;
                   }
-                  $functions_arguments[] = $temp;
                }
-               $plugin_result = $listener_method_object->invokeArgs($data["object"], $functions_arguments);
-               if ($plugin_result)
-                  $command_result = $plugin_result;
             }
          }
       }
@@ -232,6 +248,7 @@ class Module
       {
          echo $e->getTraceAsString();
       }
+
       if (is_array($command_result))
          $command_result = json_encode($command_result);
 
@@ -409,9 +426,9 @@ class Module
       
    }
 
-   public function register_permission($id, $description, $permissions, $res = '')
-   {
-      \EWCore::register_permission($this->app->get_root() . $res, $this->current_class->getShortName(), $id, $this->app->get_name(), $this->get_title(), $description, $permissions);
+   public function register_permission($id, $description, $permissions)
+   {    
+      \EWCore::register_permission($this->app->get_root(), \EWCore::camelToHyphen($this->current_class->getShortName()), \EWCore::camelToHyphen($id), $this->app->get_name(), $this->get_title(), $description, $permissions);
    }
 
    /**
