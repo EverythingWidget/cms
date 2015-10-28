@@ -16,7 +16,7 @@ if (ob_get_level())
    ob_end_clean();
 
 $_file = null;
-error_reporting(E_WARNING);
+error_reporting(E_WARNING | E_ERROR);
 //ini_set('display_errors', '1');
 
 EWCore::set_default_locale("admin");
@@ -160,7 +160,7 @@ if (!isset($_REQUEST["_uis"]))
 else
 {
 
-   $uis_data = json_decode(admin\WidgetsManagement::get_uis($_REQUEST["_uis"]), true);
+   $uis_data = json_decode(webroot\WidgetsManagement::get_uis($_REQUEST["_uis"]), true);
    $_REQUEST["_uis_template"] = $uis_data["template"];
    if (!$_REQUEST["_uis_template_settings"])
       $_REQUEST["_uis_template_settings"] = $uis_data["template_settings"];

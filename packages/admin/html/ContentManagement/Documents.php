@@ -29,7 +29,7 @@
       this.bUp.css("float", "right");
       this.bNewFolder = EW.addActivity({
          title: "tr{New Folder}",
-         activity: "admin-api/ContentManagement/category-form.php",
+         activity: "admin-html/content-management/category-form.php",
          parent: "action-bar-items",
          hash:
                  {
@@ -38,7 +38,7 @@
       }).hide().comeIn();
       this.bNewFile = EW.addActivity({
          title: "tr{New Article}",
-         activity: "admin-api/ContentManagement/article-form.php",
+         activity: "admin-html/content-management/article-form.php",
          parent: "action-bar-items",
          modal: {class: "full"},
          hash:
@@ -47,7 +47,7 @@
                  }
       }).hide().comeIn();
       this.seeFolderActivity = EW.getActivity({
-         activity: "admin-api/ContentManagement/category-form.php",
+         activity: "admin-html/content-management/category-form.php",
          onDone: function ()
          {
             EW.setHashParameters({
@@ -57,7 +57,7 @@
          }
       });
       this.seeArticleActivity = EW.getActivity({
-         activity: "admin-api/ContentManagement/article-form.php",
+         activity: "admin-html/content-management/article-form.php",
          onDone: function ()
          {
             EW.setHashParameters({

@@ -8,7 +8,7 @@
       {
          EW.setHashParameter('cmd', "new-uis");
       }, {display: "none"});
-      if (EW.getActivity({activity: "admin-api/WidgetsManagement/import_uis"}))
+      if (EW.getActivity({activity: "webroot-api/WidgetsManagement/import_uis"}))
       {
          var fi = $("<input type=file id=uis_file name=uis_file accept='.json'/>");
          $(".action-bar-items").append($("<div class='btn btn-file btn-primary' >tr{Import Layout}</div>").append(fi));
@@ -23,7 +23,7 @@
 
             // Make the ajax call
             $.ajax({
-               url: '<?php echo EW_ROOT_URL ?>admin-api/WidgetsManagement/import_uis',
+               url: '<?php echo EW_ROOT_URL ?>webroot-api/WidgetsManagement/import_uis',
                type: 'POST',
                dataType: "json",
                /*xhr: function () {
@@ -51,11 +51,11 @@
          });
       }
       var exportAction = null;
-      if (EW.getActivity({activity: "admin-api/WidgetsManagement/export_uis"}))
+      if (EW.getActivity({activity: "webroot-api/WidgetsManagement/export_uis"}))
       {
          exportAction = function (row)
          {
-            window.open("admin-api/WidgetsManagement/export_uis?uis_id=" + row.data("field-id"));
+            window.open("webroot-api/WidgetsManagement/export_uis?uis_id=" + row.data("field-id"));
          }
       }
       $(document).off("uis-list.refresh");
@@ -64,12 +64,12 @@
       });
       this.bNewUIS.comeIn(300);
 
-      this.table = EW.createTable({name: "uis-list", rowLabel: "{name}", columns: ["name", "template"], headers: {Name: {}, Template: {}}, rowCount: true, url: "<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/get_uis_list", pageSize: 30
+      this.table = EW.createTable({name: "uis-list", rowLabel: "{name}", columns: ["name", "template"], headers: {Name: {}, Template: {}}, rowCount: true, url: "<?php echo EW_ROOT_URL; ?>webroot-api/WidgetsManagement/get_uis_list", pageSize: 30
          , onDelete: function (id)
          {
 
             this.confirm("Are you sure of deleting this UIS?", function () {
-               $.post('<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/delete_uis', {
+               $.post('<?php echo EW_ROOT_URL; ?>webroot-api/WidgetsManagement/delete_uis', {
                   uisId: id}, function (data) {
                   EW.setHashParameter("categoryId", null);
                   $("body").EW().notify(data).show();
@@ -88,7 +88,7 @@
             {
                if (confirm("Are you sure you want to clone UIS:" + row.data("field-name") + "?"))
                {
-                  $.post('<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/clone_uis', {uisId: row.data("field-id")}, function (data) {
+                  $.post('<?php echo EW_ROOT_URL; ?>webroot-api/WidgetsManagement/clone_uis', {uisId: row.data("field-id")}, function (data) {
                      self.table.refresh();
                      $("body").EW().notify(data).show();
                   }, "json");
@@ -146,7 +146,7 @@
       self.currentTopPane = tp;
       tp.addClass("full");
       EW.lock(tp);
-      $.post('<?php echo EW_ROOT_URL; ?>admin/WidgetsManagement/ne-uis.php', {uisId: EW.getHashParameter("uis-id")}, function (data) {
+      $.post('<?php echo EW_ROOT_URL; ?>admin-html/WidgetsManagement/ne-uis.php', {uisId: EW.getHashParameter("uis-id")}, function (data) {
          tp.html(data);
          //neuis.editUISForm();
 
@@ -159,7 +159,7 @@
    {
       var self = this;
       //EW.lock(uisList.currentTopPane, "Saving...");
-      $.post('<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/delete_uis', {
+      $.post('<?php echo EW_ROOT_URL; ?>webroot-api/WidgetsManagement/delete_uis', {
          uisId: id}, function (data) {
          EW.setHashParameter("categoryId", null);
          $("body").EW().notify(data).show();

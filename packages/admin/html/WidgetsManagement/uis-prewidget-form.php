@@ -1,9 +1,9 @@
 <?php
 session_start();
 
-include($_SESSION['ROOT_DIR'] . '/config.php');
+//include($_SESSION['ROOT_DIR'] . '/config.php');
 
-include_once 'WidgetsManagementCore.php';
+//include_once 'WidgetsManagementCore.php';
 
 $uiStructureId = $_REQUEST['uisId'];
 $widgetId = $_REQUEST['widgetId'];
@@ -14,7 +14,7 @@ $panelId = $_REQUEST['panelId'];
   $order = mysql_real_escape_string($_POST['order']);
   $class = mysql_real_escape_string($_POST['class']);
   $parameters = mysql_real_escape_string($_POST['parameters']); */
-$WM = new admin\WidgetsManagement();
+//$WM = new admin\WidgetsManagement();
 /* if ($_REQUEST["widgetId"])
   {
   //echo $_REQUEST["widgetId"];
@@ -122,7 +122,7 @@ $WM = new admin\WidgetsManagement();
       var styleClass = $("#used-classes").text();
       var widgetStyleClass = $("#style_class").val();
 
-      $.post('<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/create_widget', {widget_type: uisWidget.widgetType, style_class: styleClass,
+      $.post('<?php echo EW_ROOT_URL; ?>webroot-api/WidgetsManagement/create_widget', {widget_type: uisWidget.widgetType, style_class: styleClass,
          widget_style_class: widgetStyleClass, style_id: styleId, widget_parameters: wp},
       function (data) {
          EW.lock($.EW("getParentDialog", $("#uis-widget-form")));
@@ -159,7 +159,7 @@ $WM = new admin\WidgetsManagement();
       var styleClass = $("#used-classes").text();
       var widgetStyleClass = $("#style_class").val();
 
-      $.post('<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/create_widget', {widget_id: this.widgetId, widget_type: uisWidget.widgetType, style_class: styleClass,
+      $.post('<?php echo EW_ROOT_URL; ?>webroot-api/WidgetsManagement/create_widget', {widget_id: this.widgetId, widget_type: uisWidget.widgetType, style_class: styleClass,
          widget_style_class: widgetStyleClass, style_id: styleId, widget_parameters: wp},
       function (data) {
          EW.lock($.EW("getParentDialog", $("#uis-widget-form")));
@@ -200,7 +200,7 @@ $WM = new admin\WidgetsManagement();
       $('#uis-widget-form').show();
       $("#widgets-list-form").hide();
       EW.lock($('#uis-widget-form'));
-      $.post('<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/uis-widget-form.php', {widgetType: widgetType, template: self.template, widgetParameters: JSON.stringify(self.widgetParameters)},
+      $.post('<?php echo EW_ROOT_URL; ?>admin-html/widgets-management/uis-widget-form.php', {widgetType: widgetType, template: self.template, widgetParameters: JSON.stringify(self.widgetParameters)},
       function (data) {
          $('#uis-widget-form').stop().hide();
          $('#uis-widget-form').html(data);

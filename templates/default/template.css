@@ -2244,42 +2244,247 @@ label.value
 
 label.label-float
 {
-   line-height:20px;
+   line-height: 24px;
    min-height:20px;
    padding:0;
-   font-size:16px;
-   font-weight:500;
-   color:#999;
+   font-size: 17px;
+   font-weight: 500;
+   color: rgba(0,0,0,.5);
    background-color:transparent;
    padding:0;
    border-radius:0;
-   margin:10px 0 5px;
+   margin: 24px 0 5px;
    -webkit-transition:all .3s ease;
    -moz-transition:all .3s ease;
    -ms-transition:all .3s ease;
    -o-transition:all .3s ease;
    transition:all .3s ease;
    z-index:3
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 label.label-float.focused
 {
    color:#039BE5;
    text-shadow:none;
-   margin-top:-16px;
+   margin-top: 0px;
+   /* font-weight: 400; */
    font-size:14px
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 .label-float.valued
 {
-   margin-top:-16px;
+   margin-top: 0px;
    font-size:14px
+;
 }
 
 .label-float-input, .text-field.label-float-input
 {
-   margin-top: 20px;
-   margin-bottom: 30px;
+   margin-top: 0px;
+   margin-bottom: 15px;
    -webkit-transition:padding .3s ease;
    -moz-transition:padding .3s ease;
    -ms-transition:padding .3s ease;
@@ -2310,8 +2515,9 @@ textarea.text-field
    width:100%;
    min-height:28px;
    line-height:26px;
-   padding: 5px 0;
-   border:0 solid rgba(0,0,0,.1);
+   padding: 5px 0px;
+   padding-top: 20px;
+   border: 0 solid rgba(0,0,0,.2);
    border-bottom-width:2px;
    margin:0;
    outline:none;
@@ -2319,10 +2525,106 @@ textarea.text-field
    font-family:Roboto,Homa,Tahoma;
    font-size:1.3em;
    font-weight:400;
-   background-color:transparent;
+   background-color: transparent;
    border-radius:0;
    transition-property:border-color;
    transition-duration:300ms
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

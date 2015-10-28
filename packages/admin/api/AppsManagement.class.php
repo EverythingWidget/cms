@@ -22,7 +22,7 @@ class AppsManagement extends \ew\Module
 
    public function get_app_sections($appDir)
    {
-      //$tempEW = new EWCore($appDir . '/');
+      /*//$tempEW = new EWCore($appDir . '/');
 
       $path = EW_PACKAGES_DIR . '/' . $appDir . '/api/';
 
@@ -46,7 +46,7 @@ class AppsManagement extends \ew\Module
 
          if (class_exists($section_class_name) && get_parent_class($section_class_name) == 'ew\Module')
          {
-            $sc = new $section_class_name($section_class_name, $_REQUEST);
+            $sc = new $section_class_name($this->get_app());
             //echo $appDir." ".$class_name;
             $permission_id = EWCore::does_need_permission($appDir, $class_name, $sc->get_index());
             //var_dump($_SESSION['EW.USER_ID'])."<br>";
@@ -67,7 +67,16 @@ class AppsManagement extends \ew\Module
                    "description" => "tr:$appDir" . "{" . $sc->get_description() . "}");
          }
       }
-      return ($sections);
+      return ($sections);*/
+      
+      $app_class_name = $appDir . '\\App';
+      if (class_exists($app_class_name))
+         {
+            // Create an instance of section with its parent App
+            $obj = new $app_class_name;
+            return json_encode($obj->get_app_api_modules());
+         }
+      
    }
 
    public function get_app_sections2($appDir)

@@ -17,10 +17,15 @@ class UsersManagement extends \ew\Module
       return [new UserValidator];
    }
 
-   public function install_permissions()
+   protected function install_assets()
+   {
+      EWCore::register_app("users-management", $this);
+   }
+
+   protected function install_permissions()
    {
       $this->register_permission("see-users", "User can see users list", array(
-          "api/get_users_list",
+          "api/get",
           "api/get_user_by_id",
           "api/get_user_by_email",
           "html/user-form.php_see",
@@ -70,10 +75,10 @@ class UsersManagement extends \ew\Module
    {
       $user_info = null;
       $db = \EWCore::get_db_connection();
-      /*if (!$username)
-         $username = $db->real_escape_string($_POST["username"]);
-      if (!$password)
-         $password = $db->real_escape_string($_POST["password"]);*/
+      /* if (!$username)
+        $username = $db->real_escape_string($_POST["username"]);
+        if (!$password)
+        $password = $db->real_escape_string($_POST["password"]); */
 
       $stm = $db->prepare("SELECT ew_users.id, group_id, email FROM ew_users, ew_users_groups WHERE ew_users.group_id = ew_users_groups.id AND ew_users.email = ? AND password = ? LIMIT 1") or die($db->error);
       $stm->bind_param("ss", $username, $password);
@@ -665,7 +670,8 @@ class UsersManagement extends \ew\Module
 
    public function get($_verb)
    {
-      return \EWCore::log_error(400, "Not defined");
+      return $this->get_users_list($_verb);
+      //return \EWCore::log_error(400, "Not defined");
    }
 
 }

@@ -1,8 +1,7 @@
 <?php
-$wm = new admin\WidgetsManagement();
-$home_page = json_decode($wm->get_path_uis("@HOME_PAGE"), true);
-$user_home_page = json_decode($wm->get_path_uis("@USER_HOME_PAGE"), true);
-$default_page = json_decode($wm->get_path_uis("@DEFAULT"), true);
+$home_page = json_decode(admin\WidgetsManagement::get_path_uis("@HOME_PAGE"), true);
+$user_home_page = json_decode(admin\WidgetsManagement::get_path_uis("@USER_HOME_PAGE"), true);
+$default_page = json_decode(admin\WidgetsManagement::get_path_uis("@DEFAULT"), true);
 //$path_uis_list = EWCore::process_command("admin", "WidgetsManagement", "get_all_pages_uis_list", null, false);
 //http_response_code(200);
 //header('Content-Type: text/html');
@@ -85,7 +84,7 @@ $default_page = json_decode($wm->get_path_uis("@DEFAULT"), true);
             "Layout Name": {}
          },
          rowCount: true,
-         url: "<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/get_all_pages_uis_list",
+         url: "<?php echo EW_ROOT_URL; ?>webroot-api/WidgetsManagement/get_all_pages_uis_list",
          pageSize: 30,
          onDelete: function (id)
          {
@@ -93,7 +92,7 @@ $default_page = json_decode($wm->get_path_uis("@DEFAULT"), true);
             this.confirm("Are you sure?", function () {
                EW.lock(pageUIS.allUISList.table, "");
                var row = this;
-               $.post("<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/set_uis", {
+               $.post("<?php echo EW_ROOT_URL; ?>webroot-api/WidgetsManagement/set_uis", {
                   path: row.data("field-path")
                },
                function (data) {
@@ -131,7 +130,7 @@ if ($path_uis_list)
             Template: {}
          },
          rowCount: true,
-         url: "<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/get_uis_list",
+         url: "<?php echo EW_ROOT_URL; ?>webroot-api/WidgetsManagement/get_uis_list",
          pageSize: 30,
          columns: ["name", "template"],
          buttons: {
@@ -165,7 +164,7 @@ if ($path_uis_list)
       $("#homePageUisId").val(uisId.data("field-id"));
       $("#home-page-uis").text("Loading...");
       $("#home-page-uis").text(uisId.data("field-name"));
-      $.post("<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/set_uis", {
+      $.post("<?php echo EW_ROOT_URL; ?>webroot-api/WidgetsManagement/set_uis", {
          path: "@HOME_PAGE",
          uisId: uisId.data("field-id")
       },
@@ -179,7 +178,7 @@ if ($path_uis_list)
       $("#homeUserPageUisId").val(uisId.data("field-id"));
       $("#user-home-page-uis").text("Loading...");
       $("#user-home-page-uis").text(uisId.data("field-name"));
-      $.post("/admin-api/WidgetsManagement/set_uis", {
+      $.post("/webroot-api/WidgetsManagement/set_uis", {
          path: "@USER_HOME_PAGE",
          uisId: uisId.data("field-id")
       },
@@ -193,7 +192,7 @@ if ($path_uis_list)
       $("#defaultUisId").val(uisId.data("field-id"));
       $("#default-uis").text("Loading...");
       $("#default-uis").text(uisId.data("field-name"));
-      $.post("<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/set_uis", {
+      $.post("<?php echo EW_ROOT_URL; ?>webroot-api/WidgetsManagement/set_uis", {
          path: "@DEFAULT",
          uisId: uisId.data("field-id")
       },
@@ -209,7 +208,7 @@ if ($path_uis_list)
          $("#apps-page-uis [name='" + pageUIS.currentElement.prop("name") + "_uisId']").val(uisId.data("field-id"));
          pageUIS.currentElement.val("Loading...").change();
          var uisName = uisId.data("field-name");
-         $.post("<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/set_uis", {
+         $.post("<?php echo EW_ROOT_URL; ?>webroot-api/WidgetsManagement/set_uis", {
             path: pageUIS.currentElement.prop("name"),
             uisId: uisId.data("field-id")
          },

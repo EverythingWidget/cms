@@ -9,13 +9,14 @@ use Module;
  *
  * @author Eeliya
  */
-
 class Settings extends \ew\Module
-{protected $resource = "api";
-   
-   public function __construct($app)
+{
+
+   protected $resource = "api";
+
+   protected function install_assets()
    {
-      parent::__construct($app);
+      \EWCore::register_app("settings", $this);
       include_once 'models/ew_settings.php';
    }
 
@@ -64,15 +65,20 @@ class Settings extends \ew\Module
       {
          //echo $key . " " . $value;
          if (!self::save_setting($key, $value))
-            return json_encode(array(status => "error", message => "App configurations has NOT been saved, Please try again"));
+            return json_encode(array(
+                status => "error",
+                message => "App configurations has NOT been saved, Please try again"));
       }
 //echo "asdasd";
-      return json_encode(array(status => "success", message => "App configurations has been saved succesfully"));
+      return json_encode(array(
+          status => "success",
+          message => "App configurations has been saved succesfully"));
    }
 
    public static function read_settings()
    {
-      $settings = ew_settings::all(['key', 'value']);
+      $settings = ew_settings::all(['key',
+                  'value']);
       $rows = array();
       foreach ($settings as $set)
       {
@@ -112,7 +118,9 @@ class Settings extends \ew\Module
          $lang_file = json_decode(file_get_contents(EW_PACKAGES_DIR . '/' . $app . '/locale/' . $language), true);
       }
 
-      return json_encode(array("id" => array_keys($lang_file["strings"]), "text" => array_values($lang_file["strings"])));
+      return json_encode(array(
+          "id" => array_keys($lang_file["strings"]),
+          "text" => array_values($lang_file["strings"])));
    }
 
    public function update_language($app, $language, $id, $text)
@@ -125,7 +133,9 @@ class Settings extends \ew\Module
          $lang_file["strings"] = array_combine($id, $text);
          $fp = file_put_contents($path, json_encode($lang_file, JSON_UNESCAPED_UNICODE));
 
-         return json_encode(array(status => "success", message => "tr{The language file has been updated successfully}"));
+         return json_encode(array(
+             status => "success",
+             message => "tr{The language file has been updated successfully}"));
       }
       return \EWCore::log_error(400, "Can't find the language file");
    }

@@ -1,6 +1,6 @@
 <?php
 
-namespace admin;
+namespace webroot;
 
 use Module;
 use EWCore;
@@ -21,11 +21,16 @@ class WidgetsManagement extends \ew\Module
    private static $html_scripts = array();
    private static $html_keywords;
    protected $resource = "api";
+   
+   protected function install_assets()
+   {
+      EWCore::register_app("widgets-management", $this);
+   }
 
-   public function install_permissions()
+   protected function install_permissions()
    {
       ob_start();
-      include 'link-chooser-uis.php';
+      include EW_ROOT_DIR .'packages/admin/html/WidgetsManagement/link-chooser-uis.php';
       $lcd = ob_get_clean();
       EWCore::register_form("ew-link-chooser-form-default", "link-chooser-uis-list", ["title" => "UI Structures",
           "content" => $lcd]);
@@ -825,7 +830,7 @@ class WidgetsManagement extends \ew\Module
           "feeder_type" => $feeder_type);
    }
 
-   function get_widget_cp($widgetName = null)
+   public static function get_widget_cp($widgetName = null)
    {
       ob_start();
       echo '<form id="uis-widget" onsubmit="return false;">';

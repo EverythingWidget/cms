@@ -164,7 +164,7 @@ class EWCore
       }
 
       $actions = EWCore::read_registry("ew_command_listener");
-      if (isset($actions) && !is_array($RESULT_CONTENT))
+      if (count($actions) > 0 && !is_array($RESULT_CONTENT))
       {
          $temp = json_decode($RESULT_CONTENT, true);
          if ($temp)
@@ -400,19 +400,19 @@ class EWCore
     */
    public static function get_db_connection()
    {
-      
+
       //if (!isset(self::$db_connection) || !isset(self::$db_connection->host_info))
       //{print_r(self::$db_connection);
-         $database_config = include('config/database_config.php');
-         // default database connection
-         
-         $db = new mysqli($database_config['host'], $database_config['username'], $database_config['password'], $database_config['database']);
-         if ($db->connect_errno)
-         {
-            echo "Failed to connect to MySQL: (" . $db->connect_errno . ") " . $db->connect_error;
-         }
-         $db->set_charset("utf8");
-         static::$db_connection = $db;
+      $database_config = include('config/database_config.php');
+      // default database connection
+
+      $db = new mysqli($database_config['host'], $database_config['username'], $database_config['password'], $database_config['database']);
+      if ($db->connect_errno)
+      {
+         echo "Failed to connect to MySQL: (" . $db->connect_errno . ") " . $db->connect_error;
+      }
+      $db->set_charset("utf8");
+      static::$db_connection = $db;
       //}
       return self::$db_connection;
    }
@@ -827,6 +827,9 @@ class EWCore
          if (strpos($template_dir, '.') === 0)
             continue;
 
+         if (!is_dir($path . $template_dir))
+            continue;
+         
          $template_dir_content = opendir($path . $template_dir);
 
          while ($file = readdir($template_dir_content))
@@ -1802,7 +1805,7 @@ class EWCore
 
                      $is_form = (strpos($method_name, '.php') && $method_name !== "index.php") ? true : false;
                      $url = $is_form ? EW_ROOT_URL . $app_name . '-' . $resource_name . "/" . $section_name . "/" . $method_name : EW_ROOT_URL . $app_name . "/" . $section_name . "/" . $method_name;
-                     $allowed_activities["$app_name-$resource_name|$section_name|$method_name"] = [
+                     $allowed_activities["$app_name-$resource_name/$section_name/$method_name"] = [
                          "activityTitle" => $title,
                          "app" => $app_name,
                          "appTitle" => "tr:$app_name{" . $sections["appTitle"] . "}",
@@ -1842,7 +1845,7 @@ class EWCore
    public static function read_registry($name)
    {
       EWCore::init_sections_plugins();
-      return isset(self::$registry[$name]) ? self::$registry[$name] : null;
+      return isset(self::$registry[$name]) ? self::$registry[$name] : [];
    }
 
    /**
@@ -1953,9 +1956,28 @@ class EWCore
       return FALSE;
    }
 
+   public static function register_app($id, $object)
+   {
+      return static::register_object("app", $id, $object);
+   }
+
+   public static function read_apps()
+   {
+      $apps_list = static::read_registry("app");
+      $apps = [];
+      foreach ($apps_list as $app)
+      {
+         $apps[] = array(
+             "title" => "tr:{$app->get_app()->get_root()}" . "{" . $app->get_title() . "}",
+             "className" => $app->get_section_name(),
+             "description" => "tr:{$app->get_app()->get_root()}" . "{" . $app->get_description() . "}");
+      }
+
+      return json_encode($apps);
+   }
+
    public static function register_action($name, $id, $function = null, $object)
    {
-
       if (!is_array(self::$action_registry[$name]))
       {
          self::$action_registry[$name] = array();

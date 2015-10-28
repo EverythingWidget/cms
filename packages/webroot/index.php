@@ -15,7 +15,7 @@ $_REQUEST['cmdResult'] = '';
 
 //$WM = new admin\WidgetsManagement("WidgetsManagement", $_REQUEST);
 //$HTML_BODY = admin\WidgetsManagement::generate_view($_REQUEST["_uis"]);
-$VIEW = admin\WidgetsManagement::generate_view($_REQUEST["_uis"]);
+$VIEW = webroot\WidgetsManagement::generate_view($_REQUEST["_uis"]);
 $HTML_BODY = $VIEW["body_html"];
 $WIDGET_DATA = $VIEW["widget_data"];
 
@@ -45,10 +45,10 @@ if (file_exists(EW_ROOT_DIR . $_REQUEST["_uis_template"] . '/template.js'))
    \admin\WidgetsManagement::add_html_script($_REQUEST["_uis_template"] . '/template.js', $script);
 }
 
-$HTML_TITLE = (admin\WidgetsManagement::get_html_title()) ? admin\WidgetsManagement::get_html_title() . " - " . $website_title : $website_title;
-$HTML_KEYWORDS = admin\WidgetsManagement::get_html_keywords();
-$HTML_SCRIPTS = admin\WidgetsManagement::get_html_scripts();
-$HTML_STYLES = admin\WidgetsManagement::get_html_styles();
+$HTML_TITLE = (webroot\WidgetsManagement::get_html_title()) ? webroot\WidgetsManagement::get_html_title() . " - " . $website_title : $website_title;
+$HTML_KEYWORDS = webroot\WidgetsManagement::get_html_keywords();
+$HTML_SCRIPTS = webroot\WidgetsManagement::get_html_scripts();
+$HTML_STYLES = webroot\WidgetsManagement::get_html_styles();
 ?>
 <!DOCTYPE html> 
 <html>

@@ -1,13 +1,13 @@
 <?php
 session_start();
 
-include($_SESSION['ROOT_DIR'] . '/config.php');
-include_once 'WidgetsManagementCore.php';
+//include($_SESSION['ROOT_DIR'] . '/config.php');
+//include_once 'WidgetsManagementCore.php';
 global $EW;
 global $widget_info;
 $widget_type = $_REQUEST["widgetType"];
 
-$WM = new admin\WidgetsManagement();
+//$WM = new admin\WidgetsManagement();
 /* if ($_REQUEST["widgetId"])
   {
 
@@ -70,7 +70,7 @@ function get_size_layout_form()
    return ob_get_clean();
 }
 
-EWCore::register_form("uis-widget-form", "widget-cp", ["title" => "Widget CP", "content" => $WM->get_widget_cp($widget_type)]);
+EWCore::register_form("uis-widget-form", "widget-cp", ["title" => "Widget CP", "content" => admin\WidgetsManagement::get_widget_cp($widget_type)]);
 EWCore::register_form("uis-widget-form", "size-layout", ["title" => "Size & Layout", "content" => get_size_layout_form()]);
 EWCore::register_form("uis-widget-form", "properties", ["title" => "Properties", "content" => get_properties_form()]);
 

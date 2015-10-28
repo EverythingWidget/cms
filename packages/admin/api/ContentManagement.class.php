@@ -17,16 +17,6 @@ class ContentManagement extends \ew\Module
 {
 
    protected $resource = "api";
-
-   public function __construct($app)
-   {
-      parent::__construct($app);
-      require_once('models/ew_contents.php');
-      require_once('models/ew_contents_labels.php');
-      require_once 'asset/DocumentComponent.class.php';
-      require_once 'asset/LanguageComponent.class.php';
-   }
-
    private $file_types = array(
        "jpeg" => "image",
        "jpg" => "image",
@@ -38,18 +28,29 @@ class ContentManagement extends \ew\Module
    private $images_resources = array(
        "/is/htdocs/wp1067381_3GN1OJU4CE/www/culturenights/app/webroot/img/logos/");
 
-   public function install_permissions()
+   protected function install_assets()
    {
+      EWCore::register_app("content-management", $this);
+      require_once('models/ew_contents.php');
+      require_once('models/ew_contents_labels.php');
+      require_once 'asset/DocumentComponent.class.php';
+      require_once 'asset/LanguageComponent.class.php';
+   }
+
+   protected function install_permissions()
+   {
+
       ob_start();
-      include 'link-chooser-document.php';
+      include EW_ROOT_DIR .'packages/admin/html/ContentManagement/link-chooser-document.php';
       $lcd = ob_get_clean();
+
       EWCore::register_form("ew-link-chooser-form-default", "contents-list", ["title" => "Contents",
           "content" => $lcd]);
       // $this->file_types 
       EWCore::register_resource("images", array(
           $this,
           "image_loader"));
-      
+
       $this->register_permission("see-content", "User can see the contents", array(
           'html/index.php',
           'api/index',
@@ -84,11 +85,13 @@ class ContentManagement extends \ew\Module
           "html/article-form.php:tr{New Article}",
           "html/category-form.php:tr{New Folder}",
           "html/album-form.php:tr{New Album}"));
+
       //$this->register_content_label("document", ["title" => "Document", "description" => "Attach this content to other content", "type" => "data_url", "value" => "app-admin/ContentManagement/get_articles_llist"]);
       //$this->register_content_label("language", ["title" => "Language", "description" => "Language of the content"]);
       //$this->register_widget_feeder("page", "ssss");
       $this->register_content_component("document", new DocumentComponent());
       $this->register_content_component("language", new LanguageComponent());
+
       $this->register_widget_feeder("page", "article");
 
       $this->register_widget_feeder("list", "folder");

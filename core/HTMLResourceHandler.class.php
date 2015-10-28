@@ -49,27 +49,30 @@ class HTMLResourceHandler extends ResourceHandler
       return $this->mime_types[$extension];
    }
 
-   protected function handle($app, $app_resource_path, $section_name, $method_name, $parameters = null)
+   protected function handle($app, $app_resource_path, $module_name, $method_name, $parameters = null)
    {
       $method_name = ($method_name == 'index.php') ? 'index' : $method_name;
-      if (\EWCore::is_widget_feeder("*", "*", $section_name))
+      $module_name = \EWCore::hyphenToCamel($module_name);
+      if (\EWCore::is_widget_feeder("*", "*", $module_name))
       {
          // Show index if the URL contains a page feeder
          ob_start();
          $app->index();
          return ob_get_clean();
       }
-      else if ($section_name)
+      else if ($module_name)
       {
+         
          if ($parameters["_file"])
          {
             //$content_type = substr($parameters["_file"], strripos($parameters["_file"], '.') + 1);
-            $path = implode('/', $app_resource_path) . '/' . $section_name . '/' . $parameters["_file"];
+            $path = implode('/', $app_resource_path) . '/' . $module_name . '/' . $parameters["_file"];
             //echo EW_PACKAGES_DIR . '/' .$path;
+            
          }
          else
          {
-            $path = implode('/', $app_resource_path) . '/' . $section_name . '/index.php';
+            $path = implode('/', $app_resource_path) . '/' . $module_name . '/index.php';
          }
       }
       else
@@ -92,6 +95,7 @@ class HTMLResourceHandler extends ResourceHandler
          if ($this->get_mime_type($path))
             header("Content-Type: " . $this->get_mime_type($path));
          //http_response_code(200);
+         
          ob_start();
          include EW_PACKAGES_DIR . '/' . $path;
          return ob_get_clean();

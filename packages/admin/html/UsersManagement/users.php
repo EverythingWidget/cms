@@ -31,7 +31,7 @@
                }
             },
             rowCount: true,
-            url: "<?php echo EW_ROOT_URL; ?>admin-api/UsersManagement/get_users_list",
+            url: "<?php echo EW_ROOT_URL; ?>admin-api/UsersManagement/",
             pageSize: 30,
             onDelete: function (id)
             {

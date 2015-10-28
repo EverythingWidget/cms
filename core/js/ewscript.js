@@ -231,7 +231,7 @@ EverythingWidgets.prototype.getActivity = function (conf)
    };
    $.extend(settings, conf);
    var ac = 1;
-   settings.activity = settings.activity.replace(/\//g, ".");
+   //settings.activity = settings.activity.replace(/\//g, ".");
 
    if (!self.activities[settings.activity])
    {
@@ -1690,7 +1690,7 @@ EWTable.prototype.read = function (customURLData)
            },
    customURLData);
    $.ajax({
-      type: "POST",
+      type: self.method || "GET",
       url: self.url,
       data: urlData,
       dataType: "json",

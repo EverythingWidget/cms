@@ -113,7 +113,7 @@ if (!isset($_SESSION['login']))
          {
             var self = this;
             this.apps = {Home: {id: "Home"}};
-            $.get('admin-api/AppsManagement/get_app_sections',
+            $.get('admin-api/EWCore/read_apps',
                     {
                        appDir: "admin"
                     },
@@ -291,7 +291,7 @@ if (!isset($_SESSION['login']))
                      //if (!linkChooserDialog)
                      //{
                      linkChooserDialog = EW.createModal();
-                     $.post("<?php echo EW_DIR ?>admin-api/ContentManagement/file-chooser.php", {
+                     $.post("<?php echo EW_DIR ?>admin-html/ContentManagement/file-chooser.php", {
                         callback: settings.callbackName,
                         data: $element.val()
                      },

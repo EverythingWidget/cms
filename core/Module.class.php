@@ -30,7 +30,12 @@ class Module
       $this->app = $app;
       $this->initParameters();
       $this->current_class = new \ReflectionClass($this);
+
+      $this->install_assets();
+
       $this->pre_processors = $this->get_pre_processors();
+
+      $this->install_permissions();
    }
 
    public function get_resource()
@@ -55,9 +60,17 @@ class Module
    }
 
    /**
+    * Override this method to include all the external resource that you are going to use in this module
+    */
+   protected function install_assets()
+   {
+      
+   }
+
+   /**
     * Override this method to registare your plugins
     */
-   public function install_permissions()
+   protected function install_permissions()
    {
       
    }
@@ -427,7 +440,7 @@ class Module
    }
 
    public function register_permission($id, $description, $permissions)
-   {    
+   {
       \EWCore::register_permission($this->app->get_root(), \EWCore::camelToHyphen($this->current_class->getShortName()), \EWCore::camelToHyphen($id), $this->app->get_name(), $this->get_title(), $description, $permissions);
    }
 

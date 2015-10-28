@@ -200,13 +200,12 @@ session_start();
          display: "none"
       },
       "uis-preference-actions").addClass("btn-success");
-
-      //this.bExportUIS = EW.addActivity({title: "tr{Export UIS}", activity: "admin-api/WidgetsManagement/export_uis", hash: {uis_id: this.uisId}});
+      
       if (EW.getActivity({
-         activity: "admin-api/WidgetsManagement/export_uis"
+         activity: "webroot-api/widgets-management/export-uis"
       }))
       {
-         $("#uis-preference-actions").append("<a class='btn btn-link pull-right export-btn' href=admin-api/WidgetsManagement/export_uis?uis_id=" + this.uisId + ">Export Layout</a>");
+         $("#uis-preference-actions").append("<a class='btn btn-link pull-right export-btn' href=webroot-api/WidgetsManagement/export_uis?uis_id=" + this.uisId + ">Export Layout</a>");
          this.bExportLayout = $("#uis-preference-actions a.export-btn");
          this.bExportLayout.hide();
       }
@@ -308,7 +307,7 @@ session_start();
             $('#form-title').html('<span>tr{Edit}</span>' + data.name);
             //alert(JSON.stringify(data));
             self.uisId = data.id;
-            $("#uis-preference-actions .export-btn").attr("href", "admin-api/WidgetsManagement/export_uis?uis_id=" + self.uisId);
+            $("#uis-preference-actions .export-btn").attr("href", "webroot-api/widgets-management/export-uis?uis_id=" + self.uisId);
             self.uisTemplate = data.template;
             if (data.template_settings)
                self.templateSettings = $.parseJSON(data.template_settings);
@@ -870,7 +869,7 @@ session_start();
       var template = $("#template").val();
       if (template)
       {
-         $.post("<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/get_template_settings_form", {
+         $.post("<?php echo EW_ROOT_URL; ?>webroot-api/widgets-management/get-template-settings-form", {
             path: template
          },
          function (data)
@@ -915,7 +914,7 @@ session_start();
       self.templateSettings = self.templateSettingsForm.serializeJSON();
       self.templateSettingsForm.trigger("getData");
 
-      $.post('<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/add_uis', {
+      $.post('<?php echo EW_ROOT_URL; ?>webroot-api/WidgetsManagement/add_uis', {
          name: $('#name').val(),
          template: $('#template').val(),
          template_settings: JSON.stringify(self.templateSettings),
@@ -961,7 +960,7 @@ session_start();
       //if(!self.templateSettings)
       //alert(JSON.stringify(self.templateSettings));
       self.templateSettingsForm.trigger("getData");
-      $.post('<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/update_uis', {
+      $.post('<?php echo EW_ROOT_URL; ?>webroot-api/WidgetsManagement/update_uis', {
          name: $('#name').val(),
          template: $('#template').val(),
          template_settings: JSON.stringify(self.templateSettings),
@@ -998,7 +997,7 @@ session_start();
       // Read template settings from template settings form
       self.templateSettingsForm.trigger("getData");
 
-      $.post('admin-api/WidgetsManagement/get_layout',
+      $.post('webroot-api/WidgetsManagement/get_layout',
               {
                  uisId: self.uisId,
                  template: self.uisTemplate,
@@ -1152,28 +1151,6 @@ session_start();
       });
    };
 
-   /*UISForm.prototype.showBlocksList = function ()
-    {
-    var self = this;
-    $("#items-list").stop().animate({left: "0px"}, 300);
-    $("#items-list #items-list-content").html("<h2 style='text-align:center;'>Please Wait</h2>");
-    $.post('<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/get_blocks', {
-    template: self.uisTemplate,
-    uisId: self.uisId
-    },
-    function (data) {
-    var items = []
-    $.each(data["result"], function (k, v) {
-    var e = $("<div class='text-icon'><h4>" + v["title"] + "</h4><p>" + v["description"] + "</p></div>");
-    e.on("click", $.proxy(self.blockForm, self, null, v["name"]));
-    items.push(e);
-    });
-    
-    $("#items-list #items-list-content").html(items);
-    }, "json");
-    return false;
-    };*/
-
    UISForm.prototype.showWidgetsList = function (parentId)
    {
       var self = this;
@@ -1186,7 +1163,7 @@ session_start();
       300);
       var listItemContent = $("#items-list #items-list-content");
       listItemContent.html("<h2 style='text-align:center;'>Please Wait</h2>");
-      $.post('<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/get_widgets_types', {
+      $.post('<?php echo EW_ROOT_URL; ?>webroot-api/WidgetsManagement/get_widgets_types', {
          template: self.uisTemplate,
          uisId: self.uisId
       },
@@ -1216,7 +1193,7 @@ session_start();
          class: "left"
       });
       self.currentDialog = d;
-      $.post('<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/block-form.php', {
+      $.post('<?php echo EW_ROOT_URL; ?>webroot-api/WidgetsManagement/block-form.php', {
          template: self.uisTemplate,
          uisId: self.uisId,
          id: id
@@ -1238,7 +1215,7 @@ session_start();
          class: "left"
       });
       self.currentDialog = d;
-      $.post('<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/UISPanel.php', {
+      $.post('<?php echo EW_ROOT_URL; ?>webroot-api/WidgetsManagement/UISPanel.php', {
          template: self.uisTemplate,
          uisId: self.uisId,
          containerId: containerId
@@ -1256,7 +1233,7 @@ session_start();
          class: "left"
       });
       self.currentDialog = d;
-      $.post('<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/UISPanel.php', {
+      $.post('<?php echo EW_ROOT_URL; ?>webroot-api/WidgetsManagement/UISPanel.php', {
          template: self.uisTemplate,
          uisId: self.uisId,
          panelId: pid,
@@ -1275,9 +1252,9 @@ session_start();
          left: "-400px"
       },
       300);
-      var d = EW.createModal();
+      var d = EW.createModal({ class: "center"});
       self.currentDialog = d;
-      $.post("<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/uis-prewidget-form.php", {
+      $.post("<?php echo EW_ROOT_URL; ?>admin-html/widgets-management/uis-prewidget-form.php", {
          template: self.uisTemplate,
          widgetType: widgetType,
          feederType: feederType,
@@ -1304,8 +1281,8 @@ session_start();
    UISForm.prototype.editWidget = function (wId)
    {
       var self = this;
-      var d = EW.createModal({class: "left",
-         lockUI: false,
+      var d = EW.createModal({class: "center",
+         //lockUI: false,
          /*onClose: function ()
           {
           $('#fr').contents().find('body').stop().animate({
@@ -1331,7 +1308,7 @@ session_start();
        }, 500, "Power3.easeOut");*/
       //this.relocateGlassPanes();
       //EW.lock(d);
-      $.post("<?php echo EW_ROOT_URL; ?>admin-api/WidgetsManagement/uis-prewidget-form.php", {
+      $.post("<?php echo EW_ROOT_URL; ?>admin-html/widgets-management/uis-prewidget-form.php", {
          template: self.uisTemplate,
          widgetId: wId,
          widgetType: w.attr("data-widget-type"),
@@ -1494,7 +1471,7 @@ session_start();
       uisForm = new UISForm();
       EW.uisForm = uisForm;
 <?php
-$uis_info = \EWCore::process_request_command("admin/api", "WidgetsManagement", "get_uis", ["uisId" => $_REQUEST['uisId']]);
+$uis_info = \EWCore::process_request_command("webroot/api", "WidgetsManagement", "get_uis", ["uisId" => $_REQUEST['uisId']]);
 echo 'EW.setFormData("#uis-preference",' . (($uis_info != null) ? ($uis_info) : "null") . ');';
 ?>
 

@@ -1,0 +1,191 @@
+<form id="<?= $form_id ?>"  action="#" method="POST">
+   <div class="header-pane tabs-bar row">
+      <h1 id="form-title" class="col-xs-12">
+         <span>tr{New}</span>tr{<?= $form_config["formTitle"] ?>}
+      </h1>  
+      <ul class="nav nav-tabs xs-nav-tabs">
+         <li class="active"><a href="#content-properties" data-toggle='tab'>tr{Properties}</a></li>
+         <li class=""><a href="#content-html" data-toggle='tab'>tr{Content}</a></li>
+         <?php
+         foreach ($tabs as $id => $tab)
+         {
+            echo "<li class='' ><a href='#{$id}' data-toggle='tab'>tr{" . $tab["title"] . "}</a></li>";
+         }
+         ?>
+      </ul>
+   </div>
+   <div class="form-content  tabs-bar">
+      <div class="tab-content">
+         <div class="tab-pane active" id="content-properties">
+            <?= get_properties($form_config, $form_id); ?>
+         </div>
+         <div class="tab-pane" id="content-html">
+            <?= get_editor($form_config, $form_id); ?>
+         </div>
+         <?php
+         foreach ($tabs as $id => $tab)
+         {
+            $tab_object = json_decode(EWCore::process_command($tab["app"], $tab["section"], $tab["command"], ["form_config" => $form_config,
+                        "form_id" => $form_id]), true);
+            echo "<div class='tab-pane' id='{$id}'>" . $tab_object["html"] . "</div>";
+         }
+         ?>
+      </div>
+   </div>
+   <div class="footer-pane row actions-bar action-bar-items">
+   </div>
+</form>
+
+<script>
+
+   // ContentForm predefined functions
+   var ContentForm = {
+      formId: "#<?= $form_id ?>",
+      initLabels: function (labels)
+      {
+         $(".content-label .label-control-button:checked").click();
+         $(".content-label .label-control-button").prop("checked", false);
+         if (labels)
+            $.each(labels, function (i, el)
+            {
+               $("#" + el.key + "_control_button:not(:checked)").click();
+               $("#" + el.key + "_control_button").prop("checked", true);
+            });
+      },
+      /**
+       * Active specified label
+       * @param {string} label Name of the label
+       * @param {boolean} flag If true then active the label only for the new content. Default is false
+       */
+      activeLabel: function (label, flag)
+      {
+         if (!flag)
+         {
+            $("#" + label + "_control_button:not(:checked)").click();
+            $("#" + label + "_control_button").prop("checked", true);
+            return;
+         }
+         if (!this.getFormData().id)
+         {
+            $("#" + label + "_control_button:not(:checked)").click();
+            $("#" + label + "_control_button").prop("checked", true);
+         }
+      },
+      /**
+       * Get content label as json object
+       * 
+       * @returns {json} return a json object contained of content labels in the {key:value} format
+       */
+      getLabels: function ()
+      {
+         var labels = {};
+         $.each($(this.formId + " #content-labels .content-label"), function (i, el)
+         {
+            el = $(el);
+            if (el.attr("data-activated") === "false")
+            {
+               labels[el.find("input[name='key']").val()] = null;
+            }
+            else if (!el.find("input[name='key']").is(":disabled") && !el.find("[name='value']").is(":disabled"))
+            {
+               labels[el.find("input[name='key']").val()] = el.find("[name='value']").val();
+            }
+         });
+         return JSON.stringify(labels);
+      },
+      /**
+       * Get content label as json object
+       * 
+       * @returns {json} return a json object contained of content labels in the {key:value} format
+       */
+      getLabel: function (key)
+      {
+         var value = null;
+         $.each($(this.formId + " #content-labels .content-label[data-activated='true']"), function (i, el)
+         {
+            el = $(el);
+            if (el.find("input[name='key']:not(:disabled)").val() == key)
+            {
+               value = el.find("[name='value']").val();
+               return;
+            }
+         });
+         return value;
+      },
+      setLabels: function (labels)
+      {
+         $(this.formId + " #content-labels .content-label input[name='value']").val("");
+         $.each(labels, function (i, el)
+         {
+            $("#" + el.key + "_value").val(el.value);
+         });
+      },
+      /**
+       * Get the content form data as json
+       * 
+       * @returns {json} return a json object of form data
+       */
+      getFormData: function ()
+      {
+         var formData = $.parseJSON($(this.formId).serializeJSON());
+         delete formData.key;
+         delete formData.value;
+         formData['labels'] = this.getLabels();
+         if (contentEditor.regions() && contentEditor.regions()[0])
+            formData["content"] = contentEditor.regions()[0].html();
+         
+         return formData;
+      },
+      setData: function (data)
+      {
+         if (data && data.labels)
+         {            
+            ContentForm.initLabels(data.labels);
+            ContentForm.setLabels(data.labels);
+         }
+         
+         EW.setFormData(this.formId, data);
+         $("#content").change();         
+      }
+   };
+   $.each($(".content-label"), function (i, e)
+   {
+      e = $(e);
+      e.find(".label-control-button").on("change", function ()
+      {
+         //console.log(e.find(".label-control-button"));
+         var label = e.find(".label-control-button").next("span");
+         var p = e.find(".label-control-button").parent();
+         if (e.find(".label-control-button").is(":checked"))
+         {
+            e.attr("data-activated", true);
+            label.text("Turned On");
+            //alert("click: "+e.attr("data-activated"));
+            p.addClass("btn-success").removeClass("btn-default");
+            e.stop().animate({
+               className: "box box-grey content-label"
+            },
+            200);
+         }
+         else
+         {
+            e.attr("data-activated", false);
+            //alert("click: "+e.attr("data-activated"));
+            label.text("Turned Off");
+            p.removeClass("btn-success").addClass("btn-default");
+            e.stop().animate({
+               className: "box box-grey content-label disabled"
+            },
+            200);
+         }
+      });
+   });
+</script>
+<?= $form_config["script"] ?>
+<script>
+   // Set form data when the form is completely loaded
+   $(document).ready(function ()
+   {
+      ContentForm.setData(<?php echo $content_data; ?>);
+   });
+</script> 
