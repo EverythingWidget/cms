@@ -1,6 +1,6 @@
-<div id="size-and-layout" class="row mar-bot">
+<div id="size-and-layout" class="row">
 
-   <div class="col-xs-12 mar-bot mar-top" >
+   <div class="col-xs-12 mar-bot" >
       <h4 >
          Read from template/Custom
       </h4>

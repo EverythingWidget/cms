@@ -3,7 +3,7 @@
       <div id="properties-form" class="col-lg-8 col-md-8 col-sm-12 col-xs-12" >
          <input type="hidden" id="id" name="id" value="">
          <input type="hidden" id="type" name="type" value="<?php echo $form_config["contentType"] ?>">
-         <div class="row mar-top">
+         <div class="row">
             <div class="col-xs-12 col-md-12 col-lg-12">
 
                <input class="text-field" data-label="tr{Title}" value="" id="title" name="title" data-validate="r"/>

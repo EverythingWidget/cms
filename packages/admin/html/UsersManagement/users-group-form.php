@@ -271,7 +271,7 @@ $tabs = EWCore::read_registry("ew-user-form");
       <h1 id='form-title' class="col-xs-12">
          tr{New Group}
       </h1>
-      <ul class="nav nav-tabs">
+      <ul class="nav nav-pills">
          <?php
          foreach ($tabsDefault as $id => $tab)
          {

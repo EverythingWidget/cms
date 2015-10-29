@@ -829,7 +829,7 @@ class EWCore
 
          if (!is_dir($path . $template_dir))
             continue;
-         
+
          $template_dir_content = opendir($path . $template_dir);
 
          while ($file = readdir($template_dir_content))
@@ -1578,7 +1578,11 @@ class EWCore
          self::$permissions_groups[$app_pack_name]["section"][$module_name]["permission"][$id] = $permission_info;
       }
 
-      $permission_info["methods"] = array_merge($permission_info["methods"], $permissions);
+      $permission_info["methods"] = array_merge($permission_info["methods"], array_map(function($str)
+              {
+                 return str_replace('_', '-', $str);
+              }, $permissions
+      ));
       self::$permissions_groups[$app_pack_name]["section"][$module_name]["permission"][$id] = $permission_info;
    }
 
@@ -1804,7 +1808,8 @@ class EWCore
                      }
 
                      $is_form = (strpos($method_name, '.php') && $method_name !== "index.php") ? true : false;
-                     $url = $is_form ? EW_ROOT_URL . $app_name . '-' . $resource_name . "/" . $section_name . "/" . $method_name : EW_ROOT_URL . $app_name . "/" . $section_name . "/" . $method_name;
+                     $url = $is_form ? EW_ROOT_URL . $app_name . '-' . $resource_name . "/" . $section_name . "/" . $method_name : EW_ROOT_URL . $app_name . '-' . $resource_name. "/" . $section_name . "/" . $method_name;
+                     //echo $url;
                      $allowed_activities["$app_name-$resource_name/$section_name/$method_name"] = [
                          "activityTitle" => $title,
                          "app" => $app_name,

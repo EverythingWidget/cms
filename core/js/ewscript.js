@@ -576,7 +576,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
          xButton.css({
             left: modalPane.offset().left + modalPane.width() - 10,
             //right:"10px",
-            top: parseInt(modalPane.css("top")) + 8,
+            top: parseInt(modalPane.css("top")) + 12,
             zIndex: modalPane.css("z-index")
          });
          xButton.show();
@@ -2260,13 +2260,13 @@ function ExtendableList(element, cSettings)
    //this.$element.find("li:first-child").prepend('<div class="handle"></div>');
 
    this.firstItemClone = this.$element.find("li:first-child").clone();
-   this.lastRow = $("<div data-add-item-row='true' class='row row-buttons'><div class='col-xs-12'></div></div>");
+   this.lastRow = $("<div data-add-item-row='true' class='row row-buttons'><div class='col-xs-12'></div></div>").addClass(this.$element.attr("class"));
    this.addNewRow = $("<button type='button' class='btn btn-text btn-primary pull-right'>Add</button>");
    this.addNewRow.on("click", function () {
       var ni = base.createItem();
       ni.hide();
-      base.lastRow.before(ni);
-      ni.fadeIn(200);
+      base.$element.append(ni);
+      ni.animate({height: "toggle"}, 200);
    });
    this.lastRow.children().append(this.addNewRow);
    base.$element.empty();
@@ -2277,28 +2277,21 @@ function ExtendableList(element, cSettings)
    ci = base.createItem();
    //alert(v[i]);
    //alert(JSON.stringify(this.settings.value));
-   $.each(this.settings.value, function (k, v)
-   {
-      if (ci.find("input[name='" + k + "']").length > 0)
+   $.each(this.settings.value, function (k, v)   {
+      var el = ci.find("input[name='" + k + "']");
+      if (el.length > 0)
       {
-         //console.log(ci.find("input[name='" + k + "']").length);
-         if (typeof (v) != "object")
-         {
-            if (!oneValue)
-            {
+         if (typeof (v) !== "object") {
+            if (!oneValue) {
                ci = base.createItem();
                oneValue = true;
-               //init = true;
                items.push(ci);
             }
-
-            ci.find("input[name='" + k + "']").val(v).change();
+            el.val(v).change();
          }
 
-         if (!oneValue)
-         {
-            if (!init)
-            {
+         if (!oneValue) {
+            if (!init) {
                // Create the list and set the value for the first key
                for (var i = 0; i < v.length; i++)
                {
@@ -2308,12 +2301,9 @@ function ExtendableList(element, cSettings)
                   items.push(ci);
                   init = true;
                }
-            }
-            else
-            {
+            } else {
                // Set the value for the other keys
-               for (var i = 0; i < v.length; i++)
-               {
+               for (var i = 0; i < v.length; i++) {
                   items[i].find(":input[name='" + k + "']").val(v[i]).change();
                }
             }
@@ -2324,7 +2314,7 @@ function ExtendableList(element, cSettings)
    base.$element.append(items);
    //if (!init)
    //base.createItem();
-   base.$element.append(this.lastRow);
+   base.$element.after(this.lastRow);
    base.$element.sortable({
       handle: ".handle"
    });
@@ -2338,11 +2328,8 @@ ExtendableList.prototype.createItem = function ()
    removeBtn.click(function ()
    {
       originalModelClone.animate({
+         height: "toggle",
          opacity: 0
-      },
-      200);
-      originalModelClone.animate({
-         height: "toggle"
       },
       300, "Power2.easeOut", function () {
          originalModelClone.remove();
@@ -2354,6 +2341,7 @@ ExtendableList.prototype.createItem = function ()
       this.settings.onNewItem.apply(this, [originalModelClone]);
    return originalModelClone;
 };
+
 var ew_plugins;
 $.EW = function ()
 {

@@ -3,7 +3,7 @@
       <h1 id="form-title" class="col-xs-12">
          <span>tr{New}</span>tr{<?= $form_config["formTitle"] ?>}
       </h1>  
-      <ul class="nav nav-tabs xs-nav-tabs">
+      <ul class="nav nav-pills xs-nav-tabs">
          <li class="active"><a href="#content-properties" data-toggle='tab'>tr{Properties}</a></li>
          <li class=""><a href="#content-html" data-toggle='tab'>tr{Content}</a></li>
          <?php

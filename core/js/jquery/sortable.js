@@ -64,20 +64,20 @@
       // Use with care, since the search for a valid container entails a depth first search
       // and may be quite expensive.
       isValidTarget: function ($item, container) {
-         return true
+         return true;
       },
       // Executed before onDrop if placeholder is detached.
       // This happens if pullPlaceholder is set to false and the drop occurs outside a container.
       onCancel: function ($item, container, _super) {
          $item.css({position: ""});
-         $item.removeClass("dragged").removeAttr("style")
-         $("body").removeClass("dragging")
-         container.append($item)
+         $item.removeClass("dragged").removeAttr("style");
+         $("body").removeClass("dragging");
+         container.append($item);
       },
       // Executed at the beginning of a mouse move event.
       // The Placeholder has not been moved yet.
       onDrag: function ($item, position, _super) {
-         $item.css(position)
+         $item.css(position);
       },
       // Called after the drag has been started,
       // that is the mouse button is beeing held down and
@@ -89,19 +89,19 @@
             height: $item.height(),
             width: $item.width()
          });
-         $item.css({position: "absolute"});
+         $item.css({position: "fixed"});
          $item.addClass("dragged");
          $("body").addClass("dragging");
       },
       // Called when the mouse button is beeing released
       onDrop: function ($item, container, _super) {
          $item.css({position: ""});
-         $item.removeClass("dragged").removeAttr("style")
-         $("body").removeClass("dragging")
+         $item.removeClass("dragged").removeAttr("style");
+         $("body").removeClass("dragging");
       },
       // Called on mousedown.
       onMousedown: function ($item, event, _super) {
-         event.preventDefault()
+         event.preventDefault();
       },
       // Template for the placeholder. Can be any valid jQuery input
       // e.g. a string, a DOM element.
@@ -114,18 +114,18 @@
       // The pair $parent/$children is either container/items or item/subcontainers.
       // Note that this default method only works, if every item only has one subcontainer
       serialize: function ($parent, $children, parentIsContainer) {
-         var result = $.extend({}, $parent.data())
+         var result = $.extend({}, $parent.data());
 
          if (parentIsContainer)
-            return $children
+            return $children;
          else if ($children[0]) {
-            result.children = $children
-            delete result.subContainer
+            result.children = $children;
+            delete result.subContainer;
          }
 
-         delete result.sortable
+         delete result.sortable;
 
-         return result
+         return result;
       },
       // Set tolerance while dragging. Positive values decrease sensitivity,
       // negative values increase it.
@@ -138,13 +138,13 @@
               top: 0,
               bottom: 0,
               right: 0
-           }
+           };
    eventNames = {
       start: "touchstart.sortable mousedown.sortable",
       drop: "touchend.sortable touchcancel.sortable mouseup.sortable",
       drag: "touchmove.sortable mousemove.sortable",
       scroll: "scroll.sortable"
-   }
+   };
 
    /*
     * a is Array [left, right, top, bottom]
@@ -152,106 +152,112 @@
     */
    function d(a, b) {
       var x = Math.max(0, a[0] - b[0], b[0] - a[1]),
-              y = Math.max(0, a[2] - b[1], b[1] - a[3])
+              y = Math.max(0, a[2] - b[1], b[1] - a[3]);
       return x + y;
    }
 
    function setDimensions(array, dimensions, tolerance, useOffset) {
       var i = array.length,
-              offsetMethod = useOffset ? "offset" : "position"
-      tolerance = tolerance || 0
+              offsetMethod = useOffset ? "offset" : "position";
+      tolerance = tolerance || 0;
 
       while (i--) {
          var el = array[i].el ? array[i].el : $(array[i]),
                  // use fitting method
-                 pos = el[offsetMethod]()
-         pos.left += parseInt(el.css('margin-left'), 10)
-         pos.top += parseInt(el.css('margin-top'), 10)
+                 pos = el[offsetMethod]();
+         pos.left += parseInt(el.css('margin-left'), 10);
+         pos.top += parseInt(el.css('margin-top'), 10);
          dimensions[i] = [
             pos.left - tolerance,
             pos.left + el.outerWidth() + tolerance,
             pos.top - tolerance,
             pos.top + el.outerHeight() + tolerance
-         ]
+         ];
       }
    }
 
    function getRelativePosition(pointer, element) {
-      var offset = element.offset()
+      var offset = element;
       return {
          left: pointer.left - offset.left,
          top: pointer.top - offset.top
-      }
+      };
    }
 
    function sortByDistanceDesc(dimensions, pointer, lastPointer) {
-      pointer = [pointer.left, pointer.top]
-      lastPointer = lastPointer && [lastPointer.left, lastPointer.top]
+      pointer = [pointer.left, pointer.top];
+      lastPointer = lastPointer && [lastPointer.left, lastPointer.top];
 
       var dim,
               i = dimensions.length,
-              distances = []
+              distances = [];
 
       while (i--) {
-         dim = dimensions[i]
-         distances[i] = [i, d(dim, pointer), lastPointer && d(dim, lastPointer)]
+         dim = dimensions[i];
+         distances[i] = [i, d(dim, pointer), lastPointer && d(dim, lastPointer)];
       }
       distances = distances.sort(function (a, b) {
-         return b[1] - a[1] || b[2] - a[2] || b[0] - a[0]
-      })
+         return b[1] - a[1] || b[2] - a[2] || b[0] - a[0];
+      });
 
       // last entry is the closest
-      return distances
+      return distances;
    }
 
    function ContainerGroup(options) {
-      this.options = $.extend({}, groupDefaults, options)
-      this.containers = []
-      this.scrollProxy = $.proxy(this.scroll, this)
-      this.dragProxy = $.proxy(this.drag, this)
-      this.dropProxy = $.proxy(this.drop, this)
+      this.options = $.extend({}, groupDefaults, options);
+      this.containers = [];
+      this.scrollProxy = $.proxy(this.scroll, this);
+      this.dragProxy = $.proxy(this.drag, this);
+      this.dropProxy = $.proxy(this.drop, this);
 
       if (!this.options.parentContainer) {
-         this.placeholder = $(this.options.placeholder)
+         this.placeholder = $(this.options.placeholder);
          if (!options.isValidTarget)
-            this.options.isValidTarget = undefined
+            this.options.isValidTarget = undefined;
       }
    }
 
    ContainerGroup.get = function (options) {
       if (!containerGroups[options.group]) {
          if (!options.group)
-            options.group = groupCounter++
-         containerGroups[options.group] = new ContainerGroup(options)
+            options.group = groupCounter++;
+         containerGroups[options.group] = new ContainerGroup(options);
       }
-      return containerGroups[options.group]
-   }
+      return containerGroups[options.group];
+   };
 
    ContainerGroup.prototype = {
       dragInit: function (e, itemContainer) {
-         this.$document = $(itemContainer.el[0].ownerDocument)
+         this.$document = $(itemContainer.el[0].ownerDocument);
 
          if (itemContainer.enabled()) {
-            this.toggleListeners('on')
+            this.toggleListeners('on');
 
             // get item to drag
-            this.item = $(e.target).closest(this.options.itemSelector)
-            this.itemContainer = itemContainer
+            this.item = $(e.target).closest(this.options.itemSelector);
+            this.itemContainer = itemContainer;
 
-            this.setPointer(e)
+            this.setPointer(e);
+            var itemOffset = this.item.offset();
+            //this.startOffset = this.item.offsetParent();
+            this.startOffset = {
+               top: e.pageY - itemOffset.top,
+               left: e.pageX - itemOffset.left
+            };
 
-            this.options.onMousedown(this.item, e, groupDefaults.onMousedown)
+            this.options.onMousedown(this.item, e, groupDefaults.onMousedown);
          } else {
-            this.toggleListeners('on', ['drop'])
+            this.toggleListeners('on', ['drop']);
          }
 
-         this.dragInitDone = true
+         this.dragInitDone = true;
       },
       drag: function (e) {
          if (!this.dragging)
          {
             if (!this.distanceMet(e))
-               return
+               return;
             // Added by Eeliya
             $(this.placeholder).css({
                height: this.item.height(),
@@ -261,186 +267,178 @@
             this.options.onDragStart(this.item, this.itemContainer, groupDefaults.onDragStart);
             this.item.before(this.placeholder);
 
-            this.dragging = true
+            this.dragging = true;
          }
+         this.setPointer(e);
 
-         this.setPointer(e)
          // place item under the cursor
-         this.options.onDrag(this.item,
-                 getRelativePosition(this.pointer, this.item.offsetParent()),
-                 groupDefaults.onDrag)
+         this.options.onDrag(this.item, getRelativePosition(this.pointer, this.startOffset), groupDefaults.onDrag);
 
          var x = e.pageX,
                  y = e.pageY,
                  box = this.sameResultBox,
-                 t = this.options.tolerance
+                 t = this.options.tolerance;
 
          if (!box || box.top - t > y || box.bottom + t < y || box.left - t > x || box.right + t < x)
             if (!this.searchValidTarget())
-               this.placeholder.detach()
+               this.placeholder.detach();
       },
       drop: function (e) {
-         this.toggleListeners('off')
+         this.toggleListeners('off');
 
-         this.dragInitDone = false
+         this.dragInitDone = false;
 
          if (this.dragging) {
             // processing Drop, check if placeholder is detached
             if (this.placeholder.closest("html")[0])
-               this.placeholder.before(this.item).detach()
+               this.placeholder.before(this.item).detach();
             else
-               this.options.onCancel(this.item, this.itemContainer, groupDefaults.onCancel)
+               this.options.onCancel(this.item, this.itemContainer, groupDefaults.onCancel);
 
-            this.options.onDrop(this.item, this.getContainer(this.item), groupDefaults.onDrop)
+            this.options.onDrop(this.item, this.getContainer(this.item), groupDefaults.onDrop);
 
             // cleanup
-            this.clearDimensions()
-            this.clearOffsetParent()
-            this.lastAppendedItem = this.sameResultBox = undefined
-            this.dragging = false
+            this.clearDimensions();
+            this.clearOffsetParent();
+            this.lastAppendedItem = this.sameResultBox = undefined;
+            this.dragging = false;
          }
       },
       searchValidTarget: function (pointer, lastPointer) {
          if (!pointer) {
-            pointer = this.relativePointer || this.pointer
-            lastPointer = this.lastRelativePointer || this.lastPointer
+            pointer = this.relativePointer || this.pointer;
+            lastPointer = this.lastRelativePointer || this.lastPointer;
          }
 
          var distances = sortByDistanceDesc(this.getContainerDimensions(),
                  pointer,
                  lastPointer),
-                 i = distances.length
+                 i = distances.length;
 
          while (i--) {
             var index = distances[i][0],
-                    distance = distances[i][1]
+                    distance = distances[i][1];
 
             if (!distance || this.options.pullPlaceholder) {
-               var container = this.containers[index]
+               var container = this.containers[index];
                if (!container.disabled) {
                   if (!this.$getOffsetParent()) {
-                     var offsetParent = container.getItemOffsetParent()
-                     pointer = getRelativePosition(pointer, offsetParent)
-                     lastPointer = getRelativePosition(lastPointer, offsetParent)
+                     var offsetParent = container.getItemOffsetParent();
+                     pointer = getRelativePosition(pointer, offsetParent.offset());
+                     lastPointer = getRelativePosition(lastPointer, offsetParent.offset());
                   }
                   if (container.searchValidTarget(pointer, lastPointer))
-                     return true
+                     return true;
                }
             }
          }
          if (this.sameResultBox)
-            this.sameResultBox = undefined
+            this.sameResultBox = undefined;
       },
       movePlaceholder: function (container, item, method, sameResultBox) {
-         var lastAppendedItem = this.lastAppendedItem
+         var lastAppendedItem = this.lastAppendedItem;
          if (!sameResultBox && lastAppendedItem && lastAppendedItem[0] === item[0])
             return;
 
-         item[method](this.placeholder)
-         this.lastAppendedItem = item
-         this.sameResultBox = sameResultBox
-         this.options.afterMove(this.placeholder, container)
+         item[method](this.placeholder);
+         this.lastAppendedItem = item;
+         this.sameResultBox = sameResultBox;
+         this.options.afterMove(this.placeholder, container);
       },
       getContainerDimensions: function () {
          if (!this.containerDimensions)
-            setDimensions(this.containers, this.containerDimensions = [], this.options.tolerance, !this.$getOffsetParent())
-         return this.containerDimensions
+            setDimensions(this.containers, this.containerDimensions = [], this.options.tolerance, !this.$getOffsetParent());
+         return this.containerDimensions;
       },
       getContainer: function (element) {
-         return element.closest(this.options.containerSelector).data(pluginName)
+         return element.closest(this.options.containerSelector).data(pluginName);
       },
       $getOffsetParent: function () {
          if (this.offsetParent === undefined) {
-            var i = this.containers.length - 1,
-                    offsetParent = this.containers[i].getItemOffsetParent()
+            var i = this.containers.length - 1;
+            var op = this.containers[i].getItemOffsetParent();
 
             if (!this.options.parentContainer) {
                while (i--) {
-                  if (offsetParent[0] != this.containers[i].getItemOffsetParent()[0]) {
-                     // If every container has the same offset parent,
-                     // use position() which is relative to this parent,
-                     // otherwise use offset()
-                     // compare #setDimensions
-                     offsetParent = false
+                  if (op[0] != this.containers[i].getItemOffsetParent()[0]) {
+                     op = false;
                      break;
                   }
                }
             }
-
-            this.offsetParent = offsetParent
+            this.offsetParent = op;
          }
-         return this.offsetParent
+         return this.offsetParent;
       },
       setPointer: function (e) {
          var pointer = {
             left: e.pageX,
             top: e.pageY
-         }
-
+         };
          if (this.$getOffsetParent()) {
-            var relativePointer = getRelativePosition(pointer, this.$getOffsetParent())
-            this.lastRelativePointer = this.relativePointer
-            this.relativePointer = relativePointer
+            var relativePointer = getRelativePosition(pointer, this.$getOffsetParent().offset());
+            this.lastRelativePointer = this.relativePointer;
+            this.relativePointer = relativePointer;
          }
 
-         this.lastPointer = this.pointer
-         this.pointer = pointer
+         this.lastPointer = this.pointer;
+         this.pointer = pointer;
       },
       distanceMet: function (e) {
          return (Math.max(
                  Math.abs(this.pointer.left - e.pageX),
                  Math.abs(this.pointer.top - e.pageY)
-                 ) >= this.options.distance)
+                 ) >= this.options.distance);
       },
       scroll: function (e) {
-         this.clearDimensions()
-         this.clearOffsetParent()
+         this.clearDimensions();
+         this.clearOffsetParent();
       },
       toggleListeners: function (method, events) {
-         var that = this
-         events = events || ['drag', 'drop', 'scroll']
+         var that = this;
+         events = events || ['drag', 'drop', 'scroll'];
 
          $.each(events, function (i, event) {
-            that.$document[method](eventNames[event], that[event + 'Proxy'])
-         })
+            that.$document[method](eventNames[event], that[event + 'Proxy']);
+         });
       },
       clearOffsetParent: function () {
-         this.offsetParent = undefined
+         this.offsetParent = undefined;
       },
       // Recursively clear container and item dimensions
       clearDimensions: function () {
-         this.containerDimensions = undefined
-         var i = this.containers.length
+         this.containerDimensions = undefined;
+         var i = this.containers.length;
          while (i--) {
-            this.containers[i].clearDimensions()
+            this.containers[i].clearDimensions();
          }
       }
-   }
+   };
 
    function Container(element, options) {
-      this.el = element
-      this.options = $.extend({}, containerDefaults, options)
+      this.el = element;
+      this.options = $.extend({}, containerDefaults, options);
 
-      this.group = ContainerGroup.get(this.options)
-      this.rootGroup = this.options.rootGroup = this.options.rootGroup || this.group
-      this.parentContainer = this.options.parentContainer
-      this.handle = this.rootGroup.options.handle || this.rootGroup.options.itemSelector
+      this.group = ContainerGroup.get(this.options);
+      this.rootGroup = this.options.rootGroup = this.options.rootGroup || this.group;
+      this.parentContainer = this.options.parentContainer;
+      this.handle = this.rootGroup.options.handle || this.rootGroup.options.itemSelector;
 
-      this.el.on(eventNames.start, this.handle, $.proxy(this.dragInit, this))
+      this.el.on(eventNames.start, this.handle, $.proxy(this.dragInit, this));
 
       if (this.options.drop)
-         this.group.containers.push(this)
+         this.group.containers.push(this);
    }
 
    Container.prototype = {
       dragInit: function (e) {
-         var rootGroup = this.rootGroup
+         var rootGroup = this.rootGroup;
 
          if (!rootGroup.dragInitDone &&
                  e.which === 1 &&
                  this.options.drag &&
                  !$(e.target).is(this.options.exclude))
-            rootGroup.dragInit(e, this)
+            rootGroup.dragInit(e, this);
       },
       searchValidTarget: function (pointer, lastPointer) {
          var distances = sortByDistanceDesc(this.getItemDimensions(),
@@ -449,23 +447,23 @@
                  i = distances.length,
                  rootGroup = this.rootGroup,
                  validTarget = !rootGroup.options.isValidTarget ||
-                 rootGroup.options.isValidTarget(rootGroup.item, this)
+                 rootGroup.options.isValidTarget(rootGroup.item, this);
 
          if (!i && validTarget) {
-            rootGroup.movePlaceholder(this, this.el, "append")
-            return true
+            rootGroup.movePlaceholder(this, this.el, "append");
+            return true;
          } else
             while (i--) {
                var index = distances[i][0],
-                       distance = distances[i][1]
+                       distance = distances[i][1];
                if (!distance && this.hasChildGroup(index)) {
-                  var found = this.getContainerGroup(index).searchValidTarget(pointer, lastPointer)
+                  var found = this.getContainerGroup(index).searchValidTarget(pointer, lastPointer);
                   if (found)
-                     return true
+                     return true;
                }
                else if (validTarget) {
-                  this.movePlaceholder(index, pointer)
-                  return true
+                  this.movePlaceholder(index, pointer);
+                  return true;
                }
             }
       },
@@ -481,139 +479,137 @@
                     right: offset.left + width,
                     top: offset.top,
                     bottom: offset.top + height
-                 }
+                 };
          if (this.options.vertical) {
             var yCenter = (dim[2] + dim[3]) / 2,
-                    inUpperHalf = pointer.top <= yCenter
+                    inUpperHalf = pointer.top <= yCenter;
             if (inUpperHalf) {
-               method = "before"
-               sameResultBox.bottom -= height / 2
+               method = "before";
+               sameResultBox.bottom -= height / 2;
             } else
-               sameResultBox.top += height / 2
+               sameResultBox.top += height / 2;
          } else {
             var xCenter = (dim[0] + dim[1]) / 2,
-                    inLeftHalf = pointer.left <= xCenter
+                    inLeftHalf = pointer.left <= xCenter;
             if (inLeftHalf) {
-               method = "before"
-               sameResultBox.right -= width / 2
+               method = "before";
+               sameResultBox.right -= width / 2;
             } else
-               sameResultBox.left += width / 2
+               sameResultBox.left += width / 2;
          }
          if (this.hasChildGroup(index))
-            sameResultBox = emptyBox
-         this.rootGroup.movePlaceholder(this, item, method, sameResultBox)
+            sameResultBox = emptyBox;
+         this.rootGroup.movePlaceholder(this, item, method, sameResultBox);
       },
       getItemDimensions: function () {
          if (!this.itemDimensions) {
-            this.items = this.$getChildren(this.el, "item").filter(":not(.placeholder, .dragged)").get()
-            setDimensions(this.items, this.itemDimensions = [], this.options.tolerance)
+            this.items = this.$getChildren(this.el, "item").filter(":not(.placeholder, .dragged)").get();
+            setDimensions(this.items, this.itemDimensions = [], this.options.tolerance);
          }
-         return this.itemDimensions
+         return this.itemDimensions;
       },
       getItemOffsetParent: function () {
          var offsetParent,
-                 el = this.el
+                 el = this.el;
          // Since el might be empty we have to check el itself and
          // can not do something like el.children().first().offsetParent()
          if (el.css("position") === "relative" || el.css("position") === "absolute" || el.css("position") === "fixed")
-            offsetParent = el
+            offsetParent = el;
          else
-            offsetParent = el.offsetParent()
-         return offsetParent
+            offsetParent = el.offsetParent();
+         return offsetParent;
       },
       hasChildGroup: function (index) {
-         return this.options.nested && this.getContainerGroup(index)
+         return this.options.nested && this.getContainerGroup(index);
       },
       getContainerGroup: function (index) {
-         var childGroup = $.data(this.items[index], "subContainer")
+         var childGroup = $.data(this.items[index], "subContainer");
          if (childGroup === undefined) {
-            var childContainers = this.$getChildren(this.items[index], "container")
-            childGroup = false
+            var childContainers = this.$getChildren(this.items[index], "container");
+            childGroup = false;
 
             if (childContainers[0]) {
                var options = $.extend({}, this.options, {
                   parentContainer: this,
                   group: groupCounter++
-               })
-               childGroup = childContainers[pluginName](options).data(pluginName).group
+               });
+               childGroup = childContainers[pluginName](options).data(pluginName).group;
             }
-            $.data(this.items[index], "subContainer", childGroup)
+            $.data(this.items[index], "subContainer", childGroup);
          }
-         return childGroup
+         return childGroup;
       },
       enabled: function () {
-         return !this.disabled && (!this.parentContainer || this.parentContainer.enabled())
+         return !this.disabled && (!this.parentContainer || this.parentContainer.enabled());
       },
       $getChildren: function (parent, type) {
          var options = this.rootGroup.options,
                  path = options[type + "Path"],
-                 selector = options[type + "Selector"]
+                 selector = options[type + "Selector"];
 
-         parent = $(parent)
+         parent = $(parent);
          if (path)
-            parent = parent.find(path)
+            parent = parent.find(path);
 
-         return parent.children(selector)
+         return parent.children(selector);
       },
       _serialize: function (parent, isContainer) {
          var that = this,
                  childType = isContainer ? "item" : "container",
                  children = this.$getChildren(parent, childType).not(this.options.exclude).map(function () {
-            return that._serialize($(this), !isContainer)
-         }).get()
+            return that._serialize($(this), !isContainer);
+         }).get();
 
-         return this.rootGroup.options.serialize(parent, children, isContainer)
+         return this.rootGroup.options.serialize(parent, children, isContainer);
       },
       clearDimensions: function () {
-         this.itemDimensions = undefined
+         this.itemDimensions = undefined;
          if (this.items && this.items[0]) {
-            var i = this.items.length
+            var i = this.items.length;
             while (i--) {
-               var group = $.data(this.items[i], "subContainer")
+               var group = $.data(this.items[i], "subContainer");
                if (group)
-                  group.clearDimensions()
+                  group.clearDimensions();
             }
          }
       }
-   }
+   };
 
    var API = {
       enable: function (ignoreChildren) {
-         this.disabled = false
+         this.disabled = false;
       },
       disable: function (ignoreChildren) {
-         this.disabled = true
+         this.disabled = true;
       },
       serialize: function () {
-         return this._serialize(this.el, true)
+         return this._serialize(this.el, true);
       }
-   }
+   };
 
-   $.extend(Container.prototype, API)
+   $.extend(Container.prototype, API);
 
    /**
-    * jQuery API
-    *
-    * Parameters are
-    *   either options on init
-    *   or a method name followed by arguments to pass to the method
+    * Parameters are either options on init or a method name followed by arguments to pass to the method
+    * 
+    * @param {type} methodOrOptions
+    * @returns {sortable_L31.$@call;map}
     */
    $.fn[pluginName] = function (methodOrOptions) {
-      var args = Array.prototype.slice.call(arguments, 1)
+      var args = Array.prototype.slice.call(arguments, 1);
 
       return this.map(function () {
          var $t = $(this),
-                 object = $t.data(pluginName)
+                 object = $t.data(pluginName);
 
          if (object && API[methodOrOptions])
-            return API[methodOrOptions].apply(object, args) || this
+            return API[methodOrOptions].apply(object, args) || this;
          else if (!object && (methodOrOptions === undefined ||
                  typeof methodOrOptions === "object"))
-            $t.data(pluginName, new Container($t, methodOrOptions))
+            $t.data(pluginName, new Container($t, methodOrOptions));
 
-         return this
+         return this;
       });
    };
 
-}(jQuery, window)
-        ;
+}(jQuery, window);

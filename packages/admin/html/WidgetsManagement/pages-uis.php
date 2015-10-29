@@ -1,7 +1,7 @@
 <?php
-$home_page = json_decode(admin\WidgetsManagement::get_path_uis("@HOME_PAGE"), true);
-$user_home_page = json_decode(admin\WidgetsManagement::get_path_uis("@USER_HOME_PAGE"), true);
-$default_page = json_decode(admin\WidgetsManagement::get_path_uis("@DEFAULT"), true);
+$home_page = json_decode(webroot\WidgetsManagement::get_path_uis("@HOME_PAGE"), true);
+$user_home_page = json_decode(webroot\WidgetsManagement::get_path_uis("@USER_HOME_PAGE"), true);
+$default_page = json_decode(webroot\WidgetsManagement::get_path_uis("@DEFAULT"), true);
 //$path_uis_list = EWCore::process_command("admin", "WidgetsManagement", "get_all_pages_uis_list", null, false);
 //http_response_code(200);
 //header('Content-Type: text/html');
@@ -49,7 +49,7 @@ $default_page = json_decode(admin\WidgetsManagement::get_path_uis("@DEFAULT"), t
                //Show list of pages and their layouts
                foreach ($widgets_types_list as $page)
                {   
-                  $uis = json_decode(\admin\WidgetsManagement::get_path_uis("/{$page["name"]}"), true);
+                  $uis = json_decode(webroot\WidgetsManagement::get_path_uis("/{$page["name"]}"), true);
                   echo '<div class="row"><div class="col-xs-12 mar-bot">';
                   echo "<input type='hidden'  name='/{$page["name"]}_uisId' id='/{$page["name"]}_uisId' value='{$uis["id"]}'>";
                   echo "<input class='text-field app-page-uis' data-label='{$page["name"]}' name='/{$page["name"]}' id='/{$page["name"]}' value='{$uis["name"]}'>";

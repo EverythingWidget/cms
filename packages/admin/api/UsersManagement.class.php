@@ -28,14 +28,14 @@ class UsersManagement extends \ew\Module
           "api/get",
           "api/get_user_by_id",
           "api/get_user_by_email",
-          "html/user-form.php_see",
+          "html/user-form.php-see",
           'html/' . $this->get_index()));
 
       $this->register_permission("manipulate-users", "User can add, edit delete users", array(
           "api/add_user",
           "api/update_user",
           "api/delete_user",
-          "html/user-form.php:tr{New User}",
+          "html/user-form.php",
           'html/' . $this->get_index()));
 
       $this->register_permission("see-groups", "User can see user groups list", array(

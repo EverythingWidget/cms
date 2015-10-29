@@ -1092,8 +1092,8 @@ fieldset[disabled] .btn-link:focus {
 .btn-xs {
    padding: 3px 6px;
    font-size: 13px;
-   line-height: 18px;
-   min-height:18px;
+   line-height: 20px;
+   /* min-height: 20px; */
    border-radius: 2px;
 }
 .btn-xs {padding: 0px 5px;}
@@ -1558,7 +1558,7 @@ input[type="button"].btn-block {width: 100%;}
 .nav-pills > li {float: left;}
 .nav-pills > li > a {
    color: #455a64;
-   padding: 15px 25px 12px;
+   padding: 13px 25px 10px;
    border-bottom: 3px solid transparent;
    transition: all .2s;
 }
@@ -1572,7 +1572,7 @@ input[type="button"].btn-block {width: 100%;}
 .nav-pills > li.active > a,
 .nav-pills > li.active > a:hover,
 .nav-pills > li.active > a:focus {
-   color: #37474f;
+   color: #406D7B;
    border-color: #607D8B;
    /* background-color: transparent; */
 }
@@ -2587,7 +2587,7 @@ td.visible-print {display: none !important;}
    padding: .2em .6em .3em;
    font-size: 100%;
    font-weight: bold;
-   line-height: 1;
+   line-height: 18px;
    color: #ffffff;
    text-align: center;
    white-space: nowrap;

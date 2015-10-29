@@ -62,13 +62,18 @@ class HTMLResourceHandler extends ResourceHandler
       }
       else if ($module_name)
       {
-         
          if ($parameters["_file"])
          {
-            //$content_type = substr($parameters["_file"], strripos($parameters["_file"], '.') + 1);
-            $path = implode('/', $app_resource_path) . '/' . $module_name . '/' . $parameters["_file"];
-            //echo EW_PACKAGES_DIR . '/' .$path;
-            
+            $matches = array();
+            preg_match('/(.*\.[^-]{2,4})/', $parameters["_file"], $matches);
+            if (isset($matches[1]))
+            {
+               $path = implode('/', $app_resource_path) . '/' . $module_name . '/' . $matches[1];
+            }
+            else
+            {
+               return \EWCore::log_error(404, "<h4>HTMLResourceHandler: Not a file</h4><p>Resource `{$parameters["_file"]}`is not a file</p>");
+            }
          }
          else
          {
@@ -91,11 +96,9 @@ class HTMLResourceHandler extends ResourceHandler
 
       if ($path && file_exists(EW_PACKAGES_DIR . '/' . $path))
       {
-
          if ($this->get_mime_type($path))
             header("Content-Type: " . $this->get_mime_type($path));
-         //http_response_code(200);
-         
+
          ob_start();
          include EW_PACKAGES_DIR . '/' . $path;
          return ob_get_clean();
