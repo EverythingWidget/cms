@@ -673,10 +673,10 @@ class UsersManagement extends \ew\Module
       return $this->get_users_list($_verb);
       //return \EWCore::log_error(400, "Not defined");
    }
+   
+   public function groups($_verb)
+   {
+      return $this->get_users_groups_list();
+   }
 
 }
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */

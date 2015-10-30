@@ -1,6 +1,5 @@
 <div  id="content-editor" style="" data-name="main-content"></div>
 
-<script src="<?php echo EW_ROOT_URL ?>admin/Tools/EWEditor/eweditor.js"></script>
 <script>
    var contentEditor;
    $(document).ready(function () {

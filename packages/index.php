@@ -61,10 +61,10 @@ define('EW_ROOT_URL', $u);
 $default_recourse = "html";
 $app_name = "webroot/" . $default_recourse;
 
-
-if ($elements[$parameter_index])
+if ($elements[$parameter_index] && strpos($elements[$parameter_index], '~') === 0)
 {
-   $app_resource_path = explode('-', $elements[$parameter_index]);
+   
+   $app_resource_path = explode('-', str_replace('~', '', $elements[$parameter_index]));
    if (count($app_resource_path) === 1)
    {
       $app_resource_path[] = $default_recourse;

@@ -129,7 +129,7 @@
       var hasNode = false;
       var aId = EW.getHashParameter("articleId", "document");
       $("#categories-list").html("<div class='col-xs-12'><h2 >Loading Folders</h2></div>");
-      $.post('admin-api/ContentManagement/get_categories_list', {
+      $.post('~admin-api/ContentManagement/get_categories_list', {
          parent_id: documents.parentId
       },
       function (data)
@@ -156,7 +156,7 @@
          }
       }, "json");
       $("#articles-list").html("<div class='col-xs-12'><h2>Loading Article</h2></div>");
-      $.post('admin-api/ContentManagement/get_articles_list', {
+      $.post('~admin-api/ContentManagement/get_articles_list', {
          parent_id: documents.parentId
       },
       function (data)

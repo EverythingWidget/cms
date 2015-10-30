@@ -7,10 +7,10 @@ function sidebar()
    ?>
    <ul>  
       <li>   
-         <a rel="ajax" data-default="true" data-ew-nav="users" href="<?php echo EW_ROOT_URL; ?>admin/users-management/users.php">tr{Users}</a> 
+         <a rel="ajax" data-default="true" data-ew-nav="users" href="<?php echo EW_ROOT_URL; ?>~admin/users-management/users.php">tr{Users}</a> 
       </li>     
       <li>      
-         <a rel="ajax" data-ew-nav="users_groups" href="<?php echo EW_ROOT_URL; ?>admin/users-management/users-groups.php">tr{Users Groups}</a>       
+         <a rel="ajax" data-ew-nav="users_groups" href="<?php echo EW_ROOT_URL; ?>~admin/users-management/users-groups.php">tr{Users Groups}</a>       
       </li>    
    </ul>   
    <?php
@@ -23,7 +23,7 @@ function script()
    ?>
    <script >
       (function () {
-         var UserManagement = System.module("UsersManagement");
+         var UserManagement = System.module("users-management");
 
          UserManagement.onInit = function ()
          {

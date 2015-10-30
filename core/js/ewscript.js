@@ -150,7 +150,8 @@ EverythingWidgets.prototype.addListItem = function (text, handler, css)
 EverythingWidgets.prototype.addAction = function (text, handler, css, parent)
 {
    var li = $(document.createElement("li"));
-   var action = $("<button>" + text + "</button>");
+   var action = $(document.createElement("button"));
+   action.html(text);
    action.attr("data-label", text);
    action.addClass("btn btn-primary");
    if (typeof css == "string")
@@ -2277,7 +2278,7 @@ function ExtendableList(element, cSettings)
    ci = base.createItem();
    //alert(v[i]);
    //alert(JSON.stringify(this.settings.value));
-   $.each(this.settings.value, function (k, v)   {
+   $.each(this.settings.value, function (k, v) {
       var el = ci.find("input[name='" + k + "']");
       if (el.length > 0)
       {

@@ -31,14 +31,14 @@
                }
             },
             rowCount: true,
-            url: "<?php echo EW_ROOT_URL; ?>admin-api/UsersManagement/",
+            url: "<?php echo EW_ROOT_URL; ?>~admin-api/UsersManagement/",
             pageSize: 30,
             onDelete: function (id)
             {
                this.confirm("tr{Are you sure of deleting of this user?}", function ()
                {
                   //EW.lock($("#main-content"));
-                  $.post('<?php echo EW_ROOT_URL; ?>admin-api/users-management/delete-user', {id: id}, function (data)
+                  $.post('<?php echo EW_ROOT_URL; ?>~admin-api/users-management/delete-user', {id: id}, function (data)
                   {
                      $(document).trigger("users-list.refresh");
                      $("body").EW().notify(data).show();

@@ -17,26 +17,29 @@ if (!isset($_SESSION['login']))
       </title> 
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
-      <link rel="shortcut icon" href="<?php echo EW_ROOT_URL ?>templates/default/favicon.ico">  
-
+      
       <base href="<?php echo EW_ROOT_URL ?>">
+      
+      <link rel="shortcut icon" href="<?php echo EW_ROOT_URL ?>templates/default/favicon.ico">  
       <link rel="stylesheet" href="<?php echo EW_ROOT_URL ?>core/css/font-awesome.min.css">
       <link type="text/css" href="<?php echo EW_ROOT_URL ?>core/css/bootstrap.css" rel="stylesheet" >  
       <link type="text/css" href="<?php echo EW_ROOT_URL ?>core/css/simple-slider.css" rel="stylesheet" >  
       <link href="<?php echo EW_ROOT_URL ?>templates/default/template.css" rel="stylesheet" type="text/css">
-      <script src="<?php echo EW_ROOT_URL ?>core/js/jquery/jquery-2.1.1.min.js"></script>       
+      <link rel="stylesheet" type="text/css" href="~admin/Tools/content-tools/content-tools.min.css">
+      
+      <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>       
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenLite.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/jquery.gsap.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/plugins/CSSPlugin.min.js"></script>
+      
       <script src="<?php echo EW_ROOT_URL ?>core/js/jquery/sortable.js"></script>      
       <script src="<?php echo EW_ROOT_URL ?>core/js/bootstrap-datepicker.js"></script>
       <script src="<?php echo EW_ROOT_URL ?>core/js/autocomplete.js"></script>
       <script src="<?php echo EW_ROOT_URL ?>core/js/floatlabels.min.js" ></script>
       <script src="<?php echo EW_ROOT_URL ?>core/js/ewscript.js"></script>      
       <script src="<?php echo EW_ROOT_URL ?>core/js/simple-slider.js"></script>
-      <script src="<?php echo EW_ROOT_URL ?>core/js/gsap/plugins/CSSPlugin.min.js"></script>
-      <script src="<?php echo EW_ROOT_URL ?>core/js/gsap/TweenLite.min.js" ></script>
-      <script src="<?php echo EW_ROOT_URL ?>core/js/gsap/jquery.gsap.min.js"></script>
-      <script src="admin/js/system.js"></script>
-      <link rel="stylesheet" type="text/css" href="admin/Tools/content-tools/content-tools.min.css">
-<!--      <script src="<?php echo EW_ROOT_URL ?>core/js/system_1.js"></script>-->
+      <script src="~admin/js/system.js"></script>                       
+      
       <script>
          System.init();
          //var EW = new EverythingWidgets();
@@ -113,7 +116,7 @@ if (!isset($_SESSION['login']))
          {
             var self = this;
             this.apps = {Home: {id: "Home"}};
-            $.get('admin-api/EWCore/read_apps',
+            $.get('~admin-api/EWCore/read_apps',
                     {
                        appDir: "admin"
                     },
@@ -123,40 +126,18 @@ if (!isset($_SESSION['login']))
                var items = ['<ul class="apps-list">'];
                $.each(data, function (key, val)
                {
-                  // var selected = ("<?php echo ($compId) ?>" == val['className']) ? "selected" : "";
-//                  items.push('<li class="col-xs-12 col-sm-6 ' + selected + '"><a href="<?php echo EW_ROOT_URL; ?>admin-api/index.php?compId=' + val['className'] + '"><label>' + val['title'] + '</label><p>' + val['description'] + '</p></a></li>');
-                  items.push('<li class=""><a data-app="' + val['className'] + '"><label>' + val['title'] + '</label><p>' + val['description'] + '</p></a></li>');
-                  val.package = "admin";
+                  items.push('<li class=""><a data-app="' + val['id'] + '"><label>' + val['title'] + '</label><p>' + val['description'] + '</p></a></li>');
+                  val.package = "~admin";
                   val.file = "index.php";
-                  val.id = val['className'];
-                  self.apps[val['className']] = val;
-
-                  //console.log(val);
+                  val.id = val['id'];
+                  self.apps[val['id']] = val;
                });
                items.push('</ul>');
                $(items.join('')).appendTo("#home-pane");
                $("#home-pane .apps-list a").click(function (e)
                {
                   e.preventDefault();
-                  /*System.openApp(
-                   {
-                   id: $(this).attr("data-app"),
-                   package: "admin-api",
-                   file: "index.php"
-                   });*/
                   System.setHashParameters({app: $(this).attr("data-app")}, null);
-                  //Router.navigate("/" + $(this).attr("data-app") );
-                  //alert(this.href);
-                  /*$.post("admin-api/" + $(this).attr("data-app") + "/index.php",
-                   {},
-                   function (response)
-                   {
-                   //alert(response);
-                   $("#main-content").remove();
-                   $("#app-bar-nav").remove();
-                   $("#app-content").append(response);
-                   initSideBar();
-                   });*/
                });
                /*EW.addHashHandler(function (data)
                 {
@@ -201,12 +182,10 @@ if (!isset($_SESSION['login']))
                $("#home-pane").animate({className: "home-pane"}, 500, "Power2.easeOut");
                setTimeout(function () {
 
-                  $.post("admin-api/" + data.app + "/index.php",
+                  $.post("~admin-api/" + data.app + "/index.php",
                           {},
                           function (response)
                           {
-                             //alert(response);
-
                              $("#main-content").remove();
                              $("#app-bar-nav").remove();
                              $("#app-content").append(response);
@@ -395,7 +374,7 @@ if (!isset($_SESSION['login']))
                         class: "center-big"
                      });
                      imageChooserDialog.append("<div class='form-content'></div><div class='footer-pane row actions-bar action-bar-items' ></div>");
-                     $.post("<?php echo EW_DIR ?>admin-api/ContentManagement/Media.php", {
+                     $.post("<?php echo EW_DIR ?>~admin-api/ContentManagement/Media.php", {
                         callback: settings.callbackName
                      },
                      function (data) {
@@ -792,13 +771,13 @@ if (!isset($_SESSION['login']))
       <div id="base-pane" class="container">      
          <div id="app-content" >
             <div id="nav-bar" class="nav-bar">
-               <a type="button" id="apps" class="btn btn-text  comp-btn" data-ew-nav="" href="./admin/#"><i class="fa fa-angle-left"></i></a>
+               <a type="button" id="apps" class="btn btn-text  comp-btn" data-ew-nav="" href="./~admin/#"><i class="fa fa-angle-left"></i></a>
                <h1 id="app-title">tr{Apps}</h1>
                <div  class="col-xs-2 col-sm-2 col-md-2 col-lg-1 pull-right">
                   <?php
                   if ($_SESSION['login'])
                   {
-                     echo '<a class="ExitBtn" href="./admin-api/UsersManagement/logout?url=' . EW_DIR_URL . 'admin/" ></a>';
+                     echo '<a class="ExitBtn" href="./~admin-api/UsersManagement/logout?url=' . EW_DIR_URL . 'admin/" ></a>';
                   }
                   ?>
                </div>            
@@ -822,6 +801,6 @@ if (!isset($_SESSION['login']))
       <div id="notifications-panel"></div>   
       <script src="<?php echo EW_ROOT_URL ?>core/js/bootstrap.min.js" ></script>
 
-      <script src="admin/Tools/content-tools/content-tools.js"></script>
+      <script src="~admin/Tools/content-tools/content-tools.js"></script>
    </body>
 </html>

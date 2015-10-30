@@ -1214,7 +1214,7 @@ class ContentManagement extends \ew\Module
     */
    public static function create_content_form($form_config = null)
    {
-      return \EWCore::load_file("admin/html/ContentManagement/content-form.php", $form_config);
+      return \EWCore::load_file("admin/html/content-management/content-form.php", $form_config);
    }
 
 }

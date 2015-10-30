@@ -23,7 +23,7 @@
 
             // Make the ajax call
             $.ajax({
-               url: '<?php echo EW_ROOT_URL ?>webroot-api/WidgetsManagement/import_uis',
+               url: '<?php echo EW_ROOT_URL ?>~webroot-api/WidgetsManagement/import_uis',
                type: 'POST',
                dataType: "json",
                /*xhr: function () {
@@ -55,7 +55,7 @@
       {
          exportAction = function (row)
          {
-            window.open("webroot-api/WidgetsManagement/export_uis?uis_id=" + row.data("field-id"));
+            window.open("~webroot-api/WidgetsManagement/export_uis?uis_id=" + row.data("field-id"));
          }
       }
       $(document).off("uis-list.refresh");
@@ -64,7 +64,7 @@
       });
       this.bNewUIS.comeIn(300);
 
-      this.table = EW.createTable({name: "uis-list", rowLabel: "{name}", columns: ["name", "template"], headers: {Name: {}, Template: {}}, rowCount: true, url: "<?php echo EW_ROOT_URL; ?>webroot-api/WidgetsManagement/get_uis_list", pageSize: 30
+      this.table = EW.createTable({name: "uis-list", rowLabel: "{name}", columns: ["name", "template"], headers: {Name: {}, Template: {}}, rowCount: true, url: "<?php echo EW_ROOT_URL; ?>~webroot-api/WidgetsManagement/get_uis_list", pageSize: 30
          , onDelete: function (id)
          {
 
@@ -122,7 +122,7 @@
       self.currentTopPane = tp;
       EW.lock(tp);
 
-      $.post('<?php echo EW_ROOT_URL; ?>admin/WidgetsManagement/ne-uis.php', function (data) {
+      $.post('<?php echo EW_ROOT_URL; ?>~admin/widgets-management/ne-uis.php', function (data) {
          tp.html(data);
          //neuis.newUISForm();
       });
@@ -146,7 +146,7 @@
       self.currentTopPane = tp;
       tp.addClass("full");
       EW.lock(tp);
-      $.post('<?php echo EW_ROOT_URL; ?>admin-html/WidgetsManagement/ne-uis.php', {uisId: EW.getHashParameter("uis-id")}, function (data) {
+      $.post('<?php echo EW_ROOT_URL; ?>~admin/widgets-management/ne-uis.php', {uisId: EW.getHashParameter("uis-id")}, function (data) {
          tp.html(data);
          //neuis.editUISForm();
 

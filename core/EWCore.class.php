@@ -121,7 +121,7 @@ class EWCore
          $RESULT_CONTENT = EWCore::log_error(400, "Wrong command");
          return $RESULT_CONTENT;
       }
-
+      //var_dump($resource_path);
       //echo " $app_name  $section_name  $function_name";
       $app_namespace = explode('/', $resource_path);
       $real_class_name = $app_namespace[0] . '\\App';
@@ -1808,7 +1808,7 @@ class EWCore
                      }
 
                      $is_form = (strpos($method_name, '.php') && $method_name !== "index.php") ? true : false;
-                     $url = $is_form ? EW_ROOT_URL . $app_name . '-' . $resource_name . "/" . $section_name . "/" . $method_name : EW_ROOT_URL . $app_name . '-' . $resource_name. "/" . $section_name . "/" . $method_name;
+                     $url = $is_form ? EW_ROOT_URL . '~' . $app_name . '-' . $resource_name . "/" . $section_name . "/" . $method_name : EW_ROOT_URL . '~' . $app_name . '-' . $resource_name . "/" . $section_name . "/" . $method_name;
                      //echo $url;
                      $allowed_activities["$app_name-$resource_name/$section_name/$method_name"] = [
                          "activityTitle" => $title,
@@ -1975,6 +1975,7 @@ class EWCore
          $apps[] = array(
              "title" => "tr:{$app->get_app()->get_root()}" . "{" . $app->get_title() . "}",
              "className" => $app->get_section_name(),
+             "id" => EWCore::camelToHyphen($app->get_section_name()),
              "description" => "tr:{$app->get_app()->get_root()}" . "{" . $app->get_description() . "}");
       }
 
@@ -2180,7 +2181,8 @@ class EWCore
 
    public static function translate_to_locale($match, $language)
    {
-      global $app_name;
+      //global $app_name;
+
       if ($language == "en")
       {
          return $match[2];
@@ -2199,16 +2201,15 @@ class EWCore
 
          self::$languages_strings = $lang_file["strings"];
       }
-      //echo $match[2].":".$languages_strings[$match[2]];
-      if (!array_key_exists($match[2], self::$languages_strings))
+
+     /* if (!array_key_exists($match[2], self::$languages_strings))
       {
-         //echo "aaaa";
-         //$not_translated[] = $match[2];
+         echo$match[2] . "<br/>";
          self::$languages_strings[$match[2]] = "";
          $lang_file["strings"] = self::$languages_strings;
          $fp = file_put_contents(EW_PACKAGES_DIR . '/' . $source_app_name . '/locale/' . $language . '.json', json_encode($lang_file, JSON_UNESCAPED_UNICODE));
       }
-      else if (self::$languages_strings[$match[2]])
+      else */if (self::$languages_strings[$match[2]])
       {
          return self::$languages_strings[$match[2]];
       }

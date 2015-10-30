@@ -51,8 +51,11 @@ class HTMLResourceHandler extends ResourceHandler
 
    protected function handle($app, $app_resource_path, $module_name, $method_name, $parameters = null)
    {
-      $method_name = ($method_name == 'index.php') ? 'index' : $method_name;
-      $module_name = \EWCore::hyphenToCamel($module_name);
+      //$method_name = ($method_name == 'index.php') ? 'index' : $method_name;
+      $matches = array();
+      preg_match('/(.*\.[^-]{2,4})/', $parameters["_file"], $matches);
+      $file = isset($matches[1]) ? $matches[1] : $parameters["_file"];
+
       if (\EWCore::is_widget_feeder("*", "*", $module_name))
       {
          // Show index if the URL contains a page feeder
@@ -62,18 +65,9 @@ class HTMLResourceHandler extends ResourceHandler
       }
       else if ($module_name)
       {
-         if ($parameters["_file"])
+         if ($file)
          {
-            $matches = array();
-            preg_match('/(.*\.[^-]{2,4})/', $parameters["_file"], $matches);
-            if (isset($matches[1]))
-            {
-               $path = implode('/', $app_resource_path) . '/' . $module_name . '/' . $matches[1];
-            }
-            else
-            {
-               return \EWCore::log_error(404, "<h4>HTMLResourceHandler: Not a file</h4><p>Resource `{$parameters["_file"]}`is not a file</p>");
-            }
+            $path = implode('/', $app_resource_path) . '/' . $module_name . '/' . $file;
          }
          else
          {
@@ -82,7 +76,8 @@ class HTMLResourceHandler extends ResourceHandler
       }
       else
       {
-         if (!isset($parameters["_file"]))
+         // if file is not specified, then open the index
+         if (!isset($file))
          {
             // Refer to app index
             ob_start();
@@ -97,7 +92,9 @@ class HTMLResourceHandler extends ResourceHandler
       if ($path && file_exists(EW_PACKAGES_DIR . '/' . $path))
       {
          if ($this->get_mime_type($path))
+         {
             header("Content-Type: " . $this->get_mime_type($path));
+         }
 
          ob_start();
          include EW_PACKAGES_DIR . '/' . $path;
@@ -105,6 +102,7 @@ class HTMLResourceHandler extends ResourceHandler
       }
       else if ($path)
       {
+         //echo $app_resource_path[1];
          return \EWCore::log_error(404, "<h4>Constract: File not found</h4><p>File `$path`, not found</p>");
       }
    }

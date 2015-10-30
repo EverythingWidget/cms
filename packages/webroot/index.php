@@ -58,22 +58,21 @@ $HTML_STYLES = webroot\WidgetsManagement::get_html_styles();
       echo "<meta name='description' content='$pageDescription'/>";
       echo "<meta name='keywords' content='$defaultKeywords, $HTML_KEYWORDS, $website_title'/>";
       ?>      
-
       <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
       <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-      <base href="<?php echo EW_ROOT_URL ?>">
-      <!--<link href="<?php echo $_REQUEST["_uis_template"] . '/favicon.ico' ?>" rel="shortcut icon" /> -->
-      <link href="core/css/custom-theme/jquery-ui-1.8.21.custom.css" rel="Stylesheet" type="text/css"/>	
-      <link href="core/css/bootstrap.css" rel="stylesheet" type="text/css"/>  
-      <link id="template-css" href="<?php echo $_REQUEST["_uis_template"] . '/template.css' ?>" rel="stylesheet" type="text/css"/>
+      <base href="<?= EW_ROOT_URL ?>">
 
-      <script src="core/js/jquery/jquery-2.1.1.min.js"></script>        
+      <link href="~webroot/css/bootstrap.css" rel="stylesheet" type="text/css"/>  
+      <link id="template-css" href="<?= $_REQUEST["_uis_template"] . '/template.css' ?>" rel="stylesheet" type="text/css"/>
+
+      <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>           
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenLite.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/jquery.gsap.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/plugins/CSSPlugin.min.js"></script>
+      
       <script src="core/js/ewscript.js"></script> 
       <script src="core/js/floatlabels.min.js"></script>
-      <script src="core/js/gsap/plugins/CSSPlugin.min.js"></script>
-      <script src="core/js/gsap/TweenLite.min.js"></script>
-      <script src="core/js/gsap/jquery.gsap.min.js"></script>
 
       <?php
       // Widget's datas
@@ -84,10 +83,10 @@ $HTML_STYLES = webroot\WidgetsManagement::get_html_styles();
       if ($template_script)
          echo '<script id="template-script">' . $template_script . '</script>';
       ?>
-      
+
       <script id="widget-data">
          $(document).ready(function () {
-<?php echo $WIDGET_DATA; ?>
+<?= $WIDGET_DATA; ?>
          });
       </script>
 
@@ -107,8 +106,8 @@ $HTML_STYLES = webroot\WidgetsManagement::get_html_styles();
    </head>
    <body class="">
       <div id="base-content-pane" class="container">
-         <?php echo $HTML_BODY; ?>  
+         <?= $HTML_BODY; ?>  
       </div>   
-      <script src="<?php echo EW_ROOT_URL ?>core/js/bootstrap.min.js"></script>
+      <script src="<?= EW_ROOT_URL ?>core/js/bootstrap.min.js"></script>
    </body>  
 </html>
