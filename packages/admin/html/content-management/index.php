@@ -28,28 +28,29 @@ $content_labels = EWCore::read_registry("ew-content-labels");
    (function ()
    {
       var ContentManagement = System.module("content-management");
-      
+
       ContentManagement.onInit = function (nav)
       {
          //alert('<?php echo json_encode($content_labels) ?>');
          //alert("a");
          console.log("ContentManagement is here :)");
       };
-      
-      ContentManagement.onStart = function () 
+
+      ContentManagement.onStart = function ()
       {
-         
+
       };
-      
+
       ContentManagement.on("app", function (p, section)
-      {         
+      {
          if (!section /*|| section === this.data.tab*/)
             return;
          this.data.tab = section;
-         
+
          EW.appNav.setCurrentTab($("a[data-ew-nav='" + section + "']"));
       });
-      
-      
+
+      ContentManagement.on("ew_activity", function (p, path) {
+      });
    }());
 </script>

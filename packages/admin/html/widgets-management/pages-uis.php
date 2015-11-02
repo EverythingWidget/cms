@@ -8,7 +8,7 @@ $default_page = json_decode(webroot\WidgetsManagement::get_path_uis("@DEFAULT"),
 //print_r($path_uis_list);
 ?>
 <div class="tab-pane-xs tab-pane-sm header-pane tabs-bar row">
-   <ul class="nav nav-pills">
+   <ul class="nav nav-pills nav-blue-grey">
       <li class="active"><a href="#uis_list" data-toggle="tab">All Layouts</a></li>
       <li><a href="#pages-uis" data-toggle="tab">Contents Layouts</a></li>
    </ul>

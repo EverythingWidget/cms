@@ -45,7 +45,9 @@ function script()
                $(document).trigger("article-list.refresh", [data]);
             }}).hide();
 
-         this.bEditAndClose = EW.addActivity({title: "tr{Save and Close}", defaultClass: "btn-success pull-right", activity: "admin-api/content-management/update-article",
+         this.bEditAndClose = EW.addActivity({title: "tr{Save and Close}",
+            defaultClass: "btn-success pull-right", 
+            activity: "admin-api/content-management/update-article",
             postData: function ()
             {
                if (!$("#article-form").EW().validate())
@@ -59,7 +61,8 @@ function script()
             {
                $("body").EW().notify(data).show();
                ContentForm.setData(data.data);
-               $.EW("getParentDialog", $("#article-form")).trigger("close");               
+               $.EW("getParentDialog", $("#article-form")).trigger("close");       
+               
                $(document).trigger("article-list.refresh");               
             }}).hide();
 

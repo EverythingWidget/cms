@@ -40,7 +40,6 @@
          title: "tr{New Article}",
          activity: "admin-html/content-management/article-form.php",
          parent: "action-bar-items",
-         modal: {class: "full"},
          hash:
                  {
                     articleId: null

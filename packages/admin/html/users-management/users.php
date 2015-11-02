@@ -3,9 +3,14 @@
       function Users()
       {
          this.table = null;
-         this.bAddUser = EW.addActivity({title: "tr{New User}", activity: "admin-html/users-management/user-form.php", hash: {userId: null}}).hide().comeIn(300);
-
-
+         this.bAddUser = EW.addActivity({
+            title: "tr{New User}",
+            modal: {
+               class: "center"
+            },
+            activity: "admin-html/users-management/user-form.php",
+            hash: {userId: null}
+         }).hide().comeIn(300);
          this.usersList();
       }
       Users.prototype.usersList = function ()
@@ -46,7 +51,12 @@
                   }, "json");
                });
             },
-            onEdit: ((editActivity = EW.getActivity({activity: "admin-html/users-management/user-form.php-see", onDone: function (hash) {
+            onEdit: ((editActivity = EW.getActivity({
+               activity: "admin-html/users-management/user-form.php-see",
+               modal: {
+                  class: "center"
+               },
+               onDone: function (hash) {
                   hash["userId"] = null;
                }})) ? function (id) {
                editActivity({userId: id});

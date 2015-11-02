@@ -17,21 +17,21 @@ if (!isset($_SESSION['login']))
       </title> 
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
-      
+
       <base href="<?php echo EW_ROOT_URL ?>">
-      
+
       <link rel="shortcut icon" href="<?php echo EW_ROOT_URL ?>templates/default/favicon.ico">  
       <link rel="stylesheet" href="<?php echo EW_ROOT_URL ?>core/css/font-awesome.min.css">
       <link type="text/css" href="<?php echo EW_ROOT_URL ?>core/css/bootstrap.css" rel="stylesheet" >  
       <link type="text/css" href="<?php echo EW_ROOT_URL ?>core/css/simple-slider.css" rel="stylesheet" >  
       <link href="<?php echo EW_ROOT_URL ?>templates/default/template.css" rel="stylesheet" type="text/css">
       <link rel="stylesheet" type="text/css" href="~admin/Tools/content-tools/content-tools.min.css">
-      
+
       <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>       
       <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenLite.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/jquery.gsap.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/plugins/CSSPlugin.min.js"></script>
-      
+
       <script src="<?php echo EW_ROOT_URL ?>core/js/jquery/sortable.js"></script>      
       <script src="<?php echo EW_ROOT_URL ?>core/js/bootstrap-datepicker.js"></script>
       <script src="<?php echo EW_ROOT_URL ?>core/js/autocomplete.js"></script>
@@ -39,7 +39,7 @@ if (!isset($_SESSION['login']))
       <script src="<?php echo EW_ROOT_URL ?>core/js/ewscript.js"></script>      
       <script src="<?php echo EW_ROOT_URL ?>core/js/simple-slider.js"></script>
       <script src="~admin/js/system.js"></script>                       
-      
+
       <script>
          System.init();
          //var EW = new EverythingWidgets();
@@ -84,6 +84,7 @@ if (!isset($_SESSION['login']))
          {
             if (!nav["app"] && "Home" !== EW.oldApp)
             {
+               $("#action-bar-items").empty();
                EW.oldApp = "Home";
                $("#app-title").text(EW.apps["Home"].title);
                System.openApp(EW.apps["Home"]);
@@ -91,13 +92,13 @@ if (!isset($_SESSION['login']))
          }
 
          System.on('app', function (path, app, sec)
-         {
+         {            
+            
             if (!app)
                app = "Home";
 
             if (app !== EW.oldApp)
             {
-               //alert("app: ha>"+path)
                EW.oldApp = app;
                $("#app-title").text(EW.apps[app].title);
                System.openApp(EW.apps[app]);
@@ -156,16 +157,17 @@ if (!isset($_SESSION['login']))
                 System.setHashParameters({app: "Home"});*/
             }, "json");
          };
-
+         
          EverythingWidgets.prototype.loadApp = function (data)
-         {
+         { 
             if (data.app !== this.oldApp)
             {
+              
                this.oldApp = data.app;
                if (!data.app)
                {
                   $("#app-title").text("Home");
-                  $("#apps").hide();
+                  $("#apps").hide();                  
                   //$("#action-bar-items").empty();
                   $("#main-content").remove();
                   $("#app-bar-nav").remove();
@@ -173,6 +175,7 @@ if (!isset($_SESSION['login']))
 
                   $("#app-bar").animate({className: "app-bar"}, 500, "Power2.easeOut");
                   $("#home-pane").animate({className: "home-pane in"}, 500, "Power2.easeOut");
+                  
                   return;
                }
                $("#apps").show();
@@ -777,7 +780,7 @@ if (!isset($_SESSION['login']))
                   <?php
                   if ($_SESSION['login'])
                   {
-                     echo '<a class="ExitBtn" href="./~admin-api/UsersManagement/logout?url=' . EW_DIR_URL . 'admin/" ></a>';
+                     echo '<a class="ExitBtn" href="./~admin-api/UsersManagement/logout?url=' . EW_DIR_URL . '~admin/" ></a>';
                   }
                   ?>
                </div>            

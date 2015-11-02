@@ -19,11 +19,12 @@ class App extends \ew\App
 
    protected $name = "Webroot";
    protected $description = "Show contents to the users";
-   protected $version = "0.9";
-
-   public function init()
+   protected $version = "0.9";   
+   
+   public function index()
    {
-      
+      $path = $this->get_path('html/index.php');
+      include $path;
    }
 
 }

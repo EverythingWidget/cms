@@ -363,7 +363,7 @@ root {
 .top-pane .form-content {
    background-color: #fff;
    padding: 0;
-   top: 50px;
+   top: 90px;
    position: absolute;
    overflow: auto;
    overflow-x: hidden;
@@ -582,7 +582,7 @@ body.Admin {
 }
 
 .top-pane {
-   background-color: #fff;
+   background-color: #00897B;
    position: absolute;
    top: 41px;
    right: 0;
@@ -590,9 +590,18 @@ body.Admin {
    overflow-y: hidden;
    overflow-x: hidden;
    border: 0 solid #999;
-   box-shadow: 0 19px 38px rgba(0,0,0,0.30),0 15px 12px rgba(0,0,0,0.22);
+   box-shadow: 0 0px 6px 1px rgba(0,0,0,0.2);
    border-radius: 0;
-   z-index: 20;
+   z-index: 10;
+   /* padding-top: 40px; */
+}
+
+.top-pane:before {
+   content: '';
+   display: block;
+   height: 40px;
+   margin: 0 -15px;
+   background-color: rgba(0,0,0,.28);
 }
 
 .top-pane.hide-content > * {
@@ -603,6 +612,8 @@ body.Admin {
    white-space: nowrap;
    text-overflow: ellipsis;
    overflow: hidden;
+   /* background-color: #fff; */
+   color: #fff;
 }
 
 .header-pane h1 span,span.header-label {
@@ -615,6 +626,7 @@ body.Admin {
 
 .header-pane.tabs-bar {
    overflow: auto;
+   /* background-color: #fff; */
 }
 
 .top-pane .header-pane.tabs-bar {
@@ -622,7 +634,7 @@ body.Admin {
 }
 
 .top-pane .form-content.tabs-bar {
-   top: 110px;
+   top: 150px;
 }
 
 #app-content {
@@ -737,11 +749,11 @@ body.Admin {
 }
 
 .top-pane.full {
-   top: 15px;
-   right: 0;
+   top: 0px;
+   right: 15px;
    bottom: 0;
-   left: 0;
-   width: 100%;
+   left: 15px;
+   width: auto;
    min-height: 30%;
    max-width: 100%;
 }
@@ -825,7 +837,7 @@ h2 {
 .glass-pane-lock {
    width: 100%;
    height: 100%;
-   background-color: rgba(150,150,150,.26);
+   background-color: rgba(160,160,160,.32);
    position: absolute;
    font-size: 64px;
    text-align: center;
@@ -833,7 +845,7 @@ h2 {
    padding: 0;
    text-shadow: 0 0 5px #fff;
    cursor: default;
-   z-index: 20;
+   z-index: 10;
 }
 
 .glass-pane-lock span {
@@ -879,8 +891,8 @@ button {
 }
 
 #nav-bar {
-   height: 42px;
-   background-color: rgba(0,0,0,.5);
+   height: 40px;
+   background-color: rgba(0,0,0,.28);
    width: 100%;
    padding: 0 10px;
    z-index: 10;
@@ -922,7 +934,7 @@ button {
    font-weight: 400;
    border-radius: 0;
    font-size: 28px;
-   line-height: 42px;
+   line-height: 40px;
    color: #fff;
 }
 
@@ -941,8 +953,8 @@ button {
 .nav-bar h1 {
    float: left;
    margin: 0;
-   height: 42px;
-   padding: 6px 8px;
+   height: 40px;
+   padding: 5px 8px;
    color: #fff;
    font-size: 18px;
    font-weight: normal;
@@ -954,7 +966,7 @@ button {
    box-shadow: 0 3px 10px 1px rgba(0,0,0,0.19),0 0px 6px rgba(0,0,0,0.23);
    height: 98px;
    position: absolute;
-   top: -102px;
+   top: -58px;
    width: 100%;
    z-index: 5;/*transition:all .3s ease-out*/
 }
@@ -1393,16 +1405,16 @@ div#components-pane {
 .app-bar-nav {
    background-color: #fff;
    position: absolute;
-   top: 42px;
+   top: 40px;
    left: 0;
    width: 250px;
-   height: 56px;
+   height: 58px;
    border-radius: 0;
    overflow: hidden;
    font-size: 13px;
    margin: 0;
    z-index: 5;
-   padding: 2px 0;
+   padding: 3px 0;
 }
 
 .app-bar-nav > label,.app-bar-nav > * {
@@ -1433,11 +1445,11 @@ div#components-pane {
 
 .app-bar-nav.in {
    left: 0;
-   top: 42px;
+   top: 40px;
    height: auto;
    width: 250px;
    border-radius: 0;
-   box-shadow: 0 2px 15px -1px rgba(0,0,0,.8);
+   box-shadow: 0 3px 8px 0px rgba(0,0,0,0.3), 0 1px 24px 0px rgba(0,0,0,.34);
    z-index: 6;
    padding-top: 15px;
    padding-bottom: 15px;
@@ -2116,7 +2128,7 @@ textarea.text-field {
    width: 28px;
    height: 28px;
    float: right;
-   margin: 7px 0;
+   margin: 6px 0;
    margin-left: 20px;
    cursor: pointer;
    background-size: cover;
@@ -3024,18 +3036,18 @@ li h3.icon-header {
 .box-title {
 }
 
-.nav-pills {
-   border-bottom: 3px solid #eceff1;
+.nav-blue-grey {
+   background-color: #78909C;
 }
 
 .nav-pills > li {
-   margin-bottom: -3px;
+   /* margin-bottom: -3px; */
 }
 
 .line-header {
    margin: 15px 0 5px;
 }
 
-.tab-pane .row:first-child {
+.tab-pane > .row:first-child, .tab-pane > form > .row:first-child {
    margin-top: 15px;
 }

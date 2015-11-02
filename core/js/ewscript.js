@@ -243,19 +243,20 @@ EverythingWidgets.prototype.getActivity = function (conf)
    var activityId = settings.activity;
    // create new activity from the original activity in the case where there is more than one action for one activity
    // removed for improvment
-   if (self.activityCounter[settings.activity] && JSON.stringify(self.activities[activityId].settings) !== JSON.stringify(settings))
-   {
-      ac = self.activityCounter[settings.activity];
-      ac++;
-      activityId = settings.activity + "-" + ac;
-      //self.activityCounter[settings.activity] = ac;
-      //alert()
-   }
-   if (!self.originalActivity[activityId])
-      self.originalActivity[activityId] = self.activities[settings.activity];
-   self.activityCounter[activityId] = ac;
-   var activity = self.originalActivity[activityId];
-
+   /*if (self.activityCounter[settings.activity] && JSON.stringify(self.activities[activityId].settings) !== JSON.stringify(settings))
+    {
+    ac = self.activityCounter[settings.activity];
+    ac++;
+    activityId = settings.activity + "-" + ac;
+    //self.activityCounter[settings.activity] = ac;
+    //alert()
+    }
+    if (!self.originalActivity[activityId])
+    self.originalActivity[activityId] = self.activities[settings.activity];
+    self.activityCounter[activityId] = ac;*/
+   //var activity = self.originalActivity[activityId];
+   var activity = self.activities[settings.activity];
+//alert(settings.activity);
    //self.activities[activityId] = $.extend(true, {}, self.activities[settings.activity]);
    //self.activities[activityId].settings = settings;
 
@@ -270,7 +271,8 @@ EverythingWidgets.prototype.getActivity = function (conf)
       });
    }
 
-   self.activities[activityId] = $.extend({}, self.originalActivity[activityId], conf);
+   //self.activities[activityId] = $.extend({}, self.originalActivity[activityId], conf);
+   self.activities[activityId] = $.extend({}, activity, conf);
    //alert(self.activities[activityId].modal.class)
    var activityCaller = function (hash) {
 
@@ -577,7 +579,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
          xButton.css({
             left: modalPane.offset().left + modalPane.width() - 10,
             //right:"10px",
-            top: parseInt(modalPane.css("top")) + 12,
+            top: parseInt(modalPane.css("top")) + 5,
             zIndex: modalPane.css("z-index")
          });
          xButton.show();
@@ -588,7 +590,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
       }
    };
    var settings = {
-      class: "center",
+      class: "full",
       initElement: true,
       lockUI: true,
       beforeClose: function ()
@@ -647,6 +649,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
       modalPane.trigger("close");
    });
    // Close event
+   
    modalPane.on("close", function ()
    {
       if (modalPane.triggerHandler("beforeClose"))
@@ -670,9 +673,10 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
             modalPane.before(animationDiv);
             //animationDiv.text("");
             //alert(settings.class)
-            if (settings.class !== "full")
+            //if (settings.class !== "full")
             {
-               self.unlock($("#base-pane"));
+               //$("#nav-bar").children().delay(1000).fadeIn(300);
+               self.unlock(basePane);
             }
             $("#apps").attr("target", "");
             // Detach the modal if close action is hide
@@ -737,9 +741,10 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
       }
    });
    // Open event
+   var basePane;
    modalPane.on("open", function ()
    {
-      var basePane = $("#base-pane");
+      basePane = $("#app-content");
       // Open the modal if it is not open
       if (!modalPane.isOpen)
       {
@@ -749,7 +754,12 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
             $("#apps").attr("target", "_self");
          }
          else
+         {
+            self.lock(basePane, " ");
+            //$("#nav-bar").children().fadeOut(300);
             $("#apps").attr("target", "_blank");
+         }
+
 
          modalPane.show().css({
             opacity: "0"
@@ -809,20 +819,20 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
                lineHeight: modalPane.outerHeight() + "px",
                fontSize: "4em"
             },
-            500, "Power4.easeInOut", function () {
+            600, "Power3.easeInOut", function () {
                modalPane.isOpen = true;
                modalPane.delay((!loadingLabel) ? 0 : 120).animate({
                   opacity: "1"
                },
                240, function () {
                   methods.setCloseButton();
-                  animationDiv.remove();
+                  animationDiv.remove(); 
                   if (settings.class == "full")
                   {
-                     $("#nav-bar").off("mouseenter.ew mouseleave.ew");
+                     /*$("#nav-bar").off("mouseenter.ew mouseleave.ew");
                      $("#nav-bar").on("mouseleave.ew", function () {
                         modalPane.stop().animate({
-                           top: "15px",
+                           top: "0px",
                            bottom: "0px"
                         },
                         100, "Power3,easeOut");
@@ -832,11 +842,11 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
                      $("#nav-bar").on("mouseenter.ew", function () {
                         modalPane.stop().animate({
                            top: "46px",
-                           bottom: "-22px"
+                           bottom: "-46px"
                         },
                         100, "Power3,easeOut");
                         xButton.hide();
-                     });
+                     });*/
                   }
                });
             });
@@ -857,10 +867,10 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
                        modalPane.isOpen = true;
                        if (settings.class === "full")
                        {
-                          $("#nav-bar").off("mouseenter.ew mouseleave.ew");
+                          /*$("#nav-bar").off("mouseenter.ew mouseleave.ew");
                           $("#nav-bar").on("mouseleave.ew", function () {
                              modalPane.stop().animate({
-                                top: "15px",
+                                top: "0px",
                                 bottom: "0px"
                              },
                              100, "Power3,easeOut");
@@ -870,11 +880,11 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
                           $("#nav-bar").on("mouseenter.ew", function () {
                              modalPane.stop().animate({
                                 top: "46px",
-                                bottom: "-31px"
+                                bottom: "-46px"
                              },
                              100, "Power3,easeOut");
                              xButton.hide();
-                          });
+                          });*/
                        }
                     });
             //animationDuration = 252;
@@ -2549,6 +2559,7 @@ $(document).ready(function () {
       {
          var settings = {
             closeHash: {}, /*hash: {key: "ew_activity", value: activity},*/
+
             onOpen: function () {
                var modal = this;
                EW.lock(this);
@@ -2590,7 +2601,7 @@ $(document).ready(function () {
                //var customHashParameters = {};
                if (EW.activities[activity].onDone)
                {
-                  if (typeof EW.activities[activity].onDone == 'function')
+                  if (typeof EW.activities[activity].onDone === 'function')
                      EW.activities[activity].onDone(closeHashParameters);
                   else
                      $.extend(closeHashParameters, EW.activities[activity].onDone);
@@ -2631,7 +2642,6 @@ $(document).ready(function () {
          //  self.activities[oldEWActivity].hasModal = false;
          oldEWActivity = activity;
       }
-
    });
 
    EW.addURLHandler(function ()
