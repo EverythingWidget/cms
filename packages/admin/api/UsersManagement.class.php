@@ -530,10 +530,10 @@ class UsersManagement extends \ew\Module
       return implode($pass); //turn the array into a string
    }
 
-   public static function add_user($email, $first_name, $last_name, $password, $group_id)
+   public static function add_user($email, $first_name, $last_name, $password, $group_id =0)
    {
       $db = \EWCore::get_db_connection();
-      if (!$email)
+      /*if (!$email)
          $email = $db->real_escape_string($_REQUEST["email"]);
       if (!$first_name)
          $first_name = $db->real_escape_string($_REQUEST["first_name"]);
@@ -544,7 +544,7 @@ class UsersManagement extends \ew\Module
       if (!$group_id)
          $group_id = $db->real_escape_string($_REQUEST["group_id"]);
       if (!$group_id)
-         $group_id = 0;
+         $group_id = 0;*/
 
       if (self::get_user_by_email($email) != NULL)
       {
@@ -608,10 +608,10 @@ class UsersManagement extends \ew\Module
       return json_encode($user_info);
    }
 
-   public function update_user($id, $email, $first_name, $last_name, $password, $group_id)
+   public function update_user($id, $email, $first_name, $last_name, $password, $group_id= 0)
    {
       $db = \EWCore::get_db_connection();
-      if (!$id)
+      /*if (!$id)
          $id = $db->real_escape_string($_REQUEST["id"]);
       if (!$email)
          $email = $db->real_escape_string($_REQUEST["email"]);
@@ -624,7 +624,7 @@ class UsersManagement extends \ew\Module
       if (!$group_id)
          $group_id = $db->real_escape_string($_REQUEST["group_id"]);
       if (!$group_id)
-         $group_id = 0;
+         $group_id = 0;*/
 
       $stm = $db->prepare("UPDATE ew_users SET email = ?, first_name = ?, last_name = ?, password = ?, group_id = ? WHERE id = ?");
       $stm->bind_param("ssssss", $email, $first_name, $last_name, $password, $group_id, $id);
@@ -635,12 +635,12 @@ class UsersManagement extends \ew\Module
          return json_encode(array(
              status => "success",
              email => $email,
-             message => "New user '$email' has been added successfully",
-             "id" => $db->insert_id));
+             message => "User '$email' has been updated successfully",
+             "id" => $id));
       }
       return json_encode(array(
           status => "unsuccess",
-          message => "New User has been NOT added"));
+          message => "User has been NOT updated"));
    }
 
    public static function delete_user($userId = null)

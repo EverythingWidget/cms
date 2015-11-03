@@ -163,67 +163,64 @@ class EWCore
          //}
       }
 
-      $actions = EWCore::read_registry("ew_command_listener");
-      if (count($actions) > 0 && !is_array($RESULT_CONTENT))
-      {
-         $temp = json_decode($RESULT_CONTENT, true);
-         if ($temp)
-         {
-            $RESULT_CONTENT = $temp;
-         }
-      }
-      try
-      {
-         // Call the listeners with the same data as the command data
-         if (isset($actions))
-         {
-            foreach ($actions as $id => $data)
-            {
+      /* $actions = EWCore::read_registry("ew_command_listener");
+        if (count($actions) > 0 && !is_array($RESULT_CONTENT))
+        {
+        $temp = json_decode($RESULT_CONTENT, true);
+        if ($temp)
+        {
+        $RESULT_CONTENT = $temp;
+        }
+        }
+        try
+        {
+        // Call the listeners with the same data as the command data
+        if (isset($actions))
+        {
+        foreach ($actions as $id => $data)
+        {
+        if (method_exists($data["object"], $data["function"]))
+        {
+        $listener_method_object = new ReflectionMethod($data["object"], $data["function"]);
+        $arguments = static::create_arguments($listener_method_object, $parameters);
 
-               if (method_exists($data["object"], $data["function"]))
-               {
-                  $listener_method_object = new ReflectionMethod($data["object"], $data["function"]);
-                  $params = $listener_method_object->getParameters();
-                  $functions_arguments = array();
-                  foreach ($params as $param)
-                  {
-                     $temp = null;
-                     if ($param->getName() === "_data")
-                     {
-                        if ($RESULT_CONTENT["data"])
-                           $functions_arguments[] = $RESULT_CONTENT["data"];
-                        else
-                           $functions_arguments[] = $RESULT_CONTENT;
-                        continue;
-                     }
-                     if ($param->getName() === "_output")
-                     {
-                        $functions_arguments[] = $RESULT_CONTENT;
-                        continue;
-                     }
+        $lestiner_result = $listener_method_object->invokeArgs($data["object"], $arguments);
 
-                     if (is_array($parameters[$param->getName()]))
-                     {
-                        $temp = $parameters[$param->getName()];
-                     }
-                     else
-                     {
-                        $temp = $parameters[$param->getName()];
-                     }
-                     $functions_arguments[] = $temp;
-                  }
-                  $lestiner_result = $listener_method_object->invokeArgs($data["object"], $functions_arguments);
-                  if ($lestiner_result)
-                     $RESULT_CONTENT = $lestiner_result;
-               }
-            }
-         }
-      }
-      catch (Exception $e)
-      {
-         
-      }
+        if ($lestiner_result)
+        {
+        $RESULT_CONTENT = $lestiner_result;
+        }
+        }
+        }
+        }
+        }
+        catch (Exception $e)
+        {
+
+        } */
       return $RESULT_CONTENT;
+   }
+
+   public static function create_arguments($method, $parameters)
+   {
+      $arguments = $method->getParameters();
+      $method_arguments = array();
+      foreach ($arguments as $arg)
+      {
+         $temp = null;
+         if ($arg->getName() === "_data" || $arg->getName() === "_input")
+         {
+            $method_arguments[] = $parameters;
+            continue;
+         }
+
+         if (isset($parameters[$arg->getName()]))
+         {
+            $temp = $parameters[$arg->getName()];
+         }
+         $method_arguments[] = $temp;
+      }
+      return $method_arguments;
    }
 
    /**
@@ -234,158 +231,158 @@ class EWCore
     * @param type $parameters
     * @return type
     */
-   public static function process_command($app_name, $section_name, $function_name, $parameters = [])
-   {
-      if (!$app_name /* || !$section_name || !$function_name */)
-      {
-         $RESULT_CONTENT = EWCore::log_error(400, "Wrong command");
-         return $RESULT_CONTENT;
-      }
-      //echo " $app_name  $section_name  $function_name";
-      $real_class_name = $app_name . '\\' . ucfirst($app_name);
-      $parameters["_app_name"] = $app_name;
-      $parameters["_section_name"] = $section_name;
-      $parameters['_function_name'] = $function_name;
-      //print_r($parameters);
-      // show index.php of app
-      if (!$function_name)
-      {
-         $function_name = "index";
-         $parameters['_function_name'] = $function_name;
-      }
-      if ($section_name == "EWCore")
-      {
-         $EW = new \EWCore();
-         $RESULT_CONTENT = $EW->processRequest($parameters);
-      }
-      else
-      {
-         $class_exist = false;
-         //var_dump(class_exists($app_name.'\\'.  ucfirst($app_name)));
-         if (class_exists($real_class_name))
-         {
+   /* public static function process_command($app_name, $section_name, $function_name, $parameters = [])
+     {
+     if (!$app_name /* || !$section_name || !$function_name )
+     {
+     $RESULT_CONTENT = EWCore::log_error(400, "Wrong command");
+     return $RESULT_CONTENT;
+     }
+     //echo " $app_name  $section_name  $function_name";
+     $real_class_name = $app_name . '\\' . ucfirst($app_name);
+     $parameters["_app_name"] = $app_name;
+     $parameters["_section_name"] = $section_name;
+     $parameters['_function_name'] = $function_name;
+     //print_r($parameters);
+     // show index.php of app
+     if (!$function_name)
+     {
+     $function_name = "index";
+     $parameters['_function_name'] = $function_name;
+     }
+     if ($section_name == "EWCore")
+     {
+     $EW = new \EWCore();
+     $RESULT_CONTENT = $EW->processRequest($parameters);
+     }
+     else
+     {
+     $class_exist = false;
+     //var_dump(class_exists($app_name.'\\'.  ucfirst($app_name)));
+     if (class_exists($real_class_name))
+     {
 
-            // Create an instance of section with its parent App
-            $app_object = new $real_class_name;
-            $class_exist = true;
-         }
-         // If class has namespace
-         /* if (class_exists($real_class_name))
-           {
-           // Create an instance of section with its parent App
-           $app_section_object = new $real_class_name(EWCore::get_app_instance($app_name));
-           $class_exist = true;
-           }
-           // If class has no namespace
-           else if (class_exists($section_name))
-           {
-           // Create an instance of section with its parent App
-           $app_section_object = new $section_name(EWCore::get_app_instance($app_name));
-           $class_exist = true;
-           } */
+     // Create an instance of section with its parent App
+     $app_object = new $real_class_name;
+     $class_exist = true;
+     }
+     // If class has namespace
+     /* if (class_exists($real_class_name))
+     {
+     // Create an instance of section with its parent App
+     $app_section_object = new $real_class_name(EWCore::get_app_instance($app_name));
+     $class_exist = true;
+     }
+     // If class has no namespace
+     else if (class_exists($section_name))
+     {
+     // Create an instance of section with its parent App
+     $app_section_object = new $section_name(EWCore::get_app_instance($app_name));
+     $class_exist = true;
+     }
 
-         $pages_feeders = EWCore::read_registry("ew-widget-feeder");
-         if ($class_exist)
-         {
-            //echo "safdasf";
-            //$RESULT_CONTENT = $app_section_object->process_request($function_name, $parameters);
-            $RESULT_CONTENT = $app_object->process_command($section_name, $function_name, $parameters);
-         }
-         /* else if (EWCore::is_widget_feeder("page", "*", $section_name))
-           {
-           // Show index if the URL contains a page feeder
-           $path = EW_PACKAGES_DIR . '/' . $app_name . '/index.php';
-           }
-           else if (!$section_name)
-           {
-           // Refer to app index
-           $path = EW_PACKAGES_DIR . '/' . $app_name . '/' . $function_name;
-           }
-           else
-           {
+     $pages_feeders = EWCore::read_registry("ew-widget-feeder");
+     if ($class_exist)
+     {
+     //echo "safdasf";
+     //$RESULT_CONTENT = $app_section_object->process_request($function_name, $parameters);
+     $RESULT_CONTENT = $app_object->process_command($section_name, $function_name, $parameters);
+     }
+     /* else if (EWCore::is_widget_feeder("page", "*", $section_name))
+     {
+     // Show index if the URL contains a page feeder
+     $path = EW_PACKAGES_DIR . '/' . $app_name . '/index.php';
+     }
+     else if (!$section_name)
+     {
+     // Refer to app index
+     $path = EW_PACKAGES_DIR . '/' . $app_name . '/' . $function_name;
+     }
+     else
+     {
 
-           // Refer to app section index
-           $path = EW_PACKAGES_DIR . '/' . $app_name . '/' . $section_name . '/' . $function_name;
-           } */
-      }
+     // Refer to app section index
+     $path = EW_PACKAGES_DIR . '/' . $app_name . '/' . $section_name . '/' . $function_name;
+     }
+     }
 
-      /* if ($path && file_exists($path))
-        {
-        ob_start();
-        include $path;
-        $RESULT_CONTENT = ob_get_clean();
-        }
-        else if ($path)
-        {
-        $RESULT_CONTENT = EWCore::log_error(404, "<h4>{$path}</h4><p>EWCore: FILE NOT FOUND</p>");
-        } */
-      // Call ew command listeners
-      //echo is_array($RESULT_CONTENT);
-      $actions = EWCore::read_registry("ew_command_listener");
-      if (isset($actions) && !is_array($RESULT_CONTENT))
-      {
-         $temp = json_decode($RESULT_CONTENT, true);
-         if ($temp)
-         {
-            $RESULT_CONTENT = $temp;
-         }
-      }
-      try
-      {
-         // Call the listeners with the same data as the command data
-         if (isset($actions))
-         {
-            foreach ($actions as $id => $data)
-            {
+     /* if ($path && file_exists($path))
+     {
+     ob_start();
+     include $path;
+     $RESULT_CONTENT = ob_get_clean();
+     }
+     else if ($path)
+     {
+     $RESULT_CONTENT = EWCore::log_error(404, "<h4>{$path}</h4><p>EWCore: FILE NOT FOUND</p>");
+     }
+     // Call ew command listeners
+     //echo is_array($RESULT_CONTENT);
+     $actions = EWCore::read_registry("ew_command_listener");
+     if (isset($actions) && !is_array($RESULT_CONTENT))
+     {
+     $temp = json_decode($RESULT_CONTENT, true);
+     if ($temp)
+     {
+     $RESULT_CONTENT = $temp;
+     }
+     }
+     try
+     {
+     // Call the listeners with the same data as the command data
+     if (isset($actions))
+     {
+     foreach ($actions as $id => $data)
+     {
 
-               if (method_exists($data["object"], $data["function"]))
-               {
-                  $listener_method_object = new ReflectionMethod($data["object"], $data["function"]);
-                  $params = $listener_method_object->getParameters();
-                  $functions_arguments = array();
-                  foreach ($params as $param)
-                  {
-                     $temp = null;
-                     if ($param->getName() === "_data")
-                     {
-                        if ($RESULT_CONTENT["data"])
-                           $functions_arguments[] = $RESULT_CONTENT["data"];
-                        else
-                           $functions_arguments[] = $RESULT_CONTENT;
-                        continue;
-                     }
-                     if ($param->getName() === "_output")
-                     {
-                        $functions_arguments[] = $RESULT_CONTENT;
-                        continue;
-                     }
+     if (method_exists($data["object"], $data["function"]))
+     {
+     $listener_method_object = new ReflectionMethod($data["object"], $data["function"]);
+     $params = $listener_method_object->getParameters();
+     $functions_arguments = array();
+     foreach ($params as $param)
+     {
+     $temp = null;
+     if ($param->getName() === "_data")
+     {
+     if ($RESULT_CONTENT["data"])
+     $functions_arguments[] = $RESULT_CONTENT["data"];
+     else
+     $functions_arguments[] = $RESULT_CONTENT;
+     continue;
+     }
+     if ($param->getName() === "_output")
+     {
+     $functions_arguments[] = $RESULT_CONTENT;
+     continue;
+     }
 
-                     if (is_array($parameters[$param->getName()]))
-                     {
-                        $temp = $parameters[$param->getName()];
-                     }
-                     else
-                     {
-                        $temp = $parameters[$param->getName()];
-                     }
-                     $functions_arguments[] = $temp;
-                  }
-                  $lestiner_result = $listener_method_object->invokeArgs($data["object"], $functions_arguments);
-                  if ($lestiner_result)
-                     $RESULT_CONTENT = $lestiner_result;
-               }
-            }
-         }
-      }
-      catch (Exception $e)
-      {
-         
-      }
-      // End of calling ew command listeners
-      //echo $RESULT_CONTENT;
-      //print_r($RESULT_CONTENT)
-      return $RESULT_CONTENT;
-   }
+     if (is_array($parameters[$param->getName()]))
+     {
+     $temp = $parameters[$param->getName()];
+     }
+     else
+     {
+     $temp = $parameters[$param->getName()];
+     }
+     $functions_arguments[] = $temp;
+     }
+     $lestiner_result = $listener_method_object->invokeArgs($data["object"], $functions_arguments);
+     if ($lestiner_result)
+     $RESULT_CONTENT = $lestiner_result;
+     }
+     }
+     }
+     }
+     catch (Exception $e)
+     {
+
+     }
+     // End of calling ew command listeners
+     //echo $RESULT_CONTENT;
+     //print_r($RESULT_CONTENT)
+     return $RESULT_CONTENT;
+     } */
 
    public static function set_db_connection($db_con)
    {
@@ -1974,6 +1971,7 @@ class EWCore
       {
          $apps[] = array(
              "title" => "tr:{$app->get_app()->get_root()}" . "{" . $app->get_title() . "}",
+             "package" => '~' . $app->get_app()->get_root(),
              "className" => $app->get_section_name(),
              "id" => EWCore::camelToHyphen($app->get_section_name()),
              "description" => "tr:{$app->get_app()->get_root()}" . "{" . $app->get_description() . "}");
@@ -2202,14 +2200,14 @@ class EWCore
          self::$languages_strings = $lang_file["strings"];
       }
 
-     /* if (!array_key_exists($match[2], self::$languages_strings))
-      {
-         echo$match[2] . "<br/>";
-         self::$languages_strings[$match[2]] = "";
-         $lang_file["strings"] = self::$languages_strings;
-         $fp = file_put_contents(EW_PACKAGES_DIR . '/' . $source_app_name . '/locale/' . $language . '.json', json_encode($lang_file, JSON_UNESCAPED_UNICODE));
-      }
-      else */if (self::$languages_strings[$match[2]])
+      /* if (!array_key_exists($match[2], self::$languages_strings))
+        {
+        echo$match[2] . "<br/>";
+        self::$languages_strings[$match[2]] = "";
+        $lang_file["strings"] = self::$languages_strings;
+        $fp = file_put_contents(EW_PACKAGES_DIR . '/' . $source_app_name . '/locale/' . $language . '.json', json_encode($lang_file, JSON_UNESCAPED_UNICODE));
+        }
+        else */if (self::$languages_strings[$match[2]])
       {
          return self::$languages_strings[$match[2]];
       }

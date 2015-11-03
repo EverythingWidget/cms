@@ -186,13 +186,14 @@ var System = System ||
                           window.location.hash = self.navHashes[id];
 
                        //alert("app current nav hash: "+self.navHashes[id]);
-                       var scripts = $(response).filter("script").detach();
+                       //var scripts = $(response).filter("script").detach();
                        var html = $(response);
-                       $("body").append(scripts);
+                       //$("body").append(scripts);
                        //var html = res;
                        //System.apps[id] = $.extend({}, System.module, self.apps[id]);
                        //System.activityTree.unshift(System.apps[id]);
                        var module = System.module(id);
+                       //console.log(module);
                        self.onAppLoaded(module, html);
                        //
                        var modNav = self.main.navigation[module.moduleIdentifier].slice(1);

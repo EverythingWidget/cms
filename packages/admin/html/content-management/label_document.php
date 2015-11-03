@@ -4,7 +4,7 @@
    <input class="text-field" data-label="Select a content" id="{{comp_id}}_text" name="text" value="" />
 </div>
 <div class="col-xs-12">
-   <ul id="{{comp_id}}_attached" class="list indent">
+   <ul id="{{comp_id}}_attached" class="list">
 
    </ul>
 </div>

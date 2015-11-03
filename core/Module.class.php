@@ -188,7 +188,7 @@ class Module
       $command_result = $method_object->invokeArgs($this, $functions_arguments);
 
       // Read the listeners for this command
-      $actions = \EWCore::read_registry("app-" . $this->app->get_root() . "/" . $this->current_class->getShortName() . "/" . $method_name . "_listener");
+      /*$actions = \EWCore::read_registry("app-" . $this->app->get_root() . "/" . $this->current_class->getShortName() . "/" . $method_name . "_listener");
       if (isset($actions) && !is_array($command_result))
       {
 
@@ -210,45 +210,10 @@ class Module
                if (method_exists($data["object"], $data["function"]))
                {
                   $listener_method_object = new ReflectionMethod($data["object"], $data["function"]);
-                  $params = $listener_method_object->getParameters();
-                  $functions_arguments = array();
-                  foreach ($params as $param)
-                  {
-                     $temp = null;
-                     //echo $command_result["data"];
-                     if ($param->getName() === "_data")
-                     {
-                        // Command result must be an array
-                        if (is_array($command_result))
-                        {
-                           if ($command_result["data"])
-                           {
-                              $functions_arguments[] = $command_result["data"];
-                           }
-                           else
-                           {
-                              $functions_arguments[] = $command_result;
-                           }
-                        }
-                        continue;
-                     }
-                     if ($param->getName() === "_output")
-                     {
-                        $functions_arguments[] = $command_result;
-                        continue;
-                     }
-
-                     if (is_array($parameters[$param->getName()]))
-                     {
-                        $temp = $parameters[$param->getName()];
-                     }
-                     else
-                     {
-                        $temp = $parameters[$param->getName()];
-                     }
-                     $functions_arguments[] = $temp;
-                  }
+                  $functions_arguments = \EWCore::create_arguments($listener_method_object, $parameters);
+                                    
                   $plugin_result = $listener_method_object->invokeArgs($data["object"], $functions_arguments);
+                  
                   if ($plugin_result)
                   {
                      $command_result = $plugin_result;
@@ -260,7 +225,7 @@ class Module
       catch (Exception $e)
       {
          echo $e->getTraceAsString();
-      }
+      }*/
 
       if (is_array($command_result))
          $command_result = json_encode($command_result);

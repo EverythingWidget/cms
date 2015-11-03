@@ -31,7 +31,7 @@ function script()
             {
                if (!$("#article-form").EW().validate())
                {
-                  return false;
+                  //return false;
                }
                var data = ContentForm.getFormData();
                //data.content = tinymce.activeEditor.getContent();

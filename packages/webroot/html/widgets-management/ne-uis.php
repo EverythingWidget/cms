@@ -1254,7 +1254,7 @@ session_start();
       300);
       var d = EW.createModal({ class: "center"});
       self.currentDialog = d;
-      $.post("<?php echo EW_ROOT_URL; ?>~admin-html/widgets-management/uis-prewidget-form.php", {
+      $.post("<?php echo EW_ROOT_URL; ?>~webroot-html/widgets-management/uis-prewidget-form.php", {
          template: self.uisTemplate,
          widgetType: widgetType,
          feederType: feederType,
@@ -1308,7 +1308,7 @@ session_start();
        }, 500, "Power3.easeOut");*/
       //this.relocateGlassPanes();
       //EW.lock(d);
-      $.post("<?php echo EW_ROOT_URL; ?>~admin-html/widgets-management/uis-prewidget-form.php", {
+      $.post("<?php echo EW_ROOT_URL; ?>~webroot-html/widgets-management/uis-prewidget-form.php", {
          template: self.uisTemplate,
          widgetId: wId,
          widgetType: w.attr("data-widget-type"),

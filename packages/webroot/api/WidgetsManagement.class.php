@@ -21,7 +21,7 @@ class WidgetsManagement extends \ew\Module
    private static $html_scripts = array();
    private static $html_keywords;
    protected $resource = "api";
-   
+
    protected function install_assets()
    {
       EWCore::register_app("widgets-management", $this);
@@ -30,7 +30,7 @@ class WidgetsManagement extends \ew\Module
    protected function install_permissions()
    {
       ob_start();
-      include EW_ROOT_DIR .'packages/admin/html/WidgetsManagement/link-chooser-uis.php';
+      include EW_ROOT_DIR . 'packages/admin/html/WidgetsManagement/link-chooser-uis.php';
       $lcd = ob_get_clean();
       EWCore::register_form("ew-link-chooser-form-default", "link-chooser-uis-list", ["title" => "UI Structures",
           "content" => $lcd]);
@@ -60,6 +60,8 @@ class WidgetsManagement extends \ew\Module
       $this->add_listener("admin-api/ContentManagement/update_article", "article_action_update");
       $this->add_listener("admin-api/ContentManagement/get_article", "article_action_get");
 
+      //$this->add_listener("admin-api/UsersManagement/update_user", "article_action_get");
+
       $this->register_permission("export-uis", "User can export UIS", array(
           "api/export_uis",
           "html/ne-uis.php_see"));
@@ -70,7 +72,7 @@ class WidgetsManagement extends \ew\Module
       //$this->register_content_label("uis", "");
    }
 
-   public function category_action_get($_output, $_data)
+   public function category_action_get($_data)
    {
 //echo "assssssssssssssssssss".$data["id"];
       if ($_data["id"])
@@ -82,7 +84,7 @@ class WidgetsManagement extends \ew\Module
       return json_encode($_data);
    }
 
-   public function category_action_update($_output, $_data, $id, $WidgetManagement_pageUisId)
+   public function category_action_update($_input, $id, $WidgetManagement_pageUisId)
    {
       if ($WidgetManagement_pageUisId)
       {
@@ -94,19 +96,21 @@ class WidgetsManagement extends \ew\Module
       }
    }
 
-   public function article_action_get($_output, $_data)
+   public function article_action_get($_input, $_language)
    {
-      if ($_data["id"])
+      if ($_input["id"])
       {
          //echo $_data;
-         $page_uis = json_decode(($this->get_path_uis("/article/" . $_data["id"])), true);
-         $_data["WidgetManagement_pageUisId"] = ($page_uis["id"]) ? $page_uis["id"] : "";
-         $_data["WidgetManagement_name"] = ($page_uis["name"]) ? $page_uis["name"] : "Inherit/Default";
-         return json_encode($_data);
+         $page_uis = json_decode(($this->get_path_uis("/article/" . $_input["id"])), true);
+         $_input["WidgetManagement_pageUisId"] = ($page_uis["id"]) ? $page_uis["id"] : "";
+         $_input["WidgetManagement_name"] = ($page_uis["name"]) ? $page_uis["name"] : "Inherit/Default";
+         //return $_input;
       }
+      //return $_input;
+      //return $_input;
    }
 
-   public function article_action_update($_output, $_data, $id, $WidgetManagement_pageUisId)
+   public function article_action_update($_data, $id, $WidgetManagement_pageUisId)
    {
       //echo $id;
       if ($WidgetManagement_pageUisId)
@@ -121,7 +125,6 @@ class WidgetsManagement extends \ew\Module
 
    public function ew_form_uis_tab($form_config, $form_id)
    {
-
       ob_start();
       //echo "asdasdasdasd";
       include "uis-tab.php";

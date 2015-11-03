@@ -10,10 +10,15 @@
        ew_media_url: "<?php echo EW_ROOT_URL; ?>admin/ContentManagement/link-chooser-media.php",
        });
        contentEditor = ewEditor;*/
-      $("#<?php echo $form_id ?>").on("refresh", function (e, formData)
+      $("#<?= $form_id ?>").on("refresh", function (e, formData)
       {
          $("#content-editor .ct-app").html(formData["content"]);
          contentEditor.start();
+      });
+      
+      $("#<?= $form_id ?>").on("error", function (e, formData)
+      {
+         contentEditor.destroy();
       });
 
       contentEditor = ContentTools.EditorApp.get();
@@ -21,7 +26,7 @@
       //ewEditor.start();
       EW.getParentDialog($("#<?php echo $form_id ?>")).on("beforeClose", function ()
       {
-         contentEditor.stop();
+         contentEditor.destroy();
          contentEditor = null;
       });
       //var edi = new ContentEdit.Region(document.getElementById("content-editor"));

@@ -11,9 +11,7 @@ if (!isset($_SESSION['login']))
 <html>
    <head>
       <title>
-         <?php
-         echo $pageTitle;
-         ?>            
+                EW Admin
       </title> 
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -128,7 +126,7 @@ if (!isset($_SESSION['login']))
                $.each(data, function (key, val)
                {
                   items.push('<li class=""><a data-app="' + val['id'] + '"><label>' + val['title'] + '</label><p>' + val['description'] + '</p></a></li>');
-                  val.package = "~admin";
+                  //val.package = "~admin";
                   val.file = "index.php";
                   val.id = val['id'];
                   self.apps[val['id']] = val;

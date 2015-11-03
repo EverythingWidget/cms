@@ -35,6 +35,7 @@ class APIResourceHandler extends ResourceHandler
       $module_name = \EWCore::hyphenToCamel($module_name);
 
       $app_name = $app->get_root();
+      $resource_name = $app_resource_path[1];
       $real_class_name = $app_name . '\\' . $module_name;
       if (!$module_name)
       {
@@ -42,11 +43,9 @@ class APIResourceHandler extends ResourceHandler
       }
       if (class_exists($real_class_name))
       {
-         
          $permission_id = \EWCore::does_need_permission($app_name, $module_name, $method_name);
          if ($permission_id && $permission_id !== FALSE)
          {
-            
             if (\admin\UsersManagement::user_has_permission($app_name, $module_name, $permission_id, $_SESSION['EW.USER_ID']))
             {
                $app_section_object = new $real_class_name($app);
@@ -59,7 +58,61 @@ class APIResourceHandler extends ResourceHandler
             }
          }
          $app_section_object = new $real_class_name($app);
-         return $app_section_object->process_request($verb, $method_name, $parameters);
+         $result = $app_section_object->process_request($verb, $method_name, $parameters);
+
+         $listeners = \EWCore::read_registry("$app_name-$resource_name/$module_name/$method_name" . '_listener');
+         
+         if (isset($listeners) && !is_array($result))
+         {
+
+            $converted_result = json_decode($result, true);
+            if (json_last_error() === JSON_ERROR_NONE)
+            {
+               $result = $converted_result;
+            }
+         }
+
+         try
+         {
+            // Call the listeners with the same data as the command data
+            if (isset($listeners))
+            {
+               if (!is_array($result))
+               {
+                  $converted_result = json_decode($result, true);
+                  if (json_last_error() === JSON_ERROR_NONE)
+                  {
+                     $result = $converted_result;
+                  }
+               }
+
+               foreach ($listeners as $id => $listener)
+               {
+                  if (method_exists($listener["object"], $listener["function"]))
+                  {
+                     $listener_method_object = new \ReflectionMethod($listener["object"], $listener["function"]);
+                     $arguments = \EWCore::create_arguments($listener_method_object, $parameters);
+                     
+                     $listener_result = $listener_method_object->invokeArgs($listener["object"], $arguments);
+
+                     if (isset($listener_result))
+                     {
+                        $result = array_merge($result, $listener_result);
+                     }
+                  }
+               }
+            }
+         }
+         catch (Exception $e)
+         {
+            echo $e->getTraceAsString();
+         }
+         
+         if (is_array($result))
+         {
+            return json_encode($result);
+         }
+         return $result;
       }
       else
       {

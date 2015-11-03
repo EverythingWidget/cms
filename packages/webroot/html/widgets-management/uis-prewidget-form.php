@@ -200,7 +200,7 @@ $panelId = $_REQUEST['panelId'];
       $('#uis-widget-form').show();
       $("#widgets-list-form").hide();
       EW.lock($('#uis-widget-form'));
-      $.post('<?php echo EW_ROOT_URL; ?>~admin-html/widgets-management/uis-widget-form.php', {widgetType: widgetType, template: self.template, widgetParameters: JSON.stringify(self.widgetParameters)},
+      $.post('<?php echo EW_ROOT_URL; ?>~webroot-html/widgets-management/uis-widget-form.php', {widgetType: widgetType, template: self.template, widgetParameters: JSON.stringify(self.widgetParameters)},
       function (data) {
          $('#uis-widget-form').stop().hide();
          $('#uis-widget-form').html(data);

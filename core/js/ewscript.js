@@ -384,6 +384,7 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler)
    {
       jsonData["status"] = "error";
       jsonData["delay"] = "stay";
+      form.trigger("error", [jsonData]);
       //$(formId).html("<div class='box box-error'><label class='value'>" + jsonData["message"] + "</label></div>");
       $(formId).EW().notify(jsonData).show();
       return;
@@ -649,7 +650,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
       modalPane.trigger("close");
    });
    // Close event
-   
+
    modalPane.on("close", function ()
    {
       if (modalPane.triggerHandler("beforeClose"))
@@ -800,6 +801,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
                left: eOffset.left,
                position: "absolute",
                backgroundColor: bgColor,
+               textTransform: "uppercase",
                zIndex: modalPane.css("z-index"),
                width: originElement.outerWidth(),
                //width: modalPane.outerWidth()/1.5,
@@ -826,27 +828,27 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
                },
                240, function () {
                   methods.setCloseButton();
-                  animationDiv.remove(); 
+                  animationDiv.remove();
                   if (settings.class == "full")
                   {
                      /*$("#nav-bar").off("mouseenter.ew mouseleave.ew");
-                     $("#nav-bar").on("mouseleave.ew", function () {
-                        modalPane.stop().animate({
-                           top: "0px",
-                           bottom: "0px"
-                        },
-                        100, "Power3,easeOut");
-                        xButton.show();
-
-                     });
-                     $("#nav-bar").on("mouseenter.ew", function () {
-                        modalPane.stop().animate({
-                           top: "46px",
-                           bottom: "-46px"
-                        },
-                        100, "Power3,easeOut");
-                        xButton.hide();
-                     });*/
+                      $("#nav-bar").on("mouseleave.ew", function () {
+                      modalPane.stop().animate({
+                      top: "0px",
+                      bottom: "0px"
+                      },
+                      100, "Power3,easeOut");
+                      xButton.show();
+                      
+                      });
+                      $("#nav-bar").on("mouseenter.ew", function () {
+                      modalPane.stop().animate({
+                      top: "46px",
+                      bottom: "-46px"
+                      },
+                      100, "Power3,easeOut");
+                      xButton.hide();
+                      });*/
                   }
                });
             });
@@ -868,23 +870,23 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
                        if (settings.class === "full")
                        {
                           /*$("#nav-bar").off("mouseenter.ew mouseleave.ew");
-                          $("#nav-bar").on("mouseleave.ew", function () {
-                             modalPane.stop().animate({
-                                top: "0px",
-                                bottom: "0px"
-                             },
-                             100, "Power3,easeOut");
-                             xButton.show();
-
-                          });
-                          $("#nav-bar").on("mouseenter.ew", function () {
-                             modalPane.stop().animate({
-                                top: "46px",
-                                bottom: "-46px"
-                             },
-                             100, "Power3,easeOut");
-                             xButton.hide();
-                          });*/
+                           $("#nav-bar").on("mouseleave.ew", function () {
+                           modalPane.stop().animate({
+                           top: "0px",
+                           bottom: "0px"
+                           },
+                           100, "Power3,easeOut");
+                           xButton.show();
+                           
+                           });
+                           $("#nav-bar").on("mouseenter.ew", function () {
+                           modalPane.stop().animate({
+                           top: "46px",
+                           bottom: "-46px"
+                           },
+                           100, "Power3,easeOut");
+                           xButton.hide();
+                           });*/
                        }
                     });
             //animationDuration = 252;
@@ -2574,10 +2576,13 @@ $(document).ready(function () {
                      $.extend(postData, EW.activities[activity].postData());
                   }
                   else
+                  {
                      $.extend(postData, EW.activities[activity].postData);
+                  }
                }
+
                $.ajax({
-                  type: "POST",
+                  type: EW.activities[activity].verb || "POST",
                   url: EW.activities[activity].url,
                   data: postData,
                   success: function (data) {

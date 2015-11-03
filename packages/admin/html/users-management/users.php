@@ -5,6 +5,7 @@
          this.table = null;
          this.bAddUser = EW.addActivity({
             title: "tr{New User}",
+            parent: "action-bar-items",
             modal: {
                class: "center"
             },
@@ -52,6 +53,7 @@
                });
             },
             onEdit: ((editActivity = EW.getActivity({
+               verb: "get",
                activity: "admin-html/users-management/user-form.php-see",
                modal: {
                   class: "center"
