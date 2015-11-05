@@ -116,8 +116,6 @@
 .owl-carousel .owl-item img {
   display: block;
   margin:0px auto;
-  //width: 100%;
-  //-webkit-transform-style: preserve-3d;
 }
 .owl-carousel.owl-text-select-on .owl-item {
   -webkit-user-select: auto;
@@ -156,7 +154,6 @@
   transition: opacity 400ms ease;
 }
 .owl-carousel .owl-item img {
-  //transform-style: preserve-3d;
 }
 
 /* 

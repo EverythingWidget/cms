@@ -154,13 +154,11 @@ body, button
 .action-bar:first-child
 {
    border-top: none;
-   //border-bottom:1px solid #e0e0e0;
 }
 
 .action-bar:last-child
 {
    border-bottom: none;
-   //border-bottom:1px solid #e0e0e0;
 }
 
 .action-bar > button
@@ -184,7 +182,6 @@ body, button
 
 .dialog.open
 {
-   //transform: scale(1,1);
    transform-origin: center center;
    margin: -200px 0 0 -300px;
    left: 50%;
@@ -402,7 +399,6 @@ button.text:active, .btn.text:active
 
 .text.success
 {  
-   //background-color: transparent;
    color:#4CAF50;
 }
 
