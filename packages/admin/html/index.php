@@ -24,7 +24,7 @@ if (!isset($_SESSION['login']))
       <link type="text/css" href="<?php echo EW_ROOT_URL ?>core/css/simple-slider.css" rel="stylesheet" >  
       <link href="<?php echo EW_ROOT_URL ?>templates/default/template.css" rel="stylesheet" type="text/css">
       <!--<link rel="stylesheet" type="text/css" href="~admin/Tools/content-tools/content-tools.min.css">-->
-      <link rel="stylesheet" type="text/css" href="~admin/Tools/ContentStrike/content-tools.min.css">-->
+      <link rel="stylesheet" type="text/css" href="~admin-html/lib/ContentStrike/content-tools.min.css">-->
 
       <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>       
       <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenLite.min.js"></script>
@@ -803,6 +803,6 @@ if (!isset($_SESSION['login']))
       <div id="notifications-panel"></div>   
       <script src="<?php echo EW_ROOT_URL ?>core/js/bootstrap.min.js" ></script>
 
-      <script src="~admin/Tools/ContentStrike/content-tools.min.js"></script>
+      <script src="~admin-html/lib/ContentStrike/content-tools.js"></script>
    </body>
 </html>

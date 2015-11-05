@@ -9187,8 +9187,9 @@
   ContentTools.IgnitionUI = (function(superClass) {
     extend(IgnitionUI, superClass);
 
-    function IgnitionUI() {
+    function IgnitionUI(conf) {
       IgnitionUI.__super__.constructor.call(this);
+      this._conf = conf;
       this._busy = false;
     }
 
@@ -11242,7 +11243,9 @@
             this._ignition = null;
             this._inspector = null;
             this._toolbox = null;
-            this._updatePositionInterval;
+            this._updatePositionInterval = null;
+            this._editorContainer = null;
+            this._contentContainer = null;
             this.oldRect = {};
         }
 
@@ -11418,18 +11421,20 @@
             this._domElement = this.constructor.createDiv(['ct-app']);
 
             if (this._domRegions.length === 1) {
-                this._container = this._domRegions[0];
-                ContentEdit.addCSSClass(this._container, 'ct-editor-container');
-                var html = this._domRegions[0].innerHTML;
-                this._domRegions[0].innerHTML = '';
-                this._domRegions[0].appendChild(this._domElement);
+                this._editorContainer = this._domRegions[0];
+                var html = this._editorContainer.innerHTML;                
+                
+                ContentEdit.addCSSClass(this._editorContainer, 'ct-editor-container');
+                
+                this._editorContainer.innerHTML = '';
+                this._editorContainer.appendChild(this._domElement);
 
-                this.contentContainer = this.constructor.createDiv(['ct-content-container']);
-                this.contentContainer.innerHTML = html;
+                this._contentContainer = this.constructor.createDiv(['ct-content-container']);
+                this._contentContainer.innerHTML = html;
 
-                this._container.appendChild(this.contentContainer);
+                this._editorContainer.appendChild(this._contentContainer);
 
-                this._domRegions = [this.contentContainer];
+                this._domRegions = [this._contentContainer];
 
                 this._updatePositionInterval = setInterval(function () {
                     _this.updateToolboxPosition();
@@ -11447,14 +11452,17 @@
             }
             var regionRect = this._domElement.getBoundingClientRect();
 
-            if (this.oldRect.top === regionRect.top && this.oldRect.height === regionRect.height && regionRect.height > 0) {
+            if ((this.oldRect.top === regionRect.top && this.oldRect.height === regionRect.height) || regionRect.height <= 0) {
                 return;
             }
-            this.contentContainer.style.marginTop = regionRect.height + 'px';
+            console.log(regionRect.height);
+            this._contentContainer.style.marginTop = regionRect.height + 'px';
             //this._inspector._domElement.style.top = this._toolbox._domElement.getBoundingClientRect().height + 'px';
             //this._domElement.style.top = regionRect.top + 'px';
-            console.log(window.innerHeight);
-            this.contentContainer.style.height = (window.innerHeight - regionRect.height) + 'px';
+            //console.log(window.innerHeight);
+            //this.contentContainer.style.height = (window.innerHeight - regionRect.height) + 'px';
+            this._domElement.style.width = this._editorContainer.getBoundingClientRect().width+'px';
+            this._domElement.style.top = this._editorContainer.getBoundingClientRect().top+'px';
             this.oldRect = regionRect;
         };
 

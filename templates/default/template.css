@@ -3058,3 +3058,16 @@ li h3.icon-header {
 .tab-pane > .row:first-child, .tab-pane > form > .row:first-child {
    margin-top: 15px;
 }
+
+.ct-editor-container {   
+   height: 100%;   
+   position: absolute !important;   
+   width: 100%;
+}
+
+.ct-content-container {   
+   position: absolute;   
+   top: 0;   
+   bottom: 0;   
+   width: 100%;
+}
