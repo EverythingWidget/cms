@@ -41,7 +41,8 @@ class WidgetsManagement extends \ew\Module
           "api/get_widgets_types",
           "api/get_all_pages_uis_list",
           "api/get_path_uis",
-          'html/' . $this->get_index()));
+          'html/' . $this->get_index()));            
+      
       //global $EW;
       $this->register_form("ew-article-form-tab", "uis_tab", ["title" => "UI"]);
       $this->register_form("ew-category-form-tab", "uis_tab", ["title" => "UI"]);
@@ -996,12 +997,15 @@ class WidgetsManagement extends \ew\Module
       }
       //ob_start();
       //print_r($rows["structure"]);
-      foreach ($res as $key => $value)
+      if (isset($res))
       {
-         $RESULT_HTML.=self::open_block("panel-" . self::$current_timestamp . "-" . self::$ui_index . "-" . self::$panel_index, "", $value["class"], $value["id"], $value["panelParameters"], FALSE, $value["blockName"]);
-         $RESULT_HTML.=self::create_panel_content($value["children"], "panel-" . self::$current_timestamp . '-' . self::$ui_index . '-' . self::$panel_index, $no_data);
-         $RESULT_HTML.=self::close_block();
-         self::$panel_index++;
+         foreach ($res as $key => $value)
+         {
+            $RESULT_HTML.=self::open_block("panel-" . self::$current_timestamp . "-" . self::$ui_index . "-" . self::$panel_index, "", $value["class"], $value["id"], $value["panelParameters"], FALSE, $value["blockName"]);
+            $RESULT_HTML.=self::create_panel_content($value["children"], "panel-" . self::$current_timestamp . '-' . self::$ui_index . '-' . self::$panel_index, $no_data);
+            $RESULT_HTML.=self::close_block();
+            self::$panel_index++;
+         }
       }
       //$html = ob_get_clean();
       return ["body_html" => $RESULT_HTML,

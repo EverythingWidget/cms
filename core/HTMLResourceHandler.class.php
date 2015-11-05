@@ -91,14 +91,31 @@ class HTMLResourceHandler extends ResourceHandler
 
       if ($path && file_exists(EW_PACKAGES_DIR . '/' . $path))
       {
-         if ($this->get_mime_type($path))
+         $permission_id = \EWCore::does_need_permission($app->get_root(), $module_name, 'html/' . $method_name);
+         if ($permission_id && $permission_id !== FALSE)
          {
-            header("Content-Type: " . $this->get_mime_type($path));
+            if (\admin\UsersManagement::user_has_permission($app->get_root(), $module_name, $permission_id, $_SESSION['EW.USER_ID']))
+            {
+               if ($this->get_mime_type($path))
+               {
+                  header("Content-Type: " . $this->get_mime_type($path));
+               }
+               ob_start();
+               include EW_PACKAGES_DIR . '/' . $path;
+               return ob_get_clean();
+            }
+            else
+            {
+               return \EWCore::log_error(403, "tr{You do not have permission for this command}", array(
+                           "Access Denied" => "$app_name/$module_name/$method_name"));
+            }
          }
-
-         ob_start();
-         include EW_PACKAGES_DIR . '/' . $path;
-         return ob_get_clean();
+         else
+         {
+            ob_start();
+            include EW_PACKAGES_DIR . '/' . $path;
+            return ob_get_clean();
+         }
       }
       else if ($path)
       {

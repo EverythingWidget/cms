@@ -42,7 +42,7 @@ if (file_exists(EW_ROOT_DIR . $_REQUEST["_uis_template"] . '/template.php'))
 // if template.js exist, then include it in HTML_SCRIPTS
 if (file_exists(EW_ROOT_DIR . $_REQUEST["_uis_template"] . '/template.js'))
 {
-   \admin\WidgetsManagement::add_html_script($_REQUEST["_uis_template"] . '/template.js', $script);
+   \webroot\WidgetsManagement::add_html_script($_REQUEST["_uis_template"] . '/template.js', $script);
 }
 
 $HTML_TITLE = (webroot\WidgetsManagement::get_html_title()) ? webroot\WidgetsManagement::get_html_title() . " - " . $website_title : $website_title;

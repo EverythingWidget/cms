@@ -173,22 +173,16 @@ class UsersManagement extends \ew\Module
    public static function user_has_permission($app_name, $class_name, $permission_id, $user_id)
    {
       $db_con = \EWCore::get_db_connection();
-      /* if (!$user_id)
-        $user_id = $_SESSION['EW.USER_ID'];
-        if (!$user_id)
-        $user_id = $db_con->real_escape_string($_REQUEST["userId"]); */
 
       $user = $db_con->query("SELECT * FROM ew_users, ew_users_groups WHERE ew_users.group_id = ew_users_groups.id AND ew_users.id = '$user_id' LIMIT 1") or die($db_con->error);
       if ($user_info = $user->fetch_assoc())
       {
-//echo $user_info["permission"]."-----$app_name+$class_name+$permission_id-";
          $user_permissions = explode(",", $user_info["permission"]);
-//if (is_array($permission_id))
-//{
          foreach ($user_permissions as $permission)
          {
             foreach ($permission_id as $item)
             {
+               //echo "$app_name.$class_name.$item === $permission<br>";
                if ($permission === "$app_name.$class_name.$item")
                   return TRUE;
             }

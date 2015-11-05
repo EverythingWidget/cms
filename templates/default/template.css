@@ -1333,6 +1333,7 @@ ul.list.tree label {
    color: #444;
    border: none;
    text-shadow: none;
+   text-transform: none;
 }
 
 ul.list.tree label:hover {

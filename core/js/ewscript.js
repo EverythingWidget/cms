@@ -44,18 +44,15 @@ function EverythingWidgets()
       {
          $(window).trigger("ew.screen.xs");
          oldSize = "xs";
-      }
-      else if ($(window).width() >= 768 && $(window).width() < 992 && oldSize !== "sm")
+      } else if ($(window).width() >= 768 && $(window).width() < 992 && oldSize !== "sm")
       {
          $(window).trigger("ew.screen.sm");
          oldSize = "sm";
-      }
-      else if ($(window).width() >= 992 && $(window).width() < 1360 && oldSize !== "md")
+      } else if ($(window).width() >= 992 && $(window).width() < 1360 && oldSize !== "md")
       {
          $(window).trigger("ew.screen.md");
          oldSize = "md";
-      }
-      else if ($(window).width() >= 1360 && oldSize !== "lg")
+      } else if ($(window).width() >= 1360 && oldSize !== "lg")
       {
          $(window).trigger("ew.screen.lg");
          oldSize = "lg";
@@ -82,7 +79,7 @@ EverythingWidgets.prototype.showAllComponents = function ()
       transform: "translateZ(0)",
       opacity: 1
    },
-   500, "Power3.easeOut").addClass("in");
+           500, "Power3.easeOut").addClass("in");
    /*$("#base-pane").animate({
     top: "100%"
     },
@@ -91,7 +88,7 @@ EverythingWidgets.prototype.showAllComponents = function ()
       //top: "0px",
       transform: "translateZ(-150px)"
    },
-   500, "Power3.easeOut");
+           500, "Power3.easeOut");
    this.lock("body", " ");
    $(".glass-pane-lock").bind("click", function (e) {
 
@@ -104,14 +101,14 @@ EverythingWidgets.prototype.showAllComponents = function ()
             opacity: 0,
             display: "none"
          },
-         500, "Power3.easeOut", function () {
-            //$("#components-pane").hide(0);
-         }).removeClass("in");
+                 500, "Power3.easeOut", function () {
+                    //$("#components-pane").hide(0);
+                 }).removeClass("in");
          $("#base-pane").stop().animate({
             //top: "0px",
             transform: "translateZ(0px)"
          },
-         500, "Power3.easeOut");
+                 500, "Power3.easeOut");
          //cPane.removeClass("zoom-out")
          self.unlock("body");
          $("#base-pane").removeClass("blur");
@@ -165,8 +162,7 @@ EverythingWidgets.prototype.addAction = function (text, handler, css, parent)
    if (parentElement.length != 0)
    {
       parentElement.append(action);
-   }
-   else
+   } else
    {
       $(".action-bar-items").last().append(action);
    }
@@ -193,19 +189,18 @@ EverythingWidgets.prototype.addNotification = function (css)
       {
          notification.text(text);
          notification.fadeIn(100);
-      }
-      else
+      } else
       {
          notification.animate({
             width: "toggle"
          },
-         500, function () {
-            notification.attr({
-               class: ""
-            });
-            notification.text("");
-            li.remove();
-         });
+                 500, function () {
+                    notification.attr({
+                       class: ""
+                    });
+                    notification.text("");
+                    li.remove();
+                 });
       }
       if (time)
          setTimeout(function () {
@@ -265,10 +260,10 @@ EverythingWidgets.prototype.getActivity = function (conf)
       activity.modalObject.animate({
          className: "top-pane col-xs-12 " + settings.modal.class
       },
-      300, function ()
-      {
-         activity.modalObject.methods.setCloseButton();
-      });
+              300, function ()
+              {
+                 activity.modalObject.methods.setCloseButton();
+              });
    }
 
    //self.activities[activityId] = $.extend({}, self.originalActivity[activityId], conf);
@@ -335,8 +330,7 @@ EverythingWidgets.prototype.addActivity = function (conf)
    if (parentE.length !== 0)
    {
       parentE.append(action);
-   }
-   else
+   } else
    {
       $(".action-bar-items").last().append(action);
    }
@@ -357,8 +351,7 @@ EverythingWidgets.prototype.getHashParameters = function (hashName)
    if (customHashes[hashName])
    {
       hashValue = customHashes[hashName].hash;
-   }
-   else if (hashName)
+   } else if (hashName)
    {
       return {};
    }
@@ -400,8 +393,7 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler)
       {
          //$(formId + " [id='" + key + "']").val(handler(key, val));
          form.find("[id='" + key + "']").val(handler(key, val));
-      }
-      else
+      } else
       {
          var elm = $();
          try
@@ -421,8 +413,7 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler)
          {
             //elm = $(formId + " #" + key);
             elm = form.find("#" + key);
-         }
-         else
+         } else
          {
             if (elm.is(":radio") || elm.is(":checkbox"))
                if (!elm.is(":checked"))
@@ -436,16 +427,14 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler)
             elm.prop("src", val);
             elm.attr("data-file-extension", /[^.]+$/.exec(val));
             elm.attr("data-filename", /^[^.]+/.exec(val));
-         }
-         else if (elm.is(":input"))
+         } else if (elm.is(":input"))
          {
             /*if (val && typeof (val) == 'string')
              {               
              val = val.replace(/\\/g, "");
              }*/
             elm.val(val).change();
-         }
-         else
+         } else
          {
             /*if (val && typeof (val) == 'string')
              {
@@ -466,18 +455,15 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler)
                field.click();
                field.prop("checked", false);
             }
-         }
-         else if (field.is("input") || field.is("select") || field.is("textarea"))
+         } else if (field.is("input") || field.is("select") || field.is("textarea"))
          {
             field.val("").change();
-         }
-         else if (field.is("img"))
+         } else if (field.is("img"))
          {
             field.prop("src", "");
             field.attr("data-file-extension", "");
             field.attr("data-filename", "");
-         }
-         else
+         } else
             field.text("");
       });
       form.data("form-data", {});
@@ -492,8 +478,7 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler)
          $.each(val, function (key1, val1) {
             setInputData(key1, val1, form);
          });
-      }
-      else
+      } else
          setInputData(key, val, form);
    });
    //alert(formId);
@@ -514,7 +499,7 @@ EverythingWidgets.prototype.createDropMenu = function (element, config)
       parent: "body",
       eventParent: $(window)
    },
-   config);
+           config);
    var size = $("<div class='dropdown-menu'><div class='col-xs-12'></div></div>");
    size.css({
       width: settings.width,
@@ -549,7 +534,7 @@ EverythingWidgets.prototype.createDropMenu = function (element, config)
       size.animate({
          height: "toggle"
       },
-      200, "Power3.easeOut");
+              200, "Power3.easeOut");
       isVisible = true;
    }
 
@@ -610,8 +595,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
          settings.autoOpen = false;
       }
       $.extend(settings, onClose);
-   }
-   else
+   } else
       settings = {
          onClose: onClose,
          closeAction: closeAction,
@@ -691,8 +675,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
             {
                modalPane.detach();
                xButton.detach();
-            }
-            else
+            } else
             {
                modalPane.remove();
                xButton.remove();
@@ -712,13 +695,12 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
                   height: "-=10%",
                   opacity: 0
                },
-               500, "Power4.easeInOut", function () {
-                  if (originElement)
-                     originElement.css("opacity", "1");
-                  animationDiv.remove();
-               });
-            }
-            else
+                       500, "Power4.easeInOut", function () {
+                          if (originElement)
+                             originElement.css("opacity", "1");
+                          animationDiv.remove();
+                       });
+            } else
             {
                var originOffset = originElement.offset();
                animationDiv.css("textShadow", "");
@@ -731,12 +713,12 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
                   fontSize: originElement.css("fontSize"),
                   borderRadius: originElement.css("border-radius")
                },
-               360, "Power2.easeOut", function () {
-                  originElement.css("opacity", "1");
-                  animationDiv.fadeOut(120, function () {
-                     animationDiv.remove();
-                  });
-               });
+                       360, "Power2.easeOut", function () {
+                          originElement.css("opacity", "1");
+                          animationDiv.fadeOut(120, function () {
+                             animationDiv.remove();
+                          });
+                       });
             }
          }
       }
@@ -753,8 +735,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
          {
             self.lock(basePane, " ");
             $("#apps").attr("target", "_self");
-         }
-         else
+         } else
          {
             self.lock(basePane, " ");
             //$("#nav-bar").children().fadeOut(300);
@@ -821,40 +802,39 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
                lineHeight: modalPane.outerHeight() + "px",
                fontSize: "4em"
             },
-            600, "Power3.easeInOut", function () {
-               modalPane.isOpen = true;
-               modalPane.delay((!loadingLabel) ? 0 : 120).animate({
-                  opacity: "1"
-               },
-               240, function () {
-                  methods.setCloseButton();
-                  animationDiv.remove();
-                  if (settings.class == "full")
-                  {
-                     /*$("#nav-bar").off("mouseenter.ew mouseleave.ew");
-                      $("#nav-bar").on("mouseleave.ew", function () {
-                      modalPane.stop().animate({
-                      top: "0px",
-                      bottom: "0px"
-                      },
-                      100, "Power3,easeOut");
-                      xButton.show();
-                      
-                      });
-                      $("#nav-bar").on("mouseenter.ew", function () {
-                      modalPane.stop().animate({
-                      top: "46px",
-                      bottom: "-46px"
-                      },
-                      100, "Power3,easeOut");
-                      xButton.hide();
-                      });*/
-                  }
-               });
-            });
+                    600, "Power3.easeInOut", function () {
+                       modalPane.isOpen = true;
+                       modalPane.delay((!loadingLabel) ? 0 : 120).animate({
+                          opacity: "1"
+                       },
+                               240, function () {
+                                  methods.setCloseButton();
+                                  animationDiv.remove();
+                                  if (settings.class == "full")
+                                  {
+                                     /*$("#nav-bar").off("mouseenter.ew mouseleave.ew");
+                                      $("#nav-bar").on("mouseleave.ew", function () {
+                                      modalPane.stop().animate({
+                                      top: "0px",
+                                      bottom: "0px"
+                                      },
+                                      100, "Power3,easeOut");
+                                      xButton.show();
+                                      
+                                      });
+                                      $("#nav-bar").on("mouseenter.ew", function () {
+                                      modalPane.stop().animate({
+                                      top: "46px",
+                                      bottom: "-46px"
+                                      },
+                                      100, "Power3,easeOut");
+                                      xButton.hide();
+                                      });*/
+                                  }
+                               });
+                    });
             //animationDuration = 360;
-         }
-         else
+         } else
          {
             /*modalPane.css({
              transform: "translateZ(100px)"
@@ -915,8 +895,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
          if (self.getHashParameter(settings.hash.key, settings.hash.name) === settings.hash.value)
          {
             modalPane.trigger("open");
-         }
-         else
+         } else
          {
             //settings.autoOpen=true;
             //modalPane=EW.createModal(settings);
@@ -984,8 +963,7 @@ JSON.stringify = JSON.stringify || function (obj) {
       if (t == "string")
          obj = '"' + obj + '"';
       return String(obj);
-   }
-   else {
+   } else {
       // recurse array or object
       var n, v, json = [], arr = (obj && obj.constructor == Array);
       for (n in obj) {
@@ -1083,8 +1061,7 @@ EverythingWidgets.prototype.setHashParameters = function (parameters, hashName, 
          //alert(hashName);
          customHashes[hashName] = new HashListener(hashName);
          hashValue = customHashes[hashName].hash;
-      }
-      else
+      } else
       {
          this.removeURLHandler("", hashName);
          hashValue = customHashes[hashName].hash;
@@ -1105,8 +1082,7 @@ EverythingWidgets.prototype.setHashParameters = function (parameters, hashName, 
          newHash += '&';
          and = true;
          delete parameters[k];
-      }
-      else if (!parameters.hasOwnProperty(k) && !clean)
+      } else if (!parameters.hasOwnProperty(k) && !clean)
       {
          newHash += k + "=" + v;
          newHash += '&';
@@ -1178,8 +1154,7 @@ EverythingWidgets.prototype.getHashParameter = function (key, hashName)
    if (customHashes[hashName])
    {
       hashValue = customHashes[hashName].hash;
-   }
-   else if (hashName)
+   } else if (hashName)
    {
       return null;
    }
@@ -1285,8 +1260,7 @@ EverythingWidgets.prototype.Router = {
                   temp.notifyRoutes();
                });
             }
-         }
-         else if ($.type(this.routes[i].url) === "regexp")
+         } else if ($.type(this.routes[i].url) === "regexp")
          {
             url.replace(this.routes[i].url, function (url)
             {
@@ -1341,8 +1315,7 @@ EverythingWidgets.prototype.lock = function (obj, string)
       glass.addClass(settings.class);
       if (settings.text)
          glass.html("<span>" + settings.text + "</span>");
-   }
-   else
+   } else
       glass.html("<span>" + string + "</span>");
 
    $(obj).append(glass);
@@ -1367,7 +1340,7 @@ EverythingWidgets.prototype.lock = function (obj, string)
    glass.animate({
       opacity: 1
    },
-   0);
+           0);
    return glass;
 };
 EverythingWidgets.prototype.unlock = function (obj)
@@ -1382,11 +1355,11 @@ EverythingWidgets.prototype.unlock = function (obj)
    ll.addClass("unlock").animate({
       opacity: 0
    },
-   0, function ()
-   {
-      $(this).remove();
+           0, function ()
+           {
+              $(this).remove();
 
-   });
+           });
 };
 function EWTable(config)
 {
@@ -1395,7 +1368,7 @@ function EWTable(config)
       pageSize: 10,
       urlData: {}
    },
-   config);
+           config);
    this.container = $("<div class='report row'></div>");
    this.tableHeaderDiv = $("<div class='table-header' ></div>");
    this.tableBodyDiv = $("<div class='table-body'></div>");
@@ -1434,12 +1407,11 @@ function EWTable(config)
             });
          });
          $base.tableHeaderDiv.show();
-      }
-      else if ($(this).scrollTop() <= 0 && $base.tableHeaderDiv.is(":visible"))
+      } else if ($(this).scrollTop() <= 0 && $base.tableHeaderDiv.is(":visible"))
          $base.tableHeaderDiv.stop().animate({
             height: "toggle"
          },
-         200);
+                 200);
       $base.tableHeaderDiv.css("left", $base.table.position().left);
    });
    // add listener to the windows width in the case of resize, the listener is added only once
@@ -1517,83 +1489,68 @@ EWTable.prototype.createRow = function (val, rc)
       var del = $(document.createElement("button"));
       del.attr("type", "button");
       del.addClass("btn btn-text delete");
-      del.click(function ()
-      {
-         tableRow.confirm = function (text, delFunction)
-         {
+      del.click(function () {
+         tableRow.confirm = function (text, delFunction) {
             var oldCells = null;
             var messageRow = $(document.createElement("div"));
+            tableRow._messageRow = messageRow;
             messageRow[0].className = "row-block label label-danger";
-            //messageRow.attr("colspan", tableRow.children().length);
             messageRow.append("<p class='row-block-p'>" + text + "</p>");
-            /*tableRow.css({
-             position: "relative"
-             });*/
-            // CSS properties are in the template
             messageRow.css({
                position: "absolute",
                transform: "scale(0,1)",
                left: "0px",
                top: tableRow.position().top,
-               //width: del.outerWidth(),
                transformOrigin: del.position().left + (del.outerWidth() / 2) + "px 0px"
             });
-            var delBtn = $("<button type=button class='btn btn-white'>Delete</button>");
-            messageRow.append(delBtn);
-            delBtn.on("click", function ()
-            {
 
-               if (delFunction.apply(tableRow, new Array(fieldId)))
-               {
+            var deleteBtn = $(document.createElement("button"));
+            deleteBtn.attr({
+               type: "button",
+               className: "btn btn-white"
+            });
+            deleteBtn.innerTEXT = "Delete";
+            messageRow.append(deleteBtn);
+            deleteBtn.on("click", function () {
+               if (delFunction.apply(tableRow, new Array(fieldId))) {
+                  cancelBtn.trigger("click");
                   ewTable.removeRow(fieldId);
                }
             });
+
             var cancelBtn = $("<button type=button class='btn btn-default btn-text' style='float:right'>Cancel</button>");
             messageRow.append(cancelBtn);
-            cancelBtn.on("click", function ()
-            {
-               /*tableRow.css(
-                {
-                position: ""
-                });*/
-               //messageRow.empty();
-               //alert()
-               messageRow.animate(
-                       {
-                          transform: "scale(0,1)"
-                                  //left: del.position().left + (del.outerWidth() / 2)
-                       },
-               400, "Power3.easeInOut", function ()
-               {
-                  messageRow.remove();
-               });
+            cancelBtn.on("click", function () {
+               messageRow.animate({
+                  transform: "scale(0,1)"
+               },
+                       400,
+                       "Power3.easeInOut",
+                       function () {
+                          messageRow.remove();
+                       });
             });
-            $(document).one("keydown", function (e)
-            {
-               if (e.keyCode === 27)
-               {
+
+            $(document).one("keydown", function (e) {
+               if (e.keyCode === 27) {
                   cancelBtn.click();
                }   // esc
             });
             ewTable.tableBodyDiv.append(messageRow);
-            messageRow.animate(
-                    {
-                       transform: "scale(1,1)"
-                               //left: "0px"
-                    },
-            400, "Power2.easeInOut");
+            messageRow.animate({
+               transform: "scale(1,1)"
+            },
+                    400,
+                    "Power2.easeInOut");
          };
          if (ewTable.config.onDelete.apply(tableRow, new Array(fieldId)))
             tableRow.removeRow(fieldId);
       });
       actionsCellBtns.push(del);
-      //actionsCell.append(del);
    }
 
-   if (ewTable.config.buttons)
-   {
-      $.each(ewTable.config.buttons, function (k, v)
-      {
+   if (ewTable.config.buttons) {
+      $.each(ewTable.config.buttons, function (k, v) {
          if (!v)
             return;
          var btnAction = v.action || v;
@@ -1640,8 +1597,7 @@ EWTable.prototype.createRow = function (val, rc)
 //alert(row);
       //index++;
       //});
-   }
-   else
+   } else
    {
 
       $.each(val, function (k, v)
@@ -1701,7 +1657,7 @@ EWTable.prototype.read = function (customURLData)
               token: self.token,
               size: self.pageSize
            },
-   customURLData);
+           customURLData);
    $.ajax({
       type: self.method || "GET",
       url: self.url,
@@ -1714,8 +1670,7 @@ EWTable.prototype.read = function (customURLData)
          {
             self.next.css('visibility', 'hidden');
             tillRow = data.totalRows;
-         }
-         else
+         } else
          {
             self.next.css('visibility', 'visible');
          }
@@ -1820,8 +1775,7 @@ EverythingWidgets.prototype.addHashHandler = EverythingWidgets.prototype.addURLH
          customHashes[hashName] = new HashListener(hashName);
 
       customHashes[hashName].addHandler(hashName, handler);
-   }
-   else
+   } else
    {
       for (var i = 0; i < handlers.length; i++)
       {
@@ -1840,8 +1794,7 @@ EverythingWidgets.prototype.addHashHandler = EverythingWidgets.prototype.addURLH
    if (hashName)
    {
       customHashes[hashName].newHandler = true;
-   }
-   else
+   } else
       this.newHandler = true;
    return handler;
    //handler.call();
@@ -2065,8 +2018,7 @@ function EWNotification(element, options)
             this.$note.html(this.options.message.html);
          else if (this.options.message.text)
             this.$note.text(this.options.message.text);
-      }
-      else
+      } else
       {
          this.$note.html(this.options.message);
       }
@@ -2130,10 +2082,10 @@ EWNotification.prototype.show = function ()
       marginLeft: "-=50",
       opacity: "1"
    },
-   300, function () {
-      if ($this.options.delay !== "stay")
-         $this.$note.delay($this.options.delay || 3000).fadeOut('slow', $.proxy($this.closeNotification, $this));
-   });
+           300, function () {
+              if ($this.options.delay !== "stay")
+                 $this.$note.delay($this.options.delay || 3000).fadeOut('slow', $.proxy($this.closeNotification, $this));
+           });
 };
 EWNotification.prototype.hide = function ()
 {
@@ -2173,8 +2125,7 @@ function EWFormValidator(element, options)
                   return false;
                }
 
-            }
-            else
+            } else
             {
                return false;
             }
@@ -2269,7 +2220,7 @@ function ExtendableList(element, cSettings)
    this.settings = $.extend({
       value: []
    },
-   cSettings);
+           cSettings);
    //this.$element.find("li:first-child").prepend('<div class="handle"></div>');
 
    this.firstItemClone = this.$element.find("li:first-child").clone();
@@ -2344,9 +2295,9 @@ ExtendableList.prototype.createItem = function ()
          height: "toggle",
          opacity: 0
       },
-      300, "Power2.easeOut", function () {
-         originalModelClone.remove();
-      });
+              300, "Power2.easeOut", function () {
+                 originalModelClone.remove();
+              });
    });
    controlRow.append(removeBtn);
    originalModelClone.prepend(controlRow);
@@ -2531,8 +2482,7 @@ EverythingWidgets.prototype.initPlugins = function ($element)
          $element.EW().imageChooser();
       if ($element.is("[data-slider]"))
          $element.simpleSlider();
-   }
-   else
+   } else
    {
       // set input and textarea dir to auto
       $element.find("input, textarea").attr("dir", "auto");
@@ -2574,8 +2524,7 @@ $(document).ready(function () {
                   if (typeof EW.activities[activity].postData == 'function')
                   {
                      $.extend(postData, EW.activities[activity].postData());
-                  }
-                  else
+                  } else
                   {
                      $.extend(postData, EW.activities[activity].postData);
                   }
@@ -2629,8 +2578,7 @@ $(document).ready(function () {
             $.extend(settings, EW.activities[activity].modal);
             //modal = self.createModal(settings);
             EW.activities[activity].modalObject = EW.createModal(settings);
-         }
-         else
+         } else
          {
             alert("Activity not found: " + activity);
             EW.setHashParameters({
@@ -2638,8 +2586,7 @@ $(document).ready(function () {
             });
          }
          oldEWActivity = activity;
-      }
-      else if (oldEWActivity != activity)
+      } else if (oldEWActivity != activity)
       {//alert(activity+" "+oldEWActivity);
          if (oldEWActivity && EW.activities[oldEWActivity].modalObject)
             EW.activities[oldEWActivity].modalObject.trigger("close");
@@ -2667,8 +2614,7 @@ $(document).ready(function () {
                if (typeof EW.activities[activity].postData == 'function')
                {
                   postData = EW.activities[activity].postData.apply(EW.activities[activity]);
-               }
-               else
+               } else
                   postData = EW.activities[activity].postData;
             }
             // Do not proceed further if postData is null
@@ -2678,7 +2624,7 @@ $(document).ready(function () {
                EW.setHashParameters({
                   ew_activity: null
                },
-               "FORMLESS_ACTIVITY");
+                       "FORMLESS_ACTIVITY");
                return;
             }
             $.post(EW.activities[activity].url, postData, function (data) {
@@ -2689,8 +2635,7 @@ $(document).ready(function () {
                // Trigger activityName.done event
                $(document).trigger(activity + ".done", data);
             }, "json");
-         }
-         else
+         } else
          {
             alert("Formless activity not found");
             //self.setHashParameters({ew_activity: null});
@@ -2699,6 +2644,6 @@ $(document).ready(function () {
       EW.setHashParameters({
          ew_activity: null
       },
-      "FORMLESS_ACTIVITY");
+              "FORMLESS_ACTIVITY");
    }, "FORMLESS_ACTIVITY");
 });

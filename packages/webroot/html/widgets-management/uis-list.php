@@ -65,30 +65,30 @@
       this.bNewUIS.comeIn(300);
 
       this.table = EW.createTable({name: "uis-list", rowLabel: "{name}", columns: ["name", "template"], headers: {Name: {}, Template: {}}, rowCount: true, url: "<?php echo EW_ROOT_URL; ?>~webroot-api/WidgetsManagement/get_uis_list", pageSize: 30
-         , onDelete: function (id)
-         {
+         , onDelete: function (id) {
 
             this.confirm("Are you sure of deleting this UIS?", function () {
-               $.post('<?php echo EW_ROOT_URL; ?>webroot-api/WidgetsManagement/delete_uis', {
+               var _this = this;
+               $.post('<?php echo EW_ROOT_URL; ?>~webroot-api/WidgetsManagement/delete_uis', {
                   uisId: id}, function (data) {
                   EW.setHashParameter("categoryId", null);
                   $("body").EW().notify(data).show();
                   self.table.removeRow(id);
+                  _this._messageRow.remove();
                   return true;
 
                }, "json");
             });
             //uisList.deleteUIS(id);
-         }
-         , onEdit: function (id)
-         {
+         },
+         onEdit: function (id) {
             EW.setHashParameters({"uis-id": id, "cmd": "edit-uis"});
          }
          , buttons: {"tr{Clone}": function (row)
             {
                if (confirm("Are you sure you want to clone UIS:" + row.data("field-name") + "?"))
                {
-                  $.post('<?php echo EW_ROOT_URL; ?>webroot-api/WidgetsManagement/clone_uis', {uisId: row.data("field-id")}, function (data) {
+                  $.post('<?php echo EW_ROOT_URL; ?>~webroot-api/WidgetsManagement/clone_uis', {uisId: row.data("field-id")}, function (data) {
                      self.table.refresh();
                      $("body").EW().notify(data).show();
                   }, "json");
@@ -159,7 +159,7 @@
    {
       var self = this;
       //EW.lock(uisList.currentTopPane, "Saving...");
-      $.post('<?php echo EW_ROOT_URL; ?>webroot-api/WidgetsManagement/delete_uis', {
+      $.post('<?php echo EW_ROOT_URL; ?>~webroot-api/WidgetsManagement/delete_uis', {
          uisId: id}, function (data) {
          EW.setHashParameter("categoryId", null);
          $("body").EW().notify(data).show();
@@ -170,13 +170,13 @@
    };
 
    /*widgetsManagement.onBackToWM = function ()
-   {
-      var self = this;
-      self.bNewUIS.remove();
-      EW.removeURLHandler(self.handler);
-      //uisList.bEditUIS.remove();
-      EW.setHashParameter('ui_structure_id', null);
-   };*/
+    {
+    var self = this;
+    self.bNewUIS.remove();
+    EW.removeURLHandler(self.handler);
+    //uisList.bEditUIS.remove();
+    EW.setHashParameter('ui_structure_id', null);
+    };*/
 
    UIStructureList.prototype.listUIStructures = function ()
    {
@@ -209,15 +209,13 @@
                uisList.loadNewUISForm();
             }
             //uisList.bEditUIS.comeOut(200);
-         }
-         else
+         } else
          {
             if (uisId)
             {
                //uisList.bEditUIS.comeIn(300);
                //uisList.selectUIS($("#uis-list tr[data-id=" + uisId + "]"));
-            }
-            else
+            } else
             {
                //uisList.bEditUIS.comeOut(200);
                //uisList.selectUIS(null);

@@ -23,27 +23,27 @@ class APIResourceHandler extends ResourceHandler
        'DELETE' => 'delete'
    ];
 
-   protected function handle($app, $app_resource_path, $module_name, $method_name, $parameters = null)
+   protected function handle($app, $app_resource_path, $module_name, $command_name, $parameters = null)
    {
       $verb = $this->verbs[$_SERVER['REQUEST_METHOD']];
 
-      $method_name = $method_name ? $method_name : $verb;
+      $command_name = $command_name ? $command_name : $verb;
       // parse method name to a api method name
-      $method_name = str_replace('-', '_', $method_name);
+      $method_name = str_replace('-', '_', $command_name);
 
       // Parse module name to a api module name
-      $module_name = \EWCore::hyphenToCamel($module_name);
+      $module_class_name = \EWCore::hyphenToCamel($module_name);
 
       $app_name = $app->get_root();
       $resource_name = $app_resource_path[1];
-      $real_class_name = $app_name . '\\' . $module_name;
-      if (!$module_name)
+      $real_class_name = $app_name . '\\' . $module_class_name;
+      if (!$module_class_name)
       {
          return \EWCore::log_error(400, "<h4>$app_name-api </h4><p>Please specify the api command</p>");
       }
       if (class_exists($real_class_name))
       {
-         $permission_id = \EWCore::does_need_permission($app_name, $module_name, $method_name);
+         $permission_id = \EWCore::does_need_permission($app_name, $module_name, 'api/' . $command_name);
          if ($permission_id && $permission_id !== FALSE)
          {
             if (\admin\UsersManagement::user_has_permission($app_name, $module_name, $permission_id, $_SESSION['EW.USER_ID']))
@@ -54,14 +54,14 @@ class APIResourceHandler extends ResourceHandler
             else
             {
                return \EWCore::log_error(403, "tr{You do not have permission for this command}", array(
-                           "Access Denied" => "$app_name/$module_name/$method_name"));
+                           "Access Denied" => "$app_name/$module_class_name/$method_name"));
             }
          }
          $app_section_object = new $real_class_name($app);
          $result = $app_section_object->process_request($verb, $method_name, $parameters);
 
-         $listeners = \EWCore::read_registry("$app_name-$resource_name/$module_name/$method_name" . '_listener');
-         
+         $listeners = \EWCore::read_registry("$app_name-$resource_name/$module_class_name/$method_name" . '_listener');
+
          if (isset($listeners) && !is_array($result))
          {
 
@@ -92,7 +92,7 @@ class APIResourceHandler extends ResourceHandler
                   {
                      $listener_method_object = new \ReflectionMethod($listener["object"], $listener["function"]);
                      $arguments = \EWCore::create_arguments($listener_method_object, $parameters);
-                     
+
                      $listener_result = $listener_method_object->invokeArgs($listener["object"], $arguments);
 
                      if (isset($listener_result))
@@ -107,7 +107,7 @@ class APIResourceHandler extends ResourceHandler
          {
             echo $e->getTraceAsString();
          }
-         
+
          if (is_array($result))
          {
             return json_encode($result);
@@ -116,7 +116,7 @@ class APIResourceHandler extends ResourceHandler
       }
       else
       {
-         return \EWCore::log_error(404, "<h4>$app_name-api </h4><p>Section `$module_name` not found</p>");
+         return \EWCore::log_error(404, "<h4>$app_name-api </h4><p>Section `$module_class_name` not found</p>");
       }
    }
 

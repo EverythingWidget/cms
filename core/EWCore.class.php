@@ -1937,8 +1937,10 @@ class EWCore
       {
          foreach ($pers as $key => $value)
          {
+            
             foreach ($value["methods"] as $method)
             {
+               //echo $method." -> $method_name<br>";
                //if(strpos(':', $method))
                //explode(':', $method);
                if ($method_name === $method)

@@ -45,11 +45,8 @@ class App
       if (!file_exists($path))
          return;
       $sections = scandir($path);
-      //$section_dir = readdir($section_dirs);
-      //echo count($sections);
 
       for ($in = 0, $len = count($sections); $in < $len; $in++)
-      //while ($section_dir = readdir($section_dirs))
       {
          $section_name = $sections[$in];
          if (strpos($section_name, '.') === 0)
@@ -66,7 +63,7 @@ class App
 
          $section_class_name = substr($section_name, 0, $i);
          $real_class_name = "$app_root\\$section_class_name";
-         
+
          if (array_key_exists('ew\Module', class_parents($real_class_name)))
          {
             $sc = new $real_class_name($this);
@@ -79,27 +76,28 @@ class App
       //session_destroy();
       $app_name = $this->get_root();
 
-      $permission_id = \EWCore::does_need_permission($app_name);
-      // Get permission id for the requested method or FALSE in the case of no permission id available
-      if ($permission_id === true)
+//      $permission_id = \EWCore::does_need_permission($app_name);
+//      //var_dump($app_name);
+//      // Get permission id for the requested method or FALSE in the case of no permission id available
+//      if ($permission_id === true)
+//      {
+//         if (\admin\UsersManagement::user_has_permission_for_resource($app_name, $app_resource_path[1], $_SESSION['EW.USER_GROUP_ID']))
+//         {
+      if ($this->resources[$app_resource_path[1]])
       {
-         if (\admin\UsersManagement::user_has_permission_for_resource($app_name, $app_resource_path[1], $_SESSION['EW.USER_GROUP_ID']))
-         {
-            if ($this->resources[$app_resource_path[1]])
-            {
-               return $this->resources[$app_resource_path[1]]->process($this, $app_resource_path, $module_name, $method_name, $parameters);
-            }
-            else
-            {
-               return \EWCore::log_error(404, "<h4>Resource not found</h4><p>Resource `$app_resource_path[1]/$module_name/$method_name`, not found</p>");
-            }
-         }
-         else
-         {
-            return \EWCore::log_error(403, "tr{You do not have permission for this resource}", array(
-                        "Access Denied" => "$app_name/$module_name/$method_name"));
-         }
+         return $this->resources[$app_resource_path[1]]->process($this, $app_resource_path, $module_name, $method_name, $parameters);
       }
+      else
+      {
+         return \EWCore::log_error(404, "<h4>Resource not found</h4><p>Resource `$app_resource_path[1]/$module_name/$method_name`, not found</p>");
+      }
+//         }
+//         else
+//         {
+//            return \EWCore::log_error(403, "tr{You do not have permission for this resource}", array(
+//                        "Access Denied" => "$app_name/$module_name/$method_name"));
+//         }
+//      }
 
       if ($this->resources[$app_resource_path[1]])
       {
@@ -173,8 +171,7 @@ class App
       include $full_path;
       $res = ob_get_clean();
 
-      return preg_replace_callback("/\{\{([\w]*)\}\}/", function($match) use ($view_data)
-      {
+      return preg_replace_callback("/\{\{([\w]*)\}\}/", function($match) use ($view_data) {
          return $view_data[$match[1]];
       }, $res);
    }
@@ -189,17 +186,17 @@ class App
    {
       $this->resources[$name] = $func;
    }
-   
+
    public function get_app_api_modules()
    {
       $root = $this->get_root();
-      $path = EW_PACKAGES_DIR . '/' .$root . '/api/';
+      $path = EW_PACKAGES_DIR . '/' . $root . '/api/';
 
       $modules = opendir($path);
       $sections = array();
 
       // Search app's root's dir
-      
+
       while ($module_file = readdir($modules))
       {
          if (strpos($module_file, '.') === 0)
@@ -215,10 +212,10 @@ class App
          }
 
          if (class_exists($module_full_name) && get_parent_class($module_full_name) == 'ew\Module')
-         {            
-            $module = new $module_full_name($this);          
+         {
+            $module = new $module_full_name($this);
             $permission_id = \EWCore::does_need_permission($root, $module_name, $module->get_index());
-            
+
             if ($permission_id && $permission_id !== FALSE)
             {
                // Check for user permission
