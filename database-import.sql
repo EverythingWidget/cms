@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 05, 2015 at 03:28 PM
+-- Generation Time: Nov 05, 2015 at 03:46 PM
 -- Server version: 10.0.17-MariaDB
 -- PHP Version: 5.6.14
 
@@ -180,7 +180,7 @@ CREATE TABLE `ew_users` (
 
 INSERT INTO `ew_users` (`id`, `email`, `password`, `first_name`, `last_name`, `type`, `group_id`, `permission`, `date_created`, `verification_code`, `verified`, `verification_date`, `disable`) VALUES
 (1, 'admin', 'admin', 'Eeliya', 'Rasta', 1, 9, NULL, NULL, NULL, NULL, NULL, 0),
-(2, 'test edited', 'utB78Fgu', 'test edited', 'test edited', 0, 0, NULL, '2014-03-18 10:24:36', NULL, NULL, NULL, 0),
+(2, 'test edited', 'utB78Fgu', 'test edited', 'test edited', 0, 1, NULL, '2014-03-18 10:24:36', NULL, NULL, NULL, 0),
 (3, 'reza.hakim', 'GtzdwcS2', 'Reza', 'Hakim', 0, 9, NULL, '2014-03-20 13:35:54', NULL, NULL, NULL, 0),
 (4, 'eeliya.rasta@gmail.com', 'Etc3TitY', 'Eeliya', 'King', 0, 9, NULL, '2014-04-03 23:10:29', NULL, NULL, NULL, 0),
 (5, 'Igor ', '1qay2wsx', 'Igor', 'Fofic', 0, 9, NULL, '2014-04-24 14:00:00', NULL, NULL, NULL, 0);
@@ -206,9 +206,9 @@ CREATE TABLE `ew_users_groups` (
 --
 
 INSERT INTO `ew_users_groups` (`id`, `parent_id`, `title`, `description`, `type`, `date_created`, `permission`) VALUES
-(0, NULL, 'Guest', 'All the visitors', 'default', '2014-03-06 22:27:36', 'admin.ContentManagement.see-content,admin.UsersManagement.see-users,admin.UsersManagement.see-groups,culturenight.Countries.see-countries,culturenight.Events.see-event'),
+(1, NULL, 'Guest', 'All the visitors', 'default', '2014-03-06 22:27:36', 'admin.content-management.see-content,admin.users-management.see-users,admin.users-management.see-groups,webroot.widgets-management.view'),
 (4, NULL, 'Event Modetore', 'Responsible for add events and remove junk events', 'user', '2014-03-06 22:37:00', 'culturenight.Countries.see-countries,culturenight.Countries.manipulate-countries,culturenight.Events.see-event,culturenight.Events.manipulate-event'),
-(9, NULL, 'Administration', 'Website administrators', 'user', '2014-03-08 16:27:31', 'admin.UsersManagement.see-users,admin.UsersManagement.manipulate-users,admin.UsersManagement.see-groups,admin.UsersManagement.manipulate-groups,admin.WidgetsManagement.view,admin.WidgetsManagement.export-uis,admin.WidgetsManagement.import-uis,culturenight.Countries.see-countries,culturenight.Countries.manipulate-countries,culturenight.Events.see-event,culturenight.Events.manipulate-event');
+(9, NULL, 'Administration', 'Website administrators', 'user', '2014-03-08 16:27:31', 'admin.content-management.see-content,admin.content-management.manipulate-content,admin.users-management.see-users,admin.users-management.manipulate-users,admin.users-management.see-groups,admin.users-management.manipulate-groups,webroot.widgets-management.view,webroot.widgets-management.export-uis,webroot.widgets-management.import-uis');
 
 -- --------------------------------------------------------
 
