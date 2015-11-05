@@ -1,10 +1,11 @@
 {
-   "require": {
-      "illuminate/database": "*",
-      "simple-validator/simple-validator": "dev-master"
+   "require":{
+      "illuminate/database":"*",
+      "simple-validator/simple-validator":"dev-master",
+      "vlucas/valitron":"1.2.3"
    },
-  "config": {
-        "vendor-dir": "modules/"
-    }
-   
+   "config":{
+      "vendor-dir":"modules/"
+   }
+
 }

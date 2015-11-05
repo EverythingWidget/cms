@@ -17,30 +17,30 @@ class HTMLResourceHandler extends ResourceHandler
 {
 
    private $mime_types = array(
-       "pdf" => "application/pdf",
-       "exe" => "application/octet-stream",
-       "zip" => "application/zip",
+       "pdf"  => "application/pdf",
+       "exe"  => "application/octet-stream",
+       "zip"  => "application/zip",
        "docx" => "application/msword",
-       "doc" => "application/msword",
-       "xls" => "application/vnd.ms-excel",
-       "ppt" => "application/vnd.ms-powerpoint",
-       "gif" => "image/gif",
-       "png" => "image/png",
+       "doc"  => "application/msword",
+       "xls"  => "application/vnd.ms-excel",
+       "ppt"  => "application/vnd.ms-powerpoint",
+       "gif"  => "image/gif",
+       "png"  => "image/png",
        "jpeg" => "image/jpg",
-       "jpg" => "image/jpg",
-       "mp3" => "audio/mpeg",
-       "wav" => "audio/x-wav",
+       "jpg"  => "image/jpg",
+       "mp3"  => "audio/mpeg",
+       "wav"  => "audio/x-wav",
        "mpeg" => "video/mpeg",
-       "mpg" => "video/mpeg",
-       "mpe" => "video/mpeg",
-       "mov" => "video/quicktime",
-       "avi" => "video/x-msvideo",
-       "3gp" => "video/3gpp",
-       "css" => "text/css",
-       "jsc" => "application/javascript",
-       "js" => "application/javascript",
-       "php" => "text/html",
-       "htm" => "text/html",
+       "mpg"  => "video/mpeg",
+       "mpe"  => "video/mpeg",
+       "mov"  => "video/quicktime",
+       "avi"  => "video/x-msvideo",
+       "3gp"  => "video/3gpp",
+       "css"  => "text/css",
+       "jsc"  => "application/javascript",
+       "js"   => "application/javascript",
+       "php"  => "text/html",
+       "htm"  => "text/html",
        "html" => "text/html");
 
    public function get_mime_type($path)
@@ -55,6 +55,7 @@ class HTMLResourceHandler extends ResourceHandler
       $matches = array();
       preg_match('/(.*\.[^-]{2,4})/', $parameters["_file"], $matches);
       $file = isset($matches[1]) ? $matches[1] : $parameters["_file"];
+      $path = null;
 
       if (\EWCore::is_widget_feeder("*", "*", $module_name))
       {
@@ -63,38 +64,27 @@ class HTMLResourceHandler extends ResourceHandler
          $app->index();
          return ob_get_clean();
       }
-      else if ($module_name)
+      else if ($module_name && $file)
       {
-         if ($file)
-         {
-            $path = implode('/', $app_resource_path) . '/' . $module_name . '/' . $file;
-         }
-         else
-         {
-            $path = implode('/', $app_resource_path) . '/' . $module_name . '/index.php';
-         }
+         $path = implode('/', $app_resource_path) . '/' . $module_name . '/' . $file;
       }
-      else
+      else if (!isset($file))
       {
          // if file is not specified, then open the index
-         if (!isset($file))
-         {
-            // Refer to app index
-            ob_start();
-            $app->index();
-            return ob_get_clean();
-         }
-
-         // Refer to app section index
-         $path = implode('/', $app_resource_path) . '/' . $parameters["_file"];
+         // app index file or package/index.php file should be public and accessible via all the users
+         // any sort of permission should implemented by the developer
+         $app_index = $app->index();
+         $module_name = $app_index['module'];
+         $method_name = $app_index['file'];
+         $path = implode('/', $app_resource_path) . '/' . $module_name . '/' . $method_name;
       }
 
-      if ($path && file_exists(EW_PACKAGES_DIR . '/' . $path))
+      if ($path !== null && is_file(EW_PACKAGES_DIR . '/' . $path))
       {
          $permission_id = \EWCore::does_need_permission($app->get_root(), $module_name, 'html/' . $method_name);
          if ($permission_id && $permission_id !== FALSE)
          {
-            if (\admin\UsersManagement::user_has_permission($app->get_root(), $module_name, $permission_id, $_SESSION['EW.USER_ID']))
+            if (\admin\UsersManagement::user_has_permission($app->get_root(), $module_name, $permission_id, $_SESSION['EW.USER_GROUP_ID']))
             {
                if ($this->get_mime_type($path))
                {
@@ -117,7 +107,7 @@ class HTMLResourceHandler extends ResourceHandler
             return ob_get_clean();
          }
       }
-      else if ($path)
+      else
       {
          //echo $app_resource_path[1];
          return \EWCore::log_error(404, "<h4>Constract: File not found</h4><p>File `$path`, not found</p>");

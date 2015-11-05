@@ -10,7 +10,7 @@ ob_start();
 require '../core/config/config.php';
 require '../core/config/database_config.php';
 require '../core/EWCore.class.php';
-require '../core/modules/Valitron/Validator.php';
+/*require '../core/modules/Valitron/Validator.php';*/
 ob_end_clean();
 if (ob_get_level())
    ob_end_clean();

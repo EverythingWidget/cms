@@ -170,12 +170,12 @@ class UsersManagement extends \ew\Module
     * @param string $user_id
     * @return boolean
     */
-   public static function user_has_permission($app_name, $class_name, $permission_id, $user_id)
+   public static function user_has_permission($app_name, $class_name, $permission_id, $user_group_id)
    {
       $db_con = \EWCore::get_db_connection();
 
-      $user = $db_con->query("SELECT * FROM ew_users, ew_users_groups WHERE ew_users.group_id = ew_users_groups.id AND ew_users.id = '$user_id' LIMIT 1") or die($db_con->error);
-      if ($user_info = $user->fetch_assoc())
+      $permissions = $db_con->query("SELECT ew_users_groups.permission FROM ew_users_groups WHERE id = '$user_group_id' LIMIT 1") or die($db_con->error);
+      if ($user_info = $permissions->fetch_assoc())
       {
          $user_permissions = explode(",", $user_info["permission"]);
          foreach ($user_permissions as $permission)

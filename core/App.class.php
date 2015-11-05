@@ -139,11 +139,11 @@ class App
    public function get_app_details()
    {
       return array(
-          "name" => $this->name,
+          "name"        => $this->name,
           "description" => $this->description,
-          "version" => $this->version,
-          "type" => $this->type,
-          "root" => $this->get_root());
+          "version"     => $this->version,
+          "type"        => $this->type,
+          "root"        => $this->get_root());
    }
 
    public function get_path($path)
@@ -178,8 +178,10 @@ class App
 
    public function index()
    {
-      $path = $this->get_path('index.php');
-      include $path;
+      return [
+          'module' => 'html',
+          'file'   => 'index.php'
+      ];
    }
 
    public function addResource($name, $func)
@@ -219,7 +221,7 @@ class App
             if ($permission_id && $permission_id !== FALSE)
             {
                // Check for user permission
-               if (!UsersManagement::user_has_permission($root, $module_name, $permission_id, $_SESSION['EW.USER_ID']))
+               if (!UsersManagement::user_has_permission($root, $module_name, $permission_id, $_SESSION['EW.USER_GROUP_ID']))
                {
                   continue;
                }
@@ -227,8 +229,8 @@ class App
 
             if ($module->get_title() && !$module->is_hidden())
                $sections[] = array(
-                   "title" => "tr:$appDir" . "{" . $module->get_title() . "}",
-                   "className" => $module_name,
+                   "title"       => "tr:$appDir" . "{" . $module->get_title() . "}",
+                   "className"   => $module_name,
                    "description" => "tr:$appDir" . "{" . $module->get_description() . "}");
          }
       }

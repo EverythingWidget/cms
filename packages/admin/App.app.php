@@ -28,41 +28,9 @@ class App extends \ew\App
 
    public function index()
    {
-      /*$compId = isset($_REQUEST['compId']) ? $_REQUEST['compId'] : null;
-      $secId = $_REQUEST['_section_name'];
-      $className = $_REQUEST['className'];
-      $cmd = $_REQUEST['cmd'];
-      $compPage = null;
-      $pageTitle = 'Administration';
-      $view_data = [];
-      $sectionTitle = '';
-      if (!$compId)
-      {
-         $compId = "AppsManagement";
-      }
-      //print_r($_REQUEST);
-      if (class_exists("admin\\" . $compId))
-      {
-         $ccc = "admin\\" . $compId;
-         $sc = new $ccc($ccc, $_REQUEST);
-
-         // Load current component content
-         $compPage = \EWCore::process_request_command("admin/html", $compId, null);
-         $temp = json_decode($compPage, true);
-         // If the statusCode is not 200 then show the error
-         if ($temp["statusCode"] && $temp["statusCode"] != 200)
-         {
-            //http_response_code(200);
-            header('Content-Type: text/html');
-            $compPage = "<div class='box box-error'><h2>{$temp["statusCode"]}</h2>{$temp["message"]}</div>";
-         }
-         $pageTitle = "tr{" . $sc->get_title() . "}";
-      }
-      $this->load_view('html/index.php', compact(['compPage',
-          'pageTitle',
-          'compId']));*/
-      
-      include $this->get_path('html/index.php');
+      return [
+          'module' => 'dashboard',
+          'file' => 'index.php'
+      ];
    }
-
 }

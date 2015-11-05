@@ -46,7 +46,7 @@ class APIResourceHandler extends ResourceHandler
          $permission_id = \EWCore::does_need_permission($app_name, $module_name, 'api/' . $command_name);
          if ($permission_id && $permission_id !== FALSE)
          {
-            if (\admin\UsersManagement::user_has_permission($app_name, $module_name, $permission_id, $_SESSION['EW.USER_ID']))
+            if (\admin\UsersManagement::user_has_permission($app_name, $module_name, $permission_id, $_SESSION['EW.USER_GROUP_ID']))
             {
                $app_section_object = new $real_class_name($app);
                return $app_section_object->process_request($verb, $method_name, $parameters);

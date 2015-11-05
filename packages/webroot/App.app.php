@@ -23,8 +23,10 @@ class App extends \ew\App
    
    public function index()
    {
-      $path = $this->get_path('html/index.php');
-      include $path;
+      return [
+          'module' => 'home',
+          'file'   => 'index.php'
+      ];
    }
 
 }

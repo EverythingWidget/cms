@@ -32,6 +32,7 @@ class WidgetsManagement extends \ew\Module
       ob_start();
       include EW_ROOT_DIR . 'packages/admin/html/WidgetsManagement/link-chooser-uis.php';
       $lcd = ob_get_clean();
+      
       EWCore::register_form("ew-link-chooser-form-default", "link-chooser-uis-list", ["title" => "UI Structures",
           "content" => $lcd]);
 
