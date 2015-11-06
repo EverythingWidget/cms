@@ -749,13 +749,14 @@ body.Admin {
 }
 
 .top-pane.full {
-   top: 0px;
-   right: 15px;
+   top: 0;
+   right: 0;
    bottom: 0;
-   left: 15px;
+   left: 0;
    width: auto;
    min-height: 30%;
-   max-width: 100%;
+   max-width: 1360px;
+   margin: 0px 15px;
 }
 
 .top-pane .row h3 {
@@ -993,22 +994,26 @@ button {
 .home-pane {
    width: 100%;
    position: absolute;
-   overflow: auto;
+   /* overflow: auto; */
    padding-top: 50px;
-   top: 100%;
-   bottom: auto;
+   /* top: 94px; */
+   /* bottom: auto; */
    /*transition:all .3s ease-out;*/
-   /* background-color: red; */;
+   /* background-color: red; */
+   transform: scale(.86);
+   opacity: 0;
 }
 
 .home-pane.in {
    top: 0;
-   bottom: 0px;
+   /* bottom: 0px; */
+   opacity: 1;
+   transform: scale(1);
 }
 
 .apps-list {
    list-style: none;
-   width: 1100px;
+   max-width: 1100px;
    display: block;
    margin: 0 auto;
    padding: 0;
@@ -1442,6 +1447,7 @@ div#components-pane {
    font-weight: 700;
    box-shadow: none;
    text-align: left;
+   text-transform: none;
 }
 
 .app-bar-nav.in {
@@ -2365,12 +2371,16 @@ textarea.text-field {
    border-radius: 0;
    border-width: 1px 0;
    margin-top: -1px;
+   /* transition: box-shadow .2s; */
+   /* transition-property:  background-color; */
+   /* transition-duration: .2s; */
 }
 
 .row-block:hover {
-   border-color: rgba(0,0,0,.3);
+   border-color: transparent;
    z-index: 2;
-   box-shadow: 0 4px 12px 0 rgba(0,0,0,0.24);
+   box-shadow: 0 3px 5px 0 rgba(0,0,0,0.12),0 1px 10px rgba(0,0,0,.16);
+   background-color: #F55043;
 }
 
 .row-block-p {

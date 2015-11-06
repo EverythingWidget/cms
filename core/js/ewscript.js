@@ -753,6 +753,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
             basePane.append(modalPane, xButton);
             //$("body").append(xButton);
          }
+         modalPane.css("left", ($(window).width() - modalPane.outerWidth(true)) / 2);
          originElement = self.activeElement;
          if (settings.initElement && originElement && originElement.parent().length !== 0 && $.contains(document, originElement[0]))
          {

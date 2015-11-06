@@ -170,7 +170,7 @@ class UsersManagement extends \ew\Module
     * @param string $user_id
     * @return boolean
     */
-   public static function user_has_permission($app_name, $class_name, $permission_id, $user_group_id)
+   public static function group_has_permission($app_name, $class_name, $permission_id, $user_group_id)
    {
       $db_con = \EWCore::get_db_connection();
 
@@ -228,7 +228,20 @@ class UsersManagement extends \ew\Module
       return FALSE;
    }
 
-   public function get_users_list($_verb, $token = 0, $size = 999999)
+   public static function user_has_permission($app_name, $resource, $module_name, $command_name)
+   {
+      $permission_id = \EWCore::does_need_permission($app_name, $module_name, $resource . '/' . $command_name);
+      if ($permission_id && $permission_id !== FALSE)
+      {
+         if (!static::group_has_permission($app_name, $module_name, $permission_id, $_SESSION['EW.USER_GROUP_ID']))
+         {
+            return false;
+         }
+      }
+      return true;
+   }
+
+   public function users($_verb, $token = 0, $size = 999999)
    {
       $db = \EWCore::get_db_connection();
 
@@ -290,7 +303,7 @@ class UsersManagement extends \ew\Module
       return json_encode($out);
    }
 
-   public static function get_user_group_by_id($groupId)
+   public function get_user_group_by_id($groupId)
    {
       $db = \EWCore::get_db_connection();
       if (!$groupId)
@@ -300,27 +313,9 @@ class UsersManagement extends \ew\Module
 
       if ($rows = $result->fetch_assoc())
       {
-         $db->close();
-
-         /* $actions = EWCore::read_actions_registry("ew-article-action-get");
-           try
-           {
-           foreach ($actions as $userId => $data)
-           {
-           if (method_exists($data["class"], $data["function"]))
-           {
-           $func_result = call_user_func(array($data["class"], $data["function"]), $rows);
-           if ($func_result)
-           $rows = $func_result;
-           }
-           }
-           } catch (Exception $e)
-           {
-
-           } */
-
-         return json_encode($rows);
+         return $rows;
       }
+      return null;
    }
 
    public static function get_users_group_by_type($type)
@@ -431,7 +426,7 @@ class UsersManagement extends \ew\Module
       $db = \EWCore::get_db_connection();
       if (!$groupId)
          $groupId = $db->real_escape_string($_REQUEST["id"]);
-      $group_info = json_decode(self::get_user_group_by_id($groupId), true);
+      $group_info = $this->get_user_group_by_id($groupId);
       $stm = $db->prepare("DELETE FROM ew_users_groups WHERE id = ?");
       $stm->bind_param("s", $groupId);
 
@@ -524,21 +519,21 @@ class UsersManagement extends \ew\Module
       return implode($pass); //turn the array into a string
    }
 
-   public static function add_user($email, $first_name, $last_name, $password, $group_id =0)
+   public static function add_user($email, $first_name, $last_name, $password, $group_id = 0)
    {
       $db = \EWCore::get_db_connection();
-      /*if (!$email)
-         $email = $db->real_escape_string($_REQUEST["email"]);
-      if (!$first_name)
-         $first_name = $db->real_escape_string($_REQUEST["first_name"]);
-      if (!$last_name)
-         $last_name = $db->real_escape_string($_REQUEST["last_name"]);
-      if (!$password)
-         $password = $db->real_escape_string($_REQUEST["password"]);
-      if (!$group_id)
-         $group_id = $db->real_escape_string($_REQUEST["group_id"]);
-      if (!$group_id)
-         $group_id = 0;*/
+      /* if (!$email)
+        $email = $db->real_escape_string($_REQUEST["email"]);
+        if (!$first_name)
+        $first_name = $db->real_escape_string($_REQUEST["first_name"]);
+        if (!$last_name)
+        $last_name = $db->real_escape_string($_REQUEST["last_name"]);
+        if (!$password)
+        $password = $db->real_escape_string($_REQUEST["password"]);
+        if (!$group_id)
+        $group_id = $db->real_escape_string($_REQUEST["group_id"]);
+        if (!$group_id)
+        $group_id = 0; */
 
       if (self::get_user_by_email($email) != NULL)
       {
@@ -602,23 +597,23 @@ class UsersManagement extends \ew\Module
       return json_encode($user_info);
    }
 
-   public function update_user($id, $email, $first_name, $last_name, $password, $group_id= 0)
+   public function update_user($id, $email, $first_name, $last_name, $password, $group_id = 0)
    {
       $db = \EWCore::get_db_connection();
-      /*if (!$id)
-         $id = $db->real_escape_string($_REQUEST["id"]);
-      if (!$email)
-         $email = $db->real_escape_string($_REQUEST["email"]);
-      if (!$first_name)
-         $first_name = $db->real_escape_string($_REQUEST["first_name"]);
-      if (!$last_name)
-         $last_name = $db->real_escape_string($_REQUEST["last_name"]);
-      if (!$password)
-         $password = $db->real_escape_string($_REQUEST["password"]);
-      if (!$group_id)
-         $group_id = $db->real_escape_string($_REQUEST["group_id"]);
-      if (!$group_id)
-         $group_id = 0;*/
+      /* if (!$id)
+        $id = $db->real_escape_string($_REQUEST["id"]);
+        if (!$email)
+        $email = $db->real_escape_string($_REQUEST["email"]);
+        if (!$first_name)
+        $first_name = $db->real_escape_string($_REQUEST["first_name"]);
+        if (!$last_name)
+        $last_name = $db->real_escape_string($_REQUEST["last_name"]);
+        if (!$password)
+        $password = $db->real_escape_string($_REQUEST["password"]);
+        if (!$group_id)
+        $group_id = $db->real_escape_string($_REQUEST["group_id"]);
+        if (!$group_id)
+        $group_id = 0; */
 
       $stm = $db->prepare("UPDATE ew_users SET email = ?, first_name = ?, last_name = ?, password = ?, group_id = ? WHERE id = ?");
       $stm->bind_param("ssssss", $email, $first_name, $last_name, $password, $group_id, $id);
@@ -664,12 +659,16 @@ class UsersManagement extends \ew\Module
 
    public function get($_verb)
    {
-      return $this->get_users_list($_verb);
+      return $this->users($_verb);
       //return \EWCore::log_error(400, "Not defined");
    }
-   
-   public function groups($_verb)
+
+   public function groups($_verb, $_parts)
    {
+      if (isset($_parts[0]))
+      {
+         return $this->get_user_group_by_id($_parts[0]);
+      }
       return $this->get_users_groups_list();
    }
 

@@ -5,12 +5,12 @@ session_start();
 // Do NOT touch this file unless you are expert in Everything Widget CMS
 // All contents inside the apps directory is reached throuth this file
 // parse app_name, section_name, function_name from url
-
+//$time_start = microtime(true);
 ob_start();
 require '../core/config/config.php';
 require '../core/config/database_config.php';
 require '../core/EWCore.class.php';
-/*require '../core/modules/Valitron/Validator.php';*/
+/* require '../core/modules/Valitron/Validator.php'; */
 ob_end_clean();
 if (ob_get_level())
    ob_end_clean();
@@ -63,7 +63,7 @@ $app_name = "webroot/" . $default_recourse;
 
 if ($elements[$parameter_index] && strpos($elements[$parameter_index], '~') === 0)
 {
-   
+
    $app_resource_path = explode('-', str_replace('~', '', $elements[$parameter_index]));
    if (count($app_resource_path) === 1)
    {
@@ -187,7 +187,10 @@ if ($RESULT_CONTENT)
 {
    //$RESULT_CONTENT = preg_replace_callback("/\{\{([^\|]*)\|?([^\|]*)\}\}/", $callback, $RESULT_CONTENT);
    // Show translated result  
-
+   
    echo preg_replace_callback("/tr(\:\w*)?\{(.*?)\}/", "translate", $RESULT_CONTENT);
+   //$time_end = microtime(true);
+   //$time = $time_end - $time_start;
+   //echo  round($time,2) . " s";
 }
 

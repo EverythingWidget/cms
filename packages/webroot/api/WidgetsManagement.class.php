@@ -32,7 +32,7 @@ class WidgetsManagement extends \ew\Module
       ob_start();
       include EW_ROOT_DIR . 'packages/admin/html/WidgetsManagement/link-chooser-uis.php';
       $lcd = ob_get_clean();
-      
+
       EWCore::register_form("ew-link-chooser-form-default", "link-chooser-uis-list", ["title" => "UI Structures",
           "content" => $lcd]);
 
@@ -42,8 +42,8 @@ class WidgetsManagement extends \ew\Module
           "api/get_widgets_types",
           "api/get_all_pages_uis_list",
           "api/get_path_uis",
-          'html/' . $this->get_index()));            
-      
+          'html/' . $this->get_index()));
+
       //global $EW;
       $this->register_form("ew-article-form-tab", "uis_tab", ["title" => "UI"]);
       $this->register_form("ew-category-form-tab", "uis_tab", ["title" => "UI"]);
@@ -582,11 +582,11 @@ class WidgetsManagement extends \ew\Module
       if ($style_id)
          $style_id_text = "id='$style_id'";
 
-      if ($block_name)
-      {
-         require_once EW_TEMPLATES_DIR . "/blocks/" . $block_name . ".php";
-         $block_name::initiate();
-      }
+      /* if ($block_name)
+        {
+        require_once EW_TEMPLATES_DIR . "/blocks/" . $block_name . ".php";
+        $block_name::initiate();
+        } */
       $result_html.= "<div class='block $style_class'  $style_id_text  data-panel-id=\"$panel_id\"  $container_id  $style data-panel-parameters='" . stripcslashes($param_json) . "' data-block='true'>";
       /* if ($parameters["title"] && $parameters["title"] != "none")
         {
@@ -648,11 +648,13 @@ class WidgetsManagement extends \ew\Module
       //$widget_parameters = json_encode($params);
       $widget_title = WidgetsManagement::get_widget_details($widget_type)["title"];
       // Include widget content
-      ob_start();
-      include EW_WIDGETS_DIR . '/' . $widget_type . '/index.php';
-      $widget_content = ob_get_clean();
-      $widget_content = preg_replace('/\{\$widget_id\}/', $widget_id, $widget_content);
-
+      if (file_exists(EW_WIDGETS_DIR . '/' . $widget_type . '/index.php'))
+      {
+         ob_start();
+         include EW_WIDGETS_DIR . '/' . $widget_type . '/index.php';
+         $widget_content = ob_get_clean();
+         $widget_content = preg_replace('/\{\$widget_id\}/', $widget_id, $widget_content);
+      }
       // Add widget style class which specified with UIS editor to the widget
       self::set_widget_style_class($widget_style_class);
       $WIDGET_STYLE_CLASS = self::get_widget_style_class();

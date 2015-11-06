@@ -1784,7 +1784,7 @@ class EWCore
          {
             foreach ($sections_permissions["permission"] as $permission_name => $permission_info)
             {
-               if (admin\UsersManagement::user_has_permission($app_name, $section_name, [$permission_name], $_SESSION['EW.USER_GROUP_ID']))
+               if (admin\UsersManagement::group_has_permission($app_name, $section_name, [$permission_name], $_SESSION['EW.USER_GROUP_ID']))
                {
                   foreach ($permission_info["methods"] as $method)
                   {
@@ -1928,7 +1928,7 @@ class EWCore
       }
 
       if ($pers)
-         $pers = $pers[$module_name]["permission"];
+         $pers = $pers[$module_name]["permission"]; 
       //$permissions_titles = array();
 
       $result = array();
@@ -2128,6 +2128,10 @@ class EWCore
 
    public static function get_comment_parameter($param, $filename)
    {
+      if(!file_exists($filename))
+      {
+         return null;
+      }
       $source = file_get_contents($filename);
       $tokens = token_get_all($source);
       foreach ($tokens as $token)

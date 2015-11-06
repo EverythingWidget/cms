@@ -108,8 +108,7 @@ function get_ew_users_permissions_form()
                      {
                         label.find("i").addClass("correct");
                         label.parent().find("input:not(:checked)").prop('checked', true).parent().addClass("active").find("i").addClass("correct");
-                     }
-                     else
+                     } else
                      {
                         label.find("i").removeClass("correct");
                         label.parent().find("input:checked").prop('checked', false).parent().removeClass("active").find("i").removeClass("correct");
@@ -123,8 +122,7 @@ function get_ew_users_permissions_form()
                         {
                            //alert("zero: "+e.children("label").html());
                            e.children("label").children("input:checked").prop('checked', false).parent().removeClass("active").find("i").removeClass("correct");
-                        }
-                        else if (e.find("li.permission-item input:checked").length > 0)
+                        } else if (e.find("li.permission-item input:checked").length > 0)
                         {
                            //alert("length "+e.find("li.permission-item input:checked").length+", "+e.children("label").html());
                            e.children("label").children("input:not(:checked)").prop('checked', true).parent().addClass("active").find("i").addClass("correct");
@@ -226,34 +224,21 @@ function get_ew_users_permissions_form()
          };
          return new UsersGroupsForm();
       })();
-      //var bSave = EW.addAction("Save", documents.addCategory).addClass("green").hide();
-      //var bEdit = EW.addAction("Save Changes", documents.editCategory).addClass("green").hide();
-      //var bDelete = EW.addAction("Delete", documents.deleteCategory).addClass("orange").hide();
-      /*var formStructure = {id: {type: "hidden"}, parent_id: {type: "hidden"}, title: {label: "Title"}};
-       var f = EW.createForm(formStructure);
-       f.attr({id: "necategory", method: "POST"});
-       $("#ew-ne-article-main-form").append(f.html());*/
    <?php
-   $row = admin\UsersManagement::get_user_group_by_id($_REQUEST["groupId"]);
-   if ($row && $_REQUEST["groupId"])
-   {
-      ?>
-         var formData = <?php echo $row; ?>;
-         $("#form-title").html("<span>tr{Group Info}</span>" + formData["title"]);
-         EW.setFormData("#users-group-form", formData);
-         if (formData)
-         {
-            UsersGroupsForm.readClasses();
-            UsersGroupsForm.bSave.comeIn(300);
-            UsersGroupsForm.bDelete.comeIn(300);
-         }
-         else
-         {
-            UsersGroupsForm.bAdd.comeIn(300);
-         }
-      <?php
-   }
+   $row = EWCore::process_request_command("admin/api", "users-management", "get_user_group_by_id", [$_REQUEST["groupId"]]);
    ?>
+      var formData = <?= isset($row) ? $row : 'null' ?>;
+      EW.setFormData("#users-group-form", formData);
+      if (formData)
+      {
+         $("#form-title").html("<span>tr{Group Info}</span>" + formData["title"]);
+         UsersGroupsForm.readClasses();
+         UsersGroupsForm.bSave.comeIn(300);
+         UsersGroupsForm.bDelete.comeIn(300);
+      } else {
+
+         UsersGroupsForm.bAdd.comeIn(300);
+      }
    </script>
    <?php
    return ob_get_clean();

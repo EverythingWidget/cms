@@ -11,7 +11,7 @@ if (!isset($_SESSION['login']))
 <html>
    <head>
       <title>
-                EW Admin
+         EW Admin
       </title> 
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -53,8 +53,8 @@ if (!isset($_SESSION['login']))
                $("#app-bar-nav").remove();
                //$("#app-bar").removeClass("in");
 
-               $("#app-bar").animate({className: "app-bar"}, 500, "Power2.easeOut");
-               $("#home-pane").animate({className: "home-pane in"}, 500, "Power2.easeOut");
+               $("#app-bar").animate({className: "app-bar"}, 500, "Power2.easeInOut");
+               $("#home-pane").delay(400).animate({className: "home-pane in"}, 500, "Power2.easeInOut");
                return false;
             }
             return true;
@@ -65,8 +65,8 @@ if (!isset($_SESSION['login']))
             $("#apps").show();
 //            $("#app-title").text(app.title);
             $("#action-bar-items").empty();
-            $("#app-bar").animate({className: "app-bar in"}, 500, "Power2.easeOut");
-            $("#home-pane").animate({className: "home-pane"}, 500, "Power2.easeOut");
+            $("#app-bar").animate({className: "app-bar in"}, 500, "Power2.easeInOut");
+            $("#home-pane").animate({className: "home-pane"}, 500, "Power2.easeInOut");
             $("#main-content").remove();
             $("#app-bar-nav").remove();
             setTimeout(function ()
@@ -91,8 +91,8 @@ if (!isset($_SESSION['login']))
          }
 
          System.on('app', function (path, app, sec)
-         {            
-            
+         {
+
             if (!app)
                app = "Home";
 
@@ -120,53 +120,53 @@ if (!isset($_SESSION['login']))
                     {
                        appDir: "admin"
                     },
-            function (data)
-            {
+                    function (data)
+                    {
 
-               var items = ['<ul class="apps-list">'];
-               $.each(data, function (key, val)
-               {
-                  items.push('<li class=""><a data-app="' + val['id'] + '"><label>' + val['title'] + '</label><p>' + val['description'] + '</p></a></li>');
-                  //val.package = "~admin";
-                  val.file = "index.php";
-                  val.id = val['id'];
-                  self.apps[val['id']] = val;
-               });
-               items.push('</ul>');
-               $(items.join('')).appendTo("#home-pane");
-               $("#home-pane .apps-list a").click(function (e)
-               {
-                  e.preventDefault();
-                  System.setHashParameters({app: $(this).attr("data-app")}, null);
-               });
-               /*EW.addHashHandler(function (data)
-                {
-                //EW.loadApp(data);
-                if (!data.app)
-                data.app = "Home";
-                if (data.app !== EW.oldApp)
-                {
-                EW.oldApp = data.app;
-                System.openApp(EW.apps[data.app]);
-                }
-                });*/
-               //alert($(items.join('')).html());
-               System.start();
-               /* if (!System.getHashNav("app"))
-                System.setHashParameters({app: "Home"});*/
-            }, "json");
+                       var items = ['<ul class="apps-list">'];
+                       $.each(data, function (key, val)
+                       {
+                          items.push('<li class=""><a data-app="' + val['id'] + '"><label>' + val['title'] + '</label><p>' + val['description'] + '</p></a></li>');
+                          //val.package = "~admin";
+                          val.file = "index.php";
+                          val.id = val['id'];
+                          self.apps[val['id']] = val;
+                       });
+                       items.push('</ul>');
+                       $(items.join('')).appendTo("#home-pane");
+                       $("#home-pane .apps-list a").click(function (e)
+                       {
+                          e.preventDefault();
+                          System.setHashParameters({app: $(this).attr("data-app")}, null);
+                       });
+                       /*EW.addHashHandler(function (data)
+                        {
+                        //EW.loadApp(data);
+                        if (!data.app)
+                        data.app = "Home";
+                        if (data.app !== EW.oldApp)
+                        {
+                        EW.oldApp = data.app;
+                        System.openApp(EW.apps[data.app]);
+                        }
+                        });*/
+                       //alert($(items.join('')).html());
+                       System.start();
+                       /* if (!System.getHashNav("app"))
+                        System.setHashParameters({app: "Home"});*/
+                    }, "json");
          };
-         
+
          EverythingWidgets.prototype.loadApp = function (data)
-         { 
+         {
             if (data.app !== this.oldApp)
             {
-              
+
                this.oldApp = data.app;
                if (!data.app)
                {
                   $("#app-title").text("Home");
-                  $("#apps").hide();                  
+                  $("#apps").hide();
                   //$("#action-bar-items").empty();
                   $("#main-content").remove();
                   $("#app-bar-nav").remove();
@@ -174,7 +174,7 @@ if (!isset($_SESSION['login']))
 
                   $("#app-bar").animate({className: "app-bar"}, 500, "Power2.easeOut");
                   $("#home-pane").animate({className: "home-pane in"}, 500, "Power2.easeOut");
-                  
+
                   return;
                }
                $("#apps").show();
@@ -220,7 +220,7 @@ if (!isset($_SESSION['login']))
                $(this).animate({
                   className: orgClass
                },
-               t || 300, "Power2.easeOut");
+                       t || 300, "Power2.easeOut");
             }
             return this;
             // Open popup code.
@@ -232,9 +232,9 @@ if (!isset($_SESSION['login']))
                $(this).animate({
                   className: $(this).prop("class") + " btn-hide"
                },
-               t || 300, "Power3.easeOut", function () {
-                  $(this).hide();
-               });
+                       t || 300, "Power3.easeOut", function () {
+                          $(this).hide();
+                       });
             }
             return this;
             // Close popup code.
@@ -276,13 +276,13 @@ if (!isset($_SESSION['login']))
                         callback: settings.callbackName,
                         data: $element.val()
                      },
-                     function (data) {
-                        var functionRefrence = $("<div style='display:none;' id='function-reference'></div>");
-                        functionRefrence.data("callback", settings.callback);
-                        e = $(data);
-                        e.append(functionRefrence);
-                        linkChooserDialog.html(e);
-                     });
+                             function (data) {
+                                var functionRefrence = $("<div style='display:none;' id='function-reference'></div>");
+                                functionRefrence.data("callback", settings.callback);
+                                e = $(data);
+                                e.append(functionRefrence);
+                                linkChooserDialog.html(e);
+                             });
                      //}
                      //linkChooserDialog.open();
                   }
@@ -379,39 +379,39 @@ if (!isset($_SESSION['login']))
                      $.post("<?php echo EW_DIR ?>~admin-api/ContentManagement/Media.php", {
                         callback: settings.callbackName
                      },
-                     function (data) {
-                        imageChooserDialog.find(".form-content:first").append(data);
-                        imageChooserDialog.prepend("<h1>Media</h1>");
-                        /*var functionRefrence = $("<div style='display:none;' id='function-reference'></div>");
-                         functionRefrence.data("callback", settings.callback);
-                         imageChooserDialog.find("#link-chooser").append(functionRefrence);*/
+                             function (data) {
+                                imageChooserDialog.find(".form-content:first").append(data);
+                                imageChooserDialog.prepend("<h1>Media</h1>");
+                                /*var functionRefrence = $("<div style='display:none;' id='function-reference'></div>");
+                                 functionRefrence.data("callback", settings.callback);
+                                 imageChooserDialog.find("#link-chooser").append(functionRefrence);*/
 
-                        var bSelectPhoto = EW.addAction("Select Photo", function () {
-                           EW.setHashParameter("select-photo", true, "Media");
-                        }, {
-                           display: "none"
-                        }).addClass("btn-success");
-                        // create handler to track selected
-                        var EWhandler = function ()
-                        {
-                           var url = EW.getHashParameter("absUrl", "Media");
-                           if (url)
-                              bSelectPhoto.comeIn(300);
-                           else
-                              bSelectPhoto.comeOut(200);
-                           if (EW.getHashParameter("select-photo", "Media"))
-                           {
-                              EW.setHashParameter("select-photo", null, "Media");
-                              imageChooserDialog.dispose();
-                              //if (EW.getHashParameter("url", "Media"))
-                              $element.val(EW.getHashParameter("absUrl", "Media")).change();
-                              $element.attr("data-filename", EW.getHashParameter("filename", "Media"));
-                              $element.attr("data-file-extension", EW.getHashParameter("fileExtension", "Media"));
-                              $element.attr("data-url", EW.getHashParameter("url", "Media"));
-                           }
-                        };
-                        EW.addURLHandler(EWhandler, "Media.ImageChooser");
-                     });
+                                var bSelectPhoto = EW.addAction("Select Photo", function () {
+                                   EW.setHashParameter("select-photo", true, "Media");
+                                }, {
+                                   display: "none"
+                                }).addClass("btn-success");
+                                // create handler to track selected
+                                var EWhandler = function ()
+                                {
+                                   var url = EW.getHashParameter("absUrl", "Media");
+                                   if (url)
+                                      bSelectPhoto.comeIn(300);
+                                   else
+                                      bSelectPhoto.comeOut(200);
+                                   if (EW.getHashParameter("select-photo", "Media"))
+                                   {
+                                      EW.setHashParameter("select-photo", null, "Media");
+                                      imageChooserDialog.dispose();
+                                      //if (EW.getHashParameter("url", "Media"))
+                                      $element.val(EW.getHashParameter("absUrl", "Media")).change();
+                                      $element.attr("data-filename", EW.getHashParameter("filename", "Media"));
+                                      $element.attr("data-file-extension", EW.getHashParameter("fileExtension", "Media"));
+                                      $element.attr("data-url", EW.getHashParameter("url", "Media"));
+                                   }
+                                };
+                                EW.addURLHandler(EWhandler, "Media.ImageChooser");
+                             });
                   }
                   imageChooserDialog.open();
                });
@@ -489,15 +489,15 @@ if (!isset($_SESSION['login']))
                   className: "app-bar-nav in",
                   width: "250px"
                },
-               360, "Power4.easeOut", function () {
-                  $sidebar.stop().css({
-                     overflowY: "auto"
-                  });
-                  if (event.type == 'focus')
-                  {
-                     $sidebar.find("a:first").focus();
-                  }
-               });
+                       360, "Power4.easeOut", function () {
+                          $sidebar.stop().css({
+                             overflowY: "auto"
+                          });
+                          if (event.type == 'focus')
+                          {
+                             $sidebar.find("a:first").focus();
+                          }
+                       });
                event.stopPropagation();
                $(window).on("click.sidebar", function ()
                {
@@ -565,8 +565,7 @@ if (!isset($_SESSION['login']))
                         System.setHashParameters({
                            "app": System.getHashNav("app")[0] + '/' + a.attr("data-ew-nav")
                         }, null);
-                     }
-                     else
+                     } else
                      {
                         var kv = a.attr("href").split("=");
                         EW.setHashParameter(kv[0], kv[1]);
@@ -655,8 +654,7 @@ if (!isset($_SESSION['login']))
                      rl += '<li><h4>' + current + '</h4><p>' + i.join() + '</p></li>';
                   });
                   rl += '</ul>';
-               }
-               catch (e)
+               } catch (e)
                {
                   console.log("ajaxError:");
                   console.log(e);
@@ -736,7 +734,7 @@ if (!isset($_SESSION['login']))
                      nav.stop().animate({
                         className: "nav nav-pills xs-nav-tabs-active nav-stacked dropdown in"
                      },
-                     300, "Power3.easeOut");
+                             300, "Power3.easeOut");
                      e.preventDefault();
                   },
                           function ()
@@ -744,9 +742,9 @@ if (!isset($_SESSION['login']))
                              nav.stop().animate({
                                 className: "nav nav-pills xs-nav-tabs-active nav-stacked dropdown"
                              },
-                             300, "Power3.easeOut", function () {
-                                nav = nav.detach();
-                             });
+                                     300, "Power3.easeOut", function () {
+                                        nav = nav.detach();
+                                     });
                           });
                });
                if ($(window).width() < 768)

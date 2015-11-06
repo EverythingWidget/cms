@@ -23,11 +23,11 @@ class APIResourceHandler extends ResourceHandler
        'DELETE' => 'delete'
    ];
 
-   protected function handle($app, $app_resource_path, $module_name, $command_name, $parameters = null)
+   protected function handle($app, $app_resource_path, $module_name, $command, $parameters = null)
    {
       $verb = $this->verbs[$_SERVER['REQUEST_METHOD']];
 
-      $command_name = $command_name ? $command_name : $verb;
+      $command_name = $command ? $command : $verb;
       // parse method name to a api method name
       $method_name = str_replace('-', '_', $command_name);
 
@@ -43,22 +43,18 @@ class APIResourceHandler extends ResourceHandler
       }
       if (class_exists($real_class_name))
       {
-         $permission_id = \EWCore::does_need_permission($app_name, $module_name, 'api/' . $command_name);
-         if ($permission_id && $permission_id !== FALSE)
+         if (\admin\UsersManagement::user_has_permission($app_name, 'api', $module_name, $command_name))
          {
-            if (\admin\UsersManagement::user_has_permission($app_name, $module_name, $permission_id, $_SESSION['EW.USER_GROUP_ID']))
-            {
-               $app_section_object = new $real_class_name($app);
-               return $app_section_object->process_request($verb, $method_name, $parameters);
-            }
-            else
-            {
-               return \EWCore::log_error(403, "tr{You do not have permission for this command}", array(
-                           "Access Denied" => "$app_name/$module_class_name/$method_name"));
-            }
+            // add _file as the _parts into the parameters list
+            $parameters["_parts"] = array_slice(explode('/', $parameters["_file"]), 1);
+            $app_section_object = new $real_class_name($app);
+            $result = $app_section_object->process_request($verb, $method_name, $parameters);
          }
-         $app_section_object = new $real_class_name($app);
-         $result = $app_section_object->process_request($verb, $method_name, $parameters);
+         else
+         {
+            return \EWCore::log_error(403, "You do not have corresponding permission to invode this api request", array(
+                        "Access Denied" => "$app_name/$module_class_name/$method_name"));
+         }
 
          $listeners = \EWCore::read_registry("$app_name-$resource_name/$module_class_name/$method_name" . '_listener');
 

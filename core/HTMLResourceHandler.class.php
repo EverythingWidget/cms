@@ -17,30 +17,30 @@ class HTMLResourceHandler extends ResourceHandler
 {
 
    private $mime_types = array(
-       "pdf"  => "application/pdf",
-       "exe"  => "application/octet-stream",
-       "zip"  => "application/zip",
+       "pdf" => "application/pdf",
+       "exe" => "application/octet-stream",
+       "zip" => "application/zip",
        "docx" => "application/msword",
-       "doc"  => "application/msword",
-       "xls"  => "application/vnd.ms-excel",
-       "ppt"  => "application/vnd.ms-powerpoint",
-       "gif"  => "image/gif",
-       "png"  => "image/png",
+       "doc" => "application/msword",
+       "xls" => "application/vnd.ms-excel",
+       "ppt" => "application/vnd.ms-powerpoint",
+       "gif" => "image/gif",
+       "png" => "image/png",
        "jpeg" => "image/jpg",
-       "jpg"  => "image/jpg",
-       "mp3"  => "audio/mpeg",
-       "wav"  => "audio/x-wav",
+       "jpg" => "image/jpg",
+       "mp3" => "audio/mpeg",
+       "wav" => "audio/x-wav",
        "mpeg" => "video/mpeg",
-       "mpg"  => "video/mpeg",
-       "mpe"  => "video/mpeg",
-       "mov"  => "video/quicktime",
-       "avi"  => "video/x-msvideo",
-       "3gp"  => "video/3gpp",
-       "css"  => "text/css",
-       "jsc"  => "application/javascript",
-       "js"   => "application/javascript",
-       "php"  => "text/html",
-       "htm"  => "text/html",
+       "mpg" => "video/mpeg",
+       "mpe" => "video/mpeg",
+       "mov" => "video/quicktime",
+       "avi" => "video/x-msvideo",
+       "3gp" => "video/3gpp",
+       "css" => "text/css",
+       "jsc" => "application/javascript",
+       "js" => "application/javascript",
+       "php" => "text/html",
+       "htm" => "text/html",
        "html" => "text/html");
 
    public function get_mime_type($path)
@@ -81,37 +81,36 @@ class HTMLResourceHandler extends ResourceHandler
 
       if ($path !== null && is_file(EW_PACKAGES_DIR . '/' . $path))
       {
-         $permission_id = \EWCore::does_need_permission($app->get_root(), $module_name, 'html/' . $method_name);
-         if ($permission_id && $permission_id !== FALSE)
+         if (\admin\UsersManagement::user_has_permission($app->get_root(), 'html', $module_name, $method_name))
          {
-            if (\admin\UsersManagement::user_has_permission($app->get_root(), $module_name, $permission_id, $_SESSION['EW.USER_GROUP_ID']))
-            {
-               if ($this->get_mime_type($path))
-               {
-                  header("Content-Type: " . $this->get_mime_type($path));
-               }
-               ob_start();
-               include EW_PACKAGES_DIR . '/' . $path;
-               return ob_get_clean();
-            }
-            else
-            {
-               return \EWCore::log_error(403, "tr{You do not have permission for this command}", array(
-                           "Access Denied" => "$app_name/$module_name/$method_name"));
-            }
+            return $this->load_file(EW_PACKAGES_DIR . '/' . $path);
          }
          else
          {
-            ob_start();
-            include EW_PACKAGES_DIR . '/' . $path;
-            return ob_get_clean();
+            return \EWCore::log_error(403, "You do not have corresponding permission to access this file", array(
+                        "Access Denied" => "$app_name/$module_name/$method_name"));
          }
       }
       else
       {
          //echo $app_resource_path[1];
-         return \EWCore::log_error(404, "<h4>Constract: File not found</h4><p>File `$path`, not found</p>");
+         return \EWCore::log_error(404, "File not found: `$path`", [
+                     "app/resource: " . implode('/', $app_resource_path),
+                     "module: $module_name",
+                     "file: $file"
+         ]);
       }
+   }
+
+   private function load_file($file_path)
+   {
+      if ($this->get_mime_type($file_path))
+      {
+         header("Content-Type: " . $this->get_mime_type($file_path));
+      }
+      ob_start();
+      include $file_path;
+      return ob_get_clean();
    }
 
 }
