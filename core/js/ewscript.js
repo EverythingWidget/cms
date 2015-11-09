@@ -576,7 +576,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
       }
    };
    var settings = {
-      class: "full",
+      class: "center",
       initElement: true,
       lockUI: true,
       beforeClose: function ()

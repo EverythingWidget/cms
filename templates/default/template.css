@@ -288,10 +288,10 @@ root {
       position: absolute;
       top: 0px;
       bottom: 0px;
-      right: 0;
-      left: 50%;
-      margin-left: -640px;
-      width: 1280px;
+      /* right: 0; */
+      /* left: 50%; */
+      /* margin-left: -640px; */
+      max-width: 1360px;
       min-width: 320px;
       min-height: 400px;
       overflow: hidden;
@@ -755,7 +755,7 @@ body.Admin {
    left: 0;
    width: auto;
    min-height: 30%;
-   max-width: 1360px;
+   max-width: 100%;
    margin: 0px 15px;
 }
 
