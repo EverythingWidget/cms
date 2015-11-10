@@ -25,26 +25,24 @@ class APIResourceHandler extends ResourceHandler
 
    protected function handle($app, $app_resource_path, $module_name, $command, $parameters = null)
    {
+      // check module name string
       if (preg_match('/[A-Z]/', $module_name))
       {
          return \EWCore::log_error(400, "Incorrect module name: $module_name");
       }
-      
+      // check command string
       if (preg_match('/_/', $command))
       {
          return \EWCore::log_error(400, "Incorrect function name: $command");
       }
-
       $verb = $this->verbs[$_SERVER['REQUEST_METHOD']];
-
+      
+      // Set the verb as command name if command is empty
       $command_name = $command ? $command : $verb;
       // parse method name to a api method name
       $method_name = str_replace('-', '_', $command_name);
-      //$method_name = $command_name;
-      // Parse module name to a api module name
+      // Parse module name to a api module class name
       $module_class_name = \EWCore::hyphenToCamel($module_name);
-      //echo $module_name
-
 
       $app_name = $app->get_root();
       $resource_name = $app_resource_path[1];
@@ -64,12 +62,11 @@ class APIResourceHandler extends ResourceHandler
 
          if (!method_exists($app_section_object, $method_name))
          {
-            return \EWCore::log_error(404, "<h4>$app_name-api </h4><p>Method `$method_name` not found</p>");
+            return \EWCore::log_error(404, "$app_name-$resource_name: Method not found: `$method_name`");
          }
 
          if ($permission_id && $permission_id !== FALSE)
          {
-            //var_dump(\admin\UsersManagement::group_has_permission($app_name, $module_name, $permission_id, $_SESSION['EW.USER_GROUP_ID']));
             if (\admin\UsersManagement::group_has_permission($app_name, $module_name, $permission_id, $_SESSION['EW.USER_GROUP_ID']))
             {
                $result = $app_section_object->process_request($verb, $method_name, $parameters);
@@ -154,7 +151,7 @@ class APIResourceHandler extends ResourceHandler
       }
       else
       {
-         return \EWCore::log_error(404, "<h4>$app_name-api </h4><p>Section `$module_class_name` not found</p>");
+         return \EWCore::log_error(404, "Section not found: `$module_class_name`");
       }
    }
 
