@@ -81,6 +81,7 @@ class HTMLResourceHandler extends ResourceHandler
 
       if ($path !== null && is_file(EW_PACKAGES_DIR . '/' . $path))
       {
+         //echo $module_name. $method_name;
          if (\admin\UsersManagement::user_has_permission($app->get_root(), 'html', $module_name, $method_name))
          {
             return $this->load_file(EW_PACKAGES_DIR . '/' . $path);

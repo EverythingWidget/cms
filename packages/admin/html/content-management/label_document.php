@@ -16,7 +16,7 @@
       var attached = $("#{{comp_id}}_attached");
       text.autocomplete({
          source: function (input) {
-            $.post("<?php echo EW_ROOT_URL; ?>~admin-api/content-management/get_contents",
+            $.post("<?php echo EW_ROOT_URL; ?>~admin-api/content-management/get-contents",
                     {
                        title_filter: text.val(),
                        type: "article",
@@ -45,7 +45,7 @@
             value.val('$content.id');
             text.val(formData["title"]).change();
          }
-         $.post("~admin-api/content-management/get_content_with_label",
+         $.post("~admin-api/content-management/get-content-with-label",
                  {
                     content_id: ContentForm.getLabel("{{comp_id}}"),
                     key: "{{comp_id}}"
@@ -69,7 +69,7 @@
                   else
                      langItem.find("a").on("click", function ()
                      {
-                        $.post("~admin-api/content-management/get_article",
+                        $.post("~admin-api/content-management/get-article",
                                 {
                                    articleId: content.id
                                 },

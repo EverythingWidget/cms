@@ -27,6 +27,11 @@ class App
 
    public function __construct()
    {
+      $this->install_resource_handlers();
+   }
+
+   protected function install_resource_handlers()
+   {
       $this->addResource("api", new APIResourceHandler($this));
       $this->addResource($this->default_resource, new HTMLResourceHandler($this));
    }

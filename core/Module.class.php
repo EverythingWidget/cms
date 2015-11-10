@@ -20,6 +20,7 @@ class Module
    private $current_class;
    private $current_method_args;
    protected $pre_processors = [];
+   protected $unauthorized_method_invoke = false;
 
    /**
     * 
@@ -73,6 +74,11 @@ class Module
    protected function install_permissions()
    {
       
+   }
+   
+   public function is_unathorized_method_invoke()
+   {
+      return $this->unauthorized_method_invoke;
    }
 
    /**

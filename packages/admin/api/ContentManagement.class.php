@@ -55,6 +55,7 @@ class ContentManagement extends \ew\Module
           'html/index.php',
           'api/index',
           "api/get_content",
+          "api/get_content_with_label",
           "api/get_category",
           "api/get_article",
           "api/get_album",

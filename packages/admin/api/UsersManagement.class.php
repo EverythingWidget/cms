@@ -11,6 +11,7 @@ class UsersManagement extends \ew\Module
 {
 
    protected $resource = "api";
+   //protected $unauthorized_method_invoke = true;
 
    protected function get_pre_processors()
    {
@@ -26,6 +27,8 @@ class UsersManagement extends \ew\Module
    {
       $this->register_permission("see-users", "User can see users list", array(
           "api/get",
+          "api/users",
+          "api/groups",
           "api/get_user_by_id",
           "api/get_user_by_email",
           "html/user-form.php-see",
@@ -42,7 +45,7 @@ class UsersManagement extends \ew\Module
           "api/get_users_groups_list",
           "api/get_user_group_by_id",
           "api/get_users_group_by_type",
-          "html/users-group-form.php_see",
+          "html/users-group-form.php",
           'html/' . $this->get_index()));
 
       $this->register_permission("manipulate-groups", "User can add, edit delete user group", array(
@@ -52,7 +55,7 @@ class UsersManagement extends \ew\Module
           "html/users-group-form.php:tr{New Group}",
           'html/' . $this->get_index()));
 
-      $this->add_listener("admin-api/UsersManagement/get_user_by_id", "test_plugin");
+      //$this->add_listener("admin-api/UsersManagement/get_user_by_id", "test_plugin");
    }
 
    public function get_title()
@@ -68,7 +71,7 @@ class UsersManagement extends \ew\Module
    public function test_plugin($_data)
    {
 //$_data["first_name"] = "Jawady";
-      return json_encode($_data);
+      return $_data;
    }
 
    public static function login($username, $password)
@@ -238,6 +241,7 @@ class UsersManagement extends \ew\Module
             return false;
          }
       }
+
       return true;
    }
 
