@@ -31,15 +31,12 @@ $tabs = \EWCore::read_registry("ew-login-form");
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <link rel="shortcut icon" href="styles/favicon.ico">  
-      <link href="<?php echo EW_ROOT_URL ?>templates/default/template.css" rel="stylesheet" type="text/css">
-      <link type="text/css" href="<?php echo EW_ROOT_URL ?>core/css/custom-theme/jquery-ui-1.8.21.custom.css" rel="Stylesheet" />	
-      <link type="text/css" href="<?php echo EW_ROOT_URL ?>core/css/bootstrap.css" rel="stylesheet" type="text/css">       
-      <script src="<?php echo EW_ROOT_URL ?>core/js/jquery/jquery-1.10.2.min.js"  type="text/javascript">
-      </script>        
-      <script type="text/javascript" src="<?php echo EW_ROOT_URL ?>core/js/jquery/jquery-ui-1.10.3.custom.min.js"></script>
-      <script src="<?php echo EW_ROOT_URL ?>core/js/ewscript.js"  type="text/javascript">
+      <link href="css/default/template.css" rel="stylesheet" type="text/css">      
+      <link type="text/css" href="css/bootstrap.css" rel="stylesheet" type="text/css">       
+      <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>             
+      <script src="js/lib/ewscript.js"  type="text/javascript">
       </script>
-      <script src="<?php echo EW_ROOT_URL ?>core/js/bootstrap.js"  type="text/javascript">
+      <script src="js/lib/bootstrap.js"  type="text/javascript">
       </script>
    </head>
    <body style="overflow-y:auto;height:100%;min-height:550px;position:relative;">
@@ -91,7 +88,7 @@ $tabs = \EWCore::read_registry("ew-login-form");
          </form>
       </div>
       <div class="footer-pane">
-         <img src="<?php echo EW_ROOT_URL ?>templates/default/EW_LOGO.png" alt="EW Logo" style="margin: 0px auto;display:block;">
+         <img src="css/default/EW_LOGO.png" alt="EW Logo" style="margin: 0px auto;display:block;">
          <div class="row">
             <h1 style="text-align:center;">
                Everything Widget CMS

@@ -66,7 +66,9 @@ class HTMLResourceHandler extends ResourceHandler
       }
       else if ($module_name && $file)
       {
+         //echo implode('/', $app_resource_path);
          $path = implode('/', $app_resource_path) . '/' . $module_name . '/' . $file;
+         
       }
       else if (!isset($file))
       {
