@@ -17,30 +17,30 @@ class HTMLResourceHandler extends ResourceHandler
 {
 
    private $mime_types = array(
-       "pdf" => "application/pdf",
-       "exe" => "application/octet-stream",
-       "zip" => "application/zip",
+       "pdf"  => "application/pdf",
+       "exe"  => "application/octet-stream",
+       "zip"  => "application/zip",
        "docx" => "application/msword",
-       "doc" => "application/msword",
-       "xls" => "application/vnd.ms-excel",
-       "ppt" => "application/vnd.ms-powerpoint",
-       "gif" => "image/gif",
-       "png" => "image/png",
+       "doc"  => "application/msword",
+       "xls"  => "application/vnd.ms-excel",
+       "ppt"  => "application/vnd.ms-powerpoint",
+       "gif"  => "image/gif",
+       "png"  => "image/png",
        "jpeg" => "image/jpg",
-       "jpg" => "image/jpg",
-       "mp3" => "audio/mpeg",
-       "wav" => "audio/x-wav",
+       "jpg"  => "image/jpg",
+       "mp3"  => "audio/mpeg",
+       "wav"  => "audio/x-wav",
        "mpeg" => "video/mpeg",
-       "mpg" => "video/mpeg",
-       "mpe" => "video/mpeg",
-       "mov" => "video/quicktime",
-       "avi" => "video/x-msvideo",
-       "3gp" => "video/3gpp",
-       "css" => "text/css",
-       "jsc" => "application/javascript",
-       "js" => "application/javascript",
-       "php" => "text/html",
-       "htm" => "text/html",
+       "mpg"  => "video/mpeg",
+       "mpe"  => "video/mpeg",
+       "mov"  => "video/quicktime",
+       "avi"  => "video/x-msvideo",
+       "3gp"  => "video/3gpp",
+       "css"  => "text/css",
+       "jsc"  => "application/javascript",
+       "js"   => "application/javascript",
+       "php"  => "text/html",
+       "htm"  => "text/html",
        "html" => "text/html");
 
    public function get_mime_type($path)
@@ -68,7 +68,6 @@ class HTMLResourceHandler extends ResourceHandler
       {
          //echo implode('/', $app_resource_path);
          $path = implode('/', $app_resource_path) . '/' . $module_name . '/' . $file;
-         
       }
       else if (!isset($file))
       {
@@ -107,9 +106,10 @@ class HTMLResourceHandler extends ResourceHandler
 
    private function load_file($file_path)
    {
-      if ($this->get_mime_type($file_path))
+      $type = $this->get_mime_type($file_path);
+      if ($type)
       {
-         header("Content-Type: " . $this->get_mime_type($file_path));
+         header("Content-Type: " . $type);
       }
       ob_start();
       include $file_path;

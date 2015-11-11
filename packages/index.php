@@ -176,11 +176,14 @@ $real_class_name = $app_name . '\\' . $section_name;
 
 $RESULT_CONTENT = EWCore::process_request_command($app_name, $section_name, $function_name, $_REQUEST);
 
+
 function translate($match)
 {
    global $language;
    return EWCore::translate_to_locale($match, $language);
 }
+
+
 
 // show the result
 if ($RESULT_CONTENT)

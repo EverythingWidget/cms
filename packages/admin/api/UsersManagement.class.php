@@ -11,6 +11,7 @@ class UsersManagement extends \ew\Module
 {
 
    protected $resource = "api";
+
    //protected $unauthorized_method_invoke = true;
 
    protected function get_pre_processors()
@@ -32,6 +33,7 @@ class UsersManagement extends \ew\Module
           "api/get_user_by_id",
           "api/get_user_by_email",
           "html/user-form.php-see",
+          "api/logout",
           'html/' . $this->get_index()));
 
       $this->register_permission("manipulate-users", "User can add, edit delete users", array(
@@ -39,6 +41,7 @@ class UsersManagement extends \ew\Module
           "api/update_user",
           "api/delete_user",
           "html/user-form.php",
+          "api/logout",
           'html/' . $this->get_index()));
 
       $this->register_permission("see-groups", "User can see user groups list", array(

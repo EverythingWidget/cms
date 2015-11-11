@@ -25,19 +25,7 @@ $tabs = \EWCore::read_registry("ew-login-form");
 <!DOCTYPE html>
 <html style="height:100%;">
    <head>
-      <title>
-         EW CPanel
-      </title>
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <link rel="shortcut icon" href="styles/favicon.ico">  
-      <link href="css/default/template.css" rel="stylesheet" type="text/css">      
-      <link type="text/css" href="css/bootstrap.css" rel="stylesheet" type="text/css">       
-      <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>             
-      <script src="js/lib/ewscript.js"  type="text/javascript">
-      </script>
-      <script src="js/lib/bootstrap.js"  type="text/javascript">
-      </script>
+      <?php include 'header.php'; ?>
    </head>
    <body style="overflow-y:auto;height:100%;min-height:550px;position:relative;">
       <div class="row" style="padding-top:20px;min-height:500px;overflow: hidden;">
@@ -88,7 +76,7 @@ $tabs = \EWCore::read_registry("ew-login-form");
          </form>
       </div>
       <div class="footer-pane">
-         <img src="css/default/EW_LOGO.png" alt="EW Logo" style="margin: 0px auto;display:block;">
+         <img src="~admin/css/default/EW_LOGO.png" alt="EW Logo" style="margin: 0px auto;display:block;">
          <div class="row">
             <h1 style="text-align:center;">
                Everything Widget CMS

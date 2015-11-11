@@ -490,11 +490,6 @@ html,body {
    margin: 0;
    height: 100%;
    font-family: Roboto,Homa;
-   background-color: #aaa;
-}
-
-html {
-   perspective: 600px;
 }
 
 .wrapper {
