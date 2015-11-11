@@ -42,6 +42,8 @@ class WidgetsManagement extends \ew\Module
           "api/get_widgets_types",
           "api/get_all_pages_uis_list",
           "api/get_path_uis",
+          "api/get_template_settings_form",
+          "api/get_layout",
           'html/' . $this->get_index()));
 
       //global $EW;

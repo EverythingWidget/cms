@@ -92,6 +92,7 @@ root {
       top: 0;
       bottom: 0;
       right: 0;
+      left: 0 !important;
       border: none;
    }
 
@@ -154,8 +155,8 @@ root {
 @media (min-width: 768px) and (max-width: 991px) {
    .top-pane.center {
       position: absolute;
-      left: 0;
-      margin-left: 0;
+      left: 0 !important;
+      margin: 0;
       top: 0;
       bottom: 0;
       right: 0;
@@ -228,8 +229,8 @@ root {
       min-width: 320px;
       min-height: 400px;
       overflow: hidden;
-      left: 50%;
-      margin-left: -496px;
+      /* left: 50%; */
+      /* margin-left: -496px; */
    }
 
    div#components-pane {
