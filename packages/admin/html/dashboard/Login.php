@@ -25,6 +25,9 @@ $tabs = \EWCore::read_registry("ew-login-form");
 <!DOCTYPE html>
 <html style="height:100%;">
    <head>
+      <title>
+         EW Admin Login
+      </title>
       <?php include 'header.php'; ?>
    </head>
    <body style="overflow-y:auto;height:100%;min-height:550px;position:relative;">
@@ -76,7 +79,7 @@ $tabs = \EWCore::read_registry("ew-login-form");
          </form>
       </div>
       <div class="footer-pane">
-         <img src="~admin/css/default/EW_LOGO.png" alt="EW Logo" style="margin: 0px auto;display:block;">
+         <img src="~admin-public/css/default/EW_LOGO.png" alt="EW Logo" style="margin: 0px auto;display:block;">
          <div class="row">
             <h1 style="text-align:center;">
                Everything Widget CMS

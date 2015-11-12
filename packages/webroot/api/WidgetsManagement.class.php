@@ -44,9 +44,9 @@ class WidgetsManagement extends \ew\Module
           "api/get_path_uis",
           "api/get_template_settings_form",
           "api/get_layout",
+          "api/get_templates",
           'html/' . $this->get_index()));
 
-      //global $EW;
       $this->register_form("ew-article-form-tab", "uis_tab", ["title" => "UI"]);
       $this->register_form("ew-category-form-tab", "uis_tab", ["title" => "UI"]);
 
@@ -74,6 +74,41 @@ class WidgetsManagement extends \ew\Module
           "html/ne-uis.php_see"));
 
       //$this->register_content_label("uis", "");
+   }
+
+   public function get_templates()
+   {
+      $path = EW_TEMPLATES_DIR . '/';
+
+      $apps_dirs = opendir($path);
+      $apps = array();
+
+      while ($template_dir = readdir($apps_dirs))
+      {
+         if (strpos($template_dir, '.') === 0)
+            continue;
+
+         if (!is_dir($path . $template_dir))
+            continue;
+
+         $template_dir_content = opendir($path . $template_dir);
+
+         while ($file = readdir($template_dir_content))
+         {
+
+            if (strpos($file, '.') === 0)
+               continue;
+            //$i = strpos($file, 'template.css');
+
+            if ($file == 'template.css')
+            {
+               $apps[] = array(
+                   "templateName" => $template_dir,
+                   "templatePath" => "templates/" . $template_dir);
+            }
+         }
+      }
+      return $apps;
    }
 
    public function category_action_get($_data)

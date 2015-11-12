@@ -1,2 +1,7 @@
 RewriteEngine On
+
+# redirect if requests a public resource
+RewriteCond %{REQUEST_URI} -public/ [NC]
+RewriteRule (.{2,3}/)?~(.*)-public/(.*) $2/public/$3 [L]
+
 FallbackResource /EverythingWidget/index.php

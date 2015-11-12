@@ -38,7 +38,6 @@ $name = $_REQUEST["name"];
                   <h3>Classes</h3>
                   <div class="col-xs-12 options-panel" id="available-classes" data-toggle="buttons">
                      <?php
-                     global $EW;
                      $templates = json_decode(EWCore::parse_css($_REQUEST["template"] . '/template.css', "block"), true);
                      foreach ($templates as $t)
                      {

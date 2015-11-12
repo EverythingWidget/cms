@@ -3,7 +3,6 @@ session_start();
 
 //include($_SESSION['ROOT_DIR'] . '/config.php');
 //include_once 'WidgetsManagementCore.php';
-global $EW;
 global $widget_info;
 $widget_type = $_REQUEST["widgetType"];
 
@@ -20,7 +19,6 @@ function get_properties_form()
 {
    global $widget_info;
    ob_start();
-   //echo $EW;
    ?>
    <div class="row">
       <div class="col-xs-12">
@@ -42,7 +40,6 @@ function get_properties_form()
          <h3 class="line-header">Classes</h3>
          <div class="options-panel" id="available-classes" data-toggle="buttons">
             <?php
-            global $EW;
             $templates = json_decode(EWCore::parse_css($_REQUEST["template"] . '/template.css', "widget"), true);
 
             foreach ($templates as $t)

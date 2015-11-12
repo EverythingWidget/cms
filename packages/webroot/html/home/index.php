@@ -20,9 +20,10 @@ $HTML_BODY = $VIEW["body_html"];
 $WIDGET_DATA = $VIEW["widget_data"];
 
 // If template has a 'template.php' then include it
-if (file_exists(EW_ROOT_DIR . $_REQUEST["_uis_template"] . '/template.php'))
+$template_php = EW_PACKAGES_DIR . '/rm/public/' . $_REQUEST["_uis_template"] . '/template.php';
+if (file_exists($template_php))
 {
-   require_once EW_ROOT_DIR . $_REQUEST["_uis_template"] . '/template.php';
+   require_once $template_php;
    $template = new \template();
    //$uis_data = json_decode(admin\WidgetsManagement::get_uis($_REQUEST["_uis"]), true);
    $template_settings = json_decode($_REQUEST["_uis_template_settings"], true);
@@ -40,9 +41,10 @@ if (file_exists(EW_ROOT_DIR . $_REQUEST["_uis_template"] . '/template.php'))
    $template_script = $script_tasg->item(0)->nodeValue;
 }
 // if template.js exist, then include it in HTML_SCRIPTS
-if (file_exists(EW_ROOT_DIR . $_REQUEST["_uis_template"] . '/template.js'))
+$template_js = EW_PACKAGES_DIR . '/rm/public/' . $_REQUEST["_uis_template"] . '/template.js';
+if (file_exists($template_js))
 {
-   \webroot\WidgetsManagement::add_html_script($_REQUEST["_uis_template"] . '/template.js', $script);
+   \webroot\WidgetsManagement::add_html_script('~rm-public/' . $_REQUEST["_uis_template"] . '/template.js', $script);
 }
 
 $HTML_TITLE = (webroot\WidgetsManagement::get_html_title()) ? webroot\WidgetsManagement::get_html_title() . " - " . $website_title : $website_title;
@@ -63,16 +65,17 @@ $HTML_STYLES = webroot\WidgetsManagement::get_html_styles();
 
       <base href="<?= EW_ROOT_URL ?>">
 
-      <link href="~webroot/css/bootstrap.css" rel="stylesheet" type="text/css"/>  
-      <link id="template-css" href="<?= $_REQUEST["_uis_template"] . '/template.css' ?>" rel="stylesheet" type="text/css"/>
+      <link rel="stylesheet" href="~rm-public/css/bootstrap.css" >  
+      <link id="template-css" href="~rm-public/<?= $_REQUEST["_uis_template"] . '/template.css' ?>" rel="stylesheet" type="text/css"/>
 
       <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>           
       <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenLite.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/jquery.gsap.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/plugins/CSSPlugin.min.js"></script>
-      
-      <script src="core/js/ewscript.js"></script> 
-      <script src="core/js/floatlabels.min.js"></script>
+
+      <script src="~admin-public/js/lib/ewscript.js"></script>            
+      <script src="~admin-public/js/lib/floatlabels.min.js" ></script>
+
 
       <?php
       // Widget's datas
@@ -108,6 +111,6 @@ $HTML_STYLES = webroot\WidgetsManagement::get_html_styles();
       <div id="base-content-pane" class="container">
          <?= $HTML_BODY; ?>  
       </div>   
-      <script src="<?= EW_ROOT_URL ?>core/js/bootstrap.min.js"></script>
+      <script src="~admin-public/js/lib/bootstrap.js"></script>
    </body>  
 </html>

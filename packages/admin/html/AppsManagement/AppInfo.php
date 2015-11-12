@@ -4,7 +4,6 @@
  * and open the template in the editor.
  */
 
-global $EW;
 if ($_REQUEST["appDir"])
 {
    $app = json_decode(EWCore::get_app_config($_REQUEST["appDir"]), true);

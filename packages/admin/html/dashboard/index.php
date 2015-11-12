@@ -10,6 +10,9 @@ if (!isset($_SESSION['login']))
 <!DOCTYPE html>
 <html>
    <head>
+      <title>
+         EW Admin
+      </title>
       <?php include 'header.php'; ?>
    </head>
    <body class="Admin <?php echo EWCore::get_language_dir($_REQUEST["_language"]); ?>" >
@@ -50,7 +53,7 @@ if (!isset($_SESSION['login']))
       </div>
 
       <div id="notifications-panel"></div>   
-      
+
       <?php include 'footer.php'; ?>      
    </body>
 </html>

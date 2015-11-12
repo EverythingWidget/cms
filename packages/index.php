@@ -43,7 +43,7 @@ if ($default_language)
 {
    $language = $default_language;
 }
-if (preg_match("/^(.{2,3})$/", $elements[$parameter_index], $match))
+if (preg_match("/^([^~]{2,3})$/", $elements[$parameter_index], $match))
 {
    $language = $match[0];
    $_REQUEST["_url_language"] = $language;
@@ -111,7 +111,7 @@ if (isset($elements[$parameter_index]))
    $parameter_index++;
 }
 // Create instance of EWCore class 
-global $EW;
+//global $EW;
 $EW = new \EWCore();
 
 // set default user group if no user group has been spacified
@@ -124,12 +124,12 @@ if (!isset($_SESSION["EW.USER_GROUP_ID"]))
 }
 
 // If app name is asset then call get_resource
-if ($app_name == "asset")
+/*if ($app_name == "asset")
 {
    EWCore::get_resource($section_name, array(
        $_file));
    return;
-}
+}*/
 
 $r_uri = strtok($_SERVER["REQUEST_URI"], "?");
 

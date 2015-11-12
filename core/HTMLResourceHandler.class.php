@@ -17,31 +17,37 @@ class HTMLResourceHandler extends ResourceHandler
 {
 
    private $mime_types = array(
-       "pdf"  => "application/pdf",
-       "exe"  => "application/octet-stream",
-       "zip"  => "application/zip",
+       "pdf" => "application/pdf",
+       "exe" => "application/octet-stream",
+       "zip" => "application/zip",
        "docx" => "application/msword",
-       "doc"  => "application/msword",
-       "xls"  => "application/vnd.ms-excel",
-       "ppt"  => "application/vnd.ms-powerpoint",
-       "gif"  => "image/gif",
-       "png"  => "image/png",
+       "doc" => "application/msword",
+       "xls" => "application/vnd.ms-excel",
+       "ppt" => "application/vnd.ms-powerpoint",
+       "gif" => "image/gif",
+       "png" => "image/png",
        "jpeg" => "image/jpg",
-       "jpg"  => "image/jpg",
-       "mp3"  => "audio/mpeg",
-       "wav"  => "audio/x-wav",
+       "jpg" => "image/jpg",
+       "mp3" => "audio/mpeg",
+       "wav" => "audio/x-wav",
        "mpeg" => "video/mpeg",
-       "mpg"  => "video/mpeg",
-       "mpe"  => "video/mpeg",
-       "mov"  => "video/quicktime",
-       "avi"  => "video/x-msvideo",
-       "3gp"  => "video/3gpp",
-       "css"  => "text/css",
-       "jsc"  => "application/javascript",
-       "js"   => "application/javascript",
-       "php"  => "text/html",
-       "htm"  => "text/html",
+       "mpg" => "video/mpeg",
+       "mpe" => "video/mpeg",
+       "mov" => "video/quicktime",
+       "avi" => "video/x-msvideo",
+       "3gp" => "video/3gpp",
+       "css" => "text/css",
+       "jsc" => "application/javascript",
+       "js" => "application/javascript",
+       "php" => "text/html",
+       "htm" => "text/html",
        "html" => "text/html");
+   
+   protected $directly_accessible = [
+       "js",
+       "css",
+       "html"
+   ];
 
    public function get_mime_type($path)
    {
@@ -49,9 +55,13 @@ class HTMLResourceHandler extends ResourceHandler
       return $this->mime_types[$extension];
    }
 
+   public function get_extension($path)
+   {
+      return strtolower(end(explode('.', $path)));
+   }
+
    protected function handle($app, $app_resource_path, $module_name, $method_name, $parameters = null)
    {
-      //$method_name = ($method_name == 'index.php') ? 'index' : $method_name;
       $matches = array();
       preg_match('/(.*\.[^-]{2,4})/', $parameters["_file"], $matches);
       $file = isset($matches[1]) ? $matches[1] : $parameters["_file"];
@@ -66,7 +76,6 @@ class HTMLResourceHandler extends ResourceHandler
       }
       else if ($module_name && $file)
       {
-         //echo implode('/', $app_resource_path);
          $path = implode('/', $app_resource_path) . '/' . $module_name . '/' . $file;
       }
       else if (!isset($file))
@@ -82,10 +91,18 @@ class HTMLResourceHandler extends ResourceHandler
 
       if ($path !== null && is_file(EW_PACKAGES_DIR . '/' . $path))
       {
-         //echo $module_name. $method_name;
+         //$ext = $this->get_extension($path);
+         $type = $this->get_mime_type($path);
+
+         /*if (in_array($ext, $this->directly_accessible))
+         {
+            header("content-type: " . $type);
+            return file_get_contents(EW_PACKAGES_DIR . '/' . $path, NULL);
+         }*/
+
          if (\admin\UsersManagement::user_has_permission($app->get_root(), 'html', $module_name, $method_name))
          {
-            return $this->load_file(EW_PACKAGES_DIR . '/' . $path);
+            return $this->load_file(EW_PACKAGES_DIR . '/' . $path, $type);
          }
          else
          {
@@ -104,13 +121,9 @@ class HTMLResourceHandler extends ResourceHandler
       }
    }
 
-   private function load_file($file_path)
+   private function load_file($file_path, $type)
    {
-      $type = $this->get_mime_type($file_path);
-      if ($type)
-      {
-         header("Content-Type: " . $type);
-      }
+      header("Content-Type: " . $type);
       ob_start();
       include $file_path;
       return ob_get_clean();

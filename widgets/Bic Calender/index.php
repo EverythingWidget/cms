@@ -3,8 +3,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-global $EW;
-
 $feeder_id = "events-list";
 
 $token = $_REQUEST["$feeder_id-token"];
