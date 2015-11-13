@@ -12,7 +12,7 @@
        contentEditor = ewEditor;*/
       $("#<?= $form_id ?>").on("refresh", function (e, formData)
       {
-         //$("#content-editor .ct-app").html(formData["content"]);
+         $("#content-editor .ct-content-container").html(formData["content"]);
          contentEditor.start();
       });
       
