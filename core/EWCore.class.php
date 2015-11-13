@@ -367,15 +367,17 @@ class EWCore
       //{print_r(self::$db_connection);
       $database_config = include('config/database_config.php');
       // default database connection
+      mysqli_report(MYSQLI_REPORT_STRICT);
 
       $db = new mysqli($database_config['host'], $database_config['username'], $database_config['password'], $database_config['database']);
+      //var_dump($db->connect_errno);
       if ($db->connect_errno)
       {
-         echo "Failed to connect to MySQL: (" . $db->connect_errno . ") " . $db->connect_error;
+         return static::log_error(500, "Failed to connect to MySQL: () ");
       }
       $db->set_charset("utf8");
       static::$db_connection = $db;
-      //}
+
       return self::$db_connection;
    }
 
