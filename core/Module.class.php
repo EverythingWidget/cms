@@ -112,7 +112,9 @@ class Module
          else
          {
             return ($result === false || $result === null) ?
-                    \EWCore::log_error(400, "API request is not executed", ["Pre processor has stopped the process: " . get_class($this->pre_processors[$i])]) :
+                    \EWCore::log_error(400, "API request is not executed", [
+                        "Pre processor has stopped the process: " . get_class($this->pre_processors[$i]),
+                        "$verb: $method_name"]) :
                     $result;
          }
       }
@@ -165,6 +167,8 @@ class Module
 
    private function invoke_method($verb, $method_name, $parameters)
    {
+      // Run all the pre processors
+      // If an error accures, then error will be returned
       $preProcessorsResult = $this->run_pre_processors($verb, $method_name, $parameters);
       if ($preProcessorsResult !== true)
       {

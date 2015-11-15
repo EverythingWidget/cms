@@ -1139,27 +1139,6 @@ class EWCore
       EWCore::register_object("ew-resource", $id, $function);
    }
 
-   /* public static function get_resource($id, $arg)
-     {
-     $func = null;
-     if (!$id)
-     {
-     echo "Please spacify the recourse id";
-     return;
-     }
-     if (array_key_exists($id, EWCore::read_registry("ew-resource")))
-     {
-     $func = EWCore::read_registry("ew-resource");
-     $func = $func[$id];
-     }
-     if (!is_callable($func))
-     echo "->$id: function is not valid or callable";
-     if (!$arg)
-     return call_user_func($func);
-     else
-     return call_user_func_array($func, $arg);
-     } */
-
    public static function read_activities()
    {
       EWCore::init_sections_plugins();
