@@ -371,7 +371,7 @@ session_start();
          //var div = $("<div></div>");
          if (v.hasClass("panel") || v.hasClass("block"))
          {
-            liUl = $("<li><div><a href='#' class='item-label'><img src='~admin-public/css/default/panel-icon.png' class='handle'/></a><a href='#' class='btn btn-primary add-item'>Add</a><a href='#' class='close-icon' ></a></div></li>");
+            liUl = $("<li><div><a href='#' class='item-label'><img src='~admin-public/css/images/panel-icon.png' class='handle'/></a><a href='#' class='btn btn-primary add-item'>Add</a><a href='#' class='close-icon' ></a></div></li>");
             itemLabel = liUl.find(".item-label");
             liUl.attr("data-linked-panel-id", v.attr("data-panel-id"));
             skipBoxBlock = false;
@@ -385,7 +385,7 @@ session_start();
              else*/ if (v.hasClass("row"))
             {
                itemLabel.append("Block");
-               liUl.find("img").attr("src", "~admin-public/css/default/block-icon.png");
+               liUl.find("img").attr("src", "~admin-public/css/images/block-icon.png");
                liUl.addClass("block");
                liUl.find(".item-label").click(function (e) {
                   self.blockForm(v.attr('data-panel-id'));
@@ -501,7 +501,7 @@ session_start();
                e.preventDefault();
             };
 
-            var li = $("<li class='widget'><div><a href='#' class='item-label'><img src='~admin-public/css/default/widget-icon.png' class='handle'/></a><a href='#' class='close-icon' ></a></div></li>");
+            var li = $("<li class='widget'><div><a href='#' class='item-label'><img src='~admin-public/css/images/widget-icon.png' class='handle'/></a><a href='#' class='close-icon' ></a></div></li>");
             li.attr("data-linked-widget-id", v.children().attr("data-widget-id"));
             var widgetTitle = li.find(".item-label");
             widgetTitle.append(/*v.children().data("widget-id") +*/ v.children().attr("data-widget-title"));
@@ -1013,7 +1013,7 @@ session_start();
          myIframeContent.find("head #widget-data").remove();
          myIframeContent.find("body #base-content-pane").remove();
 
-         myIframeContent.find("head #template-css").attr("href", $('#template').val() + "/template.css");
+         myIframeContent.find("head #template-css").attr("href", "~rm-public/"+$('#template').val() + "/template.css");
 
          var widgetData = myIframe.contentWindow.document.createElement("script");
          widgetData.id = "widget-data";

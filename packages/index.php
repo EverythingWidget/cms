@@ -54,7 +54,14 @@ $_REQUEST["_language"] = $language;
 
 $url_language = ($language == "en") ? '' : $language . '/';
 // Set the language for the root url
-$u = 'http://' . $_SERVER['SERVER_NAME'] . EW_DIR_URL . $url_language;
+if ($_SERVER['SERVER_PORT'] !== "80")
+{
+   $u = 'http://' . $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'] . EW_DIR_URL . $url_language;
+}
+else
+{
+   $u = 'http://' . $_SERVER['SERVER_NAME'] . EW_DIR_URL . $url_language;
+}
 define('EW_ROOT_URL', $u);
 
 // Check the app parameter
@@ -117,19 +124,8 @@ $EW = new \EWCore();
 // set default user group if no user group has been spacified
 if (!isset($_SESSION["EW.USER_GROUP_ID"]))
 {
-   //echo EWCore::get_default_users_group();
-   //$_SESSION["EW.USERS_GROUP"] = EWCore::get_default_users_group();
-   //print_r(EWCore::get_default_users_group());
-   $_SESSION['EW.USER_GROUP_ID'] = json_decode(EWCore::get_default_users_group(), true)["id"];
+   $_SESSION['EW.USER_GROUP_ID'] = /*json_decode(EWCore::get_default_users_group(), true)["id"]*/ 1;
 }
-
-// If app name is asset then call get_resource
-/*if ($app_name == "asset")
-{
-   EWCore::get_resource($section_name, array(
-       $_file));
-   return;
-}*/
 
 $r_uri = strtok($_SERVER["REQUEST_URI"], "?");
 
@@ -176,21 +172,18 @@ $real_class_name = $app_name . '\\' . $section_name;
 
 $RESULT_CONTENT = EWCore::process_request_command($app_name, $section_name, $function_name, $_REQUEST);
 
-
 function translate($match)
 {
    global $language;
    return EWCore::translate_to_locale($match, $language);
 }
 
-
-
 // show the result
 if ($RESULT_CONTENT)
 {
    //$RESULT_CONTENT = preg_replace_callback("/\{\{([^\|]*)\|?([^\|]*)\}\}/", $callback, $RESULT_CONTENT);
    // Show translated result  
-   
+
    echo preg_replace_callback("/tr(\:\w*)?\{(.*?)\}/", "translate", $RESULT_CONTENT);
    //$time_end = microtime(true);
    //$time = $time_end - $time_start;

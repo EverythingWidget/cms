@@ -122,7 +122,7 @@ $panelId = $_REQUEST['panelId'];
       var styleClass = $("#used-classes").text();
       var widgetStyleClass = $("#style_class").val();
 
-      $.post('<?php echo EW_ROOT_URL; ?>~webroot-api/WidgetsManagement/create_widget', {widget_type: uisWidget.widgetType, style_class: styleClass,
+      $.post('<?php echo EW_ROOT_URL; ?>~webroot-api/widgets-management/create-widget', {widget_type: uisWidget.widgetType, style_class: styleClass,
          widget_style_class: widgetStyleClass, style_id: styleId, widget_parameters: wp},
       function (data) {
          EW.lock($.EW("getParentDialog", $("#uis-widget-form")));
@@ -159,7 +159,7 @@ $panelId = $_REQUEST['panelId'];
       var styleClass = $("#used-classes").text();
       var widgetStyleClass = $("#style_class").val();
 
-      $.post('<?php echo EW_ROOT_URL; ?>~webroot-api/WidgetsManagement/create_widget', {widget_id: this.widgetId, widget_type: uisWidget.widgetType, style_class: styleClass,
+      $.post('<?php echo EW_ROOT_URL; ?>~webroot-api/widgets-management/create-widget', {widget_id: this.widgetId, widget_type: uisWidget.widgetType, style_class: styleClass,
          widget_style_class: widgetStyleClass, style_id: styleId, widget_parameters: wp},
       function (data) {
          EW.lock($.EW("getParentDialog", $("#uis-widget-form")));

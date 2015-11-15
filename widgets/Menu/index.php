@@ -27,7 +27,7 @@ $icnons = $widget_parameters["title"];
          else if ($link["type"] == "widget-feeder")
          {
             $linkURL = '#';
-            $sub_menus = EWCore::get_widget_feeder("menu", $link["feederName"]);
+            $sub_menus = webroot\WidgetsManagement::get_widget_feeder("menu", $link["feederName"]);
             $sub_menus = json_decode($sub_menus, TRUE);
          }
          else if ($link["type"])
@@ -70,7 +70,7 @@ $icnons = $widget_parameters["title"];
       else if ($link["type"] == "widget-feeder")
       {
          $linkURL = '#';
-         $sub_menus = EWCore::get_widget_feeder("menu", $link["feederName"]);
+         $sub_menus = webroot\WidgetsManagement::get_widget_feeder("menu", $link["feederName"]);
          $sub_menus = json_decode($sub_menus, TRUE);
       }
       else if ($link["type"])

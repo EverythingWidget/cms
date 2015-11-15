@@ -30,9 +30,9 @@
 <div id="content-labels" class="col-lg-4 col-md-4 col-sm-12 col-xs-12" >
    <?php
    // Load content labels
-   $content_labels = EWCore::read_registry("ew-content-labels");
+   $content_components = EWCore::read_registry(EWCore::$EW_CONTENT_COMPONENT);
 
-   foreach ($content_labels as $comp_id => $label_object)
+   foreach ($content_components as $comp_id => $label_object)
    {//print_r($value);
       $data_array = json_decode($form_config["data"], true);
       $labels = $data_array["labels"];

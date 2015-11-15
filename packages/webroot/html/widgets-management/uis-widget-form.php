@@ -23,7 +23,7 @@ function get_properties_form()
    <div class="row">
       <div class="col-xs-12">
          <input data-label="ID" class="text-field" value="<?php echo $widget_info["style_id"] ?>" name="style_id" id="style_id" >
-      
+
          <input data-label="Class" id="style_class" name="style_class" class="text-field" >
          <label class="small" id="used-classes"></label>
       </div>
@@ -40,7 +40,7 @@ function get_properties_form()
          <h3 class="line-header">Classes</h3>
          <div class="options-panel" id="available-classes" data-toggle="buttons">
             <?php
-            $templates = json_decode(EWCore::parse_css($_REQUEST["template"] . '/template.css', "widget"), true);
+            $templates = json_decode(EWCore::parse_css(EW_PACKAGES_DIR . '/rm/public/' . $_REQUEST["template"] . '/template.css', "widget"), true);
 
             foreach ($templates as $t)
             {
@@ -64,9 +64,12 @@ function get_size_layout_form()
    return ob_get_clean();
 }
 
-EWCore::register_form("uis-widget-form", "widget-cp", ["title" => "Widget CP", "content" => webroot\WidgetsManagement::get_widget_cp($widget_type)]);
-EWCore::register_form("uis-widget-form", "size-layout", ["title" => "Size & Layout", "content" => get_size_layout_form()]);
-EWCore::register_form("uis-widget-form", "properties", ["title" => "Properties", "content" => get_properties_form()]);
+EWCore::register_form("uis-widget-form", "widget-cp", ["title" => "Widget CP",
+    "content" => webroot\WidgetsManagement::get_widget_cp($widget_type)]);
+EWCore::register_form("uis-widget-form", "size-layout", ["title" => "Size & Layout",
+    "content" => get_size_layout_form()]);
+EWCore::register_form("uis-widget-form", "properties", ["title" => "Properties",
+    "content" => get_properties_form()]);
 
 $tabs = EWCore::read_registry("uis-widget-form");
 ?>

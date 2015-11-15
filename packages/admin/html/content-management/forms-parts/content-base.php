@@ -25,9 +25,8 @@
          <?php
          foreach ($tabs as $id => $tab)
          {
-            /*$tab_object = json_decode(EWCore::process_request_command($tab["app"], $tab["section"], $tab["command"], ["form_config" => $form_config,
-                        "form_id" => $form_id]), true);
-            echo "<div class='tab-pane' id='{$id}'>" . $tab_object["html"] . "</div>";*/
+            $tab_object = json_decode(EWCore::process_request_command($tab["app"], $tab["module"], $tab["method"], ["form_config" => $form_config]), true);
+            echo "<div class='tab-pane' id='{$id}'>" . $tab_object["html"] . "</div>";
          }
          ?>
       </div>
@@ -85,8 +84,7 @@
             if (el.attr("data-activated") === "false")
             {
                labels[el.find("input[name='key']").val()] = null;
-            }
-            else if (!el.find("input[name='key']").is(":disabled") && !el.find("[name='value']").is(":disabled"))
+            } else if (!el.find("input[name='key']").is(":disabled") && !el.find("[name='value']").is(":disabled"))
             {
                labels[el.find("input[name='key']").val()] = el.find("[name='value']").val();
             }
@@ -133,19 +131,19 @@
          formData['labels'] = this.getLabels();
          if (contentEditor.regions() && contentEditor.regions()[0])
             formData["content"] = contentEditor.regions()[0].html();
-         
+
          return formData;
       },
       setData: function (data)
       {
          if (data && data.labels)
-         {            
+         {
             ContentForm.initLabels(data.labels);
             ContentForm.setLabels(data.labels);
          }
-         
+
          EW.setFormData(this.formId, data);
-         $("#content").change();         
+         $("#content").change();
       }
    };
    $.each($(".content-label"), function (i, e)
@@ -165,9 +163,8 @@
             e.stop().animate({
                className: "box box-grey content-label"
             },
-            200);
-         }
-         else
+                    200);
+         } else
          {
             e.attr("data-activated", false);
             //alert("click: "+e.attr("data-activated"));
@@ -176,7 +173,7 @@
             e.stop().animate({
                className: "box box-grey content-label disabled"
             },
-            200);
+                    200);
          }
       });
    });

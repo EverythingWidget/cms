@@ -8,7 +8,7 @@
 <form name="apps-plugins-form" id="general-form" >
    <div class="row">
       <?php
-      $apps = json_decode(EWCore::get_apps("all"), true);
+      $apps = [];
       $i = 0;
       foreach ($apps as $app)
       {

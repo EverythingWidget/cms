@@ -31,7 +31,10 @@ class Module
       $this->app = $app;
       $this->initParameters();
       $this->current_class = new \ReflectionClass($this);
+   }
 
+   public function init()
+   {
       $this->install_assets();
 
       $this->pre_processors = $this->get_pre_processors();
@@ -75,7 +78,7 @@ class Module
    {
       
    }
-   
+
    public function is_unathorized_method_invoke()
    {
       return $this->unauthorized_method_invoke;
@@ -165,7 +168,6 @@ class Module
       $preProcessorsResult = $this->run_pre_processors($verb, $method_name, $parameters);
       if ($preProcessorsResult !== true)
       {
-
          return $preProcessorsResult;
       }
       $db = \EWCore::get_db_connection();
@@ -192,46 +194,6 @@ class Module
       }
       //$method_object->setAccessible(true);
       $command_result = $method_object->invokeArgs($this, $functions_arguments);
-
-      // Read the listeners for this command
-      /*$actions = \EWCore::read_registry("app-" . $this->app->get_root() . "/" . $this->current_class->getShortName() . "/" . $method_name . "_listener");
-      if (isset($actions) && !is_array($command_result))
-      {
-
-         $temp_result = json_decode($command_result, true);
-         if (json_last_error() == JSON_ERROR_NONE)
-         {
-            //echo "sadasfd $command_result";
-            $command_result = $temp_result;
-         }
-      }
-
-      try
-      {
-         // Call the listeners with the same data as the command data
-         if (isset($actions))
-         {
-            foreach ($actions as $id => $data)
-            {
-               if (method_exists($data["object"], $data["function"]))
-               {
-                  $listener_method_object = new ReflectionMethod($data["object"], $data["function"]);
-                  $functions_arguments = \EWCore::create_arguments($listener_method_object, $parameters);
-                                    
-                  $plugin_result = $listener_method_object->invokeArgs($data["object"], $functions_arguments);
-                  
-                  if ($plugin_result)
-                  {
-                     $command_result = $plugin_result;
-                  }
-               }
-            }
-         }
-      }
-      catch (Exception $e)
-      {
-         echo $e->getTraceAsString();
-      }*/
 
       if (is_array($command_result))
          $command_result = json_encode($command_result);
@@ -348,7 +310,7 @@ class Module
       //echo $command . "_listener";
       \EWCore::register_object($command . "_listener", $this->app->get_root() . "/" . $this->current_class->getShortName() . "/" . $function, array(
           "function" => $function,
-          "object" => $object));
+          "object"   => $object));
    }
 
    public function register_content_component($key, $comp_object)
@@ -356,7 +318,7 @@ class Module
       //$ro = new ReflectionClass($this);
       //$defaults = ["componentObject" => $comp_object];
       //$defaults = array_merge($defaults, $comp_object);
-      \EWCore::register_object("ew-content-labels", $this->app->get_root() . '_' . $this->get_section_name() . '_' . $key, $comp_object);
+      \EWCore::register_object(\EWCore::$EW_CONTENT_COMPONENT, $this->app->get_root() . '_' . $this->get_section_name() . '_' . $key, $comp_object);
    }
 
    /**
@@ -367,20 +329,26 @@ class Module
    public function register_content_label($key, $default_value)
    {
       //$ro = new ReflectionClass($this);
-      $defaults = ["app" => $this->app->get_root(),
+      $defaults = ["app"     => $this->app->get_root(),
           "section" => $this->get_section_name(),
           "command" => 'ew_label_' . $key];
       $defaults = array_merge($defaults, $default_value);
       \EWCore::register_object("ew-content-labels", $this->app->get_root() . '_' . $this->get_section_name() . '_' . $key, $defaults);
    }
 
-   public function register_form($name, $id, $default_value)
+   /**
+    * 
+    * @param string $name id of parent form
+    * @param type $id if of new section
+    * @param type $form
+    */
+   public function register_form($name, $id, $form)
    {
-      $defaults = ["app" => $this->app->get_root(),
-          "section" => $this->get_section_name(),
-          "command" => 'ew_form_' . $id];
-      $defaults = array_merge($defaults, $default_value);
-      \EWCore::register_object($name, $this->app->get_root() . '_' . $this->get_section_name() . '_' . $id, $defaults);
+      $defaults = ["app"    => $this->app->get_root() . '/api',
+          "module" => \EWCore::camelToHyphen($this->get_section_name()),
+          "method" => 'ew-form-' . $id];
+      $form_structure = array_merge($defaults, $form);
+      \EWCore::register_object($name, $this->app->get_root() . '_' . $this->get_section_name() . '_' . $id, $form_structure);
    }
 
    /**
@@ -392,17 +360,17 @@ class Module
    public function register_widget_feeder($type, $id, $function_name = null)
    {
       if (!$function_name)
+      {
          $function_name = $id;
-      //$ro = new ReflectionClass($this);
-      //$app = $this->app->get_root();
-      //EWCore::register_object("ew-widget-feeder", "$type:$app", array($this, "ew_" . $type . "_feeder_" . $function_name));
+      }
+
       if (!strpos($function_name, ".php"))
       {
          $function_name = array(
              $this,
              "ew_" . $type . "_feeder_" . $function_name);
       }
-      \EWCore::register_widget_feeder($type, $this->app->get_root(), $id, $function_name);
+      \webroot\WidgetsManagement::add_widget_feeder($type, $this->app->get_root(), $id, $function_name);
    }
 
    public function register_content_type($type_name, $get, $get_list)
@@ -465,7 +433,7 @@ class Module
       {
          //echo $key . " " . $value;
          if (!$this->save_setting($key, $value))
-            return \EWCore::log_error(400, "The configuration has not been saved", ["key" => $key,
+            return \EWCore::log_error(400, "The configuration has not been saved", ["key"   => $key,
                         "value" => $value]);
       }
    }

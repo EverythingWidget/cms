@@ -10,13 +10,13 @@ function sidebar()
    ?>
    <ul>
       <li>
-         <a rel="ajax" data-default="true" data-ew-nav="general" href="<?php echo EW_ROOT_URL; ?>admin/Settings/general.php">General</a>
+         <a rel="ajax" data-default="true" data-ew-nav="general" href="~admin/settings/general.php">General</a>
       </li>     
       <li>
-         <a rel="ajax" data-ew-nav="apps-plugins" href="<?php echo EW_ROOT_URL; ?>admin/Settings/apps-plugins.php">Apps & Plugins</a>
+         <a rel="ajax" data-ew-nav="apps-plugins" href="~admin/settings/apps-plugins.php">Apps & Plugins</a>
       </li>     
       <li>
-         <a rel="ajax" data-ew-nav="preference" href="<?php echo EW_ROOT_URL; ?>admin/Settings/perference.php">Preference</a>
+         <a rel="ajax" data-ew-nav="preference" href="~admin/settings/perference.php">Preference</a>
       </li>     
    </ul>
    <?php
@@ -30,11 +30,24 @@ function script()
    <script  >
       (function ()
       {
-         System.module("Settings", {
-            init: function ()
-            {
+         var Settings = System.module("settings");
 
-            }
+         Settings.onInit = function (nav)
+         {
+         };
+
+         Settings.onStart = function ()
+         {
+
+         };
+
+         Settings.on("app", function (p, section)
+         {
+            if (!section /*|| section === this.data.tab*/)
+               return;
+            this.data.tab = section;
+
+            EW.appNav.setCurrentTab($("a[data-ew-nav='" + section + "']"));
          });
       }());
    </script>

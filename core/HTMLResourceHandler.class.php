@@ -67,7 +67,7 @@ class HTMLResourceHandler extends ResourceHandler
       $file = isset($matches[1]) ? $matches[1] : $parameters["_file"];
       $path = null;
 
-      if (\EWCore::is_widget_feeder("*", "*", $module_name))
+      if (\webroot\WidgetsManagement::is_widget_feeder("*", "*", $module_name))
       {
          // Show index if the URL contains a page feeder
          ob_start();

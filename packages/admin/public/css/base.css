@@ -2,33 +2,7 @@ root {
    display: block;
 }
 
-@font-face {
-   font-family:'Roboto';
-   src:local('Cabin Regular'),local(Regular),url(Roboto-Regular.ttf);
-   font-weight:400;
-   font-style:normal;
-}
-
-@font-face {
-   font-family:'Roboto';
-   src:local('Roboto Light'),local(Roboto-Light),url(Roboto-Light.ttf);
-   font-weight:300;
-   font-style:normal;
-}
-
-@font-face {
-   font-family:'Roboto';
-   src:local('Roboto Medium'),local(Roboto-Medium),url(Roboto-Medium.ttf);
-   font-weight:500;
-   font-style:normal;
-}
-
-@font-face {
-   font-family:'Roboto';
-   src:local('Roboto Bold'),local(Roboto-Bold),url(Roboto-Bold.ttf);
-   font-weight:700;
-   font-style:normal;
-}
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,500,300,700,900);
 
 @font-face {
    font-family:'Homa';
@@ -569,7 +543,7 @@ body.Admin {
    z-index: 0;
    top: 0;
    overflow: hidden;
-   background-image: url(noise-pattern-light.png);
+   background-image: url(images/noise-pattern-light.png);
    background-color: #f0f0f0;
    box-shadow: 0 2px 12px -1px #666;
    position: absolute;
@@ -990,19 +964,14 @@ button {
 .home-pane {
    width: 100%;
    position: absolute;
-   /* overflow: auto; */
-   padding-top: 50px;
-   /* top: 94px; */
-   /* bottom: auto; */
-   /*transition:all .3s ease-out;*/
-   /* background-color: red; */
+   padding-top: 50px;   
    transform: scale(.86);
    opacity: 0;
 }
 
 .home-pane.in {
    top: 0;
-   /* bottom: 0px; */
+   
    opacity: 1;
    transform: scale(1);
 }
@@ -1023,7 +992,7 @@ button {
    flex: 0 1 auto;
 }
 
-.apps-list li a {
+.app-link {
    width: 200px;
    height: 200px;
    background-color: #fff;
@@ -1036,13 +1005,18 @@ button {
    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
    transition: all .2s ease-out;
    color: #111;
+   cursor: pointer;
 }
 
-.apps-list li a:active {
+.app-link:hover {
+   box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
+}
+
+.app-link:active {
    background-color: #ddd;
 }
 
-.apps-list li a label {
+.app-link label {
    font-size: 22px;
    float: none;
    display: block;
@@ -1053,36 +1027,13 @@ button {
    text-align: center;
 }
 
-.apps-list li a p {
+.app-link p {
    height: 80px;
    margin: 0;
    padding: 10px;
    display: block;
    font-size: 14px;
    text-align: center;
-}
-
-.apps-list li a:hover {
-   box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
-}
-
-.apps-list li a:hover label {
-   /* color:#39f
-   */;
-}
-
-.apps-list li.selected a {
-   box-shadow: 0 1px 6px #39f;
-   cursor: default;
-}
-
-.apps-list li.selected label {
-   color: #fff;
-   background-color: #39f;
-}
-
-.apps-list li.selected:hover label {
-   color: #fff;
 }
 
 .actions-bar {
@@ -1231,7 +1182,7 @@ ul.list.arrangeable
 
 ul.list.arrangeable li {
    margin-bottom: 0px;
-   border-bottom: 1px solid #ccc;  
+   border-bottom: 1px solid #eee;  
 }
 
 ul.list.arrangeable li:last-child {
@@ -1378,7 +1329,7 @@ ul.links li p {
 }
 
 .btn.component-chooser {
-   background-image: url(component-chooser-btn.png);
+   background-image: url(images/component-chooser-btn.png);
    background-repeat: no-repeat;
    background-position: 18px center;
    height: 34px;
@@ -1429,7 +1380,7 @@ div#components-pane {
 
 .app-bar-nav .comp-btn {
    background-color: #fff;
-   background-image: url(side-bar-btn.png);
+   background-image: url(images/side-bar-btn.png);
    background-repeat: no-repeat;
    background-position: 16px center;
    width: 250px;
@@ -1570,7 +1521,7 @@ div#components-pane {
 }
 
 .texture {
-   background-image: url(side-bar-bg.png);
+   background-image: url(images/side-bar-bg.png);
 }
 
 .texture.dark {
@@ -1579,7 +1530,7 @@ div#components-pane {
 
 .texture.squre {
    background-color: #fff;
-   background-image: url(squre-texture.png);
+   background-image: url(images/squre-texture.png);
 }
 
 ul.items {
@@ -2127,7 +2078,7 @@ textarea.text-field {
 }
 
 .ExitBtn {
-   background-image: url(ExitBtn.png);
+   background-image: url(images/ExitBtn.png);
    background-repeat: no-repeat;
    width: 28px;
    height: 28px;
@@ -2258,7 +2209,7 @@ textarea.text-field {
    height: 34px;
    padding: 0;
    float: right;
-   background-image: url(controls.png);
+   background-image: url(images/controls.png);
    background-repeat: no-repeat;
 }
 
@@ -2329,7 +2280,7 @@ textarea.text-field {
 }
 
 .data .btn.delete {
-   background-image: url(delete.png);
+   background-image: url(images/delete.png);
    background-position: 0 0;
    width: 32px;
    height: 32px;
@@ -2341,7 +2292,7 @@ textarea.text-field {
 }
 
 .data .btn.edit {
-   background-image: url(edit.png);
+   background-image: url(images/edit.png);
    background-position: 0 0;
    width: 32px;
    height: 32px;
@@ -2530,7 +2481,7 @@ table.contents td {
 }
 
 .content-item.folder span {
-   background: url(content-icons.png) 0 0 no-repeat;
+   background: url(images/content-icons.png) 0 0 no-repeat;
    display: block;
    margin: 0 auto;
    width: 44px;
@@ -2538,7 +2489,7 @@ table.contents td {
 }
 
 .content-item.article span {
-   background: url(content-icons.png) -44px 0 no-repeat;
+   background: url(images/content-icons.png) -44px 0 no-repeat;
    display: block;
    margin: 0 auto;
    width: 44px;
@@ -2579,7 +2530,7 @@ table.contents td {
 }
 
 .close-icon {
-   background-image: url(x-small-icon.png);
+   background-image: url(images/x-small-icon.png);
    width: 20px;
    height: 20px;
    cursor: pointer;
@@ -2600,11 +2551,11 @@ table.contents td {
 }
 
 .icon.correct {
-   background-image: url(correct-small-icon.png);
+   background-image: url(images/correct-small-icon.png);
 }
 
 .icon.incorrect {
-   background-image: url(incorrect-small-icon.png);
+   background-image: url(images/incorrect-small-icon.png);
 }
 
 .close-icon:hover {
@@ -2612,9 +2563,9 @@ table.contents td {
 }
 
 .x-icon {
-   background-image: url(cross16.png);
+   background-image: url(images/cross16.png);
    /* background-color: #fff; */
-   /* clip-path: url(cross16.png); */
+   /* clip-path: url(images/cross16.png); */
 }
 
 .btn i {
@@ -2625,14 +2576,14 @@ table.contents td {
 }
 
 .uis-icon {
-   background-image: url(uis-icon.png);
+   background-image: url(images/uis-icon.png);
    min-width: 20px;
    min-height: 20px;
    display: block;
 }
 
 .link-icon {
-   background-image: url(link-icon.png);
+   background-image: url(images/link-icon.png);
    min-width: 20px;
    min-height: 20px;
    display: block;
@@ -2823,7 +2774,7 @@ div.notification p,div.notification h4 {
 }
 
 .different-screens {
-   background-image: url(different-screens.png);
+   background-image: url(images/different-screens.png);
    background-repeat: no-repeat;
    background-position: center center;
    height: 413px;
@@ -2841,7 +2792,7 @@ div.notification p,div.notification h4 {
 }
 
 .nav-pills > li.dropdown > a {
-   background-image: url(side-bar-btn.png);
+   background-image: url(images/side-bar-btn.png);
    background-repeat: no-repeat;
    background-position: center center;
    height: 38px;

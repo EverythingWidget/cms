@@ -85,7 +85,7 @@
                  var items = ['<ul class="apps-list">'];
                  $.each(data, function (key, val)
                  {
-                    items.push('<li class=""><a data-app="' + val['id'] + '"><label>' + val['title'] + '</label><p>' + val['description'] + '</p></a></li>');
+                    items.push('<li class=""><a class="app-link" data-app="' + val['id'] + '"><label>' + val['title'] + '</label><p>' + val['description'] + '</p></a></li>');
                     //val.package = "~admin";
                     val.file = "index.php";
                     val.id = val['id'];

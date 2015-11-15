@@ -22,10 +22,8 @@
    </div>
 </div>
 <script  type="text/javascript">
-
    function UisTab()
    {
-
 
    }
 
@@ -51,8 +49,7 @@
       if ($("#WidgetManagement_pageUisId").val())
       {
          $("#remove-uis-btn").show();
-      }
-      else
+      } else
       {
          $("#remove-uis-btn").hide();
       }
@@ -67,13 +64,12 @@
 
    var uisTab = new UisTab();
 
-   $("#<?php echo $form_id ?>").on("refresh", function (e, formData)
+   $("#{{formId}}").on("refresh", function (e, formData)
    {
       if ($("#WidgetManagement_pageUisId").val())
       {
          $("#remove-uis-btn").show();
-      }
-      else
+      } else
       {
          $("#remove-uis-btn").hide();
       }

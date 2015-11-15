@@ -21,6 +21,8 @@ class WidgetsManagement extends \ew\Module
    private static $html_scripts = array();
    private static $html_keywords;
    protected $resource = "api";
+   public static $WIDGET_FEEDER = "ew-widget-feeder";
+   private static $registry = [];
 
    protected function install_assets()
    {
@@ -45,10 +47,13 @@ class WidgetsManagement extends \ew\Module
           "api/get_template_settings_form",
           "api/get_layout",
           "api/get_templates",
+          "api/create_widget",
+          "api/update_uis",
+          "api/ew_form_uis_tab",
           'html/' . $this->get_index()));
 
-      $this->register_form("ew-article-form-tab", "uis_tab", ["title" => "UI"]);
-      $this->register_form("ew-category-form-tab", "uis_tab", ["title" => "UI"]);
+      $this->register_form("ew-article-form-tab", "uis-tab", ["title" => "UI"]);
+      $this->register_form("ew-category-form-tab", "uis-tab", ["title" => "UI"]);
 
       //EWCore::register_action("ew-category-action-add", "WidgetsManagement.category_action_add", "category_action_update", $this);
       //EWCore::register_action("ew-category-action-update", "WidgetsManagement.category_action_update", "category_action_update", $this);
@@ -78,7 +83,7 @@ class WidgetsManagement extends \ew\Module
 
    public function get_templates()
    {
-      $path = EW_TEMPLATES_DIR . '/';
+      $path = EW_PACKAGES_DIR . '/rm/public/templates/';
 
       $apps_dirs = opendir($path);
       $apps = array();
@@ -108,7 +113,7 @@ class WidgetsManagement extends \ew\Module
             }
          }
       }
-      return $apps;
+      return json_encode($apps);
    }
 
    public function category_action_get($_data)
@@ -162,13 +167,9 @@ class WidgetsManagement extends \ew\Module
       }
    }
 
-   public function ew_form_uis_tab($form_config, $form_id)
+   public function ew_form_uis_tab($form_config)
    {
-      ob_start();
-      //echo "asdasdasdasd";
-      include "uis-tab.php";
-      $html = ob_get_clean();
-      return json_encode(["html" => $html]);
+      return json_encode(["html" => $this->get_app()->get_view('html/widgets-management/uis-tab.php', $form_config)]);
    }
 
    public function get_uis_list($token = 0, $size = 99999999999999)
@@ -793,9 +794,9 @@ class WidgetsManagement extends \ew\Module
 
    function get_template_settings_form($path)
    {
-      if (file_exists(EW_ROOT_DIR . $path . '/template.php'))
+      if (file_exists(EW_PACKAGES_DIR . '/rm/public/' . $path . '/template.php'))
       {
-         require_once EW_ROOT_DIR . $path . '/template.php';
+         require_once EW_PACKAGES_DIR . '/rm/public/' . $path . '/template.php';
          $template = new \template();
          return $template->get_template_settings_form();
       }
@@ -1213,6 +1214,162 @@ class WidgetsManagement extends \ew\Module
       return ["template_body" => $template_body,
           "template_script" => $template_script,
           "widget_data" => $widget_data];
+   }
+
+   public static function add_widget_feeder($type, $app, $id, $function)
+   {
+      if (!isset(self::$registry[static::$WIDGET_FEEDER]) || !array_key_exists($app, self::$registry[static::$WIDGET_FEEDER]))
+      {
+         self::$registry[static::$WIDGET_FEEDER][$app] = array();
+      }
+
+      if (!isset(self::$registry[static::$WIDGET_FEEDER][$app][$type]))
+      {
+         self::$registry[static::$WIDGET_FEEDER][$app][$type] = array();
+      }
+
+      self::$registry[static::$WIDGET_FEEDER][$app][$type][$id] = $function;
+
+      EWCore::register_object(static::$WIDGET_FEEDER, $app, self::$registry[static::$WIDGET_FEEDER][$app]);
+   }
+
+   /**
+    * Check whether widget feeder exists
+    * @param type $type
+    * @param string $app
+    * @param type $id
+    * @return boolean returns app name if the $app parameter is set to * or true if the app name is specefied and false in other cases
+    */
+   public static function is_widget_feeder($type, $app, $id)
+   {
+      if (!$app && $app != '*')
+         $app = 'admin';
+      $func = null;
+      $feederApp = true;
+      $result = false;
+      array_walk(EWCore::read_registry(static::$WIDGET_FEEDER), function($item, $key)use ($type, $app, $id, &$feederApp, &$result)
+      {
+         if ($app == "*" || $app == $key)
+         {
+            if ($type == '*')
+            {
+               foreach ($item as $feeder => $p)
+               {
+                  if (isset($p[$id]))
+                  {
+                     //echo $key." ".$feeder."  ".$id;
+                     $result = true;
+                  }
+               }
+            }
+            else if ($item[$type][$id])
+            {
+               $feederApp = $key;
+               $result = true;
+            }
+         }
+      });
+      if ($result)
+         return $feederApp;
+      // Check all thge apps for specified feeder
+      if ($app == "*")
+      {
+         $all_feeders = EWCore::read_registry(static::$WIDGET_FEEDER);
+         foreach ($all_feeders as $feeder => $p)
+         {
+            if (isset($p[$type][$id]))
+               return $feeder;
+         }
+         return FALSE;
+      }
+      if (!$app)
+         $app = 'admin';
+
+
+      $feeder = EWCore::read_registry(static::$WIDGET_FEEDER);
+      if ($feeder[$app][$type][$id])
+      {
+         //$func = EWCore::read_registry("ew-widget-feeder");
+         $func = $feeder[$app][$type][$id];
+      }
+
+      if ($func)
+         return TRUE;
+      else
+         return FALSE;
+   }
+
+   /**
+    * 
+    * @param String $type Name of widget feeder
+    * @param String $id Id of feeder
+    * @param mixed $arg argument which should be passed to the feeder function
+    * @return mixed
+    */
+   public static function get_widget_feeder($type, $app, $id, $arg)
+   {
+      $func = null;
+      if (!$app)
+         $app = 'admin';
+
+      if (EWCore::read_registry(static::$WIDGET_FEEDER)[$app] && EWCore::read_registry(static::$WIDGET_FEEDER)[$app][$type] && EWCore::read_registry(static::$WIDGET_FEEDER)[$app][$type][$id])
+      {
+         $func = EWCore::read_registry(static::$WIDGET_FEEDER)[$app][$type][$id];
+      }
+
+      if (is_string($func) && substr($func, -strlen(".php")) === ".php")
+      {
+         if (!file_exists($func))
+            return json_encode(array(
+                "html" => "$type/$id: File not found"));
+         ob_start();
+         include $func;
+         $html = ob_get_clean();
+         return json_encode(array(
+             "html" => $html));
+         //print_r($func);
+      }
+      if (!is_callable($func))
+      {
+         echo "$type/$id: Function is not valid or callable";
+      }
+      if (!$arg)
+         return call_user_func($func);
+      else
+         return call_user_func_array($func, $arg);
+   }
+
+   /**
+    * 
+    * @type string type of widget feeder
+    * @return mixed
+    */
+   public static function get_widget_feeders($type = "all")
+   {
+
+      $list = array(
+          "totalRows" => count(EWCore::read_registry(static::$WIDGET_FEEDER)),
+          "result" => array());
+//      print_r(EWCore::read_registry("ew-widget-feeder"));
+      foreach (EWCore::read_registry(static::$WIDGET_FEEDER) as $app_name => $feeder_type)
+      {
+         //$parts = explode(":", $wf);
+         //if (!$type || $type == "all" || $type == $parts[0])
+         //print_r($wf);
+
+         foreach ($feeder_type as $feeder_type_name => $id)
+         {
+            foreach ($id as $feeder => $f)
+            {
+               if (!$type || $type == "all" || $type == $feeder_type_name)
+                  $list["result"][] = array(
+                      "name" => $feeder,
+                      "type" => $feeder_type_name,
+                      "app" => $app_name);
+            }
+         }
+      }
+      return json_encode($list);
    }
 
    public function get_title()

@@ -5,7 +5,8 @@
 <link rel="stylesheet" href="~admin-public/css/font-awesome.min.css">
 <link rel="stylesheet" href="~rm-public/css/bootstrap.css" >  
 <link rel="stylesheet" href="~admin-public/css/simple-slider.css"  >  
-<link rel="stylesheet" href="~admin-public/css/default/template.css"  type="text/css">
+<link rel="stylesheet" href="~admin-public/css/base.css"  type="text/css">
+<link rel="stylesheet" href="~admin-public/css/theme/ew/theme.css"  type="text/css">
 <link rel="stylesheet" href="~admin-public/js/ContentStrike/content-tools.min.css">
 
 <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>       

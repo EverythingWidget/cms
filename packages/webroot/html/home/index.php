@@ -66,7 +66,7 @@ $HTML_STYLES = webroot\WidgetsManagement::get_html_styles();
       <base href="<?= EW_ROOT_URL ?>">
 
       <link rel="stylesheet" href="~rm-public/css/bootstrap.css" >  
-      <link id="template-css" href="~rm-public/<?= $_REQUEST["_uis_template"] . '/template.css' ?>" rel="stylesheet" type="text/css"/>
+      <link id="template-css" href="~rm-public/<?= $_REQUEST["_uis_template"] ?>/template.css" rel="stylesheet" type="text/css"/>
 
       <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>           
       <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenLite.min.js"></script>
@@ -76,15 +76,14 @@ $HTML_STYLES = webroot\WidgetsManagement::get_html_styles();
       <script src="~admin-public/js/lib/ewscript.js"></script>            
       <script src="~admin-public/js/lib/floatlabels.min.js" ></script>
 
-
       <?php
-      // Widget's datas
-      //echo '<script id="widget-data">' . $template_script . '</script>';
       // Add registered scripts
       echo $HTML_SCRIPTS;
       // Add template main script if existed
       if ($template_script)
+      {
          echo '<script id="template-script">' . $template_script . '</script>';
+      }
       ?>
 
       <script id="widget-data">

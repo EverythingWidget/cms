@@ -24,10 +24,17 @@ class App
    protected $namespace = "";
    protected $default_resource = "html";
    private $resources = [];
+   private $loaded_modules = [];
 
    public function __construct()
    {
+      $this->load_assets();
       $this->install_resource_handlers();
+   }
+
+   protected function load_assets()
+   {
+      $this->load_modules("api");
    }
 
    protected function install_resource_handlers()
@@ -36,11 +43,12 @@ class App
       $this->addResource($this->default_resource, new HTMLResourceHandler($this));
    }
 
-   //put your code here
-
    public function init_app()
    {
-      $this->load_modules("api");
+      for ($in = 0, $len = count($this->loaded_modules); $in < $len; $in++)
+      {
+         $this->loaded_modules[$in]->init();
+      }
    }
 
    public function load_modules($dir)
@@ -50,6 +58,8 @@ class App
       if (!file_exists($path))
          return;
       $sections = scandir($path);
+
+      $this->loaded_modules = [];
 
       for ($in = 0, $len = count($sections); $in < $len; $in++)
       {
@@ -71,7 +81,7 @@ class App
 
          if (array_key_exists('ew\Module', class_parents($real_class_name)))
          {
-            $sc = new $real_class_name($this);
+            $this->loaded_modules [] = new $real_class_name($this);
          }
       }
    }
@@ -94,10 +104,10 @@ class App
       else
       {
          return \EWCore::log_error(404, "Resource not found: `$app_resource_path[1]/$module_name/$method_name`", [
-                     "package" => $app_resource_path[0],
+                     "package"  => $app_resource_path[0],
                      "resource" => $app_resource_path[1],
-                     "module" => $module_name,
-                     "method" => $method_name
+                     "module"   => $module_name,
+                     "method"   => $method_name
          ]);
       }
 //         }
@@ -148,11 +158,11 @@ class App
    public function get_app_details()
    {
       return array(
-          "name" => $this->name,
+          "name"        => $this->name,
           "description" => $this->description,
-          "version" => $this->version,
-          "type" => $this->type,
-          "root" => $this->get_root());
+          "version"     => $this->version,
+          "type"        => $this->type,
+          "root"        => $this->get_root());
    }
 
    public function get_path($path)
@@ -172,6 +182,7 @@ class App
    public function get_view($path, $view_data)
    {
       $full_path = EW_PACKAGES_DIR . '/' . $this->get_root() . '/' . $path;
+
       if (!file_exists($full_path))
       {
          return \EWCore::log_error(404, "<h4>View: File not found</h4><p>File `$full_path`, not found</p>");
@@ -189,7 +200,7 @@ class App
    {
       return [
           'module' => 'html',
-          'file' => 'index.php'
+          'file'   => 'index.php'
       ];
    }
 
@@ -238,8 +249,8 @@ class App
 
             if ($module->get_title() && !$module->is_hidden())
                $sections[] = array(
-                   "title" => "tr:$appDir" . "{" . $module->get_title() . "}",
-                   "className" => $module_name,
+                   "title"       => "tr:$appDir" . "{" . $module->get_title() . "}",
+                   "className"   => $module_name,
                    "description" => "tr:$appDir" . "{" . $module->get_description() . "}");
          }
       }
