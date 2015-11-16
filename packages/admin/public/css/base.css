@@ -1,8 +1,8 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,500,300,700,900);
+
 root {
    display: block;
 }
-
-@import url(https://fonts.googleapis.com/css?family=Roboto:400,500,300,700,900);
 
 @font-face {
    font-family:'Homa';
