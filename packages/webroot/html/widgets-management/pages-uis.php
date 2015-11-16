@@ -43,7 +43,7 @@ $default_page = json_decode(webroot\WidgetsManagement::get_path_uis("@DEFAULT"),
                   </div>
                </div>
                <?php
-               $widgets_types_list = json_decode(EWCore::get_widget_feeders("page"), true);
+               $widgets_types_list = json_decode(webroot\WidgetsManagement::get_widget_feeders("page"), true);
                $widgets_types_list = $widgets_types_list["result"];
                //print_r($widgets_types_list);
                //Show list of pages and their layouts
