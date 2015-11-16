@@ -61,7 +61,7 @@ class ContentManagement extends \ew\Module
           "api/get_album",
           "api/get_categories_list",
           "api/get_articles_list",
-          "api/get_medias_list",
+          "api/get_media_list",
           "html/article-form.php",
           "html/category-form.php",
           "html/album-form.php"));

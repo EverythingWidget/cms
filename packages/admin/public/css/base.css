@@ -971,7 +971,7 @@ button {
 
 .home-pane.in {
    top: 0;
-   
+
    opacity: 1;
    transform: scale(1);
 }
@@ -1004,12 +1004,13 @@ button {
    margin: 30px;
    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
    transition: all .2s ease-out;
-   color: #111;
+   color: #444;
    cursor: pointer;
 }
 
 .app-link:hover {
    box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
+   color:#000;
 }
 
 .app-link:active {

@@ -85,7 +85,7 @@ if (!$_SESSION['login'])
       $("#folders-list").append(albums);
       $("#files-list").html("<h2>Loading Images</h2>");
       $("#files-list").append(images);
-      $.post('<?php echo EW_ROOT_URL; ?>admin-api/content-management/get-media-list', {parent_id: self.parentId}, function (data)
+      $.post('<?php echo EW_ROOT_URL; ?>~admin-api/content-management/get-media-list', {parent_id: self.parentId}, function (data)
       {
          $("#folders-list > h2").html("tr{Albums}");
          $("#files-list > h2").html("tr{Images}");
