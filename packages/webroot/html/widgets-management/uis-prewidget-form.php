@@ -42,7 +42,7 @@ $panelId = $_REQUEST['panelId'];
          <?php
          //$wm = new admin\WidgetsManagement();
          //$widgets_types_list = json_decode($wm->get_widgets_types(), true);
-         $widgets_types_list = json_decode(EWCore::get_widget_feeders($feeder_type), true);
+         $widgets_types_list = json_decode(webroot\WidgetsManagement::get_widget_feeders($feeder_type), true);
          $widgets_types_list = $widgets_types_list["result"];
          $rowNum = 0;
          $oldApp = "";

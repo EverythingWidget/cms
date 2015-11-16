@@ -23,20 +23,20 @@ class WidgetsManagement extends \ew\Module
    protected $resource = "api";
    public static $WIDGET_FEEDER = "ew-widget-feeder";
    private static $registry = [];
+   private $link_chooser_form = null;
 
    protected function install_assets()
    {
       EWCore::register_app("widgets-management", $this);
+      ob_start();
+      include EW_PACKAGES_DIR . '/webroot/html/widgets-management/link-chooser-uis.php';
+      $this->link_chooser_form = ob_get_clean();
    }
 
    protected function install_permissions()
-   {
-      ob_start();
-      include EW_ROOT_DIR . 'packages/admin/html/WidgetsManagement/link-chooser-uis.php';
-      $lcd = ob_get_clean();
-
+   {      
       EWCore::register_form("ew-link-chooser-form-default", "link-chooser-uis-list", ["title" => "UI Structures",
-          "content" => $lcd]);
+          "content" => $this->link_chooser_form]);
 
       $this->register_permission("view", "User can view the widgets section", array(
           "api/get_uis",

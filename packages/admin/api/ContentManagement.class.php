@@ -41,7 +41,7 @@ class ContentManagement extends \ew\Module
    {
 
       ob_start();
-      include EW_ROOT_DIR . 'packages/admin/html/ContentManagement/link-chooser-document.php';
+      include EW_PACKAGES_DIR . '/admin/html/content-management/link-chooser-document.php';
       $lcd = ob_get_clean();
 
       EWCore::register_form("ew-link-chooser-form-default", "contents-list", ["title" => "Contents",

@@ -231,7 +231,7 @@
                //if (!linkChooserDialog)
                //{
                linkChooserDialog = EW.createModal();
-               $.post("<?php echo EW_DIR ?>admin-html/ContentManagement/file-chooser.php", {
+               $.post("<?php echo EW_DIR ?>~admin-html/content-management/file-chooser.php", {
                   callback: settings.callbackName,
                   data: $element.val()
                },
@@ -335,7 +335,7 @@
                   class: "center-big"
                });
                imageChooserDialog.append("<div class='form-content'></div><div class='footer-pane row actions-bar action-bar-items' ></div>");
-               $.post("<?php echo EW_DIR ?>~admin-api/ContentManagement/Media.php", {
+               $.post("<?php echo EW_DIR ?>~admin-api/content-management/Media.php", {
                   callback: settings.callbackName
                },
                        function (data) {

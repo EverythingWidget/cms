@@ -85,7 +85,7 @@ $tabs = EWCore::read_registry("ew-link-chooser-form");
    <h1 id="form-title" class="col-xs-12">
       tr{Link Chooser}
    </h1>  
-   <ul class="nav nav-tabs xs-nav-tabs">    
+   <ul class="nav nav-pills xs-nav-tabs">    
       <?php
       foreach ($tabsDefault as $id => $tab)
       {
@@ -103,7 +103,6 @@ $tabs = EWCore::read_registry("ew-link-chooser-form");
 </div>
 <form id="link-chooser"  action="#" method="POST">
    <div class="form-content tab-content tabs-bar no-footer row">
-
       <?php
       foreach ($tabsDefault as $id => $tab)
       {
