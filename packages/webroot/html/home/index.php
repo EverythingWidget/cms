@@ -33,12 +33,15 @@ if (file_exists($template_php))
    }
 
    $HTML_BODY = $template->get_template_body($HTML_BODY, $template_settings);
-   //$template.=new DOMElement$template->get_template_script(stripslashes($_REQUEST["_uis_template_settings"]));
-   $DOM = new DOMDocument;
-   $DOM->loadHTML($template->get_template_script($template_settings));
-   $script_tasg = $DOM->getElementsByTagName("script");
-   // Retrive template main js script
-   $template_script = $script_tasg->item(0)->nodeValue;
+   $template_script_dom = $template->get_template_script($template_settings);
+   if ($template_script_dom)
+   {
+      $DOM = new DOMDocument;
+      $DOM->loadHTML($template->get_template_script($template_settings));
+      $script_tasg = $DOM->getElementsByTagName("script");
+      // Retrive template main js script
+      $template_script = $script_tasg->item(0)->nodeValue;
+   }
 }
 // if template.js exist, then include it in HTML_SCRIPTS
 $template_js = EW_PACKAGES_DIR . '/rm/public/' . $_REQUEST["_uis_template"] . '/template.js';
