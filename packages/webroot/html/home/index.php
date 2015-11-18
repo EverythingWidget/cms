@@ -41,8 +41,8 @@ if (file_exists($template_php))
       $script_tasg = $DOM->getElementsByTagName("script");
       // Retrive template main js script
       $template_script = $script_tasg->item(0)->nodeValue;
-   }
-}
+   }}
+
 // if template.js exist, then include it in HTML_SCRIPTS
 $template_js = EW_PACKAGES_DIR . '/rm/public/' . $_REQUEST["_uis_template"] . '/template.js';
 if (file_exists($template_js))
