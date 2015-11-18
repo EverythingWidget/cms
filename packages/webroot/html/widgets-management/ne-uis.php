@@ -1192,7 +1192,7 @@ session_start();
          class: "left"
       });
       self.currentDialog = d;
-      $.post('<?php echo EW_ROOT_URL; ?>~webroot-api/widgets-management/block-form.php', {
+      $.post('<?php echo EW_ROOT_URL; ?>~webroot/widgets-management/block-form.php', {
          template: self.uisTemplate,
          uisId: self.uisId,
          id: id
@@ -1214,7 +1214,7 @@ session_start();
          class: "left"
       });
       self.currentDialog = d;
-      $.post('<?php echo EW_ROOT_URL; ?>~webroot-api/widgets-management/UISPanel.php', {
+      $.post('<?php echo EW_ROOT_URL; ?>~webroot/widgets-management/UISPanel.php', {
          template: self.uisTemplate,
          uisId: self.uisId,
          containerId: containerId
@@ -1232,7 +1232,7 @@ session_start();
          class: "left"
       });
       self.currentDialog = d;
-      $.post('<?php echo EW_ROOT_URL; ?>~webroot-api/widgets-management/UISPanel.php', {
+      $.post('<?php echo EW_ROOT_URL; ?>~webroot/widgets-management/UISPanel.php', {
          template: self.uisTemplate,
          uisId: self.uisId,
          panelId: pid,

@@ -15,7 +15,7 @@ $container_id = $_REQUEST["containerId"];
    <h1 id="uis-panel-title" class="col-xs-12">
       <span>tr{Add}</span>tr{Panel}
    </h1>
-   <ul class="nav nav-tabs">
+   <ul class="nav nav-pills">
       <li class="active"><a href="#properties" data-toggle="tab">Properties</a></li>
       <li><a href="#appearance" data-toggle="tab">Appearance</a></li>
 
@@ -52,7 +52,7 @@ $container_id = $_REQUEST["containerId"];
                   <h3>Classes</h3>
                   <div class="col-xs-12 options-panel" id="available-classes" data-toggle="buttons">
                      <?php
-                     $templates = json_decode(EWCore::parse_css($_REQUEST["template"] . '/template.css', "panel"), true);
+                     $templates = json_decode(EWCore::parse_css(EW_PACKAGES_DIR . '/rm/public/' . $_REQUEST["template"] . '/template.css', "panel"), true);
 
                      foreach ($templates as $t)
                      {
@@ -94,8 +94,7 @@ $container_id = $_REQUEST["containerId"];
          if ($(this).val() == "")
          {
             $("#title-text").prop("disabled", true);
-         }
-         else
+         } else
          {
             $("#title-text").prop("disabled", false);
          }
@@ -111,8 +110,7 @@ $container_id = $_REQUEST["containerId"];
          $("#used-classes").text(panel.prop("class"));
          this.bAdd.comeOut(200);
          this.bEdit.comeIn(300);
-      }
-      else
+      } else
       {
          this.bAdd.comeIn(300);
          this.bEdit.comeOut(200);
@@ -138,8 +136,7 @@ $container_id = $_REQUEST["containerId"];
                classBtn.removeClass("btn-default");
                classBtn.addClass("btn-success");
                $("#panel-classes").append($(classBtn));
-            }
-            else
+            } else
             {
                classBtn.removeClass("btn-success");
                classBtn.addClass("btn-default");
@@ -220,16 +217,14 @@ $container_id = $_REQUEST["containerId"];
       if (containerElement.hasClass("block"))
       {
          containerElement.append(div);
-      }
-      else if (!self.containerId)
+      } else if (!self.containerId)
       {
          var block = $("<div></div>");
          block.prop("id", $("#style_id").val());
          block.attr("data-panel-parameters", params);
          block.prop("class", "panel row " + $("#used-classes").text());
          $("#fr").contents().find("body #base-content-pane").append(block);
-      }
-      else
+      } else
       {
          containerElement.children(".row").append(div);
       }

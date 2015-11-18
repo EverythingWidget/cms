@@ -38,7 +38,7 @@ $name = $_REQUEST["name"];
                   <h3>Classes</h3>
                   <div class="col-xs-12 options-panel" id="available-classes" data-toggle="buttons">
                      <?php
-                     $templates = json_decode(EWCore::parse_css($_REQUEST["template"] . '/template.css', "block"), true);
+                     $templates = json_decode(EWCore::parse_css(EW_PACKAGES_DIR . '/rm/public/' . $_REQUEST["template"] . '/template.css', "block"), true);
                      foreach ($templates as $t)
                      {
                         ?>
@@ -70,8 +70,7 @@ $name = $_REQUEST["name"];
             if ($(this).val() == "no")
             {
                $("#title-text").prop("disabled", true);
-            }
-            else
+            } else
             {
                $("#title-text").prop("disabled", false);
             }
@@ -90,8 +89,7 @@ $name = $_REQUEST["name"];
             $("#used-classes").text(panel.prop("class"));
             this.bAdd.comeOut(200);
             this.bEdit.comeIn(300);
-         }
-         else
+         } else
          {
             this.bAdd.comeIn(300);
             this.bEdit.comeOut(200);
@@ -128,8 +126,7 @@ $name = $_REQUEST["name"];
                   classBtn.removeClass("btn-default");
                   classBtn.addClass("btn-success");
                   $("#panel-classes").append(classBtn);
-               }
-               else
+               } else
                {
                   classBtn.removeClass("btn-success");
                   classBtn.addClass("btn-default");
