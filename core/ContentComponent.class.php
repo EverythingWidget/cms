@@ -25,4 +25,6 @@ interface ContentComponent
    function get_explorer_nav($key, $value);
 
    function get_form($key, $data);
+   
+   function get();
 }

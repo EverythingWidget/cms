@@ -21,7 +21,7 @@ class LanguageComponent implements \ContentComponent
       $form = [
           "title" => "Language",
           "description" => "Language of the content",
-          "url"=>"admin-api/ContentManagement/explorer-language.php"
+          "url" => "~admin/content-management/explorer-language.php"
       ];
       return $form;
    }
@@ -56,6 +56,17 @@ class LanguageComponent implements \ContentComponent
    public function on_update($content_id, $content_data, $label_data)
    {
       
+   }
+
+   public function get()
+   {
+      $config = [
+          "title" => "Language",
+          "description" => "Language of the content",
+          "explorer" => "~admin/content-management/explorer-language.php",
+          "form" => "~admin/content-management/label-language.php"
+      ];
+      return $config;
    }
 
 //put your code here

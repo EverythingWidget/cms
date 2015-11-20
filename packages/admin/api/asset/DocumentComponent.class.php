@@ -21,7 +21,7 @@ class DocumentComponent implements \ContentComponent
       $form = [
           "title" => "Document",
           "description" => "Language of the content",
-          "url" => "admin-api/ContentManagement/explorer-document.php"
+          "url" => "~admin/content-management/explorer-document.php"
       ];
       return $form;
    }
@@ -54,6 +54,11 @@ class DocumentComponent implements \ContentComponent
    }
 
    public function on_update($content_id, $content_data, $label_data)
+   {
+      
+   }
+
+   public function get()
    {
       
    }

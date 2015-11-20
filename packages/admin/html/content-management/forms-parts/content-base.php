@@ -162,8 +162,7 @@
             p.addClass("btn-success").removeClass("btn-default");
             e.stop().animate({
                className: "box box-grey content-label"
-            },
-                    200);
+            }, 300, "Power2.easeInOut");
          } else
          {
             e.attr("data-activated", false);
@@ -172,8 +171,7 @@
             p.removeClass("btn-success").addClass("btn-default");
             e.stop().animate({
                className: "box box-grey content-label disabled"
-            },
-                    200);
+            }, 300, "Power2.easeInOut");
          }
       });
    });

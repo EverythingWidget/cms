@@ -1131,6 +1131,7 @@ ul.list li {
    margin: 0;
    margin-bottom: 5px;
    position: relative;
+   overflow: hidden;
 }
 
 ul.list li .wrapper {
