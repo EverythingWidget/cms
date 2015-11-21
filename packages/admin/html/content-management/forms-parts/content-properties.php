@@ -48,15 +48,15 @@
             }
          }
       }
-
-      $form = $label_object->get_form($comp_id, compact("comp_id", "value", "form_id"));
+      
+      $form = EWCore::call($label_object['form'], compact("comp_id", "value", "form_id"));
       ?>
       <div class=row>
          <div class='col-xs-12'>
             <div class='box box-grey content-label disabled' data-activated="false">
                <div class='row'>
                   <div class='col-xs-12'>
-                     <h3 class="pull-left"><?php echo $form["title"] ?></h3>
+                     <h3 class="pull-left"><?php echo $label_object["title"] ?></h3>
                      <div class="btn-group pull-right" data-toggle="buttons">
                         <label class="btn btn-default btn-sm">
                            <input type="checkbox" id="<?php echo $comp_id ?>_control_button" class="label-control-button"  ><span>Turned Off</span>
@@ -65,13 +65,12 @@
                   </div>
                </div>
                <div class='row'>
-                  <?php echo $form["html"] ?>
+                  <?= EWCore::populate_view($form, compact("comp_id", "value", "form_id")) ?>
                </div>
             </div>
          </div>
       </div>
       <?php
-      //echo $inputs["content"];
    }
    ?>
 </div>

@@ -11,7 +11,6 @@
    </div>
 </div>
 <div class="row">
-   <div class="col-xs-12 ">      
       <ul id="menu" class="list arrangeable">
          <li class="" style="">
             <div class="wrapper">
@@ -32,7 +31,6 @@
             </div>
          </li>
       </ul>
-   </div>
 </div>
 
 <script>

@@ -91,8 +91,21 @@ class ContentManagement extends \ew\Module
       //$this->register_content_label("document", ["title" => "Document", "description" => "Attach this content to other content", "type" => "data_url", "value" => "app-admin/ContentManagement/get_articles_llist"]);
       //$this->register_content_label("language", ["title" => "Language", "description" => "Language of the content"]);
       //$this->register_widget_feeder("page", "ssss");
-      $this->register_content_component("document", new DocumentComponent());
-      $this->register_content_component("language", new LanguageComponent());
+      $this->register_content_component("document", [
+          "title" => "Document",
+          "description" => "Main document",
+          "explorer" => "admin/html/content-management/explorer-document.php",
+          "explorerUrl" => "~admin/content-management/explorer-document.php",
+          "form" => "admin/html/content-management/label-document.php"
+      ]);
+
+      $this->register_content_component("language", [
+          "title" => "Language",
+          "description" => "Language of the content",
+          "explorer" => "admin/html/content-management/explorer-language.php",
+          "explorerUrl" => "~admin/content-management/explorer-language.php",
+          "form" => "admin/html/content-management/label-language.php"
+      ]);
 
       $this->register_widget_feeder("page", "article");
 

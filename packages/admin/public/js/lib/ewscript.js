@@ -614,20 +614,19 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
       position: "absolute",
       display: "none"
    });
-   xButton.click(function ()
-   {
+   xButton.on("click", function () {
       modalPane.trigger("close");
    });
-   $(window).resize(function ()
-   {
+
+   $(window).resize(function () {
       methods.setCloseButton();
    });
-   modalPane.on("beforeClose", function ()
-   {
+
+   modalPane.on("beforeClose", function () {
       return true;
    });
-   modalPane.on("destroy", function ()
-   {
+
+   modalPane.on("destroy", function () {
       settings.closeAction = null;
       modalPane.isOpen = true;
       originElement = null;
@@ -635,91 +634,77 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
    });
    // Close event
 
-   modalPane.on("close", function ()
-   {
-      if (modalPane.triggerHandler("beforeClose"))
+   modalPane.on("close", function () {
+
+      if (modalPane.isOpen && modalPane.triggerHandler("beforeClose"))
       {
-         // Close the modal if it is open
-         if (modalPane.isOpen)
+         modalPane.isOpen = false;
+         self.unlock(basePane);
+
+         $("#apps").attr("target", "");
+
+         if (settings.onClose) {
+            settings.onClose.apply(modalPane, null);
+         }
+         
+         if (!originElement || !$.contains(document, originElement[0]))
          {
-            //$("#header-pane").off("mouseenter.ew mouseleave.ew");
-            //if (!animationDiv)
-            //animationDiv = $("<div class='s-to-d-scale-anim'>").css({
-            var modalOffset = modalPane.offset();
-            animationDiv.css({
-               width: modalPane.outerWidth(),
-               height: modalPane.outerHeight(),
-               top: modalOffset.top,
-               left: modalOffset.left,
-               position: "absolute",
-               //backgroundColor: "#aaa",
-               zIndex: modalPane.css("z-index")
+            modalPane.stop().animate({
+               transform: "scale(.0)"
+            },
+                    400,
+                    "Power2.easeInOut",
+                    function () {
+                       modalPane.css("transform", "");
+                       if (settings.closeAction === "hide")
+                       {
+                          modalPane.hide();
+                          xButton.detach();
+                       }
+                       // if hash is set then detach the modal instead of remove to keep the url listener alive
+                       else if (settings.closeAction === "hash")
+                       {
+                          modalPane.detach();
+                          xButton.detach();
+                       } else
+                       {
+                          modalPane.remove();
+                          xButton.remove();
+                       }
+                    });
+            return;
+         } else {
+
+            System.UI.body = $('#base-pane')[0];
+            System.UI.Animation.transform({
+               from: modalPane[0],
+               to: originElement[0],
+               time: .4,
+               fade: .3,
+               ease: "Power2.easeInOut",
+               //flow: true,
+               onComplete: function ()
+               {
+                  //modalPane.isOpen = true;
+                  //methods.setCloseButton();
+               }
             });
-            modalPane.before(animationDiv);
-            //animationDiv.text("");
-            //alert(settings.class)
-            //if (settings.class !== "full")
-            {
-               //$("#nav-bar").children().delay(1000).fadeIn(300);
-               self.unlock(basePane);
-            }
-            $("#apps").attr("target", "");
-            // Detach the modal if close action is hide
-            if (settings.closeAction === "hide")
-            {
-               modalPane.hide();
-               xButton.detach();
-            }
-            // if hash is set then detach the modal instead of remove to keep the url listener alive
-            else if (settings.closeAction === "hash")
-            {
-               modalPane.detach();
-               xButton.detach();
-            } else
-            {
-               modalPane.remove();
-               xButton.remove();
-            }
-            if (settings.onClose)
-            {
-               settings.onClose.apply(modalPane, null);
-            }
-            modalPane.isOpen = false;
-            if (!originElement || !$.contains(document, originElement[0]))
-            {
-               animationDiv.text("");
-               animationDiv.delay(30).animate({
-                  top: "+=5%",
-                  left: "+=5%",
-                  width: "-=10%",
-                  height: "-=10%",
-                  opacity: 0
-               },
-                       500, "Power4.easeInOut", function () {
-                          if (originElement)
-                             originElement.css("opacity", "1");
-                          animationDiv.remove();
-                       });
-            } else
-            {
-               var originOffset = originElement.offset();
-               animationDiv.css("textShadow", "");
-               animationDiv.animate({
-                  top: originOffset.top,
-                  left: originOffset.left,
-                  width: originElement.outerWidth(),
-                  height: originElement.outerHeight(),
-                  lineHeight: originElement.outerHeight() + "px",
-                  fontSize: originElement.css("fontSize"),
-                  borderRadius: originElement.css("border-radius")
-               },
-                       360, "Power2.easeOut", function () {
-                          originElement.css("opacity", "1");
-                          animationDiv.fadeOut(120, function () {
-                             animationDiv.remove();
-                          });
-                       });
-            }
+         }
+
+         if (settings.closeAction === "hide")
+         {
+            modalPane.hide();
+            xButton.detach();
+         }
+         // if hash is set then detach the modal instead of remove to keep the url listener alive
+         else if (settings.closeAction === "hash")
+         {
+            modalPane.detach();
+            xButton.detach();
+         } else
+         {
+            modalPane.remove();
+            xButton.remove();
          }
       }
    });
@@ -731,110 +716,40 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
       // Open the modal if it is not open
       if (!modalPane.isOpen)
       {
-         if (settings.class !== "full" && settings.lockUI)
-         {
+         if (settings.lockUI || settings.class === "full") {
             self.lock(basePane, " ");
-            $("#apps").attr("target", "_self");
-         } else
-         {
-            self.lock(basePane, " ");
-            //$("#nav-bar").children().fadeOut(300);
-            $("#apps").attr("target", "_blank");
          }
 
-
-         modalPane.show().css({
-            opacity: "0"
-         });
-         //xButton.hide();
-         if (!$.contains(document.body, modalPane))
-         {
+         if (!$.contains(document.body, modalPane)) {
             xButton.hide();
             basePane.append(modalPane, xButton);
-            //$("body").append(xButton);
          }
-         modalPane.css("left", ($(window).width() - modalPane.outerWidth(true)) / 2);
+
+         if (settings.class !== "left")
+         {
+            modalPane.css("left", ($(window).width() - modalPane.outerWidth(true)) / 2);
+         }
+
          originElement = self.activeElement;
          if (settings.initElement && originElement && originElement.parent().length !== 0 && $.contains(document, originElement[0]))
          {
             if (originElement.is("p,h1,h2,h3,h4,h5,h6,span"))
                originElement = originElement.parent();
-            // Get current element background color
-            originElement.css("opacity", ".2");
-            var bgColor = originElement.css("backgroundColor");
-            if (originElement.is("tr"))
-               bgColor = "#78909C";
-            //if (originElement.is("a"))
-            //bgColor = "#26C6DA";
-            var loadingLabel = originElement.data("label");
-            var eOffset = originElement.offset();
-            bgColor = (bgColor == "rgba(0, 0, 0, 0)" || bgColor == "transparent") ? "#aaa" : bgColor;
-            animationDiv.css({
-               overflow: "hidden",
-               whiteSpace: "nowrap",
-               color: "#fff",
-               textAlign: "center",
-               opacity: "1",
-               display: "block",
-               lineHeight: originElement.outerHeight(),
-               fontWeight: "300",
-               fontSize: originElement.css("font-size"),
-               top: eOffset.top,
-               left: eOffset.left,
-               position: "absolute",
-               backgroundColor: bgColor,
-               textTransform: "uppercase",
-               zIndex: modalPane.css("z-index"),
-               width: originElement.outerWidth(),
-               //width: modalPane.outerWidth()/1.5,
-               height: originElement.outerHeight(),
-               //height: modalPane.outerHeight()/1.5,
-               borderRadius: originElement.css('borderRadius')
+            System.UI.body = $('#base-pane')[0];
+            System.UI.Animation.transform({
+               from: originElement[0],
+               to: modalPane[0],
+               time: .6,
+               ease: "Power2.easeInOut",
+               fade: .2,
+               flow: true,
+               text: originElement.data("label"),
+               textColor: "#fff",
+               onComplete: function () {
+                  modalPane.isOpen = true;
+                  methods.setCloseButton();
+               }
             });
-            animationDiv.text(loadingLabel);
-            modalPane.before(animationDiv);
-
-            var mpOffset = modalPane.offset();
-            animationDiv.animate({
-               top: mpOffset.top,
-               left: mpOffset.left,
-               width: modalPane.outerWidth(),
-               height: modalPane.outerHeight(),
-               lineHeight: modalPane.outerHeight() + "px",
-               fontSize: "4em"
-            },
-                    600, "Power3.easeInOut", function () {
-                       modalPane.isOpen = true;
-                       modalPane.delay((!loadingLabel) ? 0 : 120).animate({
-                          opacity: "1"
-                       },
-                               240, function () {
-                                  methods.setCloseButton();
-                                  animationDiv.remove();
-                                  if (settings.class == "full")
-                                  {
-                                     /*$("#nav-bar").off("mouseenter.ew mouseleave.ew");
-                                      $("#nav-bar").on("mouseleave.ew", function () {
-                                      modalPane.stop().animate({
-                                      top: "0px",
-                                      bottom: "0px"
-                                      },
-                                      100, "Power3,easeOut");
-                                      xButton.show();
-                                      
-                                      });
-                                      $("#nav-bar").on("mouseenter.ew", function () {
-                                      modalPane.stop().animate({
-                                      top: "46px",
-                                      bottom: "-46px"
-                                      },
-                                      100, "Power3,easeOut");
-                                      xButton.hide();
-                                      });*/
-                                  }
-                               });
-                    });
-            //animationDuration = 360;
          } else
          {
             /*modalPane.css({
@@ -1293,13 +1208,12 @@ EverythingWidgets.prototype.setCurrentTab = function (obj)
 EverythingWidgets.prototype.lock = function (obj, string)
 {
    var self = this;
-   var settings =
-           {
-              class: "",
-              text: ""
-           };
+   var settings = {
+      class: "",
+      text: ""
+   };
    var glass = $(document.createElement("div"));
-   glass.addClass("glass-pane-lock " + $(obj).attr("class"));
+   glass.addClass("glass-pane-lock ");
    glass.css({
       position: "absolute",
       top: "0px",
@@ -1308,16 +1222,17 @@ EverythingWidgets.prototype.lock = function (obj, string)
       bottom: "0px",
       opacity: 0
    });
-   if (!string)
-      glass.html("<span class='loader'></span>");
-   else if (typeof (string) == "object")
-   {
+   if (!string) {
+      glass[0].innerHTML = "<span class='loader'></span>";
+   } else if (typeof (string) === "object") {
       $.extend(settings, string);
       glass.addClass(settings.class);
-      if (settings.text)
+      if (settings.text) {
          glass.html("<span>" + settings.text + "</span>");
-   } else
+      }
+   } else {
       glass.html("<span>" + string + "</span>");
+   }
 
    $(obj).append(glass);
    var of = {
@@ -1340,8 +1255,7 @@ EverythingWidgets.prototype.lock = function (obj, string)
    //var height = $(obj).outerHeight(true) === 0 ? "100%" : $(obj).outerHeight(true) - 20;
    glass.animate({
       opacity: 1
-   },
-           0);
+   }, 0);
    return glass;
 };
 EverythingWidgets.prototype.unlock = function (obj)
@@ -2225,7 +2139,7 @@ function ExtendableList(element, cSettings)
    //this.$element.find("li:first-child").prepend('<div class="handle"></div>');
 
    this.firstItemClone = this.$element.find("li:first-child").clone();
-   this.lastRow = $("<div data-add-item-row='true' class='row row-buttons'><div class='col-xs-12'></div></div>").addClass(this.$element.attr("class"));
+   this.lastRow = $("<div data-add-item-row='true' class='row row-buttons'></div>").addClass(this.$element.attr("class"));
    this.addNewRow = $("<button type='button' class='btn btn-text btn-primary pull-right'>Add</button>");
    this.addNewRow.on("click", function () {
       var ni = base.createItem();
@@ -2233,7 +2147,7 @@ function ExtendableList(element, cSettings)
       base.$element.append(ni);
       ni.animate({height: "toggle"}, 200);
    });
-   this.lastRow.children().append(this.addNewRow);
+   this.lastRow.append(this.addNewRow);
    base.$element.empty();
    var init = false;
    var oneValue = false;
@@ -2515,7 +2429,7 @@ $(document).ready(function () {
 
             onOpen: function () {
                var modal = this;
-               EW.lock(this);
+               //EW.lock(this);
                var postData = EW.getHashParameters();
                // Manage post data if it is set
                if (EW.activities[activity].postData)

@@ -75,7 +75,7 @@ class HTMLResourceHandler extends ResourceHandler
          return ob_get_clean();
       }
       else if ($module_name && $file)
-      {
+      {         
          $path = implode('/', $app_resource_path) . '/' . $module_name . '/' . $file;
       }
       else if (!isset($file))
@@ -102,7 +102,7 @@ class HTMLResourceHandler extends ResourceHandler
 
          if (\admin\UsersManagement::user_has_permission($app->get_root(), 'html', $module_name, $method_name))
          {
-            return $this->load_file(EW_PACKAGES_DIR . '/' . $path, $type);
+            return $this->load_file(EW_PACKAGES_DIR . '/' . $path, $type , $parameters);
          }
          else
          {
@@ -121,10 +121,11 @@ class HTMLResourceHandler extends ResourceHandler
       }
    }
 
-   private function load_file($file_path, $type)
+   private function load_file($file_path, $type,  $parameters)
    {
       header("Content-Type: " . $type);
       ob_start();
+      //var_dump($parameters);
       include $file_path;
       return ob_get_clean();
    }

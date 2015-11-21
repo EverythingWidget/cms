@@ -23,9 +23,12 @@
 
       contentEditor = ContentTools.EditorApp.get();
       contentEditor.init('#content-editor');
+      
       //ewEditor.start();
-      EW.getParentDialog($("#<?php echo $form_id ?>")).on("beforeClose", function ()
+      console.log($("#<?= $form_id ?>"));
+      EW.getParentDialog($("#<?= $form_id ?>")).on("beforeClose", function ()
       {
+         console.log(this);
          contentEditor.destroy();
          contentEditor = null;
       });

@@ -21,4 +21,4 @@
 <script src="~admin-public/js/lib/ewscript.js"></script>      
 <script src="~admin-public/js/lib/simple-slider.js"></script>
 <script src="~admin-public/js/lib/system.js"></script>   
-<script src="~admin-public/js/main.js"></script>   
+<script src="~admin-public/js/lib/system-ui.js"></script>   
