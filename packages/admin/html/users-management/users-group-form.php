@@ -23,57 +23,65 @@ function get_ew_users_permissions_form()
 {
    ob_start();
    ?>
-   <div class="row">
-      <input type="hidden" id="permission" name="permission">
-      <div class="col-xs-12">
-         <h2>All Permissions</h2>
-      </div>
-      <div class="col-xs-12 content" id="all-permissions"  >
-         <ul class="list permissions tree" data-toggle="buttons">
-            <?php
-            $permissions_titles = \EWCore::read_permissions_titles();
-            if (isset($permissions_titles))
-            {
-               foreach ($permissions_titles as $app_name => $sections)
-               {
-                  ?>
-                  <li><label data-value="<?php echo $app_name ?>"><i class="icon  pull-left"></i><h3 class="icon-header"><?php echo $sections["appTitle"]; ?></h3></label>
-                     <ul class="row">
-                        <?php
-                        foreach ($sections["section"] as $section_name => $sections_permissions)
-                        {
-                           ?>
-                           <li class="col-xs-6"><label data-value="<?php echo "$app_name.$section_name" ?>"><i class="icon  pull-left"></i><h3 class="icon-header"><?php echo $sections_permissions["sectionTitle"]; ?></h3></label>
-                              <ul>
-                                 <?php
-                                 foreach ($sections_permissions["permission"] as $permission_name => $permission_info)
-                                 {
-                                    ?>
-                                    <li class="permission-item">
-                                       <label  data-value="<?php echo "$app_name.$section_name.$permission_name" ?>">
-                                          <i class="icon  pull-left"></i>
-                                          <h3 class="icon-header"><?php echo $permission_info["title"] ?></h3>
-                                          <?php echo $permission_info["description"] ?>
-                                       </label>
-                                    </li>
-                                    <?php
-                                 }
-                                 ?>
-                              </ul>
-                           </li>
-                           <?php
-                        }
-                        ?>
-                     </ul>
-                  </li>
-                  <?php
-               }
-            }
-            ?>
-         </ul>
-      </div>
+   <input type="hidden" id="permission" name="permission">
+   <div class="col-lg-offset-2 col-lg-8 col-xs-12">
+      <h3 class="form-title">All Permissions</h3>
    </div>
-
+   <div class="col-lg-offset-2 col-lg-8 col-xs-12 content" id="all-permissions"  >
+      <ul class="list permissions tree" data-toggle="buttons">
+         <?php
+         $permissions_titles = \EWCore::read_permissions_titles();
+         if (isset($permissions_titles))
+         {
+            foreach ($permissions_titles as $app_name => $sections)
+            {
+               ?>
+               <li>
+                  <label data-value="<?= $app_name ?>">
+                     <i class="icon circle"></i>
+                     <h3 class="icon-header">
+                        <?= $sections["appTitle"]; ?>
+                     </h3>
+                  </label>
+                  <ul class="row">
+                     <?php
+                     foreach ($sections["section"] as $section_name => $sections_permissions)
+                     {
+                        ?>
+                        <li >
+                           <label data-value="<?= "$app_name.$section_name" ?>">
+                              <i class="icon circle"></i><h3 class="icon-header">
+                                 <?= $sections_permissions["sectionTitle"]; ?>
+                              </h3>
+                           </label>
+                           <ul>
+                              <?php
+                              foreach ($sections_permissions["permission"] as $permission_name => $permission_info)
+                              {
+                                 ?>
+                                 <li class="permission-item">
+                                    <label  data-value="<?php echo "$app_name.$section_name.$permission_name" ?>">
+                                       <i class="icon circle"></i>
+                                       <h3 class="icon-header"><?= $permission_info["title"] ?></h3>
+                                       <p class="icon-header"><?= $permission_info["description"] ?></p>
+                                    </label>
+                                 </li>
+                                 <?php
+                              }
+                              ?>
+                           </ul>
+                        </li>
+                        <?php
+                     }
+                     ?>
+                  </ul>
+               </li>
+               <?php
+            }
+         }
+         ?>
+      </ul>
+   </div>
    <script  type="text/javascript">
       var UsersGroupsForm = (function () {
          function UsersGroupsForm()
@@ -106,12 +114,12 @@ function get_ew_users_permissions_form()
                      var label = $(v);
                      if ($(this).is(":checked"))
                      {
-                        label.find("i").addClass("correct");
-                        label.parent().find("input:not(:checked)").prop('checked', true).parent().addClass("active").find("i").addClass("correct");
+                        //label.find("i").addClass("circle");
+                        label.parent().find("input:not(:checked)").prop('checked', true).parent().addClass("active");
                      } else
                      {
-                        label.find("i").removeClass("correct");
-                        label.parent().find("input:checked").prop('checked', false).parent().removeClass("active").find("i").removeClass("correct");
+                        //label.find("i").removeClass("circle");
+                        label.parent().find("input:checked").prop('checked', false).parent().removeClass("active");
                      }
                      //alert("call");
                      // Check parent items
@@ -121,11 +129,11 @@ function get_ew_users_permissions_form()
                         if (e.find("li.permission-item input:checked").length == 0)
                         {
                            //alert("zero: "+e.children("label").html());
-                           e.children("label").children("input:checked").prop('checked', false).parent().removeClass("active").find("i").removeClass("correct");
+                           e.children("label").children("input:checked").prop('checked', false).parent().removeClass("active");
                         } else if (e.find("li.permission-item input:checked").length > 0)
                         {
                            //alert("length "+e.find("li.permission-item input:checked").length+", "+e.children("label").html());
-                           e.children("label").children("input:not(:checked)").prop('checked', true).parent().addClass("active").find("i").addClass("correct");
+                           e.children("label").children("input:not(:checked)").prop('checked', true).parent().addClass("active");
                         }
                         //alert($self.readPermission());
                      });
@@ -225,7 +233,6 @@ function get_ew_users_permissions_form()
          return new UsersGroupsForm();
       })();
    <?php
-               
    $row = EWCore::process_request_command("admin/api", "users-management", "get-user-group-by-id", [$_REQUEST["groupId"]]);
    ?>
       var formData = <?= isset($row) ? $row : 'null' ?>;

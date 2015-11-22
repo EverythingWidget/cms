@@ -911,6 +911,10 @@ button {
    color: #fff;
 }
 
+.btn.comp-btn i {
+   float: none;
+}
+
 #nav-bar > .comp-btn:hover {
    background-color: rgba(0,0,0,.18);
 }
@@ -1248,21 +1252,21 @@ ul.list li ul {
 }
 
 ul.list.tree li {
-   margin-bottom: 10px;
+   margin-bottom: 15px;
 }
 
 ul.list.tree > li > ul > li {
-   padding-left: 5px;
+   padding-left: 20px;
    margin-bottom: 1px;
    overflow: hidden;
 }
 
 ul.list.tree > li > ul > li:nth-of-type(even) {
-   float: right;
+
 }
 
 ul.list.tree li li li {
-   margin: 0 0 0 10px;
+   margin: 0 0 0 20px;
    float: none;
 }
 
@@ -1285,28 +1289,37 @@ ul.list.tree label {
    border-radius: 0;
    font-size: 14px;
    position: relative;
-   padding: 10px;
-   color: #444;
+   padding: 6px 10px;
+   color: #777;
    border: none;
    text-shadow: none;
    text-transform: none;
+   box-shadow: none;
+   background-color: transparent;
+}
+
+ul.list.tree label p{
+   margin: 0;
+   margin-left: 25px;
+   font-size: 14px;
+   font-weight: normal;
 }
 
 ul.list.tree label:hover {
    z-index: 1;
-   background-color: #b0dcf0;
+   /*background-color: #b0dcf0;*/
+   background-color: #eee;
 }
 
 ul.list.tree label.active {
    box-shadow: none;
-   border-color: transparent;
-   background-color: #ddd;
+   border-color: transparent;   
    color: #000;
    text-shadow: none;
 }
 
 ul.list.tree label.active:hover {
-   background-color: #88d4ee;
+   /*background-color: #88d4ee;*/
 }
 
 ul.links {
@@ -2550,8 +2563,19 @@ table.contents td {
    background-repeat: no-repeat;
 }
 
-.icon.pull-left {
-   margin-right: 5px;
+.icon.circle {
+   width: 18px;
+   height: 18px;
+   margin: 1px;
+   border-radius: 9px;
+   transform: scale(.7);
+   background-color: #bbb;
+   transition: .2s all;
+}
+
+.active > .icon.circle {
+   transform: scale(1);
+   background-color: #590;
 }
 
 .icon.correct {
@@ -2577,6 +2601,7 @@ table.contents td {
    background-position: center center;
    background-repeat: no-repeat;
    margin: 0 -4px;
+   float: left;
 }
 
 .uis-icon {
@@ -3001,6 +3026,7 @@ a.link.active,.active > a.link {
 li h3.icon-header {
    margin: 0;
    margin-bottom: 0px;
+   margin-left: 25px;
 }
 
 .box-title {
@@ -3034,3 +3060,9 @@ li h3.icon-header {
    bottom: 0;   
    width: 100%;
 }
+
+.form-title {
+   margin: 15px 0 0;
+   font-size: 1.8em;
+}
+
