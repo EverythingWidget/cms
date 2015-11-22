@@ -64,9 +64,9 @@
       });
       this.bNewUIS.comeIn(300);
 
-      this.table = EW.createTable({name: "uis-list", rowLabel: "{name}", columns: ["name", "template"], headers: {Name: {}, Template: {}}, rowCount: true, url: "<?php echo EW_ROOT_URL; ?>~webroot-api/widgets-management/get-uis-list", pageSize: 30
+      this.table = EW.createTable({name: "uis-list", rowLabel: "{name}", columns: ["name", "template"],
+         headers: {Name: {}, Template: {}}, rowCount: true, url: "<?php echo EW_ROOT_URL; ?>~webroot-api/widgets-management/get-uis-list", pageSize: 30
          , onDelete: function (id) {
-
             this.confirm("Are you sure of deleting this UIS?", function () {
                var _this = this;
                $.post('<?php echo EW_ROOT_URL; ?>~webroot-api/widgets-management/delete-uis', {

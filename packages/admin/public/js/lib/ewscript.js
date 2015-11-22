@@ -1402,8 +1402,7 @@ EWTable.prototype.createRow = function (val, rc)
    if (ewTable.config.onDelete)
    {
       var del = $(document.createElement("button"));
-      del.attr("type", "button");
-      del.addClass("btn btn-text delete");
+      del.attr("type", "button");      del.addClass("btn btn-text delete");
       del.click(function () {
          tableRow.confirm = function (text, delFunction) {
             var oldCells = null;
@@ -1422,9 +1421,9 @@ EWTable.prototype.createRow = function (val, rc)
             var deleteBtn = $(document.createElement("button"));
             deleteBtn.attr({
                type: "button",
-               className: "btn btn-white"
+               class: "btn btn-white"
             });
-            deleteBtn.innerTEXT = "Delete";
+            deleteBtn.text("Delete");
             messageRow.append(deleteBtn);
             deleteBtn.on("click", function () {
                if (delFunction.apply(tableRow, new Array(fieldId))) {
@@ -1904,7 +1903,7 @@ function EWNotification(element, options)
       },
       onClosed: function () {
       },
-      position: "nw"
+      position: "ne"
    };
 // Element collection
    //console.log(options);
@@ -1913,12 +1912,13 @@ function EWNotification(element, options)
    this.options = $.extend(true, {}, notify_defaults, options);
    this.$note.css({
       position: "fixed",
-      zIndex: 9999
+      zIndex: 9999,
+      width: '300px'
    });
    this.$note.attr("data-alert", "true");
    this.$note.attr("data-position", this.options.position);
-   if (this.options.position == "ne")
-      this.$note.css("right", "0px");
+   if (this.options.position === "ne")
+      this.$note.css("right", "65px");
    if (this.options.status)
       this.$note.addClass('alert-' + this.options.status);
    else
@@ -1963,7 +1963,7 @@ EWNotification.prototype.closeNotification = function ()
 EWNotification.prototype.show = function ()
 {
    var top = 0;
-   var left = 0;
+   var left = 'auto';
    var position = this.options.position;
    var note = this.$note;
    var v = this.$element.find("div[data-alert][data-position='" + this.options.position + "']").last();

@@ -51,6 +51,21 @@ class WidgetsManagement extends \ew\Module
           "api/update_uis",
           "api/ew_form_uis_tab",
           'html/' . $this->get_index()));
+      
+      $this->register_permission("manipulate", "User can create and edit layouts", array(
+          "api/get_uis",
+          "api/get_uis_list",
+          "api/get_widgets_types",
+          "api/get_all_pages_uis_list",
+          "api/get_path_uis",
+          "api/get_template_settings_form",
+          "api/get_layout",
+          "api/get_templates",
+          "api/create_widget",
+          "api/update_uis",
+          "api/ew_form_uis_tab",
+          "api/delete_uis",
+          'html/' . $this->get_index()));
 
       $this->register_form("ew-article-form-tab", "uis-tab", ["title" => "UI"]);
       $this->register_form("ew-category-form-tab", "uis-tab", ["title" => "UI"]);
