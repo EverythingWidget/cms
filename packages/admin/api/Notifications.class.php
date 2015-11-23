@@ -13,7 +13,7 @@ use Module;
  *
  * @author Eeliya
  */
-class Notifications extends Module
+class Notifications extends \ew\Module
 {
 
    public function get_title()
