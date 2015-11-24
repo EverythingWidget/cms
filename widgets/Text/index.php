@@ -1,1 +1,1 @@
-<?php//\admin\WidgetsManagement::add_html_script("", widget_script($widget_id));$text = $widget_parameters["text"];$format = $widget_parameters["format"];$language = "en";if ($_REQUEST["_language"])   $language = $_REQUEST["_language"];echo "<$format>".$text."</$format>";   
+<?php//\admin\WidgetsManagement::add_html_script("", widget_script($widget_id));$text = $widget_parameters["text"];$format = $widget_parameters["format"];$language = "en";if ($_REQUEST["_language"])   $language = $_REQUEST["_language"];echo "<$format> $text </$format>";   

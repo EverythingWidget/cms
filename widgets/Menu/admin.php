@@ -34,9 +34,7 @@
 </div>
 
 <script>
-
    $("#menu").EW().dynamicList({
       value: uisWidget.widgetParameters
    });
-
 </script>
