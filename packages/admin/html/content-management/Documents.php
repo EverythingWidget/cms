@@ -80,13 +80,13 @@
                   folderId: null,
                   articleId: eventData.data.id
                },
-               "document");
+                       "document");
             if (eventData.data.type == "folder")
                EW.setHashParameters({
                   folderId: eventData.data.id,
                   articleId: null
                },
-               "document");
+                       "document");
          }
       });
       /*$(document).off("category-list");
@@ -113,8 +113,7 @@
          this.seeFolderActivity({
             folderId: tFolderId
          });
-      }
-      else if (tArticleId)
+      } else if (tArticleId)
       {
          this.articleId = tArticleId;
          this.seeArticleActivity({
@@ -131,56 +130,66 @@
       $.post('~admin-api/content-management/get-categories-list', {
          parent_id: documents.parentId
       },
-      function (data)
-      {
-         $("#categories-list").html("<h2 id='cate-title'>tr{Folders}</h2><div class='row box-content'></div>");
-         //$("#cate-title").loadingText();
-         var cId = EW.getHashParameter("folderId", "document");
-         var foldersPane = $("#categories-list .box-content");
-         $.each(data.result, function (index, element)
-         {
-            pId = element.pre_parent_id;
-            hasNode = true;
-            var temp = documents.createFolder(element.title, element.round_date_created, element.id, element);
-            if (element.id == cId)
-            {
-               temp.addClass("selected");
-               documents.currentItem = temp;
-            }
-            foldersPane.append(temp);
-         });
-         if (hasNode)
-         {
-            documents.preParentId = pId;
-         }
-      }, "json");
+              function (data)
+              {
+                 $("#categories-list").html("<h2 id='cate-title'>tr{Folders}</h2><div class='row box-content'></div>");
+                 //$("#cate-title").loadingText();
+                 var cId = EW.getHashParameter("folderId", "document");
+                 var foldersPane = $("#categories-list .box-content");
+                 $.each(data.result, function (index, element)
+                 {
+                    pId = element.pre_parent_id;
+                    hasNode = true;
+                    var temp = documents.createFolder(element.title, element.round_date_created, element.id, element);
+                    if (element.id == cId)
+                    {
+                       temp.addClass("selected");
+                       documents.currentItem = temp;
+                    }
+                    foldersPane.append(temp);
+                 });
+                 if (hasNode)
+                 {
+                    documents.preParentId = pId;
+                 }
+              }, "json");
       $("#articles-list").html("<div class='col-xs-12'><h2>Loading Article</h2></div>");
       $.post('~admin-api/content-management/get-articles-list', {
          parent_id: documents.parentId
       },
-      function (data)
-      {
-         $("#articles-list").html("<h2>tr{Articles}</h2><div class='row box-content'></div>");
+              function (data)
+              {
+                 $("#articles-list").html("<h2>tr{Articles}</h2><div class='row box-content'></div>");
 
-         var articlesPane = $("#articles-list .box-content");
-         $.each(data.result, function (index, element)
-         {
-            pId = element.pre_parent_id;
-            hasNode = true;
-            var temp = documents.createFile(element.title, element.round_date_created, element.id, element);
-            if (element.id == aId)
-            {
-               temp.addClass("selected");
-               documents.currentItem = temp;
-            }
-            articlesPane.append(temp);
-         });
-         if (hasNode)
-         {
-            documents.preParentId = pId;
-         }
-      }, "json");
+                 var articlesPane = $("#articles-list .box-content");
+                 $.each(data.result, function (index, element)
+                 {
+                    pId = element.pre_parent_id;
+                    hasNode = true;
+                    var temp = documents.createFile(element.title, element.round_date_created, element.id, element);
+                    if (element.id == aId)
+                    {
+                       temp.addClass("selected");
+                       documents.currentItem = temp;
+                    }
+                    articlesPane.append(temp);
+                 });
+                 if (hasNode)
+                 {
+                    documents.preParentId = pId;
+                 }
+              }, "json");
    };
+
+   Documents.prototype.focusOn = function (item)
+   {
+      if (this.currentItem) {
+         this.currentItem.removeClass("selected");
+      }
+      item.addClass("selected");
+      this.currentItem = item;
+   };
+
    Documents.prototype.createFolder = function (title, dateCreated, id, model)
    {
       var self = this;
@@ -194,13 +203,13 @@
             "articleId": null,
             "folderId": id
          },
-         "document");
-         $(self.currentItem).removeClass("selected");
-         $(div).addClass("selected");
-         self.currentItem = div;
+                 "document");
+         self.focusOn(div);
       });
+      div.data("label", title);
       return div;
    };
+
    Documents.prototype.createFile = function (title, dateCreated, id, model)
    {
       var self = this;
@@ -216,11 +225,10 @@
             folderId: null,
             articleId: id
          },
-         "document");
-         $(self.currentItem).removeClass("selected");
-         $(div).addClass("selected");
-         self.currentItem = div;
+                 "document");
+         self.focusOn(div);
       });
+      div.data("label", title);
       return div;
    };
    var documents = new Documents();
@@ -246,8 +254,7 @@
       if (!parent)
       {
          parent = "0";
-      }
-      else
+      } else
       {
          documents.bNewFolder.comeIn();
       }

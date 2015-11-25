@@ -646,7 +646,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
          if (settings.onClose) {
             settings.onClose.apply(modalPane, null);
          }
-         
+
          if (!originElement || !$.contains(document, originElement[0]))
          {
             modalPane.stop().animate({
@@ -717,7 +717,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
       if (!modalPane.isOpen)
       {
          if (settings.lockUI || settings.class === "full") {
-            self.lock(basePane, " ");
+            self.lock(basePane, " ", 900);
          }
 
          if (!$.contains(document.body, modalPane)) {
@@ -1205,7 +1205,7 @@ EverythingWidgets.prototype.setCurrentTab = function (obj)
    obj.addClass("selected");
    this.currentTab = obj;
 };
-EverythingWidgets.prototype.lock = function (obj, string)
+EverythingWidgets.prototype.lock = function (obj, string, delay)
 {
    var self = this;
    var settings = {
@@ -1253,7 +1253,7 @@ EverythingWidgets.prototype.lock = function (obj, string)
     460, "Power3.easeInOut");
     }*/
    //var height = $(obj).outerHeight(true) === 0 ? "100%" : $(obj).outerHeight(true) - 20;
-   glass.animate({
+   glass.delay(delay || 0).animate({
       opacity: 1
    }, 0);
    return glass;
@@ -1402,7 +1402,8 @@ EWTable.prototype.createRow = function (val, rc)
    if (ewTable.config.onDelete)
    {
       var del = $(document.createElement("button"));
-      del.attr("type", "button");      del.addClass("btn btn-text delete");
+      del.attr("type", "button");
+      del.addClass("btn btn-text delete");
       del.click(function () {
          tableRow.confirm = function (text, delFunction) {
             var oldCells = null;

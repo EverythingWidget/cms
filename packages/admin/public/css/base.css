@@ -355,7 +355,7 @@ root {
 }
 
 .top-pane .footer-pane,#main-content .footer-pane {
-   border-top: 1px solid rgba(0,0,0,.16);
+   /*border-top: 1px solid rgba(0,0,0,.06);*/
    background-clip: padding-box;
    background-color: #fff;
    z-index: 5;
@@ -543,7 +543,7 @@ body.Admin {
    z-index: 0;
    top: 0;
    overflow: hidden;
-   background-image: url(images/noise-pattern-light.png);
+   /*background-image: url(images/noise-pattern-light.png);*/
    background-color: #f0f0f0;
    box-shadow: 0 2px 12px -1px #666;
    position: absolute;
@@ -560,7 +560,7 @@ body.Admin {
    overflow-y: hidden;
    overflow-x: hidden;
    border: 0 solid #999;
-   box-shadow: 0 0px 6px 1px rgba(0,0,0,0.2);
+   box-shadow: 0 0px 20px 0px rgba(0,0,0,0.2);
    border-radius: 0;
    z-index: 10;
    /* padding-top: 40px; */
@@ -626,7 +626,7 @@ body.Admin {
    padding-left: 15px;
    padding-right: 15px;
    display: block;
-   top: 98px;
+   top: 94px;
    left: 0;
    bottom: 0;
 }
@@ -809,7 +809,7 @@ h2 {
 .glass-pane-lock {
    width: 100%;
    height: 100%;
-   background-color: rgba(110,110,110,.32);
+   background-color: rgba(110,110,110,.58);
    position: absolute;
    font-size: 64px;
    text-align: center;
@@ -865,7 +865,7 @@ button {
 
 #nav-bar {
    height: 40px;
-   background-color: rgba(0,0,0,.28);
+   background-color: transparent;
    width: 100%;
    padding: 0 10px;
    z-index: 10;
@@ -898,17 +898,19 @@ button {
 #nav-bar > .comp-btn {
    float: left;
    width: 36px;
-   height: inherit;
+   height: 36px;
    border: 0;
    margin: 0;
    margin-left: 4px;
+   margin-top: 2px;
    padding: 0;
    /* padding-left: 54px; */
    font-weight: 400;
    border-radius: 0;
    font-size: 28px;
-   line-height: 40px;
-   color: #fff;
+   line-height: 36px;
+   border-radius: 20px;
+   color: #000;
 }
 
 .btn.comp-btn i {
@@ -920,36 +922,37 @@ button {
 }
 
 #nav-bar > .comp-btn:active {
-   background-color: rgba(0,0,0,.3);
+   background-color: rgba(0,0,0,.4);
 }
 
 #nav-bar .comp-btn:focus {
-   outline: 1px dotted rgba(0,0,0,.3);
+   outline: 1px dotted rgba(0,0,0,.4);
 }
 
 .nav-bar h1 {
    float: left;
    margin: 0;
    height: 40px;
-   padding: 5px 8px;
-   color: #fff;
-   font-size: 18px;
-   font-weight: normal;
+   padding: 5px 4px;
+   color: #000;
+   font-size: 15px;
+   font-weight: 700;
    line-height: 30px;
 }
 
 .app-bar {
    background-color: #fff;
-   box-shadow: 0 3px 10px 1px rgba(0,0,0,0.19),0 0px 6px rgba(0,0,0,0.23);
    height: 94px;
    position: absolute;
    top: -54px;
    width: 100%;
    z-index: 5;/*transition:all .3s ease-out*/
+   box-shadow: 0 0px 0px 0px rgba(0,0,0,0.06),0 0px 0px rgba(0,0,0,0.1);
 }
 
 .app-bar.in {
    top: 0;
+   box-shadow: 0 3px 10px 0px rgba(0,0,0,0.06),0 0px 6px rgba(0,0,0,0.1);
 }
 
 .app-bar .action-pane {
@@ -996,27 +999,30 @@ button {
 .apps-list li {
    float: left;
    flex: 0 1 auto;
+   margin: 15px;
 }
 
 .app-link {
-   width: 200px;
-   height: 200px;
-   background-color: #fff;
-   float: left;
+   width: 225px;
+   height: 180px;
+   background-color: #f4f4f4;
    border: 0 solid #aaa;
    text-decoration: none;
-   border-radius: 16px;
+   border-radius: 0px;
    overflow: hidden;
-   margin: 30px;
    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
    transition: all .2s ease-out;
    color: #444;
    cursor: pointer;
+   display: table-cell; 
+   padding: 15px;
+   vertical-align: middle;
 }
 
 .app-link:hover {
    box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
    color:#000;
+   background-color: #fff;
 }
 
 .app-link:active {
@@ -1028,16 +1034,16 @@ button {
    float: none;
    display: block;
    margin: 0;
-   padding: 20px 10px 15px;
+   padding: 0px 0px 15px;
    cursor: inherit;
-   font-weight: 300;
+   font-weight: normal;
    text-align: center;
 }
 
 .app-link p {
    height: 80px;
    margin: 0;
-   padding: 10px;
+   padding: 0;
    display: block;
    font-size: 14px;
    text-align: center;
@@ -1404,7 +1410,7 @@ div#components-pane {
    height: 52px;
    color: #444;
    padding: 0 30px;
-   padding-left: 56px;
+   padding-left: 52px;
    font-size: 15px;
    float: left;
    display: inline;
@@ -2211,13 +2217,13 @@ textarea.text-field {
 
 .report .controls {
    display: block;
-   padding: 4px;
+   padding: 10px 15px;
    overflow: hidden;
    position: absolute;
    top: 0;
    left: 0;
    right: 0;
-   height: 42px;
+   height: 54px;
    background-color: #fff;
    border: 0 solid #ccc;
 }
@@ -2674,7 +2680,7 @@ div.notification p,div.notification h4 {
    padding: 15px;
    overflow: hidden;
    /* border-radius: 3px; */
-   box-shadow: 0 1px 3px 1px  rgba(0, 0, 0, 0.18), 0 1px 12px 0 rgba(0, 0, 0, 0.12);
+   box-shadow: 0 1px 3px 0px  rgba(0, 0, 0, 0.22), 0 0px 4px 0 rgba(0, 0, 0, 0.06);
 }
 
 .box.box-grey h3 {
