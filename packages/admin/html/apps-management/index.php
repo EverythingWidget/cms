@@ -67,7 +67,7 @@ function script()
 
          SectionManagement.prototype.getAppConf = function (app)
          {
-            $.post('<?php echo EW_ROOT_URL; ?>admin-api/AppsManagement/AppInfo.php', {
+            $.post('<?php echo EW_ROOT_URL; ?>~admin-api/apps-management/AppInfo.php', {
                appDir: app
             },
             function (data)
@@ -85,7 +85,7 @@ function script()
             EW.lock($("#main-content"));
             $("#main-content").empty();
             $("#main-content").html(appContent);
-            $.post('<?php echo EW_ROOT_URL; ?>admin-api/AppsManagement/get_app_sections', {
+            $.post('<?php echo EW_ROOT_URL; ?>~admin-api/apps-management/get-app-sections', {
                appDir: app
             },
             function (data)
@@ -166,7 +166,7 @@ function script()
             EW.lock($("#main-content"));
             //$("#app-sections").html("");
             $("#action-bar-items").find("button").remove();
-            $.post("<?php echo EW_ROOT_URL; ?>admin-api/AppsManagement/dashboard.php", {}, function (data) {
+            $.post("<?php echo EW_ROOT_URL; ?>~admin-api/apps-management/dashboard.php", {}, function (data) {
                $("#action-bar-items").find("button").remove();
                $("#main-content").html(data);
                EW.unlock($("#main-content"));
@@ -174,76 +174,6 @@ function script()
          };
          return new SectionManagement();
       })();
-
-
-      /*$(document).ready(function ()
-       {
-       // Set app to dashboard when there is no app specified. This happens when the page is loaded for the first time
-          
-          
-       EW.addURLHandler(function ()
-       {
-       var app = EW.getHashParameter("app");
-       var dashboard = EW.getHashParameter("dashboard");
-          
-       var sec = EW.getHashParameter("section");
-       var appChanged = false;
-          
-       if (app && sectionManagement.oldApp != app)
-       {
-       //appChanged = true;
-       // Set default selected section as 'app-conf' and break
-       if (!sec)
-       {
-       sec = "app-conf";
-       EW.setHashParameter("section", sec);
-       return;
-       }
-       // set the currently selected section for the current app in the case which page has been refreshed
-       // for persistency
-       if (!EW.getHashParameter("section", app) && !sectionManagement.oldApp)
-       {
-       EW.setHashParameter("section", sec, app);
-       }
-       // set app conf as section when the app open for the first time
-       else if (!EW.getHashParameter("section", app))
-       {
-       EW.setHashParameter("section", "app-conf", app);
-       }
-       if (app == "dashboard")
-       {
-       sectionManagement.loadDashboard();
-       sec = "app-conf";
-       }
-       else
-       {
-       // If app has been changed, read app sections and then break
-       sectionManagement.getAppSections(app);
-       sectionManagement.oldApp = app;
-       return;
-       //if (EW.getHashParameter("section", app))
-       //sec = EW.getHashParameter("section", app);
-       //else
-       //sec = "app-conf";
-       }
-       sectionManagement.oldApp = app;
-       }
-          
-       // Happens when different section inside the current app is selected
-       if (sectionManagement.oldSec != sec)
-       {
-       if (sectionManagement.section)
-       {
-       sectionManagement.section.dispose();
-       }
-       sectionManagement.loadAppSection(app, sec);
-       sectionManagement.oldSec = sec;
-       }
-          
-       return "SectionManagementHandler";
-       });
-          
-       });*/
    </script>
    <?php
    return ob_get_clean();

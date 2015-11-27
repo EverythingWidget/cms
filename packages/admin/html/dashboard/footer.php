@@ -10,7 +10,7 @@
          $("#main-content").stop().animate({
             transform: "scale(1.14)",
             opacity: 0
-         }, 500,"Power2.easeInOut", function () {
+         }, 500, "Power2.easeInOut", function () {
             this.remove();
          });
          $("#app-bar-nav").stop().animate({left: "-250px"}, 300, "Power2.easeOut", function () {
@@ -77,12 +77,10 @@
    EverythingWidgets.prototype.loadSections = function () {
       var self = this;
       this.apps = {Home: {id: "Home"}};
-      $.get('~admin-api/EWCore/read_apps',
-              {
-                 appDir: "admin"
-              },
-              function (data)
-              {
+      $.get('~admin-api/EWCore/read_apps', {
+         appDir: "admin"
+      },
+              function (data) {
 
                  var items = ['<ul class="apps-list">'];
                  $.each(data, function (key, val)
@@ -140,16 +138,10 @@
          $("#app-bar").animate({className: "app-bar in"}, 500, "Power2.easeOut");
          $("#home-pane").animate({className: "home-pane"}, 500, "Power2.easeOut");
          setTimeout(function () {
-
             $.post("~admin-api/" + data.app + "/index.php",
                     {},
-                    function (response)
-                    {
-
+                    function (response) {
                        $("#app-content").append(response);
-
-                       //$("#app-bar-nav").remove();
-
                        EW.initSideBar();
                     });
          }, 500);

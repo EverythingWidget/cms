@@ -88,7 +88,7 @@ class AppsManagement extends \ew\Module
     */
    public static function create_section_main_form($form_config = null)
    {
-      return \EWCore::load_file('admin/html/AppsManagement/section-main-form.php', $form_config);
+      return \EWCore::load_file('admin/html/apps-management/section-main-form.php', $form_config);
    }
 
    public function get_description()

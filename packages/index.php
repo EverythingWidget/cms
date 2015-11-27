@@ -6,6 +6,7 @@ session_start();
 // All contents inside the apps directory is reached throuth this file
 // parse app_name, section_name, function_name from url
 //$time_start = microtime(true);
+// ([^\/\s]{2,3}\/)?~?([^\/\s]*)\/?([^\/\s]*)?\/?([^\/\s]*)?\/?([^\/\s]*)?\/
 ob_start();
 require '../core/config/config.php';
 require '../core/config/database_config.php';

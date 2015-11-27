@@ -20,7 +20,7 @@
  *
  * ========================================================== */
 
-!function ($) {
+(function ($) {
 
    var defaults = {
       sections: "section",
@@ -430,12 +430,11 @@
          $('ul.onepage-pagination').html(paginationList);
       }
 
-
-
+      var firstLI = $(settings.sections + "[data-index='1']");
       if (window.location.hash != "" && window.location.hash != "#1")
       {
          init_index = window.location.hash.replace("#", "");
-         var firstLI = $(settings.sections + "[data-index='1']");
+
          var next = $(settings.sections + "[data-container-id='" + init_index + "']");
          if (next.length > 0) {
             moveTo(init_index, true);
@@ -524,7 +523,5 @@
       }
       return false;
    }
-
-
-}(window.jQuery);
+}(jQuery));
 
