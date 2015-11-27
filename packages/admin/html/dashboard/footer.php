@@ -1,33 +1,37 @@
 <script>
    System.init();
    //var EW = new EverythingWidgets();
-   System.onLoadApp = function (app)
-   {
-      if (app.id === "Home")
-      {
+   System.onLoadApp = function (app) {
+      if (app.id === "Home") {
          $("#app-title").text("Home");
          $("#apps").hide();
          //$("#action-bar-items").empty();
-         $("#main-content").remove();
-         $("#app-bar-nav").remove();
+         //$("#main-content").remove();
+         $("#main-content").stop().animate({
+            transform: "scale(1.14)",
+            opacity: 0
+         }, 500,"Power2.easeInOut", function () {
+            this.remove();
+         });
+         $("#app-bar-nav").stop().animate({left: "-250px"}, 300, "Power2.easeOut", function () {
+            this.remove();
+         });
          //$("#app-bar").removeClass("in");
 
          $("#app-bar").animate({className: "app-bar"}, 500, "Power2.easeInOut");
-         $("#home-pane").delay(400).animate({className: "home-pane in"}, 500, "Power2.easeInOut");
+         $("#home-pane").animate({className: "home-pane in"}, 500, "Power2.easeInOut");
          return false;
       }
       return true;
    };
-   System.onAppLoaded = function (app, response)
-   {
-
+   System.onAppLoaded = function (app, response) {
       $("#apps").show();
 //            $("#app-title").text(app.title);
       $("#action-bar-items").empty();
       $("#app-bar").animate({className: "app-bar in"}, 500, "Power2.easeInOut");
       $("#home-pane").animate({className: "home-pane"}, 500, "Power2.easeInOut");
-      $("#main-content").remove();
-      $("#app-bar-nav").remove();
+      //$("#main-content").remove();
+      //$("#app-bar-nav").remove();
       setTimeout(function ()
       {
          $("#app-content").append(response);
@@ -38,25 +42,24 @@
 
    };
 
-   System.main.hashHandler = function (nav, params)
-   {
+   System.main.hashHandler = function (nav, params) {
       if (!nav["app"] && "Home" !== EW.oldApp)
       {
-         $("#action-bar-items").empty();
+         $("#action-bar-items").children().animate({
+            opacity: 0
+         }, 300);
          EW.oldApp = "Home";
          $("#app-title").text(EW.apps["Home"].title);
          System.openApp(EW.apps["Home"]);
       }
-   }
+   };
 
-   System.on('app', function (path, app, sec)
-   {
-
-      if (!app)
+   System.on('app', function (path, app, sec) {
+      if (!app) {
          app = "Home";
+      }
 
-      if (app !== EW.oldApp)
-      {
+      if (app !== EW.oldApp) {
          EW.oldApp = app;
          $("#app-title").text(EW.apps[app].title);
          System.openApp(EW.apps[app]);
@@ -71,8 +74,7 @@
       //base.setCurrentTab($("a[data-ew-nav='" + EW.getHashParameter("nav") + "']"));
    });
 
-   EverythingWidgets.prototype.loadSections = function ()
-   {
+   EverythingWidgets.prototype.loadSections = function () {
       var self = this;
       this.apps = {Home: {id: "Home"}};
       $.get('~admin-api/EWCore/read_apps',
@@ -116,19 +118,15 @@
               }, "json");
    };
 
-   EverythingWidgets.prototype.loadApp = function (data)
-   {
-      if (data.app !== this.oldApp)
-      {
-
+   EverythingWidgets.prototype.loadApp = function (data) {
+      if (data.app !== this.oldApp) {
          this.oldApp = data.app;
-         if (!data.app)
-         {
+         if (!data.app) {
             $("#app-title").text("Home");
             $("#apps").hide();
             //$("#action-bar-items").empty();
-            $("#main-content").remove();
-            $("#app-bar-nav").remove();
+
+            //$("#app-bar-nav").remove();
             //$("#app-bar").removeClass("in");
 
             $("#app-bar").animate({className: "app-bar"}, 500, "Power2.easeOut");
@@ -147,14 +145,17 @@
                     {},
                     function (response)
                     {
-                       $("#main-content").remove();
-                       $("#app-bar-nav").remove();
+
                        $("#app-content").append(response);
+
+                       //$("#app-bar-nav").remove();
+
                        EW.initSideBar();
                     });
          }, 500);
       }
    };
+
    $.fn.textWidth = function () {
       var html_org = $(this).html();
       var html_calc = '<span style="white-space:nowrap">' + html_org + '</span>';
@@ -163,6 +164,7 @@
       $(this).html(html_org);
       return width;
    };
+
    $.fn.comeIn = function (t) {
 
       if (!this.is(":visible") || this.css("visibility") != "visible")
@@ -184,6 +186,7 @@
       return this;
       // Open popup code.
    };
+
    $.fn.comeOut = function (t) {
       if (!this.hasClass("btn-hide"))
       {
@@ -201,18 +204,16 @@
    $.fn.loadingText = function (t) {
       return this;
    };
-   ew_plugins.linkChooser = function (options)
-   {
+
+   ew_plugins.linkChooser = function (options) {
       var defaults = {
          callbackName: "function-reference"
       };
       var linkChooserDialog;
-      function LinkChooser(element, options)
-      {
+      function LinkChooser(element, options) {
          var base = this;
          var $element = $(element);
-         defaults.callback = function (link)
-         {
+         defaults.callback = function (link) {
             $element.val(link).change();
             linkChooserDialog.trigger("close");
          };
@@ -226,10 +227,7 @@
          $element.EW().inputButton({
             title: '<i class="link-icon"></i>',
             label: 'tr{Link Chooser}',
-            onClick: function (e)
-            {
-               //if (!linkChooserDialog)
-               //{
+            onClick: function (e) {
                linkChooserDialog = EW.createModal();
                $.post("<?php echo EW_DIR ?>~admin-html/content-management/file-chooser.php", {
                   callback: settings.callbackName,
@@ -242,8 +240,6 @@
                           e.append(functionRefrence);
                           linkChooserDialog.html(e);
                        });
-               //}
-               //linkChooserDialog.open();
             }
          });
       }
@@ -255,29 +251,23 @@
          }
       });
    };
-   ew_plugins.imageChooser = function (options)
-   {
+   ew_plugins.imageChooser = function (options) {
       var ACTIVE_PLUGIN_ATTR = "data-active-plugin-image-chooser";
       var defaults = {
          callbackName: "function-reference"
       };
       var imageChooserDialog;
-      function ImageChooser(element, options)
-      {
+      function ImageChooser(element, options) {
          var base = this;
          var $element = $(element);
          $element.off("change.image-chooser");
-         $element.on("change.image-chooser", function ()
-         {
+         $element.on("change.image-chooser", function () {
             image.attr("src", $element.val() || "asset/images/no-image.png");
          });
-         defaults.callback = function (link)
-         {
-            //alert($element.html());
-            //$element.val(link).change();
+         defaults.callback = function (link) {
             imageChooserDialog.dispose();
          };
-         //this.$element = $(element);
+
          var settings = $.extend({
          }, defaults, options);
          if (!$element.parent().attr("data-element-wrapper"))
@@ -287,8 +277,7 @@
          if (imageChooserDialog)
             imageChooserDialog.remove();
          var image = wrapper.find("img");
-         if (image.length <= 0)
-         {
+         if (image.length <= 0) {
             image = $("<img>");
             console.log(image);
             wrapper.find("div").append(image);
@@ -296,13 +285,11 @@
          image.css("max-height", $element.css("max-height"));
          var imageChooserBtn;
          // if the plugin has been called later again on same element
-         if ($element.attr(ACTIVE_PLUGIN_ATTR))
-         {
+         if ($element.attr(ACTIVE_PLUGIN_ATTR)) {
             imageChooserBtn = wrapper.find("button.btn-image-chooser");
          }
          // If the plugin has been called for the first time
-         else
-         {
+         else {
             image.attr("src", $element.val() || "asset/images/no-image.png");
             image.css({
                border: "none",
@@ -325,53 +312,52 @@
             $element.attr(ACTIVE_PLUGIN_ATTR, true);
          }
 
-         imageChooserBtn.click(function ()
-         {
+         imageChooserBtn.click(function () {
             //if (!imageChooserDialog)
-            {
-               imageChooserDialog = EW.createModal({
-                  //closeAction: "hide",
-                  autoOpen: false,
-                  class: "center-big"
-               });
-               imageChooserDialog.append("<div class='form-content'></div><div class='footer-pane row actions-bar action-bar-items' ></div>");
-               $.post("<?php echo EW_DIR ?>~admin-api/content-management/Media.php", {
-                  callback: settings.callbackName
-               },
-                       function (data) {
-                          imageChooserDialog.find(".form-content:first").append(data);
-                          imageChooserDialog.prepend("<h1>Media</h1>");
-                          /*var functionRefrence = $("<div style='display:none;' id='function-reference'></div>");
-                           functionRefrence.data("callback", settings.callback);
-                           imageChooserDialog.find("#link-chooser").append(functionRefrence);*/
 
-                          var bSelectPhoto = EW.addAction("Select Photo", function () {
-                             EW.setHashParameter("select-photo", true, "Media");
-                          }, {
-                             display: "none"
-                          }).addClass("btn-success");
-                          // create handler to track selected
-                          var EWhandler = function ()
+            imageChooserDialog = EW.createModal({
+               //closeAction: "hide",
+               autoOpen: false,
+               class: "center-big"
+            });
+            imageChooserDialog.append("<div class='form-content'></div><div class='footer-pane row actions-bar action-bar-items' ></div>");
+            $.post("<?php echo EW_DIR ?>~admin-api/content-management/Media.php", {
+               callback: settings.callbackName
+            },
+                    function (data) {
+                       imageChooserDialog.find(".form-content:first").append(data);
+                       imageChooserDialog.prepend("<h1>Media</h1>");
+                       /*var functionRefrence = $("<div style='display:none;' id='function-reference'></div>");
+                        functionRefrence.data("callback", settings.callback);
+                        imageChooserDialog.find("#link-chooser").append(functionRefrence);*/
+
+                       var bSelectPhoto = EW.addAction("Select Photo", function () {
+                          EW.setHashParameter("select-photo", true, "Media");
+                       }, {
+                          display: "none"
+                       }).addClass("btn-success");
+                       // create handler to track selected
+                       var EWhandler = function ()
+                       {
+                          var url = EW.getHashParameter("absUrl", "Media");
+                          if (url)
+                             bSelectPhoto.comeIn(300);
+                          else
+                             bSelectPhoto.comeOut(200);
+                          if (EW.getHashParameter("select-photo", "Media"))
                           {
-                             var url = EW.getHashParameter("absUrl", "Media");
-                             if (url)
-                                bSelectPhoto.comeIn(300);
-                             else
-                                bSelectPhoto.comeOut(200);
-                             if (EW.getHashParameter("select-photo", "Media"))
-                             {
-                                EW.setHashParameter("select-photo", null, "Media");
-                                imageChooserDialog.dispose();
-                                //if (EW.getHashParameter("url", "Media"))
-                                $element.val(EW.getHashParameter("absUrl", "Media")).change();
-                                $element.attr("data-filename", EW.getHashParameter("filename", "Media"));
-                                $element.attr("data-file-extension", EW.getHashParameter("fileExtension", "Media"));
-                                $element.attr("data-url", EW.getHashParameter("url", "Media"));
-                             }
-                          };
-                          EW.addURLHandler(EWhandler, "Media.ImageChooser");
-                       });
-            }
+                             EW.setHashParameter("select-photo", null, "Media");
+                             imageChooserDialog.dispose();
+                             //if (EW.getHashParameter("url", "Media"))
+                             $element.val(EW.getHashParameter("absUrl", "Media")).change();
+                             $element.attr("data-filename", EW.getHashParameter("filename", "Media"));
+                             $element.attr("data-file-extension", EW.getHashParameter("fileExtension", "Media"));
+                             $element.attr("data-url", EW.getHashParameter("url", "Media"));
+                          }
+                       };
+                       EW.addURLHandler(EWhandler, "Media.ImageChooser");
+                    });
+
             imageChooserDialog.open();
          });
       }
@@ -381,29 +367,21 @@
          }
       });
    };
-   function initPlugins(element)
-   {
+
+   function initPlugins(element) {
       if (!element.innerHTML && element.nodeName.toLowerCase() != 'input' && element.nodeName.toLowerCase() != 'textarea')
          return;
       var $element = $(element);
       EW.initPlugins($element);
-      // Bootstraps Plugins
-      // Begin
-      //$("[data-toggle='tooltip'],[data-tooltip]").tooltip();
-      // End
 
-      $element.find("a[rel='ajax']").each(function ()
-      {
+      $element.find("a[rel='ajax']").each(function () {
          var a = $(this);
-         if (a.attr("rel") === "ajax")
-         {
-            a.click(function (event)
-            {
+         if (a.attr("rel") === "ajax") {
+            a.click(function (event) {
                event.preventDefault();
                var params = a.attr("href").split(",");
                $.each(params, function (k, v) {
-                  if (v)
-                  {
+                  if (v) {
                      var kv = v.split("=");
                      EW.setHashParameter(kv[0], kv[1]);
                   }
@@ -412,38 +390,36 @@
          }
       });
    }
-   EverythingWidgets.prototype.initSideBar = function ()
-   {
+
+   EverythingWidgets.prototype.initSideBar = function () {
       this.appNav = this.appNav || {};
       var $sidebar = $("#app-bar-nav");
       //var sbb = $("#side-bar-btn");
       $sidebar.prepend(EW.sidebarButton);
+      $sidebar.css("left", "-250px");
+      $("#app-bar").prepend($sidebar);
+      $sidebar.stop().animate({left: 0}, 200, "Power2.easeOut");
       //sidebar.attr("tabindex", 1);
       $sidebar.off("mouseleave");
-      $sidebar.on("mouseleave", function ()
-      {
+      $sidebar.on("mouseleave", function () {
          $sidebar.stop().css({
             overflowY: "hidden"
          });
+
          $("#app-bar-nav.in").stop().animate({
-            className: "app-bar-nav",
-            //width: $("#side-bar-btn").outerWidth()
-         },
-                 360, "Power3.easeOut");
-         //$("#sidebar").fadeOut(300);
+            className: "app-bar-nav"
+         }, 360, "Power3.easeOut");
       });
       $sidebar.off("click");
-      $sidebar.on("click", function (e)
-      {
+      $sidebar.on("click", function (e) {
          e.stopPropagation();
       });
       EW.sidebarButton.off("click mouseenter focus");
-      EW.sidebarButton.on("click mouseenter focus", function (event)
-      {
-         //event.preventDefault();
+      EW.sidebarButton.on("click mouseenter focus", function (event) {
          $sidebar.css({
             maxHeight: $(window).height() - 100
          });
+
          $("#app-bar-nav:not(.in)").stop().animate({
             className: "app-bar-nav in",
             width: "250px"
@@ -452,8 +428,7 @@
                     $sidebar.stop().css({
                        overflowY: "auto"
                     });
-                    if (event.type == 'focus')
-                    {
+                    if (event.type === 'focus') {
                        $sidebar.find("a:first").focus();
                     }
                  });
@@ -469,20 +444,15 @@
       this.appNav.currentTab = null;
       var oldHref = null
       var oldRequest = null
-      this.appNav.setCurrentTab = function (element)
-      {
-         if (this.currentTab)
-         {
+      this.appNav.setCurrentTab = function (element) {
+         if (this.currentTab) {
             this.currentTab.removeClass("selected");
             oldHref = this.currentTab.attr("href")
          }
-         if (element)
-         {
-            if (element !== this.currentTab)
-            {
+         if (element) {
+            if (element !== this.currentTab) {
                EW.sidebarButton.text(element.text());
-               if (element.attr("data-ew-nav") && element.attr("href") != oldHref)
-               {
+               if (element.attr("data-ew-nav") && element.attr("href") != oldHref) {
                   //alert(element.prop("href"));
                   $("#action-bar-items").find("button,div").remove();
                   $("#main-content").empty();
@@ -502,52 +472,38 @@
          this.currentTab = element;
       };
       //var base = this;
-      if ($("#app-bar-nav").length == 0)
-      {
+      if ($("#app-bar-nav").length == 0) {
          //sbb.hide();
       }
-      if ($("#components-list").length == 1)
-      {
+      if ($("#components-list").length == 1) {
          //$("#component-chooser-btn").remove();
       }
-      $("#app-bar-nav a, .app-bar-nav a").each(function ()
-      {
+      $("#app-bar-nav a, .app-bar-nav a").each(function () {
          var a = $(this);
-         if (a.attr("rel") === "ajax")
-         {
-
-            a.click(function (event)
-            {
+         if (a.attr("rel") === "ajax") {
+            a.click(function (event) {
                event.preventDefault();
-               if (a.attr("data-ew-nav"))
-               {
+               if (a.attr("data-ew-nav")) {
                   System.setHashParameters({
                      "app": System.getHashNav("app")[0] + '/' + a.attr("data-ew-nav")
                   }, null);
-               } else
-               {
+               } else {
                   var kv = a.attr("href").split("=");
                   EW.setHashParameter(kv[0], kv[1]);
                }
-
-               //base.setCurrentTab(a);
             });
             var currentNav = System.getHashNav("app")[1];
 
-            if (window.location.hash.indexOf(a.attr("href")) != -1 || currentNav === a.attr("data-ew-nav"))
-            {
+            if (window.location.hash.indexOf(a.attr("href")) != -1 || currentNav === a.attr("data-ew-nav")) {
                //System.hashChanged();
                //base.setCurrentTab(a);
             }
             //alert(currentNav);
-            if (a.attr("data-default") && !currentNav)
-            {
-               if (System.getHashNav("app")[1] !== a.attr("data-ew-nav"))
-               {
-                  System.setHashParameters(
-                          {
-                             app: System.getHashNav("app")[0] + '/' + a.attr("data-ew-nav")
-                          }, true);
+            if (a.attr("data-default") && !currentNav) {
+               if (System.getHashNav("app")[1] !== a.attr("data-ew-nav")) {
+                  System.setHashParameters({
+                     app: System.getHashNav("app")[0] + '/' + a.attr("data-ew-nav")
+                  }, true);
                }
             }
             /*var defaultLink = EW.getHashParameter(kv[0]);

@@ -25,8 +25,8 @@
    var defaults = {
       sections: "section",
       sectionsContainer: null,
-      easing: "ease",
-      animationTime: 1000,
+      easing: "Circ.easeInOut",
+      animationTime: 1200,
       pagination: true,
       updateURL: false,
       keyboard: true,
@@ -85,26 +85,6 @@
 
       });
    };
-   /*var getPosition = function (i)
-    {
-    var next = $(settings.sectionContainer + "[data-index='" + (i + 1) + "']");
-    if (next.length < 1)
-    {
-    if (settings.loop == true)
-    {
-    pos = 0;
-    next = $(settings.sectionContainer + "[data-index='1']");
-    }
-    else 
-    {
-    return
-    }
-    
-    } else {
-    pos = (i * 100) * -1;
-    }
-    return pos;
-    }*/
 
    $.fn.onepage_scroll = function (options) {
       var settings = $.extend({}, defaults, options),
@@ -127,27 +107,27 @@
          // Just a simple edit that makes use of modernizr to detect an IE8 browser and changes the transform method into
          // an top animate so IE8 users can also use this script.
          //if ($('html').hasClass('ie8')) {
-         if (settings.direction == 'horizontal') {
-            //var s = $(settings.sections + "[data-index='" + index + "']");
-            //var toppos = ($(window).outerWidth() / 100) * pos;
-            //alert(el.position().left);
-            var s = $(this);
-            s.css("display", "");
-            s.css("position", "absolute");
-            $(this).stop().animate({left: pos + '%'}, settings.animationTime, settings.easing, function ()
-            {
-               if (!s.hasClass("active"))
-               {
-                  s.hide();
-               }
-               else
-               {
-                  s.css("position", "");
+         if (settings.direction === 'horizontal') {
+            var $this = $(this);
+            $this.css({
+               position: "absolute",
+               display: ""
+            });
+
+            $this.stop().animate({
+               left: pos + '%'
+            }, settings.animationTime, settings.easing, function () {
+               if (!$this.hasClass("active")) {
+                  $this.hide();
+               } else {
+                  $this.css("position", "");
                }
             });
          } else {
             var toppos = (el.height() / 100) * pos;
-            $(this).animate({top: toppos + 'px'}, settings.animationTime, settings.easing);
+            $this.animate({
+               top: toppos + 'px'
+            }, settings.animationTime, settings.easing);
          }
          //} else {
          /*$(this).css({
@@ -161,17 +141,25 @@
           "transition": "all " + settings.animationTime + "ms " + settings.easing
           });*/
          //}
-         $(this).one('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function (e) {
-            if (typeof settings.afterMove == 'function')
+         $this.one('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function (e) {
+            if (typeof settings.afterMove === 'function')
                settings.afterMove(index);
          });
-      }
+      };
+
+      var updateURL = function (index) {
+         if (history.replaceState && settings.updateURL === true) {
+            var href = window.location.href.substr(0, window.location.href.indexOf('#')) + "#" + index;
+            history.pushState({}, document.title, href);
+         }
+      };
 
       $.fn.moveDown = function () {
-         var el = $(this)
+         var el = $(this);
          index = $(settings.sections + ".active").data("index");
          current = $(settings.sections + "[data-index='" + index + "']");
          next = $(settings.sections + "[data-index='" + (index + 1) + "']");
+         var nextIndex = next.data("index");
          if (next.length < 1) {
             if (settings.loop == true) {
                pos = 0;
@@ -187,41 +175,34 @@
             settings.beforeMove(next.data("index"));
          current.removeClass("active")
          next.addClass("active");
-         if (settings.pagination == true) {
+         if (settings.pagination === true) {
             $(".onepage-pagination li a" + "[data-index='" + index + "']").removeClass("active");
-            $(".onepage-pagination li a" + "[data-index='" + next.data("index") + "']").addClass("active");
+            $(".onepage-pagination li a" + "[data-index='" + nextIndex + "']").addClass("active");
          }
-         $("body").removeClass("viewing-page-" + current.data("index"));
-         $("body").addClass("viewing-page-" + next.data("index"));
-         if (mainMenu)
-         {
+         $("body").removeClass("viewing-page-" + current.data("index")).addClass("viewing-page-" + nextIndex);
+         if (mainMenu) {
             mainMenu.find("li.active").removeClass("active");
             mainMenu.find("li a[href='#" + (next.attr("data-container-id")) + "']").parent().addClass("active");
          }
 
-         if (history.replaceState && settings.updateURL == true)
-         {
-            var href = window.location.href.substr(0, window.location.href.indexOf('#')) + "#" + (index + 1);
-            history.pushState({}, document.title, href);
-         }
-         current.transformPage(settings, -100, next.data("index"));
-         next.css({left: '100%'});
-         next.transformPage(settings, 0, next.data("index"));
-      }
+         updateURL(index + 1);
 
-      $.fn.moveUp = function ()
-      {
-         var el = $(this)
+         current.transformPage(settings, -100, nextIndex);
+         next.css({left: '100%'});
+         next.transformPage(settings, 0, nextIndex);
+      };
+
+      $.fn.moveUp = function () {
+         var el = $(this);
          index = $(settings.sections + ".active").data("index");
          current = $(settings.sections + "[data-index='" + index + "']");
          next = $(settings.sections + "[data-index='" + (index - 1) + "']");
 
          if (next.length < 1) {
-            if (settings.loop == true) {
+            if (settings.loop === true) {
                pos = ((total - 1) * 100) * -1;
                next = $(settings.sections + "[data-index='" + total + "']");
-            }
-            else {
+            } else {
                return
             }
          } else {
@@ -242,84 +223,65 @@
             mainMenu.find("li.active").removeClass("active");
             mainMenu.find("li a[href='#" + (next.attr("data-container-id")) + "']").parent().addClass("active");
          }
-         $("body").removeClass("viewing-page-" + current.data("index"));
-         $("body").addClass("viewing-page-" + next.data("index"))
+         $("body").removeClass("viewing-page-" + current.data("index")).addClass("viewing-page-" + next.data("index"));
 
-         if (history.replaceState && settings.updateURL == true)
-         {
-            var href = window.location.href.substr(0, window.location.href.indexOf('#')) + "#" + (index - 1);
-            history.pushState({}, document.title, href);
-         }
+         updateURL(index - 1);
+
          current.transformPage(settings, 100, next.data("index"));
          next.css({left: '-100%'});
          next.transformPage(settings, 0, next.data("index"));
-      }
+      };
 
-      var moveTo = function (id, inst)
-      {
+      var moveTo = function (id, inst) {
          current = $(settings.sections + ".active");
-         //next = $(settings.sections + "[data-index='" + (page_index) + "']");
          var next = $(settings.sections + "[data-container-id='" + id + "']");
-         //alert(next.data("index") + "  " + current.data("index"));
          var page_index = next.data("index");
-
          if (next.length > 0)
          {
-            if (next.attr("data-container-id") == current.attr("data-container-id"))
+            next.addClass("active");
+            if (next.attr("data-container-id") === current.attr("data-container-id")) {
                return;
-            if (typeof settings.beforeMove == 'function')
-               settings.beforeMove(next.data("index"));
-            current.removeClass("active")
-            next.addClass("active")
-            if (mainMenu)
-            {
-               mainMenu.find("li.active").removeClass("active");
-               mainMenu.find("li a[href='#" + (id) + "']").parent().addClass("active");
             }
-            //$("body")[0].className = $("body")[0].className.replace(/\bviewing-page-\d.*?\b/g, '');
-            $("body").removeClass("viewing-page-" + current.data("index"));
-            $("body").addClass("viewing-page-" + next.data("index"))
+
+            if (typeof settings.beforeMove === 'function') {
+               settings.beforeMove(next.data("index"));
+            }
+            current.removeClass("active");
+
+
+            if (mainMenu) {
+               mainMenu.find("li.active").removeClass("active");
+               mainMenu.find("li a[href*='#" + (id) + "']").parent().addClass("active");
+            }
+            $("body").removeClass("viewing-page-" + current.data("index")).addClass("viewing-page-" + page_index);
 
             pos = ((page_index - 1) * 100) * -1;
 
-            if (history.replaceState && settings.updateURL == true)
+            if (history.replaceState && settings.updateURL === true)
             {
-               var href = window.location.href.substr(0, window.location.href.indexOf('#')) + "#" + (page_index - 1);
-               history.pushState({}, document.title, href);
+               updateURL(page_index - 1);
             }
-            if (inst)
-            {
-               if (settings.direction == 'horizontal')
-               {
-                  //var toppos = (el.width() / 100) * pos;
+
+            if (inst) {
+               if (settings.direction === 'horizontal') {
                   next.css({left: 0 + 'px', display: "", position: ""});
-               }
-               else
-               {
+               } else {
                   var toppos = (el.height() / 100) * pos;
                   next.css({top: toppos + 'px'});
                }
-            }
-            else
-            {
-               if (next.data("index") > current.data("index"))
-               {
-                  //alert("big");
+            } else {
+               if (next.data("index") > current.data("index")) {
                   current.transformPage(settings, -100, next.data("index"));
                   next.css({left: '100%'});
                   next.transformPage(settings, 0, next.data("index"));
-               }
-               else
-               {
-                  //alert("big");
+               } else {
                   current.transformPage(settings, 100, next.data("index"));
                   next.css({left: '-100%'});
                   next.transformPage(settings, 0, next.data("index"));
                }
-               //el.transformPage(settings, pos, page_index);
             }
          }
-      }
+      };
 
       function responsive() {
          //start modification
@@ -394,8 +356,7 @@
       if (settings.sectionsContainer)
       {
          sectionsContainer.addClass("onepage-wrapper").css("position", "relative");
-      }
-      else
+      } else
       {
          el.addClass("onepage-wrapper").css("position", "relative");
          $(window).resize(function ()
@@ -411,34 +372,35 @@
          mainMenu = $(settings.mainMenu);
          var menus = mainMenu.find("li a");
       }
+
       $.each(sections, function (i) {
-         $(this).css({
+         var $this = $(this);
+         $this.css({
             position: "absolute",
             top: topPos + "%"
          }).addClass("section").attr("data-index", i + 1);
 
          if (settings.direction == 'horizontal')
          {
-            $(this).css({
+            $this.css({
                left: "100%",
                display: "none"
             });
-         }
-         else if (settings.direction == 'vertical')
+         } else if (settings.direction == 'vertical')
          {
-            $(this).css({
+            $this.css({
                top: topPos + "%"
             });
          }
 
          if (settings.direction == 'horizontal')
-            leftPos = leftPos + $(this).outerWidth();
+            leftPos = leftPos + $this.outerWidth();
          else
             topPos = topPos + 100;
 
 
-         if (settings.pagination == true) {
-            paginationList += "<li><a data-index='" + (i + 1) + "' href='#" + (i + 1) + "'></a></li>"
+         if (settings.pagination === true) {
+            paginationList += "<li><a data-index='" + (i + 1) + "' href='#" + (i + 1) + "'></a></li>";
          }
       });
 //el.width();
@@ -473,46 +435,19 @@
       if (window.location.hash != "" && window.location.hash != "#1")
       {
          init_index = window.location.hash.replace("#", "");
-//alert(init_index);
-         //if (parseInt(init_index) <= total && parseInt(init_index) > 0)
-         //var next = $(settings.sections + "#" + init_index);
+         var firstLI = $(settings.sections + "[data-index='1']");
          var next = $(settings.sections + "[data-container-id='" + init_index + "']");
-         if (next.length > 0)
-         {
-            /*$(settings.sections + "[data-index='" + init_index + "']").addClass("active")
-             $("body").addClass("viewing-page-" + init_index)
-             if (settings.pagination == true)
-             $(".onepage-pagination li a" + "[data-index='" + init_index + "']").addClass("active");
-             
-             next = $(settings.sections + "[data-index='" + (init_index) + "']");
-             if (next) {
-             next.addClass("active")
-             if (settings.pagination == true)
-             $(".onepage-pagination li a" + "[data-index='" + (init_index) + "']").addClass("active");
-             $("body")[0].className = $("body")[0].className.replace(/\bviewing-page-\d.*?\b/g, '');
-             $("body").addClass("viewing-page-" + next.data("index"))
-             if (history.replaceState && settings.updateURL == true) {
-             var href = window.location.href.substr(0, window.location.href.indexOf('#')) + "#" + (init_index);
-             history.pushState({}, document.title, href);
-             }
-             }*/
-            //pos = ((next.data("index") - 1) * 100) * -1;
-            //el.transformPage(settings, pos, next.data("index"));
+         if (next.length > 0) {
             moveTo(init_index, true);
-         }
-         else
-         {
-            $(settings.sections + "[data-index='1']").addClass("active");
-            $(settings.sections + "[data-index='1']").css({left: "0px", display: "", position: ""});
+         } else {
+            firstLI.addClass("active").css({left: "0px", display: "", position: ""});
             $("body").addClass("viewing-page-1");
             if (settings.pagination == true)
                $(".onepage-pagination li a" + "[data-index='1']").addClass("active");
          }
-      }
-      else
+      } else
       {
-         $(settings.sections + "[data-index='1']").addClass("active");
-         $(settings.sections + "[data-index='1']").css({left: "0px", display: "", position: ""});
+         firstLI.addClass("active").css({left: "0px", display: "", position: ""});
          $("body").addClass("viewing-page-1");
          if (settings.pagination == true)
             $(".onepage-pagination li a" + "[data-index='1']").addClass("active");
@@ -528,18 +463,8 @@
             //alert(index);
             //alert($(this).attr("href"));
             moveTo(index);
-            //e.preventDefault();
          });
       }
-      //$(document).click($.proxy(el.moveDown, el));
-
-      /*$(document).bind('mousewheel DOMMouseScroll MozMousePixelScroll', function (event) {
-       event.preventDefault();
-       var delta = event.originalEvent.wheelDelta || -event.originalEvent.detail;
-       //if (!$("body").hasClass("disabled-onepage-scroll"))
-       //init_scroll(event, delta);
-       });*/
-
 
       if (settings.responsiveFallback != false) {
          $(window).resize(function () {
