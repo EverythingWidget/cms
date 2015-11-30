@@ -16,8 +16,16 @@ ob_end_clean();
 if (ob_get_level())
    ob_end_clean();
 
+
 $_file = null;
 error_reporting(E_WARNING | E_ERROR);
+/*$api_call = urldecode($_SERVER['REQUEST_URI']);
+
+$api_call =str_replace(EW_DIR,'', $api_call);
+echo $api_call;
+preg_match_all('/([^\/\s]{2,3}\/)?~?([^\/\s]*)\/?([^\/\s]*)?\/?([^\/\s]*)?\/?([^\/\s]*)?\//', $api_call, $matches);
+var_dump($matches);
+die();*/
 //ini_set('display_errors', '1');
 
 EWCore::set_default_locale("admin");
@@ -125,7 +133,7 @@ $EW = new \EWCore();
 // set default user group if no user group has been spacified
 if (!isset($_SESSION["EW.USER_GROUP_ID"]))
 {
-   $_SESSION['EW.USER_GROUP_ID'] = /*json_decode(EWCore::get_default_users_group(), true)["id"]*/ 1;
+   $_SESSION['EW.USER_GROUP_ID'] = /* json_decode(EWCore::get_default_users_group(), true)["id"] */ 1;
 }
 
 $r_uri = strtok($_SERVER["REQUEST_URI"], "?");

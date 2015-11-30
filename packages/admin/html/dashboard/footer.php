@@ -13,7 +13,7 @@
          }, 500, "Power2.easeInOut", function () {
             this.remove();
          });
-         $("#app-bar-nav").stop().animate({left: "-250px"}, 300, "Power2.easeOut", function () {
+         $("#app-bar-nav").stop().animate({opacity: 0}, 300, function () {
             this.remove();
          });
          //$("#app-bar").removeClass("in");
@@ -388,9 +388,13 @@
       var $sidebar = $("#app-bar-nav");
       //var sbb = $("#side-bar-btn");
       $sidebar.prepend(EW.sidebarButton);
-      $sidebar.css("left", "-250px");
+      $sidebar.css({
+         left: "-250px"
+      });
       $("#app-bar").prepend($sidebar);
-      $sidebar.stop().animate({left: 0}, 200, "Power2.easeOut");
+      $sidebar.stop().animate({
+         left: 0
+      }, 200, "Power2.easeOut");
       //sidebar.attr("tabindex", 1);
       $sidebar.off("mouseleave");
       $sidebar.on("mouseleave", function () {

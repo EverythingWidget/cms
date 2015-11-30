@@ -10,9 +10,10 @@
 <link rel="stylesheet" href="~admin-public/js/ContentStrike/content-tools.min.css">
 
 <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>       
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenLite.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/jquery.gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/plugins/CSSPlugin.min.js"></script>
+<script src="~rm-public/js/gsap/plugins/CSSPlugin.min.js"></script>
+<script src="~rm-public/js/gsap/easing/EasePack.min.js"></script>
+<script src="~rm-public/js/gsap/jquery.gsap.min.js"></script>
+<script src="~rm-public/js/gsap/TweenLite.min.js"></script>
 
 <script src="~admin-public/js/lib/sortable.js"></script>      
 <script src="~admin-public/js/lib/bootstrap-datepicker.js"></script>
