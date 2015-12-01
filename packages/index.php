@@ -19,19 +19,24 @@ if (ob_get_level())
 
 $_file = null;
 error_reporting(E_WARNING | E_ERROR);
-/*$api_call = urldecode($_SERVER['REQUEST_URI']);
+/* $api_call = urldecode($_SERVER['REQUEST_URI']);
 
-$api_call =str_replace(EW_DIR,'', $api_call);
-echo $api_call;
-preg_match_all('/([^\/\s]{2,3}\/)?~?([^\/\s]*)\/?([^\/\s]*)?\/?([^\/\s]*)?\/?([^\/\s]*)?\//', $api_call, $matches);
-var_dump($matches);
-die();*/
+  $api_call =str_replace(EW_DIR,'', $api_call);
+  echo $api_call;
+  preg_match_all('/([^\/\s]{2,3}\/)?~?([^\/\s]*)\/?([^\/\s]*)?\/?([^\/\s]*)?\/?([^\/\s]*)?\//', $api_call, $matches);
+  var_dump($matches);
+  die(); */
 //ini_set('display_errors', '1');
 
 EWCore::set_default_locale("admin");
 //EWCore::set_db_connection(get_db_connection());
 
 $path = ltrim($_SERVER['REQUEST_URI'], '/');    // Trim leading slash(es)
+if (substr($path, -1) === '/')
+{
+   $path = substr($path, 0, -1);
+}
+
 // Decode url to a normal string
 $path = urldecode($path);
 if (strpos($path, '?') !== false)
@@ -40,8 +45,8 @@ $elements = explode('/', $path);
 $parameter_index = 0;
 if (strpos(EW_DIR, $elements[0]))
 {
-   $root_dir = $elements[0];
-   $parameter_index = 1;
+   $root_dir = array_shift($elements);
+   //$parameter_index = 1;
 }
 
 // Check the language parameter
@@ -74,20 +79,27 @@ else
 define('EW_ROOT_URL', $u);
 
 // Check the app parameter
-$default_recourse = "html";
-$app_name = "webroot/" . $default_recourse;
+$resource_type = "html";
+$app_name = "webroot";
 
-if ($elements[$parameter_index] && strpos($elements[$parameter_index], '~') === 0)
+if (strpos($elements[$parameter_index], '~') === 0)
 {
-
-   $app_resource_path = explode('-', str_replace('~', '', $elements[$parameter_index]));
-   if (count($app_resource_path) === 1)
-   {
-      $app_resource_path[] = $default_recourse;
-   }
-   $app_name = implode('/', $app_resource_path);
+   /* $app_resource_path = str_replace('~', '', $elements[$parameter_index]);
+     if (count($app_resource_path) === 1)
+     {
+     $app_resource_path[] = $default_recourse;
+     } */
+   $app_name = str_replace('~', '', $elements[$parameter_index]);
    $parameter_index++;
+
+   if (count($elements) > 3 && $elements[$parameter_index])
+   {
+      $resource_type = $elements[$parameter_index];
+      $parameter_index++;
+   }
 }
+
+
 
 //$resource_path = "$app_name-$default_recourse";
 //$_REQUEST["_app_name"] = $app_name;
@@ -179,7 +191,7 @@ $RESULT_CONTENT = "RESULT_CONTENT: EMPTY";
 
 $real_class_name = $app_name . '\\' . $section_name;
 
-$RESULT_CONTENT = EWCore::process_request_command($app_name, $section_name, $function_name, $_REQUEST);
+$RESULT_CONTENT = EWCore::process_request_command($app_name, $resource_type, $section_name, $function_name, $_REQUEST);
 
 function translate($match)
 {

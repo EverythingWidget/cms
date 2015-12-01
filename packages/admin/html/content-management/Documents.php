@@ -29,7 +29,7 @@
       this.bUp.css("float", "right");
       this.bNewFolder = EW.addActivity({
          title: "tr{New Folder}",
-         activity: "admin-html/content-management/category-form.php",
+         activity: "admin/html/content-management/category-form.php",
          parent: "action-bar-items",
          hash:
                  {
@@ -38,7 +38,7 @@
       }).hide().comeIn();
       this.bNewFile = EW.addActivity({
          title: "tr{New Article}",
-         activity: "admin-html/content-management/article-form.php",
+         activity: "admin/html/content-management/article-form.php",
          parent: "action-bar-items",
          hash:
                  {
@@ -46,7 +46,7 @@
                  }
       }).hide().comeIn();
       this.seeFolderActivity = EW.getActivity({
-         activity: "admin-html/content-management/category-form.php",
+         activity: "admin/html/content-management/category-form.php",
          onDone: function ()
          {
             EW.setHashParameters({
@@ -56,7 +56,7 @@
          }
       });
       this.seeArticleActivity = EW.getActivity({
-         activity: "admin-html/content-management/article-form.php",
+         activity: "admin/html/content-management/article-form.php",
          onDone: function ()
          {
             EW.setHashParameters({
@@ -127,7 +127,7 @@
       var hasNode = false;
       var aId = EW.getHashParameter("articleId", "document");
       $("#categories-list").html("<div class='col-xs-12'><h2 >Loading Folders</h2></div>");
-      $.post('~admin-api/content-management/get-categories-list', {
+      $.post('~admin/api/content-management/get-categories-list', {
          parent_id: documents.parentId
       },
               function (data)
@@ -154,7 +154,7 @@
                  }
               }, "json");
       $("#articles-list").html("<div class='col-xs-12'><h2>Loading Article</h2></div>");
-      $.post('~admin-api/content-management/get-articles-list', {
+      $.post('~admin/api/content-management/get-articles-list', {
          parent_id: documents.parentId
       },
               function (data)

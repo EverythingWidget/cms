@@ -4,7 +4,8 @@ session_start();
 $articleInfo = array();
 $articleInfo["parent_id"] = $_REQUEST["parent"];
 if ($_REQUEST["articleId"])
-   $articleInfo = (EWCore::process_request_command("admin/api", "content-management", "get-article", array("articleId" => $_REQUEST["articleId"])));
+   $articleInfo = EWCore::process_request_command("admin", "api", "content-management", "get-article", [
+               "articleId" => $_REQUEST["articleId"]]);
 else
    $articleInfo = json_encode($articleInfo);
 
@@ -26,7 +27,7 @@ function script()
       function Article()
       {
          var self = this;
-         this.bAdd = EW.addActivity({title: "tr{Save}", defaultClass: "btn-success", activity: "admin-api/content-management/add-article",
+         this.bAdd = EW.addActivity({title: "tr{Save}", defaultClass: "btn-success", activity: "admin/api/content-management/add-article",
             postData: function ()
             {
                if (!$("#article-form").EW().validate())
@@ -39,15 +40,15 @@ function script()
             },
             onDone: function (data)
             {
-               
+
                $.EW("getParentDialog", $("#article-form")).trigger("close");
                $("body").EW().notify(data).show();
                $(document).trigger("article-list.refresh", [data]);
             }}).hide();
 
          this.bEditAndClose = EW.addActivity({title: "tr{Save and Close}",
-            defaultClass: "btn-success pull-right", 
-            activity: "admin-api/content-management/update-article",
+            defaultClass: "btn-success pull-right",
+            activity: "admin/api/content-management/update-article",
             postData: function ()
             {
                if (!$("#article-form").EW().validate())
@@ -61,12 +62,12 @@ function script()
             {
                $("body").EW().notify(data).show();
                ContentForm.setData(data.data);
-               $.EW("getParentDialog", $("#article-form")).trigger("close");       
-               
-               $(document).trigger("article-list.refresh");               
+               $.EW("getParentDialog", $("#article-form")).trigger("close");
+
+               $(document).trigger("article-list.refresh");
             }}).hide();
 
-         this.bEdit = EW.addActivity({title: "tr{Save}", defaultClass: "btn-success", activity: "admin-api/content-management/update-article",
+         this.bEdit = EW.addActivity({title: "tr{Save}", defaultClass: "btn-success", activity: "admin/api/content-management/update-article",
             postData: function ()
             {
                if (!$("#article-form").EW().validate())
@@ -86,14 +87,13 @@ function script()
                $(document).trigger("article-list.refresh");
             }}).hide();
 
-         this.bDelete = EW.addActivity({title: "tr{Delete}", defaultClass: "btn-danger", activity: "admin-api/content-management/delete-article",
+         this.bDelete = EW.addActivity({title: "tr{Delete}", defaultClass: "btn-danger", activity: "admin/api/content-management/delete-article",
             postData: function ()
             {
                if (confirm("tr{Delete this article?}"))
                {
                   return {articleId: $("#id").val()};
-               }
-               else
+               } else
                   return null;
 
             },
@@ -118,8 +118,7 @@ function script()
                $("#form-title").html("<span>tr{Edit}</span>" + data.title);
                $("#date_created").val(data.round_date_created);
 
-            }
-            else
+            } else
             {
                self.bAdd.comeIn(300);
                self.bEditAndClose.comeOut(300);
@@ -175,5 +174,8 @@ function script()
 }
 
 EWCore::register_form("ew-content-form-proerties", "article-properties", ["content" => inputs()]);
-echo admin\ContentManagement::create_content_form(["formId" => "article-form", "contentType" => "article", "script" => script(), "data" => $articleInfo]);
+echo admin\ContentManagement::create_content_form(["formId" => "article-form",
+    "contentType" => "article",
+    "script" => script(),
+    "data" => $articleInfo]);
 

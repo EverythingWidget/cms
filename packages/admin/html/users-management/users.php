@@ -9,7 +9,7 @@
             modal: {
                class: "center"
             },
-            activity: "admin-html/users-management/user-form.php",
+            activity: "admin/html/users-management/user-form.php",
             hash: {userId: null}
          }).hide().comeIn(300);
          this.usersList();
@@ -37,14 +37,14 @@
                }
             },
             rowCount: true,
-            url: "<?php echo EW_ROOT_URL; ?>~admin-api/users-management/users",
+            url: "<?php echo EW_ROOT_URL; ?>~admin/api/users-management/users",
             pageSize: 30,
             onDelete: function (id)
             {
                this.confirm("tr{Are you sure of deleting of this user?}", function ()
                {
                   //EW.lock($("#main-content"));
-                  $.post('<?php echo EW_ROOT_URL; ?>~admin-api/users-management/delete-user', {id: id}, function (data)
+                  $.post('<?php echo EW_ROOT_URL; ?>~admin/api/users-management/delete-user', {id: id}, function (data)
                   {
                      $(document).trigger("users-list.refresh");
                      $("body").EW().notify(data).show();
@@ -54,7 +54,7 @@
             },
             onEdit: ((editActivity = EW.getActivity({
                verb: "get",
-               activity: "admin-html/users-management/user-form.php-see",
+               activity: "admin/html/users-management/user-form.php-see",
                modal: {
                   class: "center"
                },

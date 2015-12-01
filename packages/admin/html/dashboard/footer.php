@@ -77,7 +77,7 @@
    EverythingWidgets.prototype.loadSections = function () {
       var self = this;
       this.apps = {Home: {id: "Home"}};
-      $.get('~admin-api/EWCore/read_apps', {
+      $.get('~admin/api/EWCore/read_apps', {
          appDir: "admin"
       },
               function (data) {
@@ -138,7 +138,7 @@
          $("#app-bar").animate({className: "app-bar in"}, 500, "Power2.easeOut");
          $("#home-pane").animate({className: "home-pane"}, 500, "Power2.easeOut");
          setTimeout(function () {
-            $.post("~admin-api/" + data.app + "/index.php",
+            $.post("~admin/api/" + data.app + "/index.php",
                     {},
                     function (response) {
                        $("#app-content").append(response);
@@ -221,7 +221,7 @@
             label: 'tr{Link Chooser}',
             onClick: function (e) {
                linkChooserDialog = EW.createModal();
-               $.post("<?php echo EW_DIR ?>~admin-html/content-management/file-chooser.php", {
+               $.post("<?php echo EW_DIR ?>~admin/html/content-management/file-chooser.php", {
                   callback: settings.callbackName,
                   data: $element.val()
                },
@@ -313,7 +313,7 @@
                class: "center-big"
             });
             imageChooserDialog.append("<div class='form-content'></div><div class='footer-pane row actions-bar action-bar-items' ></div>");
-            $.post("<?php echo EW_DIR ?>~admin-api/content-management/Media.php", {
+            $.post("<?php echo EW_DIR ?>~admin/api/content-management/Media.php", {
                callback: settings.callbackName
             },
                     function (data) {
@@ -672,5 +672,5 @@
    });
 </script>
 
-<script src="~admin-public/js/lib/bootstrap.js" ></script>
-<script src="~admin-public/js/ContentStrike/content-tools.js"></script>
+<script src="~admin/public/js/lib/bootstrap.js" ></script>
+<script src="~admin/public/js/ContentStrike/content-tools.js"></script>

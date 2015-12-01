@@ -67,7 +67,7 @@ function script()
 
          SectionManagement.prototype.getAppConf = function (app)
          {
-            $.post('<?php echo EW_ROOT_URL; ?>~admin-api/apps-management/AppInfo.php', {
+            $.post('<?php echo EW_ROOT_URL; ?>~admin/api/apps-management/AppInfo.php', {
                appDir: app
             },
             function (data)
@@ -85,7 +85,7 @@ function script()
             EW.lock($("#main-content"));
             $("#main-content").empty();
             $("#main-content").html(appContent);
-            $.post('<?php echo EW_ROOT_URL; ?>~admin-api/apps-management/get-app-sections', {
+            $.post('<?php echo EW_ROOT_URL; ?>~admin/api/apps-management/get-app-sections', {
                appDir: app
             },
             function (data)
@@ -166,7 +166,7 @@ function script()
             EW.lock($("#main-content"));
             //$("#app-sections").html("");
             $("#action-bar-items").find("button").remove();
-            $.post("<?php echo EW_ROOT_URL; ?>~admin-api/apps-management/dashboard.php", {}, function (data) {
+            $.post("<?php echo EW_ROOT_URL; ?>~admin/api/apps-management/dashboard.php", {}, function (data) {
                $("#action-bar-items").find("button").remove();
                $("#main-content").html(data);
                EW.unlock($("#main-content"));

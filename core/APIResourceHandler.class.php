@@ -23,7 +23,7 @@ class APIResourceHandler extends ResourceHandler
        'DELETE' => 'delete'
    ];
 
-   protected function handle($app, $app_resource_path, $module_name, $command, $parameters = null)
+   protected function handle($app, $package,$resource_type, $module_name, $command, $parameters = null)
    {
       // check module name string
       if (preg_match('/[A-Z]/', $module_name))
@@ -45,7 +45,7 @@ class APIResourceHandler extends ResourceHandler
       $module_class_name = \EWCore::hyphenToCamel($module_name);
 
       $app_name = $app->get_root();
-      $resource_name = $app_resource_path[1];
+      $resource_name = $resource_type;
       $real_class_name = $app_name . '\\' . $module_class_name;
 
       if (!$module_class_name)

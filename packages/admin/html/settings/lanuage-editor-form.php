@@ -77,7 +77,7 @@
          //alert(media.itemId);
          var formParams = $.parseJSON($("#json-editor-form").serializeJSON());
          EW.lock($("#city-form"), "Saving...");
-         $.post('<?php echo EW_ROOT_URL; ?>admin-api/Settings/update_language', formParams, function (data) {
+         $.post('<?php echo EW_ROOT_URL; ?>admin/api/Settings/update_language', formParams, function (data) {
 
             $("body").EW().notify(data).show();
 

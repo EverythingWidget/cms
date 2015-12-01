@@ -47,7 +47,7 @@ if (file_exists($template_php))
 $template_js = EW_PACKAGES_DIR . '/rm/public/' . $_REQUEST["_uis_template"] . '/template.js';
 if (file_exists($template_js))
 {
-   \webroot\WidgetsManagement::add_html_script('~rm-public/' . $_REQUEST["_uis_template"] . '/template.js', $script);
+   \webroot\WidgetsManagement::add_html_script('~rm/public/' . $_REQUEST["_uis_template"] . '/template.js', $script);
 }
 
 $HTML_TITLE = (webroot\WidgetsManagement::get_html_title()) ? webroot\WidgetsManagement::get_html_title() . " - " . $website_title : $website_title;
@@ -68,16 +68,16 @@ $HTML_STYLES = webroot\WidgetsManagement::get_html_styles();
 
       <base href="<?= EW_ROOT_URL ?>">
 
-      <link rel="stylesheet" href="~rm-public/css/bootstrap.css" >  
-      <link id="template-css" href="~rm-public/<?= $_REQUEST["_uis_template"] ?>/template.css" rel="stylesheet" type="text/css"/>
+      <link rel="stylesheet" href="~rm/public/css/bootstrap.css" >  
+      <link id="template-css" href="~rm/public/<?= $_REQUEST["_uis_template"] ?>/template.css" rel="stylesheet" type="text/css"/>
 
       <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>           
       <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenLite.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/jquery.gsap.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/plugins/CSSPlugin.min.js"></script>
 
-      <script src="~admin-public/js/lib/ewscript.js"></script>            
-      <script src="~admin-public/js/lib/floatlabels.min.js" ></script>
+      <script src="~admin/public/js/lib/ewscript.js"></script>            
+      <script src="~admin/public/js/lib/floatlabels.min.js" ></script>
 
       <?php
       // Add registered scripts
@@ -113,6 +113,6 @@ $HTML_STYLES = webroot\WidgetsManagement::get_html_styles();
       <div id="base-content-pane" class="container">
          <?= $HTML_BODY; ?>  
       </div>   
-      <script src="~admin-public/js/lib/bootstrap.js"></script>
+      <script src="~admin/public/js/lib/bootstrap.js"></script>
    </body>  
 </html>

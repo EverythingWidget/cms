@@ -25,7 +25,7 @@
          <?php
          foreach ($tabs as $id => $tab)
          {
-            $tab_object = json_decode(EWCore::process_request_command($tab["app"], $tab["module"], $tab["method"], ["form_config" => $form_config]), true);
+            $tab_object = json_decode(EWCore::process_request_command($tab["app"], $tab["resource"], $tab["module"], $tab["method"], ["form_config" => $form_config]), true);
             echo "<div class='tab-pane' id='{$id}'>" . $tab_object["html"] . "</div>";
          }
          ?>

@@ -116,26 +116,28 @@ class EWCore
     $pars = array_merge($_REQUEST, [
         '_file' => implode('/', array_slice($parts, 3))
             ], $parameters);
-    
-    return static::process_request_command($parts[0] . '/' . $parts[1], $parts[2], $parts[3], $pars);
+
+    return static::process_request_command($parts[0] , $parts[1], $parts[2], $parts[3], $pars);
   }
 
-  public static function process_request_command($resource_path, $section_name, $function_name, $parameters)
+  public static function process_request_command($package, $resource_type, $section_name, $function_name, $parameters)
   {
-    if (!$resource_path /* || !$section_name || !$function_name */)
+    if (!$package /* || !$section_name || !$function_name */)
     {
       $RESULT_CONTENT = EWCore::log_error(400, "Wrong command");
       return $RESULT_CONTENT;
     }
-    //var_dump($resource_path);
+    
     //echo " $app_name  $section_name  $function_name";
-    $app_namespace = explode('/', $resource_path);
-    $real_class_name = $app_namespace[0] . '\\App';
+    //$app_namespace = explode('/', $package);
+    $real_class_name = $package . '\\App';
     //echo $real_class_name;
-    $parameters["_app_name"] = $resource_path;
+    $parameters["_app_name"] = $package;
+    $parameters["_resource_type"] = $resource_type;
     $parameters["_section_name"] = $section_name;
     $parameters['_function_name'] = $function_name;
     $parameters["_parts"] = array_slice(explode('/', $parameters["_file"]), 1);
+
     //print_r($parameters);
     // show index.php of app
     /* if (!$function_name)
@@ -157,11 +159,11 @@ class EWCore
         // Create an instance of section with its parent App
         $app_object = new $real_class_name;
         $class_exist = true;
-        $RESULT_CONTENT = $app_object->process_command($app_namespace, $section_name, $function_name, $parameters);
+        $RESULT_CONTENT = $app_object->process_command($package, $resource_type, $section_name, $function_name, $parameters);
       }
       else
       {
-        return \EWCore::log_error(404, "<h4>App not found</h4><p>Requested app `$app_namespace[0]`, not found</p>");
+        return \EWCore::log_error(404, "<h4>App not found</h4><p>Requested app `$package`, not found</p>");
       }
     }
     return $RESULT_CONTENT;
@@ -1183,9 +1185,9 @@ class EWCore
               }
 
               $is_form = (strpos($method_name, '.php') && $method_name !== "index.php") ? true : false;
-              $url = $is_form ? EW_ROOT_URL . '~' . $app_name . '-' . $resource_name . "/" . $section_name . "/" . $method_name : EW_ROOT_URL . '~' . $app_name . '-' . $resource_name . "/" . $section_name . "/" . $method_name;
+              $url = $is_form ? EW_ROOT_URL . '~' . $app_name . '/' . $resource_name . "/" . $section_name . "/" . $method_name : EW_ROOT_URL . '~' . $app_name . '/' . $resource_name . "/" . $section_name . "/" . $method_name;
               //echo $url;
-              $allowed_activities["$app_name-$resource_name/$section_name/$method_name"] = [
+              $allowed_activities["$app_name/$resource_name/$section_name/$method_name"] = [
                   "activityTitle" => $title,
                   "app"           => $app_name,
                   "appTitle"      => "tr:$app_name{" . $sections["appTitle"] . "}",

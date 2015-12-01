@@ -39,7 +39,7 @@
          ContentForm.activeLabel("{{comp_id}}", true);
          $("#{{comp_id}}_select").change();
       }
-      $.post("~admin-api/content-management/get-content-with-label", {content_id: documentId, key: "{{comp_id}}"}, function (data) {
+      $.post("~admin/api/content-management/get-content-with-label", {content_id: documentId, key: "{{comp_id}}"}, function (data) {
          $("#{{comp_id}}_languages").empty();
          if (data['result'])
             $.each(data['result'], function (i, content)
@@ -54,7 +54,7 @@
                else
                   langItem.find("a").on("click", function ()
                   {
-                     $.post("~admin-api/content-management/get-article", {articleId: content.id}, function (data)
+                     $.post("~admin/api/content-management/get-article", {articleId: content.id}, function (data)
                      {
                         ContentForm.setData(data);
                         //EW.setHashParameter("articleId", lang.id)

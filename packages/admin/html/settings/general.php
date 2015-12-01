@@ -40,7 +40,7 @@ $app_config = EWCore::read_settings("ew");
    {
 
       d = $("#general-form").serializeJSON();
-      $.post('<?php echo EW_ROOT_URL; ?>admin-api/EWCore/save_settings', {
+      $.post('<?php echo EW_ROOT_URL; ?>admin/api/EWCore/save_settings', {
          params: d
       },
       function (data)

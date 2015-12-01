@@ -73,18 +73,18 @@ class WidgetsManagement extends \ew\Module
       //EWCore::register_action("ew-category-action-add", "WidgetsManagement.category_action_add", "category_action_update", $this);
       //EWCore::register_action("ew-category-action-update", "WidgetsManagement.category_action_update", "category_action_update", $this);
       //EWCore::register_action("ew-category-action-get", "WidgetsManagement.category_action_get", "category_action_get", $this);
-      $this->add_listener("admin-api/ContentManagement/add_category", "category_action_update");
-      $this->add_listener("admin-api/ContentManagement/update_category", "category_action_update");
-      $this->add_listener("admin-api/ContentManagement/get_category", "category_action_get");
+      $this->add_listener("admin/api/ContentManagement/add_category", "category_action_update");
+      $this->add_listener("admin/api/ContentManagement/update_category", "category_action_update");
+      $this->add_listener("admin/api/ContentManagement/get_category", "category_action_get");
 
       //EWCore::register_action("ew-article-action-add", "WidgetsManagement.article_action_add", "article_action_update", $this);
       //EWCore::register_action("ew-article-action-update", "WidgetsManagement.article_action_update", "article_action_update", $this);
       //EWCore::register_action("ew-article-action-get", "WidgetsManagement.article_action_get", "article_action_get", $this);
-      $this->add_listener("admin-api/ContentManagement/add_article", "article_action_update");
-      $this->add_listener("admin-api/ContentManagement/update_article", "article_action_update");
-      $this->add_listener("admin-api/ContentManagement/get_article", "article_action_get");
+      $this->add_listener("admin/api/ContentManagement/add_article", "article_action_update");
+      $this->add_listener("admin/api/ContentManagement/update_article", "article_action_update");
+      $this->add_listener("admin/api/ContentManagement/get_article", "article_action_get");
 
-      //$this->add_listener("admin-api/UsersManagement/update_user", "article_action_get");
+      //$this->add_listener("admin/api/UsersManagement/update_user", "article_action_get");
 
       $this->register_permission("export-uis", "User can export UIS", array(
           "api/export_uis",

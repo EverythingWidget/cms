@@ -56,7 +56,7 @@ function get_ew_user_form()
                //alert(media.itemId);
                var formParams = $.parseJSON($("#user-form").serializeJSON());
                EW.lock($("#user-form"), "Saving...");
-               $.post('<?php echo EW_ROOT_URL; ?>~admin-api/users-management/add-user', formParams, function (data) {
+               $.post('<?php echo EW_ROOT_URL; ?>~admin/api/users-management/add-user', formParams, function (data) {
                   if (data.status === "success")
                   {
                      $.EW("getParentDialog", $("#user-form")).trigger("close");
@@ -78,7 +78,7 @@ function get_ew_user_form()
                //alert(media.itemId);
                var formParams = $.parseJSON($("#user-form").serializeJSON());
                EW.lock($("#user-form"), "Saving...");
-               $.post('<?php echo EW_ROOT_URL; ?>~admin-api/users-management/update-user', formParams, function (data) {
+               $.post('<?php echo EW_ROOT_URL; ?>~admin/api/users-management/update-user', formParams, function (data) {
                   if (data.status === "success")
                   {
                      $(document).trigger("users-list.refresh");
@@ -99,7 +99,7 @@ function get_ew_user_form()
                
    if ($_REQUEST['userId'])
    {
-      $row = EWCore::process_request_command("admin/api", "users-management", "get-user-by-id", array("userId" => $_REQUEST["userId"]));
+      $row = EWCore::process_request_command("admin","api", "users-management", "get-user-by-id", array("userId" => $_REQUEST["userId"]));
       if ($row)
       {
          ?>

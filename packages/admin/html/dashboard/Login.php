@@ -79,7 +79,7 @@ $tabs = \EWCore::read_registry("ew-login-form");
          </form>
       </div>
       <div class="footer-pane">
-         <img src="~admin-public/css/images/EW_LOGO.png" alt="EW Logo" style="margin: 0px auto;display:block;">
+         <img src="~admin/public/css/images/EW_LOGO.png" alt="EW Logo" style="margin: 0px auto;display:block;">
          <div class="row">
             <h1 style="text-align:center;">
                Everything Widget CMS

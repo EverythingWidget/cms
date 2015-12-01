@@ -30,7 +30,7 @@
    UisTab.prototype.uisListDialog = function (onSelect)
    {
       var dp = EW.createModal();
-      this.table = EW.createTable({name: "uis-list", headers: {Name: {}, Template: {}}, columns: ["name", "template"], rowCount: true, url: "<?php echo EW_ROOT_URL; ?>webroot-api/WidgetsManagement/get_uis_list", pageSize: 30
+      this.table = EW.createTable({name: "uis-list", headers: {Name: {}, Template: {}}, columns: ["name", "template"], rowCount: true, url: "<?php echo EW_ROOT_URL; ?>webroot/api/WidgetsManagement/get_uis_list", pageSize: 30
          , buttons: {"Select": function (row) {
                if (onSelect)
                   onSelect.apply(null, new Array(row));

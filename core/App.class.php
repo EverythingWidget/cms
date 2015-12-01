@@ -86,7 +86,7 @@ class App
       }
    }
 
-   public function process_command($app_resource_path, $module_name, $method_name, $parameters = null)
+   public function process_command($package,$resource_type, $module_name, $method_name, $parameters = null)
    {
       //session_destroy();
       //$app_name = $this->get_root();
@@ -97,15 +97,15 @@ class App
 //      {
 //         if (\admin\UsersManagement::user_has_permission_for_resource($app_name, $app_resource_path[1], $_SESSION['EW.USER_GROUP_ID']))
 //         {
-      if ($this->resources[$app_resource_path[1]])
+      if ($this->resources[$resource_type])
       {
-         return $this->resources[$app_resource_path[1]]->process($this, $app_resource_path, $module_name, $method_name, $parameters);
+         return $this->resources[$resource_type]->process($this, $package,$resource_type, $module_name, $method_name, $parameters);
       }
       else
       {
-         return \EWCore::log_error(404, "Resource not found: `$app_resource_path[1]/$module_name/$method_name`", [
-                     "package"  => $app_resource_path[0],
-                     "resource" => $app_resource_path[1],
+         return \EWCore::log_error(404, "Resource not found: `$resource_type/$module_name/$method_name`", [
+                     "package"  => $package,
+                     "resource" => $resource_type,
                      "module"   => $module_name,
                      "method"   => $method_name
          ]);
@@ -118,13 +118,13 @@ class App
 //         }
 //      }
 
-      if ($this->resources[$app_resource_path[1]])
+      if ($this->resources[$package[1]])
       {
-         return $this->resources[$app_resource_path[1]]->process($this, $app_resource_path, $module_name, $method_name, $parameters);
+         return $this->resources[$package[1]]->process($this, $package, $module_name, $method_name, $parameters);
       }
       else
       {
-         return \EWCore::log_error(404, "<h4>Resource not found</h4><p>Resource `$app_resource_path[1]/$module_name/$method_name`, not found</p>");
+         return \EWCore::log_error(404, "<h4>Resource not found</h4><p>Resource `$package[1]/$module_name/$method_name`, not found</p>");
       }
    }
 

@@ -187,7 +187,7 @@ function get_ew_users_permissions_form()
                var formParams = $.parseJSON($("#users-group-form").serializeJSON());
                formParams["permission"] = $self.readPermission().toString();
                EW.lock($("#users-group-form"), "Saving...");
-               $.post('<?php echo EW_ROOT_URL; ?>~admin-api/users-management/update-group', formParams, function (data) {
+               $.post('<?php echo EW_ROOT_URL; ?>~admin/api/users-management/update-group', formParams, function (data) {
                   UsersGroups.usersGroupsList();
                   $("body").EW().notify(data).show();
 
@@ -204,7 +204,7 @@ function get_ew_users_permissions_form()
                var formParams = $.parseJSON($("#users-group-form").serializeJSON());
                formParams["permission"] = $self.readPermission().toString();
                EW.lock($("#users-group-form"), "Saving...");
-               $.post('<?php echo EW_ROOT_URL; ?>~admin-api/users-management/add-group', formParams, function (data) {
+               $.post('<?php echo EW_ROOT_URL; ?>~admin/api/users-management/add-group', formParams, function (data) {
                   $.EW("getParentDialog", $("#users-group-form")).trigger("close");
                   UsersGroups.usersGroupsList();
                   $("body").EW().notify(data).show();
@@ -221,7 +221,7 @@ function get_ew_users_permissions_form()
             {
                var formParams = $.parseJSON($("#users-group-form").serializeJSON());
                EW.lock($("#users-group-form"));
-               $.post('<?php echo EW_ROOT_URL; ?>~admin-api/users-management/delete-group', formParams, function (data) {
+               $.post('<?php echo EW_ROOT_URL; ?>~admin/api/users-management/delete-group', formParams, function (data) {
                   $.EW("getParentDialog", $("#users-group-form")).trigger("close");
                   UsersGroups.usersGroupsList();
                   $("body").EW().notify(data).show();
@@ -233,7 +233,7 @@ function get_ew_users_permissions_form()
          return new UsersGroupsForm();
       })();
    <?php
-   $row = EWCore::process_request_command("admin/api", "users-management", "get-user-group-by-id", [$_REQUEST["groupId"]]);
+   $row = EWCore::process_request_command("admin","api", "users-management", "get-user-group-by-id", [$_REQUEST["groupId"]]);
    ?>
       var formData = <?= isset($row) ? $row : 'null' ?>;
       EW.setFormData("#users-group-form", formData);

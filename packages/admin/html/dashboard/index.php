@@ -31,7 +31,7 @@ if (!isset($_SESSION['login']))
                   <?php
                   if ($_SESSION['login'])
                   {
-                     echo '<a class="ExitBtn" href="~admin-api/users-management/logout?url=' . EW_DIR_URL . '~admin/" ></a>';
+                     echo '<a class="ExitBtn" href="~admin/api/users-management/logout?url=' . EW_DIR_URL . '~admin/" ></a>';
                   }
                   ?>
                </div>            

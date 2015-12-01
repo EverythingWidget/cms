@@ -47,7 +47,7 @@
     theme: "modern",
     apply_source_formatting: true,
     height: 340,
-    ew_media_url: "<?php echo EW_ROOT_URL; ?>admin-api/ContentManagement/Media.php",
+    ew_media_url: "<?php echo EW_ROOT_URL; ?>admin/api/ContentManagement/Media.php",
     visualblocks_default_state: true,
     image_class_list: [
     {title: 'None', value: ''},
