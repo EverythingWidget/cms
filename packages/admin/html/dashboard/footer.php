@@ -203,13 +203,13 @@
       };
       var linkChooserDialog;
       function LinkChooser(element, options) {
-         var base = this;
+         //var base = this;
          var $element = $(element);
          defaults.callback = function (link) {
             $element.val(link).change();
             linkChooserDialog.trigger("close");
          };
-         this.$element = $(element);
+         //this.$element = $(element);
          var settings = $.extend({
          }, defaults, options);
          //$element.EW().putInWrapper();
@@ -223,15 +223,15 @@
                linkChooserDialog = EW.createModal();
                $.post("<?php echo EW_DIR ?>~admin/html/content-management/file-chooser.php", {
                   callback: settings.callbackName,
-                  data: $element.val()
-               },
-                       function (data) {
-                          var functionRefrence = $("<div style='display:none;' id='function-reference'></div>");
-                          functionRefrence.data("callback", settings.callback);
-                          e = $(data);
-                          e.append(functionRefrence);
-                          linkChooserDialog.html(e);
-                       });
+                  data: $element.val(),
+                  contentType: $element.data("content-type") || "all"
+               }, function (data) {
+                  var functionRefrence = $("<div style='display:none;' id='function-reference'></div>");
+                  functionRefrence.data("callback", settings.callback);
+                  e = $(data);
+                  e.append(functionRefrence);
+                  linkChooserDialog.html(e);
+               });
             }
          });
       }
@@ -242,7 +242,8 @@
             new LinkChooser(this, options);
          }
       });
-   };
+   }
+   ;
    ew_plugins.imageChooser = function (options) {
       var ACTIVE_PLUGIN_ATTR = "data-active-plugin-image-chooser";
       var defaults = {

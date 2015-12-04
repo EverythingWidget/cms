@@ -113,29 +113,29 @@ class ContentManagement extends \ew\Module
       $this->register_widget_feeder("menu", "languages");
    }
 
+   private function get_content_fields($html)
+   {
+      $dom = new \DOMDocument;
+      $dom->loadHTML($html);
+      $xpath = new \DOMXpath($dom);
+
+      $fields = $xpath->query('//p[@content-field]');
+      $content_fields = [];
+
+      foreach ($fields as $field)
+      {
+         $content_fields[] = [
+             $field->getAttribute("content-field") => trim($field->nodeValue)
+         ];
+      }
+      return $content_fields;
+   }
+
    public function ew_page_feeder_ssss($id, $language)
    {
       return null;
    }
-
-   public function ew_label_document($key, $value, $data, $form_id)
-   {
-      ob_start();
-      include 'label_document.php';
-      $html = ob_get_clean();
-      return (["html" => $html]);
-   }
-
-   public function ew_label_language($key, $value, $data, $form_id)
-   {
-      if (!$value)
-         $value = "en";
-      ob_start();
-      include 'label_language.php';
-      $html = ob_get_clean();
-      return (["html" => $html]);
-   }
-
+   
    public function image_loader($file)
    {
       preg_match('/(.*)\.?(\d*)?,?(\d*)?\.([^\.]\w*)/', $file, $match);
@@ -329,6 +329,10 @@ class ContentManagement extends \ew\Module
       $content->description = $description;
       $content->parent_id = $parent_id;
       $content->content = $html_content;
+      if (isset($html_content))
+      {
+         $content->content_fields = json_encode($this->get_content_fields($html_content));
+      }
       $content->featured_image = $featured_image;
       $content->date_created = date('Y-m-d H:i:s');
       $content->date_modified = date('Y-m-d H:i:s');
@@ -364,6 +368,11 @@ class ContentManagement extends \ew\Module
       $content->description = $description;
       $content->parent_id = $parent_id;
       $content->content = $html_content;
+      if (isset($html_content))
+      {
+         $content->content_fields = json_encode($this->get_content_fields($html_content));
+      }
+
       $content->featured_image = $featured_image;
       $content->date_modified = date('Y-m-d H:i:s');
       $content->save();

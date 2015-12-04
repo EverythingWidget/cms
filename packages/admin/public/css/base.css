@@ -336,7 +336,6 @@ root {
 }
 
 .top-pane .form-content {
-   background-color: #fff;
    padding: 0;
    top: 94px;
    position: absolute;
@@ -560,7 +559,6 @@ body.Admin {
    overflow-y: hidden;
    overflow-x: hidden;
    border: 0 solid #999;
-   box-shadow: 0 0px 20px 0px rgba(0,0,0,0.2);
    border-radius: 0;
    z-index: 10;
    /* padding-top: 40px; */
