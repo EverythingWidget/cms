@@ -692,6 +692,7 @@ body.Admin {
 }
 
 .form-content .tab-content {
+   background-color: #fff;
    position: absolute;
    width: 100%;
    top: 55px;
