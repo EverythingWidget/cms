@@ -42,7 +42,8 @@ $tabs = EWCore::read_registry("ew-link-chooser-form");
    </ul>
 </div>
 <form id="link-chooser"  action="#" method="POST">
-   <div class="form-content tab-content tabs-bar no-footer row">
+   <div class="form-content tabs-bar no-footer">
+     <div class="tab-content">
       <?php
       foreach ($tabsDefault as $id => $tab)
       {
@@ -56,6 +57,7 @@ $tabs = EWCore::read_registry("ew-link-chooser-form");
          echo "<div class='tab-pane' id='{$id}'>{$tab["content"]}</div>";
       }
       ?>
+     </div>
    </div>
 </form>
 <script>

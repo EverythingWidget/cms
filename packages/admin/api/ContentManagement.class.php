@@ -424,7 +424,6 @@ class ContentManagement extends \ew\Module
 
    public function ew_page_feeder_article($id, $language)
    {
-
       $articles = $this->get_content_with_label($id, "admin_ContentManagement_language", $language);
       $article = [];
       //print_r($articles);

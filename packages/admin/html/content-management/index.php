@@ -26,16 +26,16 @@ echo admin\AppsManagement::create_section_main_form();
 ?>
 
 <script>
-   (function ()
-   {
+   (function () {
       var ContentManagement = System.module("content-management");
 
       ContentManagement.onInit = function (nav) {
-         console.log("ContentManagement is here :)");
+         //console.log("ContentManagement is here :)");
+         //alert("C is here");
       };
 
       ContentManagement.onStart = function () {
-
+         //alert("C is started");
       };
 
       ContentManagement.on("app", function (p, section) {

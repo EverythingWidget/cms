@@ -687,7 +687,7 @@ body.Admin {
 }
 
 .form-content.no-footer {
-   bottom: 4px;
+   bottom: 0;
    border-bottom: 0 solid #ddd;
 }
 

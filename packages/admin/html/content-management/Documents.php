@@ -35,7 +35,7 @@
                  {
                     folderId: null
                  }
-      }).hide().comeIn();
+      }).hide();
       this.bNewFile = EW.addActivity({
          title: "tr{New Article}",
          activity: "admin/html/content-management/article-form.php",
@@ -44,7 +44,7 @@
                  {
                     articleId: null
                  }
-      }).hide().comeIn();
+      }).hide();
       this.seeFolderActivity = EW.getActivity({
          activity: "admin/html/content-management/category-form.php",
          onDone: function ()
@@ -278,4 +278,18 @@
    {
       EW.removeURLHandler(documents.handler);
    };
+
+   (function () {
+
+      var Doc = {};
+      Doc.onInit = function (nav) {
+         documents.bNewFile.comeIn();
+         documents.bNewFolder.comeIn();
+      };
+
+      var ContentManagement = System.module("content-management");
+      Doc = ContentManagement.module("documents", Doc);
+      Doc.init();
+      Doc.start();
+   }());
 </script>

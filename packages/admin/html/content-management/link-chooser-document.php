@@ -1,6 +1,4 @@
-<?php
-
-?>
+<?php ?>
 <div  class="row">
    <div class="col-xs-12" >            
       <div id="categories-list"  class="box">
@@ -50,9 +48,8 @@
          var hasNode = false;
          if (parentId == 0)
          {
-            this.bUp.comeOut(200);            
-         }
-         else
+            this.bUp.comeOut(200);
+         } else
          {
             this.bUp.comeIn(300);
          }
@@ -83,10 +80,7 @@
             $("#link-chooser #articles-list").html("<h2>tr{Articles}</h2><div class='row box-content'></div>");
             var aId = EW.getHashParameter("articleId");
             var articlesPane = $("#link-chooser #articles-list .box-content");
-            $.each(data.result, function (index, element)
-            {
-               //pId = element.pre_parent_id;
-               //hasNode = true;
+            $.each(data.result, function (index, element) {
                var temp = self.createFile(element);
                if (element.id == aId)
                {
@@ -110,7 +104,7 @@
             //EW.setHashParameters({"articleId": null, "categoryId": model.id});
          });
          div.dblclick(function () {
-            self.listFilesAndFolders(model.id)
+            self.listFilesAndFolders(model.id);
          });
          return div;
       };
@@ -129,6 +123,7 @@
          });
          return div;
       };
+
       LinkChooserDocuments.prototype.highlightContent = function (element)
       {
          if (this.oldElement)
@@ -136,7 +131,11 @@
          element.addClass("selected");
          this.oldElement = element;
          this.bSelect.comeIn(300);
-      }
+      };
+
+      LinkChooserDocuments.prototype.showContentFields = function (element) {
+      };
+
       LinkChooserDocuments.prototype.selectContent = function ()
       {
 

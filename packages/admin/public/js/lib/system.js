@@ -44,6 +44,7 @@
                        return this.modules[id];
                     this.modules[id] = $.extend(true, {}, System.MODULE_ABSTRACT, object || {});
                     this.modules[id].id = id;
+                    //this.modules[id].init();
                     return this.modules[id];
                  },
                  hash: {},
@@ -106,12 +107,16 @@
                     });
                     this.navigation = navigation;
                     this.params = params;
+                    //alert(navigation[this.moduleIdentifier][0]+"----");
+                    
                     if (this.moduleIdentifier && navigation[this.moduleIdentifier])
                     {
                        // Select activeModule according to moduleIdentifier
                        this.activeModule = this.modules[navigation[this.moduleIdentifier][0]];
                     } else
                        this.activeModule = null;
+                    console.log(this.id, this.activeModule,this.modules);
+                    
                     if (this.activeModule)
                     {
                        // Remove first part of navigation in order to force activeModule to only react to events at its level and higher 
@@ -120,7 +125,7 @@
                        newNav[this.moduleIdentifier] = modNav;
                        if (!this.activeModule.inited)
                        {
-                          this.activeModule.init(newNav, this.params);
+                          //this.activeModule.init(newNav, this.params);
                        }
 
                        // Call module level events handlers
@@ -176,9 +181,10 @@
                   if (self.navHashes[id])
                      window.location.hash = self.navHashes[id];
                   //alert("app current nav hash: "+self.navHashes[id]);
-                  //var scripts = $(response).filter("script").detach();
                   var html = $(response);
-                  //$("body").append(scripts);
+                  var scripts = html.filter("script").detach();
+                  
+                  $("body").append(scripts);
                   //var html = res;
                   //System.apps[id] = $.extend({}, System.module, self.apps[id]);
                   //System.activityTree.unshift(System.apps[id]);
