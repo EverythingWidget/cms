@@ -586,6 +586,8 @@ class ContentManagement extends \ew\Module
          return \EWCore::log_error(400, 'tr{Content Id is requird}');
       $content = ew_contents::find($id, ['*',
                   \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
+      $labels = $this->get_content_labels($id);
+      $content->labels = $labels;
       return $content->toArray();
    }
 

@@ -152,6 +152,7 @@
 <script>
    // Set form data when the form is completely loaded
    $(document).ready(function () {
+
       $.each($(ContentForm.formId + " .content-label"), function (i, e) {
          var $e = $(e);
          var lcb = $e.find(".label-control-button");
@@ -165,6 +166,7 @@
                $e.stop().animate({
                   className: "box box-grey content-label"
                }, 500, "Power3.easeInOut");
+
             } else {
                $e.attr("data-activated", false);
                //alert("click: "+e.attr("data-activated"));
@@ -177,5 +179,6 @@
          });
       });
       ContentForm.setData(<?php echo $content_data; ?>);
+
    });
 </script> 

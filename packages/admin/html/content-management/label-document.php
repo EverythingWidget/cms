@@ -45,29 +45,24 @@
          }, function (data) {
             attached.empty();
             if (data['result'])
-               $.each(data['result'], function (i, content)
-               {
+               $.each(data['result'], function (i, content) {
                   var langItem = $("<li class=''><a rel='ajax' href='#' class='link'>" + content.title + "</a></li>");
-                  if (content.id == "{{value}}")
-                  {
+                  if (content.id == "{{value}}") {
                      value.val(content.id);
                      text.val(content.title).change();
                   }
-                  if (content.id == formData.id)
-                  {
+
+                  if (content.id == formData.id) {
                      langItem.addClass("active");
-                  } else
-                     langItem.find("a").on("click", function ()
-                     {
-                        $.post("~admin/api/content-management/get-article",
-                                {
-                                   articleId: content.id
-                                },
-                                function (data)
-                                {
-                                   ContentForm.setData(data);
-                                }, "json");
+                  } else {
+                     langItem.find("a").on("click", function () {
+                        $.post("~admin/api/content-management/get-article", {
+                           articleId: content.id
+                        }, function (data) {
+                           ContentForm.setData(data);
+                        }, "json");
                      });
+                  }
                   attached.append(langItem);
                });
          }, "json");
