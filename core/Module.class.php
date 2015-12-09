@@ -266,9 +266,9 @@ class Module
     return $this->request[$param];
   }
 
-  public function getName()
+  public function get_name()
   {
-    return $this->sectionName = $secName;
+    return $this->current_class->getShortName();
   }
 
   public function index()
@@ -362,7 +362,7 @@ class Module
    * @param type $id
    * @param type $function_name Name of the fucntion without the prefix
    */
-  public function register_widget_feeder($type, $id, $function_name = null)
+  /*public function register_widget_feeder($type, $id, $function_name = null)
   {
     if (!$function_name)
     {
@@ -376,7 +376,7 @@ class Module
           "ew_" . $type . "_feeder_" . $function_name);
     }
     \webroot\WidgetsManagement::add_widget_feeder($type, $this->app->get_root(), $id, $function_name);
-  }
+  }*/
 
   public function register_content_type($type_name, $get, $get_list)
   {

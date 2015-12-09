@@ -63,6 +63,7 @@ class ContentManagement extends \ew\Module
           "api/get_categories_list",
           "api/get_articles_list",
           "api/get_media_list",
+          "api/ew_page_feeder_article",
           "html/article-form.php",
           "html/category-form.php",
           "html/album-form.php"));
@@ -107,10 +108,11 @@ class ContentManagement extends \ew\Module
           "form" => "admin/html/content-management/label-language.php"
       ]);
 
-      $this->register_widget_feeder("page", "article");
+      //$this->register_widget_feeder("page", "article");
+      \webroot\WidgetsManagement::register_widget_feeder($this, "page", "article", "get_content");
 
-      $this->register_widget_feeder("list", "folder");
-      $this->register_widget_feeder("menu", "languages");
+      //$this->register_widget_feeder("list", "folder");
+      //$this->register_widget_feeder("menu", "languages");
    }
 
    private function get_content_fields($html)
@@ -135,7 +137,7 @@ class ContentManagement extends \ew\Module
    {
       return null;
    }
-   
+
    public function image_loader($file)
    {
       preg_match('/(.*)\.?(\d*)?,?(\d*)?\.([^\.]\w*)/', $file, $match);
@@ -432,9 +434,9 @@ class ContentManagement extends \ew\Module
       {
          $article = $articles["result"][0];
          $result["html"] = "WIDGET_DATA_MODEL";
-         $result["title"] = $article['title'];
-         $result["content"] = $article['content'];
-         return json_encode($result);
+         $result["title"] = $article->title;
+         $result["content"] = $article->content;
+         return $result;
       }
 
       return NULL;
@@ -535,7 +537,7 @@ class ContentManagement extends \ew\Module
       }
       $out = array(
           "totalRows" => $folders->count(),
-          "result" => $rows);
+          "items" => $rows);
       return json_encode($out);
    }
 
@@ -572,7 +574,7 @@ class ContentManagement extends \ew\Module
             $rows[] = $i;
          }
          return ["totalRows" => $articles->count(),
-             "result" => $rows];
+             "items" => $rows];
       }
 
       return \EWCore::log_error(400, 'tr{Something went wrong}');
@@ -607,7 +609,7 @@ class ContentManagement extends \ew\Module
           \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
       //print_r($contents);
       return ["totalRows" => $contents->count(),
-          "result" => $contents->toArray()];
+          "items" => $contents->toArray()];
    }
 
    public function add_category($title, $parent_id, $keywords, $description, $labels)

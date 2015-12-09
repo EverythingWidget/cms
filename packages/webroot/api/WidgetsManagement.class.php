@@ -20,6 +20,7 @@ class WidgetsManagement extends \ew\Module
    private static $title = "";
    private static $html_scripts = array();
    private static $html_keywords;
+   private static $widgets_feeders = array();
    protected $resource = "api";
    public static $WIDGET_FEEDER = "ew-widget-feeder";
    private static $registry = [];
@@ -34,7 +35,7 @@ class WidgetsManagement extends \ew\Module
    }
 
    protected function install_permissions()
-   {      
+   {
       EWCore::register_form("ew-link-chooser-form-default", "link-chooser-uis-list", ["title" => "UI Structures",
           "content" => $this->link_chooser_form]);
 
@@ -51,7 +52,7 @@ class WidgetsManagement extends \ew\Module
           "api/update_uis",
           "api/ew_form_uis_tab",
           'html/' . $this->get_index()));
-      
+
       $this->register_permission("manipulate", "User can create and edit layouts", array(
           "api/get_uis",
           "api/get_uis_list",
@@ -1352,6 +1353,31 @@ class WidgetsManagement extends \ew\Module
          return call_user_func($func);
       else
          return call_user_func_array($func, $arg);
+   }
+
+   /**
+    * 
+    * @param \ew\Module $module
+    * @param string $type
+    * @param string $id
+    * @param string $function_name
+    * @param string $resource_type
+    */
+   public static function register_widget_feeder($module, $type, $id, $function_name, $resource_type = "api")
+   {
+      //parent::register_widget_feeder($type, $id, $function_name);
+      if (!isset(static::$widgets_feeders[$type]))
+      {
+         static::$widgets_feeders[$type] = [];
+      }
+      $id = $module->get_app()->get_root() . '.' . $module->get_name() . '.' . $function_name . '.' . $id;
+      $feeder = new \stdClass();
+      $feeder->package = $module->get_app()->get_root();
+      $feeder->$resource_type = $resource_type;
+      $feeder->module = EWCore::camelToHyphen($module->get_name());
+      $feeder->function = str_replace('_', '-', $function_name);
+      static::$widgets_feeders[$type][$id] = $feeder;
+      //print_r(static::$widgets_feeders);
    }
 
    /**

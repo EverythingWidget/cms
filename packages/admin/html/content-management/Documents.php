@@ -136,7 +136,7 @@
                  //$("#cate-title").loadingText();
                  var cId = EW.getHashParameter("folderId", "document");
                  var foldersPane = $("#categories-list .box-content");
-                 $.each(data.result, function (index, element)
+                 $.each(data.items, function (index, element)
                  {
                     pId = element.pre_parent_id;
                     hasNode = true;
@@ -162,7 +162,7 @@
                  $("#articles-list").html("<h2>tr{Articles}</h2><div class='row box-content'></div>");
 
                  var articlesPane = $("#articles-list .box-content");
-                 $.each(data.result, function (index, element)
+                 $.each(data.items, function (index, element)
                  {
                     pId = element.pre_parent_id;
                     hasNode = true;

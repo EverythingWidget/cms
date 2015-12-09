@@ -36,7 +36,6 @@
 </form>
 
 <script>
-
    // ContentForm predefined functions
    var ContentForm = {
       formId: "#<?= $form_id ?>",
@@ -146,41 +145,37 @@
          $("#content").change();
       }
    };
-   $.each($(".content-label"), function (i, e)
-   {
-      e = $(e);
-      e.find(".label-control-button").on("change", function ()
-      {
-         //console.log(e.find(".label-control-button"));
-         var label = e.find(".label-control-button").next("span");
-         var p = e.find(".label-control-button").parent();
-         if (e.find(".label-control-button").is(":checked"))
-         {
-            e.attr("data-activated", true);
-            label.text("Turned On");
-            //alert("click: "+e.attr("data-activated"));
-            p.addClass("btn-success").removeClass("btn-default");
-            e.stop().animate({
-               className: "box box-grey content-label"
-            }, 300, "Power2.easeInOut");
-         } else
-         {
-            e.attr("data-activated", false);
-            //alert("click: "+e.attr("data-activated"));
-            label.text("Turned Off");
-            p.removeClass("btn-success").addClass("btn-default");
-            e.stop().animate({
-               className: "box box-grey content-label disabled"
-            }, 300, "Power2.easeInOut");
-         }
-      });
-   });
+
+
 </script>
 <?= $form_config["script"] ?>
 <script>
    // Set form data when the form is completely loaded
-   $(document).ready(function ()
-   {
+   $(document).ready(function () {
+      $.each($(ContentForm.formId + " .content-label"), function (i, e) {
+         var $e = $(e);
+         var lcb = $e.find(".label-control-button");
+         lcb.on("change", function () {
+            var label = lcb.next("span");
+            var labelBox = lcb.parent();
+            if (lcb.is(":checked")) {
+               $e.attr("data-activated", true);
+               label.text("Turned On");
+               labelBox.addClass("btn-success").removeClass("btn-default");
+               $e.stop().animate({
+                  className: "box box-grey content-label"
+               }, 500, "Power3.easeInOut");
+            } else {
+               $e.attr("data-activated", false);
+               //alert("click: "+e.attr("data-activated"));
+               label.text("Turned Off");
+               labelBox.removeClass("btn-success").addClass("btn-default");
+               $e.stop().animate({
+                  className: "box box-grey content-label disabled"
+               }, 400, "Power3.easeInOut");
+            }
+         });
+      });
       ContentForm.setData(<?php echo $content_data; ?>);
    });
 </script> 

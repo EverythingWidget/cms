@@ -60,7 +60,7 @@
             //$("#cate-title").loadingText();
             var cId = EW.getHashParameter("categoryId");
             var foldersPane = $("#link-chooser #categories-list .box-content").empty();
-            $.each(data.result, function (index, element)
+            $.each(data.items, function (index, element)
             {
                //pId = element.pre_parent_id;
                //hasNode = true;
@@ -80,7 +80,7 @@
             $("#link-chooser #articles-list").html("<h2>tr{Articles}</h2><div class='row box-content'></div>");
             var aId = EW.getHashParameter("articleId");
             var articlesPane = $("#link-chooser #articles-list .box-content");
-            $.each(data.result, function (index, element) {
+            $.each(data.items, function (index, element) {
                var temp = self.createFile(element);
                if (element.id == aId)
                {
