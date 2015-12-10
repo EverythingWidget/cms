@@ -15,7 +15,7 @@ session_start();
       <h1 class="pull-left">Select an item</h1><a href='javascript:void(0)' class='close-icon pull-right' style="margin:5px;"></a>      
       <div  id="items-list-content" ></div>
    </div>
-   <ul id="ew-uis-editor-tabs" class="nav nav-pills xs-nav-tabs nav-sm" style="width:400px;float:left;margin: 0px;">
+   <ul id="ew-uis-editor-tabs" class="nav nav-pills xs-nav-tabs nav-sm" style="width:400px;float:left;margin: 0px;background-color: #00897B;">
       <li class="active"><a href="#inspector" data-toggle='tab'>tr{Structure}</a></li>
       <li class="disable"><a href="#template-control" data-toggle='tab'>tr{Template}</a></li>
       <li class=""><a href="#pref" data-toggle='tab'>tr{Settings}</a></li>

@@ -699,6 +699,7 @@ class WidgetsManagement extends \ew\Module
       }
       else if ($params)
          $widget_parameters = json_decode($params, true);
+      
       //$widget_parameters = json_encode($params);
       $widget_title = WidgetsManagement::get_widget_details($widget_type)["title"];
       // Include widget content
@@ -715,7 +716,7 @@ class WidgetsManagement extends \ew\Module
 
       //if ($no_data)
       //{
-      $parameters_string = "data-widget-parameters='$widget_parameters'";
+      //$parameters_string = "data-widget-parameters='$widget_parameters'";
       $widget_type_string = "data-widget-type='$widget_type'";
       $widget_title_string = "data-widget-title='$widget_title'";
       //}

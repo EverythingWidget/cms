@@ -522,11 +522,10 @@
 
    // Plugins which initilize when document is ready
    //var EW = null;
-   $(document).ready(function ()
-   {
+   $(document).ready(function ()   {
       var hashDetection = new hashHandler();
       EW.activities = <?php echo EWCore::read_activities(); ?>;
-      console.log(EW.activities);
+      //console.log(EW.activities);
       EW.oldApp = null;
 
       // Init EW plugins

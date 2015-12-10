@@ -344,6 +344,7 @@ root {
    left: 0;
    right: 0;
    margin: 0;
+   background-color: #fff;
 }
 
 #main-content .form-content {
@@ -692,7 +693,6 @@ body.Admin {
 }
 
 .form-content .tab-content {
-   background-color: #fff;
    position: absolute;
    width: 100%;
    top: 55px;

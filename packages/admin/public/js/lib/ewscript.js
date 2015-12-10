@@ -649,6 +649,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
 
          if (!originElement || !$.contains(document, originElement[0]))
          {
+            xButton.detach();
             modalPane.stop().animate({
                transform: "scale(.0)"
             },
@@ -659,13 +660,11 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
                        if (settings.closeAction === "hide")
                        {
                           modalPane.hide();
-                          xButton.detach();
                        }
                        // if hash is set then detach the modal instead of remove to keep the url listener alive
                        else if (settings.closeAction === "hash")
                        {
                           modalPane.detach();
-                          xButton.detach();
                        } else
                        {
                           modalPane.remove();

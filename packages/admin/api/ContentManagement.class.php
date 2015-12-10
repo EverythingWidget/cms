@@ -55,6 +55,7 @@ class ContentManagement extends \ew\Module
           'html/index.php',
           'api/index',
           "api/contents",
+          "api/content_fields",
           "api/get_content",
           "api/get_contents",
           "api/get_content_with_label",
@@ -123,13 +124,11 @@ class ContentManagement extends \ew\Module
       $xpath = new \DOMXpath($dom);
 
       $fields = $xpath->query('//p[@content-field]');
-      $content_fields = [];
+      $content_fields = new \stdClass();
 
       foreach ($fields as $field)
       {
-         $content_fields[] = [
-             //$field->getAttribute("content-field") => [content:trim($field->nodeValue)]
-         ];
+         $content_fields->{$field->getAttribute("content-field")} = ["content" => trim($field->nodeValue)];
       }
       return $content_fields;
    }
@@ -591,6 +590,13 @@ class ContentManagement extends \ew\Module
       {
          return $this->get_contents();
       }
+   }
+
+   public function content_fields($_parts__id, $id)
+   {
+      $content = $this->get_content($_parts__id);
+
+      return $content["content_fields"];
    }
 
    public function get_content($id)
