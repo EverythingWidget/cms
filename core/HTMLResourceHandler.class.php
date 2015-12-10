@@ -101,7 +101,10 @@ class HTMLResourceHandler extends ResourceHandler
 
       if (\admin\UsersManagement::user_has_permission($app->get_root(), 'html', $module_name, $method_name))
       {
-        return $this->load_file(EW_PACKAGES_DIR . '/' . $path, $type, $parameters);
+        
+        $res = $this->load_file(EW_PACKAGES_DIR . '/' . $path, $type, $parameters);
+        header("Content-Type: text/html");
+        return $res;
       }
       else
       {

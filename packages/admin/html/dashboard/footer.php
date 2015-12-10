@@ -569,7 +569,7 @@
          } catch (e)
          {
             console.log("ajaxError:");
-            console.log(e);
+            console.log(e,status);
             console.log(data);
          }
          $("body").EW().notify({

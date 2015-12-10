@@ -180,19 +180,24 @@ class Module
 
     $functions_arguments = array();
     $this->current_method_args = array();
+    $part_index = 0;
     foreach ($params as $param)
     {
       $temp = NULL;
-      if (is_array($parameters[$param->getName()]))
+      $param_name = $param->getName();
+
+      if (strpos($param_name, "_parts__") === 0)
       {
-        //array_walk_recursive($parameters[$param->getName()], Illuminate\Database\Capsule\Manager::connection()->getPdo()->quote);
-        $temp = $parameters[$param->getName()];
+        $temp = $parameters[str_replace("_parts__", "", $param_name)];
+        if (!isset($temp))
+        {
+          $temp = $parameters["_parts"][$part_index++];
+        }
       }
-      else
-      {
-        //$temp = Illuminate\Database\Capsule\Manager::connection()->getPdo()->quote($parameters[$param->getName()]);
-        $temp = $parameters[$param->getName()];
-      }
+     // if (isset($parameters[$param_name]))
+      //{
+        $temp = $parameters[$param_name];
+      //}
       $functions_arguments[] = $temp;
       $this->current_method_args[$param->getName()] = $temp;
     }
@@ -200,8 +205,9 @@ class Module
     $command_result = $method_object->invokeArgs($this, $functions_arguments);
 
     if (is_array($command_result))
+    {
       $command_result = json_encode($command_result);
-
+    }
     return $command_result;
   }
 
@@ -314,7 +320,7 @@ class Module
     //echo $command . "_listener";
     \EWCore::register_object($command . "_listener", $this->app->get_root() . "/" . $this->current_class->getShortName() . "/" . $function, array(
         "function" => $function,
-        "object"   => $object));
+        "object" => $object));
   }
 
   public function register_content_component($key, $comp_object)
@@ -333,7 +339,7 @@ class Module
   public function register_content_label($key, $default_value)
   {
     //$ro = new ReflectionClass($this);
-    $defaults = ["app"     => $this->app->get_root(),
+    $defaults = ["app" => $this->app->get_root(),
         "section" => $this->get_section_name(),
         "command" => 'ew_label_' . $key];
     $defaults = array_merge($defaults, $default_value);
@@ -348,10 +354,10 @@ class Module
    */
   public function register_form($name, $id, $form, $resource = 'api')
   {
-    $defaults = ["app"      => $this->app->get_root(),
+    $defaults = ["app" => $this->app->get_root(),
         "resource" => $resource,
-        "module"   => \EWCore::camelToHyphen($this->get_section_name()),
-        "method"   => 'ew-form-' . $id];
+        "module" => \EWCore::camelToHyphen($this->get_section_name()),
+        "method" => 'ew-form-' . $id];
     $form_structure = array_merge($defaults, $form);
     \EWCore::register_object($name, $this->app->get_root() . '_' . $this->get_section_name() . '_' . $id, $form_structure);
   }
@@ -362,21 +368,21 @@ class Module
    * @param type $id
    * @param type $function_name Name of the fucntion without the prefix
    */
-  /*public function register_widget_feeder($type, $id, $function_name = null)
-  {
+  /* public function register_widget_feeder($type, $id, $function_name = null)
+    {
     if (!$function_name)
     {
-      $function_name = $id;
+    $function_name = $id;
     }
 
     if (!strpos($function_name, ".php"))
     {
-      $function_name = array(
-          $this,
-          "ew_" . $type . "_feeder_" . $function_name);
+    $function_name = array(
+    $this,
+    "ew_" . $type . "_feeder_" . $function_name);
     }
     \webroot\WidgetsManagement::add_widget_feeder($type, $this->app->get_root(), $id, $function_name);
-  }*/
+    } */
 
   public function register_content_type($type_name, $get, $get_list)
   {
@@ -438,7 +444,7 @@ class Module
     {
       //echo $key . " " . $value;
       if (!$this->save_setting($key, $value))
-        return \EWCore::log_error(400, "The configuration has not been saved", ["key"   => $key,
+        return \EWCore::log_error(400, "The configuration has not been saved", ["key" => $key,
                     "value" => $value]);
     }
   }

@@ -1,7 +1,7 @@
 <?php ?>
 <div  class="row">
    <div class="col-xs-12" >            
-      <div id="categories-list"  class="box">
+      <div id="folders-list"  class="box">
          <h2 id='cate-title' class="box-title actions-bar action-bar-items">
             <span>tr{Folders}</span>
             <button class='button' id='documents-up-btn' type='button' style='display:none;float:right;'>UP</button>
@@ -13,10 +13,12 @@
 <div class="row">
    <div class="col-xs-12" >
       <div class="box"  id="articles-list">
-
+         <h2>tr{Articles}</h2>
+         <div class='row box-content'></div>
       </div>
    </div>
 </div>
+
 
 <script  type="text/javascript">
    var LinkChooserDocuments = (function () {
@@ -30,6 +32,15 @@
          $("#documents-up-btn").click($.proxy(this.preCategory, this));
          this.bUp = EW.addAction("tr{Up}", $.proxy(this.preCategory, this), {float: "right"}).hide();
          this.bSelect = EW.addAction("tr{Select}", $.proxy(this.selectContent, this)).addClass("btn-success").hide();
+
+         this.folderList = $("#link-chooser #folders-list");
+         //this.folderListHeader = this.articlesList.children().eq(0);
+         this.folderListContent = this.folderList.children().eq(1);
+
+         this.articlesList = $("#link-chooser #articles-list");
+         this.articlesListHeader = this.articlesList.children().eq(0);
+         this.articlesListContent = this.articlesList.children().eq(1);
+
          this.listFilesAndFolders(this.parentId);
       }
 
@@ -55,6 +66,7 @@
          }
          this.bSelect.hide();
          //$("#link-chooser #categories-list").html("<div class='col-xs-12'><h2 >Loading Folders</h2></div>");
+         self.folderListContent.empty();
          $.post('<?php echo EW_ROOT_URL; ?>~admin/api/content-management/get-categories-list', {parent_id: parentId}, function (data)
          {
             //$("#cate-title").loadingText();
@@ -70,24 +82,25 @@
                   temp.addClass("selected");
                   self.oldItem = temp;
                }
-               foldersPane.append(temp);
+               self.folderListContent.append(temp);
             });
 
          }, "json");
-         $("#link-chooser #articles-list").html("<div class='col-xs-12'><h2>Loading Article</h2></div>");
+         console.log(self.articlesListHeader)
+         self.articlesListHeader.html("Loading articles");
+         self.articlesListContent.empty();
          $.post('<?php echo EW_ROOT_URL; ?>~admin/api/content-management/get-articles-list', {parent_id: parentId}, function (data)
          {
-            $("#link-chooser #articles-list").html("<h2>tr{Articles}</h2><div class='row box-content'></div>");
+            //$("#link-chooser #articles-list").html("<h2>tr{Articles}</h2><div class='row box-content'></div>");
             var aId = EW.getHashParameter("articleId");
-            var articlesPane = $("#link-chooser #articles-list .box-content");
+
             $.each(data.items, function (index, element) {
                var temp = self.createFile(element);
-               if (element.id == aId)
-               {
+               if (element.id == aId) {
                   temp.addClass("selected");
                   self.oldItem = temp;
                }
-               articlesPane.append(temp);
+               self.articlesListContent.append(temp);
             });
 
          }, "json");
@@ -115,7 +128,7 @@
          var div = $("<div class='content-item article' data-article-id='{id}'><span></span><p>{title}</p><p class='date'>{round_date_created}</p></div>").EW().createView(model);
          div.click(function () {
             self.document = {type: "article", id: model.id};
-            self.highlightContent(div);
+            self.highlightContent(div, model);
             //EW.setHashParameters({categoryId: null, articleId: id});
          });
          div.dblclick(function () {
@@ -124,16 +137,39 @@
          return div;
       };
 
-      LinkChooserDocuments.prototype.highlightContent = function (element)
+      LinkChooserDocuments.prototype.createField = function (model)
+      {
+         var self = this;
+         var div = $("<div class='content-item article' data-field-id='{id}'><span></span><p>{title}</p></div>").EW().createView(model);
+         div.click(function () {
+            //self.document = {type: "article", id: model.id};
+            //self.highlightContent(div, model);
+            //EW.setHashParameters({categoryId: null, articleId: id});
+         });
+         div.dblclick(function () {
+            //self.selectContent("article", model.id);
+         });
+         return div;
+      };
+
+      LinkChooserDocuments.prototype.highlightContent = function (element, data)
       {
          if (this.oldElement)
             this.oldElement.removeClass("selected");
          element.addClass("selected");
          this.oldElement = element;
          this.bSelect.comeIn(300);
+         if (data)
+            this.showContentFields(data.contentFields);
       };
 
-      LinkChooserDocuments.prototype.showContentFields = function (element) {
+      LinkChooserDocuments.prototype.showContentFields = function (fields) {
+         var _this = this;
+         $.each(fields, function (index, element) {
+            var temp = _this.createField(element);
+
+            _this.articlesListContent.append(temp);
+         });
       };
 
       LinkChooserDocuments.prototype.selectContent = function ()

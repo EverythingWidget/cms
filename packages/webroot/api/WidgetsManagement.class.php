@@ -812,6 +812,7 @@ class WidgetsManagement extends \ew\Module
    {
       if (file_exists(EW_PACKAGES_DIR . '/rm/public/' . $path . '/template.php'))
       {
+         header("Content-Type: text/html");
          require_once EW_PACKAGES_DIR . '/rm/public/' . $path . '/template.php';
          $template = new \template();
          return $template->get_template_settings_form();

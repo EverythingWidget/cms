@@ -54,6 +54,7 @@ class ContentManagement extends \ew\Module
       $this->register_permission("see-content", "User can see the contents", array(
           'html/index.php',
           'api/index',
+          "api/contents",
           "api/get_content",
           "api/get_contents",
           "api/get_content_with_label",
@@ -127,7 +128,7 @@ class ContentManagement extends \ew\Module
       foreach ($fields as $field)
       {
          $content_fields[] = [
-             $field->getAttribute("content-field") => trim($field->nodeValue)
+             //$field->getAttribute("content-field") => [content:trim($field->nodeValue)]
          ];
       }
       return $content_fields;
@@ -580,15 +581,32 @@ class ContentManagement extends \ew\Module
       return \EWCore::log_error(400, 'tr{Something went wrong}');
    }
 
+   public function contents($_parts__id)
+   {
+      if (isset($_parts__id))
+      {
+         return $this->get_content($_parts__id);
+      }
+      else
+      {
+         return $this->get_contents();
+      }
+   }
+
    public function get_content($id)
    {
       if (!isset($id))
          return \EWCore::log_error(400, 'tr{Content Id is requird}');
       $content = ew_contents::find($id, ['*',
                   \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
-      $labels = $this->get_content_labels($id);
-      $content->labels = $labels;
-      return $content->toArray();
+
+      if (isset($content))
+      {
+         $labels = $this->get_content_labels($id);
+         $content->labels = $labels;
+         return $content->toArray();
+      }
+      return EWCore::log_error(404, "content not found");
    }
 
    public function get_contents($title_filter = '%', $type = '%', $token = 0, $size = 99999999999999)
