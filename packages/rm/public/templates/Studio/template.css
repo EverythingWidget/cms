@@ -42,7 +42,7 @@ html,body{margin:0px;height:100%;font-family:'Dosis',arial,sans-serif;}
 .block.menu-container{display:block;min-height:60px;background-color:rgba(0,0,0,.5);position:fixed;width:100%;z-index:10;}
 .block.section{display:block;padding:0px 15px;margin:0px;position:relative}
 .block.section h3{font-size:1.8em;}
-.block.section h2{font-size:2.3em;}
+.block.section h2{font-size:2.3em;text-align:center;color:#fff;text-shadow:0px 0px 15px rgba(0,0,0,.75)}
 .block.section h1{text-align:center;font-size:6.5em;font-weight:400;color:#fff;text-shadow:0px 0px 15px rgba(0,0,0,.75);margin:10px 0px;}
 .block.section p{font-size:1.6em;font-weight:400;}
 .block.background{background-position:center top;background-size:100% auto;background-repeat:no-repeat;width:100%;min-height:520px;position:relative;padding-top:60px;}
