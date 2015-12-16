@@ -9,23 +9,6 @@ and open the template in the editor.
     Author     : Eeliya
 */
 @import url(http://fonts.googleapis.com/css?family=Dosis:300,400,500,600,700);
-@font-face {
-   font-family: 'Roboto';
-   src: local('Roboto Light'), local('Roboto-Light'), url('Roboto-Light.ttf');
-   font-weight: 300;
-   font-style: normal;
-}
-@font-face {
-   font-family: 'Roboto';
-   src: local('Roboto'), local('Roboto'), url('Roboto-Regular.ttf');
-   font-style: normal;
-}
-@font-face {
-   font-family: 'Roboto';
-   src: local('Roboto Bold'), local('Roboto-Bold'), url('Roboto-Bold.ttf');
-   font-weight: bold;
-   font-style: normal;
-}
 ::-webkit-scrollbar {   width: 20px;}
 ::-webkit-scrollbar-track {background-color:transparent;}
 ::-webkit-scrollbar-thumb { background-color:rgba(0,0,0,.5);border:0px solid transparent;border-radius:0px;background-clip:content-box;}
@@ -46,13 +29,13 @@ html,body{margin:0px;height:100%;font-family:'Dosis',arial,sans-serif;}
 .block.section h1{text-align:center;font-size:6.5em;font-weight:400;color:#fff;text-shadow:0px 0px 15px rgba(0,0,0,.75);margin:10px 0px;}
 .block.section p{font-size:1.6em;font-weight:400;}
 .block.background{background-position:center top;background-size:100% auto;background-repeat:no-repeat;width:100%;min-height:520px;position:relative;padding-top:60px;}
-.block.studio {background-image:url('studio2.jpg');}
-.block.works {background-image:url('works.jpg');}
-.block.team {background-image:url('team6.jpg');}
+.block.studio {background-image:url('images/studio2.jpg');}
+.block.works {background-image:url('images/works.jpg');}
+.block.team {background-image:url('images/team6.jpg');}
 .panel.content-margin{margin-top:500px;margin-bottom:50px;}
 @media (max-width: 1359px) 
 {
-.overlay.content-margin{margin-top:700px;margin-bottom:50px; position:absolute;z-index:1;width:auto;left:15px;right:15px;}
+   .overlay.content-margin{margin-top:700px;margin-bottom:50px; position:absolute;z-index:1;width:auto;left:15px;right:15px;}
 }
 @media (min-width: 1360px) 
 {
@@ -71,7 +54,7 @@ html,body{margin:0px;height:100%;font-family:'Dosis',arial,sans-serif;}
 .widget.dark-box{background-color:rgba(0,0,0,.0);color:#fff;padding:20px 25px;text-align:center;}
 .widget.dark-box p{margin:0px;font-weight:300;font-size:2.8em;/*text-shadow:0px 1px 3px rgba(0,0,0,.8), 0px -1px 12px rgba(250,180,80,.8);*/}
 .panel.white-box{padding-top:20px;padding-bottom:30px;background-color:rgba(255,255,255,1);border-radius:10px;box-shadow:0px 2px 15px -1px rgba(0,0,0,.25);}
-.panel.white-box h2{margin:0px auto;margin-bottom:50px;text-align:center;font-weight:700;font-size:4.2em;}
+.panel.white-box h2{margin:0px auto;margin-bottom:50px;text-align:center;font-weight:700;font-size:4.2em;text-shadow: none;color:#333;}
 .widget.works-list{padding:0px 15px;}
 .widget.works-list .list-content .item,.widget.works-item{color:#fff;position:relative;overflow:hidden;transition: all .3s ease-out}
 .widget.works-list .list-content .item:hover p:last-child,.widget.works-item:hover p:last-child{height:50%;}

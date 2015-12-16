@@ -699,7 +699,7 @@ class WidgetsManagement extends \ew\Module
       }
       else if ($params)
          $widget_parameters = json_decode($params, true);
-      
+
       //$widget_parameters = json_encode($params);
       $widget_title = WidgetsManagement::get_widget_details($widget_type)["title"];
       // Include widget content
@@ -1248,7 +1248,7 @@ class WidgetsManagement extends \ew\Module
 
       self::$registry[static::$WIDGET_FEEDER][$app][$type][$id] = $function;
 
-      EWCore::register_object(static::$WIDGET_FEEDER, $app, self::$registry[static::$WIDGET_FEEDER][$app]);
+      //EWCore::register_object(static::$WIDGET_FEEDER, $app, self::$registry[static::$WIDGET_FEEDER][$app]);
    }
 
    /**
@@ -1265,7 +1265,12 @@ class WidgetsManagement extends \ew\Module
       $func = null;
       $feederApp = true;
       $result = false;
-      array_walk(EWCore::read_registry(static::$WIDGET_FEEDER), function($item, $key)use ($type, $app, $id, &$feederApp, &$result)
+      if (!isset(self::$registry[static::$WIDGET_FEEDER]))
+      {
+         return false;
+      }
+
+      array_walk(self::$registry[static::$WIDGET_FEEDER], function($item, $key)use ($type, $app, $id, &$feederApp, &$result)
       {
          if ($app == "*" || $app == $key)
          {
@@ -1290,9 +1295,9 @@ class WidgetsManagement extends \ew\Module
       if ($result)
          return $feederApp;
       // Check all thge apps for specified feeder
+      $all_feeders = self::$registry[static::$WIDGET_FEEDER];
       if ($app == "*")
       {
-         $all_feeders = EWCore::read_registry(static::$WIDGET_FEEDER);
          foreach ($all_feeders as $feeder => $p)
          {
             if (isset($p[$type][$id]))
@@ -1304,8 +1309,8 @@ class WidgetsManagement extends \ew\Module
          $app = 'admin';
 
 
-      $feeder = EWCore::read_registry(static::$WIDGET_FEEDER);
-      if ($feeder[$app][$type][$id])
+      //$feeder = EWCore::read_registry(static::$WIDGET_FEEDER);
+      if ($all_feeders[$app][$type][$id])
       {
          //$func = EWCore::read_registry("ew-widget-feeder");
          $func = $feeder[$app][$type][$id];
@@ -1326,59 +1331,57 @@ class WidgetsManagement extends \ew\Module
     */
    public static function get_widget_feeder($type, $app, $id, $arg)
    {
-      $func = null;
+      $feeder = null;
       if (!$app)
          $app = 'admin';
+      var_dump(static::$widgets_feeders);
 
-      if (EWCore::read_registry(static::$WIDGET_FEEDER)[$app] && EWCore::read_registry(static::$WIDGET_FEEDER)[$app][$type] && EWCore::read_registry(static::$WIDGET_FEEDER)[$app][$type][$id])
+      if (static::$widgets_feeders[$type] && static::$widgets_feeders[$type][$id])
       {
-         $func = EWCore::read_registry(static::$WIDGET_FEEDER)[$app][$type][$id];
+         $feeder = static::$widgets_feeders[$type][$id];
       }
 
-      if (is_string($func) && substr($func, -strlen(".php")) === ".php")
+      if (is_string($feeder) && substr($feeder, -strlen(".php")) === ".php")
       {
-         if (!file_exists($func))
+         if (!file_exists($feeder))
             return json_encode(array(
                 "html" => "$type/$id: File not found"));
          ob_start();
-         include $func;
+         include $feeder;
          $html = ob_get_clean();
          return json_encode(array(
              "html" => $html));
          //print_r($func);
       }
-      if (!is_callable($func))
+      if (!is_callable($feeder))
       {
-         echo "$type/$id: Function is not valid or callable";
+         echo "$app/$type/$id: Function is not valid or callable";
       }
       if (!$arg)
-         return call_user_func($func);
+         return call_user_func($feeder);
       else
-         return call_user_func_array($func, $arg);
+         return call_user_func_array($feeder, $arg);
    }
 
    /**
     * 
     * @param \ew\Module $module
-    * @param string $type
-    * @param string $id
-    * @param string $function_name
-    * @param string $resource_type
+    * @param \ew\WidgetFeeder $feeder
     */
-   public static function register_widget_feeder($module, $type, $id, $function_name, $resource_type = "api")
+   public static function register_widget_feeder($feeder/* $module, $type, $function_name, $resource_type = "api" */)
    {
       //parent::register_widget_feeder($type, $id, $function_name);
-      if (!isset(static::$widgets_feeders[$type]))
+      if (!isset(static::$widgets_feeders[$feeder->widget_type]))
       {
-         static::$widgets_feeders[$type] = [];
+         static::$widgets_feeders[$feeder->widget_type] = [];
       }
-      $id = $module->get_app()->get_root() . '.' . $module->get_name() . '.' . $function_name . '.' . $id;
-      $feeder = new \stdClass();
-      $feeder->package = $module->get_app()->get_root();
-      $feeder->$resource_type = $resource_type;
-      $feeder->module = EWCore::camelToHyphen($module->get_name());
-      $feeder->function = str_replace('_', '-', $function_name);
-      static::$widgets_feeders[$type][$id] = $feeder;
+      //$id = $feeder->module->get_app()->get_root() . '/' . $resource_type . '/' . EWCore::camelToHyphen($module->get_name() . '/' . $function_name);
+      //$feeder = new \stdClass();
+      /* $feeder->package = $module->get_app()->get_root();
+        $feeder->$resource_type = $resource_type;
+        $feeder->module = EWCore::camelToHyphen($module->get_name());
+        $feeder->function = str_replace('_', '-', $function_name); */
+      static::$widgets_feeders[$feeder->widget_type][$feeder->id] = $feeder;
       //print_r(static::$widgets_feeders);
    }
 

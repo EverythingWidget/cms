@@ -111,9 +111,9 @@ class ContentManagement extends \ew\Module
       ]);
 
       //$this->register_widget_feeder("page", "article");
-      \webroot\WidgetsManagement::register_widget_feeder($this, "page", "article", "get_content");
+      \webroot\WidgetsManagement::register_widget_feeder(new \ew\WidgetFeeder($this, "page", "get_content"));
 
-      //$this->register_widget_feeder("list", "folder");
+      \webroot\WidgetsManagement::register_widget_feeder(new \ew\WidgetFeeder($this, "list", "ew_list_feeder_folder"));
       //$this->register_widget_feeder("menu", "languages");
    }
 
