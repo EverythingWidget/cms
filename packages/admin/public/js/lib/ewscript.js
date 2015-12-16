@@ -716,7 +716,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
       if (!modalPane.isOpen)
       {
          if (settings.lockUI || settings.class === "full") {
-            self.lock(basePane, " ", 900);
+            self.lock(basePane, " ", 600);
          }
 
          if (!$.contains(document.body, modalPane)) {

@@ -1,6 +1,8 @@
 <?php
-
+ini_set( 'session.cookie_httponly', 1 );
 session_start();
+header_remove("X-Powered-By");
+
 // 05 November, 2013
 // Do NOT touch this file unless you are expert in Everything Widget CMS
 // All contents inside the apps directory is reached throuth this file
