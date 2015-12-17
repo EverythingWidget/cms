@@ -1324,43 +1324,44 @@ class WidgetsManagement extends \ew\Module
 
    /**
     * 
-    * @param String $type Name of widget feeder
     * @param String $id Id of feeder
-    * @param mixed $arg argument which should be passed to the feeder function
-    * @return mixed
+    * @return \ew\WidgetFeeder
     */
-   public static function get_widget_feeder($type, $app, $id, $arg)
+   public static function get_widget_feeder($id)
    {
-      $feeder = null;
-      if (!$app)
-         $app = 'admin';
-      var_dump(static::$widgets_feeders);
+      /* $feeder = null;
+        if (!$app)
+        $app = 'admin';
+        var_dump(static::$widgets_feeders);
 
-      if (static::$widgets_feeders[$type] && static::$widgets_feeders[$type][$id])
-      {
-         $feeder = static::$widgets_feeders[$type][$id];
-      }
+        if (static::$widgets_feeders[$id] )
+        {
+        $feeder = static::$widgets_feeders[$type][$id];
+        }
 
-      if (is_string($feeder) && substr($feeder, -strlen(".php")) === ".php")
-      {
-         if (!file_exists($feeder))
-            return json_encode(array(
-                "html" => "$type/$id: File not found"));
-         ob_start();
-         include $feeder;
-         $html = ob_get_clean();
-         return json_encode(array(
-             "html" => $html));
-         //print_r($func);
-      }
-      if (!is_callable($feeder))
-      {
-         echo "$app/$type/$id: Function is not valid or callable";
-      }
-      if (!$arg)
-         return call_user_func($feeder);
-      else
-         return call_user_func_array($feeder, $arg);
+        if (is_string($feeder) && substr($feeder, -strlen(".php")) === ".php")
+        {
+        if (!file_exists($feeder))
+        return json_encode(array(
+        "html" => "$type/$id: File not found"));
+        ob_start();
+        include $feeder;
+        $html = ob_get_clean();
+        return json_encode(array(
+        "html" => $html));
+        //print_r($func);
+        }
+        if (!is_callable($feeder))
+        {
+        echo "$app/$type/$id: Function is not valid or callable";
+        }
+        if (!$arg)
+        return call_user_func($feeder);
+        else
+        return call_user_func_array($feeder, $arg); */
+      //echo $id.'<br/>';
+      //return \EWCore::call($id, $arg);
+      return static::$widgets_feeders[$id];
    }
 
    /**
@@ -1371,17 +1372,17 @@ class WidgetsManagement extends \ew\Module
    public static function register_widget_feeder($feeder/* $module, $type, $function_name, $resource_type = "api" */)
    {
       //parent::register_widget_feeder($type, $id, $function_name);
-      if (!isset(static::$widgets_feeders[$feeder->widget_type]))
-      {
-         static::$widgets_feeders[$feeder->widget_type] = [];
-      }
+      /* if (!isset(static::$widgets_feeders[$feeder->widget_type]))
+        {
+        static::$widgets_feeders[$feeder->widget_type] = [];
+        } */
       //$id = $feeder->module->get_app()->get_root() . '/' . $resource_type . '/' . EWCore::camelToHyphen($module->get_name() . '/' . $function_name);
       //$feeder = new \stdClass();
       /* $feeder->package = $module->get_app()->get_root();
         $feeder->$resource_type = $resource_type;
         $feeder->module = EWCore::camelToHyphen($module->get_name());
         $feeder->function = str_replace('_', '-', $function_name); */
-      static::$widgets_feeders[$feeder->widget_type][$feeder->id] = $feeder;
+      static::$widgets_feeders[$feeder->id] = $feeder;
       //print_r(static::$widgets_feeders);
    }
 

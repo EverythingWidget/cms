@@ -111,9 +111,11 @@ class ContentManagement extends \ew\Module
       ]);
 
       //$this->register_widget_feeder("page", "article");
-      \webroot\WidgetsManagement::register_widget_feeder(new \ew\WidgetFeeder($this, "page", "get_content"));
+      \webroot\WidgetsManagement::register_widget_feeder(new \ew\WidgetFeeder($this, "page", "ew_page_feeder_article"));
 
       \webroot\WidgetsManagement::register_widget_feeder(new \ew\WidgetFeeder($this, "list", "ew_list_feeder_folder"));
+      
+      //\webroot\WidgetsManagement::register_widget_feeder(new \ew\WidgetFeeder($this, "text", "content_fields"));
       //$this->register_widget_feeder("menu", "languages");
    }
 
@@ -428,8 +430,7 @@ class ContentManagement extends \ew\Module
    {
       $articles = $this->get_content_with_label($id, "admin_ContentManagement_language", $language);
       $article = [];
-      //print_r($articles);
-      //echo count($articles['result']);
+
       if ($articles)
       {
          $article = $articles["result"][0];

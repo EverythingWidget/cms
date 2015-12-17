@@ -3,7 +3,7 @@
    <div class="col-xs-12" >            
       <div id="folders-list"  class="box">
          <h2 id='cate-title' class="box-title actions-bar action-bar-items">
-            <span>tr{Folders}</span>
+            <span></span>
             <button class='button' id='documents-up-btn' type='button' style='display:none;float:right;'>UP</button>
          </h2>
          <div class='row box-content'></div>
@@ -13,7 +13,7 @@
 <div class="row">
    <div class="col-xs-12" >
       <div class="box"  id="articles-list">
-         <h2>tr{Articles}</h2>
+         <h2></h2>
          <div class='row box-content'></div>
       </div>
    </div>
@@ -24,7 +24,7 @@
    var LinkChooserDocuments = (function () {
       function LinkChooserDocuments() {
          var _this = this;
-         this.contentType = "<?php echo $_REQUEST["contentType"] ?>";
+         this.contentType = "<?php echo $_REQUEST["contentType"] ?>" || null;
          this.parentId = 0;
          this.preParentId = -1;
          this.document = {};
@@ -62,41 +62,43 @@
          }
 
          this.bSelect.hide();
+         if (_this.contentType === "all" || _this.contentType === "list" || _this.contentType === "contentField") {
+            _this.folderListHeader.html("tr{Loading folders}");
+            _this.folderListContent.empty();
+            $.post('<?php echo EW_ROOT_URL; ?>~admin/api/content-management/get-categories-list', {parent_id: parentId}, function (data) {
+               _this.folderListHeader.html("tr{Folders}");
+               var cId = EW.getHashParameter("categoryId");
+               $.each(data.items, function (index, element) {
+                  var temp = _this.createFolder(element);
+                  if (element.id == cId)
+                  {
+                     temp.addClass("selected");
+                     _this.oldItem = temp;
+                  }
+                  _this.folderListContent.append(temp);
+               });
+            }, "json");
+         }
 
-         _this.folderListHeader.html("tr{Loading folders}");
-         _this.folderListContent.empty();
-         $.post('<?php echo EW_ROOT_URL; ?>~admin/api/content-management/get-categories-list', {parent_id: parentId}, function (data) {
-            _this.folderListHeader.html("tr{Folders}");
-            var cId = EW.getHashParameter("categoryId");
-            $.each(data.items, function (index, element) {
-               var temp = _this.createFolder(element);
-               if (element.id == cId)
-               {
-                  temp.addClass("selected");
-                  _this.oldItem = temp;
-               }
-               _this.folderListContent.append(temp);
-            });
-         }, "json");
+         if (_this.contentType === "all" || _this.contentType === "content" || _this.contentType === "contentField") {
+            _this.articlesListHeader.html("tr{Loading articles}");
+            _this.articlesListContent.empty();
+            $.post('<?php echo EW_ROOT_URL; ?>~admin/api/content-management/get-articles-list',
+                    {parent_id: parentId},
+                    function (data) {
+                       _this.articlesListHeader.html("tr{Articles}");
 
-         _this.articlesListHeader.html("tr{Loading articles}");
-         _this.articlesListContent.empty();
-         $.post('<?php echo EW_ROOT_URL; ?>~admin/api/content-management/get-articles-list',
-                 {parent_id: parentId},
-                 function (data) {
-                    _this.articlesListHeader.html("tr{Articles}");
-
-                    var aId = EW.getHashParameter("articleId");
-                    $.each(data.items, function (index, element) {
-                       var temp = _this.createFile(element);
-                       if (element.id == aId) {
-                          temp.addClass("selected");
-                          _this.oldItem = temp;
-                       }
-                       _this.articlesListContent.append(temp);
-                    });
-                 }, "json");
-
+                       var aId = EW.getHashParameter("articleId");
+                       $.each(data.items, function (index, element) {
+                          var temp = _this.createFile(element);
+                          if (element.id == aId) {
+                             temp.addClass("selected");
+                             _this.oldItem = temp;
+                          }
+                          _this.articlesListContent.append(temp);
+                       });
+                    }, "json");
+         }
       };
 
       LinkChooserDocuments.prototype.createFolder = function (model) {
@@ -122,7 +124,7 @@
             if (_this.contentType === "all" || _this.contentType === "article") {
                _this.bSelect.comeIn(300);
             }
-            _this.document = {feederId: "admin/api/content-management/get-content", id: model.id};
+            _this.document = {feederId: "admin/api/content-management/ew-page-feeder-article", id: model.id};
             _this.highlightContent(div);
          });
          div.dblclick(function () {
@@ -137,7 +139,7 @@
          var div = $("<div class='content-item article'><span></span><p>{fieldId}</p></div>").EW().createView(model);
          div.click(function () {
             _this.bSelect.comeIn(300);
-            _this.document = {feederId: "admin/api/content-management/get-content", id: model.contentId, fieldId: model.fieldId};
+            _this.document = {feederId: "admin/api/content-management/get-content-fields", id: model.contentId, fieldId: model.fieldId};
             //self.highlightContent(div, model);
             //EW.setHashParameters({categoryId: null, articleId: id});
          });
