@@ -2,7 +2,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <base href="<?php echo EW_ROOT_URL ?>">
 <link rel="shortcut icon" href="~admin/public/css/images/favicon.ico">  
-<link rel="stylesheet" href="~admin/public/css/font-awesome.min.css">
 <link rel="stylesheet" href="~rm/public/css/bootstrap.css" >  
 <link rel="stylesheet" href="~admin/public/css/simple-slider.css"  >  
 <link rel="stylesheet" href="~admin/public/css/base.css"  type="text/css">
