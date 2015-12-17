@@ -106,7 +106,7 @@
             if (_this.contentType === "all" || _this.contentType === "folder") {
                _this.bSelect.comeIn(300);
             }
-            self.document = {type: "folder", id: model.id};
+            self.document = {feederId: "admin/api/content-management/ew-list-feeder-folder", id: model.id};
             self.highlightContent(div);
          });
          div.dblclick(function () {
@@ -122,7 +122,7 @@
             if (_this.contentType === "all" || _this.contentType === "article") {
                _this.bSelect.comeIn(300);
             }
-            _this.document = {type: "article", id: model.id};
+            _this.document = {feederId: "admin/api/content-management/get-content", id: model.id};
             _this.highlightContent(div);
          });
          div.dblclick(function () {
@@ -137,7 +137,7 @@
          var div = $("<div class='content-item article'><span></span><p>{fieldId}</p></div>").EW().createView(model);
          div.click(function () {
             _this.bSelect.comeIn(300);
-            _this.document = {type: "contentField", id: model.contentId, fieldId: model.fieldId};
+            _this.document = {feederId: "admin/api/content-management/get-content", id: model.contentId, fieldId: model.fieldId};
             //self.highlightContent(div, model);
             //EW.setHashParameters({categoryId: null, articleId: id});
          });

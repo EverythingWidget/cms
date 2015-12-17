@@ -15,7 +15,7 @@
 if ($_REQUEST["callback"] == "function-reference")
 {
    ?>
-         var doc = {type: "link", "url": $("#url_link").val()};
+         var doc = {type: "admin/content-management/link", url: $("#url_link").val()};
          var func = $("#link-chooser #function-reference").data("callback")(JSON.stringify(doc));
    <?php
 }
@@ -24,9 +24,9 @@ else
    ?>
 
    }
-   $("#link-chooser").on("refresh.url", function (e, data)
-   {
-      if (data.type == "link")
+   $("#link-chooser").on("refresh.url", function (e, data) {
+      if (data.type === "link") {
          $("#link-chooser #url_link").val(data.url).change();
+      }
    });
 </script>

@@ -12,7 +12,7 @@
             pageSize: 30,
             buttons: {
                "Select": function (row) {
-                  self.uis = {type: "uis", id: row.data("field-id")};
+                  self.uis = {type: "webroot/widgets-management/uis", id: row.data("field-id")};
                   self.selectUIS();
                }
             }
