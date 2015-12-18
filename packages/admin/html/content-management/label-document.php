@@ -32,27 +32,28 @@
 
       $("#{{form_id}}").on("refresh", function (e, formData) {
 
-         // Init
-         if (!ContentForm.getLabel("{{comp_id}}"))
-         {
+         if (!ContentForm.getLabel("{{comp_id}}")) {
             ContentForm.activeLabel("{{comp_id}}", true);
             value.val('$content.id');
             text.val(formData["title"]).change();
          }
-         $.post("~admin/api/content-management/get-content-with-label", {
+
+         $.post("~admin/api/content-management/contents-with-label", {
             content_id: ContentForm.getLabel("{{comp_id}}"),
             key: "{{comp_id}}"
          }, function (data) {
             attached.empty();
-            if (data['result'])
-               $.each(data['result'], function (i, content) {
+
+            if (data['data']) {
+               $.each(data['data'], function (i, content) {
                   var langItem = $("<li class=''><a rel='ajax' href='#' class='link'>" + content.title + "</a></li>");
-                  if (content.id == "{{value}}") {
+
+                  if (content.id === "{{value}}") {
                      value.val(content.id);
                      text.val(content.title).change();
                   }
 
-                  if (content.id == formData.id) {
+                  if (content.id === formData.id) {
                      langItem.addClass("active");
                   } else {
                      langItem.find("a").on("click", function () {
@@ -63,8 +64,11 @@
                         }, "json");
                      });
                   }
+
                   attached.append(langItem);
                });
+            }
+
          }, "json");
       });
    }());

@@ -10,134 +10,146 @@
       /*activeHashHandler: function () {
        },*/
       UI: {},
-      MODULE_ABSTRACT:
-              {
-                 inited: false,
-                 moduleIdentifier: "app",
-                 navigation: {},
-                 params: {},
-                 modules: {},
-                 activeModule: null,
-                 init: function ()
-                 {
-                    this.inited = true;
-                    this.trigger("onInit");
-                 },
-                 start: function ()
-                 {
-                    this.trigger("onStart");
-                    this.hashChanged(this.navigation, this.params);
-                 },
-                 dispose: function ()
-                 {
+      MODULE_ABSTRACT: {
+         inited: false,
+         moduleIdentifier: "app",
+         navigation: {},
+         params: {},
+         modules: {},
+         activeModule: null,
+         init: function (navigations, params)
+         {
+            this.inited = true;
+            this.navigation = navigations;
+            this.params = params;
+            this.trigger("onInit");
+         },
+         start: function ()
+         {
+            this.trigger("onStart");
+            this.hashChanged(this.navigation, this.params);
+         },
+         dispose: function ()
+         {
 
-                 },
-                 /**
-                  * 
-                  * @param {String} id
-                  * @param {Object} object
-                  * @returns {sys.MODULE_ABSTRACT}
-                  */
-                 module: function (id, object)
-                 {
-                    if (!object && this.modules[id])
-                       return this.modules[id];
-                    this.modules[id] = $.extend(true, {}, System.MODULE_ABSTRACT, object || {});
-                    this.modules[id].id = id;
-                    //this.modules[id].init();
-                    return this.modules[id];
-                 },
-                 hash: {},
-                 data: {},
-                 /**
-                  * 
-                  * @param {String} id
-                  * @param {Function} handler
-                  * @returns {undefined}
-                  */
-                 on: function (id, handler)
-                 {
-                    this.hash[id] = handler;
-                    //System.main.newHandler = true;
-                    /*if (this.navigation[id])
-                     {
-                     var args = [];
-                     args.push(this.navigation[id]);
-                     for (var i = 0; i < this.navigation[id].length; ++i)
-                     {
-                     args.push(this.navigation[id][i]);
-                     }
-                     handler.apply(this, args);
-                     }*/
-                 },
-                 /**
-                  * Call the event function if exist and pass the args to it
-                  * 
-                  * @param {String} event
-                  * @param {Array} args
-                  * @returns {undefined}
-                  */
-                 trigger: function (event, args)
-                 {
-                    if (typeof (this[event]) === "function")
-                    {
-                       this[event].apply(this, args);
-                    }
-                 },
-                 hashChanged: function (navigation, params)
-                 {
-                    var self = this;
-                    var newNav = navigation;
-                    this.hashHandler.call(this, navigation, params);
-                    $.each(navigation, function (key, value)
-                    {
-                       var navHandler = self.hash[key];
-                       // Call same level events handlers                            
-                       if (navHandler)
-                       {
-                          var args = [];
-                          args.push(value);
-                          for (var i = 0; i < value.length; ++i)
-                          {
-                             //i is always valid index in the arguments object
-                             args.push(value[i]);
-                          }
-                          navHandler.apply(self, args);
-                       }
-                    });
-                    this.navigation = navigation;
-                    this.params = params;
-                    //alert(navigation[this.moduleIdentifier][0]+"----");
-                    
-                    if (this.moduleIdentifier && navigation[this.moduleIdentifier])
-                    {
-                       // Select activeModule according to moduleIdentifier
-                       this.activeModule = this.modules[navigation[this.moduleIdentifier][0]];
-                    } else
-                       this.activeModule = null;
-                    console.log(this.id, this.activeModule,this.modules);
-                    
-                    if (this.activeModule)
-                    {
-                       // Remove first part of navigation in order to force activeModule to only react to events at its level and higher 
-                       var modNav = navigation[this.moduleIdentifier].slice(1);
-                       newNav = $.extend(true, {}, navigation);
-                       newNav[this.moduleIdentifier] = modNav;
-                       if (!this.activeModule.inited)
-                       {
-                          //this.activeModule.init(newNav, this.params);
-                       }
+         },
+         /**
+          * 
+          * @param {String} id
+          * @param {Object} object
+          * @returns {sys.MODULE_ABSTRACT}
+          */
+         module: function (id, object)
+         {
+            if (!object && this.modules[id])
+               return this.modules[id];
+            if (typeof (object) === "function") {
+               this.modules[id] = $.extend(true, {}, System.MODULE_ABSTRACT);
+               object.call(this.modules[id]);
+            } else {
+               this.modules[id] = $.extend(true, {}, System.MODULE_ABSTRACT, object || {});
+            }
 
-                       // Call module level events handlers
-                       this.activeModule.hashChanged(newNav, this.params);
-                    }
-                 },
-                 hashHandler: function (nav, params)
-                 {
-                    /*if (this.activeModule && !e.isDefaultPrevented())
-                     this.activeModule.hashHandler(e, data);*/
-                 }
-              },
+            this.modules[id].id = id;
+
+            var modNav = System.main.navigation[this.modules[id].moduleIdentifier].slice(1);
+            var newNav = $.extend(true, {}, System.main.navigation);
+            newNav[this.modules[id].moduleIdentifier] = modNav;
+
+            this.modules[id].init(newNav, System.main.params);
+            return this.modules[id];
+         },
+         hash: {},
+         data: {},
+         /**
+          * 
+          * @param {String} id
+          * @param {Function} handler
+          * @returns {undefined}
+          */
+         on: function (id, handler)
+         {
+            this.hash[id] = handler;
+            //System.main.newHandler = true;
+            /*if (this.navigation[id])
+             {
+             var args = [];
+             args.push(this.navigation[id]);
+             for (var i = 0; i < this.navigation[id].length; ++i)
+             {
+             args.push(this.navigation[id][i]);
+             }
+             handler.apply(this, args);
+             }*/
+         },
+         /**
+          * Call the event function if exist and pass the args to it
+          * 
+          * @param {String} event
+          * @param {Array} args
+          * @returns {undefined}
+          */
+         trigger: function (event, args)
+         {
+            if (typeof (this[event]) === "function")
+            {
+               this[event].apply(this, args);
+            }
+         },
+         hashChanged: function (navigation, params)
+         {
+            var self = this;
+            var newNav = navigation;
+            this.hashHandler.call(this, navigation, params);
+            $.each(navigation, function (key, value)
+            {
+               var navHandler = self.hash[key];
+               // Call same level events handlers                            
+               if (navHandler)
+               {
+                  var args = [];
+                  args.push(value);
+                  for (var i = 0; i < value.length; ++i)
+                  {
+                     //i is always valid index in the arguments object
+                     args.push(value[i]);
+                  }
+                  navHandler.apply(self, args);
+               }
+            });
+            this.navigation = navigation;
+            this.params = params;
+            //alert(navigation[this.moduleIdentifier][0]+"----");
+
+            if (this.moduleIdentifier && navigation[this.moduleIdentifier])
+            {
+               // Select activeModule according to moduleIdentifier
+               this.activeModule = this.modules[navigation[this.moduleIdentifier][0]];
+            } else
+               this.activeModule = null;
+            console.log(this.id, this.activeModule, this.modules);
+
+            if (this.activeModule)
+            {
+               // Remove first part of navigation in order to force activeModule to only react to events at its level and higher 
+               var modNav = navigation[this.moduleIdentifier].slice(1);
+               newNav = $.extend(true, {}, navigation);
+               newNav[this.moduleIdentifier] = modNav;
+               if (!this.activeModule.inited)
+               {
+                  //this.activeModule.init(newNav, this.params);
+               }
+
+               // Call module level events handlers
+               this.activeModule.hashChanged(newNav, this.params);
+            }
+         },
+         hashHandler: function (nav, params)
+         {
+            /*if (this.activeModule && !e.isDefaultPrevented())
+             this.activeModule.hashHandler(e, data);*/
+         }
+      },
       // Apps Management
       registerApp: function (id, object)
       {
@@ -183,7 +195,7 @@
                   //alert("app current nav hash: "+self.navHashes[id]);
                   var html = $(response);
                   var scripts = html.filter("script").detach();
-                  
+
                   $("body").append(scripts);
                   //var html = res;
                   //System.apps[id] = $.extend({}, System.module, self.apps[id]);
@@ -199,12 +211,12 @@
                   if (!this.activeModule.inited)
                   {
                      //this.activeModule.inited = true;
-                     this.activeModule.navigation = newNav;
-                     this.activeModule.params = self.main.params;
+                     //this.activeModule.navigation = newNav;
+                     //this.activeModule.params = self.main.params;
                      this.activeModule.init.call(module, newNav, self.main.params);
                      //this.activeModule.hashChanged(newNav, self.main.params);
                   }
-                  this.activeModule.trigger("onActive");
+                  //this.activeModule.trigger("onActive");
                   //
                   self.currentOnLoad = null;
                   self.onLoadQueue.shift();
@@ -259,42 +271,6 @@
       },
       navHashes: {},
       hashChecker: null,
-      /*hashChanged: function ()
-       {
-       var self = this;
-       console.log([this.navigation, this.params]);
-       var e = $.Event("hashchange");
-       $.each(this.navigation, function (key, value)
-       {
-       
-       var navHandler = null;
-       if (navHandler = self.navs[key])
-       {
-       var args = [];
-       args.push(value);
-       for (var i = 0; i < value.length; ++i)
-       {
-       //i is always valid index in the arguments object
-       args.push(value[i]);
-       }
-       
-       //value.unshift(value);
-       navHandler.apply(null, args);
-       }
-       });
-       
-       if (this.navigation[this.moduleIdentifier])
-       this.activeModule = this.modules[this.navigation[this.moduleIdentifier][0]];
-       if (this.activeModule)
-       {
-       this.activeModule.navigation = this.navigation;
-       this.activeModule.params = this.params;
-       this.activeModule.hashChanged();
-       }
-       
-       this.hashHandler.call(e, this.navigation, this.params);
-       },
-       navs: {},*/
       /**
        * 
        * @param {String} id
@@ -321,20 +297,7 @@
                self.main.newHandler = false;
                var hashValue = window.location.hash;
                hashValue = hashValue.replace(/^#\/?/igm, '');
-               /*if (self.main.activeModule)
-                {
-                self.navHashes[self.main.activeModule.id] = hashValue;
-                
-                }*/
-
-               /*self.main.navigation = {};
-                self.main.params = {};
-                hashValue.replace(/([^&]*)=([^&]*)/g, function (m, k, v)
-                {
-                self.main.navigation[k] = v.split("/").filter(Boolean);
-                self.main.params[k] = v;
-                });*/
-
+               
                var navigation = {};
                var params = {};
                hashValue.replace(/([^&]*)=([^&]*)/g, function (m, k, v)
@@ -415,14 +378,7 @@
             }
          });
          newHash = newHash.replace(/\&$/, '');
-         // set newHash for corresponding hash name if it has been passed
-         // if (app)
-         //{
-         //this.navHashes[app] = newHash.replace(/\&$/, '');
-         //alert(customHashes[hashName].hash);
-         //}
-         // set url hash if no hash name specified
-         //else
+         
          if (app)
          {
             this.navHashes[app] = newHash;

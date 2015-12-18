@@ -31,34 +31,31 @@ function script()
    ob_start();
    ?>
    <script>
-      (function ()
-      {
-         var WidgetsManagement = System.module("widgets-management");
+      (function (System) {
 
-         WidgetsManagement.onInit = function ()
-         {
+         System.module("widgets-management", function () {
 
-         };
+            this.type = "app";
+            this.onInit = function () {
+            };
 
-         WidgetsManagement.onStart = function ()
-         {
-            this.data.tab = null;           
-         };
-         
-         WidgetsManagement.onActive = function ()
-         {
-         };
+            this.onStart = function () {
+               this.data.tab = null;
+            };
 
-         WidgetsManagement.on("app", function (p, section)
-         {
-            if (!section || section === this.data.tab)
-               return;
-            this.data.tab = section;
-            EW.appNav.setCurrentTab($("a[data-ew-nav='" + section + "']"));
+            this.onActive = function () {
+            };
+
+            this.on("app", function (p, section) {
+               if (!section || section === this.data.tab)
+                  return;
+               this.data.tab = section;
+               EW.appNav.setCurrentTab($("a[data-ew-nav='" + section + "']"));
+            });
+
+            return this;
          });
-
-
-      }());
+      })(System);
    </script>
    <?php
    return ob_get_clean();

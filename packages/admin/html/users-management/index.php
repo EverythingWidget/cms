@@ -22,29 +22,27 @@ function script()
    ob_start();
    ?>
    <script >
-      (function () {
-         var UserManagement = System.module("users-management");
+      (function (System) {
 
-         UserManagement.onInit = function ()
-         {
-            //System.setHashParameters({app:"UsersManagement",test: "dsfsdfsfd"})
-         }
+         System.module("users-management", function () {
+            this.type = "app";
+            this.onInit = function () {
+            };
 
-         UserManagement.onStart = function ()
-         {
-            this.data.tab = null;
+            this.onStart = function () {
+               this.data.tab = null;
+            };
 
-         }
+            this.on("app", function (p, section) {
+               if (!section || section === this.data.tab)
+                  return;
+               this.data.tab = section;
+               EW.appNav.setCurrentTab($("a[data-ew-nav='" + section + "']"));
+            });
 
-         UserManagement.on("app", function (p, section)
-         {
-            if (!section || section === this.data.tab)
-               return;
-            this.data.tab = section;
-            EW.appNav.setCurrentTab($("a[data-ew-nav='" + section + "']"));
+            return this;
          });
-
-      }());
+      }(System));
    </script>
    <?php
    return ob_get_clean();

@@ -1264,16 +1264,7 @@ session_start();
    UISForm.prototype.editWidget = function (wId)
    {
       var self = this;
-      var d = EW.createModal({class: "center",
-         //lockUI: false,
-         /*onClose: function ()
-          {
-          $('#fr').contents().find('body').stop().animate({
-          transform: '',
-          //left: (wi/2) +301
-          }, 500, "Power3.easeOut");
-          EW.setHashParameter("screen", null, "neuis");
-          }*/});
+      var d = EW.createModal({class: "center"});
       self.currentDialog = d;
 
       var w = self.getEditorItem(wId);
@@ -1281,16 +1272,6 @@ session_start();
       //EW.setHashParameter("screen", null, "neuis");
       var wi = $("#editor-window").width() * .2;
 
-      /*$('#fr').stop().animate({
-       transform: 'scale(.8)',
-       //left: (wi/2) +301
-       }, 500, "Power3.easeOut");
-       $("#editor-window").stop().animate({
-       width: $("#editor-window").width() - wi,
-       left: wi + 301
-       }, 500, "Power3.easeOut");*/
-      //this.relocateGlassPanes();
-      //EW.lock(d);
       $.post("<?php echo EW_ROOT_URL; ?>~webroot/html/widgets-management/uis-prewidget-form.php", {
          template: self.uisTemplate,
          widgetId: wId,
@@ -1304,8 +1285,7 @@ session_start();
       return false;
    };
 
-   UISForm.prototype.removeWidget = function (wId)
-   {
+   UISForm.prototype.removeWidget = function (wId) {
       var self = this;
       if (confirm("Do you really want to remove this Widget?"))
       {
@@ -1315,8 +1295,7 @@ session_start();
       return false;
    };
 
-   UISForm.prototype.removePanel = function (wId)
-   {
+   UISForm.prototype.removePanel = function (wId) {
       if (confirm("Do you really want to remove this Panel?"))
       {
          $("#fr").contents().find("body #base-content-pane div[data-panel-id='" + wId + "']").remove();
@@ -1325,25 +1304,12 @@ session_start();
       return false;
    };
 
-   function setView()
-   {
-      //obj('<?php // echo $styleId ? $styleId : 'testDiv'                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ?>').style.cssText = obj('style').value;
+   function setView() {
       //obj('fr').contentDocument.body.innerHTML = '<link href="../templates/SpapcoDefault/template.css" rel="stylesheet" type="text/css">';
       $('#fr').contentDocument.getElementById('dynamicStyle').innerHTML = $('#style').value;
       $('#fr').contentDocument.getElementById('<?php echo $name ?>').className = 'Panel <?php echo $class ?> ' + $('#class').value;
       $('#classValue').innerHTML = 'Panel <?php echo $class ?> ' + $('#class').value;
-
    }
-
-   /*UISForm.prototype.setMode = function (mode)
-    {
-    switch (mode)
-    {
-    case "edit":
-    this.resizeEditorFrame(this.simulatorWidth, )
-    break;
-    }
-    };*/
 
    UISForm.prototype.resizeEditorFrame = function (simWidth, width)
    {

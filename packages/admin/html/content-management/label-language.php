@@ -21,47 +21,48 @@
 <script>
    var languages = {en: "English", es: "Spanish", de: "German", ru: "Russian", cmn: "Mandarin", ar: "Arabic", fa: "فارسی", nl: 'Dutch'};
    $("#{{comp_id}}_value").val("<?php echo $value ?>");
-   $("#{{comp_id}}_select").on("change", function ()
-   {
+   $("#{{comp_id}}_select").on("change", function () {
       $("#{{comp_id}}_value").val($("#{{comp_id}}_select").val());
    });
-   $("#{{form_id}}").on("refresh", function (e, formData)
-   {
+
+   $("#{{form_id}}").on("refresh", function (e, formData) {
       var documentId = formData.id;
-      if (ContentForm.getLabel("admin_ContentManagement_document") != documentId)
-      {
+      if (ContentForm.getLabel("admin_ContentManagement_document") !== documentId) {
          documentId = ContentForm.getLabel("admin_ContentManagement_document");
       }
-      //init
-      if (!ContentForm.getLabel("{{comp_id}}"))
-      {
+
+      // Init
+      if (!ContentForm.getLabel("{{comp_id}}")) {
          // Active language label as default for the new article
          ContentForm.activeLabel("{{comp_id}}", true);
          $("#{{comp_id}}_select").change();
       }
-      $.post("~admin/api/content-management/get-content-with-label", {content_id: documentId, key: "{{comp_id}}"}, function (data) {
+
+      $.post("~admin/api/content-management/contents-with-label", {
+         content_id: documentId,
+         key: "{{comp_id}}"
+      }, function (data) {
          $("#{{comp_id}}_languages").empty();
-         if (data['result'])
-            $.each(data['result'], function (i, content)
-            {
+
+         if (data['data']) {
+            $.each(data['data'], function (i, content) {
                //$("#{{comp_id}}_select option[value='" + content.value + "']").remove();
                var langItem = $("<li><a rel='ajax' href='#' class='link'>" + languages[content.value] + "<p>" + content["title"] + "</p></a></li>");
-               if (content.id == formData.id)
-               {
+
+               if (content.id == formData.id) {
                   langItem.addClass("active");
                   $("#{{comp_id}}_value").val(content.value);
-               }
-               else
-                  langItem.find("a").on("click", function ()
-                  {
-                     $.post("~admin/api/content-management/get-article", {articleId: content.id}, function (data)
-                     {
+               } else {
+                  langItem.find("a").on("click", function () {
+                     $.post("~admin/api/content-management/get-article", {articleId: content.id}, function (data) {
                         ContentForm.setData(data);
-                        //EW.setHashParameter("articleId", lang.id)
                      }, "json");
                   });
+               }
+               
                $("#{{comp_id}}_languages").append(langItem);
             });
+         }
       }, "json");
    });
 

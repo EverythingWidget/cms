@@ -39,8 +39,7 @@
    // ContentForm predefined functions
    var ContentForm = {
       formId: "#<?= $form_id ?>",
-      initLabels: function (labels)
-      {
+      initLabels: function (labels) {
          $(".content-label .label-control-button:checked").click();
          $(".content-label .label-control-button").prop("checked", false);
          if (labels)
@@ -55,16 +54,15 @@
        * @param {string} label Name of the label
        * @param {boolean} flag If true then active the label only for the new content. Default is false
        */
-      activeLabel: function (label, flag)
-      {
-         if (!flag)
-         {
+      activeLabel: function (label, flag) {
+
+         if (!flag) {
             $("#" + label + "_control_button:not(:checked)").click();
             $("#" + label + "_control_button").prop("checked", true);
             return;
          }
-         if (!this.getFormData().id)
-         {
+
+         if (!this.getFormData().id) {
             $("#" + label + "_control_button:not(:checked)").click();
             $("#" + label + "_control_button").prop("checked", true);
          }
@@ -74,20 +72,17 @@
        * 
        * @returns {json} return a json object contained of content labels in the {key:value} format
        */
-      getLabels: function ()
-      {
+      getLabels: function () {
          var labels = {};
-         $.each($(this.formId + " #content-labels .content-label"), function (i, el)
-         {
+         $.each(this.formUI.find("#content-labels .content-label"), function (i, el) {
             el = $(el);
-            if (el.attr("data-activated") === "false")
-            {
+            if (el.attr("data-activated") === "false") {
                labels[el.find("input[name='key']").val()] = null;
-            } else if (!el.find("input[name='key']").is(":disabled") && !el.find("[name='value']").is(":disabled"))
-            {
+            } else if (!el.find("input[name='key']").is(":disabled") && !el.find("[name='value']").is(":disabled")) {
                labels[el.find("input[name='key']").val()] = el.find("[name='value']").val();
             }
          });
+
          return JSON.stringify(labels);
       },
       /**
@@ -95,25 +90,21 @@
        * 
        * @returns {json} return a json object contained of content labels in the {key:value} format
        */
-      getLabel: function (key)
-      {
+      getLabel: function (key) {
          var value = null;
-         $.each($(this.formId + " #content-labels .content-label[data-activated='true']"), function (i, el)
-         {
+         $.each(this.formUI.find("#content-labels .content-label[data-activated='true']"), function (i, el) {
             el = $(el);
-            if (el.find("input[name='key']:not(:disabled)").val() == key)
-            {
+            if (el.find("input[name='key']:not(:disabled)").val() == key) {
                value = el.find("[name='value']").val();
                return;
             }
          });
+
          return value;
       },
-      setLabels: function (labels)
-      {
-         $(this.formId + " #content-labels .content-label input[name='value']").val("");
-         $.each(labels, function (i, el)
-         {
+      setLabels: function (labels) {
+         this.formUI.find("#content-labels .content-label input[name='value']").val("");
+         $.each(labels, function (i, el) {
             $("#" + el.key + "_value").val(el.value);
          });
       },
@@ -122,8 +113,7 @@
        * 
        * @returns {json} return a json object of form data
        */
-      getFormData: function ()
-      {
+      getFormData: function () {
          var formData = $.parseJSON($(this.formId).serializeJSON());
          delete formData.key;
          delete formData.value;
@@ -133,10 +123,8 @@
 
          return formData;
       },
-      setData: function (data)
-      {
-         if (data && data.labels)
-         {
+      setData: function (data) {
+         if (data && data.labels) {
             ContentForm.initLabels(data.labels);
             ContentForm.setLabels(data.labels);
          }
@@ -145,6 +133,7 @@
          $("#content").change();
       }
    };
+   ContentForm.formUI = $(ContentForm.formId);
 
 
 </script>

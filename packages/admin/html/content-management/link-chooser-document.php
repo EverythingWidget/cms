@@ -19,7 +19,6 @@
    </div>
 </div>
 
-
 <script  type="text/javascript">
    var LinkChooserDocuments = (function () {
       function LinkChooserDocuments() {
@@ -51,10 +50,9 @@
 
       LinkChooserDocuments.prototype.listFilesAndFolders = function (parentId) {
          var _this = this;
-         var pId = 0;
          _this.preParentId = _this.parentId;
-         _this.parentId = parentId
-         var hasNode = false;
+         _this.parentId = parentId;
+
          if (parentId == 0) {
             this.bUp.comeOut(200);
          } else {
@@ -65,16 +63,19 @@
          if (_this.contentType === "all" || _this.contentType === "list" || _this.contentType === "contentField") {
             _this.folderListHeader.html("tr{Loading folders}");
             _this.folderListContent.empty();
-            $.post('<?php echo EW_ROOT_URL; ?>~admin/api/content-management/get-categories-list', {parent_id: parentId}, function (data) {
+            $.post('<?php echo EW_ROOT_URL; ?>~admin/api/content-management/get-categories-list', {
+               parent_id: parentId
+            }, function (data) {
                _this.folderListHeader.html("tr{Folders}");
                var cId = EW.getHashParameter("categoryId");
-               $.each(data.items, function (index, element) {
+               $.each(data.data, function (index, element) {
                   var temp = _this.createFolder(element);
-                  if (element.id == cId)
-                  {
+
+                  if (element.id == cId) {
                      temp.addClass("selected");
                      _this.oldItem = temp;
                   }
+
                   _this.folderListContent.append(temp);
                });
             }, "json");
@@ -83,21 +84,23 @@
          if (_this.contentType === "all" || _this.contentType === "content" || _this.contentType === "contentField") {
             _this.articlesListHeader.html("tr{Loading articles}");
             _this.articlesListContent.empty();
-            $.post('<?php echo EW_ROOT_URL; ?>~admin/api/content-management/get-articles-list',
-                    {parent_id: parentId},
-                    function (data) {
-                       _this.articlesListHeader.html("tr{Articles}");
+            $.post('<?php echo EW_ROOT_URL; ?>~admin/api/content-management/get-articles-list', {
+               parent_id: parentId
+            }, function (data) {
+               _this.articlesListHeader.html("tr{Articles}");
 
-                       var aId = EW.getHashParameter("articleId");
-                       $.each(data.items, function (index, element) {
-                          var temp = _this.createFile(element);
-                          if (element.id == aId) {
-                             temp.addClass("selected");
-                             _this.oldItem = temp;
-                          }
-                          _this.articlesListContent.append(temp);
-                       });
-                    }, "json");
+               var aId = EW.getHashParameter("articleId");
+               $.each(data.data, function (index, element) {
+                  var temp = _this.createFile(element);
+
+                  if (element.id == aId) {
+                     temp.addClass("selected");
+                     _this.oldItem = temp;
+                  }
+
+                  _this.articlesListContent.append(temp);
+               });
+            }, "json");
          }
       };
 
@@ -105,15 +108,23 @@
          var self = this;
          var div = $("<div class='content-item folder' data-category-id='{id}'><span></span><p>{title}</p><p class='date'>{round_date_created}</p></div>").EW().createView(model);
          div.click(function () {
+
             if (_this.contentType === "all" || _this.contentType === "folder") {
                _this.bSelect.comeIn(300);
             }
-            self.document = {feederId: "admin/api/content-management/ew-list-feeder-folder", id: model.id};
+
+            self.document = {
+               feederId: "admin/api/content-management/ew-list-feeder-folder",
+               id: model.id
+            };
+
             self.highlightContent(div);
          });
+
          div.dblclick(function () {
             self.listFilesAndFolders(model.id);
          });
+
          return div;
       };
 
@@ -121,42 +132,53 @@
          var _this = this;
          var div = $("<div class='content-item article' data-article-id='{id}'><span></span><p>{title}</p><p class='date'>{round_date_created}</p></div>").EW().createView(model);
          div.click(function () {
+
             if (_this.contentType === "all" || _this.contentType === "article") {
                _this.bSelect.comeIn(300);
             }
-            _this.document = {feederId: "admin/api/content-management/ew-page-feeder-article", id: model.id};
+
+            _this.document = {
+               feederId: "admin/api/content-management/ew-page-feeder-article",
+               id: model.id
+            };
+
             _this.highlightContent(div);
          });
+
          div.dblclick(function () {
             _this.selectContent("article", model);
          });
+
          return div;
       };
 
-      LinkChooserDocuments.prototype.createField = function (model)
-      {
+      LinkChooserDocuments.prototype.createField = function (model) {
          var _this = this;
          var div = $("<div class='content-item article'><span></span><p>{fieldId}</p></div>").EW().createView(model);
          div.click(function () {
             _this.bSelect.comeIn(300);
-            _this.document = {feederId: "admin/api/content-management/get-content-fields", id: model.contentId, fieldId: model.fieldId};
-            //self.highlightContent(div, model);
-            //EW.setHashParameters({categoryId: null, articleId: id});
+            _this.document = {
+               feederId: "admin/api/content-management/get-content-fields",
+               id: model.contentId,
+               fieldId: model.fieldId
+            };
          });
+
          div.dblclick(function () {
             _this.selectContent("field");
          });
+
          return div;
       };
 
       LinkChooserDocuments.prototype.highlightContent = function (element)
       {
-         if (this.oldElement)
+         if (this.oldElement) {
             this.oldElement.removeClass("selected");
+         }
+
          element.addClass("selected");
          this.oldElement = element;
-
-
       };
 
       LinkChooserDocuments.prototype.showContentFields = function (content) {
@@ -164,12 +186,16 @@
 
          _this.folderListHeader.html(content.title);
          _this.folderListContent.empty();
-
          _this.articlesListContent.empty();
          _this.articlesListHeader.html("Content Fields");
+
          if (content) {
             $.each(JSON.parse(content.content_fields) || {}, function (key, element) {
-               var temp = _this.createField({contentId: content.id, fieldId: key});
+               var temp = _this.createField({
+                  contentId: content.id,
+                  fieldId: key
+               });
+
                _this.articlesListContent.append(temp);
             });
          }

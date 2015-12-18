@@ -56,9 +56,7 @@ class ContentManagement extends \ew\Module
           'api/index',
           "api/contents",
           "api/content_fields",
-          "api/get_content",
-          "api/get_contents",
-          "api/get_content_with_label",
+          "api/contents_with_label",
           "api/get_category",
           "api/get_article",
           "api/get_album",
@@ -114,7 +112,7 @@ class ContentManagement extends \ew\Module
       \webroot\WidgetsManagement::register_widget_feeder(new \ew\WidgetFeeder($this, "page", "ew_page_feeder_article"));
 
       \webroot\WidgetsManagement::register_widget_feeder(new \ew\WidgetFeeder($this, "list", "ew_list_feeder_folder"));
-      
+
       //\webroot\WidgetsManagement::register_widget_feeder(new \ew\WidgetFeeder($this, "text", "content_fields"));
       //$this->register_widget_feeder("menu", "languages");
    }
@@ -269,7 +267,7 @@ class ContentManagement extends \ew\Module
       return $labels;
    }
 
-   public static function get_content_with_label($content_id, $key, $value = '%')
+   public static function contents_with_label($content_id, $key, $value = '%')
    {
       if (preg_match('/\$content\.(\w*)/', $content_id))
          return [];
@@ -298,9 +296,13 @@ class ContentManagement extends \ew\Module
                       })
                       ->where('key', 'LIKE', $key)
                       ->where('value', 'LIKE', $value)->orderBy('value');
-      return ["totalRows" => $rows->count(),
-          "result" => $rows->get(['*',
-              \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")])];
+      /* return ["totalRows" => $rows->count(),
+        "result" => $rows->get(['*',
+        \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")])]; */
+      return \ew\APIResourceHandler::to_api_response($rows->get([
+                          '*',
+                          \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")
+                      ]), ["totalRows" => $rows->count()]);
    }
 
    /**
@@ -428,7 +430,7 @@ class ContentManagement extends \ew\Module
 
    public function ew_page_feeder_article($id, $language)
    {
-      $articles = $this->get_content_with_label($id, "admin_ContentManagement_language", $language);
+      $articles = $this->contents_with_label($id, "admin_ContentManagement_language", $language);
       $article = [];
 
       if ($articles)
@@ -536,10 +538,11 @@ class ContentManagement extends \ew\Module
          $i["parent_id"] = $container_id;
          $rows[] = $i;
       }
-      $out = array(
-          "totalRows" => $folders->count(),
-          "items" => $rows);
-      return json_encode($out);
+      /* $out = array(
+        "totalRows" => $folders->count(),
+        "items" => $rows);
+        return json_encode($out); */
+      return \ew\APIResourceHandler::to_api_response($rows, ["totalRows" => $folders->count()]);
    }
 
    public function get_articles_list($parent_id = null, $token, $size)
@@ -574,8 +577,9 @@ class ContentManagement extends \ew\Module
             $i["pre_parent_id"] = $container_id;
             $rows[] = $i;
          }
-         return ["totalRows" => $articles->count(),
-             "items" => $rows];
+         /* return ["totalRows" => $articles->count(),
+           "items" => $rows]; */
+         return \ew\APIResourceHandler::to_api_response($rows, ["totalRows" => $articles->count()]);
       }
 
       return \EWCore::log_error(400, 'tr{Something went wrong}');
@@ -585,7 +589,7 @@ class ContentManagement extends \ew\Module
    {
       if (isset($_parts__id))
       {
-         return $this->get_content($_parts__id);
+         return $this->get_content_by_id($_parts__id);
       }
       else
       {
@@ -595,12 +599,12 @@ class ContentManagement extends \ew\Module
 
    public function content_fields($_parts__id, $id)
    {
-      $content = $this->get_content($_parts__id);
+      $content = $this->get_content_by_id($_parts__id);
 
       return $content["content_fields"];
    }
 
-   public function get_content($id)
+   private function get_content_by_id($id)
    {
       if (!isset($id))
          return \EWCore::log_error(400, 'tr{Content Id is requird}');
@@ -611,12 +615,12 @@ class ContentManagement extends \ew\Module
       {
          $labels = $this->get_content_labels($id);
          $content->labels = $labels;
-         return $content->toArray();
+         return \ew\APIResourceHandler::to_api_response($content->toArray());
       }
       return EWCore::log_error(404, "content not found");
    }
 
-   public function get_contents($title_filter = '%', $type = '%', $token = 0, $size = 99999999999999)
+   private function get_contents($title_filter = '%', $type = '%', $token = 0, $size = 99999999999999)
    {
       $db = \EWCore::get_db_connection();
       //$parentId = $db->real_escape_string($this->get_param("parentId"));
@@ -634,9 +638,11 @@ class ContentManagement extends \ew\Module
                       ->where(\Illuminate\Database\Capsule\Manager::raw("`title` COLLATE UTF8_GENERAL_CI"), 'LIKE', $title_filter . '%')
                       ->orderBy('title')->take($size)->skip($token)->get($id, ['*',
           \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
-      //print_r($contents);
-      return ["totalRows" => $contents->count(),
-          "items" => $contents->toArray()];
+
+      /* return ["totalRows" => $contents->count(),
+        "items" => $contents->toArray()]; */
+
+      return \ew\APIResourceHandler::to_api_response($contents->toArray(), ["totalRows" => $contents->count()]);
    }
 
    public function add_category($title, $parent_id, $keywords, $description, $labels)

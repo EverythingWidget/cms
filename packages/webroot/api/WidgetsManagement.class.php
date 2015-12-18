@@ -735,8 +735,6 @@ class WidgetsManagement extends \ew\Module
 
    public function create_widget($widget_type, $style_class, $widget_style_class, $style_id, $widget_parameters)
    {
-      //echo (stripcslashes($widget_parameters));
-      //$widget_parameters = html_entity_decode($widget_parameters);
       $timestamp = time();
       if ($_SESSION["_ew_gw_ts"] == $timestamp)
       {
@@ -757,7 +755,7 @@ class WidgetsManagement extends \ew\Module
         } */
       $widget_script = self::get_html_scripts($widget_id);
       return ["widget_html" => $widget_html,
-          "widget_data" => ($widget_parameters),
+          "widget_data" => $widget_parameters,
           "widget_id" => $widget_id,
           "widget_script" => $widget_script,
           "widget_style" => ""];

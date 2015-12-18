@@ -28,28 +28,29 @@ function script()
    ob_start();
    ?>
    <script  >
-      (function ()
-      {
-         var Settings = System.module("settings");
+      (function (System) {
 
-         Settings.onInit = function (nav)
-         {
-         };
 
-         Settings.onStart = function ()
-         {
+         System.module("settings", function () {
+            this.type = "app";
+            this.onInit = function (nav) {
+            };
 
-         };
+            this.onStart = function () {
+            };
 
-         Settings.on("app", function (p, section)
-         {
-            if (!section /*|| section === this.data.tab*/)
-               return;
-            this.data.tab = section;
+            this.on("app", function (p, section) {
+               if (!section || section === this.data.tab) {
+                  return;
+               }
+               this.data.tab = section;
 
-            EW.appNav.setCurrentTab($("a[data-ew-nav='" + section + "']"));
+               EW.appNav.setCurrentTab($("a[data-ew-nav='" + section + "']"));
+            });
+
+            return this;
          });
-      }());
+      }(System));
    </script>
    <?php
    return ob_get_clean();

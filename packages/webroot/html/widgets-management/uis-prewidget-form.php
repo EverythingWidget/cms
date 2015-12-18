@@ -2,7 +2,6 @@
 session_start();
 
 //include($_SESSION['ROOT_DIR'] . '/config.php');
-
 //include_once 'WidgetsManagementCore.php';
 
 $uiStructureId = $_REQUEST['uisId'];
@@ -98,8 +97,7 @@ $panelId = $_REQUEST['panelId'];
 
          var widget = uisForm.getEditorItem(this.widgetId);
          this.showWidgetControlPanel(widget.attr("data-widget-type"));
-      }
-      else if (!this.feederType)
+      } else if (!this.feederType)
       {
          this.showWidgetControlPanel(this.widgetType);
       }
@@ -114,7 +112,7 @@ $panelId = $_REQUEST['panelId'];
    {
       var self = this;
       $.EW("lock", $.EW("getParentDialog", $("#uis-widget-form")));
-      var wp = $("#uis-widget").serializeJSON();
+      var wp = JSON$("#uis-widget").serializeJSON();
       if (self.getWidgetData)
          wp = JSON.stringify($.extend($.parseJSON(wp), self.getWidgetData.apply(null, null)));
       //var param = $("#parameters").val();
@@ -124,26 +122,25 @@ $panelId = $_REQUEST['panelId'];
 
       $.post('<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/create-widget', {widget_type: uisWidget.widgetType, style_class: styleClass,
          widget_style_class: widgetStyleClass, style_id: styleId, widget_parameters: wp},
-      function (data) {
-         EW.lock($.EW("getParentDialog", $("#uis-widget-form")));
+              function (data) {
+                 EW.lock($.EW("getParentDialog", $("#uis-widget-form")));
 
-         // Add widget data to the widget-data script tag
-         if (data["widget_data"])
-            uisForm.setWidgetData(data["widget_id"], data["widget_data"]);
+                 // Add widget data to the widget-data script tag
+                 if (data["widget_data"])
+                    uisForm.setWidgetData(data["widget_id"], data["widget_data"]);
 
-         var containerElement = $("#fr").contents().find("body #base-content-pane div[data-panel-id='<?php echo $panelId ?>']");
-         if (containerElement.hasClass("block"))
-         {
-            uisForm.addWidget(data["widget_html"], containerElement[0]);
-         }
-         else
-         {
-            uisForm.addWidget(data["widget_html"], containerElement.children(".row")[0]);
-         }
+                 var containerElement = $("#fr").contents().find("body #base-content-pane div[data-panel-id='<?php echo $panelId ?>']");
+                 if (containerElement.hasClass("block"))
+                 {
+                    uisForm.addWidget(data["widget_html"], containerElement[0]);
+                 } else
+                 {
+                    uisForm.addWidget(data["widget_html"], containerElement.children(".row")[0]);
+                 }
 
-         $("#inspector-editor").trigger("refresh");
-         $.EW("getParentDialog", $("#uis-widget-form")).trigger("close");
-      }, "json");
+                 $("#inspector-editor").trigger("refresh");
+                 $.EW("getParentDialog", $("#uis-widget-form")).trigger("close");
+              }, "json");
    };
 
    UISWidget.prototype.applyToWidget = function ()
@@ -151,24 +148,30 @@ $panelId = $_REQUEST['panelId'];
       var self = this;
       $.EW("lock", $.EW("getParentDialog", $("#uis-widget-form")));
       var widget = uisForm.getEditorItem(this.widgetId);
-      var wp = $("#uis-widget").serializeJSON();
-      if (self.getWidgetData)
-         wp = JSON.stringify($.extend($.parseJSON(wp), self.getWidgetData.apply(null, null)));
+      var wp = JSON.parse($("#uis-widget").serializeJSON());
+      if (self.getWidgetData) {
+         wp = $.extend($.parseJSON(wp), self.getWidgetData.apply(null, null));
+      }
+      console.log(wp);
       //alert(wp);
       var styleId = $("#style_id").val();
       var styleClass = $("#used-classes").text();
       var widgetStyleClass = $("#style_class").val();
 
-      $.post('<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/create-widget', {widget_id: this.widgetId, widget_type: uisWidget.widgetType, style_class: styleClass,
-         widget_style_class: widgetStyleClass, style_id: styleId, widget_parameters: wp},
-      function (data) {
+      $.post('<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/create-widget', {
+         widget_id: this.widgetId,
+         widget_type: uisWidget.widgetType,
+         style_class: styleClass,
+         widget_style_class: widgetStyleClass,
+         style_id: styleId,
+         widget_parameters: wp
+      }, function (data) {
          EW.lock($.EW("getParentDialog", $("#uis-widget-form")));
          // Remove the old widget script
          uisForm.getEditor().find("head #" + self.widgetId).remove();
 
          // Add widget data to the widget-data script tag
-         if (data["widget_data"])
-         {
+         if (data["widget_data"]) {
             uisForm.setWidgetData(data["widget_id"], data["widget_data"]);
          }
 
@@ -201,33 +204,33 @@ $panelId = $_REQUEST['panelId'];
       $("#widgets-list-form").hide();
       EW.lock($('#uis-widget-form'));
       $.post('<?php echo EW_ROOT_URL; ?>~webroot/html/widgets-management/uis-widget-form.php', {widgetType: widgetType, template: self.template, widgetParameters: JSON.stringify(self.widgetParameters)},
-      function (data) {
-         $('#uis-widget-form').stop().hide();
-         $('#uis-widget-form').html(data);
-         // If widgetId exist, set data for widget control panel
-         if (self.widgetId != "")
-         {
-            $("#used-classes").text(widget.data("container").prop("class"));
-            $("#style_class").val(widget.prop("class"));
-            $("#style_id").val(widget.prop("id")).change();
-            // If true, set values for the fields of widget control panel form
-            if (self.setData === true)
-            {
-               //widgetParams = (widget.attr("data-widget-parameters")) ? $.parseJSON(widget.attr("data-widget-parameters")) : {};
-               EW.setFormData("#uis-widget", widgetParams);
-               $("#style_class").keyup(this.setClasses);
-            }
-         }
-         // If widgetId is empty show add button
-         else
-            self.bAdd.comeIn(300);
+              function (data) {
+                 $('#uis-widget-form').stop().hide();
+                 $('#uis-widget-form').html(data);
+                 // If widgetId exist, set data for widget control panel
+                 if (self.widgetId != "")
+                 {
+                    $("#used-classes").text(widget.data("container").prop("class"));
+                    $("#style_class").val(widget.prop("class"));
+                    $("#style_id").val(widget.prop("id")).change();
+                    // If true, set values for the fields of widget control panel form
+                    if (self.setData === true)
+                    {
+                       //widgetParams = (widget.attr("data-widget-parameters")) ? $.parseJSON(widget.attr("data-widget-parameters")) : {};
+                       EW.setFormData("#uis-widget", widgetParams);
+                       $("#style_class").keyup(this.setClasses);
+                    }
+                 }
+                 // If widgetId is empty show add button
+                 else
+                    self.bAdd.comeIn(300);
 
-         if (widgetParams)
-            EW.setFormData("#uis-widget", widgetParams);
-         $('#uis-widget-form').fadeIn(300);
+                 if (widgetParams)
+                    EW.setFormData("#uis-widget", widgetParams);
+                 $('#uis-widget-form').fadeIn(300);
 
-         self.readClasses();
-      });
+                 self.readClasses();
+              });
    };
 
    UISWidget.prototype.cancel = function ()
@@ -268,8 +271,7 @@ $panelId = $_REQUEST['panelId'];
                classBtn.removeClass("btn-default");
                classBtn.addClass("btn-success");
                $("#widget-classes").append($(classBtn));
-            }
-            else
+            } else
             {
                classBtn.removeClass("btn-success");
                classBtn.addClass("btn-default");

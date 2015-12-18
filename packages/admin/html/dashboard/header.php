@@ -13,6 +13,7 @@
 <script src="~rm/public/js/gsap/easing/EasePack.min.js"></script>
 <script src="~rm/public/js/gsap/jquery.gsap.min.js"></script>
 <script src="~rm/public/js/gsap/TweenLite.min.js"></script>
+<script src="~rm/public/js/x-tag/x-tag-core.min.js"></script>
 
 <script src="~admin/public/js/lib/sortable.js"></script>      
 <script src="~admin/public/js/lib/bootstrap-datepicker.js"></script>

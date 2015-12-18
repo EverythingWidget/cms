@@ -23,6 +23,7 @@ class WidgetFeeder
   public $method_name;
   public $title = "Widget";
   public $description = "This is a widget";
+  public $api_url;
 
   public function __construct($module, $widget_type, $method_name, $resource_type = "api")
   {
@@ -31,6 +32,7 @@ class WidgetFeeder
     $this->method_name = $method_name;
     $this->resourse_type = $resource_type;
     $this->id = $module->get_app()->get_root() . '/' . $resource_type . '/' . \EWCore::camelToHyphen($module->get_name() . '/' . $method_name);
+    $this->api_url = $this->id;
   }
 
 }

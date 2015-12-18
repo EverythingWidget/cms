@@ -26,28 +26,28 @@ echo admin\AppsManagement::create_section_main_form();
 ?>
 
 <script>
-   (function () {
-      var ContentManagement = System.module("content-management");
+   (function (System) {
 
-      ContentManagement.onInit = function (nav) {
-         //console.log("ContentManagement is here :)");
-         //alert("C is here");
-      };
+      System.module("content-management", function () {
+         this.type = "app";
 
-      ContentManagement.onStart = function () {
-         //alert("C is started");
-      };
+         this.onInit = function (nav) {
+         };
 
-      ContentManagement.on("app", function (p, section) {
-         if (!section /*|| section === this.data.tab*/)
-            return;
-         this.data.tab = section;
+         this.onStart = function () {
+         };
 
-         EW.appNav.setCurrentTab($("a[data-ew-nav='" + section + "']"));
+         this.on("app", function (p, section) {
+            if (!section) {
+               return;
+            }
+            this.data.tab = section;
+
+            EW.appNav.setCurrentTab($("a[data-ew-nav='" + section + "']"));
+         });
+
+         return this;
       });
+   })(System);
 
-      ContentManagement.on("ew_activity", function (p, path) {
-      });
-
-   }());
 </script>

@@ -157,5 +157,13 @@ class APIResourceHandler extends ResourceHandler
     }
   }
 
+  public static function to_api_response($data, $meta = [])
+  {
+    $response = ["statusCode" => 200];
+    $response = array_merge($response, $meta);
+    $response["data"] = $data;
+    return $response;
+  }
+
 //put your code here
 }
