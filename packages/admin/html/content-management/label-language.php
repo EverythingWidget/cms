@@ -38,7 +38,7 @@
          $("#{{comp_id}}_select").change();
       }
 
-      $.post("~admin/api/content-management/contents-with-label", {
+      $.post("~admin/api/content-management/contents-labels", {
          content_id: documentId,
          key: "{{comp_id}}"
       }, function (data) {
@@ -59,7 +59,7 @@
                      }, "json");
                   });
                }
-               
+
                $("#{{comp_id}}_languages").append(langItem);
             });
          }

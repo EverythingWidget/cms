@@ -1,26 +1,26 @@
 //Form data to JSOn Object
-$.fn.serializeJSON = function ()
+$.fn.serializeJSON = function (flag)
 {
-   var o = {
+   var pureObject = {
    };
    var a = this.serializeArray();
    $.each(a, function () {
-      if (o[this.name] !== undefined) {
-         if (!o[this.name].push) {
-            o[this.name] = [o[this.name]];
+      if (pureObject[this.name] !== undefined) {
+         if (!pureObject[this.name].push) {
+            pureObject[this.name] = [pureObject[this.name]];
          }
-         o[this.name].push(this.value || '');
+         pureObject[this.name].push(this.value || '');
       } else {
-         o[this.name] = this.value || '';
+         pureObject[this.name] = this.value || '';
       }
    });
    //console.log(o);
-   if ($.isEmptyObject(o))
+   if ($.isEmptyObject(pureObject))
    {
       return null;
    }
 
-   return JSON.stringify(o);
+   return flag ? pureObject : JSON.stringify(pureObject);
 };
 
 var customHashes = new Object();
@@ -175,33 +175,29 @@ EverythingWidgets.prototype.addAction = function (text, handler, css, parent)
    return action;
 };
 
-EverythingWidgets.prototype.addNotification = function (css)
-{
+EverythingWidgets.prototype.addNotification = function (css) {
    var li = $(document.createElement("li"));
    var notification = $(document.createElement("label"));
    if (css)
       li.css(css);
    //notification.text(text);
    li.append(notification);
-   li.setText = function (text, time)
-   {
-      if (text)
-      {
+   li.setText = function (text, time) {
+      if (text) {
          notification.text(text);
          notification.fadeIn(100);
-      } else
-      {
+      } else {
          notification.animate({
             width: "toggle"
-         },
-                 500, function () {
-                    notification.attr({
-                       class: ""
-                    });
-                    notification.text("");
-                    li.remove();
-                 });
+         }, 500, function () {
+            notification.attr({
+               class: ""
+            });
+            notification.text("");
+            li.remove();
+         });
       }
+
       if (time)
          setTimeout(function () {
             li.setText("");
@@ -217,80 +213,54 @@ EverythingWidgets.prototype.addNotification = function (css)
  * @param {json} conf <b>activity</b>, <b>defaultClass</b>, <b>title</b>, <b>postData</b>, <b>onDone</b> 
  * @returns {EverythingWidgets.prototype.getActivity.activityCaller}
  */
-EverythingWidgets.prototype.getActivity = function (conf)
-{
-   var self = this;
+EverythingWidgets.prototype.getActivity = function (conf) {
+   var _this = this;
    var settings = {
       title: "",
       defaultClass: "btn-primary",
       activity: null
    };
-   $.extend(settings, conf);
-   var ac = 1;
-   //settings.activity = settings.activity.replace(/\//g, ".");
 
-   if (!self.activities[settings.activity])
-   {
+   $.extend(settings, conf);
+
+   if (!_this.activities[settings.activity]) {
       console.log("activity does not exist: " + settings.activity);
-      console.log(self.activities);
+      console.log(_this.activities);
       return null;
    }
-   var activityId = settings.activity;
-   // create new activity from the original activity in the case where there is more than one action for one activity
-   // removed for improvment
-   /*if (self.activityCounter[settings.activity] && JSON.stringify(self.activities[activityId].settings) !== JSON.stringify(settings))
-    {
-    ac = self.activityCounter[settings.activity];
-    ac++;
-    activityId = settings.activity + "-" + ac;
-    //self.activityCounter[settings.activity] = ac;
-    //alert()
-    }
-    if (!self.originalActivity[activityId])
-    self.originalActivity[activityId] = self.activities[settings.activity];
-    self.activityCounter[activityId] = ac;*/
-   //var activity = self.originalActivity[activityId];
-   var activity = self.activities[settings.activity];
-//alert(settings.activity);
-   //self.activities[activityId] = $.extend(true, {}, self.activities[settings.activity]);
-   //self.activities[activityId].settings = settings;
 
-   if (activity.modalObject && settings.modal && settings.modal.class)
-   {
-      activity.modalObject.animate({
+   var activityId = settings.activity;
+   var activityController = _this.activities[activityId];
+
+   if (activityController.modalObject && settings.modal && settings.modal.class) {
+      activityController.modalObject.animate({
          className: "top-pane col-xs-12 " + settings.modal.class
-      },
-              300, function ()
-              {
-                 activity.modalObject.methods.setCloseButton();
-              });
+      }, 300, function () {
+         activityController.modalObject.methods.setCloseButton();
+      });
    }
 
-   //self.activities[activityId] = $.extend({}, self.originalActivity[activityId], conf);
-   self.activities[activityId] = $.extend({}, activity, conf);
-   //alert(self.activities[activityId].modal.class)
+   activityController = $.extend({}, activityController, conf);
    var activityCaller = function (hash) {
-
       var hashParameters = {
          ew_activity: activityId
       };
       // Call hash if it is a function
-      if (typeof hash === 'function')
-      {
+      if (typeof hash === 'function') {
          hash = hash();
       }
+
       $.extend(hashParameters, hash);
 
       // if the activity contains a form then set a main hash parameter
-      if (self.activities[activityId].form)
-      {
-         self.setHashParameters(hashParameters);
+      if (activityController.form) {
+         _this.setHashParameters(hashParameters);
       }
       // if the activity does not contains any form then set a formless hash parameter
-      else
-      {
-         //console.log(hashParameters);
-         self.setHashParameters(hashParameters, "FORMLESS_ACTIVITY");
+      else {
+         //console.log(activityController);
+         _this.activitySource = activityController;
+         _this.setHashParameters(hashParameters, "FORMLESS_ACTIVITY");
       }
    };
 
@@ -309,37 +279,38 @@ EverythingWidgets.prototype.addActivity = function (conf)
       defaultClass: "btn-primary",
       activity: null
    };
+
    $.extend(settings, conf);
+
    var activityCaller = self.getActivity(conf);
-   if (!activityCaller)
-   {
+   if (!activityCaller) {
       console.log("Undefined activity: " + settings.activity);
-      //var emptyObj = $().data("activityCaller", null);
       return $();
    }
    //var li = $(document.createElement("li"));
-   var action = $("<button>" + settings.title + "</button>");
+   var action = $(document.createElement("button"));
+   action.html(settings.title);
    action.attr("data-label", settings.title).addClass("btn " + settings.defaultClass + " " + settings.class);
 
    action.attr("type", "button");
    action.click(function () {
       activityCaller(settings.hash);
    });
+
    action.data("activity", activityCaller);
    var parentE = $("#" + settings.parent);
-   if (parentE.length !== 0)
-   {
+
+   if (parentE.length !== 0) {
       parentE.append(action);
-   } else
-   {
+   } else {
       $(".action-bar-items").last().append(action);
    }
-   if (typeof settings.css !== "string" && settings.css)
-   {
+
+   if (typeof settings.css !== "string" && settings.css) {
       action.css(settings.css);
       return action;
    }
-   //action.width(action.width());
+
    return action;
 };
 
@@ -2419,11 +2390,9 @@ $(document).ready(function () {
    // ew_activity handler
    var oldEWActivity = null;
    var modal = null;
-   EW.addURLHandler(function ()
-   {
+   EW.addURLHandler(function () {
       var activity = EW.getHashParameter("ew_activity");
-      if (activity && activity != oldEWActivity)
-      {
+      if (activity && activity !== oldEWActivity) {
          var settings = {
             closeHash: {}, /*hash: {key: "ew_activity", value: activity},*/
 
@@ -2432,15 +2401,12 @@ $(document).ready(function () {
                //EW.lock(this);
                var postData = EW.getHashParameters();
                // Manage post data if it is set
-               if (EW.activities[activity].postData)
-               {
+               if (EW.activities[activity].postData) {
                   // Add user defined post data to the postData variable
                   // Call post data if it is a function
-                  if (typeof EW.activities[activity].postData == 'function')
-                  {
+                  if (typeof EW.activities[activity].postData === 'function') {
                      $.extend(postData, EW.activities[activity].postData());
-                  } else
-                  {
+                  } else {
                      $.extend(postData, EW.activities[activity].postData);
                   }
                }
@@ -2461,19 +2427,19 @@ $(document).ready(function () {
                      EW.customAjaxErrorHandler = true;
                   }
                });
-
             },
             onClose: function () {
                var closeHashParameters = {
                   ew_activity: null
                };
                //var customHashParameters = {};
-               if (EW.activities[activity].onDone)
-               {
-                  if (typeof EW.activities[activity].onDone === 'function')
+               if (EW.activities[activity].onDone) {
+
+                  if (typeof EW.activities[activity].onDone === 'function') {
                      EW.activities[activity].onDone(closeHashParameters);
-                  else
+                  } else {
                      $.extend(closeHashParameters, EW.activities[activity].onDone);
+                  }
                }
                // Trigger close activity event and pass closeHashParameters to it
                $(document).trigger(activity + ".close", closeHashParameters);
@@ -2481,8 +2447,8 @@ $(document).ready(function () {
                EW.setHashParameters(closeHashParameters);
             }
          };
-         if (EW.activities[activity])
-         {
+
+         if (EW.activities[activity]) {
             // Trigger open activity event and pass settings to it before creating modal
             $(document).trigger(activity + ".open", settings);
 
@@ -2493,16 +2459,14 @@ $(document).ready(function () {
             $.extend(settings, EW.activities[activity].modal);
             //modal = self.createModal(settings);
             EW.activities[activity].modalObject = EW.createModal(settings);
-         } else
-         {
+         } else {
             alert("Activity not found: " + activity);
             EW.setHashParameters({
                ew_activity: null
             });
          }
          oldEWActivity = activity;
-      } else if (oldEWActivity != activity)
-      {//alert(activity+" "+oldEWActivity);
+      } else if (oldEWActivity !== activity) {
          if (oldEWActivity && EW.activities[oldEWActivity].modalObject)
             EW.activities[oldEWActivity].modalObject.trigger("close");
          //if (self.activities[oldEWActivity].hasModal)
@@ -2511,54 +2475,49 @@ $(document).ready(function () {
       }
    });
 
-   EW.addURLHandler(function ()
-   {
+   EW.addURLHandler(function () {
       var activity = EW.getHashParameter("ew_activity", "FORMLESS_ACTIVITY");
-      if (activity)
-      {
-         if (EW.activities[activity])
-         {
+      var currentActivity = EW.activitySource;
+      EW.$docuement = EW.$docuement || $(document);
+      if (activity) {
+         if (currentActivity) {
             // Trigger activityName.call event
-            $(document).trigger(activity + ".call", EW.activities[activity]);
+            EW.$docuement.trigger(activity + ".call", currentActivity);
             var postData = EW.getHashParameters("FORMLESS_ACTIVITY");
             // Manage post data if it is set
-            if (EW.activities[activity].postData)
-            {
+            if (currentActivity.postData) {
                // Overwrite the content of postData variable  with the user defined post data
                // Call postData if it is a function
-               if (typeof EW.activities[activity].postData == 'function')
-               {
-                  postData = EW.activities[activity].postData.apply(EW.activities[activity]);
-               } else
-                  postData = EW.activities[activity].postData;
+               if (typeof currentActivity.postData === 'function') {
+                  postData = currentActivity.postData.call(currentActivity);
+               } else {
+                  postData = currentActivity.postData;
+               }
             }
+
             // Do not proceed further if postData is null
-            if (!postData)
-            {
+            if (!postData) {
                // set hash ew_activity to null
                EW.setHashParameters({
                   ew_activity: null
-               },
-                       "FORMLESS_ACTIVITY");
+               }, "FORMLESS_ACTIVITY");
                return;
             }
-            $.post(EW.activities[activity].url, postData, function (data) {
-               if (EW.activities[activity].onDone)
-               {
-                  EW.activities[activity].onDone.apply(EW.activities[activity], [data]);
+
+            $.post(currentActivity.url, postData, function (data) {
+               if (currentActivity.onDone) {
+                  currentActivity.onDone.apply(currentActivity, [data]);
                }
                // Trigger activityName.done event
-               $(document).trigger(activity + ".done", data);
+               EW.$docuement.trigger(activity + ".done", data);
+               EW.activitySource = null;
             }, "json");
-         } else
-         {
+         } else {
             alert("Formless activity not found");
-            //self.setHashParameters({ew_activity: null});
          }
       }
       EW.setHashParameters({
          ew_activity: null
-      },
-              "FORMLESS_ACTIVITY");
+      }, "FORMLESS_ACTIVITY");
    }, "FORMLESS_ACTIVITY");
 });

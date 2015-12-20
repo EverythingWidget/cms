@@ -74,7 +74,7 @@
        */
       getLabels: function () {
          var labels = {};
-         $.each(this.formUI.find("#content-labels .content-label"), function (i, el) {
+         $.each(this.uiForm.find("#content-labels .content-label"), function (i, el) {
             el = $(el);
             if (el.attr("data-activated") === "false") {
                labels[el.find("input[name='key']").val()] = null;
@@ -92,7 +92,7 @@
        */
       getLabel: function (key) {
          var value = null;
-         $.each(this.formUI.find("#content-labels .content-label[data-activated='true']"), function (i, el) {
+         $.each(this.uiForm.find("#content-labels .content-label[data-activated='true']"), function (i, el) {
             el = $(el);
             if (el.find("input[name='key']:not(:disabled)").val() == key) {
                value = el.find("[name='value']").val();
@@ -103,7 +103,7 @@
          return value;
       },
       setLabels: function (labels) {
-         this.formUI.find("#content-labels .content-label input[name='value']").val("");
+         this.uiForm.find("#content-labels .content-label input[name='value']").val("");
          $.each(labels, function (i, el) {
             $("#" + el.key + "_value").val(el.value);
          });
@@ -133,7 +133,9 @@
          $("#content").change();
       }
    };
-   ContentForm.formUI = $(ContentForm.formId);
+   
+   ContentForm.uiForm = $(ContentForm.formId);
+   ContentForm.uiTitle = ContentForm.uiForm.find("#form-title");
 
 
 </script>

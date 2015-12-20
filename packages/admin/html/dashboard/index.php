@@ -25,7 +25,7 @@ if (!isset($_SESSION['login']))
       <div id="base-pane" class="container">      
          <div id="app-content" >
             <div id="nav-bar" class="nav-bar">
-               <a type="button" id="apps" class="btn btn-text  comp-btn" data-ew-nav="" href="./~admin/#"><i class="fa fa-angle-left"></i></a>
+               <a type="button" id="apps" class="btn btn-text comp-btn component-chooser" data-ew-nav="" href="./~admin/#"></a>
                <h1 id="app-title">tr{Apps}</h1>
                <div  class="col-xs-2 col-sm-2 col-md-2 col-lg-1 pull-right">
                   <?php

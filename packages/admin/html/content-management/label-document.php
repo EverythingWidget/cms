@@ -15,12 +15,12 @@
       var attached = $("#{{comp_id}}_attached");
       text.autocomplete({
          source: function (input) {
-            $.post("<?php echo EW_ROOT_URL; ?>~admin/api/content-management/get-contents", {
+            $.post("<?php echo EW_ROOT_URL; ?>~admin/api/content-management/contents", {
                title_filter: text.val(),
                type: "article",
                size: 30
-            }, function (data) {
-               input.trigger("updateList", [data.result]);
+            }, function (response) {
+               input.trigger("updateList", [response.data]);
             }, "json");
          },
          templateText: "<li class='text-item'><a href='#'><%= title %><span><%= date_created %></span></a><li>",
@@ -38,7 +38,7 @@
             text.val(formData["title"]).change();
          }
 
-         $.post("~admin/api/content-management/contents-with-label", {
+         $.post("~admin/api/content-management/contents-labels", {
             content_id: ContentForm.getLabel("{{comp_id}}"),
             key: "{{comp_id}}"
          }, function (data) {

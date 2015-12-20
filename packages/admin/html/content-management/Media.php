@@ -6,14 +6,8 @@ if (!$_SESSION['login'])
    return;
 }
 ?>
-<div  class="row">
-   <div class="col-xs-12" >
-      <div id="folders-list" class="box">
 
-      </div>
-   </div>
-</div>
-<div  class="row">
+<div id="media-items-container" class="row">
    <div class="col-xs-12" >
       <div id="files-list" class="box">
 
@@ -32,44 +26,63 @@ if (!$_SESSION['login'])
       this.currentItem;
       this.bBack = EW.addAction("tr{Back to Media}", function ()
       {
-         //var preParentId = EW.getHashParameter("preParentId");
          EW.setHashParameter("parent", null);
-      }, {float: "right", display: "none"});
-      this.newAlbumActivity = EW.addActivity({title: "tr{New Album}", activity: "admin/html/content-management/album-form.php"}).hide();
-      this.uploadFileActivity = EW.addActivity({title: "tr{Upload Photo}", activity: "admin/html/content-management/upload-form.php"}).hide();
-      this.seeAlbumActivity = EW.getActivity({activity: "admin/html/content-management/album-form.php_see"});
+      }, {
+         float: "right",
+         display: "none"
+      }, "action-bar-items");
+
+      this.newAlbumActivity = EW.addActivity({
+         title: "tr{New Album}",
+         activity: "admin/html/content-management/album-form.php",
+         parent: "action-bar-items"
+      }).hide();
+
+      this.uploadFileActivity = EW.addActivity({
+         title: "tr{Upload Photo}",
+         activity: "admin/html/content-management/upload-form.php",
+         parent: "action-bar-items",
+         hash: function () {
+            return {parentId: EW.getHashParameter("parent")};
+         },
+         onDone: function () {
+            EW.setHashParameter("parentId", null);
+         }
+      }).hide();
+
+      this.seeAlbumActivity = EW.getActivity({
+         activity: "admin/html/content-management/album-form.php_see",
+         parent: "action-bar-items"
+      });
       //this.seeArticleActivity = EW.getActivity({activity: "admin/api/ContentManagement/article-form.php_see"});
 
-      if (this.seeAlbumActivity)
+      if (this.seeAlbumActivity) {
          this.seeAction = EW.addAction("tr{See}", $.proxy(this.seeDetails, this)).hide();
-      else
+      } else {
          this.seeAction = $();
+      }
+
       this.bDel = $();
       $(document).off("media-list");
       $(document).on("media-list.refresh", function (e, eventData) {
          self.listMedia();
       });
-      var oldCn = 0;
-      $(window).resize(function ()
-      {
-         var cn = Math.floor(($("#main-content").width() - 30) / 159);
-         var mw = Math.floor(($("#main-content").width() - 30 - (cn * 159)) / cn);
-         $(".content-item").css("margin-right", mw);
-      });
+
+      /*$(window).resize(function () {
+       var cn = Math.floor(($("#main-content").width() - 30) / 159);
+       var mw = Math.floor(($("#main-content").width() - 30 - (cn * 159)) / cn);
+       $(".content-item").css("margin-right", mw);
+       });*/
    }
 
-   Media.prototype.seeDetails = function ()
-   {
+   Media.prototype.seeDetails = function () {
       var albumId = EW.getHashParameter("albumId", "media");
       var imageId = EW.getHashParameter("imageId", "media");
       EW.activeElement = this.currentItem;
-      if (albumId)
-      {
+      if (albumId) {
          this.albumId = albumId;
          this.seeAlbumActivity({albumId: albumId});
-      }
-      else if (imageId)
-      {
+      } else if (imageId) {
          this.imageId = imageId;
          this.seeArticleActivity({articleId: imageId});
       }
@@ -79,26 +92,27 @@ if (!$_SESSION['login'])
    Media.prototype.listMedia = function ()
    {
       var self = this;
-      var albums = $("<div class='row box-content'></div>");
-      var images = $("<div class='row box-content'></div>");
-      $("#folders-list").html("<h2>Loading Albums</h2>");
-      $("#folders-list").append(albums);
-      $("#files-list").html("<h2>Loading Images</h2>");
-      $("#files-list").append(images);
-      $.post('<?php echo EW_ROOT_URL; ?>~admin/api/content-management/get-media-list', {parent_id: self.parentId}, function (data)
-      {
-         $("#folders-list > h2").html("tr{Albums}");
-         $("#files-list > h2").html("tr{Images}");
-         var pId = 0;
-         var flag = false;
-         $.each(data, function (index, element)
-         {
-            flag = true;
-            pId = element.parentId;
+      //var albums = $("<div class='row box-content'></div>");
+      var itemsList = $("<div class='row box-content'></div>");
+
+      $("#files-list").html("<h2>Loading...</h2>");
+      $("#files-list").append(itemsList);
+
+      $.post('<?php echo EW_ROOT_URL; ?>~admin/api/content-management/get-media-list', {parent_id: self.parentId}, function (response) {
+         if (self.parentId == 0) {
+            $("#files-list > h2").html("tr{Albums}");
+         } else {
+            $("#files-list > h2").html("tr{Images}");
+         }
+
+         //var pId = 0;
+         //var flag = false;
+         $.each(response.data, function (index, element) {
+            //flag = true;
+            //pId = element.parentId;
             var temp = self.createMedia(element.title, element.type, element.ext, element.size, element.thumbURL, element.id);
             //temp.click(temp.focus);
-            if (element.type == "album")
-            {
+            if (element.type === "album") {
                temp.on('keydown', function (e) {
                   if (e.which == 13)
                      EW.setHashParameter("parent", element.id);
@@ -107,30 +121,28 @@ if (!$_SESSION['login'])
                temp.dblclick(function () {
                   EW.setHashParameter("parent", element.id);
                });
-               temp.on("focus", function (e)
-               {
+
+               temp.on("focus", function (e) {
                   //console.log('call');
                   EW.setHashParameters({imageId: null, "albumId": element.id}, "media");
                });
-               albums.append(temp);
-            }
-            else
-            {
+               itemsList.append(temp);
+            } else {
                temp.attr("data-url", element.url);
                temp.dblclick(function () {
                   EW.setHashParameter("cmd", "preview", "media");
                });
-               temp.on("focus", function ()
-               {
+
+               temp.on("focus", function () {
                   EW.setHashParameter("itemId", element.id, "media");
                   EW.setHashParameter("url", element.url, "media");
                   EW.setHashParameter("filename", element.filename, "media");
                   EW.setHashParameter("fileExtension", element.fileExtension, "media");
                   EW.setHashParameter("absUrl", element.absUrl, "media");
                   EW.setHashParameters({albumId: null, "imageId": element.id}, "media");
-
                });
-               images.append(temp);
+
+               itemsList.append(temp);
             }
 
          });
@@ -140,6 +152,7 @@ if (!$_SESSION['login'])
          $("div[data-item-id='" + self.itemId + "']").focus();
       }, "json");
    };
+
    Media.prototype.createMedia = function (title, type, ext, size, ImageURL, id)
    {
       var self = this;
@@ -161,8 +174,7 @@ if (!$_SESSION['login'])
       {
          img.attr("src", ImageURL);
          div.append(img);
-      }
-      else
+      } else
       {
          div.append("<span></span>");
       }
@@ -199,8 +211,7 @@ if (!$_SESSION['login'])
             media.itemId = itemId;
             media.seeAction.comeIn();
          }
-      }
-      else
+      } else
       {
          media.seeAction.comeOut();
          media.bDel.comeOut();
@@ -226,14 +237,14 @@ if (!$_SESSION['login'])
          media.newAlbumActivity.comeOut();
          media.uploadFileActivity.comeIn();
          media.bBack.comeIn();
-      }
-      else
+      } else
       {
          media.newAlbumActivity.comeIn();
          media.uploadFileActivity.comeOut();
          media.bBack.comeOut();
       }
    });
+   
    media.dispose = function ()
    {
       EW.setHashParameters({imageId: null, albumId: null, parent: null});

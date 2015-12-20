@@ -3,19 +3,17 @@
       tr{Upload File}
    </h1>
 </div>
-<div  class="form-content row" >
-   <form enctype="multipart/form-data" id="upload-form">    
-
-      <input type="hidden"   name="parentId" id="parentId" value="<?php echo $_REQUEST["parentId"] ?>" />
-      <div class="col-xs-12 margin-bottom" id="choose-files">
-         <label>Choose Your Files:</label>
+<div  class="form-content " >
+   <form enctype="multipart/form-data" id="upload-form">   
+      <div class="col-xs-12 mar-top" id="choose-files">
+         <label>Choose your files:</label>
          <input class="text-field" type="file" accept="image/*" multiple name="img[]" id="image" />
-
+      </div>
+      <input type="hidden"   name="parent_id" id="parent_id" value="<?php echo $_REQUEST["parentId"] ?>" />
+      <div id="progress-bar">
+         <progress value="0" max="100"></progress>
       </div>
    </form>
-   <div class="col-xs-12" id="progress-bar">
-      <progress value="0" max="100"></progress>
-   </div>
 </div>
 <div class="footer-pane row actions-bar action-bar-items" >
 

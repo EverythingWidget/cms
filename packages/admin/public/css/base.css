@@ -866,7 +866,7 @@ button {
    height: 40px;
    background-color: transparent;
    width: 100%;
-   padding: 0 10px;
+   padding: 0 12px;
    z-index: 10;
    position: relative;
 }
@@ -894,7 +894,7 @@ button {
    box-shadow: 0 0 5px 0 #eee;
 }
 
-#nav-bar > .comp-btn {
+.comp-btn {
    float: left;
    width: 36px;
    height: 36px;
@@ -1353,8 +1353,7 @@ ul.links li p {
 .btn.component-chooser {
    background-image: url(images/component-chooser-btn.png);
    background-repeat: no-repeat;
-   background-position: 18px center;
-   height: 34px;
+   background-position: center center;
    text-decoration: none;
    padding: 0;
 }
@@ -1865,7 +1864,7 @@ ul.errors-list li {
 }
 
 .Label,label {
-   line-height: 18px;
+   line-height: 24px;
    padding: 0;
    font-size: 14px;
    font-weight: 700;
@@ -2452,12 +2451,12 @@ table.contents td {
    vertical-align: top;
    text-align: center;
    padding: 5px;
-   border: 2px solid transparent;
    border-radius: 4px;
    font-weight: 700;
    font-size: 13px;
    min-height: 50px;
    cursor: pointer;
+   overflow: hidden;
 }
 
 .content-item.album {
@@ -2521,9 +2520,8 @@ table.contents td {
 .content-item.image img {
    display: block;
    margin: 0 auto;
-   max-width: 140px;
-   max-height: 140px;
-   width: 100%;
+   max-width: 130px;
+   max-height: 140px;   
 }
 
 .content-item.ready {
@@ -3072,5 +3070,5 @@ li h3.icon-header {
 }
 
 inline-dialog{
-   
+
 }

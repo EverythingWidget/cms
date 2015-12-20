@@ -392,17 +392,22 @@ class WidgetsManagement extends \ew\Module
    public function update_uis($uisId = null, $name = null, $template = null, $template_settings = null, $perview_url = null, $structure = null)
    {
       $db = \EWCore::get_db_connection();
-
+//echo json_encode($structure);
       if (!$name)
       {
-         $res = array(
+         $res = [
              "status" => "unsuccess",
-             "message" => "The field name is mandatory");
+             "message" => "The field name is mandatory"
+         ];
          $db->close();
          return json_encode($res);
       }
+      if (is_array($structure))
+      {
+         $structure = json_encode($structure);
+      }
       $stm = $db->prepare("UPDATE ew_ui_structures SET name = ?, template= ?, template_settings= ?, perview_url = ?, structure = ? WHERE id = ?") or die($db->error);
-      $stm->bind_param("ssssss", $name, $template, ($template_settings), $perview_url, ($structure), $uisId);
+      $stm->bind_param("ssssss", $name, $template, ($template_settings), $perview_url, $structure, $uisId);
       $error = $db->errno;
       if ($stm->execute())
       {
@@ -547,24 +552,23 @@ class WidgetsManagement extends \ew\Module
    public static function create_panel_content($panel = array(), $container_id, $no_data = null)
    {
       $result_html = '';
-      foreach ($panel as $key => $value)
+      if (isset($panel))
       {
-//echo $value["type"];
-         if ($value["type"] == "panel")
+         foreach ($panel as $key => $value)
          {
-//echo $value["type"] . " - " . $value["class"] . "<br>";
-            self::$panel_index++;
-            $result_html.=self::open_panel("panel-" . self::$current_timestamp . '-' . self::$ui_index . '-' . self::$panel_index, $container_id, $value["class"], $value["id"], $value["panelParameters"], FALSE);
-            $result_html.=self::create_panel_content($value["children"], "panel-" . self::$ui_index . '-' . self::$panel_index);
-            $result_html.=self::close_panel();
-         }
-         else
-         {
-            self::$widget_index++;
-            $result_html.=self::open_widget("widget-" . self::$current_timestamp . '-' . self::$ui_index . '-' . self::$widget_index, $value["widgetType"], $value["class"], $value["widgetClass"], $value["id"], $value["widgetParameters"], $no_data);
-            $result_html.=self::close_widget();
-
-//echo $value["type"] . " - " . $value["class"] . "<br>";
+            if ($value["type"] == "panel")
+            {
+               self::$panel_index++;
+               $result_html.=self::open_panel("panel-" . self::$current_timestamp . '-' . self::$ui_index . '-' . self::$panel_index, $container_id, $value["class"], $value["id"], $value["panelParameters"], FALSE);
+               $result_html.=self::create_panel_content($value["children"], "panel-" . self::$ui_index . '-' . self::$panel_index);
+               $result_html.=self::close_panel();
+            }
+            else
+            {
+               self::$widget_index++;
+               $result_html.=self::open_widget("widget-" . self::$current_timestamp . '-' . self::$ui_index . '-' . self::$widget_index, $value["widgetType"], $value["class"], $value["widgetClass"], $value["id"], $value["widgetParameters"], $no_data);
+               $result_html.=self::close_widget();
+            }
          }
       }
       return $result_html;
@@ -573,39 +577,35 @@ class WidgetsManagement extends \ew\Module
    public static function open_panel($panel_id, $container_id, $style_class, $style_id, $parameters, $row = TRUE, $block_name = null)
    {
       $result_html = '';
-      $param_json = $parameters;
+      //$param_json = $parameters;
       $parameters = json_decode($parameters, TRUE);
 //$default_class = "panel ";
       // Check if width has been set and add value to the style
       //echo $panel_parameters["width-opt"];
-      $style = $parameters["width-opt"] ? "width:" . $parameters["width"] . ";" : "";
-
+      //$style = $parameters["width-opt"] ? "width:" . $parameters["width"] . ";" : "";
       // Check if margin has been set and add value to the style
-      $style .= $parameters["margin-opt"] ? "margin:" . $parameters["margin"] . ";" : "";
-
+      //$style .= $parameters["margin-opt"] ? "margin:" . $parameters["margin"] . ";" : "";
       // Check if padding has been set and add value to the style
-      $style .= $parameters["padding-opt"] ? "padding:" . $parameters["padding"] . ";" : "";
+      //$style .= $parameters["padding-opt"] ? "padding:" . $parameters["padding"] . ";" : "";
 
       if ($style_id)
-         $style_id_text = "id='$style_id'";
-
-      if ($block_name)
       {
-         require_once EW_TEMPLATES_DIR . "/blocks/" . $block_name . ".php";
-         $block_name::initiate();
+         $style_id_text = "id='$style_id'";
       }
-//if ($row)
-//$default_class = "row";
-      $result_html.= "<div class='panel $style_class'  $style_id_text  data-panel-id=\"$panel_id\"  data-container-id=\"$container_id\"  style='$style' data-panel-parameters='" . stripcslashes($param_json) . "' data-panel='true'><div class='row'>";
 
-//echo '<div class="wrapper">';
+      /* if ($block_name)
+        {
+        require_once EW_TEMPLATES_DIR . "/blocks/" . $block_name . ".php";
+        $block_name::initiate();
+        } */
+
+      $result_html.= "<div class='panel $style_class'  $style_id_text  data-panel-id=\"$panel_id\"  data-container-id=\"$container_id\"  data-panel='true'><div class='row'>";
 
       if ($parameters["title"] && $parameters["title"] != "none")
       {
          $result_html.= "<div class='col-xs-12 panel-header'><{$parameters["title"]}>" . $parameters["title-text"] . "</{$parameters["title"]}></div>";
       }
-//echo '</div>';
-      //
+
       return $result_html;
    }
 
@@ -699,7 +699,6 @@ class WidgetsManagement extends \ew\Module
       }
       else if ($params)
          $widget_parameters = json_decode($params, true);
-
       //$widget_parameters = json_encode($params);
       $widget_title = WidgetsManagement::get_widget_details($widget_type)["title"];
       // Include widget content
@@ -1052,19 +1051,18 @@ class WidgetsManagement extends \ew\Module
             //var_dump(json_last_error_msg() );
          }
       }
-      //ob_start();
-      //print_r($rows["structure"]);
+
       if (isset($res))
       {
          foreach ($res as $key => $value)
          {
-            $RESULT_HTML.=self::open_block("panel-" . self::$current_timestamp . "-" . self::$ui_index . "-" . self::$panel_index, "", $value["class"], $value["id"], $value["panelParameters"], FALSE, $value["blockName"]);
+            $RESULT_HTML.=self::open_block("panel-" . self::$current_timestamp . "-" . self::$ui_index . "-" . self::$panel_index, "", $value["class"], $value["id"], $value["blockParameters"], FALSE, $value["blockName"]);
             $RESULT_HTML.=self::create_panel_content($value["children"], "panel-" . self::$current_timestamp . '-' . self::$ui_index . '-' . self::$panel_index, $no_data);
             $RESULT_HTML.=self::close_block();
             self::$panel_index++;
          }
       }
-      //$html = ob_get_clean();
+
       return ["body_html" => $RESULT_HTML,
           "widget_data" => self::get_widget_data()];
    }

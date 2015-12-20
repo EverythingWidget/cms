@@ -55,14 +55,17 @@ html,body{margin:0px;height:100%;font-family:'Dosis',arial,sans-serif;}
 .widget.dark-box p{margin:0px;font-weight:300;font-size:2.8em;/*text-shadow:0px 1px 3px rgba(0,0,0,.8), 0px -1px 12px rgba(250,180,80,.8);*/}
 .panel.white-box{padding-top:20px;padding-bottom:30px;background-color:rgba(255,255,255,1);border-radius:10px;box-shadow:0px 2px 15px -1px rgba(0,0,0,.25);}
 .panel.white-box h2{margin:0px auto;margin-bottom:50px;text-align:center;font-weight:700;font-size:4.2em;text-shadow: none;color:#333;}
+
 .widget.works-list{padding:0px 15px;}
-.widget.works-list .list-content .item,.widget.works-item{color:#fff;position:relative;overflow:hidden;transition: all .3s ease-out}
-.widget.works-list .list-content .item:hover p:last-child,.widget.works-item:hover p:last-child{height:50%;}
-.widget.works-list .list-content .item h3, .widget.works-item h3{text-align:center;margin:0px;}
+.widget.works-list .list-content .item,.widget.works-item{color:#fff;position:relative;overflow:hidden;transition: all .3s ease-out;min-height: 180px;}
+.widget.works-list .list-content .item:hover p:last-child,.widget.works-item:hover p:last-child{height:75%;}
+.widget.works-list .list-content .item h2, .widget.works-item h2{text-align:center;margin:0px;font-size: 1.3em;}
 .widget.works-list .list-content .item img,.widget.works-item img{display:block;margin:0px auto;min-width:100%;}
 .widget.works-list .list-content .item p,.widget.works-item p{margin:0px;background-color:rgba(0,0,0,.5)}
 .widget.works-item .widget-header{width:100%;padding:15px 0px;top:0px;position:absolute;text-shadow:0px 0px 5px rgba(0,0,0,.8);font-weight:600;font-size:2.2em;}
-.widget.works-list .list-content .item p:last-child,.widget.works-item p:last-child{left:15px;right:15px;height:60px;bottom:0px;position:absolute;background-color:rgba(0,0,0,.5);padding:15px;transition: all .3s ease}
+.widget.works-list .list-content .item p:last-child,.widget.works-item p:last-child{line-height:35px;left:15px;right:15px;height:50px;bottom:0px;position:absolute;background-color:rgba(0,0,0,.5);padding:10px 15px;transition: all .3s ease}
+.widget.panel-image{display: block;margin: 0px auto; padding:5px 10px;}
+.widget.panel-image img{width: 100%;}
 
 .widget.team-members .list-content .item{text-align:center;}
 .widget.team-members .list-content .item *{transition: all .24s ease}

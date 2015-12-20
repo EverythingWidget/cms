@@ -28,7 +28,7 @@
       this.bUp.css("float", "right");
       this.bNewFolder = EW.addActivity({
          title: "tr{New Folder}",
-         activity: "admin/html/content-management/category-form.php",
+         activity: "admin/html/content-management/folder-form.php",
          parent: "action-bar-items",
          hash: {
             folderId: null
@@ -45,7 +45,7 @@
       }).hide();
 
       this.seeFolderActivity = EW.getActivity({
-         activity: "admin/html/content-management/category-form.php",
+         activity: "admin/html/content-management/folder-form.php",
          onDone: function () {
             EW.setHashParameters({
                folderId: null,
@@ -118,7 +118,7 @@
       var hasNode = false;
       var aId = EW.getHashParameter("articleId", "document");
       $("#categories-list").html("<div class='col-xs-12'><h2 >Loading Folders</h2></div>");
-      $.post('~admin/api/content-management/get-categories-list', {
+      $.post('~admin/api/content-management/contents-folders', {
          parent_id: documents.parentId
       }, function (data) {
          $("#categories-list").html("<h2 id='cate-title'>tr{Folders}</h2><div class='row box-content'></div>");
@@ -142,7 +142,7 @@
          }
       }, "json");
       $("#articles-list").html("<div class='col-xs-12'><h2>Loading Article</h2></div>");
-      $.post('~admin/api/content-management/get-articles-list', {
+      $.post('~admin/api/content-management/contents-articles', {
          parent_id: documents.parentId
       }, function (data) {
          $("#articles-list").html("<h2>tr{Articles}</h2><div class='row box-content'></div>");

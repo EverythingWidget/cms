@@ -3,8 +3,9 @@
    System.onLoadApp = function (app) {
 
       if (app.id === "Home") {
-         $("#app-title").text("Home");
-         $("#apps").hide();
+         System.UI.components.appTitle.text("Home");
+         System.UI.components.homeButton.stop().comeOut(500);
+
 
          $("#main-content").stop().animate({
             transform: "scale(1.14)",
@@ -15,20 +16,22 @@
 
          $("#app-bar-nav").stop().animate({opacity: 0}, 300, function () {
             this.remove();
+
          });
 
-         $("#app-bar").animate({className: "app-bar"}, 500, "Power2.easeInOut");
-         $("#home-pane").animate({className: "home-pane in"}, 500, "Power2.easeInOut");
+         System.UI.components.appBar.animate({className: "app-bar"}, 500, "Power2.easeInOut");
+         System.UI.components.homePane.animate({className: "home-pane in"}, 500, "Power2.easeInOut");
          return false;
       }
+      System.UI.components.appTitle.text(app.title);
       return true;
    };
 
    System.onAppLoaded = function (app, response) {
-      $("#apps").show();
+      System.UI.components.homeButton.stop().comeIn(300);
       $("#action-bar-items").empty();
-      $("#app-bar").animate({className: "app-bar in"}, 500, "Power2.easeInOut");
-      $("#home-pane").animate({className: "home-pane"}, 500, "Power2.easeInOut");
+      System.UI.components.appBar.animate({className: "app-bar in"}, 500, "Power2.easeInOut");
+      System.UI.components.homePane.animate({className: "home-pane"}, 500, "Power2.easeInOut");
 
       setTimeout(function () {
          $("#app-content").append(response);
@@ -46,7 +49,6 @@
             opacity: 0
          }, 300);
          EW.oldApp = "Home";
-         $("#app-title").text(EW.apps["Home"].title);
          System.openApp(EW.apps["Home"]);
       }
    };
@@ -100,18 +102,14 @@
          this.oldApp = data.app;
 
          if (!data.app) {
-            $("#app-title").text("Home");
-            $("#apps").hide();
-            $("#app-bar").animate({className: "app-bar"}, 500, "Power2.easeOut");
-            $("#home-pane").animate({className: "home-pane in"}, 500, "Power2.easeOut");
+            System.UI.components.appBar.animate({className: "app-bar"}, 500, "Power2.easeOut");
+            System.UI.components.homePane.animate({className: "home-pane in"}, 500, "Power2.easeOut");
             return;
          }
 
-         $("#apps").show();
-         $("#app-title").text(this.apps[data.app].title);
          $("#action-bar-items").empty();
-         $("#app-bar").animate({className: "app-bar in"}, 500, "Power2.easeOut");
-         $("#home-pane").animate({className: "home-pane"}, 500, "Power2.easeOut");
+         System.UI.components.appBar.animate({className: "app-bar in"}, 500, "Power2.easeOut");
+         System.UI.components.homePane.animate({className: "home-pane"}, 500, "Power2.easeOut");
 
          setTimeout(function () {
             $.post("~admin/api/" + data.app + "/index.php", {}, function (response) {
@@ -230,7 +228,7 @@
          $element.on("change.image-chooser", function () {
             image.attr("src", $element.val() || "asset/images/no-image.png");
          });
-         
+
          defaults.callback = function (link) {
             imageChooserDialog.dispose();
          };
@@ -238,7 +236,7 @@
          var settings = $.extend({
          }, defaults, options);
          if (!$element.parent().attr("data-element-wrapper"))
-            $element.wrap('<div class="element-wrapper" style="position:relative;padding-bottom:30px;" data-element-wrapper="true"><div style="border:1px dashed #ddd;background-color:#eee;display:block;overflow:hidden;" data-element-wrapper="true"></div></div>');
+            $element.wrap('<div class="element-wrapper" style="position:relative;padding-bottom:30px;" data-element-wrapper="true"><div style="padding:5px 0;border:2px dashed #aaa;background-color:#fff;display:block;overflow:hidden;" data-element-wrapper="true"></div></div>');
          $element.attr("type", "hidden");
          var wrapper = $element.parent().parent();
          if (imageChooserDialog)
@@ -249,7 +247,7 @@
             console.log(image);
             wrapper.find("div").append(image);
          }
-         
+
          image.css("max-height", $element.css("max-height"));
          var imageChooserBtn;
          // if the plugin has been called later again on same element
@@ -263,6 +261,7 @@
                border: "none",
                outline: "none",
                minHeght: "128px",
+               maxWidth:"720px",
                display: "block",
                float: "",
                margin: "2px auto 2px auto"
@@ -281,39 +280,39 @@
          imageChooserBtn.click(function () {
             imageChooserDialog = EW.createModal({
                autoOpen: false,
-               class: "center-big"
+               class: "center"
             });
             imageChooserDialog.append("<div class='form-content'></div><div class='footer-pane row actions-bar action-bar-items' ></div>");
-            $.post("<?php echo EW_DIR ?>~admin/api/content-management/Media.php", {
+            $.post("<?php echo EW_DIR ?>~admin/html/content-management/Media.php", {
                callback: settings.callbackName
             }, function (data) {
                imageChooserDialog.find(".form-content:first").append(data);
                imageChooserDialog.prepend("<h1>Media</h1>");
                var bSelectPhoto = EW.addAction("Select Photo", function () {
-                  EW.setHashParameter("select-photo", true, "Media");
+                  EW.setHashParameter("select-photo", true, "media");
                }, {
                   display: "none"
                }).addClass("btn-success");
                // create handler to track selected
                var EWhandler = function () {
-                  var url = EW.getHashParameter("absUrl", "Media");
+                  var url = EW.getHashParameter("absUrl", "media");
                   if (url) {
                      bSelectPhoto.comeIn(300);
                   } else {
                      bSelectPhoto.comeOut(200);
                   }
 
-                  if (EW.getHashParameter("select-photo", "Media")) {
-                     EW.setHashParameter("select-photo", null, "Media");
+                  if (EW.getHashParameter("select-photo", "media")) {
+                     EW.setHashParameter("select-photo", null, "media");
                      imageChooserDialog.dispose();
                      //if (EW.getHashParameter("url", "Media"))
-                     $element.val(EW.getHashParameter("absUrl", "Media")).change();
-                     $element.attr("data-filename", EW.getHashParameter("filename", "Media"));
-                     $element.attr("data-file-extension", EW.getHashParameter("fileExtension", "Media"));
-                     $element.attr("data-url", EW.getHashParameter("url", "Media"));
+                     $element.val(EW.getHashParameter("absUrl", "media")).change();
+                     $element.attr("data-filename", EW.getHashParameter("filename", "media"));
+                     $element.attr("data-file-extension", EW.getHashParameter("fileExtension", "media"));
+                     $element.attr("data-url", EW.getHashParameter("url", "media"));
                   }
                };
-               EW.addURLHandler(EWhandler, "Media.ImageChooser");
+               EW.addURLHandler(EWhandler, "media.ImageChooser");
             });
 
             imageChooserDialog.open();
@@ -389,7 +388,7 @@
             maxHeight: $(window).height() - 100
          });
 
-         $("#app-bar-nav:not(.in)").stop().animate({
+         $("#app-bar-nav:not(.in)").animate({
             className: "app-bar-nav in",
             width: "250px"
          }, 360, "Power4.easeOut", function () {
@@ -474,6 +473,13 @@
    // Plugins which initilize when document is ready
    //var EW = null;
    $(document).ready(function () {
+
+      System.UI.components = {
+         homeButton: $("#apps"),
+         appTitle: $("#app-title"),
+         appBar: $("#app-bar"),
+         homePane: $("#home-pane")
+      };
       var hashDetection = new hashHandler();
       EW.activities = <?php echo EWCore::read_activities(); ?>;
       EW.oldApp = null;

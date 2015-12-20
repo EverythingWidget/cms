@@ -63,7 +63,7 @@
          if (_this.contentType === "all" || _this.contentType === "list" || _this.contentType === "contentField") {
             _this.folderListHeader.html("tr{Loading folders}");
             _this.folderListContent.empty();
-            $.post('<?php echo EW_ROOT_URL; ?>~admin/api/content-management/get-categories-list', {
+            $.post('<?php echo EW_ROOT_URL; ?>~admin/api/content-management/contents-folders', {
                parent_id: parentId
             }, function (data) {
                _this.folderListHeader.html("tr{Folders}");
@@ -84,7 +84,7 @@
          if (_this.contentType === "all" || _this.contentType === "content" || _this.contentType === "contentField") {
             _this.articlesListHeader.html("tr{Loading articles}");
             _this.articlesListContent.empty();
-            $.post('<?php echo EW_ROOT_URL; ?>~admin/api/content-management/get-articles-list', {
+            $.post('<?php echo EW_ROOT_URL; ?>~admin/api/content-management/contents-articles', {
                parent_id: parentId
             }, function (data) {
                _this.articlesListHeader.html("tr{Articles}");
@@ -105,24 +105,24 @@
       };
 
       LinkChooserDocuments.prototype.createFolder = function (model) {
-         var self = this;
+         var _this = this;
          var div = $("<div class='content-item folder' data-category-id='{id}'><span></span><p>{title}</p><p class='date'>{round_date_created}</p></div>").EW().createView(model);
          div.click(function () {
 
-            if (_this.contentType === "all" || _this.contentType === "folder") {
+            if (_this.contentType === "all" || _this.contentType === "list") {
                _this.bSelect.comeIn(300);
             }
 
-            self.document = {
+            _this.document = {
                feederId: "admin/api/content-management/ew-list-feeder-folder",
                id: model.id
             };
 
-            self.highlightContent(div);
+            _this.highlightContent(div);
          });
 
          div.dblclick(function () {
-            self.listFilesAndFolders(model.id);
+            _this.listFilesAndFolders(model.id);
          });
 
          return div;
@@ -133,7 +133,7 @@
          var div = $("<div class='content-item article' data-article-id='{id}'><span></span><p>{title}</p><p class='date'>{round_date_created}</p></div>").EW().createView(model);
          div.click(function () {
 
-            if (_this.contentType === "all" || _this.contentType === "article") {
+            if (_this.contentType === "all" || _this.contentType === "content") {
                _this.bSelect.comeIn(300);
             }
 
@@ -158,7 +158,7 @@
          div.click(function () {
             _this.bSelect.comeIn(300);
             _this.document = {
-               feederId: "admin/api/content-management/get-content-fields",
+               feederId: "admin/api/content-management/content-fields",
                id: model.contentId,
                fieldId: model.fieldId
             };

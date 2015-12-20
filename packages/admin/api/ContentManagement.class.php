@@ -56,37 +56,39 @@ class ContentManagement extends \ew\Module
           'api/index',
           "api/contents",
           "api/content_fields",
-          "api/contents_with_label",
+          "api/contents_labels",
           "api/get_category",
           "api/get_article",
-          "api/get_album",
-          "api/get_categories_list",
-          "api/get_articles_list",
+          "api/albums",
+          "api/contents_folders",
+          "api/contents_articles",
           "api/get_media_list",
+          "api/ew_list_feeder_folder",
           "api/ew_page_feeder_article",
           "html/article-form.php",
-          "html/category-form.php",
+          "html/folder-form.php",
           "html/album-form.php"));
 
       $this->register_permission("manipulate-content", "User can add new, edit, delete contents", array(
           'html/index.php',
           'api/index',
           "api/add_content",
-          "api/add_category",
+          "api/add_folder",
           "api/add_article",
           "api/add_album",
           "html/upload-form.php",
           "api/update_content",
-          "api/update_category",
+          "api/update_folder",
           "api/update_article",
           "api/update_album",
           "api/delete_content",
           "api/delete_content_by_id",
-          "api/delete_category",
+          "api/delete_folder",
           "api/delete_article",
           "api/delete_album",
+          "api/upload_file",
           "html/article-form.php:tr{New Article}",
-          "html/category-form.php:tr{New Folder}",
+          "html/folder-form.php:tr{New Folder}",
           "html/album-form.php:tr{New Album}"));
 
       //$this->register_content_label("document", ["title" => "Document", "description" => "Attach this content to other content", "type" => "data_url", "value" => "app-admin/ContentManagement/get_articles_llist"]);
@@ -119,12 +121,17 @@ class ContentManagement extends \ew\Module
 
    private function get_content_fields($html)
    {
+      $content_fields = new \stdClass();
+      if (!isset($html) || $html === "")
+      {
+         return $content_fields;
+      }
       $dom = new \DOMDocument;
       $dom->loadHTML($html);
       $xpath = new \DOMXpath($dom);
 
       $fields = $xpath->query('//p[@content-field]');
-      $content_fields = new \stdClass();
+
 
       foreach ($fields as $field)
       {
@@ -257,7 +264,7 @@ class ContentManagement extends \ew\Module
     * @param type $content_id
     * @return json <p>A list of content labels</p>
     */
-   public static function get_content_labels($content_id, $key = '%')
+   private function get_content_labels($content_id, $key = '%')
    {
       if (preg_match('/\$content\.(\w*)/', $content_id))
          return [];
@@ -267,7 +274,7 @@ class ContentManagement extends \ew\Module
       return $labels;
    }
 
-   public static function contents_with_label($content_id, $key, $value = '%')
+   public static function contents_labels($content_id, $key, $value = '%')
    {
       if (preg_match('/\$content\.(\w*)/', $content_id))
          return [];
@@ -346,16 +353,15 @@ class ContentManagement extends \ew\Module
 
       if ($content->id)
       {
-         $res = ["status" => "success",
-             "data" => $content->toArray()];
          $id = $content->id;
          $labels = json_decode($labels, true);
-         foreach ($labels as $key => $value)
-         {
-            $this->update_label($id, $key, $value);
-         }
+         if (is_array($labels))
+            foreach ($labels as $key => $value)
+            {
+               $this->update_label($id, $key, $value);
+            }
       }
-      return json_encode($res);
+      return \ew\APIResourceHandler::to_api_response($content->toArray());
    }
 
    public function update_content($id, $title, $type, $parent_id, $keywords, $description, $html_content, $featured_image, $labels)
@@ -413,15 +419,15 @@ class ContentManagement extends \ew\Module
       }
 
       $result = $this->add_content("article", $title, $parent_id, $keywords, $description, $htmlContent, "", $labels);
-      $result = json_decode($result, true);
 
       if ($result["data"]["id"])
       {
-         return json_encode(["status" => "success",
-             "title" => $title,
-             "message" => "tr{The new article has been added succesfully}",
-             "data" => ["id" => $result["data"]["id"],
-                 "type" => "article"]]);
+
+         return \ew\APIResourceHandler::to_api_response(["status" => "success",
+                     "title" => $title,
+                     "message" => "tr{The new article has been added succesfully}",
+                     "data" => ["id" => $result["data"]["id"],
+                         "type" => "article"]]);
          // End of plugins actions call
       }
       return $result;
@@ -430,7 +436,7 @@ class ContentManagement extends \ew\Module
 
    public function ew_page_feeder_article($id, $language)
    {
-      $articles = $this->contents_with_label($id, "admin_ContentManagement_language", $language);
+      $articles = $this->contents_labels($id, "admin_ContentManagement_language", $language);
       $article = [];
 
       if ($articles)
@@ -451,14 +457,18 @@ class ContentManagement extends \ew\Module
          $token = 0;
       if (!$size)
          $size = 30;
-      $articles = $this->get_articles_list($id, $token, $size);
-      $result["num_rows"] = $articles["totalRows"];
-      foreach ($articles["result"] as $article)
+
+      $articles = $this->contents_articles($id, $token, $size);
+
+      $result = [];
+      if (isset($articles["data"]))
       {
-         $result["items"][] = ["html" => "{$article["content"]}"];
+         foreach ($articles["data"] as $article)
+         {
+            $result[] = ["html" => "{$article["content"]}"];
+         }
       }
-      //print_r($language);
-      return json_encode($result);
+      return \ew\APIResourceHandler::to_api_response($result, ["totalRows" => $articles["totalRows"]]);
    }
 
    public function ew_menu_feeder_languages($id, $token = 0, $size)
@@ -491,7 +501,7 @@ class ContentManagement extends \ew\Module
          return \EWCore::log_error(404, "Requested article not found", "article is not exist: $articleId");
       }
       $article = $article->toArray();
-      $article["labels"] = ContentManagement::get_content_labels($articleId);
+      $article["labels"] = $this->get_content_labels($articleId);
       return $article;
    }
 
@@ -523,7 +533,7 @@ class ContentManagement extends \ew\Module
       }
    }
 
-   public function get_categories_list($parent_id, $token, $size)
+   public function contents_folders($parent_id, $token, $size)
    {
       $container_id = ew_contents::find($parent_id);
       $container_id = $container_id['parent_id'];
@@ -545,7 +555,7 @@ class ContentManagement extends \ew\Module
       return \ew\APIResourceHandler::to_api_response($rows, ["totalRows" => $folders->count()]);
    }
 
-   public function get_articles_list($parent_id = null, $token, $size)
+   public function contents_articles($parent_id = null, $token, $size)
    {
       if (!isset($token))
       {
@@ -585,7 +595,7 @@ class ContentManagement extends \ew\Module
       return \EWCore::log_error(400, 'tr{Something went wrong}');
    }
 
-   public function contents($_parts__id)
+   public function contents($_parts__id, $title_filter, $type, $token, $size)
    {
       if (isset($_parts__id))
       {
@@ -593,15 +603,15 @@ class ContentManagement extends \ew\Module
       }
       else
       {
-         return $this->get_contents();
+         return $this->get_contents($title_filter, $type, $token, $size);
       }
    }
 
-   public function content_fields($_parts__id, $id)
+   public function content_fields($_parts__id)
    {
       $content = $this->get_content_by_id($_parts__id);
 
-      return $content["content_fields"];
+      return $content["data"]["content_fields"];
    }
 
    private function get_content_by_id($id)
@@ -617,18 +627,17 @@ class ContentManagement extends \ew\Module
          $content->labels = $labels;
          return \ew\APIResourceHandler::to_api_response($content->toArray());
       }
+
       return EWCore::log_error(404, "content not found");
    }
 
    private function get_contents($title_filter = '%', $type = '%', $token = 0, $size = 99999999999999)
    {
-      $db = \EWCore::get_db_connection();
-      //$parentId = $db->real_escape_string($this->get_param("parentId"));
-      //echo "asssssssssssssssss";
       if (!$token)
       {
          $token = 0;
       }
+
       if (!$size)
       {
          $size = '18446744073709551610';
@@ -636,7 +645,7 @@ class ContentManagement extends \ew\Module
 
       $contents = ew_contents::where('type', 'LIKE', $type)
                       ->where(\Illuminate\Database\Capsule\Manager::raw("`title` COLLATE UTF8_GENERAL_CI"), 'LIKE', $title_filter . '%')
-                      ->orderBy('title')->take($size)->skip($token)->get($id, ['*',
+                      ->orderBy('title')->take($size)->skip($token)->get(['*',
           \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
 
       /* return ["totalRows" => $contents->count(),
@@ -645,30 +654,31 @@ class ContentManagement extends \ew\Module
       return \ew\APIResourceHandler::to_api_response($contents->toArray(), ["totalRows" => $contents->count()]);
    }
 
-   public function add_category($title, $parent_id, $keywords, $description, $labels)
+   public function add_folder($title, $parent_id, $keywords, $description, $labels)
    {
       $db = \EWCore::get_db_connection();
 
-      if (!$parentId)
-         $parentId = 0;
+      if (!$parent_id)
+         $parent_id = 0;
 
       $html_content = $_REQUEST['content'];
 
       $result = $this->add_content("folder", $title, $parent_id, $keywords, $description, $html_content, "", $labels);
-      $result = json_decode($result, true);
-
-      /* $stm = $db->prepare("INSERT INTO content_categories (title , parent_id , date_created , content_categories.order) VALUES (? , ? , NOW() , '0')");
-        $stm->bind_param("ss", $title, $parentId); */
+      //$result = json_decode($result, true);
 
       if ($result['data']["id"])
       {
          $content_id = $result['data']["id"];
-         $res = array(
+         $res = [
              "status" => "success",
              "message" => "Folder has been added successfully",
-             "data" => ["id" => $content_id,
-                 "type" => "folder"]);
-         return json_encode($res);
+             "data" => [
+                 "id" => $content_id,
+                 "type" => "folder"
+             ]
+         ];
+
+         return \ew\APIResourceHandler::to_api_response($res);
       }
       return $result;
    }
@@ -676,8 +686,6 @@ class ContentManagement extends \ew\Module
    public function get_category($id)
    {
       $db = \EWCore::get_db_connection();
-      //$categoryId = $db->real_escape_string($_REQUEST["categoryId"]);
-
 
       $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents WHERE id = '$id'") or die($db->error);
 
@@ -688,7 +696,7 @@ class ContentManagement extends \ew\Module
       }
    }
 
-   public function update_category($id = null, $title = null, $parent_id = null, $keywords = null, $description = null, $content = null, $labels = null)
+   public function update_folder($id = null, $title = null, $parent_id = null, $keywords = null, $description = null, $content = null, $labels = null)
    {
       $db = \EWCore::get_db_connection();
 
@@ -776,26 +784,22 @@ class ContentManagement extends \ew\Module
       }
    }
 
-   public function delete_content($type, $id)
+   public function delete_content($id)
    {
       $db = \EWCore::get_db_connection();
-      if (!$type)
-         $type = $db->real_escape_string($_REQUEST["type"]);
-      if (!$id)
-         $id = $db->real_escape_string($_REQUEST["id"]);
-      $result = $db->query("SELECT * FROM ew_contents WHERE parent_id = '$id' LIMIT 1");
-      if ($result->fetch_assoc())
+
+      $items = ew_contents::where("parent_id", $id)->get();
+      if ($items->count() > 0)
       {
          //return array(status => "unable", status_code => 2);
          return \EWCore::log_error(400, "tr{In order to delete this folder, you must delete content of this folder first}");
       }
-      $result = $db->query("DELETE FROM ew_contents WHERE type = '$type' AND id = '$id'");
-      if ($result)
+
+      if (ew_contents::destroy($id))
       {
-         return array(
-             "status" => "success",
-             "status_code" => 1,
-             "message" => "Content has been deleted successfully");
+         return \ew\APIResourceHandler::to_api_response(["status" => "success",
+                     "status_code" => 1,
+                     "message" => "Content has been deleted successfully"]);
       }
       else
       {
@@ -807,7 +811,7 @@ class ContentManagement extends \ew\Module
    {
       $db = \EWCore::get_db_connection();
       $albumId = $db->real_escape_string($_REQUEST["albumId"]);
-      $res = $this->delete_content("album", $albumId);
+      $res = $this->delete_content($albumId);
       if ($res["status_code"] == 1)
          $res["message"] = "The album has been deleted successfuly";
       else if ($res["status_code"] == 2)
@@ -817,30 +821,14 @@ class ContentManagement extends \ew\Module
       return json_encode($res);
    }
 
-   public function delete_category($categoryId)
+   public function delete_folder($id)
    {
-      /* $db = \EWCore::get_db_connection();
-        $categoryId = $db->real_escape_string($_REQUEST["categoryId"]); */
-      return json_encode($this->delete_content("folder", $categoryId));
+      return $this->delete_content($id);
    }
 
-   public function delete_article($articleId)
+   public function delete_article($id)
    {
-      $db = \EWCore::get_db_connection();
-      //$articleId = $db->real_escape_string($_REQUEST["articleId"]);
-      $result = $db->query("DELETE FROM ew_contents WHERE id = '$articleId'");
-      $db->close();
-      if ($result)
-      {
-         echo json_encode(array(
-             status => "success",
-             "message" => "tr{Article has been deleted succesfully}"));
-      }
-      else
-      {
-
-         return EWCore::log_error("400", "tr{Something went wrong, please try again}", $db->error_list);
-      }
+      return $this->delete_content($id);
    }
 
    public function get_documents_list($parentId, $token = null, $size = null)
@@ -935,12 +923,11 @@ class ContentManagement extends \ew\Module
 
       $root = EW_MEDIA_DIR;
       $new_width = 140;
-
       try
       {
          $files = array();
          // Folder
-         $files = ew_contents::where('type', 'album')->where('parent_id', $parent_id)->orderBy('title')->get(['*',
+         $files = ew_contents::where('type', 'album')->where('type', 'album')->where('parent_id', $parent_id)->orderBy('title')->get(['*',
                      \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")])->toArray();
          /* $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents WHERE type = 'album' AND parent_id = '$parent_id' ORDER BY title") or die("safasfasf");
            while ($r = $result->fetch_assoc())
@@ -949,18 +936,20 @@ class ContentManagement extends \ew\Module
            } */
 
          // images
-         $result = $db->query("SELECT *,ew_contents.id AS content_id, DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents, ew_images WHERE ew_contents.id = ew_images.content_id AND parent_id = '$parent_id' ORDER BY title") or die("safasfasf");
+         $result = $db->query("SELECT *,ew_contents.id AS content_id, DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents, ew_images WHERE ew_contents.id = ew_images.content_id AND ew_contents.parent_id = '$parent_id' ORDER BY title") or die("safasfasf");
          while ($r = $result->fetch_assoc())
          {
+            //echo "asd";
             $file = $r["source"];
             $file_path = $root . $path . $file;
             $file_info = pathinfo($file_path);
 
             // create thumb for image if doesn't exist
-            $tumbURL = 'asset/images' . $path . $file_info["filename"] . ".thumb." . $file_info["extension"];
-
+            $tumbURL = 'album-' . $parent_id . $path . $file_info["filename"] . ".thumb." . $file_info["extension"];
+//echo $tumbURL;
             if (!file_exists($file_path))
             {
+
                $files[] = array(
                    "id" => $r["content_id"],
                    title => $r["title"],
@@ -982,12 +971,13 @@ class ContentManagement extends \ew\Module
             if (!file_exists($root . $path . $file_info["filename"] . ".thumb." . $file_info["extension"]) && $width > 140)
             {
                $this->create_image_thumb($file_path, 140);
-               $tumbURL = 'asset/images' . $path . $file_info["filename"] . ".thumb." . $file_info["extension"];
+               $tumbURL = 'album-' . $parent_id . $path . $file_info["filename"] . ".thumb." . $file_info["extension"];
             }
             else if ($width <= 140)
             {
-               $tumbURL = 'asset/images' . $path . $file;
+               $tumbURL = 'album-' . $parent_id . $path . $file;
             }
+
 //echo $file_info["extension"]." ".$this->file_types["jpg"];
 //print_r($this->file_types);
             $files[] = array(
@@ -997,12 +987,12 @@ class ContentManagement extends \ew\Module
                 type => $this->file_types[$file_info["extension"]] ? $this->file_types[$file_info["extension"]] : "unknown",
                 size => round(filesize($file_path) / 1024),
                 ext => $file_info["extension"],
-                url => 'asset/images' . $path . $file,
-                absUrl => EW_ROOT_URL . "asset/images/$file",
-                originalUrl => EW_ROOT_URL . "media/$file",
+                url => 'media' . $path . $file,
+                absUrl => EW_ROOT_URL . "~rm/public/media/$file",
+                originalUrl => EW_ROOT_URL . "~rm/public/media/$file",
                 filename => $file_info["filename"],
                 fileExtension => $file_info["extension"],
-                thumbURL => EW_DIR . $tumbURL,
+                thumbURL => EW_DIR . '~rm/public/media/' . $tumbURL,
                 path => $file_path);
          }
       }
@@ -1010,15 +1000,16 @@ class ContentManagement extends \ew\Module
       {
          echo $e->getMessage();
       }
-      return json_encode($files);
+      //var_dump($files);
+      return \ew\APIResourceHandler::to_api_response($files);
    }
 
-   public function get_album($albumId)
+   public function albums($_parts__id)
    {
       $db = \EWCore::get_db_connection();
 
 
-      $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents WHERE id = '$albumId'") or die($db->error);
+      $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents WHERE id = '$_parts__id'") or die($db->error);
 
       if ($rows = $result->fetch_assoc())
       {
@@ -1200,7 +1191,7 @@ class ContentManagement extends \ew\Module
       //  $order = 0;
 
 
-      $root = EW_MEDIA_DIR;
+      $root = EW_MEDIA_DIR . '/album-' . $parent_id;
       $succeed = 0;
       $error = 0;
       $thegoodstuf = '';
@@ -1238,7 +1229,7 @@ class ContentManagement extends \ew\Module
                   $content_id = $result["data"]["id"];
                   $stm = $db->prepare("INSERT INTO ew_images (content_id, source , alt_text) 
             VALUES (? , ? , ?)") or die($db->error);
-                  $image_path = $foo->file_dst_name;
+                  $image_path = 'album-' . $parent_id . '/' . $foo->file_dst_name;
                   $stm->bind_param("sss", $content_id, $image_path, $alt_text) or die($db->error);
                   if ($stm->execute())
                   {

@@ -376,15 +376,8 @@ session_start();
             itemLabel = liUl.find(".item-label");
             liUl.attr("data-linked-panel-id", v.attr("data-panel-id"));
             skipBoxBlock = false;
-            /*if (v.hasClass("row") && v.parent().hasClass("panel"))
-             {
-             liUl.find(".item-label").append("Box Block");
-             //Set box block id for the box 
-             skipBoxBlock = true;
-             //alert("asd");
-             }
-             else*/ if (v.hasClass("row"))
-            {
+
+            if (v.hasClass("row")) {
                itemLabel.append("Block");
                liUl.find("img").attr("src", "~admin/public/css/images/block-icon.png");
                liUl.addClass("block");
@@ -392,12 +385,11 @@ session_start();
                   self.blockForm(v.attr('data-panel-id'));
                   e.preventDefault();
                });
-            } else if (v.children(".row").length > 0)
-            {
+            } else if (v.children(".row").length > 0) {
                itemLabel.append("Panel");
                liUl.addClass("panel");
                // Set data link panel id for the panel
-               liUl.attr("data-linked-panel-id", v.attr('data-panel-id'))
+               liUl.attr("data-linked-panel-id", v.attr('data-panel-id'));
                self.lastItem = liUl;
 
                itemLabel.click(function (e) {
@@ -406,8 +398,7 @@ session_start();
                });
                //skipBoxBlock = true;
                skipChildren = true;
-            } else
-            {
+            } else {
                itemLabel.append("Panel");
                liUl.addClass("panel");
                itemLabel.click(function (e) {
@@ -439,8 +430,7 @@ session_start();
                {
                   frameBody.stop().animate({
                      scrollTop: panel.offset().top
-                  },
-                          500);
+                  }, 500);
                }
 
                self.currentElementHighlight.css({
@@ -451,21 +441,18 @@ session_start();
                   height: panel.outerHeight(),
                   margin: "0px"
                });
+
                self.currentElementHighlight.show();
                addItem.stop().fadeIn(300);
-               //console.log("a");
-
             }, function () {
                self.currentElementHighlight.hide();
                addItem.hide();
-
             });
 
             var ul = $("<ul></ul>");
             ul.append(self.createInspector(v));
             // Skip adding panel block to the editor
-            if (skipBoxBlock)
-            {
+            if (skipBoxBlock) {
                $(self.lastItem).find(".add-item").unbind("click").click(function (e) {
                   e.preventDefault();
                   self.showWidgetsList(v.attr('data-panel-id'));
@@ -474,15 +461,14 @@ session_start();
                $(self.lastItem).append(ul);
                self.lastItem = null;
                //$this.lastItem = null;
-            } else
-            {
-               if (skipChildren)
-               {
+            } else {
+               if (skipChildren) {
                   skipChildren = false;
                   ul.html(self.createInspector(v.children().eq(0)));
                   liUl.append(ul);
-               } else
+               } else {
                   liUl.append(ul);
+               }
                result.push(liUl);
             }
          }
@@ -579,7 +565,7 @@ session_start();
             widgetIndex++;
          }
       });
-      var inspectorEditorList = $("#inspector-editor > .items");
+      var inspectorEditorList = $("#inspector-editor").children(".items");
       inspectorEditorList.empty();
 
       // Add div to create glass effect to make the iframe content unselectable
@@ -724,12 +710,12 @@ session_start();
             self.relocateGlassPanes();
          }, 1000);
    };
+
    /** Create a json string from current layout structure heirarchy 
     * 
     
     * @returns {String} */
-   UISForm.prototype.createContentHeirarchy = function ()
-   {
+   UISForm.prototype.createContentHeirarchy = function () {
       var self = this;
       if (!self.editor)
          return {};
@@ -737,25 +723,25 @@ session_start();
       var root = {
       };
 
-      $.each(panels, function (i, v)
-      {
+      $.each(panels, function (i, v) {
          v = $(v).clone();
          v.removeClass("panel").removeClass("block");
+         //alert(v.attr("data-panel-parameters"))
          root[i] = {
-            "type": "panel",
-            "class": v.prop("class"),
-            "id": v.attr("id"),
-            "panelParameters": v.attr("data-panel-parameters"),
+            type: "panel",
+            class: v.prop("class"),
+            id: v.attr("id"),
+            panelParameters: JSON.parse(v.attr("data-panel-parameters") || '{}'),
             //"blockName": v.attr("data-block-name"),
-            "children": self.readPanels(v)
+            children: self.readPanels(v)
          };
       });
-      //alert(JSON.stringify(root));
-      return JSON.stringify(root);
+
+      //console.log(root);
+      return root;
    };
 
-   UISForm.prototype.readPanels = function (elm)
-   {
+   UISForm.prototype.readPanels = function (elm) {
       var self = this;
       var child = {
       };
@@ -763,30 +749,28 @@ session_start();
       $.each($(elm).children("[data-panel],[data-widget-container]"), function (i, v) {
          v = $(v).clone();
 
-         if (v.attr("data-panel"))
-         {
+         if (v.attr("data-panel")) {
             v.removeClass("panel");
             child[index++] = {
-               "type": "panel",
-               "class": v.prop("class"),
-               "id": v.attr("id"),
-               "panelParameters": v.attr("data-panel-parameters"),
+               type: "panel",
+               class: v.prop("class"),
+               id: v.attr("id"),
+               /*"panelParameters": JSON.parse(v.attr("data-panel-parameters") || '{}'),*/
                // Read the childeren of the panel
-               "children": self.readPanels(v.children().eq(0))
+               children: self.readPanels(v.children().eq(0))
             };
-         } else if (v.attr("data-widget-container"))
-         {
+         } else if (v.attr("data-widget-container")) {
             v.removeClass("widget-container");
-            var w = $(v).children(".widget");
+            var w = v.children(".widget");
             w.removeClass("widget");
             //alert(w.prop("class"));
             child[index++] = {
-               "type": "widget",
-               "class": v.prop("class"),
+               type: "widget",
+               class: v.prop("class"),
                widgetClass: w.prop("class"),
-               "id": w.attr("id"),
-               "widgetType": w.attr("data-widget-type"),
-               "widgetParameters": self.editor.EW.widget_data[w.attr("data-widget-id")]
+               id: w.attr("id"),
+               widgetType: w.attr("data-widget-type"),
+               widgetParameters: self.editor.EW.widget_data[w.attr("data-widget-id")]
             };
          }
 
@@ -948,27 +932,26 @@ session_start();
       $.post('<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/update-uis', {
          name: $('#name').val(),
          template: $('#template').val(),
-         template_settings: JSON.stringify(self.templateSettings),
+         template_settings: self.templateSettings,
          perview_url: $("#perview_url").val(),
          structure: structure,
          uisId: self.uisId,
          defaultUIS: defaultUIS,
          homeUIS: homeUIS
-      },
-              function (data) {
-                 //EW.unlock(self.dpPreference);
-                 EW.unlock($("#ew-uis-editor"));
-                 $("body").EW().notify(data).show();
-                 uisList.listUIStructures();
-                 $('#form-title').html("<span>Edit</span> " + data.data.title);
+      }, function (data) {
+         //EW.unlock(self.dpPreference);
+         EW.unlock($("#ew-uis-editor"));
+         $("body").EW().notify(data).show();
+         uisList.listUIStructures();
+         $('#form-title').html("<span>Edit</span> " + data.data.title);
 
-                 if (reload === true)
-                 {
-                    self.reloadFrame();
-                 } else
-                    self.oldStructure = self.createContentHeirarchy();
+         if (reload === true)
+         {
+            self.reloadFrame();
+         } else
+            self.oldStructure = self.createContentHeirarchy();
 
-              }, "json");
+      }, "json");
    };
 
    UISForm.prototype.updateTemplateBody = function ()
@@ -981,60 +964,58 @@ session_start();
       // Read template settings from template settings form
       self.templateSettingsForm.trigger("getData");
 
-      $.post('~webroot/api/widgets-management/get-layout',
-              {
-                 uisId: self.uisId,
-                 template: self.uisTemplate,
-                 template_settings: JSON.stringify(self.templateSettings)
-              },
-              function (data) {
-                 EW.unlock(self.editorWindow);
-                 //console.log(data);
-                 var myIframe = document.getElementById("fr");
-                 //$(myIframe.contentWindow.document).off();
-                 var myIframeContent = $(myIframe).contents();
-                 myIframeContent.find("body").off();
-                 myIframeContent.find("head #template-script").remove();
-                 myIframeContent.find("head #widget-data").remove();
-                 myIframeContent.find("body #base-content-pane").remove();
+      $.post('~webroot/api/widgets-management/get-layout', {
+         uisId: self.uisId,
+         template: self.uisTemplate,
+         template_settings: JSON.stringify(self.templateSettings)
+      }, function (data) {
+         EW.unlock(self.editorWindow);
+         //console.log(data);
+         var myIframe = document.getElementById("fr");
+         //$(myIframe.contentWindow.document).off();
+         var myIframeContent = $(myIframe).contents();
+         myIframeContent.find("body").off();
+         myIframeContent.find("head #template-script").remove();
+         myIframeContent.find("head #widget-data").remove();
+         myIframeContent.find("body #base-content-pane").remove();
 
-                 myIframeContent.find("head #template-css").attr("href", "~rm/public/" + $('#template').val() + "/template.css");
+         myIframeContent.find("head #template-css").attr("href", "~rm/public/" + $('#template').val() + "/template.css");
 
-                 var widgetData = myIframe.contentWindow.document.createElement("script");
-                 widgetData.id = "widget-data";
-                 widgetData.innerHTML = data["widget_data"];
-                 myIframe.contentWindow.document.head.appendChild(widgetData);
+         var widgetData = myIframe.contentWindow.document.createElement("script");
+         widgetData.id = "widget-data";
+         widgetData.innerHTML = data["widget_data"];
+         myIframe.contentWindow.document.head.appendChild(widgetData);
 
-                 var templateBody = myIframe.contentWindow.document.createElement("div");
-                 templateBody.id = "base-content-pane";
-                 templateBody.className = "container";
-                 templateBody.innerHTML = data["template_body"];
-                 myIframe.contentWindow.document.body.appendChild(templateBody);
+         var templateBody = myIframe.contentWindow.document.createElement("div");
+         templateBody.id = "base-content-pane";
+         templateBody.className = "container";
+         templateBody.innerHTML = data["template_body"];
+         myIframe.contentWindow.document.body.appendChild(templateBody);
 
-                 // Adding template script after adding template body
-                 if (data["template_script"])
-                 {
-                    var script = myIframe.contentWindow.document.createElement("script");
-                    //script.type = "text/javascript";
-                    script.id = "template-script";
-                    var templateScript = $(data["template_script"]).attr("id", "template-script");
-                    script.innerHTML = templateScript.html();
+         // Adding template script after adding template body
+         if (data["template_script"])
+         {
+            var script = myIframe.contentWindow.document.createElement("script");
+            //script.type = "text/javascript";
+            script.id = "template-script";
+            var templateScript = $(data["template_script"]).attr("id", "template-script");
+            script.innerHTML = templateScript.html();
 
-                    myIframe.contentWindow.document.head.appendChild(script);
-                 }
+            myIframe.contentWindow.document.head.appendChild(script);
+         }
 
-                 // Find scripts inside the template body and run them
-                 var scripts = [];
-                 var ret = myIframe.contentWindow.document.body;
-                 findScriptTags(ret, scripts)
-                 for (script in scripts)
-                 {
-                    evalScript(scripts[script]);
-                 }
+         // Find scripts inside the template body and run them
+         var scripts = [];
+         var ret = myIframe.contentWindow.document.body;
+         findScriptTags(ret, scripts)
+         for (script in scripts)
+         {
+            evalScript(scripts[script]);
+         }
 
-                 $("#inspector-editor").trigger("refresh");
+         $("#inspector-editor").trigger("refresh");
 
-              }, "json");
+      }, "json");
    };
    function findScriptTags(element, scripts)
    {

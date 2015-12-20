@@ -112,9 +112,9 @@ $panelId = $_REQUEST['panelId'];
    {
       var self = this;
       $.EW("lock", $.EW("getParentDialog", $("#uis-widget-form")));
-      var wp = JSON$("#uis-widget").serializeJSON();
+      var wp = $("#uis-widget").serializeJSON(true);
       if (self.getWidgetData)
-         wp = JSON.stringify($.extend($.parseJSON(wp), self.getWidgetData.apply(null, null)));
+         wp = $.extend($.parseJSON(wp), self.getWidgetData.apply(null, null));
       //var param = $("#parameters").val();
       var styleId = $("#style_id").val();
       var styleClass = $("#used-classes").text();
