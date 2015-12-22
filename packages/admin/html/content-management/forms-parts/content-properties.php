@@ -33,8 +33,8 @@
    $content_components = EWCore::read_registry(EWCore::$EW_CONTENT_COMPONENT);
 
    foreach ($content_components as $comp_id => $label_object)
-   {//print_r($value);
-      $data_array = json_decode($form_config["data"], true);
+   {
+      $data_array = json_decode($form_config["data"] || [], true);
       $labels = $data_array["labels"];
 
       if (isset($labels))
@@ -48,7 +48,7 @@
             }
          }
       }
-      
+
       $form = EWCore::call($label_object['form'], compact("comp_id", "value", "form_id"));
       ?>
       <div class=row>
@@ -65,7 +65,7 @@
                   </div>
                </div>
                <div class='row'>
-                  <?= EWCore::populate_view($form, compact("comp_id", "value", "form_id")) ?>
+   <?= EWCore::populate_view($form, compact("comp_id", "value", "form_id")) ?>
                </div>
             </div>
          </div>

@@ -220,6 +220,7 @@
                     boxShadow: ds.boxShadow,
                     borderRadius: ds.borderRadius,
                     ease: conf.ease || "Power2.easeInOut",
+                    delay: conf.delay || 0,
                     onComplete: function ()
                     {
                        conf.to.style.visibility = "";
@@ -240,6 +241,131 @@
                           conf.onComplete();
                     }
                  });
+      },
+      /**
+       * 
+       * @param {object} conf
+       * @returns {undefined}
+       */
+      sizeTransform: function (conf)
+      {
+         var t = conf.time || system.UI.DEFAULTS.animationDuration;
+         var sourceRect = conf.from.getBoundingClientRect();
+         var distRect = conf.to.getBoundingClientRect();
+         var transformBox = document.createElement("div");
+         //var sourceStyle = window.getComputedStyle(conf.from, null);
+         //var ds = window.getComputedStyle(conf.to, null);
+         transformBox.style.position = "absolute";
+         transformBox.style.textAlign = "center";
+         transformBox.className = conf.to.className;
+
+         conf.to.style.visibility = "hidden";
+         if (conf.flow) {
+            conf.from.style.visibility = "hidden";
+            conf.from.style.transition = "none";
+         }
+
+         if (conf.to.parentNode) {
+            conf.to.parentNode.appendChild(transformBox);
+         } else {
+            system.UI.body.appendChild(transformBox);
+         }
+
+         tween.fromTo(transformBox, t, {
+            width: sourceRect.width,
+            height: sourceRect.height,
+            left: sourceRect.left,
+            top: sourceRect.top
+                    //opacity: 1
+         }, {
+            width: distRect.width,
+            height: distRect.height,
+            left: distRect.left,
+            top: distRect.top,
+            ease: conf.ease || "Power2.easeInOut",
+            onComplete: function () {
+               conf.to.style.visibility = "";
+               conf.from.style.transition = "";
+               if (conf.fade > 0) {
+                  tween.to(transformBox, conf.fade, {
+                     opacity: 0,
+                     ease: "Power0.easeNone",
+                     onComplete: function () {
+                        transformBox.parentNode.removeChild(transformBox);
+                     }
+                  });
+               } else {
+                  transformBox.parentNode.removeChild(transformBox);
+               }
+
+               if (conf.onComplete)
+                  conf.onComplete();
+            }
+         });
+      },
+      /**
+       * 
+       * @param {object} conf
+       * @returns {undefined}
+       */
+      rippleOut: function (conf)
+      {
+         var t = conf.time || system.UI.DEFAULTS.animationDuration;
+         var sourceRect = conf.from.getBoundingClientRect();
+         var distRect = conf.to.getBoundingClientRect();
+         var transformBox = document.createElement("div");
+         var ds = window.getComputedStyle(conf.to, null);
+         transformBox.style.position = "absolute";
+         transformBox.style.textAlign = "center";
+         transformBox.style.borderRadius = "50%";
+         transformBox.style.backgroundColor = ds.backgroundColor;
+         transformBox.style.zIndex = ds.zIndex;
+
+         conf.to.style.visibility = "hidden";
+         if (conf.flow) {
+            conf.from.style.visibility = "hidden";
+            conf.from.style.transition = "none";
+         }
+
+         if (conf.to.parentNode) {
+            conf.to.parentNode.appendChild(transformBox);
+         } else {
+            system.UI.body.appendChild(transformBox);
+         }
+         var width = distRect.width > distRect.height ? distRect.width : distRect.height,
+                 halfWidth = distRect.width / 2,
+                 sourceLeft = sourceRect.left + (sourceRect.width / 2),
+                 sourceTop = sourceRect.top + (sourceRect.height / 2);
+         tween.fromTo(transformBox, t, {
+            width: width,
+            height: width,
+            left: sourceLeft - halfWidth,
+            top: sourceTop - halfWidth,
+            transform: "scale(0)"
+                    //opacity: 1
+         }, {
+            transform: "scale(2)",
+            ease: conf.ease || "Power2.easeInOut",
+            delay: conf.delay || 0,
+            onComplete: function () {
+               conf.to.style.visibility = "";
+               conf.from.style.transition = "";
+               if (conf.fade > 0) {
+                  tween.to(transformBox, conf.fade, {
+                     opacity: 0,
+                     ease: "Power0.easeNone",
+                     onComplete: function () {
+                        transformBox.parentNode.removeChild(transformBox);
+                     }
+                  });
+               } else if (transformBox.parentNode) {
+                  transformBox.parentNode.removeChild(transformBox);
+               }
+
+               if (conf.onComplete)
+                  conf.onComplete();
+            }
+         });
       },
       scaleTransform: function (conf)
       {

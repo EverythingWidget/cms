@@ -289,12 +289,10 @@ session_start();
             self.dpPreference.trigger("destroy");
       });
       $.EW("getParentDialog", $("#ew-uis-editor")).on("beforeClose", function () {
-         //console.log(self.oldStructure + "  " + self.createContentHeirarchy());
-         if (self.oldStructure !== self.createContentHeirarchy())
-         {
+         console.log(self.oldStructure, self.createContentHeirarchy());
+         if (JSON.stringify(self.oldStructure) !== JSON.stringify(self.createContentHeirarchy())) {
             return confirm("tr{You have unsaved changes. Are you sure you want to close?}");
-         } else
-         {
+         } else {
             return true;
          }
       });
@@ -309,9 +307,9 @@ session_start();
             self.uisId = data.id;
             $("#uis-preference-actions .export-btn").attr("href", "~webroot/api/widgets-management/export-uis?uis_id=" + self.uisId);
             self.uisTemplate = data.template;
-            if (data.template_settings)
-               self.templateSettings = $.parseJSON(data.template_settings);
-            else
+            if (data.template_settings) {
+               self.templateSettings = JSON.parse(data.template_settings);
+            } else
                self.templateSettings = {};
             EW.setFormData("#template_settings_form", self.templateSettings);
             self.reloadFrame();
@@ -324,9 +322,9 @@ session_start();
 
    UISForm.prototype.setTemplateSettings = function (settings)
    {
-      if (typeof settings == "string")
+      if (typeof settings === "object")
       {
-         settings = $.parseJSON(settings);
+         settings = JSON.stringify(settings);
       }
       this.templateSettings = settings;
    }
@@ -746,7 +744,7 @@ session_start();
       var child = {
       };
       var index = 0;
-      $.each($(elm).children("[data-panel],[data-widget-container]"), function (i, v) {
+      $.each(elm.children("[data-panel],[data-widget-container]"), function (i, v) {
          v = $(v).clone();
 
          if (v.attr("data-panel")) {
@@ -840,18 +838,15 @@ session_start();
       {
          $.post("<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/get-template-settings-form", {
             path: template
-         },
-                 function (data)
-                 {
-                    self.uisTemplate = template;
-                    self.templateSettingsForm.off("getData");
-                    self.templateSettingsForm.html(data);
-                    EW.setFormData("#template_settings_form", self.templateSettings);
-                    self.updateTemplateBody();
-                 });
+         }, function (data) {
+            self.uisTemplate = template;
+            self.templateSettingsForm.off("getData");
+            self.templateSettingsForm.html(data);
+            EW.setFormData("#template_settings_form", self.templateSettings);
+            self.updateTemplateBody();
+         });
       }
-   }
-
+   };
 
    UISForm.prototype.readTemplateClassAndId = function ()
    {
@@ -922,10 +917,11 @@ session_start();
       EW.lock(self.dpPreference, "Saving...");
       EW.lock($("#ew-uis-editor"));
 
-      var structure = self.createContentHeirarchy();
+      var structure = JSON.stringify(self.createContentHeirarchy());
       var defaultUIS = $("#uis-default").is(":checked");
       var homeUIS = $("#uis-home-page").is(":checked");
-      self.templateSettings = self.templateSettingsForm.serializeJSON();
+      self.templateSettings = self.templateSettingsForm.serializeJSON(true);
+
       //if(!self.templateSettings)
       //alert(JSON.stringify(self.templateSettings));
       self.templateSettingsForm.trigger("getData");
@@ -944,7 +940,7 @@ session_start();
          $("body").EW().notify(data).show();
          uisList.listUIStructures();
          $('#form-title').html("<span>Edit</span> " + data.data.title);
-
+         self.oldStructure = structure;
          if (reload === true)
          {
             self.reloadFrame();

@@ -817,7 +817,7 @@ h2 {
    text-shadow: 0 0 5px #fff;
    cursor: default;
    z-index: 10;
-   transition: opacity .5s;
+   /* transition: opacity .5s;*/
 }
 
 .glass-pane-lock span {

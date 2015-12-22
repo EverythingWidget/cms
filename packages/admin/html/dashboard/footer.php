@@ -261,7 +261,7 @@
                border: "none",
                outline: "none",
                minHeght: "128px",
-               maxWidth:"720px",
+               maxWidth: "720px",
                display: "block",
                float: "",
                margin: "2px auto 2px auto"
@@ -480,6 +480,9 @@
          appBar: $("#app-bar"),
          homePane: $("#home-pane")
       };
+      
+      System.UI.body = $("body")[0];
+      
       var hashDetection = new hashHandler();
       EW.activities = <?php echo EWCore::read_activities(); ?>;
       EW.oldApp = null;

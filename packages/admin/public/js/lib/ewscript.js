@@ -610,7 +610,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
       if (modalPane.isOpen && modalPane.triggerHandler("beforeClose"))
       {
          modalPane.isOpen = false;
-         self.unlock(basePane);
+         self.unlock(basePane, 400);
 
          $("#apps").attr("target", "");
 
@@ -687,7 +687,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
       if (!modalPane.isOpen)
       {
          if (settings.lockUI || settings.class === "full") {
-            self.lock(basePane, " ", 600);
+            self.lock(basePane, " ", 500);
          }
 
          if (!$.contains(document.body, modalPane)) {
@@ -1205,6 +1205,13 @@ EverythingWidgets.prototype.lock = function (obj, string, delay)
    }
 
    $(obj).append(glass);
+   /*if (EW.activeElement) {
+    System.UI.Animation.rippleOut({
+    from: EW.activeElement[0],
+    to: glass[0],
+    time: delay
+    });
+    }*/
    var of = {
       top: 0,
       left: 0
@@ -1223,29 +1230,21 @@ EverythingWidgets.prototype.lock = function (obj, string, delay)
     460, "Power3.easeInOut");
     }*/
    //var height = $(obj).outerHeight(true) === 0 ? "100%" : $(obj).outerHeight(true) - 20;
-   glass.delay(delay || 0).animate({
+   glass.animate({
       opacity: 1
-   }, 0);
+   }, delay);
    return glass;
 };
-EverythingWidgets.prototype.unlock = function (obj)
-{
-   /*if ($(obj).is("body"))
-    $("#base-pane").animate({
-    transform: "none"
-    },
-    360);*/
 
+EverythingWidgets.prototype.unlock = function (obj, dur) {
    var ll = $(obj).children(".glass-pane-lock:not(.unlock)").last();
    ll.addClass("unlock").animate({
       opacity: 0
-   },
-           0, function ()
-           {
-              $(this).remove();
-
-           });
+   }, dur || 0, function () {
+      $(this).remove();
+   });
 };
+
 function EWTable(config)
 {
    var $base = this;

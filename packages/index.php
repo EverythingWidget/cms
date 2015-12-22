@@ -179,7 +179,7 @@ if (!isset($_REQUEST["_uis"]))
 else
 {
 
-   $uis_data = json_decode(webroot\WidgetsManagement::get_uis($_REQUEST["_uis"]), true);
+   $uis_data = webroot\WidgetsManagement::get_uis($_REQUEST["_uis"]);
    $_REQUEST["_uis_template"] = $uis_data["template"];
    if (!$_REQUEST["_uis_template_settings"])
       $_REQUEST["_uis_template_settings"] = $uis_data["template_settings"];

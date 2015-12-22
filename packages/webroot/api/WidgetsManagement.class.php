@@ -266,7 +266,7 @@ class WidgetsManagement extends \ew\Module
          return json_encode($res);
       }
       $stm = $db->prepare("INSERT INTO ew_ui_structures(name,template,template_settings,structure) VALUES (?,?,?,?)");
-      $stm->bind_param("ssss", $name, $template, ($template_settings), ($structure));
+      $stm->bind_param("ssss", $name, $template, $template_settings, $structure);
       $stm->execute();
       if ($_REQUEST['defaultUIS'] == "true")
       {
@@ -282,7 +282,7 @@ class WidgetsManagement extends \ew\Module
           "name" => $name);
       $stm->close();
       $db->close();
-      return json_encode($res);
+      return $res;
    }
 
    public function import_uis()
@@ -407,7 +407,7 @@ class WidgetsManagement extends \ew\Module
          $structure = json_encode($structure);
       }
       $stm = $db->prepare("UPDATE ew_ui_structures SET name = ?, template= ?, template_settings= ?, perview_url = ?, structure = ? WHERE id = ?") or die($db->error);
-      $stm->bind_param("ssssss", $name, $template, ($template_settings), $perview_url, $structure, $uisId);
+      $stm->bind_param("ssssss", $name, $template, $template_settings, $perview_url, $structure, $uisId);
       $error = $db->errno;
       if ($stm->execute())
       {
@@ -451,7 +451,7 @@ class WidgetsManagement extends \ew\Module
             $rows["uis-default"] = "true";
          if ($home_uis["id"] == $uisId)
             $rows["uis-home-page"] = "true";
-         return json_encode($rows);
+         return $rows;
       }
       else
       {
@@ -1205,7 +1205,7 @@ class WidgetsManagement extends \ew\Module
       $widget_data = $layout["widget_data"];
       if (!$template)
       {
-         $uis_info = json_decode(WidgetsManagement::get_uis($uisId), true);
+         $uis_info = WidgetsManagement::get_uis($uisId);
          $template = $uis_info["template"];
          $template_settings = $uis_info["template_settings"];
       }

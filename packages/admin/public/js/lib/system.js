@@ -127,7 +127,7 @@
                this.activeModule = this.modules[navigation[this.moduleIdentifier][0]];
             } else
                this.activeModule = null;
-            console.log(this.id, this.activeModule, this.modules);
+            //console.log(this.id, this.activeModule, this.modules);
 
             if (this.activeModule)
             {
