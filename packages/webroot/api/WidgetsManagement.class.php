@@ -134,7 +134,6 @@ class WidgetsManagement extends \ew\Module
 
    public function category_action_get($_data)
    {
-//echo "assssssssssssssssssss".$data["id"];
       if ($_data["id"])
       {
          $page_uis = json_decode($this->get_path_uis("/folder/" . $_data["id"]), true);
@@ -1199,23 +1198,28 @@ class WidgetsManagement extends \ew\Module
 
    public static function get_layout($uisId, $template = null, $template_settings = null)
    {
+      
       $layout = WidgetsManagement::generate_view($uisId);
-      //echo "asd$uisId";
+      //echo "asd $uisId";
       $template_body = $layout["body_html"];
       $widget_data = $layout["widget_data"];
       if (!$template)
       {
          $uis_info = WidgetsManagement::get_uis($uisId);
+
          $template = $uis_info["template"];
          $template_settings = $uis_info["template_settings"];
+         //echo $template;
       }
-      if (file_exists(EW_ROOT_DIR . $template . '/template.php'))
+      
+      if (file_exists(EW_TEMPLATES_DIR . $template . '/template.php'))
       {
-         require_once EW_ROOT_DIR . $template . '/template.php';
+         
+         require_once EW_TEMPLATES_DIR . $template . '/template.php';
          $template = new \template();
          //echo $template_settings;
-
-         $settings = json_decode($template_settings, true);
+         
+         $settings = json_decode($template_settings, true) || [];
          if (json_last_error() != JSON_ERROR_NONE)
          {
             $settings = json_decode(stripslashes($template_settings), true);

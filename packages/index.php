@@ -189,6 +189,7 @@ if (isset($_REQUEST["_parameters"]))
    $GLOBALS["page_parameters"] = explode("/", $_REQUEST["_parameters"]);
 }
 
+
 $RESULT_CONTENT = "RESULT_CONTENT: EMPTY";
 
 $real_class_name = $app_name . '\\' . $section_name;

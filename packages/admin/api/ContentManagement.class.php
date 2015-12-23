@@ -611,7 +611,7 @@ class ContentManagement extends \ew\Module
    {
       $content = $this->get_content_by_id($_parts__id);
 
-      return $content["data"]["content_fields"];
+      return \ew\APIResourceHandler::to_api_response($content["data"]["content_fields"]);
    }
 
    private function get_content_by_id($id)
@@ -623,7 +623,7 @@ class ContentManagement extends \ew\Module
 
       if (isset($content))
       {
-         $content->content_fields = json_decode($content->content_fields);
+         $content->content_fields = json_decode($content->content_fields, true);
 
          $labels = $this->get_content_labels($id);
          $content->labels = $labels;
