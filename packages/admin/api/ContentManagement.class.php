@@ -623,6 +623,8 @@ class ContentManagement extends \ew\Module
 
       if (isset($content))
       {
+         $content->content_fields = json_decode($content->content_fields);
+
          $labels = $this->get_content_labels($id);
          $content->labels = $labels;
          return \ew\APIResourceHandler::to_api_response($content->toArray());
@@ -648,10 +650,13 @@ class ContentManagement extends \ew\Module
                       ->orderBy('title')->take($size)->skip($token)->get(['*',
           \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
 
-      /* return ["totalRows" => $contents->count(),
-        "items" => $contents->toArray()]; */
+      $data = array_map(function($e)
+      {
+         $e["content_fields"] = json_decode($e["content_fields"]);
+         return $e;
+      }, $contents->toArray());
 
-      return \ew\APIResourceHandler::to_api_response($contents->toArray(), ["totalRows" => $contents->count()]);
+      return \ew\APIResourceHandler::to_api_response($data, ["totalRows" => $contents->count()]);
    }
 
    public function add_folder($title, $parent_id, $keywords, $description, $labels)

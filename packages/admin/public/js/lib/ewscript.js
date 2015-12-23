@@ -1232,7 +1232,7 @@ EverythingWidgets.prototype.lock = function (obj, string, delay)
    //var height = $(obj).outerHeight(true) === 0 ? "100%" : $(obj).outerHeight(true) - 20;
    glass.animate({
       opacity: 1
-   }, delay);
+   }, delay || 0);
    return glass;
 };
 

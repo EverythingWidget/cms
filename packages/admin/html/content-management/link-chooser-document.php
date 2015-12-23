@@ -190,7 +190,7 @@
          _this.articlesListHeader.html("Content Fields");
 
          if (content) {
-            $.each(JSON.parse(content.content_fields) || {}, function (key, element) {
+            $.each(content.content_fields || {}, function (key, element) {
                var temp = _this.createField({
                   contentId: content.id,
                   fieldId: key
