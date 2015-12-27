@@ -8460,8 +8460,8 @@
         } else if (e.keyCode === 13) {
           e.preventDefault();
           input.blur();
-          //var l = element.content.length();
-          //element.selection(new ContentSelect.Range(l, l));
+          var l = element.content.length();
+          element.selection(new ContentSelect.Range(l, l));
           element.focus();
         }
         e.stopPropagation();
