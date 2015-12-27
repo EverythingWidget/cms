@@ -48,7 +48,7 @@ $default_page = json_decode(webroot\WidgetsManagement::get_path_uis("@DEFAULT"),
                //print_r($widgets_types_list);
                //Show list of pages and their layouts
                foreach ($widgets_types_list as $page)
-               {   
+               {
                   $uis = json_decode(webroot\WidgetsManagement::get_path_uis("/{$page["name"]}"), true);
                   echo '<div class="row"><div class="col-xs-12 mar-bot">';
                   echo "<input type='hidden'  name='/{$page["name"]}_uisId' id='/{$page["name"]}_uisId' value='{$uis["id"]}'>";
@@ -68,9 +68,7 @@ $default_page = json_decode(webroot\WidgetsManagement::get_path_uis("@DEFAULT"),
       //this.bSelect = EW.addAction("Save Changes", $.proxy(this.save, this));
       $(".app-page-uis").EW().inputButton({
          title: "<i class='uis-icon'></i>",
-         onClick: function (e)
-         {
-            pageUIS.currentElement = null;
+         onClick: function (e) {
             pageUIS.currentElement = e;
             pageUIS.uisListDialog(pageUIS.setPageUIS);
          }
@@ -86,16 +84,13 @@ $default_page = json_decode(webroot\WidgetsManagement::get_path_uis("@DEFAULT"),
          rowCount: true,
          url: "<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/get-all-pages-uis-list",
          pageSize: 30,
-         onDelete: function (id)
-         {
-
+         onDelete: function (id) {
             this.confirm("Are you sure?", function () {
                EW.lock(pageUIS.allUISList.table, "");
                var row = this;
                $.post("<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/set-uis", {
                   path: row.data("field-path")
-               },
-               function (data) {
+               }, function (data) {
                   $("input[name='" + row.data("field-path") + "']").val("").change();
                   $("body").EW().notify(data).show();
                   $(document).trigger("all-uis-list.refresh");
@@ -107,6 +102,7 @@ $default_page = json_decode(webroot\WidgetsManagement::get_path_uis("@DEFAULT"),
       });
       //this.allUISList.container.css({margin: "5px 15px"});
       $("#uis_list").append(this.allUISList.container);
+      this.allUISList.read();
       // Register event listener for all-uis-list table
       $(document).off("all-uis-list.refresh");
       $(document).on("all-uis-list.refresh", function () {
@@ -120,9 +116,8 @@ if ($path_uis_list)
 ?>
    }
 
-   PageUIS.prototype.uisListDialog = function (onSelect)
-   {
-      var dp = EW.createModal();
+   PageUIS.prototype.uisListDialog = function (onSelect) {
+      var dialog = EW.createModal();
       this.table = EW.createTable({
          name: "uis-list",
          headers: {
@@ -137,7 +132,7 @@ if ($path_uis_list)
             "Select": function (row) {
                if (onSelect)
                   onSelect.apply(null, new Array(row));
-               dp.dispose();
+               dialog.dispose();
             }
          }
       });
@@ -150,13 +145,14 @@ if ($path_uis_list)
             data.data("field-name", "");
             onSelect.apply(null, new Array(data));
          }
-         dp.dispose();
+         dialog.dispose();
       });
-      dp.append("<div class='header-pane row'><h1 id='' class='col-xs-12'> Layouts List: Select a layout</h1></div>");
+      dialog.append("<div class='header-pane row'><h1 id='' class='col-xs-12'><span>Layouts</span> Select a layout</h1></div>");
       var d = $("<div id='' class='form-content'></div>");
       d.append(this.table.container);
-      dp.append(d);
-      dp.append($("<div class='footer-pane row actions-bar action-bar-items' ></div>").append(removeUISbtn));
+      dialog.append(d);
+      dialog.append($("<div class='footer-pane row actions-bar action-bar-items' ></div>").append(removeUISbtn));
+      this.table.read();
    };
 
    PageUIS.prototype.setHomePageUIS = function (uisId)
@@ -168,9 +164,9 @@ if ($path_uis_list)
          path: "@HOME_PAGE",
          uisId: uisId.data("field-id")
       },
-      function (data) {
-         $("body").EW().notify(data).show();
-      }, "json");
+              function (data) {
+                 $("body").EW().notify(data).show();
+              }, "json");
    };
 
    PageUIS.prototype.setUserHomePageUIS = function (uisId)
@@ -182,9 +178,9 @@ if ($path_uis_list)
          path: "@USER_HOME_PAGE",
          uisId: uisId.data("field-id")
       },
-      function (data) {
-         $("body").EW().notify(data).show();
-      }, "json");
+              function (data) {
+                 $("body").EW().notify(data).show();
+              }, "json");
    };
 
    PageUIS.prototype.setDefaultUIS = function (uisId)
@@ -196,9 +192,9 @@ if ($path_uis_list)
          path: "@DEFAULT",
          uisId: uisId.data("field-id")
       },
-      function (data) {
-         $("body").EW().notify(data).show();
-      }, "json");
+              function (data) {
+                 $("body").EW().notify(data).show();
+              }, "json");
    };
 
    PageUIS.prototype.setPageUIS = function (uisId)
@@ -212,18 +208,18 @@ if ($path_uis_list)
             path: pageUIS.currentElement.prop("name"),
             uisId: uisId.data("field-id")
          },
-         function (data) {
-            pageUIS.currentElement.val(uisName).change();
-            $(document).trigger("all-uis-list.refresh");
-            $("body").EW().notify(data).show();
-         }, "json");
+                 function (data) {
+                    pageUIS.currentElement.val(uisName).change();
+                    $(document).trigger("all-uis-list.refresh");
+                    $("body").EW().notify(data).show();
+                 }, "json");
       }
    };
 
    /*widgetsManagement.onBackToWM = function ()
-   {
-      //pageUIS.bSelect.remove();
-   };*/
+    {
+    //pageUIS.bSelect.remove();
+    };*/
    var pageUIS;
    $(document).ready(function () {
       pageUIS = new PageUIS();

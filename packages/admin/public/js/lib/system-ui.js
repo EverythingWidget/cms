@@ -1,6 +1,8 @@
 (function (system, tween) {
    system.UI = new SystemUI();
 
+
+
    /**
     * System ui
     */
@@ -24,7 +26,22 @@
       this.body = document.getElementsByTagName("body")[0];
    }
 
-   SystemUI.prototype.clone = function (obg)
+   SystemUI.prototype.util = {};
+   SystemUI.prototype.util.addClass = function (el, className) {
+      if (el.classList)
+         el.classList.add(className);
+      else
+         el.className += ' ' + className;
+   };
+
+   SystemUI.prototype.util.removeClass = function (el, className) {
+      if (el.classList)
+         el.classList.remove(className);
+      else
+         el.className = el.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
+   };
+
+   SystemUI.prototype.clone = function (obj)
    {
       var target = {};
       for (var i in obj) {
@@ -107,30 +124,64 @@
          modal.remove();
       });
    };
-
-   SystemUI.prototype.lock = function (e, t) {
+   /**
+    * 
+    * @param {object} conf
+    * @param {number} t
+    * @returns {object}
+    */
+   SystemUI.prototype.lock = function (conf, t) {
+      var _this = this;
       t = t || system.UI.DEFAULTS.animationDuration;
-      var sourceRect = e.getBoundingClientRect();
-      var ss = window.getComputedStyle(e);
+      var sourceRect = conf.element.getBoundingClientRect();
+      var ss = window.getComputedStyle(conf.element);
       var lockPane = document.createElement("div");
       lockPane.className = "lock-pane";
-      lockPane.style.position = "absolute";
-      lockPane.style.left = sourceRect.left;
-      lockPane.style.top = sourceRect.top;
+      lockPane.style.position = "fixed";
+      lockPane.style.left = sourceRect.left + 'px';
+      lockPane.style.top = sourceRect.top + 'px';
       lockPane.style.width = sourceRect.width + "px";
       lockPane.style.height = sourceRect.height + "px";
       lockPane.style.zIndex = (ss.zIndex === "0" || ss.zIndex === "auto") ? 1 : ss.zIndex;
-      lockPane.style.transition = "opacity " + t + "s";
+      //conf.element.style.opacity = .5;
+      //lockPane.style.transition = "opacity " + t + "s";
 
-      e.parentNode.insertBefore(lockPane, e.nextSibling);
-      setTimeout(function ()
-      {
-         lockPane.classList.add("show");
-      }, 0);
-      lockPane.dispose = function ()
-      {
-         lockPane.parentNode.removeChild(lockPane);
+      if (conf.akcent) {
+         var akcent = document.createElement("div");
+         akcent.className = conf.akcent;
+         akcent.style.transform = "scale(0)";
+         lockPane.appendChild(akcent);
+         tween.to(akcent, t, {
+            transform: "scale(1)",
+            ease: Back.easeOut.config(2),
+            y: 0
+         });
+      }
+
+      conf.element.parentNode.insertBefore(lockPane, conf.element.nextSibling);
+      tween.to(lockPane, t, {
+         className: "lock-pane show"
+      });
+
+
+      lockPane.dispose = function () {
+         if (conf.akcent) {
+            tween.to(akcent, t, {
+               transform: "scale(.5)",
+               opacity: 0,
+               ease: "Power2.easeInOut"
+            });
+         }
+
+         tween.to(lockPane, t, {
+            opacity: "0",
+            onComplete: function () {
+               lockPane.parentNode.removeChild(lockPane);
+            }
+         });
+
       };
+
       return lockPane;
    };
 
@@ -524,29 +575,24 @@
          loader.el.style.left = elemRect.left + 'px';
          loader.el.style.zIndex = (elemStyle.zIndex === "0" || elemStyle.zIndex === "auto") ? 1 : elemStyle.zIndex;
 
-         var animProperties = (loaderClass) ?
-                 {
-                    top: elemCent.top - loaderRect.width / 2,
-                    left: elemCent.left - loaderRect.height / 2,
-                    width: loaderRect.width,
-                    height: loaderRect.height,
-                    borderRadius: loaderStyle.borderRadius,
-                    //backgroundColor: loaderStyle.backgroundColor,
-                    boxShadow: loaderStyle.boxShadow,
-                    ease: "Power3.easeOut",
-                 } :
-                 {
-                    top: elemCent.top - 30,
-                    left: elemCent.left - 30,
-                    width: 60,
-                    height: 60,
-                    borderRadius: 30,
-                    ease: "Power2.easeOut",
-                 };
-         /*animProperties.onComplete = function ()
-          {
-          
-          }*/
+         var animProperties = (loaderClass) ? {
+            top: elemCent.top - loaderRect.width / 2,
+            left: elemCent.left - loaderRect.height / 2,
+            width: loaderRect.width,
+            height: loaderRect.height,
+            borderRadius: loaderStyle.borderRadius,
+            //backgroundColor: loaderStyle.backgroundColor,
+            boxShadow: loaderStyle.boxShadow,
+            ease: "Power3.easeOut"
+         } : {
+            top: elemCent.top - 30,
+            left: elemCent.left - 30,
+            width: 60,
+            height: 60,
+            borderRadius: 30,
+            ease: "Power2.easeOut"
+         };
+
          loader.el.style.visibility = "hidden";
          setTimeout(function ()
          {
@@ -556,7 +602,7 @@
             loader.el.style.backgroundColor = (elemStyle.backgroundColor.indexOf("rgba") !== -1 ||
                     elemStyle.backgroundColor === "transparent" || elemStyle.backgroundColor === "rgb(255, 255, 255)") ? elemStyle.color : elemStyle.backgroundColor;
             el.style.visibility = "hidden";
-            tween.to(loader.el, .15,
+            tween.to(loader.el, 5,
                     {
                        top: elemCent.top - 14,
                        left: elemCent.left - 14,
@@ -570,7 +616,7 @@
                        }
                     });
 
-            animProperties.delay = .15;
+            animProperties.delay = 5;
             tween.to(loader.el, .3, animProperties);
             loader.el.addEventListener("click", function ()
             {

@@ -1,24 +1,37 @@
+<!--<ew-table class="report" list-url="<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/get-uis-list">
+   <table-control-bar class="controls"></table-control-bar>
+   <table-column name="_RowNumber">No</table-column>
+   <table-column name="name">Name</table-column>
+   <table-column name="template">Template</table-column>
+</ew-table>-->
+
 <script  type="text/javascript">
    function UIStructureList()
    {
       var self = this;
       this.currentTopPane;
       this.oldRow;
-      this.bNewUIS = EW.addAction("tr{New Layout}", function ()
-      {
-         EW.setHashParameter('cmd', "new-uis");
-      }, {display: "none"});
+      this.bNewUIS = EW.addActivity({
+         title: "tr{New Layout}",
+         activity: "webroot/html/widgets-management/ne-uis.php",
+         parent: "action-bar-items",
+         modal: {
+            class: "full"
+         }
+      }).hide();
+
       if (EW.getActivity({activity: "webroot/api/widgets-management/import-uis"}))
       {
-         var fi = $("<input type=file id=uis_file name=uis_file accept='.json'/>");
-         $(".action-bar-items").append($("<div class='btn btn-file btn-primary' >tr{Import Layout}</div>").append(fi));
-
-         fi.change(function (e) {
+         var fileInput = $("<input type=file id=uis_file name=uis_file accept='.json'/>");
+         var button = $("<div class='btn btn-file btn-primary' >tr{Import Layout}</div>").hide();
+         $(".action-bar-items").append(button.append(fileInput));
+         button.comeIn();
+         fileInput.change(function (e) {
             var form = new FormData();
             // HTML file input user's choice...
-            form.append("uis_file", fi[0].files[0]);
+            form.append("uis_file", fileInput[0].files[0]);
             //EW.lock($("#main-content"));
-            if (!fi[0].files[0])
+            if (!fileInput[0].files[0])
                return;
 
             // Make the ajax call
@@ -26,17 +39,7 @@
                url: '<?php echo EW_ROOT_URL ?>~webroot/api/widgets-management/import-uis',
                type: 'POST',
                dataType: "json",
-               /*xhr: function () {
-                var myXhr = $.ajaxSettings.xhr();
-                if (myXhr.upload) {
-                myXhr.upload.addEventListener('progress', uploadForm.progress, false);
-                }
-                return myXhr;
-                },*/
-               //add beforesend handler to validate or something
-               //beforeSend: functionname,
                success: function (res) {
-                  //EW.unlock($("#main-content"));
                   $("body").EW().notify(res).show();
                   self.table.refresh();
                },
@@ -62,11 +65,14 @@
       $(document).on("uis-list.refresh", function () {
          self.table.refresh();
       });
-      this.bNewUIS.comeIn(300);
-
+      this.bNewUIS.comeIn();
+      var editActivity;
       this.table = EW.createTable({name: "uis-list", rowLabel: "{name}", columns: ["name", "template"],
-         headers: {Name: {}, Template: {}}, rowCount: true, url: "<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/get-uis-list", pageSize: 30
-         , onDelete: function (id) {
+         headers: {Name: {}, Template: {}},
+         rowCount: true,
+         url: "<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/get-uis-list",
+         pageSize: 30,
+         onDelete: function (id) {
             this.confirm("Are you sure of deleting this UIS?", function () {
                var _this = this;
                $.post('<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/delete-uis', {
@@ -76,15 +82,21 @@
                   self.table.removeRow(id);
                   _this._messageRow.remove();
                   return true;
-
                }, "json");
             });
-            //uisList.deleteUIS(id);
          },
-         onEdit: function (id) {
-            EW.setHashParameters({"uis-id": id, "cmd": "edit-uis"});
-         }
-         , buttons: {"tr{Clone}": function (row)
+         onEdit: ((editActivity = EW.getActivity({
+            verb: "get",
+            activity: "webroot/html/widgets-management/ne-uis.php",
+            modal: {
+               class: "full"
+            },
+            onDone: function (hash) {
+               hash.uisId = null;
+            }})) ? function (id) {
+            editActivity({uisId: id});
+         } : null),
+         buttons: {"tr{Clone}": function (row)
             {
                if (confirm("Are you sure you want to clone UIS:" + row.data("field-name") + "?"))
                {
@@ -96,6 +108,7 @@
             }
             , "tr{Export}": exportAction}});
       $("#main-content").html(this.table.container);
+      this.table.read();
    }
 
    UIStructureList.prototype.selectUIS = function (obj, uisId)
@@ -111,8 +124,7 @@
       EW.setHashParameter('cmd', "edit-uis");
    };
 
-   UIStructureList.prototype.loadNewUISForm = function ()
-   {
+   UIStructureList.prototype.loadNewUISForm = function () {
       var self = this;
       var tp = EW.createModal({class: "full", onClose: function ()
          {
@@ -144,21 +156,14 @@
             //contentManagement.showActions();
          }});
       self.currentTopPane = tp;
-      tp.addClass("full");
-      EW.lock(tp);
+
       $.post('<?php echo EW_ROOT_URL; ?>~webroot/widgets-management/ne-uis.php', {uisId: EW.getHashParameter("uis-id")}, function (data) {
          tp.html(data);
-         //neuis.editUISForm();
-
       });
-      //}
-
    };
 
-   UIStructureList.prototype.deleteUIS = function (id)
-   {
+   UIStructureList.prototype.deleteUIS = function (id) {
       var self = this;
-      //EW.lock(uisList.currentTopPane, "Saving...");
       $.post('<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/delete-uis', {
          uisId: id}, function (data) {
          EW.setHashParameter("categoryId", null);
@@ -169,17 +174,8 @@
       }, "json");
    };
 
-   /*widgetsManagement.onBackToWM = function ()
-    {
-    var self = this;
-    self.bNewUIS.remove();
-    EW.removeURLHandler(self.handler);
-    //uisList.bEditUIS.remove();
-    EW.setHashParameter('ui_structure_id', null);
-    };*/
 
-   UIStructureList.prototype.listUIStructures = function ()
-   {
+   UIStructureList.prototype.listUIStructures = function () {
       if (this.table)
       {
          this.table.refresh();
@@ -187,47 +183,10 @@
       }
    };
 
-   //showMoreOptions(false);
-   // listUIStructures();
    var uisList;
    $(document).ready(function () {
       uisList = new UIStructureList();
-      //uisList.listUIStructures();
 
-      uisList.handler = EW.addURLHandler(function ()
-      {
-         var uisId = EW.getHashParameter("uis-id");
-         var cmd = EW.getHashParameter("cmd");
-         if (cmd)
-         {
-            if (cmd === "edit-uis")
-            {
-               uisList.loadEditUISForm();
-            }
-            if (cmd === "new-uis")
-            {
-               uisList.loadNewUISForm();
-            }
-            //uisList.bEditUIS.comeOut(200);
-         } else
-         {
-            if (uisId)
-            {
-               //uisList.bEditUIS.comeIn(300);
-               //uisList.selectUIS($("#uis-list tr[data-id=" + uisId + "]"));
-            } else
-            {
-               //uisList.bEditUIS.comeOut(200);
-               //uisList.selectUIS(null);
-            }
-            uisList.bNewUIS.comeIn(300);
-            if (uisList.currentTopPane)
-               uisList.currentTopPane.dispose();
-            uisList.currentTopPane = null;
-         }
-
-         return "UISHandler";
-      });
    });
 </script>
 

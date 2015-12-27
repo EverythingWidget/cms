@@ -66,6 +66,7 @@
             }
          });
          $("#main-content").html(this.table.container);
+         this.table.read();
       };
       return new UsersGroups();
    })();

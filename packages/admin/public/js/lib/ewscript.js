@@ -254,6 +254,7 @@ EverythingWidgets.prototype.getActivity = function (conf) {
 
       // if the activity contains a form then set a main hash parameter
       if (activityController.form) {
+         _this.activitySource = activityController;
          _this.setHashParameters(hashParameters);
       }
       // if the activity does not contains any form then set a formless hash parameter
@@ -528,21 +529,17 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
    var xButton;
    var methods = {
       // Set X button at the top tight corner
-      setCloseButton: function ()
-      {
-         var mw = ($("#base-pane").outerWidth() - modalPane.outerWidth()) /*/ 2*/;
-         if (mw < 0)
-            mw = 0;
+      setCloseButton: function () {
+
          xButton.css({
-            left: modalPane.offset().left + modalPane.width() - 10,
+            left: modalPane[0].getBoundingClientRect().right - 40,
             //right:"10px",
             top: parseInt(modalPane.css("top")) + 5,
             zIndex: modalPane.css("z-index")
          });
          xButton.show();
       },
-      html: function (data)
-      {
+      html: function (data) {
 
       }
    };
@@ -557,16 +554,14 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
       //closeAction: "hide",
       autoOpen: true
    };
-   if (typeof (onClose) === "object")
-   {
+   if (typeof (onClose) === "object") {
       // If hash is set, change default behaviors
-      if (onClose.hash)
-      {
+      if (onClose.hash) {
          settings.closeAction = "hash";
          settings.autoOpen = false;
       }
       $.extend(settings, onClose);
-   } else
+   } else {
       settings = {
          onClose: onClose,
          closeAction: closeAction,
@@ -575,6 +570,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
          class: "center",
          lockUI: true
       };
+   }
    //var animationDuration = 600;
    this.isOpen = false;
    var modalPane = $(document.createElement("div"));
@@ -711,55 +707,27 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
                to: modalPane[0],
                time: .6,
                ease: "Power2.easeInOut",
-               fade: .2,
+               fade: .3,
                flow: true,
                text: originElement.data("label"),
                textColor: "#fff",
                onComplete: function () {
-                  modalPane.isOpen = true;
                   methods.setCloseButton();
+                  modalPane.isOpen = true;
                }
             });
-         } else
-         {
-            /*modalPane.css({
-             transform: "translateZ(100px)"
-             });*/
+         } else {
             modalPane.animate({
-               opacity: "1",
-               //transform: "translateZ(0)"
-            },
-                    520, "Power3.easeOut", function () {
-                       //modalPane.css("left", "");
-                       methods.setCloseButton();
-                       modalPane.isOpen = true;
-                       if (settings.class === "full")
-                       {
-                          /*$("#nav-bar").off("mouseenter.ew mouseleave.ew");
-                           $("#nav-bar").on("mouseleave.ew", function () {
-                           modalPane.stop().animate({
-                           top: "0px",
-                           bottom: "0px"
-                           },
-                           100, "Power3,easeOut");
-                           xButton.show();
-                           
-                           });
-                           $("#nav-bar").on("mouseenter.ew", function () {
-                           modalPane.stop().animate({
-                           top: "46px",
-                           bottom: "-46px"
-                           },
-                           100, "Power3,easeOut");
-                           xButton.hide();
-                           });*/
-                       }
-                    });
-            //animationDuration = 252;
+               opacity: "1"
+            }, 520, "Power3.easeOut", function () {
+               //modalPane.css("left", "");
+               methods.setCloseButton();
+               modalPane.isOpen = true;
+               if (settings.class === "full")
+               {
+               }
+            });
          }
-         //xButton.show();
-
-         //modalPane.removeClass("scale-out transparent");
 
          if (settings.onOpen)
          {
@@ -767,55 +735,44 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
          }
       }
    });
-   modalPane.dispose = function ()
-   {
+
+   modalPane.dispose = function () {
       modalPane.trigger("close");
    };
-   modalPane.open = function ()
-   {
+
+   modalPane.open = function () {
       modalPane.trigger("open");
    };
-   if (settings.hash)
-   {
+
+   if (settings.hash) {
       self.addURLHandler(function () {
          if (self.getHashParameter(settings.hash.key, settings.hash.name) === settings.hash.value)
          {
             modalPane.trigger("open");
-         } else
-         {
+         } else {
             //settings.autoOpen=true;
             //modalPane=EW.createModal(settings);
             modalPane.trigger("close");
          }
       });
    }
-   if (settings.autoOpen)
-   {
+
+   if (settings.autoOpen) {
       modalPane.trigger("open");
    }
-   var htmlFunction = function (data)
-   {
+
+   var htmlFunction = function (data) {
       // Set default jquery html() function
       modalPane.html = modalPane.__proto__.html;
-      var withTillModalOpen = function ()
-      {
-         //try
-         //{
+      var withTillModalOpen = function () {
+
          if (!modalPane.isOpen)
          {
-            setTimeout(withTillModalOpen, 32);
+            setTimeout(withTillModalOpen, 10);
             return;
          }
          modalPane.html(data);
          modalPane.html = htmlFunction;
-         //window.clearInterval(int);
-         /*}
-          catch (e)
-          {
-          console.error(e);
-          window.clearInterval(int);
-          }*/
-
       };
       withTillModalOpen.call();
    };
@@ -1291,11 +1248,12 @@ function EWTable(config)
             });
          });
          $base.tableHeaderDiv.show();
-      } else if ($(this).scrollTop() <= 0 && $base.tableHeaderDiv.is(":visible"))
-         $base.tableHeaderDiv.stop().animate({
+      } else if ($(this).scrollTop() <= 0 && $base.tableHeaderDiv.is(":visible")){
+         /*$base.tableHeaderDiv.stop().animate({
             height: "toggle"
-         },
-                 200);
+         },                 200);*/
+         $base.tableHeaderDiv.hide();
+      }
       $base.tableHeaderDiv.css("left", $base.table.position().left);
    });
    // add listener to the windows width in the case of resize, the listener is added only once
@@ -1320,7 +1278,10 @@ EWTable.prototype.createHeadersRow = function (headers)
    var tr = $(document.createElement("tr"));
    var ths = [];
    $.each(headers, function (k, v) {
-      ths.push('<th style=width:', v.width || 0, 'px;display:', v.display, '>', k, '</th>');
+      if (v)
+         ths.push('<th style=width:', v.width || 0, 'px;', v.display ? 'display:' + v.display : '', '>', k, '</th>');
+      else
+         ths.push('<th>', k, '</th>');
       //alert(k);
       /*var th = $(document.createElement("th"));
        th.css("width", v.width);
@@ -1359,8 +1320,7 @@ EWTable.prototype.createRow = function (val, rc)
       edit.attr("type", "button");
       edit.attr("data-label", "Edit");
       edit.addClass("btn btn-text edit");
-      edit.click(function ()
-      {
+      edit.click(function () {
          EW.activeElement = tableRow;
          //EW.activeElement.attr("data-label", tableRow.data("row-title"));
          ewTable.config.onEdit.apply(tableRow, new Array(fieldId));
@@ -1503,89 +1463,95 @@ EWTable.prototype.createRow = function (val, rc)
    }
    return tableRow;
 };
-EWTable.prototype.listRows = function ()
-{
+EWTable.prototype.listRows = function () {
    var self = this;
    var rc = self.token + 1;
    // With row number
-   var rows = new Array();
-   if (self.config.rowCount)
-   {
-      for (var i = 0, len = self.data.result.length; i < len; i++)
-      {
-         var row = self.createRow(self.data.result[i], 1);
-         row.prepend("<td>" + rc + "</td>");
-         rows.push(row);
+   var rows = document.createDocumentFragment(), row = null;
+   if (self.config.rowCount) {
+      for (var i = 0, len = self.data.result.length; i < len; i++) {
+         row = self.createRow(self.data.result[i], 1);
+         var rn = document.createElement("td");
+         rn.innerTEXT = rc;
+         row[0].insertBefore(rn, row[0].firstChild);
+         rows.appendChild(row[0]);
          rc++;
       }
    }
    // Without row number
-   else
-   {
-      for (var i = 0, len = self.data.result.length; i < len; i++)
-      {
-         var row = self.createRow(self.data.result[i], 0);
-         rows.push(row);
+   else {
+      for (var i = 0, len = self.data.result.length; i < len; i++) {
+         row = self.createRow(self.data.result[i], 0);
+         rows.appendChild(row[0]);
       }
    }
-   //self.table.empty();
    self.table.html(rows);
 };
 // read the table data from given url
-EWTable.prototype.read = function (customURLData)
-{
+EWTable.prototype.read = function (customURLData) {
    var self = this;
-   $.EW("lock", self.table);
-   var urlData = $.extend(self.urlData,
-           {
-              token: self.token,
-              size: self.pageSize
-           },
-           customURLData);
-   $.ajax({
-      type: self.method || "GET",
-      url: self.url,
-      data: urlData,
-      dataType: "json",
-      success: function (data)
-      {
-         var tillRow = (self.token + self.pageSize);
-         if (self.token + self.pageSize > data.totalRows)
-         {
+   var lock = System.UI.lock({
+      element: self.tableBodyDiv[0],
+      akcent: "loader top"
+   }, .3);
+
+   var urlData = $.extend(self.urlData, {
+      token: self.token,
+      size: self.pageSize
+   }, customURLData);
+
+   setTimeout(function () {
+      $.ajax({
+         type: self.method || "GET",
+         url: self.url,
+         data: urlData,
+         dataType: "json",
+         success: function (data) {
+            var tillRow = (self.token + self.pageSize);
+            if (self.token + self.pageSize > data.totalRows) {
+               self.next.css('visibility', 'hidden');
+               tillRow = data.totalRows;
+            } else {
+               self.next.css('visibility', 'visible');
+            }
+            if (self.token <= 0) {
+               self.previous.css('visibility', 'hidden');
+            } else {
+               self.previous.css('visibility', 'visible');
+            }
+            self.data = data;
+            self.table.css({
+               marginTop: "-5%",
+               opacity: 0,
+               transformOrigin: "center top"
+            });
+
+            self.listRows();
+            self.dynamicHeader = self.headers.clone();
+            self.dynamicHeader.addClass("dynamic-header");
+            var th = $("<thead>");
+            th.append(self.dynamicHeader);
+            self.table.prepend(th);
+            self.pageInfo.text(self.token + "-" + tillRow + " of " + data.totalRows);
+            lock.dispose();
+            self.table.animate({
+               marginTop: "0px",
+               opacity: 1
+            }, 400, "Power2.easeOut");
+         },
+         error: function (o) {
+            //console.log(o);
+            self.data = {
+               result: []
+            };
+            self.table.empty();
             self.next.css('visibility', 'hidden');
-            tillRow = data.totalRows;
-         } else
-         {
-            self.next.css('visibility', 'visible');
-         }
-         if (self.token <= 0)
-         {
             self.previous.css('visibility', 'hidden');
-         } else
-         {
-            self.previous.css('visibility', 'visible');
+            self.container.replaceWith("<div class='box box-error'><h2>" + o.responseJSON.statusCode + "</h2>" + o.responseJSON.message + "</div>");
+            EW.customAjaxErrorHandler = true;
          }
-         self.data = data;
-         //self.table.empty();
-         self.listRows();
-         self.dynamicHeader = self.headers.clone();
-         self.dynamicHeader.addClass("dynamic-header");
-         self.table.prepend(self.dynamicHeader);
-         self.pageInfo.text(self.token + "-" + tillRow + " of " + data.totalRows);
-      },
-      error: function (o)
-      {
-         //console.log(o);
-         self.data = {
-            result: []
-         };
-         self.table.empty();
-         self.next.css('visibility', 'hidden');
-         self.previous.css('visibility', 'hidden');
-         self.container.replaceWith("<div class='box box-error'><h2>" + o.responseJSON.statusCode + "</h2>" + o.responseJSON.message + "</div>");
-         EW.customAjaxErrorHandler = true;
-      }
-   });
+      });
+   }, 300);
 };
 EWTable.prototype.refresh = function (data)
 {
@@ -1645,9 +1611,14 @@ EverythingWidgets.prototype.createTable = function (conf)
    ewTable.headers = hr;
    ewTable.tableHeaderDiv.append(headerTable);
    ewTable.tableBodyDiv.append(bodyTable);
-   ewTable.read();
+
+   /*setTimeout(function ()   {
+    ewTable.read();
+    }, 1);*/
+
    return ewTable;
 };
+
 EverythingWidgets.prototype.addHashHandler = EverythingWidgets.prototype.addURLHandler = function (handler, hashName)
 {
    var handlers = this.urlHandlers;
@@ -2389,8 +2360,12 @@ $(document).ready(function () {
    // ew_activity handler
    var oldEWActivity = null;
    var modal = null;
+
+
    EW.addURLHandler(function () {
       var activity = EW.getHashParameter("ew_activity");
+      var currentActivity = EW.activitySource || EW.activities[activity];
+
       if (activity && activity !== oldEWActivity) {
          var settings = {
             closeHash: {}, /*hash: {key: "ew_activity", value: activity},*/
@@ -2400,13 +2375,13 @@ $(document).ready(function () {
                //EW.lock(this);
                var postData = EW.getHashParameters();
                // Manage post data if it is set
-               if (EW.activities[activity].postData) {
+               if (currentActivity.postData) {
                   // Add user defined post data to the postData variable
                   // Call post data if it is a function
-                  if (typeof EW.activities[activity].postData === 'function') {
-                     $.extend(postData, EW.activities[activity].postData());
+                  if (typeof currentActivity.postData === 'function') {
+                     $.extend(postData, currentActivity.postData());
                   } else {
-                     $.extend(postData, EW.activities[activity].postData);
+                     $.extend(postData, currentActivity.postData);
                   }
                }
 
@@ -2416,6 +2391,7 @@ $(document).ready(function () {
                   data: postData,
                   success: function (data) {
                      modal.html(data);
+                     EW.activitySource = null;
                   },
                   error: function (result) {
                      console.log(result);
@@ -2432,12 +2408,12 @@ $(document).ready(function () {
                   ew_activity: null
                };
                //var customHashParameters = {};
-               if (EW.activities[activity].onDone) {
+               if (currentActivity.onDone) {
 
-                  if (typeof EW.activities[activity].onDone === 'function') {
-                     EW.activities[activity].onDone(closeHashParameters);
+                  if (typeof currentActivity.onDone === 'function') {
+                     currentActivity.onDone(closeHashParameters);
                   } else {
-                     $.extend(closeHashParameters, EW.activities[activity].onDone);
+                     $.extend(closeHashParameters, currentActivity.onDone);
                   }
                }
                // Trigger close activity event and pass closeHashParameters to it
@@ -2447,7 +2423,7 @@ $(document).ready(function () {
             }
          };
 
-         if (EW.activities[activity]) {
+         if (currentActivity) {
             // Trigger open activity event and pass settings to it before creating modal
             $(document).trigger(activity + ".open", settings);
 
@@ -2455,9 +2431,10 @@ $(document).ready(function () {
             //if (self.activities[activity].hasModal)
             //return;
 
-            $.extend(settings, EW.activities[activity].modal);
+            $.extend(settings, currentActivity.modal);
             //modal = self.createModal(settings);
-            EW.activities[activity].modalObject = EW.createModal(settings);
+            currentActivity.modalObject = EW.activities[activity].modalObject = EW.createModal(settings);
+            //EW.activities[activity].
          } else {
             alert("Activity not found: " + activity);
             EW.setHashParameters({

@@ -132,11 +132,17 @@ class ContentManagement extends \ew\Module
 
       $fields = $xpath->query('//p[@content-field]');
 
-
       foreach ($fields as $field)
       {
-         $content_fields->{$field->getAttribute("content-field")} = ["content" => trim($field->nodeValue)];
+         $children = $field->childNodes;
+         $html = "";
+         foreach ($children as $child)
+         {
+            $html .= $dom->saveHTML($child);
+         }
+         $content_fields->{$field->getAttribute("content-field")} = ["content" => trim($html)];
       }
+
       return $content_fields;
    }
 
@@ -423,11 +429,10 @@ class ContentManagement extends \ew\Module
       if ($result["data"]["id"])
       {
 
-         return \ew\APIResourceHandler::to_api_response(["status" => "success",
-                     "title" => $title,
+         return \ew\APIResourceHandler::to_api_response($this->get_content_by_id($result["data"]["id"])["data"], [
                      "message" => "tr{The new article has been added succesfully}",
-                     "data" => ["id" => $result["data"]["id"],
-                         "type" => "article"]]);
+                     "status" => "success"
+         ]);
          // End of plugins actions call
       }
       return $result;
@@ -571,8 +576,14 @@ class ContentManagement extends \ew\Module
       {
          $articles = ew_contents::where('type', 'article')->orderBy('title')->get(['*',
              \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
-         return ["totalRows" => $articles->count(),
-             "result" => $articles->toArray()];
+
+         $data = array_map(function($e)
+         {
+            $e["content_fields"] = json_decode($e["content_fields"]);
+            return $e;
+         }, $articles->toArray());
+
+         return \ew\APIResourceHandler::to_api_response($data, ["totalRows" => $articles->count()]);
       }
       else
       {
@@ -580,16 +591,15 @@ class ContentManagement extends \ew\Module
          $container_id = $container_id['parent_id'];
          $articles = ew_contents::where('parent_id', '=', $parent_id)->where('type', 'article')->take($size)->skip($token)->get(['*',
              \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
-         $rows = array();
-         $articles_ar = $articles->toArray();
-         foreach ($articles_ar as $i)
+
+         $data = array_map(function($e)
          {
-            $i["pre_parent_id"] = $container_id;
-            $rows[] = $i;
-         }
-         /* return ["totalRows" => $articles->count(),
-           "items" => $rows]; */
-         return \ew\APIResourceHandler::to_api_response($rows, ["totalRows" => $articles->count()]);
+            $e["pre_parent_id"] = $container_id;
+            $e["content_fields"] = json_decode($e["content_fields"]);
+            return $e;
+         }, $articles->toArray());
+
+         return \ew\APIResourceHandler::to_api_response($data, ["totalRows" => $articles->count()]);
       }
 
       return \EWCore::log_error(400, 'tr{Something went wrong}');

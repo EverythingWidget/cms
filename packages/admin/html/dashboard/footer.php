@@ -35,6 +35,7 @@
 
       setTimeout(function () {
          $("#app-content").append(response);
+         System.UI.components.mainContent = $("#main-content");
          EW.initSideBar();
 
          if (app.type === "app") {
@@ -411,6 +412,7 @@
       this.appNav.currentTab = null;
       var oldHref = null;
       var oldRequest = null;
+      var anim;
       this.appNav.setCurrentTab = function (element) {
          if (this.currentTab) {
             this.currentTab.removeClass("selected");
@@ -422,19 +424,32 @@
                EW.sidebarButton.text(element.text());
                if (element.attr("data-ew-nav") && element.attr("href") !== oldHref) {
                   $("#action-bar-items").find("button,div").remove();
-                  $("#main-content").empty();
+                  System.UI.components.mainContent.empty();
 
                   if (oldRequest) {
                      oldRequest.abort();
                   }
 
-                  oldRequest = $.post(element.prop("href"), function (data) {
+                  oldRequest = $.get(element.prop("href"), function (data) {
                      $("#action-bar-items").find("button,div").remove();
-                     $("#main-content").html(data);
+
+                     System.UI.components.mainContent.html(data);
+                     if (anim)
+                        anim.pause();
+
+                     anim = TweenLite.fromTo(System.UI.components.mainContent[0], .5, {
+                        opacity: 0,
+                        ease: "Power3.easeInOut",
+                        top: "-=5%"
+                     }, {
+                        top: "+=5%",
+                        opacity: 1,
+                     });
                   });
                }
             }
          }
+
          element.addClass("selected");
          this.currentTab = element;
       };
@@ -478,11 +493,13 @@
          homeButton: $("#apps"),
          appTitle: $("#app-title"),
          appBar: $("#app-bar"),
-         homePane: $("#home-pane")
+         homePane: $("#home-pane"),
+         mainContent: $("#main-content"),
+         body: $("body")
       };
-      
+
       System.UI.body = $("body")[0];
-      
+
       var hashDetection = new hashHandler();
       EW.activities = <?php echo EWCore::read_activities(); ?>;
       EW.oldApp = null;

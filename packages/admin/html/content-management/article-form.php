@@ -35,10 +35,12 @@ function script()
                var data = ContentForm.getFormData();
                return data;
             },
-            onDone: function (data) {
-               $.EW("getParentDialog", $("#article-form")).trigger("close");
-               $("body").EW().notify(data).show();
-               $(document).trigger("article-list.refresh", [data]);
+            onDone: function (response) {
+               System.UI.components.body.EW().notify(response).show();
+               EW.setHashParameter("articleId", response.data.id, "document");
+               EW.setHashParameter("articleId", response.data.id);
+               ContentForm.setData(response.data);
+               $(document).trigger("article-list.refresh");
             }}).hide();
 
          this.bEditAndClose = EW.addActivity({title: "tr{Save and Close}",
@@ -53,8 +55,8 @@ function script()
                return data;
             },
             onDone: function (data) {
-               $("body").EW().notify(data).show();
-               ContentForm.setData(data.data);
+               System.UI.components.body.EW().notify(data).show();
+               //ContentForm.setData(data.data);
                $.EW("getParentDialog", $("#article-form")).trigger("close");
 
                $(document).trigger("article-list.refresh");
@@ -69,9 +71,9 @@ function script()
                var data = ContentForm.getFormData();
                return data;
             },
-            onDone: function (data) {
-               $("body").EW().notify(data).show();
-               ContentForm.setData(data.data);
+            onDone: function (response) {
+               System.UI.components.body.EW().notify(response).show();
+               ContentForm.setData(response.data);
                $(document).trigger("article-list.refresh");
             }}).hide();
 
@@ -85,8 +87,8 @@ function script()
             },
             onDone: function (data) {
                $.EW("getParentDialog", $("#article-form")).trigger("destroy");
-               EW.setHashParameter("articleId", null);
-               $("body").EW().notify(data).show();
+               EW.setHashParameter("articleId", null, "document");
+               System.UI.components.body.EW().notify(data).show();
                $(document).trigger("article-list.refresh");
             }}).hide();
 

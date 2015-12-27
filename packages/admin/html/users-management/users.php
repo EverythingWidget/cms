@@ -22,6 +22,8 @@
             this.table.refresh();
             return;
          }
+
+         var editActivity;
          this.table = EW.createTable({
             name: "users-list",
             rowLabel: "{first_name} {last_name}",
@@ -64,7 +66,10 @@
                editActivity({userId: id});
             } : null)
          });
+
          $("#main-content").html(this.table.container);
+         this.table.read();
+
          $(document).off("users-list.refresh");
          $(document).on("users-list.refresh", function () {
             self.table.refresh();

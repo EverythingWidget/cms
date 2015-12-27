@@ -18,8 +18,13 @@
       //console.log($("#<?= $form_id ?>"));
       EW.getParentDialog($("#<?= $form_id ?>")).on("beforeClose", function () {
          //console.log(this);
-         contentEditor.destroy();
-         contentEditor = null;
+         if(contentEditor.revert())
+         {
+            contentEditor.destroy();
+            contentEditor = null;
+            return true;
+         }
+         return false;
       });
    });
 </script>

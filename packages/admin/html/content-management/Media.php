@@ -51,7 +51,7 @@ if (!$_SESSION['login'])
       }).hide();
 
       this.seeAlbumActivity = EW.getActivity({
-         activity: "admin/html/content-management/album-form.php_see",
+         activity: "admin/html/content-management/album-form.php",
          parent: "action-bar-items"
       });
       //this.seeArticleActivity = EW.getActivity({activity: "admin/api/ContentManagement/article-form.php_see"});

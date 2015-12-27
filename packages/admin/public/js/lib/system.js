@@ -52,11 +52,11 @@
 
             this.modules[id].id = id;
 
-            var modNav = System.main.navigation[this.modules[id].moduleIdentifier].slice(1);
-            var newNav = $.extend(true, {}, System.main.navigation);
+            var modNav = this.navigation[this.modules[id].moduleIdentifier].slice(1);
+            var newNav = $.extend(true, {}, this.navigation);
             newNav[this.modules[id].moduleIdentifier] = modNav;
 
-            this.modules[id].init(newNav, System.main.params);
+            this.modules[id].init(newNav, this.params);
             return this.modules[id];
          },
          hash: {},

@@ -82,9 +82,9 @@ session_start();
       <div class="col-xs-12" >
          <input class="text-field" data-label="UIS Perview URL" name="perview_url" id="perview_url">
       </div>
-      <div id="editor-window" style="position:absolute;right:0px;top:68px;bottom:1px;overflow:hidden;left:auto;">
+      <div id="editor-container" style="position:absolute;right:0px;top:68px;bottom:1px;overflow:hidden;left:auto;">
          <form id="neuis" style="padding:0;border:0px solid #aaa;border-width:1px 0 1px 1px;" class="col-xs-12">
-            <iframe id="fr" style="position:absolute;top:0px;left:0px;border:none;min-width:410px;width:1920px;height:100%;overflow:scroll;background-image: url('./templates/default/glass-pane-bg-small.png');padding:0px;"                               
+            <iframe id="fr" style="position:absolute;top:0px;left:0px;border:none;min-width:410px;width:1920px;height:100%;overflow:scroll;padding:0px;"                               
                     src="">
             </iframe>
             <input type="submit" style="display: none;" value="ثبت">
@@ -178,12 +178,13 @@ session_start();
       this.dpPreference = null;
       this.uisId;
       this.uisTemplate = "";
-      self.oldStructure = "{}";
+      this.oldStructure = {};
       this.inlineEditor = {};
-      this.editorWindow = $("#editor-window");
+      this.editorWindow = $("#editor-container");
       this.editorWindow.width($(window).width() - 400);
       //this.editorFrame = $(document.getElementById("fr").contentDocument.body);
-      this.editorFrame = $(document.getElementById("fr")).contents().find("body");
+      this.editorIFrame = $(document.getElementById("fr"));
+      this.editorFrame = this.editorIFrame.contents().find("body");
       this.templateSettingsForm = $("#template_settings_form");
       this.bExportLayout = $();
       this.bSaveChanges = EW.addAction("Save Layout", $.proxy(this.updateUIS, this)).hide().addClass("btn-success");
@@ -246,15 +247,12 @@ session_start();
       };
 
       // Load inspector editor when the content of frame has been loaded
-      $("#fr").load(function () {
-         //self.editor = document.getElementById("fr").contentWindow;
-         EW.unlock($("#editor-window"));
-         //alert("ssss");
+      this.editorIFrame.load(function () {
+         //EW.unlock(self.editorWindow);
          $(document.getElementById("fr").contentDocument.head).append("<style id='editor-style'>" + $("#editor-css").html() + "</style>");
-         //$("#inspector_data").trigger("refresh");
          self.oldStructure = self.createContentHeirarchy();
-         $("#template").off("change");
-         $("#template").change($.proxy(self.reloadFrame, self));
+         $("#template").off("change").change($.proxy(self.reloadFrame, self));
+         //$("#template").change($.proxy(self.reloadFrame, self));
          self.changeTemplate();
       });
 
@@ -289,7 +287,7 @@ session_start();
             self.dpPreference.trigger("destroy");
       });
       $.EW("getParentDialog", $("#ew-uis-editor")).on("beforeClose", function () {
-         console.log(self.oldStructure, self.createContentHeirarchy());
+         //console.log(self.oldStructure, self.createContentHeirarchy(), self.createContentHeirarchy());
          if (JSON.stringify(self.oldStructure) !== JSON.stringify(self.createContentHeirarchy())) {
             return confirm("tr{You have unsaved changes. Are you sure you want to close?}");
          } else {
@@ -884,47 +882,45 @@ session_start();
          template_settings: JSON.stringify(self.templateSettings),
          defaultUIS: defaultUIS,
          homeUIS: homeUIS
-      },
-              function (data) {
-                 //EW.unlock(self.dpPreference);
-                 $("body").EW().notify(data).show();
-                 self.uisTemplate = $('#template').val();
-                 self.uisId = data.uisId;
+      }, function (data) {
+         //EW.unlock(self.dpPreference);
+         $("body").EW().notify(data).show();
+         self.uisTemplate = $('#template').val();
+         self.uisId = data.uisId;
 
-                 EW.setHashParameters({
-                    "uis-id": self.uisId,
-                    cmd: "edit-uis"
-                 });
-                 $(document).trigger("uis-list.refresh");
-                 self.reloadFrame();
-                 self.init();
-                 //self.dpPreference.dispose();
-                 //uisList.listUIStructures();
+         EW.setHashParameters({
+            "uis-id": self.uisId,
+            cmd: "edit-uis"
+         });
+         $(document).trigger("uis-list.refresh");
+         self.reloadFrame();
+         self.init();
+         //self.dpPreference.dispose();
+         //uisList.listUIStructures();
 
-              }, "json");
+      }, "json");
    };
 
    UISForm.prototype.updateUIS = function (reload)
    {
       var self = this;
       $('#name').removeClass("red");
-      if (!$('#name').val())
-      {
+      if (!$('#name').val()) {
          $('#name').addClass("red");
          return;
       }
-      //alert("ajiiiiiiibe");
-      EW.lock(self.dpPreference, "Saving...");
-      EW.lock($("#ew-uis-editor"));
+
+      var lock = System.UI.lock({
+         element: $.EW("getParentDialog", $("#ew-uis-editor"))[0],
+         akcent: "loader center"
+      }, .5);
 
       var structure = JSON.stringify(self.createContentHeirarchy());
       var defaultUIS = $("#uis-default").is(":checked");
       var homeUIS = $("#uis-home-page").is(":checked");
-      self.templateSettings = self.templateSettingsForm.serializeJSON(true);
-
-      //if(!self.templateSettings)
-      //alert(JSON.stringify(self.templateSettings));
+      self.templateSettings = self.templateSettingsForm.serializeJSON();
       self.templateSettingsForm.trigger("getData");
+      
       $.post('<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/update-uis', {
          name: $('#name').val(),
          template: $('#template').val(),
@@ -935,26 +931,26 @@ session_start();
          defaultUIS: defaultUIS,
          homeUIS: homeUIS
       }, function (data) {
-         //EW.unlock(self.dpPreference);
-         EW.unlock($("#ew-uis-editor"));
          $("body").EW().notify(data).show();
          uisList.listUIStructures();
          $('#form-title').html("<span>Edit</span> " + data.data.title);
          self.oldStructure = structure;
-         if (reload === true)
-         {
+         if (reload === true) {
             self.reloadFrame();
-         } else
+         } else {
             self.oldStructure = self.createContentHeirarchy();
-
+         }
+         lock.dispose();
       }, "json");
    };
 
-   UISForm.prototype.updateTemplateBody = function ()
-   {
+   UISForm.prototype.updateTemplateBody = function () {
       // Update template body with current template settings
       var self = this;
-      EW.lock(this.editorWindow);
+      var lock = System.UI.lock({
+         element: this.editorWindow[0]
+         , akcent: "loader center"
+      }, .5);
 
       //var originalTemplateSettings = self.templateSettings;
       // Read template settings from template settings form
@@ -965,17 +961,15 @@ session_start();
          template: self.uisTemplate,
          template_settings: JSON.stringify(self.templateSettings)
       }, function (data) {
-         EW.unlock(self.editorWindow);
-         //console.log(data);
-         var myIframe = document.getElementById("fr");
-         //$(myIframe.contentWindow.document).off();
-         var myIframeContent = $(myIframe).contents();
-         myIframeContent.find("body").off();
-         myIframeContent.find("head #template-script").remove();
-         myIframeContent.find("head #widget-data").remove();
-         myIframeContent.find("body #base-content-pane").remove();
-
-         myIframeContent.find("head #template-css").attr("href", "~rm/public/" + $('#template').val() + "/template.css");
+         var myIframe = self.editorIFrame[0],
+                 myIframeContent = $(myIframe).contents(),
+                 head = myIframeContent.find("head"),
+                 body = myIframeContent.find("body");
+         body.off();
+         head.find("#template-script").remove();
+         head.find("#widget-data").remove();
+         head.find("#template-css").attr("href", "~rm/public/" + $('#template').val() + "/template.css");
+         body.find("#base-content-pane").remove();
 
          var widgetData = myIframe.contentWindow.document.createElement("script");
          widgetData.id = "widget-data";
@@ -989,8 +983,7 @@ session_start();
          myIframe.contentWindow.document.body.appendChild(templateBody);
 
          // Adding template script after adding template body
-         if (data["template_script"])
-         {
+         if (data["template_script"]) {
             var script = myIframe.contentWindow.document.createElement("script");
             //script.type = "text/javascript";
             script.id = "template-script";
@@ -1003,23 +996,20 @@ session_start();
          // Find scripts inside the template body and run them
          var scripts = [];
          var ret = myIframe.contentWindow.document.body;
-         findScriptTags(ret, scripts)
-         for (script in scripts)
-         {
+         findScriptTags(ret, scripts);
+         for (script in scripts) {
             evalScript(scripts[script]);
          }
 
          $("#inspector-editor").trigger("refresh");
-
+         lock.dispose();
       }, "json");
    };
-   function findScriptTags(element, scripts)
-   {
+
+   function findScriptTags(element, scripts) {
       var ret = element.childNodes;
-      if (ret)
-      {
-         for (var i = 0; ret[i]; i++)
-         {
+      if (ret) {
+         for (var i = 0; ret[i]; i++) {
             if (ret[i].childNodes.length > 0)
                findScriptTags(ret[i], scripts);
             if (scripts && nodeName(ret[i], "script") && (!ret[i].type || ret[i].type.toLowerCase() === "text/javascript")) {
@@ -1103,7 +1093,7 @@ session_start();
    UISForm.prototype.reloadFrame = function (t)
    {
       var url = !($("#perview_url").val) ? "index.php" : $("#perview_url").val();
-      EW.lock($("#editor-window"));
+      //EW.lock($("#editor-container"));
       //$("#inspector-panel").empty();
       $("#inspector-editor > .items").empty();
       $('#fr').attr({
@@ -1247,7 +1237,7 @@ session_start();
       var w = self.getEditorItem(wId);
       //console.log(w);
       //EW.setHashParameter("screen", null, "neuis");
-      var wi = $("#editor-window").width() * .2;
+      var wi = $("#editor-container").width() * .2;
 
       $.post("<?php echo EW_ROOT_URL; ?>~webroot/html/widgets-management/uis-prewidget-form.php", {
          template: self.uisTemplate,
@@ -1297,7 +1287,7 @@ session_start();
       //var width = $(window).width() - sidebarWidth;
       self.editorFrame.find(".widget-glass-pane").hide();
       //console.log(self.editorFrame)
-      $("#editor-window").stop().animate({
+      $("#editor-container").stop().animate({
          //left: left,
          width: width
       }, 500, "Power1.easeInOut", function () {

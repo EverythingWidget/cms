@@ -51,6 +51,7 @@ class WidgetsManagement extends \ew\Module
           "api/create_widget",
           "api/update_uis",
           "api/ew_form_uis_tab",
+          "html/ne-uis.php_see",
           'html/' . $this->get_index()));
 
       $this->register_permission("manipulate", "User can create and edit layouts", array(
@@ -66,6 +67,7 @@ class WidgetsManagement extends \ew\Module
           "api/update_uis",
           "api/ew_form_uis_tab",
           "api/delete_uis",
+          "html/ne-uis.php",
           'html/' . $this->get_index()));
 
       $this->register_form("ew-article-form-tab", "uis-tab", ["title" => "UI"]);
@@ -89,10 +91,10 @@ class WidgetsManagement extends \ew\Module
 
       $this->register_permission("export-uis", "User can export UIS", array(
           "api/export_uis",
-          "html/ne-uis.php_see"));
+          "html/ne-uis.php"));
       $this->register_permission("import-uis", "User can import UIS", array(
           "api/import_uis",
-          "html/ne-uis.php_see"));
+          "html/ne-uis.php"));
 
       //$this->register_content_label("uis", "");
    }

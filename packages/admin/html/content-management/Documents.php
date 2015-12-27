@@ -205,8 +205,10 @@
          EW.setHashParameters({
             folderId: null,
             articleId: id
-         },
-                 "document");
+         }, "document");
+         System.setHashParameters({
+            app: "content-management/documents/article/" + id
+         });
          self.focusOn(div);
       });
       div.data("label", title);
@@ -261,6 +263,13 @@
          this.onInit = function () {
             documents.bNewFile.comeIn();
             documents.bNewFolder.comeIn();
+
+            this.on("app", function (e, type, id)
+            {
+               if (type) {
+                  console.log(type, id);
+               }
+            });
          };
       };
 

@@ -414,8 +414,8 @@ root {
 }
 
 .form-content.tab-content .tab-pane.static-block, .static-block {
-   position: fixed;
-   top: 102px;
+   position: absolute;
+   top: 0;
    bottom: 0;
 }
 
@@ -494,24 +494,42 @@ html,body {
    transition: all .5s;
 }
 
-span.loader {
-   width: 128px;
-   height: 128px;
-   display: block;
+.lock-pane{
+   background-color: rgba(200,200,200,.36);
+   opacity: .5;
 }
 
-span.loader:before {
+.lock-pane.show{
+   opacity: 1;
+}
+
+.table-container > .lock-pane{
+   background-color: transparent;
+   opacity: 1;
+}
+
+.loader {
+   width: 64px;
+   height: 64px;
+   display: block;
+   background-color: #fff;
+   padding: 14px;
+   border-radius: 50%;
+   box-shadow: 0 3px 4px rgba(0,0,0,.1), 0 1px 10px rgba(0,0,0,.14);
+}
+
+.loader:before {
    display: block;
    margin: 0 auto;
-   width: 128px;
-   height: 128px;
+   width: 36px;
+   height: 36px;
    -webkit-transform: rotate(-45deg);
    -ms-transform: rotate(-45deg);
    transform: rotate(-45deg);
-   border-top: 8px solid #3cf;
-   border-right: 8px solid #a4e900;
-   border-left: 8px solid #ff7200;
-   border-bottom: 8px solid #000;
+   border-top: 4px solid #3cf;
+   border-right: 4px solid #a4e900;
+   border-left: 4px solid #ff7200;
+   border-bottom: 4px solid #000;
    content: "";
    -webkit-animation: spin 2s ease infinite;
    animation: spin 2s ease infinite;
@@ -520,10 +538,24 @@ span.loader:before {
 
 .loader.center {
    position: absolute;
-   margin-top: -12px;
-   margin-left: -36px;
+   margin-top: -32px;
+   margin-left: -32px;
    top: 50%;
    left: 50%;
+}
+
+.loader.top {
+   position: absolute;
+   margin-top: -32px;
+   margin-left: -32px;
+   top: 25%;
+   left: 50%;
+}
+
+.loading-lock {
+   background-color: red;
+   width: 100px;
+   height: 100px;
 }
 
 body {
@@ -726,7 +758,6 @@ body.Admin {
    width: auto;
    min-height: 30%;
    max-width: 100%;
-   margin: 0px 15px;
 }
 
 .top-pane .row h3 {
@@ -820,14 +851,12 @@ h2 {
    /* transition: opacity .5s;*/
 }
 
-.glass-pane-lock span {
-   overflow: hidden;
+.glass-pane-lock .loader {
    position: absolute;
-   top: 49%;
-   left: 0;
-   width: 100%;
-   text-align: center;
-   margin-top: -64px;
+   top: 50%;
+   left: 50%;
+   margin-top: -32px;
+   margin-left: -32px;
 }
 
 .glass-pane-lock.green {
@@ -951,7 +980,7 @@ button {
 
 .app-bar.in {
    top: 0;
-   box-shadow: 0 3px 10px 0px rgba(0,0,0,0.06),0 0px 6px rgba(0,0,0,0.1);
+   box-shadow: 0 3px 10px 0px rgba(0,0,0,0.08),0 0px 6px rgba(0,0,0,0.12);
 }
 
 .app-bar .action-pane {
@@ -1110,7 +1139,7 @@ ul.actions-bar li label {
    line-height: 30px;
 }
 
-.actions-bar span.loader {
+.actions-bar .loader {
    width: 34px;
    height: 34px;
    float: left;
@@ -1119,7 +1148,7 @@ ul.actions-bar li label {
    position: relative;
 }
 
-.actions-bar span.loader:before {
+.actions-bar .loader:before {
    width: 34px;
    height: 34px;
    float: left;
@@ -1726,8 +1755,9 @@ ul.items ul {
 
 ul.items li.placeholder {
    min-height: 28px;
-   background-color: #39f;
+   background-color: transparent;
    border-radius: 3px;
+   border: 2px dashed #555;
    display: block;
 }
 
@@ -2181,24 +2211,24 @@ textarea.text-field {
 
 .report .table-container {
    position: absolute;
-   top: 42px;
+   top: 64px;
    bottom: 0;
-   left: 0;
-   right: 0;
+   left: 10px;
+   right: 10px;
    padding: 0;
 }
 
 .report .table-container .table-header {
-   background-color: rgba(255,255,255,1);
+   background-color: #f0f0f0;
    border: 0 solid #ccc;
    border-top: none;
    overflow: hidden;
-   padding: 1px 0;
-   margin-top: -1px;
+   padding:0;
+   margin-top: 0;
 }
 
 .report .table-container .table-header th {
-   color: #666;
+
    border: none;
    padding: 6px 10px 0;
    height: 38px;
@@ -2218,12 +2248,15 @@ textarea.text-field {
    padding: 10px 15px;
    overflow: hidden;
    position: absolute;
-   top: 0;
-   left: 0;
-   right: 0;
+   top: 10px;
+   left: 10px;
+   right: 10px;
    height: 54px;
    background-color: #fff;
    border: 0 solid #ccc;
+   border-radius: 3px;
+   box-shadow: 0 1px 3px rgba(0,0,0,.06), 0 1px 5px rgba(0,0,0,.1);
+   z-index: 3;
 }
 
 .report .controls .button {
@@ -2369,7 +2402,7 @@ textarea.text-field {
    width: 100%;
    border-spacing: 0;
    border: 0 solid #aaa;
-   padding: 10px;
+   padding: 10px 3px;
    text-align: left;
    font-size: 13px;
    border-collapse: separate;
