@@ -7,11 +7,13 @@
       activityTree: [],
       onLoadQueue: [],
       activeModule: null,
+      notYetStarted: [],
       /*activeHashHandler: function () {
        },*/
       UI: {},
       MODULE_ABSTRACT: {
          inited: false,
+         started: false,
          moduleIdentifier: "app",
          navigation: {},
          params: {},
@@ -26,8 +28,13 @@
          },
          start: function ()
          {
+            this.started = true;
             this.trigger("onStart");
             this.hashChanged(this.navigation, this.params);
+            var index = System.notYetStarted.indexOf(this.id);
+            if (index > -1) {
+               System.notYetStarted.splice(index, 1);
+            }
          },
          dispose: function ()
          {
@@ -41,23 +48,28 @@
           */
          module: function (id, object)
          {
+            var module;
+            id = this.id + '.' + id;
             if (!object && this.modules[id])
                return this.modules[id];
             if (typeof (object) === "function") {
-               this.modules[id] = $.extend(true, {}, System.MODULE_ABSTRACT);
-               object.call(this.modules[id]);
+               module = $.extend(true, {}, System.MODULE_ABSTRACT);
+               object.call(module);
             } else {
-               this.modules[id] = $.extend(true, {}, System.MODULE_ABSTRACT, object || {});
+               module = $.extend(true, {}, System.MODULE_ABSTRACT, object || {});
             }
 
-            this.modules[id].id = id;
+            module.id = id;
 
-            var modNav = this.navigation[this.modules[id].moduleIdentifier].slice(1);
+            var modNav = this.navigation[module.moduleIdentifier] ? this.navigation[module.moduleIdentifier].slice(1) : [];
             var newNav = $.extend(true, {}, this.navigation);
-            newNav[this.modules[id].moduleIdentifier] = modNav;
+            newNav[module.moduleIdentifier] = modNav;
 
-            this.modules[id].init(newNav, this.params);
-            return this.modules[id];
+            System.modules[id] = this.modules[id] = module;
+            module.init(newNav, this.params);
+            System.notYetStarted.push(id);
+
+            return module;
          },
          hash: {},
          data: {},
@@ -89,24 +101,19 @@
           * @param {Array} args
           * @returns {undefined}
           */
-         trigger: function (event, args)
-         {
-            if (typeof (this[event]) === "function")
-            {
+         trigger: function (event, args) {
+            if (typeof (this[event]) === "function") {
                this[event].apply(this, args);
             }
          },
-         hashChanged: function (navigation, params)
-         {
+         hashChanged: function (navigation, params) {
             var self = this;
             var newNav = navigation;
             this.hashHandler.call(this, navigation, params);
-            $.each(navigation, function (key, value)
-            {
+            $.each(navigation, function (key, value) {
                var navHandler = self.hash[key];
                // Call same level events handlers                            
-               if (navHandler)
-               {
+               if (navHandler) {
                   var args = [];
                   args.push(value);
                   for (var i = 0; i < value.length; ++i)
@@ -124,7 +131,7 @@
             if (this.moduleIdentifier && navigation[this.moduleIdentifier])
             {
                // Select activeModule according to moduleIdentifier
-               this.activeModule = this.modules[navigation[this.moduleIdentifier][0]];
+               this.activeModule = this.modules["system." + navigation[this.moduleIdentifier][0]];
             } else
                this.activeModule = null;
             //console.log(this.id, this.activeModule, this.modules);
@@ -135,9 +142,9 @@
                var modNav = navigation[this.moduleIdentifier].slice(1);
                newNav = $.extend(true, {}, navigation);
                newNav[this.moduleIdentifier] = modNav;
-               if (!this.activeModule.inited)
-               {
-                  //this.activeModule.init(newNav, this.params);
+               if (!this.activeModule.started) {
+                  //alert("system." + navigation[this.moduleIdentifier][0])
+                  return;
                }
 
                // Call module level events handlers
@@ -151,10 +158,10 @@
          }
       },
       // Apps Management
-      registerApp: function (id, object)
-      {
-         this.modules[id] = $.extend(true, {}, System.MODULE_ABSTRACT, object);
-      },
+      /* registerApp: function (id, object)
+       {
+       this.modules[id] = $.extend(true, {}, System.MODULE_ABSTRACT, object);
+       },*/
       /**
        * 
        * @param {String} id
@@ -163,7 +170,7 @@
        */
       module: function (id, object)
       {
-         return this.main.module(id, object);
+         return this.app.module(id, object);
       },
       // Open app
       openApp: function (app, reload)
@@ -181,17 +188,17 @@
          if (self.onLoadQueue[0] && self.currentOnLoad != self.onLoadQueue[0])
          {
             self.currentOnLoad = self.onLoadQueue[0];
-            console.log("Loading app: " + self.currentOnLoad.id);
+            //console.log("Loading app: " + self.currentOnLoad.id);
             var package = self.currentOnLoad.package;
             var id = self.currentOnLoad.id;
             var file = self.currentOnLoad.file;
             var data = self.currentOnLoad.data;
             if (self.onLoadApp(self.currentOnLoad))
             {
-               $.get(package + '/' + id + '/' + file, data).done(function (response, status)
+               self.loadingAppXHR = $.get(package + '/' + id + '/' + file, data).done(function (response, status)
                {
-                  if (self.navHashes[id])
-                     window.location.hash = self.navHashes[id];
+                  if (self.navHashes["system." + id])
+                     window.location.hash = self.navHashes["system." + id];
                   //alert("app current nav hash: "+self.navHashes[id]);
                   var html = $(response);
                   var scripts = html.filter("script").detach();
@@ -201,11 +208,13 @@
                   //System.apps[id] = $.extend({}, System.module, self.apps[id]);
                   //System.activityTree.unshift(System.apps[id]);
                   var module = System.module(id);
-                  //console.log(module);
+
                   self.onAppLoaded(module, html);
                   //
-                  var modNav = self.main.navigation[module.moduleIdentifier].slice(1);
-                  var newNav = $.extend(true, {}, self.main.navigation);
+                  var modNav = [];
+                  if (self.app.navigation[module.moduleIdentifier])
+                     modNav = self.app.navigation[module.moduleIdentifier].slice(1);
+                  var newNav = $.extend(true, {}, self.app.navigation);
                   newNav[module.moduleIdentifier] = modNav;
                   this.activeModule = module;
                   if (!this.activeModule.inited)
@@ -213,7 +222,7 @@
                      //this.activeModule.inited = true;
                      //this.activeModule.navigation = newNav;
                      //this.activeModule.params = self.main.params;
-                     this.activeModule.init.call(module, newNav, self.main.params);
+                     this.activeModule.init.call(module, newNav, self.app.params);
                      //this.activeModule.hashChanged(newNav, self.main.params);
                   }
                   //this.activeModule.trigger("onActive");
@@ -269,6 +278,12 @@
       {
          return true;
       },
+      abortLoadingApp: function () {
+         if (this.loadingAppXHR) {
+            this.loadingAppXHR.abort();
+            this.loadingAppXHR = null;
+         }
+      },
       navHashes: {},
       hashChecker: null,
       /**
@@ -278,7 +293,7 @@
        */
       on: function (id, handler)
       {
-         this.main.on.call(this.main, id, handler);
+         this.app.on.call(this.app, id, handler);
       },
       hashHandler: function (nav, params)
       {
@@ -291,13 +306,13 @@
          var self = this;
          var detect = function ()
          {
-            if (self.main.oldHash !== window.location.hash || self.main.newHandler)
+            if (self.app.oldHash !== window.location.hash || self.app.newHandler)
             {
-               self.main.oldHash = window.location.hash;
-               self.main.newHandler = false;
+               self.app.oldHash = window.location.hash;
+               self.app.newHandler = false;
                var hashValue = window.location.hash;
                hashValue = hashValue.replace(/^#\/?/igm, '');
-               
+
                var navigation = {};
                var params = {};
                hashValue.replace(/([^&]*)=([^&]*)/g, function (m, k, v)
@@ -305,7 +320,7 @@
                   navigation[k] = v.split("/").filter(Boolean);
                   params[k] = v;
                });
-               self.main.hashChanged(navigation, params); // System
+               self.app.hashChanged(navigation, params); // System
             }
          };
          detect();
@@ -322,7 +337,7 @@
       },
       getHashNav: function (key, hashName)
       {
-         return this.main.navigation[key];
+         return this.app.navigation[key] || [];
       },
       // Set parameters for current app/nav if not specified
       setHashParameters: function (parameters, replace, clean)
@@ -331,8 +346,8 @@
          this.lastHashParams = parameters;
          var hashValue = window.location.hash;
          // if the app found then set the params for app otherwise set the param for default app (main.mainModule)
-         var app = ('' + parameters[this.main.moduleIdentifier]).split('/')[0] || this.main.activeModule.id;
-         var mI = this.main.moduleIdentifier;
+         var app = ('' + parameters[this.app.moduleIdentifier]).split('/')[0] || this.app.activeModule.id;
+         var mI = this.app.moduleIdentifier;
          //if (this.modules[app])
          //mI = this.modules[app].moduleIdentifier;
          //alert("navHAsh: " + app + " > " + parameters[this.main.moduleIdentifier])
@@ -378,7 +393,7 @@
             }
          });
          newHash = newHash.replace(/\&$/, '');
-         
+
          if (app)
          {
             this.navHashes[app] = newHash;
@@ -389,11 +404,17 @@
          } else
             window.location.hash = newHash.replace(/\&$/, '');
       },
+      startLastLoadedModule: function () {
+         if (this.notYetStarted.length > 0) {
+            //console.log(this.notYetStarted[this.notYetStarted.length - 1]);
+            this.modules[this.notYetStarted[this.notYetStarted.length - 1]].start();
+         }
+      },
       init: function ()
       {
-         this.main = $.extend(true, {}, System.MODULE_ABSTRACT);
-         this.main.moduleIdentifier = this.moduleIdentifier;
-         this.main.id = "main";
+         this.app = $.extend(true, {}, System.MODULE_ABSTRACT);
+         this.app.moduleIdentifier = this.moduleIdentifier;
+         this.app.id = "system";
       }
    };
 }());

@@ -108,7 +108,7 @@
             }
             , "tr{Export}": exportAction}});
       $("#main-content").html(this.table.container);
-      this.table.read();
+
    }
 
    UIStructureList.prototype.selectUIS = function (obj, uisId)
@@ -184,10 +184,23 @@
    };
 
    var uisList;
-   $(document).ready(function () {
-      uisList = new UIStructureList();
 
-   });
+   (function (System) {
+
+      var UISList = function () {
+         this.type = "appSection";
+         this.onInit = function () {
+            uisList = new UIStructureList();
+            uisList.table.read();
+         };
+
+         this.onStart = function () {            
+         };
+      };
+
+      System.module("widget-management")
+              .module("uis-list", UISList);
+   }(System));
 </script>
 
 

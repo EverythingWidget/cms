@@ -3105,3 +3105,12 @@ li h3.icon-header {
 inline-dialog{
 
 }
+
+.anim-scale-in {   
+   transition: transform .3s;
+   transform: scale(0);
+}
+
+.anim-scale-in.in {   
+   transform: scale(1);
+}

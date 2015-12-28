@@ -1,8 +1,13 @@
 <script>
    System.init();
    System.onLoadApp = function (app) {
-
       if (app.id === "Home") {
+         System.abortLoadingApp();
+
+         $("#action-bar-items").children().animate({
+            opacity: 0
+         }, 300);
+
          System.UI.components.appTitle.text("Home");
          System.UI.components.homeButton.stop().comeOut(500);
 
@@ -24,18 +29,18 @@
          return false;
       }
       System.UI.components.appTitle.text(app.title);
-      return true;
-   };
-
-   System.onAppLoaded = function (app, response) {
       System.UI.components.homeButton.stop().comeIn(300);
       $("#action-bar-items").empty();
       System.UI.components.appBar.animate({className: "app-bar in"}, 500, "Power2.easeInOut");
       System.UI.components.homePane.animate({className: "home-pane"}, 500, "Power2.easeInOut");
+      return true;
+   };
 
+   System.onAppLoaded = function (app, response) {
       setTimeout(function () {
          $("#app-content").append(response);
          System.UI.components.mainContent = $("#main-content");
+
          EW.initSideBar();
 
          if (app.type === "app") {
@@ -44,11 +49,8 @@
       }, 500);
    };
 
-   System.main.hashHandler = function (nav, params) {
+   System.app.hashHandler = function (nav, params) {
       if (!nav["app"] && "Home" !== EW.oldApp) {
-         $("#action-bar-items").children().animate({
-            opacity: 0
-         }, 300);
          EW.oldApp = "Home";
          System.openApp(EW.apps["Home"]);
       }
@@ -62,6 +64,7 @@
 
       if (app !== EW.oldApp) {
          EW.oldApp = app;
+         console.log(app);
          $("#app-title").text(EW.apps[app].title);
          System.openApp(EW.apps[app]);
          return;
@@ -433,17 +436,27 @@
                   oldRequest = $.get(element.prop("href"), function (data) {
                      $("#action-bar-items").find("button,div").remove();
 
+                     if (!System.getHashNav("app")[0]) {
+                        return;
+                     }
+                     
                      System.UI.components.mainContent.html(data);
-                     if (anim)
+
+                     if (anim) {
                         anim.pause();
+                     }
 
                      anim = TweenLite.fromTo(System.UI.components.mainContent[0], .5, {
                         opacity: 0,
-                        ease: "Power3.easeInOut",
+                        ease: "Power2.easeInOut",
                         top: "-=5%"
                      }, {
                         top: "+=5%",
                         opacity: 1,
+                        onComplete: function () {
+                           //console.log(System.notYetStarted)
+                           System.startLastLoadedModule();
+                        }
                      });
                   });
                }
@@ -470,15 +483,19 @@
             });
             var currentNav = System.getHashNav("app")[1];
 
-            if (window.location.hash.indexOf(a.attr("href")) != -1 || currentNav === a.attr("data-ew-nav")) {
-
-            }
+            /*if (window.location.hash.indexOf(a.attr("href")) != -1 || currentNav === a.attr("data-ew-nav")) {
+             
+             }*/
 
             if (a.attr("data-default") && !currentNav) {
                if (System.getHashNav("app")[1] !== a.attr("data-ew-nav")) {
-                  System.setHashParameters({
-                     app: System.getHashNav("app")[0] + '/' + a.attr("data-ew-nav")
-                  }, true);
+                  if (System.getHashNav("app")[0]) {
+                     System.setHashParameters({
+                        app: System.getHashNav("app")[0] + '/' + a.attr("data-ew-nav")
+                     }, true);
+                  } else {
+                     System.openApp(EW.apps["Home"]);
+                  }
                }
             }
          }

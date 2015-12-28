@@ -46,9 +46,10 @@ function script()
             this.onActive = function () {
             };
 
-            this.on("app", function (p, section) {
+            this.on("app", function (p, section) {   
                if (!section || section === this.data.tab)
                   return;
+               
                this.data.tab = section;
                EW.appNav.setCurrentTab($("a[data-ew-nav='" + section + "']"));
             });

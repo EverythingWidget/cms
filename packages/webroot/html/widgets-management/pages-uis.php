@@ -102,7 +102,7 @@ $default_page = json_decode(webroot\WidgetsManagement::get_path_uis("@DEFAULT"),
       });
       //this.allUISList.container.css({margin: "5px 15px"});
       $("#uis_list").append(this.allUISList.container);
-      this.allUISList.read();
+      //this.allUISList.read();
       // Register event listener for all-uis-list table
       $(document).off("all-uis-list.refresh");
       $(document).on("all-uis-list.refresh", function () {
@@ -216,12 +216,21 @@ if ($path_uis_list)
       }
    };
 
-   /*widgetsManagement.onBackToWM = function ()
-    {
-    //pageUIS.bSelect.remove();
-    };*/
    var pageUIS;
-   $(document).ready(function () {
-      pageUIS = new PageUIS();
-   });
+
+   (function (System) {
+      var Section = function () {
+         this.type = "appSection";
+         this.onInit = function () {
+            pageUIS = new PageUIS();
+            pageUIS.allUISList.read();
+         };
+
+         this.onStart = function () {            
+         };
+      };
+
+      System.module("widget-management")
+              .module("pages-uis", Section);
+   }(System));
 </script>
