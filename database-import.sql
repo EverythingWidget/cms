@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.5.0.2
+-- version 4.5.1
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 05, 2015 at 03:46 PM
--- Server version: 10.0.17-MariaDB
--- PHP Version: 5.6.14
+-- Generation Time: Dec 28, 2015 at 11:20 AM
+-- Server version: 10.1.9-MariaDB
+-- PHP Version: 7.0.0
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -35,7 +35,7 @@ CREATE TABLE `ew_contents` (
   `keywords` text CHARACTER SET utf8,
   `description` text CHARACTER SET utf8 COLLATE utf8_bin,
   `parent_id` bigint(20) DEFAULT NULL,
-  `source_page_address` text CHARACTER SET utf8 COLLATE utf8_bin,
+  `content_fields` text CHARACTER SET utf8 COLLATE utf8_bin,
   `content` text CHARACTER SET utf8,
   `order` int(11) DEFAULT '0',
   `featured_image` text CHARACTER SET utf8,
@@ -179,7 +179,7 @@ CREATE TABLE `ew_users` (
 --
 
 INSERT INTO `ew_users` (`id`, `email`, `password`, `first_name`, `last_name`, `type`, `group_id`, `permission`, `date_created`, `verification_code`, `verified`, `verification_date`, `disable`) VALUES
-(1, 'admin', 'admin', 'Eeliya', 'Rasta', 1, 9, NULL, NULL, NULL, NULL, NULL, 0),
+(1, 'admin', 'admin', 'Eeliya', 'Rasta', 1, 9, 'admin.dashboard.dashboard', NULL, NULL, NULL, NULL, 0),
 (2, 'test edited', 'utB78Fgu', 'test edited', 'test edited', 0, 1, NULL, '2014-03-18 10:24:36', NULL, NULL, NULL, 0),
 (3, 'reza.hakim', 'GtzdwcS2', 'Reza', 'Hakim', 0, 9, NULL, '2014-03-20 13:35:54', NULL, NULL, NULL, 0),
 (4, 'eeliya.rasta@gmail.com', 'Etc3TitY', 'Eeliya', 'King', 0, 9, NULL, '2014-04-03 23:10:29', NULL, NULL, NULL, 0),
@@ -206,9 +206,9 @@ CREATE TABLE `ew_users_groups` (
 --
 
 INSERT INTO `ew_users_groups` (`id`, `parent_id`, `title`, `description`, `type`, `date_created`, `permission`) VALUES
-(1, NULL, 'Guest', 'All the visitors', 'default', '2014-03-06 22:27:36', 'admin.content-management.see-content,admin.users-management.see-users,admin.users-management.see-groups,webroot.widgets-management.view'),
+(1, NULL, 'Guest', 'All the visitors', 'default', '2014-03-06 22:27:36', 'admin.content-management.see-content,admin.users-management.see-users,admin.users-management.see-groups,webroot.widgets-management.view,admin.dashboard.dashboard'),
 (4, NULL, 'Event Modetore', 'Responsible for add events and remove junk events', 'user', '2014-03-06 22:37:00', 'culturenight.Countries.see-countries,culturenight.Countries.manipulate-countries,culturenight.Events.see-event,culturenight.Events.manipulate-event'),
-(9, NULL, 'Administration', 'Website administrators', 'user', '2014-03-08 16:27:31', 'admin.content-management.see-content,admin.content-management.manipulate-content,admin.users-management.see-users,admin.users-management.manipulate-users,admin.users-management.see-groups,admin.users-management.manipulate-groups,webroot.widgets-management.view,webroot.widgets-management.export-uis,webroot.widgets-management.import-uis');
+(9, NULL, 'Administration', 'Website administrators', 'user', '2014-03-08 16:27:31', 'admin.content-management.see-content,admin.content-management.manipulate-content,admin.users-management.see-users,admin.users-management.manipulate-users,admin.users-management.see-groups,admin.users-management.manipulate-groups,webroot.widgets-management.view,webroot.widgets-management.export-uis,webroot.widgets-management.import-uis,admin.dashboard.dashboard');
 
 -- --------------------------------------------------------
 
