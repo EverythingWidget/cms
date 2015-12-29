@@ -8,6 +8,7 @@
       onLoadQueue: [],
       activeModule: null,
       notYetStarted: [],
+      activeRequests: {},
       /*activeHashHandler: function () {
        },*/
       UI: {},
@@ -180,8 +181,7 @@
          this.appLoaderService();
       },
       appPattern: /var app =\s*{([\s\S]*)}/gi,
-      appLoaderService: function ()
-      {
+      appLoaderService: function () {
          var self = this;
          if (self.currentOnLoad)
             return;
@@ -195,8 +195,7 @@
             var data = self.currentOnLoad.data;
             if (self.onLoadApp(self.currentOnLoad))
             {
-               self.loadingAppXHR = $.get(package + '/' + id + '/' + file, data).done(function (response, status)
-               {
+               self.loadingAppXHR = self.load(package + '/' + id + '/' + file, data).done(function (response, status) {
                   if (self.navHashes["system." + id])
                      window.location.hash = self.navHashes["system." + id];
                   //alert("app current nav hash: "+self.navHashes[id]);
@@ -209,7 +208,7 @@
                   //System.activityTree.unshift(System.apps[id]);
                   var module = System.module(id);
 
-                  self.onAppLoaded(module, html);
+                  self.onAppLoaded(module, html, status);
                   //
                   var modNav = [];
                   if (self.app.navigation[module.moduleIdentifier])
@@ -238,8 +237,7 @@
                self.onLoadQueue.shift();
             }
          }
-         setTimeout(function ()
-         {
+         setTimeout(function () {
             self.appLoaderService();
          }, 1);
       },
@@ -248,40 +246,36 @@
        * @param {Object} app
        * @returns {Boolean} True if the app should be loaded and false if the app may not be loaded
        */
-      onLoadApp: function (app)
-      {
+      onLoadApp: function (app) {
          // Example: show a loading animation
          return true;
       },
-      onAppLoaded: function (app, data)
-      {
+      onAppLoaded: function (app, data) {
          // Example: add the content into the DOM
       },
       // Close App
-      closeApp: function (appId)
-      {
-         if (this.onCloseApp(System.modules[appId]))
-         {
+      closeApp: function (appId) {
+         if (this.onCloseApp(System.modules[appId])) {
             System.modules[appId].blur();
             var pos = this.activityTree.lastIndexOf(appId);
-            if (pos !== -1)
+            if (pos !== -1) {
                this.activityTree.splice(pos, 1);
+            }
             System.modules[appId].dispose();
             this.onAppClosed(System.modules[appId]);
          }
       },
-      onCloseApp: function (app)
-      {
+      onCloseApp: function (app) {
 
       },
-      onAppClosed: function ()
-      {
+      onAppClosed: function () {
          return true;
       },
       abortLoadingApp: function () {
          if (this.loadingAppXHR) {
             this.loadingAppXHR.abort();
             this.loadingAppXHR = null;
+            delete this.activeRequests[this.loadingAppXHR.creationId];
          }
       },
       navHashes: {},
@@ -291,23 +285,17 @@
        * @param {String} id
        * @param {Function} handler
        */
-      on: function (id, handler)
-      {
+      on: function (id, handler) {
          this.app.on.call(this.app, id, handler);
       },
-      hashHandler: function (nav, params)
-      {
-
+      hashHandler: function (nav, params) {
       },
       navigation: {},
       params: {},
-      start: function ()
-      {
+      start: function () {
          var self = this;
-         var detect = function ()
-         {
-            if (self.app.oldHash !== window.location.hash || self.app.newHandler)
-            {
+         var detect = function () {
+            if (self.app.oldHash !== window.location.hash || self.app.newHandler) {
                self.app.oldHash = window.location.hash;
                self.app.newHandler = false;
                var hashValue = window.location.hash;
@@ -315,8 +303,7 @@
 
                var navigation = {};
                var params = {};
-               hashValue.replace(/([^&]*)=([^&]*)/g, function (m, k, v)
-               {
+               hashValue.replace(/([^&]*)=([^&]*)/g, function (m, k, v) {
                   navigation[k] = v.split("/").filter(Boolean);
                   params[k] = v;
                });
@@ -326,23 +313,17 @@
          detect();
          //this.systemModule = $.extend({}, System.MODULE_ABSTRACT);
          clearInterval(this.hashChecker);
-         this.hashChecker = setInterval(function ()
-         {
+         this.hashChecker = setInterval(function () {
             detect();
-         }, 50);
+         }, 20);
       },
-      getHashParam: function (key, hashName)
-      {
-
+      getHashParam: function (key, hashName) {
       },
-      getHashNav: function (key, hashName)
-      {
+      getHashNav: function (key, hashName) {
          return this.app.navigation[key] || [];
       },
       // Set parameters for current app/nav if not specified
-      setHashParameters: function (parameters, replace, clean)
-      {
-
+      setHashParameters: function (parameters, replace, clean) {
          this.lastHashParams = parameters;
          var hashValue = window.location.hash;
          // if the app found then set the params for app otherwise set the param for default app (main.mainModule)
@@ -351,67 +332,89 @@
          //if (this.modules[app])
          //mI = this.modules[app].moduleIdentifier;
          //alert("navHAsh: " + app + " > " + parameters[this.main.moduleIdentifier])
-         if (app)
-         {
-            if (!this.navHashes[app])
-            {
+         if (app) {
+            if (!this.navHashes[app]) {
                //this.navHashes[app] = mI + "=" + parameters[this.main.moduleIdentifier];
                this.navHashes[app] = hashValue;
             }
             hashValue = this.navHashes[app];
          }
 
-         if (hashValue.indexOf("#") !== -1)
-         {
+         if (hashValue.indexOf("#") !== -1) {
             hashValue = hashValue.substring(1);
          }
          var pairs = hashValue.split("&");
          var newHash = "#";
          var and = false;
-         hashValue.replace(/([^&]*)=([^&]*)/g, function (m, k, v)
-         {
-            if (parameters[k] != null)
-            {
+         hashValue.replace(/([^&]*)=([^&]*)/g, function (m, k, v) {
+            if (parameters[k] != null) {
                newHash += k + "=" + parameters[k];
                newHash += '&';
                and = true;
                delete parameters[k];
-            } else if (!parameters.hasOwnProperty(k) && !clean)
-            {
+            } else if (!parameters.hasOwnProperty(k) && !clean) {
                newHash += k + "=" + v;
                newHash += '&';
                and = true;
             }
          });
          // New keys
-         $.each(parameters, function (key, value)
-         {
-            if (key && value)
-            {
+         $.each(parameters, function (key, value) {
+            if (key && value) {
                newHash += key + "=" + value + "&";
                and = true;
             }
          });
          newHash = newHash.replace(/\&$/, '');
 
-         if (app)
-         {
+         if (app) {
             this.navHashes[app] = newHash;
          }
-         if (replace)
-         {
+
+         if (replace) {
             window.location.replace(('' + window.location).split('#')[0] + newHash);
-         } else
+         } else {
             window.location.hash = newHash.replace(/\&$/, '');
+         }
+      },
+      load: function (href, onDone) {
+         var _this = this,
+                 id = new Date().valueOf();
+         while (id === this.oldRequestCreationId) {
+            id = new Date().valueOf();
+         }
+
+         var request = $.get(href, function (response) {
+            console.log(href);
+            if ("function" === typeof (onDone)) {
+               onDone.call(this, response);
+            }
+
+            if (request.creationId) {
+               delete _this.activeRequests[request.creationId];
+            }
+         });
+
+         request.creationId = id;
+         this.oldRequestCreationId = id;
+         this.activeRequests[id] = request;
+         return request;
+      },
+      abortAllReqests: function () {
+         for (var request in this.activeRequests) {
+            this.activeRequests[request].abort();
+            console.log("aborted", this.activeRequests[request]);
+            delete this.activeRequests[request];
+         }
+         this.onLoadQueue = [];
+         this.currentOnLoad = null;
       },
       startLastLoadedModule: function () {
          if (this.notYetStarted.length > 0) {
-            //console.log(this.notYetStarted[this.notYetStarted.length - 1]);
             this.modules[this.notYetStarted[this.notYetStarted.length - 1]].start();
          }
       },
-      init: function ()
-      {
+      init: function () {
          this.app = $.extend(true, {}, System.MODULE_ABSTRACT);
          this.app.moduleIdentifier = this.moduleIdentifier;
          this.app.id = "system";

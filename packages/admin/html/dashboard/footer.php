@@ -1,33 +1,34 @@
 <script>
    System.init();
+
+   System.goToHomeApp = function () {
+      System.abortAllReqests();
+      $("#action-bar-items").children().animate({
+         opacity: 0
+      }, 300);
+
+      System.UI.components.appTitle.text("Home");
+      System.UI.components.homeButton.stop().comeOut(500);
+
+
+      $("#main-content").stop().animate({
+         transform: "scale(1.14)",
+         opacity: 0
+      }, 500, "Power2.easeInOut", function () {
+         this.remove();
+      });
+
+      $("#app-bar-nav").stop().animate({opacity: 0}, 300, function () {
+         this.remove();
+
+      });
+
+      System.UI.components.appBar.animate({className: "app-bar"}, 500, "Power2.easeInOut");
+      System.UI.components.homePane.animate({className: "home-pane in"}, 500, "Power2.easeInOut");
+   };
+
    System.onLoadApp = function (app) {
-      if (app.id === "Home") {
-         System.abortLoadingApp();
 
-         $("#action-bar-items").children().animate({
-            opacity: 0
-         }, 300);
-
-         System.UI.components.appTitle.text("Home");
-         System.UI.components.homeButton.stop().comeOut(500);
-
-
-         $("#main-content").stop().animate({
-            transform: "scale(1.14)",
-            opacity: 0
-         }, 500, "Power2.easeInOut", function () {
-            this.remove();
-         });
-
-         $("#app-bar-nav").stop().animate({opacity: 0}, 300, function () {
-            this.remove();
-
-         });
-
-         System.UI.components.appBar.animate({className: "app-bar"}, 500, "Power2.easeInOut");
-         System.UI.components.homePane.animate({className: "home-pane in"}, 500, "Power2.easeInOut");
-         return false;
-      }
       System.UI.components.appTitle.text(app.title);
       System.UI.components.homeButton.stop().comeIn(300);
       $("#action-bar-items").empty();
@@ -36,8 +37,13 @@
       return true;
    };
 
-   System.onAppLoaded = function (app, response) {
+   System.onAppLoaded = function (app, response, s) {
       setTimeout(function () {
+         // if user immidietly returned to home, then stop here
+         if (System.getHashNav("app")[0] === "Home") {
+            return;
+         }
+
          $("#app-content").append(response);
          System.UI.components.mainContent = $("#main-content");
 
@@ -50,16 +56,19 @@
    };
 
    System.app.hashHandler = function (nav, params) {
-      if (!nav["app"] && "Home" !== EW.oldApp) {
+      console.log(nav)
+      if ((!nav["app"] || nav["app"][0] === "Home") && "Home" !== EW.oldApp) {
          EW.oldApp = "Home";
-         System.openApp(EW.apps["Home"]);
+         System.setHashParameters({
+            app: "Home"
+         }, true);
       }
    };
 
    System.on('app', function (path, app, sec) {
-
-      if (!app) {
-         app = "Home";
+      if (!app || app === "Home") {
+         System.goToHomeApp();
+         return;
       }
 
       if (app !== EW.oldApp) {
@@ -100,29 +109,29 @@
       }, "json");
    };
 
-   EverythingWidgets.prototype.loadApp = function (data) {
-
-      if (data.app !== this.oldApp) {
-         this.oldApp = data.app;
-
-         if (!data.app) {
-            System.UI.components.appBar.animate({className: "app-bar"}, 500, "Power2.easeOut");
-            System.UI.components.homePane.animate({className: "home-pane in"}, 500, "Power2.easeOut");
-            return;
-         }
-
-         $("#action-bar-items").empty();
-         System.UI.components.appBar.animate({className: "app-bar in"}, 500, "Power2.easeOut");
-         System.UI.components.homePane.animate({className: "home-pane"}, 500, "Power2.easeOut");
-
-         setTimeout(function () {
-            $.post("~admin/api/" + data.app + "/index.php", {}, function (response) {
-               $("#app-content").append(response);
-               EW.initSideBar();
-            });
-         }, 500);
-      }
-   };
+   /*EverythingWidgets.prototype.loadApp = function (data) {
+    
+    if (data.app !== this.oldApp) {
+    this.oldApp = data.app;
+    
+    if (!data.app) {
+    System.UI.components.appBar.animate({className: "app-bar"}, 500, "Power2.easeOut");
+    System.UI.components.homePane.animate({className: "home-pane in"}, 500, "Power2.easeOut");
+    return;
+    }
+    
+    $("#action-bar-items").empty();
+    System.UI.components.appBar.animate({className: "app-bar in"}, 500, "Power2.easeOut");
+    System.UI.components.homePane.animate({className: "home-pane"}, 500, "Power2.easeOut");
+    
+    setTimeout(function () {
+    $.post("~admin/api/" + data.app + "/index.php", {}, function (response) {
+    $("#app-content").append(response);
+    EW.initSideBar();
+    });
+    }, 500);
+    }
+    };*/
 
    $.fn.textWidth = function () {
       var html_org = $(this).html();
@@ -368,7 +377,7 @@
       $("#app-bar").prepend($sidebar);
       $sidebar.stop().animate({
          left: 0
-      }, 200, "Power2.easeOut");
+      }, 250, "Power2.easeOut");
       //sidebar.attr("tabindex", 1);
       $sidebar.off("mouseleave");
       $sidebar.on("mouseleave", function () {
@@ -412,6 +421,37 @@
          });
       });
 
+      $("#app-bar-nav a").each(function () {
+         var a = $(this);
+         if (a.attr("rel") === "ajax") {
+            a.click(function (event) {
+               event.preventDefault();
+               if (a.attr("data-ew-nav")) {
+                  System.setHashParameters({
+                     "app": System.getHashNav("app")[0] + '/' + a.attr("data-ew-nav")
+                  }, null);
+               } else {
+                  var kv = a.attr("href").split("=");
+                  EW.setHashParameter(kv[0], kv[1]);
+               }
+            });
+
+            var currentNav = System.getHashNav("app")[1];
+
+            if (a.attr("data-default") && !currentNav && System.getHashNav("app")[0] !== "Home") {
+               if (System.getHashNav("app")[1] !== a.attr("data-ew-nav")) {
+                  //if (System.getHashNav("app")[0]) {
+                  System.setHashParameters({
+                     app: System.getHashNav("app")[0] + '/' + a.attr("data-ew-nav")
+                  }, true);
+                  //} else {
+                  //System.openApp(EW.apps["Home"]);
+                  //}
+               }
+            }
+         }
+      });
+
       this.appNav.currentTab = null;
       var oldHref = null;
       var oldRequest = null;
@@ -433,13 +473,14 @@
                      oldRequest.abort();
                   }
 
-                  oldRequest = $.get(element.prop("href"), function (data) {
+                  oldRequest = System.load(element.prop("href"), function (data) {
+                     console.log(oldRequest);
                      $("#action-bar-items").find("button,div").remove();
 
                      if (!System.getHashNav("app")[0]) {
                         return;
                      }
-                     
+
                      System.UI.components.mainContent.html(data);
 
                      if (anim) {
@@ -459,6 +500,7 @@
                         }
                      });
                   });
+                  console.log(oldRequest);
                }
             }
          }
@@ -466,40 +508,6 @@
          element.addClass("selected");
          this.currentTab = element;
       };
-
-      $("#app-bar-nav a, .app-bar-nav a").each(function () {
-         var a = $(this);
-         if (a.attr("rel") === "ajax") {
-            a.click(function (event) {
-               event.preventDefault();
-               if (a.attr("data-ew-nav")) {
-                  System.setHashParameters({
-                     "app": System.getHashNav("app")[0] + '/' + a.attr("data-ew-nav")
-                  }, null);
-               } else {
-                  var kv = a.attr("href").split("=");
-                  EW.setHashParameter(kv[0], kv[1]);
-               }
-            });
-            var currentNav = System.getHashNav("app")[1];
-
-            /*if (window.location.hash.indexOf(a.attr("href")) != -1 || currentNav === a.attr("data-ew-nav")) {
-             
-             }*/
-
-            if (a.attr("data-default") && !currentNav) {
-               if (System.getHashNav("app")[1] !== a.attr("data-ew-nav")) {
-                  if (System.getHashNav("app")[0]) {
-                     System.setHashParameters({
-                        app: System.getHashNav("app")[0] + '/' + a.attr("data-ew-nav")
-                     }, true);
-                  } else {
-                     System.openApp(EW.apps["Home"]);
-                  }
-               }
-            }
-         }
-      });
    }
 
    // Plugins which initilize when document is ready
