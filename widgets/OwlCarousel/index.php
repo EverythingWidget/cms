@@ -1,6 +1,6 @@
 <?php
 $feeder = json_decode($widget_parameters["feeder"], TRUE);
-$feeder_id = $feeder["type"];
+$feeder_id = $feeder["feederId"];
 //admin\WidgetsManagement::add_html_script("widgets/OwlCarousel/owl.carousel.js");
 $id = $feeder["id"];
 if (!$feeder_id)
@@ -65,31 +65,34 @@ if (!$token)
    $token = 0;
 $row_num = ($token * $num_of_items_per_page) + $num_of_items_per_page;
 
-$items_list = EWCore::get_widget_feeder("list", $feeder_app, $feeder_id, [$id, $token * $num_of_items_per_page, $num_of_items_per_page]);
-$items_list = json_decode($items_list, TRUE);
+//$items_list = EWCore::get_widget_feeder("list", $feeder_app, $feeder_id, [$id, $token * $num_of_items_per_page, $num_of_items_per_page]);
 
-$items_count = $items_list["num_rows"];
-$items = $items_list["items"];
+$items_list = json_decode(EWCore::call($feeder_id, ["id" => $id]), TRUE);
+$items_count = $items_list["totalRows"];
+$items = $items_list["data"];
 $page = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 ?>
 
 <div class="owl-carousel">
    <?php
    $index = 1;
-   foreach ($items as $item)
+   if (isset($items))
    {
-      //$row_seprator = false;
-      echo "<div class='item {$item["class"]}' >{$item["html"]}</div>";
+      foreach ($items as $item)
+      {
+         //$row_seprator = false;
+         echo "<div class='item {$item["class"]}' >{$item["html"]}</div>";
+      }
    }
    ?>
 </div>
-<link rel="stylesheet" type="text/css" href="widgets/OwlCarousel/animate.css"/>
-<link rel="stylesheet" type="text/css" href="widgets/OwlCarousel/owl.carousel.css"/>
-<link rel="stylesheet" type="text/css" href="widgets/OwlCarousel/owl.theme.default.css"/>
+<link rel="stylesheet" type="text/css" href="~rm/public/js/owl-carousel/animate.css"/>
+<link rel="stylesheet" type="text/css" href="~rm/public/js/owl-carousel/owl.carousel.css"/>
+<link rel="stylesheet" type="text/css" href="~rm/public/js/owl-carousel/owl.theme.default.css"/>
 <script>
    $(document).ready(function () {
 
-      $.getScript("widgets/OwlCarousel/owl.carousel.js", function () {
+      $.getScript("~rm/public/js/owl-carousel/owl.carousel.js", function () {
 
          //$("div[data-widget-id='{$widget_id}'] > .owl-carousel").hide();
          $("div[data-widget-id='{$widget_id}'] > .owl-carousel").owlCarousel({responsiveClass: true,

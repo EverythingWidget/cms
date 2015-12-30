@@ -118,8 +118,10 @@
          delete formData.key;
          delete formData.value;
          formData['labels'] = this.getLabels();
-         if (contentEditor.regions() && contentEditor.regions()[0])
+         if (contentEditor.regions() && contentEditor.regions()[0]) {
             formData["content"] = contentEditor.regions()[0].html();
+            contentEditor._rootLastModified = ContentEdit.Root.get().lastModified();
+         }
 
          return formData;
       },
@@ -133,7 +135,7 @@
          $("#content").change();
       }
    };
-   
+
    ContentForm.uiForm = $(ContentForm.formId);
    ContentForm.uiTitle = ContentForm.uiForm.find("#form-title");
 

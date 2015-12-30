@@ -490,9 +490,9 @@
                      anim = TweenLite.fromTo(System.UI.components.mainContent[0], .5, {
                         opacity: 0,
                         ease: "Power2.easeInOut",
-                        top: "-=5%"
+                        top: "-=54px"
                      }, {
-                        top: "+=5%",
+                        top: "+=54px",
                         opacity: 1,
                         onComplete: function () {
                            //console.log(System.notYetStarted)
