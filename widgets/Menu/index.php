@@ -16,7 +16,7 @@ $icnons = $widget_parameters["title"];
          $sub_menus = null;
          $link = json_decode($links[$i], true);
 
-         if ($link["type"] == "link")
+         if ($link["type"] == "admin/content-management/link")
          {
             //echo EWCore::$languages['en'];
             if (!EWCore::$languages[str_replace('/', '', $link["url"])])
@@ -63,7 +63,7 @@ $icnons = $widget_parameters["title"];
    else
    {
       $link = json_decode($links, true);
-      if ($link["type"] == "link")
+      if ($link["type"] == "admin/content-management/link")
       {
          $linkURL = EW_DIR_URL . $link["url"];
       }
