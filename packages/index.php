@@ -118,7 +118,7 @@ $section_name = null;
 if (isset($elements[$parameter_index]) && preg_match("/^([^\.]*)$/", $elements[$parameter_index], $match))
 {
    $section_name = $elements[$parameter_index];
-   $_REQUEST["_section_name"] = $section_name;
+   $_REQUEST["_module_name"] = $section_name;
 
    $parameter_index++;
 }
@@ -129,7 +129,7 @@ if (isset($elements[$parameter_index]))
 {
    $function_name = $elements[$parameter_index];
    //$function_name = ($function_name == 'index.php') ? 'index' : $function_name;
-   $_REQUEST["_function_name"] = $function_name;
+   $_REQUEST["_method_name"] = $function_name;
 
    $rest_of_elements = array_slice($elements, $parameter_index);
    $file_uri = implode('/', $rest_of_elements);
@@ -149,46 +149,6 @@ if (!isset($_SESSION["EW.USER_GROUP_ID"]))
 {
    $_SESSION['EW.USER_GROUP_ID'] = /* json_decode(EWCore::get_default_users_group(), true)["id"] */ 1;
 }
-
-$r_uri = strtok($_SERVER["REQUEST_URI"], "?");
-
-// If root dir is same with the uri then refer to the base url
-if ($root_dir == str_replace("/", "", $r_uri))
-   $r_uri = "/";
-// Check if UI structure is specified
-if (!isset($_REQUEST["_uis"]))
-{
-
-   if ($section_name)
-      $r_uri = "/" . $section_name;
-   if ($_file)
-      $r_uri.='/' . $_file;
-   $r_uri = str_replace('/' . $root_dir, "", $r_uri);
-   //echo $r_uri.'<br/>';
-   //echo $r_uri;
-   // Remove last /
-   if (strlen($r_uri) > 1 && substr($r_uri, -1) == "/")
-      $r_uri = substr($r_uri, 0, strlen($r_uri) - 1);
-   $uis_data = EWCore::get_url_uis($r_uri);
-   $_REQUEST["_uis"] = $uis_data["uis_id"];
-   $_REQUEST["_uis_template"] = $uis_data["uis_template"];
-   if (!isset($_REQUEST["_uis_template_settings"]))
-      $_REQUEST["_uis_template_settings"] = $uis_data["uis_template_settings"];
-   //print_r($_REQUEST);
-}
-else
-{
-
-   $uis_data = webroot\WidgetsManagement::get_uis($_REQUEST["_uis"]);
-   $_REQUEST["_uis_template"] = $uis_data["template"];
-   if (!$_REQUEST["_uis_template_settings"])
-      $_REQUEST["_uis_template_settings"] = $uis_data["template_settings"];
-}
-if (isset($_REQUEST["_parameters"]))
-{
-   $GLOBALS["page_parameters"] = explode("/", $_REQUEST["_parameters"]);
-}
-
 
 $RESULT_CONTENT = "RESULT_CONTENT: EMPTY";
 

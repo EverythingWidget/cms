@@ -71,10 +71,10 @@ class EWCore
       $parameters = $_REQUEST;
     }
 
-    if ($parameters['_function_name'] && method_exists($this, $parameters['_function_name']))
+    if ($parameters['_method_name'] && method_exists($this, $parameters['_method_name']))
     {
       //echo call_user_func(array($this, $this->request['_function_name']));
-      $method_object = new ReflectionMethod($this, $parameters['_function_name']);
+      $method_object = new ReflectionMethod($this, $parameters['_method_name']);
       $params = $method_object->getParameters();
       $functions_arguments = array();
       $this->current_method_args = array();
@@ -106,7 +106,7 @@ class EWCore
     }
     else
     {
-      echo "No such command existed: " . $parameters['_function_name'];
+      echo "No such command existed: " . $parameters['_method_name'];
     }
   }
 
@@ -134,8 +134,8 @@ class EWCore
     //echo $real_class_name;
     $parameters["_app_name"] = $package;
     $parameters["_resource_type"] = $resource_type;
-    $parameters["_section_name"] = $section_name;
-    $parameters['_function_name'] = $function_name;
+    $parameters["_module_name"] = $section_name;
+    $parameters["_method_name"] = $function_name;
     $parameters["_parts"] = array_slice(explode('/', $parameters["_file"]), 1);
 
     //print_r($parameters);
@@ -1659,38 +1659,7 @@ class EWCore
       {
       return "<h2>Error No: $header_code</h2><p>$message</p>";
       } */
-  }
-
-  public static function get_url_uis($url)
-  {
-    $dbc = EWCore::get_db_connection();
-    // if the url is the root, the home layout will be set
-    if ($url == "/")
-    {
-      $url = "@HOME_PAGE";
-    }
-    $url.='%';
-    //echo $r_uri."ssss";
-    $stm = $dbc->prepare("SELECT * FROM ew_pages_ui_structures,ew_ui_structures "
-            . "WHERE ew_ui_structures.id = ew_pages_ui_structures.ui_structure_id AND path LIKE ?") or die($db->error);
-    $stm->bind_param("s", $url);
-    $stm->execute();
-    $uis = $stm->get_result();
-    if ($row = $uis->fetch_assoc())
-    {
-      //$dbc->close();
-      //print_r($dbc);
-    }
-    else
-    {
-      $uis = $dbc->query("SELECT * FROM ew_pages_ui_structures,ew_ui_structures WHERE ew_ui_structures.id = ew_pages_ui_structures.ui_structure_id AND path =  '@DEFAULT' ") or die("haaaa");
-      $row = $uis->fetch_assoc();
-    }
-    return array(
-        "uis_id"                => $row["ui_structure_id"],
-        "uis_template"          => $row["template"],
-        "uis_template_settings" => $row["template_settings"]);
-  }
+  }  
 
   public static function process_content_component($action, $id, $content_id, $content_data, $label_data)
   {

@@ -40,13 +40,14 @@ function get_properties_form()
          <h3 class="line-header">Classes</h3>
          <div class="options-panel" id="available-classes" data-toggle="buttons">
             <?php
-            $templates = json_decode(EWCore::parse_css(EW_PACKAGES_DIR . '/rm/public/' . $_REQUEST["template"] . '/template.css', "widget"), true);
-
-            foreach ($templates as $t)
+            if ($_REQUEST["template"])
             {
-               ?>
-               <label><?php echo $t ?></label>
-               <?php
+               $templates = json_decode(EWCore::parse_css(EW_PACKAGES_DIR . '/rm/public/' . $_REQUEST["template"] . '/template.css', "widget"), true);
+
+               foreach ($templates as $t)
+               {
+                  echo "<label>$t</label>";
+               }
             }
             ?>
          </div>

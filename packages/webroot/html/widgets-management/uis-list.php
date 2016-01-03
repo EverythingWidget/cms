@@ -17,6 +17,9 @@
          parent: "action-bar-items",
          modal: {
             class: "full"
+         },
+         onDone: function (hash) {
+            hash.uisId = null;
          }
       }).hide();
 
@@ -24,7 +27,7 @@
       {
          var fileInput = $("<input type=file id=uis_file name=uis_file accept='.json'/>");
          var button = $("<div class='btn btn-file btn-primary' >tr{Import Layout}</div>").hide();
-         $(".action-bar-items").append(button.append(fileInput));
+         $("#action-bar-items").append(button.append(fileInput));
          button.comeIn();
          fileInput.change(function (e) {
             var form = new FormData();
@@ -194,7 +197,7 @@
             uisList.table.read();
          };
 
-         this.onStart = function () {            
+         this.onStart = function () {
          };
       };
 

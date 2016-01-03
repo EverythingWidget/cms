@@ -111,9 +111,13 @@ class ContentManagement extends \ew\Module
       ]);
 
       //$this->register_widget_feeder("page", "article");
-      \webroot\WidgetsManagement::register_widget_feeder(new \ew\WidgetFeeder($this, "page", "ew_page_feeder_article"));
+      $article_feeder = new \ew\WidgetFeeder("article", $this, "page", "ew_page_feeder_article");
+      $article_feeder->title = "article";
+      \webroot\WidgetsManagement::register_widget_feeder($article_feeder);
 
-      \webroot\WidgetsManagement::register_widget_feeder(new \ew\WidgetFeeder($this, "list", "ew_list_feeder_folder"));
+      $folder_feeder = new \ew\WidgetFeeder("folder", $this, "list", "ew_list_feeder_folder");
+      $folder_feeder->title = "folder";
+      \webroot\WidgetsManagement::register_widget_feeder($folder_feeder);
 
       //\webroot\WidgetsManagement::register_widget_feeder(new \ew\WidgetFeeder($this, "text", "content_fields"));
       //$this->register_widget_feeder("menu", "languages");
@@ -341,9 +345,10 @@ class ContentManagement extends \ew\Module
 
 
       $content = new ew_contents;
-      $content->author_id = $_SESSION['EW.USER_ID'];
+      $content->author_id = $_SESSION['EW.USER_ID'];      
       $content->type = $type;
       $content->title = $title;
+      $content->slug = EWCore::to_slug($title, "ew_contents");
       $content->keywords = $keywords;
       $content->description = $description;
       $content->parent_id = $parent_id;
@@ -382,6 +387,7 @@ class ContentManagement extends \ew\Module
       $content->author_id = $_SESSION['EW.USER_ID'];
       $content->type = $type;
       $content->title = $title;
+      $content->slug = EWCore::to_slug($title, "ew_contents");
       $content->keywords = $keywords;
       $content->description = $description;
       $content->parent_id = $parent_id;
@@ -439,14 +445,15 @@ class ContentManagement extends \ew\Module
 //      return \EWCore::log_error(400, "tr{Something went wrong, content has not been added}");
    }
 
-   public function ew_page_feeder_article($id, $language)
+   public function ew_page_feeder_article($id, $language = "en")
    {
+      
       $articles = $this->contents_labels($id, "admin_ContentManagement_language", $language);
       $article = [];
 
       if ($articles)
       {
-         $article = $articles["result"][0];
+         $article = $articles["data"][0];
          $result["html"] = "WIDGET_DATA_MODEL";
          $result["title"] = $article->title;
          $result["content"] = $article->content;

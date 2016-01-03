@@ -217,6 +217,84 @@
             }
          });
       },
+      slideOut: function (conf)
+      {
+         var t = conf.time || system.UI.DEFAULTS.animationDuration,
+                 sourceRect = conf.element.getBoundingClientRect(),
+                 direction = conf.to;
+
+         tween.to(conf.element, t, {
+            left: -sourceRect.width,
+            ease: conf.ease || "Power2.easeInOut",
+            delay: conf.delay || 0,
+            onComplete: function () {
+               conf.element.style.visibility = "";
+
+               if (conf.onComplete)
+                  conf.onComplete();
+            }
+         });
+      },
+      slideIn: function (conf)
+      {
+         var t = conf.time || system.UI.DEFAULTS.animationDuration,
+                 sourceRect = conf.element.getBoundingClientRect(),
+                 direction = conf.from,
+                 transformBox = document.createElement("div"),
+                 sourceStyle = window.getComputedStyle(conf.element, null);
+
+         transformBox.style.position = "absolute";
+         transformBox.style.textAlign = "center";
+         transformBox.style.backgroundColor = (sourceStyle.backgroundColor.indexOf("rgba") !== -1 ||
+                 sourceStyle.backgroundColor === "transparent") ? "rgb(190,190,190)" : sourceStyle.backgroundColor;
+         transformBox.style.boxShadow = sourceStyle.boxShadow;
+         transformBox.style.borderRadius = sourceStyle.borderRadius;
+         //transformBox.style.padding = ss.padding;
+         transformBox.style.color = conf.textColor || sourceStyle.color;
+         transformBox.style.fontSize = sourceStyle.fontSize;
+         transformBox.style.fontWeight = sourceStyle.fontWeight;
+         transformBox.style.lineHeight = sourceRect.height + 'px';
+         transformBox.style.textTransform = sourceStyle.textTransform;
+         transformBox.style.zIndex = (sourceStyle.zIndex === "0" || sourceStyle.zIndex === "auto") ? 1 : sourceStyle.zIndex;
+         transformBox.style.overflow = "hidden";
+         if (conf.text) {
+            transformBox.innerHTML = conf.text;
+         }
+
+         conf.element.style.visibility = "hidden";
+
+         system.UI.body.appendChild(transformBox);
+
+         tween.fromTo(transformBox, t, {
+            width: sourceRect.width,
+            height: sourceRect.height,
+            left: -sourceRect.width,
+            lineHeight: sourceRect.height + 'px',
+            fontSize: '3em'
+         }, {
+            left: 0,
+            ease: conf.ease || "Power2.easeInOut",
+            delay: conf.delay || 0,
+            onComplete: function () {
+               conf.element.style.visibility = "";
+
+               if (conf.fade > 0) {
+                  tween.to(transformBox, conf.fade, {
+                     opacity: 0,
+                     ease: "Power0.easeNone",
+                     onComplete: function () {
+                        transformBox.parentNode.removeChild(transformBox);
+                     }
+                  });
+               } else {
+                  transformBox.parentNode.removeChild(transformBox);
+               }
+
+               if (conf.onComplete)
+                  conf.onComplete();
+            }
+         });
+      },
       transform: function (conf)
       {
          var t = conf.time || system.UI.DEFAULTS.animationDuration;

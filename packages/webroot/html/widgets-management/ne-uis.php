@@ -257,27 +257,27 @@ session_start();
       });
 
       // Adjust the width of preview window according to the screen resolution
-      $(window).resize(function () {
-         var eww = $(window).width() - 400;
-         var screen = "large";
-         if (eww >= 420)
-         {
-            screen = "mobile";
-         }
-         if (eww >= 800)
-         {
-            screen = "tablet";
-         }
-         if (eww >= 1100)
-         {
-            screen = "normal";
-         }
-         if (eww >= 1360)
-         {
-            screen = "large";
-         }
-         EW.setHashParameter("screen", screen, "neuis");
-      });
+      /*$(window).resize(function () {
+       var eww = $(window).width() - 400;
+       var screen = "large";
+       if (eww >= 420)
+       {
+       screen = "mobile";
+       }
+       if (eww >= 800)
+       {
+       screen = "tablet";
+       }
+       if (eww >= 1100)
+       {
+       screen = "normal";
+       }
+       if (eww >= 1360)
+       {
+       screen = "large";
+       }
+       EW.setHashParameter("screen", screen, "neuis");
+       });*/
 
       // Destroy preference modal on close
       $.EW("getParentDialog", $("#ew-uis-editor")).on("close", function ()
@@ -349,6 +349,7 @@ session_start();
    {
       var self = this;
       var frameBody = $(document.getElementById("fr").contentDocument.body);
+      frameBody.children(".widget-glass-pane").remove();
       //var editorGlassPane = frameBody.children("#editor-glass-pane");
 
       var children = $(element).children();
@@ -470,7 +471,7 @@ session_start();
          }
          if (v.hasClass("widget-container"))
          {
-            v.find(".widget-glass-pane").remove();
+            //v.find(".widget-glass-pane").remove();
             var widgetGlassPane = $("<div class='widget-glass-pane'>");
             widgetGlassPane.data("widget-element", v);
             frameBody.append(widgetGlassPane);
@@ -766,7 +767,7 @@ session_start();
                widgetClass: w.prop("class"),
                id: w.attr("id"),
                widgetType: w.attr("data-widget-type"),
-               widgetParameters: self.editor.EW.widget_data[w.attr("data-widget-id")]
+               widgetParameters: self.editor.ew_widget_data[w.attr("data-widget-id")]
             };
          }
 
@@ -876,28 +877,24 @@ session_start();
       self.templateSettings = self.templateSettingsForm.serializeJSON();
       self.templateSettingsForm.trigger("getData");
 
-      $.post('<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/add_uis', {
+      $.post('<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/add-uis', {
          name: $('#name').val(),
          template: $('#template').val(),
          template_settings: JSON.stringify(self.templateSettings),
          defaultUIS: defaultUIS,
          homeUIS: homeUIS
       }, function (data) {
-         //EW.unlock(self.dpPreference);
-         $("body").EW().notify(data).show();
          self.uisTemplate = $('#template').val();
          self.uisId = data.uisId;
 
          EW.setHashParameters({
-            "uis-id": self.uisId,
-            cmd: "edit-uis"
+            "uisId": self.uisId
          });
+
          $(document).trigger("uis-list.refresh");
          self.reloadFrame();
          self.init();
-         //self.dpPreference.dispose();
-         //uisList.listUIStructures();
-
+         $("body").EW().notify(data).show();
       }, "json");
    };
 
@@ -920,7 +917,7 @@ session_start();
       var homeUIS = $("#uis-home-page").is(":checked");
       self.templateSettings = self.templateSettingsForm.serializeJSON();
       self.templateSettingsForm.trigger("getData");
-      
+
       $.post('<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/update-uis', {
          name: $('#name').val(),
          template: $('#template').val(),
@@ -968,7 +965,11 @@ session_start();
          body.off();
          head.find("#template-script").remove();
          head.find("#widget-data").remove();
-         head.find("#template-css").attr("href", "~rm/public/" + $('#template').val() + "/template.css");
+
+         if ($('#template').val()) {
+            head.find("#template-css").attr("href", "~rm/public/" + $('#template').val() + "/template.css");
+         }
+
          body.find("#base-content-pane").remove();
 
          var widgetData = myIframe.contentWindow.document.createElement("script");
@@ -1080,8 +1081,8 @@ session_start();
       {
          return false;
       }
-      this.editor.EW.widget_data[widgetId] = data;
-      console.log(this.editor.EW.widget_data);
+      this.editor.ew_widget_data[widgetId] = data;
+      //console.log(this.editor.ew_widget_data);
    }
 
    UISForm.prototype.dispose = function ()
@@ -1116,22 +1117,21 @@ session_start();
       $.post('<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/get-widgets-types', {
          template: self.uisTemplate,
          uisId: self.uisId
-      },
-              function (data) {
-                 var items = [];
+      }, function (data) {
+         var items = [];
 
-                 // Add panel item
-                 var e = $("<div class='text-icon' data-label='Panel'><h4>Panel</h4><p>Add a panel</p></div>");
-                 e.on("click", $.proxy($this.addPanel, $this, parentId));
-                 items.push(e);
-                 $.each(data["result"], function (k, v) {
-                    e = $("<div class='text-icon' data-label='" + v["title"] + "'><h4>" + v["title"] + "</h4><p>" + ((v["description"]) ? v["description"] : "") + "</p></div>");
-                    e.on("click", $.proxy($this.widgetForm, $this, v["path"], parentId, v["feeder_type"]));
-                    items.push(e);
-                 });
+         // Add panel item
+         var e = $("<div class='text-icon' data-label='Panel'><h4>Panel</h4><p>Add a panel</p></div>");
+         e.on("click", $.proxy($this.addPanel, $this, parentId));
+         items.push(e);
+         $.each(data["result"], function (k, v) {
+            e = $("<div class='text-icon' data-label='" + v["title"] + "'><h4>" + v["title"] + "</h4><p>" + ((v["description"]) ? v["description"] : "") + "</p></div>");
+            e.on("click", $.proxy($this.widgetForm, $this, v["path"], parentId, v["feeder_type"]));
+            items.push(e);
+         });
 
-                 listItemContent.html(items);
-              }, "json");
+         listItemContent.html(items);
+      }, "json");
       return false;
    };
 

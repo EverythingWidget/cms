@@ -56,7 +56,7 @@
    };
 
    System.app.hashHandler = function (nav, params) {
-      console.log(nav)
+      //console.log(nav)
       if ((!nav["app"] || nav["app"][0] === "Home") && "Home" !== EW.oldApp) {
          EW.oldApp = "Home";
          System.setHashParameters({
@@ -474,7 +474,7 @@
                   }
 
                   oldRequest = System.load(element.prop("href"), function (data) {
-                     console.log(oldRequest);
+                     //console.log(oldRequest);
                      $("#action-bar-items").find("button,div").remove();
 
                      if (!System.getHashNav("app")[0]) {
@@ -490,9 +490,9 @@
                      anim = TweenLite.fromTo(System.UI.components.mainContent[0], .5, {
                         opacity: 0,
                         ease: "Power2.easeInOut",
-                        top: "-=54px"
+                        top: "-=94px"
                      }, {
-                        top: "+=54px",
+                        top: "+=94px",
                         opacity: 1,
                         onComplete: function () {
                            //console.log(System.notYetStarted)
@@ -500,7 +500,7 @@
                         }
                      });
                   });
-                  console.log(oldRequest);
+                  //console.log(oldRequest);
                }
             }
          }
@@ -508,7 +508,7 @@
          element.addClass("selected");
          this.currentTab = element;
       };
-   }
+   };
 
    // Plugins which initilize when document is ready
    //var EW = null;

@@ -43,17 +43,19 @@ $default_page = json_decode(webroot\WidgetsManagement::get_path_uis("@DEFAULT"),
                   </div>
                </div>
                <?php
-               $widgets_types_list = json_decode(webroot\WidgetsManagement::get_widget_feeders("page"), true);
-               $widgets_types_list = $widgets_types_list["result"];
-               //print_r($widgets_types_list);
+               $widgets_types_list = webroot\WidgetsManagement::get_widget_feeders("page");
+               $pages = $widgets_types_list["data"];
                //Show list of pages and their layouts
-               foreach ($widgets_types_list as $page)
+               if (isset($pages))
                {
-                  $uis = json_decode(webroot\WidgetsManagement::get_path_uis("/{$page["name"]}"), true);
-                  echo '<div class="row"><div class="col-xs-12 mar-bot">';
-                  echo "<input type='hidden'  name='/{$page["name"]}_uisId' id='/{$page["name"]}_uisId' value='{$uis["id"]}'>";
-                  echo "<input class='text-field app-page-uis' data-label='{$page["name"]}' name='/{$page["name"]}' id='/{$page["name"]}' value='{$uis["name"]}'>";
-                  echo "</div></div>";
+                  foreach ($pages as $page)
+                  {                     
+                     $uis = json_decode(webroot\WidgetsManagement::get_path_uis("{$page->url}"), true);
+                     echo '<div class="row"><div class="col-xs-12 mar-bot">';
+                     echo "<input type='hidden'  name='{$page->url}_uisId' id='{$page->url}_uisId' value='{$uis["id"]}'>";
+                     echo "<input class='text-field app-page-uis' data-label='{$page->title}' name='{$page->url}' id='{$page->url}' value='{$uis["name"]}'>";
+                     echo "</div></div>";
+                  }
                }
                ?>
             </div>      
@@ -86,14 +88,16 @@ $default_page = json_decode(webroot\WidgetsManagement::get_path_uis("@DEFAULT"),
          pageSize: 30,
          onDelete: function (id) {
             this.confirm("Are you sure?", function () {
-               EW.lock(pageUIS.allUISList.table, "");
+               //EW.lock(pageUIS.allUISList.table, "");
                var row = this;
                $.post("<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/set-uis", {
                   path: row.data("field-path")
                }, function (data) {
                   $("input[name='" + row.data("field-path") + "']").val("").change();
                   $("body").EW().notify(data).show();
-                  $(document).trigger("all-uis-list.refresh");
+                  self.allUISList.removeRow(id);
+                  row._messageRow.remove();
+                  //$(document).trigger("all-uis-list.refresh");
                }, "json");
             });
             //uisList.deleteUIS(id);
@@ -136,7 +140,7 @@ if ($path_uis_list)
             }
          }
       });
-      var removeUISbtn = $("<button class='btn btn-link' type='button'>Clear UIS</button>");
+      var removeUISbtn = $("<button class='btn btn-danger' type='button'>Clear UIS</button>");
       removeUISbtn.on("click", function () {
          if (onSelect)
          {
@@ -226,11 +230,10 @@ if ($path_uis_list)
             pageUIS.allUISList.read();
          };
 
-         this.onStart = function () {            
+         this.onStart = function () {
          };
       };
 
-      System.module("widget-management")
-              .module("pages-uis", Section);
+      System.module("widget-management").module("pages-uis", Section);
    }(System));
 </script>

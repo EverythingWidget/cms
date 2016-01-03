@@ -38,12 +38,15 @@ $name = $_REQUEST["name"];
                   <h3>Classes</h3>
                   <div class="col-xs-12 options-panel" id="available-classes" data-toggle="buttons">
                      <?php
-                     $templates = json_decode(EWCore::parse_css(EW_PACKAGES_DIR . '/rm/public/' . $_REQUEST["template"] . '/template.css', "block"), true);
-                     foreach ($templates as $t)
+                     if ($_REQUEST["template"])
                      {
-                        ?>
-                        <label ><?php echo $t ?></label>
-                        <?php
+                        $templates = json_decode(EWCore::parse_css(EW_PACKAGES_DIR . '/rm/public/' . $_REQUEST["template"] . '/template.css', "block"), true);
+                        foreach ($templates as $t)
+                        {
+                           ?>
+                           <label ><?php echo $t ?></label>
+                           <?php
+                        }
                      }
                      ?>
                   </div>
@@ -178,10 +181,10 @@ $name = $_REQUEST["name"];
          this.blockHTML.attr("data-panel-parameters", params);
          this.blockHTML.attr("data-block-name", "<?php echo $block_class_name; ?>");
          this.blockHTML.prop("class", "block row " + $("#used-classes").text());
-         
-         if ($("#fr").contents().find("body [base-content-pane]").length){
+
+         if ($("#fr").contents().find("body [base-content-pane]").length) {
             $("#fr").contents().find("body [base-content-pane]").append(this.blockHTML);
-         } else{
+         } else {
             $("#fr").contents().find("body #base-content-pane").append(this.blockHTML);
          }
          $("#inspector-editor").trigger("refresh");

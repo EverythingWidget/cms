@@ -19,6 +19,7 @@ class WidgetsManagement extends \ew\Module
    private static $current_timestamp = 0;
    private static $title = "";
    private static $html_scripts = array();
+   private static $html_links = array();
    private static $html_keywords;
    private static $widgets_feeders = array();
    protected $resource = "api";
@@ -55,7 +56,9 @@ class WidgetsManagement extends \ew\Module
           'html/' . $this->get_index()));
 
       $this->register_permission("manipulate", "User can create and edit layouts", array(
+          "api/add_uis",
           "api/get_uis",
+          "api/set_uis",
           "api/get_uis_list",
           "api/get_widgets_types",
           "api/get_all_pages_uis_list",
@@ -70,23 +73,20 @@ class WidgetsManagement extends \ew\Module
           "html/ne-uis.php",
           'html/' . $this->get_index()));
 
-      $this->register_form("ew-article-form-tab", "uis-tab", ["title" => "UI"]);
-      $this->register_form("ew-category-form-tab", "uis-tab", ["title" => "UI"]);
-
+      //$this->register_form("ew-article-form-tab", "uis-tab", ["title" => "UI"]);
+      //$this->register_form("ew-category-form-tab", "uis-tab", ["title" => "UI"]);
       //EWCore::register_action("ew-category-action-add", "WidgetsManagement.category_action_add", "category_action_update", $this);
       //EWCore::register_action("ew-category-action-update", "WidgetsManagement.category_action_update", "category_action_update", $this);
       //EWCore::register_action("ew-category-action-get", "WidgetsManagement.category_action_get", "category_action_get", $this);
-      $this->add_listener("admin/api/ContentManagement/add_category", "category_action_update");
-      $this->add_listener("admin/api/ContentManagement/update_category", "category_action_update");
-      $this->add_listener("admin/api/ContentManagement/get_category", "category_action_get");
-
+      //$this->add_listener("admin/api/ContentManagement/add_category", "category_action_update");
+      //$this->add_listener("admin/api/ContentManagement/update_category", "category_action_update");
+      //$this->add_listener("admin/api/ContentManagement/get_category", "category_action_get");
       //EWCore::register_action("ew-article-action-add", "WidgetsManagement.article_action_add", "article_action_update", $this);
       //EWCore::register_action("ew-article-action-update", "WidgetsManagement.article_action_update", "article_action_update", $this);
       //EWCore::register_action("ew-article-action-get", "WidgetsManagement.article_action_get", "article_action_get", $this);
-      $this->add_listener("admin/api/ContentManagement/add_article", "article_action_update");
-      $this->add_listener("admin/api/ContentManagement/update_article", "article_action_update");
-      $this->add_listener("admin/api/ContentManagement/get_article", "article_action_get");
-
+      //$this->add_listener("admin/api/ContentManagement/add_article", "article_action_update");
+      //$this->add_listener("admin/api/ContentManagement/update_article", "article_action_update");
+      //$this->add_listener("admin/api/ContentManagement/get_article", "article_action_get");
       //$this->add_listener("admin/api/UsersManagement/update_user", "article_action_get");
 
       $this->register_permission("export-uis", "User can export UIS", array(
@@ -260,11 +260,7 @@ class WidgetsManagement extends \ew\Module
 
       if (!$name)
       {
-         $res = array(
-             "status" => "unsuccess",
-             "message" => "The field name is mandatory");
-         $db->close();
-         return json_encode($res);
+         return EWCore::log_error(400, "The field name is mandatory");
       }
       $stm = $db->prepare("INSERT INTO ew_ui_structures(name,template,template_settings,structure) VALUES (?,?,?,?)");
       $stm->bind_param("ssss", $name, $template, $template_settings, $structure);
@@ -437,22 +433,29 @@ class WidgetsManagement extends \ew\Module
 
    public static function get_uis($uisId = null)
    {
-
       $db = \EWCore::get_db_connection();
 
       if (!$uisId)
          return;
-      $result = $db->query("SELECT * FROM ew_ui_structures WHERE id = '$uisId'") or die(null);
+
+      $stm = $db->prepare("SELECT id, name, template, template_settings, perview_url, structure FROM ew_ui_structures WHERE id = ?");
+      $stm->bind_param("s", $uisId);
+
+      if ($stm->execute())
+      {
+         $result = $stm->get_result();
+      }
+
       $default_uis = json_decode(WidgetsManagement::get_path_uis("@DEFAULT"), true);
       $home_uis = json_decode(WidgetsManagement::get_path_uis("@HOME_PAGE"), true);
 
-      if ($rows = $result->fetch_assoc())
+      if ($row = $result->fetch_assoc())
       {
          if ($default_uis["id"] == $uisId)
-            $rows["uis-default"] = "true";
+            $row["uis-default"] = "true";
          if ($home_uis["id"] == $uisId)
-            $rows["uis-home-page"] = "true";
-         return $rows;
+            $row["uis-home-page"] = "true";
+         return $row;
       }
       else
       {
@@ -464,9 +467,9 @@ class WidgetsManagement extends \ew\Module
    {
       $db = \EWCore::get_db_connection();
 
-      $result = $db->query("DELETE FROM ew_ui_structures WHERE id = '$uisId'");
-      $db->close();
-      if ($result)
+      $statement = $db->prepare("DELETE FROM ew_ui_structures WHERE id = ?");
+      $statement->bind_param("s", $uisId);
+      if ($statement->execute())
       {
          echo json_encode(array(
              status => "success"));
@@ -476,78 +479,6 @@ class WidgetsManagement extends \ew\Module
          echo json_encode(array(
              status => "unsuccess"));
       }
-   }
-
-   public function add_panel($uisId = null, $styleId = null, $styleClass = null)
-   {
-      $db = \EWCore::get_db_connection();
-
-      $parameters = $db->real_escape_string($_REQUEST["parameters"]);
-      $container_id = $db->real_escape_string($_REQUEST["containerId"]);
-
-      if (!$uisId)
-      {
-         $res = array(
-             "status" => "unsuccess",
-             "message" => "The field UIS ID is mandatory");
-         $db->close();
-         return json_encode($res);
-      }
-      $stm = $db->prepare("INSERT INTO ui_structures_parts (ui_structure_id
-  , item_type ,style_id, style_class,widgets_parameters,container_id,ui_structures_parts.order)
-  SELECT ? , 'panel' , ? , ?, ? ,?,  count(*) FROM ui_structures_parts WHERE item_type = 'panel' AND ui_structure_id = $uisId") or die($db->error);
-      $stm->bind_param("sssss", $uisId, $styleId, $styleClass, $parameters, $container_id);
-      if ($stm->execute())
-      {
-         $res = array(
-             "status" => "success",
-             message => "Panel has been added successfully",
-             "uisId" => $stm->insert_id);
-      }
-      else
-      {
-         $res = array(
-             "status" => "error",
-             message => "Panel has NOT been added, Please try again");
-      }
-      $stm->close();
-      $db->close();
-      return json_encode($res);
-   }
-
-   public function update_panel()
-   {
-      $db = \EWCore::get_db_connection();
-
-      $panelId = $db->real_escape_string($_REQUEST['panelId']);
-      $styleId = $db->real_escape_string($_REQUEST['styleId']);
-      $styleClass = $db->real_escape_string($_REQUEST['styleClass']);
-      $parameters = $db->real_escape_string($_REQUEST["parameters"]);
-      if (!$panelId)
-      {
-         $res = array(
-             "status" => "unsuccess",
-             "message" => "The field Panel ID is mandatory");
-         $db->close();
-         return json_encode($res);
-      }
-      $stm = $db->prepare("UPDATE ui_structures_parts SET style_id = ?, style_class = ? , widgets_parameters = ? WHERE id = ?");
-      $stm->bind_param("ssss", $styleId, $styleClass, $parameters, $panelId);
-      if ($stm->execute())
-      {
-         $res = array(
-             "status" => "success",
-             message => "Panel has been updated successfully");
-      }
-      else
-      {
-         $res = array(
-             "status" => "error",
-             message => "Panel has NOT been updated, Please try again");
-      }
-      $stm->close();
-      $db->close();
-      return json_encode($res);
    }
 
    public static function create_panel_content($panel = array(), $container_id, $no_data = null)
@@ -578,34 +509,19 @@ class WidgetsManagement extends \ew\Module
    public static function open_panel($panel_id, $container_id, $style_class, $style_id, $parameters, $row = TRUE, $block_name = null)
    {
       $result_html = '';
-      //$param_json = $parameters;
-      $parameters = json_decode($parameters, TRUE);
-//$default_class = "panel ";
-      // Check if width has been set and add value to the style
-      //echo $panel_parameters["width-opt"];
-      //$style = $parameters["width-opt"] ? "width:" . $parameters["width"] . ";" : "";
-      // Check if margin has been set and add value to the style
-      //$style .= $parameters["margin-opt"] ? "margin:" . $parameters["margin"] . ";" : "";
-      // Check if padding has been set and add value to the style
-      //$style .= $parameters["padding-opt"] ? "padding:" . $parameters["padding"] . ";" : "";
+      $parameters_array = json_decode($parameters, TRUE);
 
       if ($style_id)
       {
          $style_id_text = "id='$style_id'";
       }
 
-      /* if ($block_name)
-        {
-        require_once EW_TEMPLATES_DIR . "/blocks/" . $block_name . ".php";
-        $block_name::initiate();
-        } */
-
       $result_html.= "<div class='panel $style_class'  $style_id_text  data-panel-id=\"$panel_id\"  data-container-id=\"$container_id\"  data-panel='true'><div class='row'>";
 
-      if ($parameters["title"] && $parameters["title"] != "none")
-      {
-         $result_html.= "<div class='col-xs-12 panel-header'><{$parameters["title"]}>" . $parameters["title-text"] . "</{$parameters["title"]}></div>";
-      }
+      /* if ($parameters_array["title"] && $parameters_array["title"] != "none")
+        {
+        $result_html.= "<div class='col-xs-12 panel-header'><{$parameters_array["title"]}>" . $parameters_array["title-text"] . "</{$parameters_array["title"]}></div>";
+        } */
 
       return $result_html;
    }
@@ -619,34 +535,16 @@ class WidgetsManagement extends \ew\Module
    {
       $result_html = '';
       $param_json = $parameters;
-      $parameters = json_decode($parameters, TRUE);
-//$default_class = "panel ";
-      // Check if width has been set and add value to the style
-      //echo $panel_parameters["width-opt"];
-      $style = $parameters["width-opt"] ? "width:" . $parameters["width"] . ";" : "";
 
-      // Check if margin has been set and add value to the style
-      $style .= $parameters["margin-opt"] ? "margin:" . $parameters["margin"] . ";" : "";
-
-      // Check if padding has been set and add value to the style
-      $style .= $parameters["padding-opt"] ? "padding:" . $parameters["padding"] . ";" : "";
-
-      $style = $style ? "style='$style'" : "";
-      $container_id = $container_id ? "data-container-id='$container_id'" : "";
+      $html_container_id = $container_id ? "data-container-id='$container_id'" : "";
 
       if ($style_id)
+      {
          $style_id_text = "id='$style_id'";
+      }
 
-      /* if ($block_name)
-        {
-        require_once EW_TEMPLATES_DIR . "/blocks/" . $block_name . ".php";
-        $block_name::initiate();
-        } */
-      $result_html.= "<div class='block $style_class'  $style_id_text  data-panel-id=\"$panel_id\"  $container_id  $style data-panel-parameters='" . stripcslashes($param_json) . "' data-block='true'>";
-      /* if ($parameters["title"] && $parameters["title"] != "none")
-        {
-        $result_html.= "<div class='col-xs-12 panel-header'><{$parameters["title"]}>" . $parameters["title-text"] . "</{$parameters["title"]}></div>";
-        } */
+      $result_html.= "<div class='block $style_class'  $style_id_text  data-panel-id=\"$panel_id\"  $html_container_id data-panel-parameters='" . stripcslashes($param_json) . "' data-block='true'>";
+
       return $result_html;
    }
 
@@ -686,7 +584,6 @@ class WidgetsManagement extends \ew\Module
     */
    public static function open_widget($widget_id, $widget_type, $style_class, $widget_style_class, $style_id, $params, $no_data = false)
    {
-
       // Empty widget style class when creating a widget
       $result_html = '';
       if ($style_id)
@@ -725,6 +622,7 @@ class WidgetsManagement extends \ew\Module
       $result_html.= $widget_content;
       self::$widget_style_class = "";
       self::add_widget_data($widget_id, $params);
+
       return $result_html;
    }
 
@@ -761,54 +659,9 @@ class WidgetsManagement extends \ew\Module
           "widget_style" => ""];
    }
 
-   public function get_widget($widgetId)
-   {
-      $db = \EWCore::get_db_connection();
-      if (!isset($widgetId))
-         $widgetId = $db->real_escape_string($_REQUEST["wId"]);
-      if (!$widgetId)
-         return;
-      $result = $db->query("SELECT * FROM ui_structures_parts WHERE id = '$widgetId'") or die(null);
-
-      if ($rows = $result->fetch_assoc())
-      {
-         $db->close();
-         return json_encode($rows);
-      }
-      else
-      {
-         return null;
-      }
-   }
-
-   public function update_widget($widgetId = null, $widgetType = null, $widgetParameters = null, $styleId = null, $styleClass = null, $style = null)
-   {
-      $db = \EWCore::get_db_connection();
-
-      $stm = $db->prepare("UPDATE ui_structures_parts SET  widget_type = ?, widgets_parameters = ? ,style_id = ?, style_class= ?, style = ? 
-            WHERE id = ?") or die($db->error);
-      $stm->bind_param("ssssss", $widgetType, $widgetParameters, $styleId, $styleClass, $style, $widgetId);
-
-      if ($stm->execute())
-      {
-         $res = array(
-             "status" => "success",
-             message => "Widget has been updated successfully",
-             "widgetType" => $widgetType);
-      }
-      else
-      {
-         $res = array(
-             "status" => "error",
-             message => "Widget has NOT been updated, Please try again");
-      }
-      $stm->close();
-      $db->close();
-      return json_encode($res);
-   }
-
    function get_template_settings_form($path)
    {
+      header("Content-Type: text/html");
       if (file_exists(EW_PACKAGES_DIR . '/rm/public/' . $path . '/template.php'))
       {
          header("Content-Type: text/html");
@@ -817,7 +670,9 @@ class WidgetsManagement extends \ew\Module
          return $template->get_template_settings_form();
       }
       else
+      {
          return "tr{Nothing to configure}";
+      }
    }
 
    /* public function get_blocks()
@@ -919,81 +774,6 @@ class WidgetsManagement extends \ew\Module
       echo ob_get_clean();
    }
 
-   public function add_to_panel($panelId = null, $widgetType = null, $widgetParameters = null, $uisId = null, $styleId = null, $styleClass = null, $style = null)
-   {
-      $db = \EWCore::get_db_connection();
-
-      $stm = $db->prepare("INSERT INTO ui_structures_parts (ui_structure_id , item_type, widget_type, widgets_parameters , container_id ,style_id,style_class,style, ui_structures_parts.order) 
-            SELECT ?,'widget',?,?,?,?,?,?,count(*) FROM ui_structures_parts WHERE container_id = $panelId") or die($db->error);
-      $stm->bind_param("sssssss", $uisId, $widgetType, $widgetParameters, $panelId, $styleId, $styleClass, $style);
-
-      if ($stm->execute())
-      {
-         $res = array(
-             "status" => "success",
-             message => "Widget has been added successfully",
-             "wId" => $stm->insert_id,
-             "widgetType" => $widgetType);
-      }
-      else
-      {
-         $res = array(
-             "status" => "error",
-             message => "Widget has NOT been added, Please try again");
-      }
-      $stm->close();
-      $db->close();
-      return json_encode($res);
-   }
-
-   public function remove_from_panel()
-   {
-      $db = \EWCore::get_db_connection();
-      $uisId = $db->real_escape_string($_REQUEST['uisId']);
-      $widgetId = $db->real_escape_string($_REQUEST['widgetId']);
-
-      $stm = $db->prepare("DELETE FROM ui_structures_parts WHERE id = ? AND ui_structure_id = ? AND item_type = 'widget'") or die($db->error);
-      $stm->bind_param("ss", $widgetId, $uisId);
-
-      if ($stm->execute())
-      {
-         $res = array(
-             "status" => "success",
-             message => "Widget has been removed successfully",);
-      }
-      else
-      {
-         $res = array(
-             "status" => "error",
-             message => "Widget has NOT been removed, Please try again");
-      }
-      return json_encode($res);
-   }
-
-   public function remove_panel()
-   {
-      $db = \EWCore::get_db_connection();
-      $uisId = $db->real_escape_string($_REQUEST['uisId']);
-      $widgetId = $db->real_escape_string($_REQUEST['panelId']);
-
-      $stm = $db->prepare("DELETE FROM ui_structures_parts WHERE (id = ? OR container_id = ?) AND ui_structure_id = ?") or die($db->error);
-      $stm->bind_param("sss", $widgetId, $widgetId, $uisId);
-
-      if ($stm->execute())
-      {
-         $res = array(
-             "status" => "success",
-             message => "Panel has been removed successfully",);
-      }
-      else
-      {
-         $res = array(
-             "status" => "error",
-             message => "Panel has NOT been removed, Please try again");
-      }
-      return json_encode($res);
-   }
-
    private static $widget_data = array();
 
    private static function add_widget_data($widget_id, $data)
@@ -1006,7 +786,7 @@ class WidgetsManagement extends \ew\Module
       foreach (self::$widget_data as $wi => $data)
       {
          $data = ($data) ? $data : "{}";
-         $data_string.="EW.widget_data['$wi'] = $data;\n";
+         $data_string.="ew_widget_data['$wi'] = $data;\n";
       }
       return $data_string;
    }
@@ -1025,7 +805,11 @@ class WidgetsManagement extends \ew\Module
          $no_data = false;
       }
 
-      $panels = $db->query("SELECT * FROM ew_ui_structures WHERE id = '$uisId' ") or die($db->error);
+      $statement = $db->prepare("SELECT structure FROM ew_ui_structures WHERE id = ? ") or die($db->error);
+      $statement->bind_param("s", $uisId);
+      $statement->execute();
+      $statement->bind_result($structure);
+      //$rows = $blocks->fetch_assoc();
       // Create unigue set of ID's every time when generate_view is called
       $timestamp = time();
       if ($_SESSION["_ew_gw_ts"] == $timestamp)
@@ -1039,23 +823,21 @@ class WidgetsManagement extends \ew\Module
       self::$current_timestamp = strval($timestamp);
       self::$panel_index = 0;
       self::$widget_index = 0;
-
-      while ($rows = $panels->fetch_assoc())
+      if ($statement->fetch())
       {
-
-         $res = json_decode(($rows["structure"]), true);
+         $structure_array = json_decode($structure, true);
          //echo json_encode($rows["structure"]);
          //echo json_decode(stripslashes($rows["structure"]));
-         if (json_last_error() != JSON_ERROR_NONE)
-         {
-            $res = json_decode(stripslashes($rows["structure"]), true);
-            //var_dump(json_last_error_msg() );
-         }
+         /* if (json_last_error() != JSON_ERROR_NONE)
+           {
+           $res = json_decode(stripslashes($rows["structure"]), true);
+           var_dump(json_last_error_msg() );
+           } */
       }
 
-      if (isset($res))
+      if (isset($structure_array))
       {
-         foreach ($res as $key => $value)
+         foreach ($structure_array as $key => $value)
          {
             $RESULT_HTML.=self::open_block("panel-" . self::$current_timestamp . "-" . self::$ui_index . "-" . self::$panel_index, "", $value["class"], $value["id"], $value["blockParameters"], FALSE, $value["blockName"]);
             $RESULT_HTML.=self::create_panel_content($value["children"], "panel-" . self::$current_timestamp . '-' . self::$ui_index . '-' . self::$panel_index, $no_data);
@@ -1064,16 +846,18 @@ class WidgetsManagement extends \ew\Module
          }
       }
 
-      return ["body_html" => $RESULT_HTML,
-          "widget_data" => self::get_widget_data()];
+      return [
+          "body_html" => $RESULT_HTML,
+          "widget_data" => self::get_widget_data()
+      ];
    }
 
-   public static function get_html_styles()
-   {
-      return "";
-   }
+   /* private static function cache_file($file)
+     {
 
-   public static function add_html_script($src, $script)
+     } */
+
+   public static function add_html_script($src, $script = "")
    {
       self::$html_scripts[] = array(
           "src" => $src,
@@ -1082,15 +866,30 @@ class WidgetsManagement extends \ew\Module
 
    public static function get_html_scripts($element_id = '')
    {
-      $result = "";
+      $script_tags = "";
       foreach (self::$html_scripts as $script)
       {
          if ($script["src"])
-            $result.="<script id='$element_id' src='{$script["src"]}'>{$script["script"]}</script>";
+            $script_tags.="<script id='$element_id' src='{$script["src"]}' defer>{$script["script"]}</script>";
          else if ($script["script"])
-            $result.="<script id='$element_id'>{$script["script"]}</script>";
+            $script_tags.="<script id='$element_id'>{$script["script"]}</script>";
       }
-      return $result;
+      return $script_tags;
+   }
+
+   public static function add_html_link($href)
+   {
+      self::$html_links[] = $href;
+   }
+
+   public static function get_html_links()
+   {
+      $link_tags = "";
+      foreach (self::$html_links as $href)
+      {
+         $link_tags.="<link rel='stylesheet' type='text/css' href='$href' />";
+      }
+      return $link_tags;
    }
 
    public static function set_html_title($title)
@@ -1200,7 +999,6 @@ class WidgetsManagement extends \ew\Module
 
    public static function get_layout($uisId, $template = null, $template_settings = null)
    {
-      
       $layout = WidgetsManagement::generate_view($uisId);
       //echo "asd $uisId";
       $template_body = $layout["body_html"];
@@ -1213,27 +1011,28 @@ class WidgetsManagement extends \ew\Module
          $template_settings = $uis_info["template_settings"];
          //echo $template;
       }
-      
+
       if (file_exists(EW_TEMPLATES_DIR . $template . '/template.php'))
       {
-         
          require_once EW_TEMPLATES_DIR . $template . '/template.php';
          $template = new \template();
          //echo $template_settings;
-         
+
          $settings = json_decode($template_settings, true) || [];
-         if (json_last_error() != JSON_ERROR_NONE)
-         {
-            $settings = json_decode(stripslashes($template_settings), true);
-         }
+         /* if (json_last_error() != JSON_ERROR_NONE)
+           {
+           $settings = json_decode(stripslashes($template_settings), true);
+           } */
          //$template_settings = json_decode(stripslashes($template_settings), true);
          $template_body = $template->get_template_body($template_body, $settings);
          $template_script = $template->get_template_script($settings);
       }
 
-      return ["template_body" => $template_body,
+      return [
+          "template_body" => $template_body,
           "template_script" => $template_script,
-          "widget_data" => $widget_data];
+          "widget_data" => $widget_data
+      ];
    }
 
    public static function add_widget_feeder($type, $app, $id, $function)
@@ -1249,8 +1048,6 @@ class WidgetsManagement extends \ew\Module
       }
 
       self::$registry[static::$WIDGET_FEEDER][$app][$type][$id] = $function;
-
-      //EWCore::register_object(static::$WIDGET_FEEDER, $app, self::$registry[static::$WIDGET_FEEDER][$app]);
    }
 
    /**
@@ -1331,39 +1128,28 @@ class WidgetsManagement extends \ew\Module
     */
    public static function get_widget_feeder($id)
    {
-      /* $feeder = null;
-        if (!$app)
-        $app = 'admin';
-        var_dump(static::$widgets_feeders);
-
-        if (static::$widgets_feeders[$id] )
-        {
-        $feeder = static::$widgets_feeders[$type][$id];
-        }
-
-        if (is_string($feeder) && substr($feeder, -strlen(".php")) === ".php")
-        {
-        if (!file_exists($feeder))
-        return json_encode(array(
-        "html" => "$type/$id: File not found"));
-        ob_start();
-        include $feeder;
-        $html = ob_get_clean();
-        return json_encode(array(
-        "html" => $html));
-        //print_r($func);
-        }
-        if (!is_callable($feeder))
-        {
-        echo "$app/$type/$id: Function is not valid or callable";
-        }
-        if (!$arg)
-        return call_user_func($feeder);
-        else
-        return call_user_func_array($feeder, $arg); */
-      //echo $id.'<br/>';
-      //return \EWCore::call($id, $arg);
       return static::$widgets_feeders[$id];
+   }
+
+   /**
+    * 
+    * @param String $id Id of feeder
+    * @return \ew\WidgetFeeder
+    */
+   public static function get_widget_feeder_by_url($id)
+   {
+      $id = (substr($id, -1) === "/") ? $id : "$id/";
+      if (isset(static::$widgets_feeders))
+      {
+         foreach (static::$widgets_feeders as $feeder_id => $feeder_conf)
+         {
+            if ($feeder_conf->url === $id)
+            {
+               return $feeder_conf;
+            }
+         }
+      }
+      return null;
    }
 
    /**
@@ -1371,21 +1157,10 @@ class WidgetsManagement extends \ew\Module
     * @param \ew\Module $module
     * @param \ew\WidgetFeeder $feeder
     */
-   public static function register_widget_feeder($feeder/* $module, $type, $function_name, $resource_type = "api" */)
+   public static function register_widget_feeder($feeder)
    {
-      //parent::register_widget_feeder($type, $id, $function_name);
-      /* if (!isset(static::$widgets_feeders[$feeder->widget_type]))
-        {
-        static::$widgets_feeders[$feeder->widget_type] = [];
-        } */
-      //$id = $feeder->module->get_app()->get_root() . '/' . $resource_type . '/' . EWCore::camelToHyphen($module->get_name() . '/' . $function_name);
-      //$feeder = new \stdClass();
-      /* $feeder->package = $module->get_app()->get_root();
-        $feeder->$resource_type = $resource_type;
-        $feeder->module = EWCore::camelToHyphen($module->get_name());
-        $feeder->function = str_replace('_', '-', $function_name); */
+
       static::$widgets_feeders[$feeder->id] = $feeder;
-      //print_r(static::$widgets_feeders);
    }
 
    /**
@@ -1395,30 +1170,16 @@ class WidgetsManagement extends \ew\Module
     */
    public static function get_widget_feeders($type = "all")
    {
-
-      $list = array(
-          "totalRows" => count(EWCore::read_registry(static::$WIDGET_FEEDER)),
-          "result" => array());
-//      print_r(EWCore::read_registry("ew-widget-feeder"));
-      foreach (EWCore::read_registry(static::$WIDGET_FEEDER) as $app_name => $feeder_type)
+      $feeders = [];
+      //      print_r(EWCore::read_registry("ew-widget-feeder"));
+      foreach (static::$widgets_feeders as $feeder_id => $feeder_config)
       {
-         //$parts = explode(":", $wf);
-         //if (!$type || $type == "all" || $type == $parts[0])
-         //print_r($wf);
-
-         foreach ($feeder_type as $feeder_type_name => $id)
+         if ($feeder_config->feeder_type === "page" || $type === "all")
          {
-            foreach ($id as $feeder => $f)
-            {
-               if (!$type || $type == "all" || $type == $feeder_type_name)
-                  $list["result"][] = array(
-                      "name" => $feeder,
-                      "type" => $feeder_type_name,
-                      "app" => $app_name);
-            }
+            $feeders[] = $feeder_config;
          }
       }
-      return json_encode($list);
+      return \ew\APIResourceHandler::to_api_response($feeders, ["totalRows" => count($feeders)]);
    }
 
    public function get_title()

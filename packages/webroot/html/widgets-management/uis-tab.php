@@ -30,7 +30,12 @@
    UisTab.prototype.uisListDialog = function (onSelect)
    {
       var dp = EW.createModal();
-      this.table = EW.createTable({name: "uis-list", headers: {Name: {}, Template: {}}, columns: ["name", "template"], rowCount: true, url: "<?php echo EW_ROOT_URL; ?>webroot/api/WidgetsManagement/get_uis_list", pageSize: 30
+      this.table = EW.createTable({name: "uis-list",
+         headers: {Name: {}, Template: {}},
+         columns: ["name", "template"],
+         rowCount: true,
+         url: "<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/get-uis-list",
+         pageSize: 30
          , buttons: {"Select": function (row) {
                if (onSelect)
                   onSelect.apply(null, new Array(row));
@@ -38,7 +43,7 @@
             }}});
       dp.append("<div class='header-pane row'><h1 id='' class='col-xs-12'> UIS List: Select UIS</h1></div>");
       dp.append($("<div id='' class='form-content no-footer' ></div>").append(this.table.container));
-
+      this.table.read();
       //$.post('/admin/WidgetsManagement/get_uis_list',function(data));
    };
 

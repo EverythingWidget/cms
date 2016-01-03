@@ -71,6 +71,12 @@ $items_list = json_decode(EWCore::call($feeder_id, ["id" => $id]), TRUE);
 $items_count = $items_list["totalRows"];
 $items = $items_list["data"];
 $page = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
+
+webroot\WidgetsManagement::add_html_script("~rm/public/js/owl-carousel/owl.carousel.js");
+
+webroot\WidgetsManagement::add_html_link("~rm/public/js/owl-carousel/animate.css");
+webroot\WidgetsManagement::add_html_link("~rm/public/js/owl-carousel/owl.carousel.css");
+webroot\WidgetsManagement::add_html_link("~rm/public/js/owl-carousel/owl.theme.default.css");
 ?>
 
 <div class="owl-carousel">
@@ -86,39 +92,31 @@ $page = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
    }
    ?>
 </div>
-<link rel="stylesheet" type="text/css" href="~rm/public/js/owl-carousel/animate.css"/>
-<link rel="stylesheet" type="text/css" href="~rm/public/js/owl-carousel/owl.carousel.css"/>
-<link rel="stylesheet" type="text/css" href="~rm/public/js/owl-carousel/owl.theme.default.css"/>
+
 <script>
    $(document).ready(function () {
-
-      $.getScript("~rm/public/js/owl-carousel/owl.carousel.js", function () {
-
-         //$("div[data-widget-id='{$widget_id}'] > .owl-carousel").hide();
-         $("div[data-widget-id='{$widget_id}'] > .owl-carousel").owlCarousel({responsiveClass: true,
-            autoHeight:<?php echo $auto_height ?>,
-            loop:<?php echo $loop ?>,
-            center:<?php echo $center ?>,
-            dots:<?php echo $slide_indicator ?>,
-            nav:<?php echo $nav ?>,
-            autoplay:<?php echo $auto_play ?>,
-            autoplayTimeout: <?php echo $slide_timeout ?>,
-            autoplayHoverPause:<?php echo $autoPlayPause ?>,
-            responsive: {
-               0: {
-                  items: <?php echo $item_per_slide_xs ?>
-               },
-               768: {
-                  items:<?php echo $item_per_slide_sm ?>
-               },
-               991: {
-                  items:<?php echo $item_per_slide_md ?>
-               },
-               1359: {
-                  items:<?php echo $item_per_slide_lg ?>
-               }
-            }});
-
-      });
+      $("div[data-widget-id='{$widget_id}'] > .owl-carousel").owlCarousel({responsiveClass: true,
+         autoHeight:<?php echo $auto_height ?>,
+         loop:<?php echo $loop ?>,
+         center:<?php echo $center ?>,
+         dots:<?php echo $slide_indicator ?>,
+         nav:<?php echo $nav ?>,
+         autoplay:<?php echo $auto_play ?>,
+         autoplayTimeout: <?php echo $slide_timeout ?>,
+         autoplayHoverPause:<?php echo $autoPlayPause ?>,
+         responsive: {
+            0: {
+               items: <?php echo $item_per_slide_xs ?>
+            },
+            768: {
+               items:<?php echo $item_per_slide_sm ?>
+            },
+            991: {
+               items:<?php echo $item_per_slide_md ?>
+            },
+            1359: {
+               items:<?php echo $item_per_slide_lg ?>
+            }
+         }});
    });
 </script>

@@ -17,18 +17,20 @@ class WidgetFeeder
 {
 
   public $id = "";
+  public $url = "";
   public $module;
   private $resourse_type = "api";
-  public $widget_type = "widget";
+  public $feeder_type = "widget";
   public $method_name;
   public $title = "Widget";
   public $description = "This is a widget";
   public $api_url;
 
-  public function __construct($module, $widget_type, $method_name, $resource_type = "api")
+  public function __construct($url, $module, $feeder_type, $method_name, $resource_type = "api")
   {
+    $this->url = (substr($haystack, -1) === "/") ? $url : "$url/";
     $this->module = $module;
-    $this->widget_type = $widget_type;
+    $this->feeder_type = $feeder_type;
     $this->method_name = $method_name;
     $this->resourse_type = $resource_type;
     $this->id = $module->get_app()->get_root() . '/' . $resource_type . '/' . \EWCore::camelToHyphen($module->get_name() . '/' . $method_name);

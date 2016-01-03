@@ -258,9 +258,7 @@
          };
 
          this.onStart = function () {
-            console.log(Date.now())
             EW.addURLHandler(function () {
-               console.log(Date.now())
                var parent = EW.getHashParameter("parent"),
                        app = EW.getHashParameter("app");
                if (!parent) {

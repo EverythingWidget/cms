@@ -233,11 +233,18 @@ EverythingWidgets.prototype.getActivity = function (conf) {
    var activityController = _this.activities[activityId];
 
    if (activityController.modalObject && settings.modal && settings.modal.class) {
-      activityController.modalObject.animate({
-         className: "top-pane col-xs-12 " + settings.modal.class
-      }, 300, function () {
-         activityController.modalObject.methods.setCloseButton();
-      });
+      activityController.modalObject.css("left", "");
+      /*activityController.modalObject.animate({
+       left:0,
+       right:0,
+       className: "top-pane col-xs-12 " + settings.modal.class
+       }, 3000, function () {
+       activityController.modalObject.methods.setCloseButton();
+       });*/
+      activityController.modalObject.attr("class", "top-pane col-xs-12 " + settings.modal.class);
+      activityController.modalObject.methods.setCloseButton();
+      activityController = $.extend({}, activityController, conf);
+      _this.activitySource = activityController;
    }
 
    activityController = $.extend({}, activityController, conf);
@@ -532,9 +539,9 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
       setCloseButton: function () {
 
          xButton.css({
-            left: modalPane[0].getBoundingClientRect().right - 40,
+            left: modalPane[0].getBoundingClientRect().right - 32,
             //right:"10px",
-            top: parseInt(modalPane.css("top")) + 5,
+            top: parseInt(modalPane.css("top")) + 1,
             zIndex: modalPane.css("z-index")
          });
          xButton.show();
@@ -599,8 +606,27 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
       originElement = null;
       modalPane.trigger("close");
    });
-   // Close event
 
+   var closeAction = function () {
+      modalPane.css("transform", "");
+      if (settings.closeAction === "hide")
+      {
+         modalPane.hide();
+         xButton.detach();
+      }
+      // if hash is set then detach the modal instead of remove to keep the url listener alive
+      else if (settings.closeAction === "hash")
+      {
+         modalPane.detach();
+         xButton.detach();
+      } else
+      {
+         modalPane.remove();
+         xButton.remove();
+      }
+   };
+
+   // Close event
    modalPane.on("close", function () {
 
       if (modalPane.isOpen && modalPane.triggerHandler("beforeClose"))
@@ -614,33 +640,27 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
             settings.onClose.apply(modalPane, null);
          }
 
-         if (!originElement || !$.contains(document, originElement[0]))
-         {
+         if (settings.class === "left") {
+            xButton.remove();
+            System.UI.Animation.slideOut({
+               time: .3,
+               element: modalPane[0],
+               to: "left",
+               onComplete: function () {
+                  closeAction();
+               }
+            });
+            return;
+         } else if (!originElement || !$.contains(document, originElement[0])) {
             xButton.detach();
             modalPane.stop().animate({
                transform: "scale(.0)"
-            },
-                    400,
-                    "Power2.easeInOut",
-                    function () {
-                       modalPane.css("transform", "");
-                       if (settings.closeAction === "hide")
-                       {
-                          modalPane.hide();
-                       }
-                       // if hash is set then detach the modal instead of remove to keep the url listener alive
-                       else if (settings.closeAction === "hash")
-                       {
-                          modalPane.detach();
-                       } else
-                       {
-                          modalPane.remove();
-                          xButton.remove();
-                       }
-                    });
+            }, 400, "Power2.easeInOut", function () {
+
+               closeAction();
+            });
             return;
          } else {
-
             System.UI.body = $('#base-pane')[0];
             System.UI.Animation.transform({
                from: modalPane[0],
@@ -648,30 +668,12 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
                time: .4,
                fade: .3,
                ease: "Power2.easeInOut",
-               //flow: true,
-               onComplete: function ()
-               {
-                  //modalPane.isOpen = true;
-                  //methods.setCloseButton();
+               onComplete: function () {
                }
             });
          }
 
-         if (settings.closeAction === "hide")
-         {
-            modalPane.hide();
-            xButton.detach();
-         }
-         // if hash is set then detach the modal instead of remove to keep the url listener alive
-         else if (settings.closeAction === "hash")
-         {
-            modalPane.detach();
-            xButton.detach();
-         } else
-         {
-            modalPane.remove();
-            xButton.remove();
-         }
+         closeAction();
       }
    });
    // Open event
@@ -691,16 +693,31 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
             basePane.append(modalPane, xButton);
          }
 
-         if (settings.class !== "left")
-         {
+         if (settings.class !== "left") {
             modalPane.css("left", ($(window).width() - modalPane.outerWidth(true)) / 2);
+         } else {
+            System.UI.Animation.slideIn({
+               time: .5,
+               fade: .3,
+               element: modalPane[0],
+               from: "left",
+               onComplete: function () {
+                  methods.setCloseButton();
+                  modalPane.isOpen = true;
+               }
+            });
+
+            if (settings.onOpen) {
+               settings.onOpen.apply(modalPane, null);
+            }
+            return;
          }
 
          originElement = self.activeElement;
-         if (settings.initElement && originElement && originElement.parent().length !== 0 && $.contains(document, originElement[0]))
-         {
-            if (originElement.is("p,h1,h2,h3,h4,h5,h6,span"))
+         if (settings.initElement && originElement && originElement.parent().length !== 0 && $.contains(document, originElement[0])) {
+            if (originElement.is("p,h1,h2,h3,h4,h5,h6,span")) {
                originElement = originElement.parent();
+            }
             System.UI.body = $('#base-pane')[0];
             System.UI.Animation.transform({
                from: originElement[0],
@@ -1248,10 +1265,10 @@ function EWTable(config)
             });
          });
          $base.tableHeaderDiv.show();
-      } else if ($(this).scrollTop() <= 0 && $base.tableHeaderDiv.is(":visible")){
+      } else if ($(this).scrollTop() <= 0 && $base.tableHeaderDiv.is(":visible")) {
          /*$base.tableHeaderDiv.stop().animate({
-            height: "toggle"
-         },                 200);*/
+          height: "toggle"
+          },                 200);*/
          $base.tableHeaderDiv.hide();
       }
       $base.tableHeaderDiv.css("left", $base.table.position().left);
@@ -1345,6 +1362,7 @@ EWTable.prototype.createRow = function (val, rc)
                transform: "scale(0,1)",
                left: "0px",
                top: tableRow.position().top,
+               height: tableRow.outerHeight() + 2,
                transformOrigin: del.position().left + (del.outerWidth() / 2) + "px 0px"
             });
 
@@ -1571,7 +1589,7 @@ EverythingWidgets.prototype.createTable = function (conf)
    bodyTable.attr("id", conf.name);
    ewTable.table = bodyTable;
    var next = $(document.createElement("button"));
-   next.addClass("button next");
+   next.addClass("button next").css('visibility', 'hidden');
    next.click(function (e) {
       e.preventDefault();
       ewTable.token += ewTable.pageSize;
@@ -1580,7 +1598,7 @@ EverythingWidgets.prototype.createTable = function (conf)
    ewTable.controls.append(next);
    ewTable.next = next;
    var previous = $(document.createElement("button"));
-   previous.addClass("button previous");
+   previous.addClass("button previous").css('visibility', 'hidden');
    previous.click(function (e) {
       e.preventDefault();
       ewTable.token -= ewTable.pageSize;
@@ -2391,7 +2409,6 @@ $(document).ready(function () {
                   data: postData,
                   success: function (data) {
                      modal.html(data);
-                     EW.activitySource = null;
                   },
                   error: function (result) {
                      console.log(result);
@@ -2404,6 +2421,8 @@ $(document).ready(function () {
                });
             },
             onClose: function () {
+               currentActivity = EW.activitySource || EW.activities[activity];
+               EW.activitySource = null;
                var closeHashParameters = {
                   ew_activity: null
                };

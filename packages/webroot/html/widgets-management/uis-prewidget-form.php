@@ -41,23 +41,23 @@ $panelId = $_REQUEST['panelId'];
          <?php
          //$wm = new admin\WidgetsManagement();
          //$widgets_types_list = json_decode($wm->get_widgets_types(), true);
-         $widgets_types_list = json_decode(webroot\WidgetsManagement::get_widget_feeders($feeder_type), true);
-         $widgets_types_list = $widgets_types_list["result"];
+         $widgets_types_list = webroot\WidgetsManagement::get_widget_feeders($feeder_type);
+         $widgets_types_list = $widgets_types_list["data"];
          $rowNum = 0;
          $oldApp = "";
          foreach ($widgets_types_list as $row)
          {
-            if ($oldApp != $row["app"])
+            if ($oldApp != $row->module->get_app()->get_name())
             {
-               $oldApp = $row["app"];
+               $oldApp = $row->module->get_app()->get_name();
                echo "<h2>$oldApp</h2>";
             }
-            $prewidget_data = json_encode(["feeder" => "{\"type\":\"widget-feeder\",\"feederType\":\"$widget_type\", \"feederApp\": \"$oldApp\", \"feederName\": \"{$row["name"]}\"}"]);
+            $prewidget_data = json_encode(["feeder" => '{type:"widget-feeder"", feederId: "'.$row->id.'"}']);
             ?> 
-            <div class="text-icon" onclick="uisWidget.showWidgetControlPanel('<?php echo $widget_type ?>',<?php echo htmlentities($prewidget_data) ?>)">
+         <div class="text-icon" onclick="uisWidget.showWidgetControlPanel('<?php echo $widget_type ?>',<?php echo htmlentities($prewidget_data) ?>)">
                <?php
-               echo '<h4>' . $row["name"] . '</h4>'
-               . '<p>' . $row["type"] . '</p>';
+               echo '<h4>' . $row->title . '</h4>'
+               . '<p>' . $row->feeder_type . '</p>';
                ?>
             </div>
             <?php
@@ -193,7 +193,7 @@ $panelId = $_REQUEST['panelId'];
       {
          widget = uisForm.getEditorItem(self.widgetId);
          //widgetParams = (widget.attr("data-widget-parameters")) ? $.parseJSON(widget.attr("data-widget-parameters")) : {};
-         widgetParams = uisForm.editor.EW.widget_data[self.widgetId];
+         widgetParams = uisForm.editor.ew_widget_data[self.widgetId];
          self.widgetParameters = widgetParams;
       }
 

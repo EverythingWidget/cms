@@ -385,7 +385,7 @@
          }
 
          var request = $.get(href, function (response) {
-            console.log(href);
+            //console.log(href);
             if ("function" === typeof (onDone)) {
                onDone.call(this, response);
             }
