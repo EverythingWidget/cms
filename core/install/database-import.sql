@@ -75,7 +75,7 @@ CREATE TABLE `ew_pages_ui_structures` (
   `id` bigint(20) NOT NULL,
   `path` text NOT NULL,
   `ui_structure_id` bigint(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -148,7 +148,7 @@ CREATE TABLE `ew_users_groups` (
   `type` varchar(100) COLLATE utf8_bin DEFAULT 'user',
   `date_created` datetime DEFAULT NULL,
   `permission` text CHARACTER SET utf8
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `ew_users_groups`
