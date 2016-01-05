@@ -129,10 +129,11 @@
             this.params = params;
             //alert(navigation[this.moduleIdentifier][0]+"----");
 
-            if (this.moduleIdentifier && navigation[this.moduleIdentifier])
+            if (this.moduleIdentifier && navigation[this.moduleIdentifier][0])
             {
                // Select activeModule according to moduleIdentifier
-               this.activeModule = this.modules["system." + navigation[this.moduleIdentifier][0]];
+               this.activeModule = this.modules[this.id + "." + navigation[this.moduleIdentifier][0]];
+               //console.log(this.id + "  " + navigation[this.moduleIdentifier][0])
             } else
                this.activeModule = null;
             //console.log(this.id, this.activeModule, this.modules);
@@ -156,6 +157,13 @@
          {
             /*if (this.activeModule && !e.isDefaultPrevented())
              this.activeModule.hashHandler(e, data);*/
+         },
+         setNav: function (nav, value) {
+            var o = {};
+            o[nav] = this.id.split(".").slice(1).join("/") + "/" + value;
+            System.setHashParameters(o);
+
+            console.log(this.id.split(".").slice(1).join("/") + "/" + value);
          }
       },
       // Apps Management
@@ -295,6 +303,7 @@
       start: function () {
          var self = this;
          var detect = function () {
+            //console.log(self.app.oldHash, window.location.hash)
             if (self.app.oldHash !== window.location.hash || self.app.newHandler) {
                self.app.oldHash = window.location.hash;
                self.app.newHandler = false;
@@ -318,6 +327,7 @@
          }, 20);
       },
       getHashParam: function (key, hashName) {
+         return this.app.params[key] || null;
       },
       getHashNav: function (key, hashName) {
          return this.app.navigation[key] || [];
@@ -328,10 +338,7 @@
          var hashValue = window.location.hash;
          // if the app found then set the params for app otherwise set the param for default app (main.mainModule)
          var app = ('' + parameters[this.app.moduleIdentifier]).split('/')[0] || this.app.activeModule.id;
-         var mI = this.app.moduleIdentifier;
-         //if (this.modules[app])
-         //mI = this.modules[app].moduleIdentifier;
-         //alert("navHAsh: " + app + " > " + parameters[this.main.moduleIdentifier])
+
          if (app) {
             if (!this.navHashes[app]) {
                //this.navHashes[app] = mI + "=" + parameters[this.main.moduleIdentifier];

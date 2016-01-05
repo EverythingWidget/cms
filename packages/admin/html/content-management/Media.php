@@ -26,7 +26,7 @@ if (!$_SESSION['login'])
       this.currentItem;
       this.bBack = EW.addAction("tr{Back to Media}", function ()
       {
-         EW.setHashParameter("parent", null);
+         Module.setNav("app","");
       }, {
          float: "right",
          display: "none"
@@ -84,10 +84,14 @@ if (!$_SESSION['login'])
          this.seeAlbumActivity({albumId: albumId});
       } else if (imageId) {
          this.imageId = imageId;
-         this.seeArticleActivity({articleId: imageId});
+         this.seeImageActivity({articleId: imageId});
       }
    };
 
+   Media.prototype.seeImageActivity = function (id)
+   {
+
+   };
 
    Media.prototype.listMedia = function ()
    {
@@ -119,12 +123,16 @@ if (!$_SESSION['login'])
                });
 
                temp.dblclick(function () {
-                  EW.setHashParameter("parent", element.id);
+                  //EW.setHashParameter("parent", element.id);
+                  Module.setNav("app", element.id);
                });
 
                temp.on("focus", function (e) {
                   //console.log('call');
                   EW.setHashParameters({imageId: null, "albumId": element.id}, "media");
+                  //console.log(System.getHashParam("app"));
+                  console.log(Module)
+                  //Module.setNav("app","testy");
                });
                itemsList.append(temp);
             } else {
@@ -140,6 +148,7 @@ if (!$_SESSION['login'])
                   EW.setHashParameter("fileExtension", element.fileExtension, "media");
                   EW.setHashParameter("absUrl", element.absUrl, "media");
                   EW.setHashParameters({albumId: null, "imageId": element.id}, "media");
+
                });
 
                itemsList.append(temp);
@@ -200,55 +209,86 @@ if (!$_SESSION['login'])
    media.handler = EW.addURLHandler(function ()
    {
 
-      var itemId = EW.getHashParameter("albumId", "media") || EW.getHashParameter("imageId", "media");
-      var url = EW.getHashParameter("absUrl", "media");
-      var reg = /(.*)(\/)$/
-
-      if (itemId)
-      {
-         if (media.itemId !== itemId)
-         {
-            media.itemId = itemId;
-            media.seeAction.comeIn();
-         }
-      } else
-      {
-         media.seeAction.comeOut();
-         media.bDel.comeOut();
-      }
+      /*var itemId = EW.getHashParameter("albumId", "media") || EW.getHashParameter("imageId", "media");
+       var url = EW.getHashParameter("absUrl", "media");
+       var reg = /(.*)(\/)$/
+       
+       if (itemId)
+       {
+       if (media.itemId !== itemId)
+       {
+       media.itemId = itemId;
+       media.seeAction.comeIn();
+       }
+       } else
+       {
+       media.seeAction.comeOut();
+       media.bDel.comeOut();
+       }*/
 
    }, "media");
    EW.addURLHandler(function ()
    {
       var parent = EW.getHashParameter("parent");
-      if (!parent)
-      {
-         parent = "0";
-      }
-      if (parent && media.parentId !== parent)
-      {
-         //EW.setHashParameter("preParentId", media.parentId, "media");
-         media.parentId = parent;
-         media.listMedia();
-      }
 
-      if (parent > 0)
-      {
-         media.newAlbumActivity.comeOut();
-         media.uploadFileActivity.comeIn();
-         media.bBack.comeIn();
-      } else
-      {
-         media.newAlbumActivity.comeIn();
-         media.uploadFileActivity.comeOut();
-         media.bBack.comeOut();
-      }
+
+      /*if (parent > 0)
+       {
+       media.newAlbumActivity.comeOut();
+       media.uploadFileActivity.comeIn();
+       media.bBack.comeIn();
+       } else
+       {
+       media.newAlbumActivity.comeIn();
+       media.uploadFileActivity.comeOut();
+       media.bBack.comeOut();
+       }*/
    });
-   
+
    media.dispose = function ()
    {
       EW.setHashParameters({imageId: null, albumId: null, parent: null});
       EW.removeURLHandler(media.handler);
    };
+   var Module;
+   (function (System) {
+
+      var M = function () {
+         this.type = "appSection";
+         this.onInit = function () {
+
+            this.on("app", function (e, parent, id)
+            {
+               if (parent > 0) {
+                  media.newAlbumActivity.comeOut();
+                  media.uploadFileActivity.comeIn();
+                  media.bBack.comeIn();
+               } else {
+                  media.newAlbumActivity.comeIn();
+                  media.uploadFileActivity.comeOut();
+                  media.bBack.comeOut();
+               }
+
+               if (!parent)
+               {
+                  parent = "0";
+               }
+               if (parent && media.parentId !== parent)
+               {
+                  media.parentId = parent;
+                  media.listMedia();
+               }
+
+            });
+         };
+
+         this.onStart = function () {
+
+         };
+      };
+
+      Module = System.module("content-management")
+              .module("media", M);
+   }(System));
 
 </script>
