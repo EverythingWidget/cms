@@ -15,9 +15,8 @@
       contentEditor = ContentTools.EditorApp.get();
       contentEditor.init('#content-editor');
 
-      //console.log($("#<?= $form_id ?>"));
-      EW.getParentDialog($("#<?= $form_id ?>")).on("beforeClose", function () {
-         //console.log(this);
+      //console.log($("#<?= $form_id ?>"));   
+      EW.getParentDialog($("#<?= $form_id ?>")).one("beforeClose", function (e) {
          if(contentEditor.revert())
          {
             contentEditor.destroy();

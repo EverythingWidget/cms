@@ -214,8 +214,8 @@ EverythingWidgets.prototype.addNotification = function (css) {
  * @returns {EverythingWidgets.prototype.getActivity.activityCaller}
  */
 EverythingWidgets.prototype.getActivity = function (conf) {
-   var _this = this;
-   var settings = {
+   var _this = this, settings, url, activityId, activityController;
+   settings = {
       title: "",
       defaultClass: "btn-primary",
       activity: null
@@ -223,31 +223,35 @@ EverythingWidgets.prototype.getActivity = function (conf) {
 
    $.extend(settings, conf);
 
-   if (!_this.activities[settings.activity]) {
-      console.log("activity does not exist: " + settings.activity);
+   url = settings.activity.substr(0, settings.activity.lastIndexOf("_")) || settings.activity;
+
+   if (!_this.activities[url]) {
+      console.log("activity does not exist: " + url + "!");
       console.log(_this.activities);
       return null;
    }
 
-   var activityId = settings.activity;
-   var activityController = _this.activities[activityId];
+   if (url !== settings.activity) {
+      _this.activities[settings.activity] = $.extend({}, _this.activities[url]);
+   }
+//console.log(_this.activities[settings.activity])
+   activityId = settings.activity;
+   activityController = _this.activities[activityId];
 
-   if (activityController.modalObject && settings.modal && settings.modal.class) {
-      activityController.modalObject.css("left", "");
-      /*activityController.modalObject.animate({
-       left:0,
-       right:0,
-       className: "top-pane col-xs-12 " + settings.modal.class
-       }, 3000, function () {
-       activityController.modalObject.methods.setCloseButton();
-       });*/
-      activityController.modalObject.attr("class", "top-pane col-xs-12 " + settings.modal.class);
-      activityController.modalObject.methods.setCloseButton();
+   if (activityController.modalObject) {
+      if (settings.modal && settings.modal.class) {
+         activityController.modalObject.css("left", "");
+         activityController.modalObject.attr("class", "top-pane col-xs-12 " + settings.modal.class);
+         activityController.modalObject.methods.setCloseButton();
+      }
+
       activityController = $.extend({}, activityController, conf);
       _this.activitySource = activityController;
    }
 
    activityController = $.extend({}, activityController, conf);
+   _this.activities[activityId] = activityController;
+
    var activityCaller = function (hash) {
       var hashParameters = {
          ew_activity: activityId
@@ -298,7 +302,7 @@ EverythingWidgets.prototype.addActivity = function (conf)
    //var li = $(document.createElement("li"));
    var action = $(document.createElement("button"));
    action.html(settings.title);
-   action.attr("data-label", settings.title).addClass("btn " + settings.defaultClass + " " + settings.class);
+   action.attr("data-label", settings.title).addClass("btn " + settings.defaultClass + " " + ((settings.class) ? settings.class : ""));
 
    action.attr("type", "button");
    action.click(function () {
@@ -603,7 +607,11 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
    modalPane.on("destroy", function () {
       settings.closeAction = null;
       modalPane.isOpen = true;
-      originElement = null;
+      if (originElement) {
+         originElement.css("visibility", "");
+         originElement = null;
+      }
+      //settings.onClose = null;
       modalPane.trigger("close");
    });
 
@@ -626,7 +634,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
       }
    };
 
-   // Close event
+   // Close event   
    modalPane.on("close", function () {
 
       if (modalPane.isOpen && modalPane.triggerHandler("beforeClose"))
@@ -2381,10 +2389,18 @@ $(document).ready(function () {
 
 
    EW.addURLHandler(function () {
-      var activity = EW.getHashParameter("ew_activity");
-      var currentActivity = EW.activitySource || EW.activities[activity];
+      var activityId = EW.getHashParameter("ew_activity");
+      var url = activityId ? activityId.substr(0, activityId.lastIndexOf("_")) : null;
+      var activityName = activityId;
 
-      if (activity && activity !== oldEWActivity) {
+      if (url && url !== activityId) {
+         activityName = url;
+      }
+
+      var currentActivity = EW.activities[activityId] || EW.activities[activityName];
+      //console.log(EW.activitySource);
+
+      if (activityName && activityName !== oldEWActivity) {
          var settings = {
             closeHash: {}, /*hash: {key: "ew_activity", value: activity},*/
 
@@ -2404,8 +2420,8 @@ $(document).ready(function () {
                }
 
                $.ajax({
-                  type: EW.activities[activity].verb || "POST",
-                  url: EW.activities[activity].url,
+                  type: EW.activities[activityName].verb || "POST",
+                  url: EW.activities[activityName].url,
                   data: postData,
                   success: function (data) {
                      modal.html(data);
@@ -2421,7 +2437,17 @@ $(document).ready(function () {
                });
             },
             onClose: function () {
-               currentActivity = EW.activitySource || EW.activities[activity];
+               //console.log(EW.activitySource, EW.activities[activityName]);
+               //alert(activityName + " > " + activityId);
+               currentActivity = EW.activities[activityId] || EW.activities[activityName];
+               /*if (EW.activitySource && EW.activitySource.form) {
+                currentActivity = EW.activitySource;
+                }*/
+
+               if (!currentActivity) {
+                  return;
+               }
+
                EW.activitySource = null;
                var closeHashParameters = {
                   ew_activity: null
@@ -2436,7 +2462,7 @@ $(document).ready(function () {
                   }
                }
                // Trigger close activity event and pass closeHashParameters to it
-               $(document).trigger(activity + ".close", closeHashParameters);
+               $(document).trigger(activityName + ".close", closeHashParameters);
                $.extend(closeHashParameters, settings.closeHash);
                EW.setHashParameters(closeHashParameters);
             }
@@ -2444,7 +2470,7 @@ $(document).ready(function () {
 
          if (currentActivity) {
             // Trigger open activity event and pass settings to it before creating modal
-            $(document).trigger(activity + ".open", settings);
+            $(document).trigger(activityName + ".open", settings);
 
             // Do not create modal if activity has a modal already
             //if (self.activities[activity].hasModal)
@@ -2452,21 +2478,21 @@ $(document).ready(function () {
 
             $.extend(settings, currentActivity.modal);
             //modal = self.createModal(settings);
-            currentActivity.modalObject = EW.activities[activity].modalObject = EW.createModal(settings);
+            currentActivity.modalObject = EW.activities[activityName].modalObject = EW.createModal(settings);
             //EW.activities[activity].
          } else {
-            alert("Activity not found: " + activity);
+            alert("Activity not found: " + activityName);
             EW.setHashParameters({
                ew_activity: null
             });
          }
-         oldEWActivity = activity;
-      } else if (oldEWActivity !== activity) {
+         oldEWActivity = activityName;
+      } else if (oldEWActivity !== activityName) {
          if (oldEWActivity && EW.activities[oldEWActivity].modalObject)
             EW.activities[oldEWActivity].modalObject.trigger("close");
          //if (self.activities[oldEWActivity].hasModal)
          //  self.activities[oldEWActivity].hasModal = false;
-         oldEWActivity = activity;
+         oldEWActivity = activityName;
       }
    });
 

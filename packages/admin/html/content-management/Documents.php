@@ -37,15 +37,18 @@
 
       this.bNewFile = EW.addActivity({
          title: "tr{New Article}",
-         activity: "admin/html/content-management/article-form.php",
+         activity: "admin/html/content-management/article-form.php_new",
          parent: "action-bar-items",
          hash: {
             articleId: null
+         },
+         onDone: function (hash) {
+            hash.articleId = null;
          }
       }).hide();
 
       this.seeFolderActivity = EW.getActivity({
-         activity: "admin/html/content-management/folder-form.php",
+         activity: "admin/html/content-management/folder-form.php_see",
          onDone: function () {
             EW.setHashParameters({
                folderId: null,
@@ -55,7 +58,7 @@
       });
 
       this.seeArticleActivity = EW.getActivity({
-         activity: "admin/html/content-management/article-form.php",
+         activity: "admin/html/content-management/article-form.php_see",
          onDone: function () {
             EW.setHashParameters({
                folderId: null,
