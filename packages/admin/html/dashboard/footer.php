@@ -2,7 +2,7 @@
    System.init();
 
    System.goToHomeApp = function () {
-      System.abortAllReqests();
+      System.abortAllRequests();
       $("#action-bar-items").children().animate({
          opacity: 0
       }, 300);
@@ -73,7 +73,7 @@
 
       if (app !== EW.oldApp) {
          EW.oldApp = app;
-         console.log(app);
+         //console.log(app);
          $("#app-title").text(EW.apps[app].title);
          System.openApp(EW.apps[app]);
          return;
@@ -469,11 +469,9 @@
                   $("#action-bar-items").find("button,div").remove();
                   System.UI.components.mainContent.empty();
 
-                  if (oldRequest) {
-                     oldRequest.abort();
-                  }
+                  System.abortAllRequests();
 
-                  oldRequest = System.load(element.prop("href"), function (data) {
+                  System.load(element.prop("href"), function (data) {
                      //console.log(oldRequest);
                      $("#action-bar-items").find("button,div").remove();
 

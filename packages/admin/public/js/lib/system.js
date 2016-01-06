@@ -45,14 +45,20 @@
           * 
           * @param {String} id
           * @param {Object} object
+          * @param {Boolean} set true to force the system to re init the module
           * @returns {sys.MODULE_ABSTRACT}
           */
-         module: function (id, object)
-         {
+         module: function (id, object, forceReload) {
             var module;
-            id = this.id + '.' + id;
-            if (!object && this.modules[id])
+            id = this.id + '/' + id;
+
+            //if forceReload is true, then init the module again
+            if (/*!object && */!forceReload && this.modules[id]) {
+               // Add the module to notYetStarted list so it can be started by startLastLoadedModule method
+               System.notYetStarted.push(id);
                return this.modules[id];
+            }
+
             if (typeof (object) === "function") {
                module = $.extend(true, {}, System.MODULE_ABSTRACT);
                object.call(module);
@@ -68,10 +74,12 @@
 
             System.modules[id] = this.modules[id] = module;
             System.notYetStarted.push(id);
-            System.navHashes[id.replace("system.", "")] = module.moduleIdentifier + "=" + id.replace("system.", "").replace(".", "/");
-            
-            module.init(newNav, this.params);            
-            
+
+            System.navHashes[id.replace("system/", "")] = module.moduleIdentifier + "=" + id.replace("system/", "");
+
+            module.init(newNav, this.params);
+            console.log("Module is inited: " + id);
+
             return module;
          },
          hash: {},
@@ -131,17 +139,17 @@
             this.params = params;
             //alert(navigation[this.moduleIdentifier][0]+"----");
 
-            if (this.moduleIdentifier && navigation[this.moduleIdentifier][0])
+            if (this.moduleIdentifier && navigation[this.moduleIdentifier])
             {
                // Select activeModule according to moduleIdentifier
-               this.activeModule = this.modules[this.id + "." + navigation[this.moduleIdentifier][0]];
+               this.activeModule = this.modules[this.id + "/" + navigation[this.moduleIdentifier][0]];
 
             } else
                this.activeModule = null;
 
             // if full nav pointing to this module, then update the hash value of the current nav
-            if (this.id === "system." + fullNavPath) {
-               console.log(this.id, "system." + fullNavPath);
+            if (this.id === "system/" + fullNavPath) {
+               //console.log(this.id, fullNavPath , hashValue);
                System.navHashes[fullNavPath] = hashValue;
             }
 
@@ -167,7 +175,8 @@
          },
          setNav: function (nav, value) {
             var o = {};
-            o[nav] = this.id.split(".").slice(1).join("/") + "/" + value;
+
+            o[nav] = this.id.split("/").slice(1).join("/") + ((value === null) ? "" : "/" + value);
             System.setHashParameters(o);
 
             //console.log(this.id.split(".").slice(1).join("/") + "/" + value);
@@ -344,13 +353,14 @@
          this.lastHashParams = parameters;
          var hashValue = window.location.hash;
          // if the app found then set the params for app otherwise set the param for default app (main.mainModule)
-         var app = ('' + parameters[this.app.moduleIdentifier]).split('/').filter(Boolean).join(".") || this.app.activeModule.id;
+         var app = ('' + parameters[this.app.moduleIdentifier]).split('/').filter(Boolean).join("/") || this.app.activeModule.id;
 
          if (app) {
             //console.log(app)
             if (!this.navHashes[app]) {
                //this.navHashes[app] = mI + "=" + parameters[this.main.moduleIdentifier];
-               hashValue =this.navHashes[app] = "app="+app.replace(".","/");
+
+               //hashValue = this.navHashes[app] = "app=" + app;
             } else {
                hashValue = this.navHashes[app];
             }
@@ -384,8 +394,11 @@
          });
          newHash = newHash.replace(/\&$/, '');
 
-         if (app) {
+
+
+         if (app && this.navHashes[app]) {
             this.navHashes[app] = newHash;
+            //console.log(app, hashValue, newHash);
          }
 
          if (replace) {
@@ -395,32 +408,49 @@
          }
       },
       load: function (href, onDone) {
-         var _this = this,
-                 id = new Date().valueOf();
-         while (id === this.oldRequestCreationId) {
-            id = new Date().valueOf();
-         }
 
-         var request = $.get(href, function (response) {
-            //console.log(href);
+         return this.addActiveRequest($.get(href, function (response) {
+
             if ("function" === typeof (onDone)) {
                onDone.call(this, response);
             }
 
+         }));
+      },
+      ajax: function (href, onDone) {
+
+      },
+      addActiveRequest: function (request) {
+         var _this = this,
+                 parentSuccess = request.done,
+                 id;
+         // Overwrite the done method in order to remove the request from the activeRequest list
+         request.done = function (callback) {
+            parentSuccess.call(this, callback);
+
             if (request.creationId) {
                delete _this.activeRequests[request.creationId];
             }
-         });
+         };
+
+         id = this.generateRequestId();
 
          request.creationId = id;
          this.oldRequestCreationId = id;
          this.activeRequests[id] = request;
          return request;
       },
-      abortAllReqests: function () {
+      generateRequestId: function () {
+         var id = new Date().valueOf();
+         while (id === this.oldRequestCreationId) {
+            id = new Date().valueOf();
+         }
+         return id;
+      },
+      abortAllRequests: function () {
          for (var request in this.activeRequests) {
             this.activeRequests[request].abort();
-            console.log("aborted", this.activeRequests[request]);
+            //console.log("aborted: "+ this.activeRequests[request].creationId);
             delete this.activeRequests[request];
          }
          this.onLoadQueue = [];

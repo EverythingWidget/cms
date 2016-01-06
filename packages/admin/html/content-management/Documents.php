@@ -121,7 +121,8 @@
       var hasNode = false;
       var aId = EW.getHashParameter("articleId", "document");
       $("#categories-list").html("<div class='col-xs-12'><h2 >Loading Folders</h2></div>");
-      $.post('~admin/api/content-management/contents-folders', {
+
+      System.addActiveRequest($.post('~admin/api/content-management/contents-folders', {
          parent_id: documents.parentId
       }, function (data) {
          $("#categories-list").html("<h2 id='cate-title'>tr{Folders}</h2><div class='row box-content'></div>");
@@ -144,9 +145,10 @@
          if (hasNode) {
             documents.preParentId = pId;
          }
-      }, "json");
+      }, "json"));
+
       $("#articles-list").html("<div class='col-xs-12'><h2>Loading Article</h2></div>");
-      $.post('~admin/api/content-management/contents-articles', {
+      System.addActiveRequest($.post('~admin/api/content-management/contents-articles', {
          parent_id: documents.parentId
       }, function (data) {
          $("#articles-list").html("<h2>tr{Articles}</h2><div class='row box-content'></div>");
@@ -171,7 +173,7 @@
          if (hasNode) {
             documents.preParentId = pId;
          }
-      }, "json");
+      }, "json"));
    };
 
    Documents.prototype.focusOn = function (item) {
@@ -249,8 +251,7 @@
       var Documents = function () {
          this.type = "appSection";
          this.onInit = function () {
-            documents.bNewFile.comeIn();
-            documents.bNewFolder.comeIn();
+
 
             this.on("app", function (e, type, id)
             {
@@ -261,6 +262,9 @@
          };
 
          this.onStart = function () {
+            documents.bNewFile.comeIn();
+            documents.bNewFolder.comeIn();
+
             EW.addURLHandler(function () {
                var parent = EW.getHashParameter("parent"),
                        app = EW.getHashParameter("app");

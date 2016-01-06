@@ -2995,7 +2995,9 @@ a.link.active,.active > a.link {
    padding-right: 0;
    margin-left: 0;
    margin-right: 0;
-   opacity: 0;
+   border-left-width: 0;
+   border-right-width: 0;
+   transform: scale(1,.1);
 }
 
 .list-modal {
