@@ -26,7 +26,7 @@ if (!$_SESSION['login'])
       this.currentItem;
       this.bBack = EW.addAction("tr{Back to Media}", function ()
       {
-         Module.setNav("app","");
+         Module.setNav("app", "");
       }, {
          float: "right",
          display: "none"
@@ -131,7 +131,7 @@ if (!$_SESSION['login'])
                   //console.log('call');
                   EW.setHashParameters({imageId: null, "albumId": element.id}, "media");
                   //console.log(System.getHashParam("app"));
-                  console.log(Module)
+                  //console.log(Module)
                   //Module.setNav("app","testy");
                });
                itemsList.append(temp);
@@ -269,12 +269,11 @@ if (!$_SESSION['login'])
                   media.bBack.comeOut();
                }
 
-               if (!parent)
-               {
+               if (!parent) {
                   parent = "0";
                }
-               if (parent && media.parentId !== parent)
-               {
+
+               if (parent && media.parentId !== parent) {
                   media.parentId = parent;
                   media.listMedia();
                }

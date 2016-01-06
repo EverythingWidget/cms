@@ -67,9 +67,11 @@
             newNav[module.moduleIdentifier] = modNav;
 
             System.modules[id] = this.modules[id] = module;
-            module.init(newNav, this.params);
             System.notYetStarted.push(id);
-
+            System.navHashes[id.replace("system.", "")] = module.moduleIdentifier + "=" + id.replace("system.", "").replace(".", "/");
+            
+            module.init(newNav, this.params);            
+            
             return module;
          },
          hash: {},
@@ -107,9 +109,9 @@
                this[event].apply(this, args);
             }
          },
-         hashChanged: function (navigation, params) {
+         hashChanged: function (navigation, params, hashValue, fullNavPath) {
             var self = this;
-            var newNav = navigation;
+            var moduleNav = navigation;
             this.hashHandler.call(this, navigation, params);
             $.each(navigation, function (key, value) {
                var navHandler = self.hash[key];
@@ -133,24 +135,29 @@
             {
                // Select activeModule according to moduleIdentifier
                this.activeModule = this.modules[this.id + "." + navigation[this.moduleIdentifier][0]];
-               //console.log(this.id + "  " + navigation[this.moduleIdentifier][0])
+
             } else
                this.activeModule = null;
-            //console.log(this.id, this.activeModule, this.modules);
+
+            // if full nav pointing to this module, then update the hash value of the current nav
+            if (this.id === "system." + fullNavPath) {
+               console.log(this.id, "system." + fullNavPath);
+               System.navHashes[fullNavPath] = hashValue;
+            }
 
             if (this.activeModule)
             {
                // Remove first part of navigation in order to force activeModule to only react to events at its level and higher 
                var modNav = navigation[this.moduleIdentifier].slice(1);
-               newNav = $.extend(true, {}, navigation);
-               newNav[this.moduleIdentifier] = modNav;
+               moduleNav = $.extend(true, {}, navigation);
+               moduleNav[this.moduleIdentifier] = modNav;
                if (!this.activeModule.started) {
                   //alert("system." + navigation[this.moduleIdentifier][0])
                   return;
                }
 
                // Call module level events handlers
-               this.activeModule.hashChanged(newNav, this.params);
+               this.activeModule.hashChanged(moduleNav, this.params, hashValue, fullNavPath || navigation[this.moduleIdentifier].join("."));
             }
          },
          hashHandler: function (nav, params)
@@ -163,7 +170,7 @@
             o[nav] = this.id.split(".").slice(1).join("/") + "/" + value;
             System.setHashParameters(o);
 
-            console.log(this.id.split(".").slice(1).join("/") + "/" + value);
+            //console.log(this.id.split(".").slice(1).join("/") + "/" + value);
          }
       },
       // Apps Management
@@ -316,7 +323,7 @@
                   navigation[k] = v.split("/").filter(Boolean);
                   params[k] = v;
                });
-               self.app.hashChanged(navigation, params); // System
+               self.app.hashChanged(navigation, params, hashValue); // System
             }
          };
          detect();
@@ -337,14 +344,17 @@
          this.lastHashParams = parameters;
          var hashValue = window.location.hash;
          // if the app found then set the params for app otherwise set the param for default app (main.mainModule)
-         var app = ('' + parameters[this.app.moduleIdentifier]).split('/')[0] || this.app.activeModule.id;
+         var app = ('' + parameters[this.app.moduleIdentifier]).split('/').filter(Boolean).join(".") || this.app.activeModule.id;
 
          if (app) {
+            //console.log(app)
             if (!this.navHashes[app]) {
                //this.navHashes[app] = mI + "=" + parameters[this.main.moduleIdentifier];
-               this.navHashes[app] = hashValue;
+               hashValue =this.navHashes[app] = "app="+app.replace(".","/");
+            } else {
+               hashValue = this.navHashes[app];
             }
-            hashValue = this.navHashes[app];
+
          }
 
          if (hashValue.indexOf("#") !== -1) {

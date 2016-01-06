@@ -1053,7 +1053,7 @@ class ContentManagement extends \ew\Module
       }
 
       $result = $this->add_content("album", $title, 0, $keywords, $description, $htmlContent, "", $labels);
-      $result = json_decode($result, true);
+      //$result = json_decode($result, true);
       //$res = array(status => "success", message => "The directory {" . $title . "} hase been created succesfuly");*/
       return json_encode(['status' => "success",
           'message' => "The directory '$title' hase been created succesfuly",

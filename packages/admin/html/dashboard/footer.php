@@ -443,7 +443,7 @@
                   //if (System.getHashNav("app")[0]) {
                   System.setHashParameters({
                      app: System.getHashNav("app")[0] + '/' + a.attr("data-ew-nav")
-                  }, true);
+                  });
                   //} else {
                   //System.openApp(EW.apps["Home"]);
                   //}
