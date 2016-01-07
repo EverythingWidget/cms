@@ -114,9 +114,9 @@ if (!$_SESSION['login'])
             this.albumId = albumId;
             this.seeAlbumActivity({albumId: albumId});
          } /*else if (imageId) {
-            this.imageId = imageId;
-            this.seeImageActivity({articleId: imageId});
-         }*/
+          this.imageId = imageId;
+          this.seeImageActivity({articleId: imageId});
+          }*/
       };
 
       Media.prototype.seeImageActivity = function (id) {
@@ -233,8 +233,7 @@ if (!$_SESSION['login'])
          };
       };
 
-      System.module("content-management")
-              .module("media", module);
+      System.module("content-management").module("media", module);
    }(System));
 
 </script>

@@ -18,20 +18,29 @@
          moduleIdentifier: "app",
          navigation: {},
          params: {},
+         html: "",
          modules: {},
          activeModule: null,
-         init: function (navigations, params)
+         init: function (navigations, params, html)
          {
             this.inited = true;
             this.navigation = navigations;
             this.params = params;
+            this.html = html;
             this.trigger("onInit");
          },
          start: function ()
          {
             this.started = true;
+            System.app.activeModule = this;
             this.trigger("onStart");
-            this.hashChanged(this.navigation, this.params);
+            var n = this.navigation;
+            var p = this.params;
+            this.navigation = {};
+            this.params = {};
+            // Empty navigation and params before call the hashChanged method in start phase.
+            // This will force the module to call all its event handlers
+            this.hashChanged(n, p);
             var index = System.notYetStarted.indexOf(this.id);
             if (index > -1) {
                System.notYetStarted.splice(index, 1);
@@ -75,7 +84,10 @@
             System.modules[id] = this.modules[id] = module;
             System.notYetStarted.push(id);
 
-            System.navHashes[id.replace("system/", "")] = module.moduleIdentifier + "=" + id.replace("system/", "");
+            // Set module hash for this module when its inited
+            // module hash will be set in the hashChanged method as well
+            // if current navigation path is equal to this module id
+            System.modulesHashes[id.replace("system/", "")] = module.moduleIdentifier + "=" + id.replace("system/", "");
 
             module.init(newNav, this.params);
             console.log("Module is inited: " + id);
@@ -118,13 +130,20 @@
             }
          },
          hashChanged: function (navigation, params, hashValue, fullNavPath) {
-            var self = this;
+            var _this = this;
             var moduleNav = navigation;
             this.hashHandler.call(this, navigation, params);
+            //console.log(navigation)
             $.each(navigation, function (key, value) {
-               var navHandler = self.hash[key];
-               // Call same level events handlers                            
+               var navHandler = _this.hash[key];
+               // Call same level events handlers    
+
                if (navHandler) {
+                  //console.log(key, _this.navigation[key], value.join("/"))
+                  if (_this.navigation[key] && _this.navigation[key].join("/") === value.join("/")) {
+                     //console.log("rid")
+                     return;
+                  }
                   var args = [];
                   args.push(value);
                   for (var i = 0; i < value.length; ++i)
@@ -132,25 +151,32 @@
                      //i is always valid index in the arguments object
                      args.push(value[i]);
                   }
-                  navHandler.apply(self, args);
+                  navHandler.apply(_this, args);
                }
             });
             this.navigation = navigation;
             this.params = params;
-            //alert(navigation[this.moduleIdentifier][0]+"----");
 
-            if (this.moduleIdentifier && navigation[this.moduleIdentifier])
+            if (this.moduleIdentifier && navigation[this.moduleIdentifier] && navigation[this.moduleIdentifier][0])
             {
-               // Select activeModule according to moduleIdentifier
-               this.activeModule = this.modules[this.id + "/" + navigation[this.moduleIdentifier][0]];
-
-            } else
-               this.activeModule = null;
+               // Set the app.activeModule according to the current navigation path
+               if (this.modules[this.id + "/" + navigation[this.moduleIdentifier][0]]) {
+                  System.app.activeModule = this.activeModule = this.modules[this.id + "/" + navigation[this.moduleIdentifier][0]];
+               }
+            } else {
+               // if current nav path is equal to this module id, then set the current hash value as module hash 
+               // for the current module id. This keeps the hash parameters consistent 
+               // when module get inited on page (re)load or after the hash value is already set
+               var urlId = this.id.replace("system/", "");
+               if (System.getHashParam("app") === urlId) {
+                  System.modulesHashes[urlId] = window.location.hash.substr(1);
+               }
+            }
 
             // if full nav pointing to this module, then update the hash value of the current nav
             if (this.id === "system/" + fullNavPath) {
                //console.log(this.id, fullNavPath , hashValue);
-               System.navHashes[fullNavPath] = hashValue;
+               System.modulesHashes[fullNavPath] = hashValue;
             }
 
             if (this.activeModule)
@@ -217,16 +243,17 @@
             var id = self.currentOnLoad.id;
             var file = self.currentOnLoad.file;
             var data = self.currentOnLoad.data;
-            if (self.onLoadApp(self.currentOnLoad))
+
+            if (/*!System.modules["system/" + id] && */self.onLoadApp(self.currentOnLoad))
             {
                self.loadingAppXHR = self.load(package + '/' + id + '/' + file, data).done(function (response, status) {
-                  if (self.navHashes["system." + id])
-                     window.location.hash = self.navHashes["system." + id];
+                  //if (self.navHashes["system/" + id])
+                  //window.location.hash = self.navHashes["system/" + id];
                   //alert("app current nav hash: "+self.navHashes[id]);
                   var html = $(response);
                   var scripts = html.filter("script").detach();
 
-                  $("body").append(scripts);
+                  $("head").append(scripts);
                   //var html = res;
                   //System.apps[id] = $.extend({}, System.module, self.apps[id]);
                   //System.activityTree.unshift(System.apps[id]);
@@ -302,7 +329,7 @@
             delete this.activeRequests[this.loadingAppXHR.creationId];
          }
       },
-      navHashes: {},
+      modulesHashes: {},
       hashChecker: null,
       /**
        * 
@@ -335,8 +362,8 @@
                self.app.hashChanged(navigation, params, hashValue); // System
             }
          };
+
          detect();
-         //this.systemModule = $.extend({}, System.MODULE_ABSTRACT);
          clearInterval(this.hashChecker);
          this.hashChecker = setInterval(function () {
             detect();
@@ -352,19 +379,35 @@
       setHashParameters: function (parameters, replace, clean) {
          this.lastHashParams = parameters;
          var hashValue = window.location.hash;
-         // if the app found then set the params for app otherwise set the param for default app (main.mainModule)
-         var app = ('' + parameters[this.app.moduleIdentifier]).split('/').filter(Boolean).join("/") || this.app.activeModule.id;
+         var paramApp = parameters[this.app.moduleIdentifier] ? ('' + parameters[this.app.moduleIdentifier]).split('/').filter(Boolean).join("/") : null;
+         var moduleId = paramApp || this.app.activeModule.id;
+         moduleId = moduleId.replace("system/", "");
 
-         if (app) {
-            //console.log(app)
-            if (!this.navHashes[app]) {
-               //this.navHashes[app] = mI + "=" + parameters[this.main.moduleIdentifier];
-
-               //hashValue = this.navHashes[app] = "app=" + app;
-            } else {
-               hashValue = this.navHashes[app];
+         alert(paramApp + " no " + moduleId)
+         if (paramApp) {
+            if (!this.modulesHashes[paramApp]) {
+               if (("system/" + paramApp).indexOf(this.app.activeModule.id) === 0) {
+                  console.log("mod fit", moduleId, hashValue);
+                  this.modulesHashes[this.app.activeModule.id.replace("system/", "")] = hashValue;
+               } else {
+                  hashValue = this.modulesHashes[moduleId] = "app=" + moduleId;
+               }
             }
+         } else if (moduleId) {
+            // when module id changes the window hash value will be changed to the current module hash too
+            // This makes each module hash parameters be accessible only in the scope of that module.
+            // The only way to move hash parameter between modules is to set module id directly from browser url bar
+            if (!this.modulesHashes[moduleId]) {
 
+    //           if (("system/" + moduleId).indexOf(this.app.activeModule.id) === 0) {
+  //                console.log("mod fit", moduleId, ("system/" + moduleId).indexOf(this.app.activeModule.id));
+//                  this.modulesHashes[this.app.activeModule.id.replace("system/", "")] = hashValue;
+               //} else {
+                  hashValue = this.modulesHashes[moduleId] = "app=" + moduleId;
+               //}
+            } else {
+               hashValue = this.modulesHashes[moduleId];
+            }
          }
 
          if (hashValue.indexOf("#") !== -1) {
@@ -394,11 +437,9 @@
          });
          newHash = newHash.replace(/\&$/, '');
 
-
-
-         if (app && this.navHashes[app]) {
-            this.navHashes[app] = newHash;
-            //console.log(app, hashValue, newHash);
+         if (moduleId && this.modulesHashes[moduleId]) {
+            this.modulesHashes[moduleId] = newHash;
+            //console.log(moduleId, hashValue, newHash);
          }
 
          if (replace) {
