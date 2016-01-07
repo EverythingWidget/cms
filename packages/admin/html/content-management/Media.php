@@ -71,7 +71,7 @@ if (!$_SESSION['login'])
          }, {
             float: "right",
             display: "none"
-         }, "action-bar-items");
+         }, "action-bar-items").removeClass("btn-primary").addClass("btn-default");
 
          this.newAlbumActivity = EW.addActivity({
             title: "tr{New Album}",
@@ -108,16 +108,15 @@ if (!$_SESSION['login'])
       };
 
       Media.prototype.seeDetails = function () {
-         var albumId = EW.getHashParameter("albumId", "media");
-         var imageId = EW.getHashParameter("imageId", "media");
+         var albumId = this.selectedItemId;
          EW.activeElement = this.currentItem;
          if (albumId) {
             this.albumId = albumId;
             this.seeAlbumActivity({albumId: albumId});
-         } else if (imageId) {
+         } /*else if (imageId) {
             this.imageId = imageId;
             this.seeImageActivity({articleId: imageId});
-         }
+         }*/
       };
 
       Media.prototype.seeImageActivity = function (id) {

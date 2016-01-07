@@ -340,7 +340,7 @@
          clearInterval(this.hashChecker);
          this.hashChecker = setInterval(function () {
             detect();
-         }, 20);
+         }, 50);
       },
       getHashParam: function (key, hashName) {
          return this.app.params[key] || null;

@@ -193,11 +193,13 @@
       var UISList = function () {
          this.type = "appSection";
          this.onInit = function () {
-            uisList = new UIStructureList();
-            uisList.table.read();
+            
+            
          };
 
          this.onStart = function () {
+            uisList = new UIStructureList();
+            uisList.table.read();
          };
       };
 

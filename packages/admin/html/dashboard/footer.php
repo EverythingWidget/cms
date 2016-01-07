@@ -158,7 +158,7 @@
 
          this.animate({
             className: orgClass
-         }, dur || 300, "Power2.easeOut");
+         }, dur || 300, "Power2.easeInOut");
       }
 
       return this;
@@ -169,7 +169,7 @@
       if (!this.hasClass("btn-hide")) {
          this.stop(true, true).animate({
             className: this.prop("class") + " btn-hide"
-         }, dur || 300, "Power3.easeOut", function () {
+         }, dur || 300, "Power2.easeInOut", function () {
             this.hide();
          });
       }
