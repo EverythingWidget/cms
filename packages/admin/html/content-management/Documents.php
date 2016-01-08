@@ -23,7 +23,7 @@
          this.parentId = null;
          this.folderId = 0;
          this.articleId = 0;
-         this.upParentId = -1;
+         this.upParentId = null;
          this.currentItem = $();
          this.bUp = EW.addAction("tr{Up}", $.proxy(this.preCategory, this), {
             display: "none"
@@ -123,7 +123,7 @@
 
       Documents.prototype.listCategories = function () {
          var _this = this;
-         var pId = 0;
+         var pId = null;
          var hasNode = false;
          var aId = System.getHashParam("article");
          var cId = System.getHashParam("folder");
@@ -235,27 +235,9 @@
          this.onInit = function () {
             this.class = new Documents(this);
 
-            this.on("app", function (e, parent) {
-               if (!parent) {
-                  parent = 0;
-               } else {
-                  this.class.bNewFolder.comeIn();
-               }
-
-               if (this.class.parentId !== parent) {
-                  this.class.preParentId = this.class.parentId;
-                  this.class.parentId = parseInt(parent);
-                  this.class.listCategories();
-               }
-
-               if (parent === 0) {
-                  this.class.bUp.comeOut(300);
-               }
-
-               if (parent > 0) {
-                  this.class.bUp.comeIn(300);
-               }
-            });
+            /*this.on("app", function (e, parent) {
+             
+             });*/
 
             this.on("article", function (full, id) {
                console.log(id)
@@ -270,7 +252,7 @@
                }
             });
 
-            this.on("folder", function (full, id) {
+            this.on("folder", function (full, id, command) {
                if (!id) {
                   this.class.bSee.comeOut();
                   this.class.currentItem.removeClass("selected");
@@ -279,6 +261,29 @@
                if (id) {
                   this.class.bSee.comeIn();
                }
+
+               if (!id) {
+                  id = 0;
+               } else {
+                  this.class.bNewFolder.comeIn();
+               }
+
+               if (command) {
+
+                  if (this.class.parentId !== id) {
+                     this.class.preParentId = this.class.parentId;
+                     this.class.parentId = parseInt(id);
+                     this.class.listCategories();
+                  }
+
+                  if (id === 0) {
+                     this.class.bUp.comeOut(300);
+                  }
+
+                  if (id > 0) {
+                     this.class.bUp.comeIn(300);
+                  }
+               }
             });
          };
 
@@ -286,6 +291,8 @@
             this.class.start();
             this.class.bNewFile.comeIn();
             this.class.bNewFolder.comeIn();
+            alert("asdasdasd");
+            System.setHashParameters({folder: "0/list"});
          };
       };
 

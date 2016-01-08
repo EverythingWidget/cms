@@ -28,9 +28,9 @@ if (!$_SESSION['login'])
             _this.listMedia();
          });
 
-         module.on("app", function (e, parent, select) {
+         module.on("album", function (e, id, images) {
 
-            if (parent > 0) {
+            if (id > 0) {
                _this.newAlbumActivity.comeOut();
                _this.uploadFileActivity.comeIn();
                _this.bBack.comeIn();
@@ -40,13 +40,15 @@ if (!$_SESSION['login'])
                _this.bBack.comeOut();
             }
 
-            if (!parent) {
-               parent = 0;
+            if (!id) {
+               id = 0;
             }
 
-            if (parent !== null && _this.parentId !== parent) {
-               _this.parentId = parseInt(parent);
-               _this.listMedia();
+            if (images) {
+               if (id !== null && _this.parentId !== id) {
+                  _this.parentId = parseInt(id);
+                  _this.listMedia();
+               }
             }
          });
 
@@ -104,6 +106,7 @@ if (!$_SESSION['login'])
          }
 
          this.bDel = $();
+         //System.setHashParameters({album: "0/images"})
 
       };
 
