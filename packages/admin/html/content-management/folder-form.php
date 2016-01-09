@@ -67,16 +67,14 @@ function script()
             $.EW("getParentDialog", $("#category-form")).trigger("close");
          }}).hide();
 
-      $("#category-form").on("refresh", function (e, data) {
-         //console.log(data.id);
-         if ($("#category-form #id").val())
+      $("#category-form").on("refresh", function (e, folder) {
+         if (folder && folder.data.id)
          {
             bSave.comeOut(300);
             bEdit.comeIn(300);
             bDelete.comeIn(300);
-            $("#category-form #form-title").html("<span>tr{Edit}</span>" + data.title);
-         } else
-         {
+            $("#category-form #form-title").html("<span>tr{Edit}</span>" + folder.data.title);
+         } else {
             bSave.comeIn(300);
             bEdit.comeOut(300);
             bDelete.comeOut(300);

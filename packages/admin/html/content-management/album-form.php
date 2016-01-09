@@ -38,9 +38,9 @@ function scripts()
 
          this.bEdit = EW.addAction("tr{Save Changes}", this.editAlbum).addClass("btn-success").hide();
 
-         $("#album-form").on('refresh', function (e, data) {
-            if (data["id"]) {
-               $("#form-title").html("<span>tr{Edit}</span>" + data.title);
+         $("#album-form").on('refresh', function (e, album) {
+            if (album && album.data["id"]) {
+               $("#form-title").html("<span>tr{Edit}</span>" + album.data.title);
                self.bEdit.comeIn();
                self.bAdd.comeOut();
                //bDelete.comeIn(300)

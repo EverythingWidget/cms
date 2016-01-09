@@ -345,7 +345,7 @@ class ContentManagement extends \ew\Module
 
 
       $content = new ew_contents;
-      $content->author_id = $_SESSION['EW.USER_ID'];      
+      $content->author_id = $_SESSION['EW.USER_ID'];
       $content->type = $type;
       $content->title = $title;
       $content->slug = EWCore::to_slug($title, "ew_contents");
@@ -447,7 +447,7 @@ class ContentManagement extends \ew\Module
 
    public function ew_page_feeder_article($id, $language = "en")
    {
-      
+
       $articles = $this->contents_labels($id, "admin_ContentManagement_language", $language);
       $article = [];
 
@@ -514,7 +514,7 @@ class ContentManagement extends \ew\Module
       }
       $article = $article->toArray();
       $article["labels"] = $this->get_content_labels($articleId);
-      return $article;
+      return \ew\APIResourceHandler::to_api_response($article);
    }
 
    public function update_article($id, $title, $parent_id, $keywords = null, $description = null, $content = null, $labels = null)
@@ -548,7 +548,8 @@ class ContentManagement extends \ew\Module
    public function contents_folders($parent_id, $token, $size)
    {
       $container_id = ew_contents::find($parent_id);
-      $container_id = $container_id['parent_id'];
+      $up_parent_id = $container_id['parent_id'] ? $container_id['parent_id'] : 0;
+      //$container_id = $container_id['parent_id'];
       $folders = ew_contents::where('parent_id', '=', $parent_id)->where('type', 'folder')->get(['*',
           \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
 
@@ -557,7 +558,7 @@ class ContentManagement extends \ew\Module
 
       foreach ($folders_ar as $i)
       {
-         $i["parent_id"] = $container_id;
+         $i["up_parent_id"] = $up_parent_id;
          $rows[] = $i;
       }
       /* $out = array(
@@ -595,13 +596,13 @@ class ContentManagement extends \ew\Module
       else
       {
          $container_id = ew_contents::find($parent_id);
-         $container_id = $container_id['parent_id'];
+         $up_parent_id = isset($container_id['parent_id']) ? $container_id['parent_id'] : 0;
          $articles = ew_contents::where('parent_id', '=', $parent_id)->where('type', 'article')->take($size)->skip($token)->get(['*',
              \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
 
-         $data = array_map(function($e)
+         $data = array_map(function($e) use ($up_parent_id)
          {
-            $e["pre_parent_id"] = $container_id;
+            $e["up_parent_id"] = $up_parent_id;
             $e["content_fields"] = json_decode($e["content_fields"]);
             return $e;
          }, $articles->toArray());

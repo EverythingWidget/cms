@@ -125,13 +125,13 @@
 
          return formData;
       },
-      setData: function (data) {
-         if (data && data.labels) {
-            ContentForm.initLabels(data.labels);
-            ContentForm.setLabels(data.labels);
+      setData: function (contentInfo) {
+         if (contentInfo && contentInfo.data.labels) {
+            ContentForm.initLabels(contentInfo.data.labels);
+            ContentForm.setLabels(contentInfo.data.labels);
          }
 
-         EW.setFormData(this.formId, data);
+         EW.setFormData(this.formId, contentInfo);
          $("#content").change();
       }
    };

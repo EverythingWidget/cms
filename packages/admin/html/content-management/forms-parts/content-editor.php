@@ -3,8 +3,8 @@
 <script>
    var contentEditor;
    $(document).ready(function () {
-      $("#<?= $form_id ?>").on("refresh", function (e, formData) {
-         $("#content-editor .ct-content-container").html(formData["content"]);
+      $("#<?= $form_id ?>").on("refresh", function (e, content) {
+         $("#content-editor .ct-content-container").html(content.data["content"]);
          contentEditor.start();
       });
 

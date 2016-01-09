@@ -466,13 +466,14 @@
             if (element !== this.currentTab) {
                EW.sidebarButton.text(element.text());
                if (element.attr("data-ew-nav") && element.attr("href") !== oldHref) {
+                  $sidebar.children(".btn-current-tab").addClass("inline-loader");
+                  element.addClass("inline-loader");
                   $("#action-bar-items").find("button,div").remove();
                   System.UI.components.mainContent.empty();
 
                   System.abortAllRequests();
 
                   System.load(element.prop("href"), function (data) {
-                     //console.log(oldRequest);
                      $("#action-bar-items").find("button,div").remove();
 
                      if (!System.getHashNav("app")[0]) {
@@ -485,6 +486,11 @@
                         anim.pause();
                      }
 
+                     System.startLastLoadedModule();
+
+                     $sidebar.children(".btn-current-tab").removeClass("inline-loader");
+                     element.removeClass("inline-loader");
+
                      anim = TweenLite.fromTo(System.UI.components.mainContent[0], .5, {
                         opacity: 0,
                         ease: "Power2.easeInOut",
@@ -493,12 +499,9 @@
                         top: "+=94px",
                         opacity: 1,
                         onComplete: function () {
-                           //console.log(System.notYetStarted)
-                           System.startLastLoadedModule();
                         }
                      });
                   });
-                  //console.log(oldRequest);
                }
             }
          }
@@ -518,7 +521,8 @@
          appBar: $("#app-bar"),
          homePane: $("#home-pane"),
          mainContent: $("#main-content"),
-         body: $("body")
+         body: $("body"),
+         document: $(document)
       };
 
       System.UI.body = $("body")[0];

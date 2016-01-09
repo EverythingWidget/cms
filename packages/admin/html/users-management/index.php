@@ -22,26 +22,48 @@ function script()
    ob_start();
    ?>
    <script >
-      (function (System) {
+      (function (System) {         
 
-         System.module("users-management", function () {
-            this.type = "app";
-            this.onInit = function () {
+         /**
+          * Users management component
+          * 
+          * @param {System.MODULE_ABSTRACT} module a instance of system module
+          */
+         function UsersManagementComponent(module) {
+            var component = this;
+            this.module = module;
+            this.module.type = "app";
+            this.data = {};
+
+            this.module.onInit = function () {
+               component.init();
             };
 
-            this.onStart = function () {
-               this.data.tab = null;
+            this.module.onStart = function () {
+               component.start();
             };
+         }
 
-            this.on("app", function (p, section) {
-               if (!section || section === this.data.tab)
+         UsersManagementComponent.prototype.init = function () {
+            var component = this;
+            this.module.on("app", function (path, section) {
+               if (!section || section === component.data.tab) {
                   return;
-               this.data.tab = section;
+               }
+
+               component.data.tab = section;
                EW.appNav.setCurrentTab($("a[data-ew-nav='" + section + "']"));
             });
+         };
 
-            return this;
+         UsersManagementComponent.prototype.start = function () {
+            this.data.tab = null;
+         };
+         
+         System.module("users-management", function () {
+            new UsersManagementComponent(this);
          });
+
       }(System));
    </script>
    <?php

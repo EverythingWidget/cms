@@ -8,28 +8,30 @@ if (!$_SESSION['login'])
 ?>
 
 <div id="media-items-container" class="row">
-   <div class="col-xs-12" >
-      <div id="files-list" class="box">
+   <div id="files-list" class="elements-list">
 
-      </div>
    </div>
 </div>
 <script>
    (function (System) {
 
-      function Media(module) {
+      function MediaComponent(module) {
          var _this = this;
-         this.module = module;
-         this.currentItem = $();
-         this.itemsList = $();
+         _this.module = module;
+         _this.module.type = "app-section";
 
-         $(document).off("media-list");
-         $(document).on("media-list.refresh", function (e, eventData) {
-            _this.listMedia();
-         });
+         _this.module.onInit = function () {
+            _this.init();
+         };
 
-         module.on("album", function (e, id, images) {
+         _this.module.onStart = function () {
+            _this.start();
+         };
+      }
 
+      MediaComponent.prototype.init = function () {
+         var _this = this;
+         this.module.on("album", function (e, id, images) {
             if (id > 0) {
                _this.newAlbumActivity.comeOut();
                _this.uploadFileActivity.comeIn();
@@ -52,7 +54,7 @@ if (!$_SESSION['login'])
             }
          });
 
-         module.on("select", function (itemId) {
+         this.module.on("select", function (itemId) {
             if (itemId > 0) {
                _this.selectedItemId = itemId;
                _this.seeAction.comeIn();
@@ -61,15 +63,24 @@ if (!$_SESSION['login'])
                _this.seeAction.comeOut();
             }
          });
-      }
 
-      Media.prototype.start = function () {
+         System.UI.components.document.off("media-list");
+         System.UI.components.document.on("media-list.refresh", function (e, eventData) {
+            _this.listMedia();
+         });
+      };
+
+      MediaComponent.prototype.start = function () {
          var _this = this;
          this.parentId = null;
+         this.itemsList = $();
          this.currentItem = $();
+         this.bDel = $();
 
          this.bBack = EW.addAction("tr{Back to Media}", function () {
-            _this.module.setNav("app", null);
+            System.setHashParameters({
+               album: "0/images"
+            });
          }, {
             float: "right",
             display: "none"
@@ -100,61 +111,59 @@ if (!$_SESSION['login'])
          //this.seeArticleActivity = EW.getActivity({activity: "admin/api/ContentManagement/article-form.php_see"});
 
          if (this.seeAlbumActivity) {
-            this.seeAction = EW.addAction("tr{See}", $.proxy(this.seeDetails, this)).hide();
+            this.seeAction = EW.addAction("tr{See}", $.proxy(this.seeItemDetails, this)).hide();
          } else {
             this.seeAction = $();
          }
 
-         this.bDel = $();
-         //System.setHashParameters({album: "0/images"})
-
+         _this.module.setParamIfNone("album", "0/images");
       };
 
-      Media.prototype.seeDetails = function () {
+      MediaComponent.prototype.seeItemDetails = function () {
          var albumId = this.selectedItemId;
          EW.activeElement = this.currentItem;
          if (albumId) {
             this.albumId = albumId;
             this.seeAlbumActivity({albumId: albumId});
-         } /*else if (imageId) {
-          this.imageId = imageId;
-          this.seeImageActivity({articleId: imageId});
-          }*/
+         }
       };
 
-      Media.prototype.seeImageActivity = function (id) {
+      MediaComponent.prototype.seeImageActivity = function (id) {
 
       };
 
-      Media.prototype.listMedia = function () {
+      MediaComponent.prototype.listMedia = function () {
          var _this = this;
          //var albums = $("<div class='row box-content'></div>");
-         this.itemsList = $("<div class='row box-content'></div>");
+         this.itemsList = $("<div class='box-content anim-fade-in'></div>");
+         var elementsList = $("#files-list");
+         elementsList.html("<h2>Loading...</h2><div class='loader center'></div>");
 
-         $("#files-list").html("<h2>Loading...</h2>");
-         $("#files-list").append(_this.itemsList);
-
-         System.addActiveRequest($.post('<?php echo EW_ROOT_URL; ?>~admin/api/content-management/get-media-list', {parent_id: _this.parentId}, function (response) {
+         System.addActiveRequest($.get('<?php echo EW_ROOT_URL; ?>~admin/api/content-management/get-media-list', {parent_id: _this.parentId}, function (response) {
             if (_this.parentId === 0) {
-               $("#files-list > h2").html("tr{Albums}");
+               elementsList.html("<h2>tr{Albums}</h2>");
             } else {
-               $("#files-list > h2").html("tr{Images}");
+               elementsList.html("<h2>tr{Images}</h2>");
             }
 
             $.each(response.data, function (index, element) {
                //flag = true;
                //pId = element.parentId;
-               var temp = _this.createMedia(element.title, element.type, element.ext, element.size, element.thumbURL, element.id);
+               var temp = _this.createMediaElement(element.title, element.type, element.ext, element.size, element.thumbURL, element.id);
                //temp.click(temp.focus);
                if (element.type === "album") {
                   temp.on('keydown', function (e) {
                      if (e.which === 13) {
-                        _this.module.setNav("app", element.id);
+                        System.setHashParameters({
+                           album: element.id + "/images"
+                        });
                      }
                   });
 
                   temp.dblclick(function () {
-                     _this.module.setNav("app", element.id);
+                     System.setHashParameters({
+                        album: element.id + "/images"
+                     });
                   });
 
                   temp.on("focus", function (e) {
@@ -189,24 +198,26 @@ if (!$_SESSION['login'])
                $("div[data-item-id='" + _this.selectedItemId + "']").focus();
             }
 
+            elementsList.append(_this.itemsList);
+            _this.itemsList.addClass("in");
          }, "json"));
       };
 
-      Media.prototype.createMedia = function (title, type, ext, size, ImageURL, id) {
-         var self = this,
-                 div = $(document.createElement("div"));
+      MediaComponent.prototype.createMediaElement = function (title, type, ext, size, ImageURL, id) {
+         var _this = this,
+                 div = $(document.createElement("div")),
+                 img = $(document.createElement("img"));
 
-         div.addClass("content-item");
-         div.addClass(type);
-         div.addClass(ext);
+         div.addClass("content-item")
+                 .addClass(type)
+                 .addClass(ext);
          div.attr("tabindex", "1");
          div.on("focus click", function () {
-            self.currentItem.removeClass("selected");
+            _this.currentItem.removeClass("selected");
             div.addClass("selected");
-            self.currentItem = div;
+            _this.currentItem = div;
          });
 
-         var img = $(document.createElement("img"));
          if (ImageURL) {
             img.attr("src", ImageURL);
             div.append(img);
@@ -224,19 +235,9 @@ if (!$_SESSION['login'])
          return div;
       };
 
-      var module = function () {
-         this.type = "appSection";
-         this.onInit = function () {
-            this.class = new Media(this);
-         };
-
-         this.onStart = function () {
-            this.class.start();
-
-         };
-      };
-
-      System.module("content-management").module("media", module);
+      System.module("content-management").module("media", function () {
+         new MediaComponent(this);
+      });
    }(System));
 
 </script>

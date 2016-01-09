@@ -4,8 +4,9 @@ session_start();
 $articleInfo = array();
 $articleInfo["parent_id"] = $_REQUEST["parent"];
 if ($_REQUEST["articleId"])
-   $articleInfo = EWCore::process_request_command("admin", "api", "content-management", "get-article", [
-               "articleId" => $_REQUEST["articleId"]]);
+   $articleInfo = EWCore::call("admin/api/content-management/get-article", [
+               "articleId" => $_REQUEST["articleId"]
+   ]);
 else
    $articleInfo = json_encode($articleInfo);
 
@@ -92,16 +93,15 @@ function script()
                $(document).trigger("article-list.refresh");
             }}).hide();
 
-         ContentForm.uiForm.on("refresh", function (e, data) {
-
-            if (data.id) {
+         ContentForm.uiForm.on("refresh", function (e, article) {
+            if (article && article.data.id) {
                self.bAdd.comeOut(300);
                self.bEditAndClose.comeIn(300);
                self.bEdit.comeIn(300);
                self.bDelete.comeIn(300);
 
-               ContentForm.uiTitle.html("<span>tr{Edit}</span>" + data.title);
-               $("#date_created").val(data.round_date_created);
+               ContentForm.uiTitle.html("<span>tr{Edit}</span>" + article.data.title);
+               $("#date_created").val(article.data.round_date_created);
 
             } else {
                self.bAdd.comeIn(300);

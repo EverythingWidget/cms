@@ -541,7 +541,6 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
    var methods = {
       // Set X button at the top tight corner
       setCloseButton: function () {
-
          xButton.css({
             left: modalPane[0].getBoundingClientRect().right - 32,
             //right:"10px",
@@ -702,7 +701,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
          }
 
          if (settings.class !== "left") {
-            modalPane.css("left", ($(window).width() - modalPane.outerWidth(true)) / 2);
+            /*modalPane.css("left", ($(window).width() - modalPane.outerWidth(true)) / 2);*/
          } else {
             System.UI.Animation.slideIn({
                time: .5,

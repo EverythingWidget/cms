@@ -25,7 +25,7 @@ if (!isset($_SESSION['login']))
       <div id="base-pane" class="container">      
          <div id="app-content" >
             <div id="nav-bar" class="nav-bar">
-               <a type="button" id="apps" class="btn btn-text comp-btn component-chooser" data-ew-nav="" href="./~admin/#"></a>
+               <a type="button" id="apps" class="btn btn-text btn-home-app component-chooser" data-ew-nav="" href="./~admin/#"></a>
                <h1 id="app-title">tr{Apps}</h1>
                <div  class="col-xs-2 col-sm-2 col-md-2 col-lg-1 pull-right">
                   <?php
@@ -37,7 +37,7 @@ if (!isset($_SESSION['login']))
                </div>            
             </div>
             <div id="app-bar" class="app-bar">
-               <button class="btn comp-btn" id="side-bar-btn" >  
+               <button class="btn btn-current-tab" id="side-bar-btn" >  
                </button>   
                <div class="action-pane" >
                   <div id="action-bar-items" class="actions-bar action-bar-items" style="display:block;float:none;">
