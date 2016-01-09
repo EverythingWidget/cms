@@ -385,7 +385,7 @@
             overflowY: "hidden"
          });
 
-         $("#app-bar-nav.in").stop().animate({
+         $("#app-bar-nav.in").animate({
             className: "app-bar-nav"
          }, 360, "Power3.easeOut");
       });
@@ -443,7 +443,7 @@
                   //if (System.getHashNav("app")[0]) {
                   System.setHashParameters({
                      app: System.getHashNav("app")[0] + '/' + a.attr("data-ew-nav")
-                  });
+                  }, true);
                   //} else {
                   //System.openApp(EW.apps["Home"]);
                   //}

@@ -914,7 +914,7 @@ button {
    height: 40px;
    background-color: transparent;
    width: 100%;
-   padding: 0;
+   padding: 0 16px;
    z-index: 10;
    position: relative;
 }
@@ -948,7 +948,7 @@ button {
    height: 36px;
    border: 0;
    margin: 0;
-   margin-left: 16px;
+   margin-left: 0px;
    margin-top: 2px;
    padding: 0;
    /* padding-left: 54px; */

@@ -132,7 +132,7 @@
             if (!this.params[param]) {
                var paramObject = {};
                paramObject[param] = value;
-               System.setHashParameters(paramObject);
+               System.setHashParameters(paramObject, true);
             }
          },
          /**
@@ -258,24 +258,25 @@
          var self = this;
          if (self.currentOnLoad)
             return;
-         if (self.onLoadQueue[0] && self.currentOnLoad != self.onLoadQueue[0])
+         if (self.onLoadQueue[0] && self.currentOnLoad !== self.onLoadQueue[0])
          {
             self.currentOnLoad = self.onLoadQueue[0];
             //console.log("Loading app: " + self.currentOnLoad.id);
-            var package = self.currentOnLoad.package;
-            var id = self.currentOnLoad.id;
-            var file = self.currentOnLoad.file;
-            var data = self.currentOnLoad.data;
+            var package = self.currentOnLoad.package,
+                    id = self.currentOnLoad.id,
+                    file = self.currentOnLoad.file,
+                    data = self.currentOnLoad.data;
 
-            if (/*!System.modules["system/" + id] && */self.onLoadApp(self.currentOnLoad))
-            {
+            if (self.onLoadApp(self.currentOnLoad)) {
+               /*if (System.modules["system/" + id]) {
+                  return;
+               }*/
                self.loadingAppXHR = self.load(package + '/' + id + '/' + file, data).done(function (response, status) {
                   //if (self.navHashes["system/" + id])
                   //window.location.hash = self.navHashes["system/" + id];
                   //alert("app current nav hash: "+self.navHashes[id]);
                   var html = $(response);
                   var scripts = html.filter("script").detach();
-
                   $("head").append(scripts);
                   //var html = res;
                   //System.apps[id] = $.extend({}, System.module, self.apps[id]);
@@ -446,7 +447,13 @@
             System.modulesHashes[nav] = hashValue;
          }
       },
-      // Set parameters for current app/nav if not specified
+      /** Set parameters for app/nav. if app/nav was not in parameters, then set paraters for current app/nav
+       * 
+       * @param {type} parameters
+       * @param {type} replace if true it overwrites last url history otherwise it create new url history
+       * @param {type} clean clean all the existing parameters
+       * @returns {undefined}
+       */
       setHashParameters: function (parameters, replace, clean) {
          this.lastHashParams = parameters;
          var hashValue = window.location.hash;
