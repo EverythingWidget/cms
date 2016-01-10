@@ -55,9 +55,13 @@ if (!$_SESSION['login'])
          });
 
          this.module.on("select", function (itemId) {
+
             if (itemId > 0) {
                _this.selectedItemId = itemId;
                _this.seeAction.comeIn();
+               
+               _this.currentItem.removeClass("selected");
+               $("div[data-item-id='" + _this.selectedItemId + "']").focus();
 
             } else {
                _this.seeAction.comeOut();
@@ -167,9 +171,7 @@ if (!$_SESSION['login'])
                   });
 
                   temp.on("focus", function (e) {
-                     System.setHashParameters({
-                        select: element.id
-                     });
+                     _this.module.setParam("select", element.id);
                   });
                   _this.itemsList.append(temp);
                } else {
@@ -193,13 +195,14 @@ if (!$_SESSION['login'])
 
             });
 
-            // Select current item
+            elementsList.append(_this.itemsList);
+            _this.itemsList.addClass("in");
+
+            // Select current item            
             if (_this.selectedItemId) {
                $("div[data-item-id='" + _this.selectedItemId + "']").focus();
             }
 
-            elementsList.append(_this.itemsList);
-            _this.itemsList.addClass("in");
          }, "json"));
       };
 

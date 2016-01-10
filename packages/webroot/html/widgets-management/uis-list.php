@@ -193,8 +193,8 @@
       var UISList = function () {
          this.type = "appSection";
          this.onInit = function () {
-            
-            
+
+
          };
 
          this.onStart = function () {
@@ -203,8 +203,7 @@
          };
       };
 
-      System.module("widget-management")
-              .module("uis-list", UISList);
+      System.module("widgets-management").module("uis-list", UISList);
    }(System));
 </script>
 

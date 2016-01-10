@@ -15,79 +15,80 @@ session_start();
       <h1 class="pull-left">Select an item</h1><a href='javascript:void(0)' class='close-icon pull-right' style="margin:5px;"></a>      
       <div  id="items-list-content" ></div>
    </div>
-   <ul id="ew-uis-editor-tabs" class="nav nav-pills xs-nav-tabs nav-sm" style="width:400px;float:left;margin: 0px;background-color: #00897B;">
-      <li class="active"><a href="#inspector" data-toggle='tab'>tr{Structure}</a></li>
-      <li class="disable"><a href="#template-control" data-toggle='tab'>tr{Template}</a></li>
-      <li class=""><a href="#pref" data-toggle='tab'>tr{Settings}</a></li>
-   </ul>
-   <div class="tab-content fix" style="width:400px;top:40px;background-color:#fff;">
-      <div class="tab-pane active" id="inspector">
-         <form name="inspector-editor" id="inspector-editor" onsubmit="return false">
+   <div class="uis-editor-tool-pane">
+      <ul id="ew-uis-editor-tabs" class="nav nav-pills xs-nav-tabs nav-sm" >
+         <li class="active"><a href="#inspector" data-toggle='tab'>tr{Structure}</a></li>
+         <li class="disable"><a href="#template-control" data-toggle='tab'>tr{Template}</a></li>
+         <li class=""><a href="#pref" data-toggle='tab'>tr{Settings}</a></li>
+      </ul>
+      <div class="tab-content">
+         <div class="tab-pane active" id="inspector">
+            <form name="inspector-editor" id="inspector-editor" onsubmit="return false">
 
-            <ul class="items" >
-            </ul>
+               <ul class="items" >
+               </ul>
 
-         </form>
-      </div>
-      <div class="tab-pane col-xs-12" id="template-control">
-         <form id="template_settings_form">
+            </form>
+         </div>
+         <div class="tab-pane col-xs-12" id="template-control">
+            <form id="template_settings_form">
 
-         </form>
-      </div>
-      <div class="tab-pane col-xs-12" id="pref">
-         <form id="uis-preference" onsubmit="return false;">
-            <div class="row mar-top">
-               <div class="col-xs-12" >
-                  <input class="text-field" data-label="UIS Name" name="name" id="name">
-               </div>
-            </div>
-
-            <div class="row">
-               <div class="col-xs-12" >
-                  <div class="btn-group btn-group-justified" data-toggle="buttons">
-                     <label class="btn btn-default " data-tooltip="Use this layout as default layout for all the pages">
-                        <input type="checkbox" name="uis-default" id="uis-default" value="true" > Default UIS
-                     </label>
-                     <label class="btn btn-default" data-tooltip="Use this layout as home page layout">
-                        <input type="checkbox" name="uis-home-page" id="uis-home-page"  value="true" > Home Page UIS
-                     </label>
+            </form>
+         </div>
+         <div class="tab-pane col-xs-12" id="pref">
+            <form id="uis-preference" onsubmit="return false;">
+               <div class="row mar-top">
+                  <div class="col-xs-12" >
+                     <input class="text-field" data-label="UIS Name" name="name" id="name">
                   </div>
                </div>
-            </div>
-            <div class="row mar-top">
-               <div class="col-xs-12" >
 
-                  <select data-label="UIS Template" id="template" name="template">
-                     <option value="">---</option>
-                     <?php
-                     $templates = json_decode(EWCore::call("webroot/api/widgets-management/get-templates"), true);
-                     //print_r($templates);
-                     foreach ($templates as $t)
-                     {
-                        ?>
-                        <option value="<?php echo $t["templatePath"] ?>"><?php echo $t["templateName"] ?></option>
-                        <?php
-                     }
-                     ?>
-                  </select>
-
+               <div class="row">
+                  <div class="col-xs-12" >
+                     <div class="btn-group btn-group-justified" data-toggle="buttons">
+                        <label class="btn btn-default " data-tooltip="Use this layout as default layout for all the pages">
+                           <input type="checkbox" name="uis-default" id="uis-default" value="true" > Default UIS
+                        </label>
+                        <label class="btn btn-default" data-tooltip="Use this layout as home page layout">
+                           <input type="checkbox" name="uis-home-page" id="uis-home-page"  value="true" > Home Page UIS
+                        </label>
+                     </div>
+                  </div>
                </div>
-            </div>
+               <div class="row mar-top">
+                  <div class="col-xs-12" >
 
-            <div id="uis-preference-actions" class="actions-bar action-bar-items" ></div>
-         </form>
+                     <select data-label="UIS Template" id="template" name="template">
+                        <option value="">---</option>
+                        <?php
+                        $templates = json_decode(EWCore::call("webroot/api/widgets-management/get-templates"), true);
+                        //print_r($templates);
+                        foreach ($templates as $t)
+                        {
+                           ?>
+                           <option value="<?php echo $t["templatePath"] ?>"><?php echo $t["templateName"] ?></option>
+                           <?php
+                        }
+                        ?>
+                     </select>
+
+                  </div>
+               </div>
+
+               <div id="uis-preference-actions" class="actions-bar action-bar-items" ></div>
+            </form>
+         </div>
       </div>
-   </div>   
-   <div style="background-color: #fff;position:absolute;left:400px;top:0;bottom:0;right: 0;">
+   </div>
+   <div id="uis-editor-preview-pane" class="uis-editor-preview-pane">
       <div class="col-xs-12" >
          <input class="text-field" data-label="UIS Perview URL" name="perview_url" id="perview_url">
       </div>
       <div id="editor-container" style="position:absolute;right:0px;top:68px;bottom:1px;overflow:hidden;left:auto;">
-         <form id="neuis" style="padding:0;border:0px solid #aaa;border-width:1px 0 1px 1px;" class="col-xs-12">
-            <iframe id="fr" style="position:absolute;top:0px;left:0px;border:none;min-width:410px;width:1920px;height:100%;overflow:scroll;padding:0px;"                               
-                    src="">
+         <form id="neuis" style="padding:0;border:1px solid #aaa;overflow:hidden;" class="col-xs-12">
+            <iframe id="fr" class="preview-iframe" src="">
             </iframe>
-            <input type="submit" style="display: none;" value="ثبت">
+            <input type="submit" style="display: none;" value="">
          </form>
       </div>
    </div>
@@ -369,7 +370,7 @@ session_start();
          //var div = $("<div></div>");
          if (v.hasClass("panel") || v.hasClass("block"))
          {
-            liUl = $("<li><div><a href='#' class='item-label'><img src='~admin/public/css/images/panel-icon.png' class='handle'/></a><a href='#' class='btn btn-primary add-item'>Add</a><a href='#' class='close-icon' ></a></div></li>");
+            liUl = $("<li><div><div href='#' class='item-label'><img src='~admin/public/css/images/panel-icon.png' class='handle'/></div><a href='#' class='btn btn-primary add-item'>Add</a><a href='#' class='close-icon' ></a></div></li>");
             itemLabel = liUl.find(".item-label");
             liUl.attr("data-linked-panel-id", v.attr("data-panel-id"));
             skipBoxBlock = false;
@@ -419,7 +420,7 @@ session_start();
                self.removePanel(v.attr('data-panel-id'));
             });
 
-            liUl.find("div").hover(function () {
+            liUl.children("div").hover(function () {
                var panel = frameBody.find("[data-panel-id='" + v.attr('data-panel-id') + "']");
                // Scroll to the panel if the panel is not in view port
                if (panel.offset().top > (frameBody.scrollTop() + frameBody.innerHeight())
@@ -481,7 +482,7 @@ session_start();
                e.preventDefault();
             };
 
-            var li = $("<li class='widget'><div><a href='#' class='item-label'><img src='~admin/public/css/images/widget-icon.png' class='handle'/></a><a href='#' class='close-icon' ></a></div></li>");
+            var li = $("<li class='widget'><div><div href='#' class='item-label'><img src='~admin/public/css/images/widget-icon.png' class='handle'/></div><a href='#' class='close-icon' ></a></div></li>");
             li.attr("data-linked-widget-id", v.children().attr("data-widget-id"));
             var widgetTitle = li.find(".item-label");
             widgetTitle.append(/*v.children().data("widget-id") +*/ v.children().attr("data-widget-title"));
@@ -1278,17 +1279,16 @@ session_start();
       $('#classValue').innerHTML = 'Panel <?php echo $class ?> ' + $('#class').value;
    }
 
-   UISForm.prototype.resizeEditorFrame = function (simWidth, width)
-   {
+   UISForm.prototype.resizeEditorFrame = function (simWidth, width) {
       this.simulatorWidth = simWidth;
       this.editorFrame = $(document.getElementById("fr")).contents().find("body");
       var self = this;
-      var left = (($(window).width() - width) / 2);
+      var left = (($("#uis-editor-preview-pane").width() - width) / 2);
       //var width = $(window).width() - sidebarWidth;
       self.editorFrame.find(".widget-glass-pane").hide();
       //console.log(self.editorFrame)
       $("#editor-container").stop().animate({
-         //left: left,
+         left: left,
          width: width
       }, 500, "Power1.easeInOut", function () {
          self.loadInspectorEditor();
@@ -1297,14 +1297,14 @@ session_start();
 
       var fh = self.editorWindow.outerHeight();
       $("#neuis").css("height", fh);
-      var newHeight = (fh * simWidth) / width;
-      var leftOffset = width - simWidth;
+      var newHeight = (fh * this.simulatorWidth) / width;
+      var leftOffset = width - this.simulatorWidth;
       var topOffset = fh - newHeight;
 
       $("#fr").stop().animate({
          //left: left,
-         width: simWidth,
-         transform: "scale(" + scale(simWidth, width) + ")",
+         width: this.simulatorWidth - 2,
+         transform: "scale(" + scale(this.simulatorWidth - 2, width) + ")",
          top: topOffset / 2,
          left: leftOffset / 2,
          height: newHeight
@@ -1319,28 +1319,28 @@ session_start();
    EW.addURLHandler(function ()
    {
       var screen = EW.getHashParameter("screen", "neuis");
-      var sidebarWidth = 501;
-      var windowWidth = $(window).width() - sidebarWidth;
+      var sidebarWidth = 430;
+      var windowWidth = $("#uis-editor-preview-pane").width();
 
       var defScreen = "large";
       var left = sidebarWidth;
-      var width = windowWidth;
+      var width = $("#uis-editor-preview-pane").width();
       var simWidth = 1920;
-      if (screen == "normal" /*&& windowWidth >= 1100*/)
+      if (screen === "normal" /*&& windowWidth >= 1100*/)
       {
          defScreen = "normal";
          //left = ((windowWidth - 1100) / 2) + sidebarWidth;
          width = 1100;
          simWidth = 1100;
       }
-      if (screen == "tablet" /*&& windowWidth >= 800*/)
+      if (screen === "tablet" /*&& windowWidth >= 800*/)
       {
          defScreen = "tablet";
          //left = ((windowWidth - 800) / 2) + sidebarWidth;
          width = 800;
          simWidth = 800;
       }
-      if (screen == "mobile" /*&& windowWidth >= 420*/)
+      if (screen === "mobile" /*&& windowWidth >= 420*/)
       {
          defScreen = "mobile";
          //left = ((windowWidth - 420) / 2) + sidebarWidth;
@@ -1348,25 +1348,23 @@ session_start();
          simWidth = 420;
       }
 
-      if (defScreen == "large")
+      if (defScreen === "large")
       {
          screen = "large";
+         width -= 10;
          simWidth = 1920;
          //left = sidebarWidth;
          //width = windowWidth;
       }
 
-      if (windowWidth >= width)
-      {
-         left = ((windowWidth - width) / 2) + sidebarWidth;
-      } else
-      {
+      if (windowWidth < width) {
          width = windowWidth;
       }
-      if (uisForm.oldScreem != screen)
-      {
+
+      if (uisForm.oldScreem !== screen) {
          uisForm.resizeEditorFrame(simWidth, width);
       }
+
       uisForm.oldScreen = screen;
 
       if (!$("input[value='" + screen + "']").is(":checked"))

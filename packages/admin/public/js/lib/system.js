@@ -183,32 +183,16 @@
                   /*System.app.activeModule = */this.activeModule = this.modules[this.id + "/" + navigation[this.moduleIdentifier][0]];
                }
             } else {
-               // if current nav path is equal to this module id, then set the current hash value as module hash 
-               // for the current module id. This keeps the hash parameters consistent 
-               // when module get inited on page (re)load or after the hash value is already set
-               /*var urlId = this.id.replace("system/", "");
-                if (urlId.length && System.getHashParam("app") === urlId) {
-                System.modulesHashes[urlId] = window.location.hash.substr(1);
-                }*/
                this.activeModule = null;
             }
-            //console.log(this.id, this.activeModule);
 
-            // if full nav pointing to this module, then update the hash value of the current nav
-            /*if (this.id === "system/" + fullNavPath) {
-             //console.log(this.id, fullNavPath , hashValue);
-             System.modulesHashes[fullNavPath] = hashValue;
-             }*/
-            //alert(this.id);
-            //console.log(this.id, this.params)
+
             fullNavPath = this.params["app"];
+            //console.log(this.id,"system/" + fullNavPath,this.params,System.app.activeModule)
             if (this.id === "system/" + fullNavPath && System.app.activeModule !== this) {
                System.app.activeModule = this;
-               //console.log(System.getHashParam("app"), this.id, window.location.hash);
-               //alert(window.location.hash + "===" + System.modulesHashes[fullNavPath] + " active >>> " + this.id);
-               //window.location.hash = System.modulesHashes[fullNavPath];
-
-               //System.modulesHashes[fullNavPath] = hashValue;
+            } else {
+               //console.log(this.id,"system/"+fullNavPath);
             }
 
             if (this.activeModule)
@@ -269,8 +253,8 @@
 
             if (self.onLoadApp(self.currentOnLoad)) {
                /*if (System.modules["system/" + id]) {
-                  return;
-               }*/
+                return;
+                }*/
                self.loadingAppXHR = self.load(package + '/' + id + '/' + file, data).done(function (response, status) {
                   //if (self.navHashes["system/" + id])
                   //window.location.hash = self.navHashes["system/" + id];
@@ -446,6 +430,7 @@
             // When the hash parameters value is changed from the browser url bar or originated from url bar
             System.modulesHashes[nav] = hashValue;
          }
+
       },
       /** Set parameters for app/nav. if app/nav was not in parameters, then set paraters for current app/nav
        * 
@@ -558,6 +543,16 @@
          }
          this.onLoadQueue = [];
          this.currentOnLoad = null;
+      },
+      startModule: function (moduleId) {
+         var module = this.modules[moduleId];
+         if (!module) {
+            alert("Module does not exist: " + moduleId);
+            console.error("Module does not exist: " + moduleId);
+            return;
+         }
+         this.modules[moduleId].start();
+
       },
       startLastLoadedModule: function () {
          if (this.notYetStarted.length > 0) {

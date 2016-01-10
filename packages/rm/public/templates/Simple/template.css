@@ -19,6 +19,7 @@ html,body{
 body {
    position: relative;
    background-color: #fafafa;
+   overflow-x: hidden;
 }
 
 .block.header{padding:15px;border-bottom:1px solid #222;min-height:70px;box-shadow:0px 0px 15px rgba(0,0,0,.2);}

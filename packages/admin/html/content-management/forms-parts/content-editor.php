@@ -4,7 +4,9 @@
    var contentEditor;
    $(document).ready(function () {
       $("#<?= $form_id ?>").on("refresh", function (e, content) {
-         $("#content-editor .ct-content-container").html(content.data["content"]);
+         if (content.data) {
+            $("#content-editor .ct-content-container").html(content.data.content);
+         }
          contentEditor.start();
       });
 
@@ -17,7 +19,7 @@
 
       //console.log($("#<?= $form_id ?>"));   
       EW.getParentDialog($("#<?= $form_id ?>")).one("beforeClose", function (e) {
-         if(contentEditor.revert())
+         if (contentEditor.revert())
          {
             contentEditor.destroy();
             contentEditor = null;

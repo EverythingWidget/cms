@@ -126,12 +126,12 @@
          return formData;
       },
       setData: function (contentInfo) {
-         if (contentInfo && contentInfo.data.labels) {
+         if (contentInfo.data && contentInfo.data.labels) {
             ContentForm.initLabels(contentInfo.data.labels);
             ContentForm.setLabels(contentInfo.data.labels);
          }
 
-         EW.setFormData(this.formId, contentInfo);
+         EW.setFormData(this.formId, contentInfo || {});
          $("#content").change();
       }
    };

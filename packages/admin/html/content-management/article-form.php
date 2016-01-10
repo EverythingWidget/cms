@@ -94,7 +94,7 @@ function script()
             }}).hide();
 
          ContentForm.uiForm.on("refresh", function (e, article) {
-            if (article && article.data.id) {
+            if (article.data && article.data.id) {
                self.bAdd.comeOut(300);
                self.bEditAndClose.comeIn(300);
                self.bEdit.comeIn(300);

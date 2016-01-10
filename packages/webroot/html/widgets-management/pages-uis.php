@@ -49,7 +49,7 @@ $default_page = json_decode(webroot\WidgetsManagement::get_path_uis("@DEFAULT"),
                if (isset($pages))
                {
                   foreach ($pages as $page)
-                  {                     
+                  {
                      $uis = json_decode(webroot\WidgetsManagement::get_path_uis("{$page->url}"), true);
                      echo '<div class="row"><div class="col-xs-12 mar-bot">';
                      echo "<input type='hidden'  name='{$page->url}_uisId' id='{$page->url}_uisId' value='{$uis["id"]}'>";
@@ -153,6 +153,7 @@ if ($path_uis_list)
       });
       dialog.append("<div class='header-pane row'><h1 id='' class='col-xs-12'><span>Layouts</span> Select a layout</h1></div>");
       var d = $("<div id='' class='form-content'></div>");
+      this.table.container.addClass("mar-top");
       d.append(this.table.container);
       dialog.append(d);
       dialog.append($("<div class='footer-pane row actions-bar action-bar-items' ></div>").append(removeUISbtn));

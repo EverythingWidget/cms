@@ -68,7 +68,7 @@ function script()
          }}).hide();
 
       $("#category-form").on("refresh", function (e, folder) {
-         if (folder && folder.data.id)
+         if (folder.data && folder.data.id)
          {
             bSave.comeOut(300);
             bEdit.comeIn(300);
