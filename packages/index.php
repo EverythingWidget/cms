@@ -55,15 +55,17 @@ if (strpos(EW_DIR, $elements[0]))
 $language = "en";
 $default_language = EWCore::read_setting("ew/language");
 
-if ($default_language)
-{
+if ($default_language){
    $language = $default_language;
 }
+
 if (preg_match("/^([^~]{2,3})$/", $elements[$parameter_index], $match))
 {
    $language = $match[0];
    $_REQUEST["_url_language"] = $language;
-   $parameter_index++;
+   //echo array_shift($elements);   
+   //$parameter_index++;
+   array_shift($elements);
 }
 
 $_REQUEST["_language"] = $language;

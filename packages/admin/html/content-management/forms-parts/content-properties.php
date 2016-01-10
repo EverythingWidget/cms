@@ -34,8 +34,8 @@
 
    foreach ($content_components as $comp_id => $label_object)
    {
-      $data_array = json_decode($form_config["data"] || [], true);
-      $labels = $data_array["labels"];
+      $data_array = json_decode($form_config["data"], true);
+      $labels = $data_array["data"]["labels"];
 
       if (isset($labels))
       {
@@ -65,7 +65,7 @@
                   </div>
                </div>
                <div class='row'>
-   <?= EWCore::populate_view($form, compact("comp_id", "value", "form_id")) ?>
+                  <?= EWCore::populate_view($form, compact("comp_id", "value", "form_id")) ?>
                </div>
             </div>
          </div>

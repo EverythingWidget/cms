@@ -35,25 +35,26 @@
          if (!ContentForm.getLabel("{{comp_id}}")) {
             ContentForm.activeLabel("{{comp_id}}", true);
             value.val('$content.id');
-            text.val(formData["title"]).change();
+            text.val(formData.data["title"]).change();
          }
 
          $.post("~admin/api/content-management/contents-labels", {
             content_id: ContentForm.getLabel("{{comp_id}}"),
             key: "{{comp_id}}"
-         }, function (data) {
+         }, function (response) {
             attached.empty();
 
-            if (data['data']) {
-               $.each(data['data'], function (i, content) {
+            if (response['data']) {
+               $.each(response['data'], function (i, content) {
                   var langItem = $("<li class=''><a rel='ajax' href='#' class='link'>" + content.title + "</a></li>");
 
-                  if (content.id === "{{value}}") {
+                  if (content.id == "{{value}}") {
+
                      value.val(content.id);
                      text.val(content.title).change();
                   }
 
-                  if (content.id === formData.id) {
+                  if (content.id === formData.data.id) {
                      langItem.addClass("active");
                   } else {
                      langItem.find("a").on("click", function () {

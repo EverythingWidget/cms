@@ -411,9 +411,10 @@ class ContentManagement extends \ew\Module
          {
             $this->update_label($id, $key, $value);
          }
-         return json_encode([status => "success",
-             message => "tr{The content has been updated successfully}",
-             "data" => $content->toArray()]);
+         return \ew\APIResourceHandler::to_api_response($content->toArray(), [
+                     status => "success",
+                     message => "tr{The content has been updated successfully}"
+         ]);
       }
       return EWCore::log_error("400", "Something went wrong, content has not been updated");
    }
@@ -532,16 +533,16 @@ class ContentManagement extends \ew\Module
       if (!$v->validate())
          return EWCore::log_error("400", "tr{New article has not been added}", $v->errors());
 
-      $result = json_decode($this->update_content($id, $title, 'article', $parent_id, $keywords, $description, $content, null, $labels), TRUE);
+      $result = $this->update_content($id, $title, 'article', $parent_id, $keywords, $description, $content, null, $labels);
 
-      if ($result["status"] === "success")
+      if ($result["statusCode"] === 200)
       {
          $result["message"] = "tr{Article has been updated successfully}";
-         return json_encode($result);
+         return $result;
       }
       else
       {
-         return EWCore::log_error("400", "New article has not been added");
+         return EWCore::log_error("400", "Article has not been updated");
       }
    }
 
@@ -625,14 +626,14 @@ class ContentManagement extends \ew\Module
       }
    }
 
-   public function content_fields($_parts__id)
+   public function content_fields($_parts__id, $language)
    {
-      $content = $this->get_content_by_id($_parts__id);
+      $content = $this->get_content_by_id($_parts__id, $language);
 
       return \ew\APIResourceHandler::to_api_response($content["data"]["content_fields"]);
    }
 
-   private function get_content_by_id($id)
+   private function get_content_by_id($id, $language=ën)
    {
       if (!isset($id))
          return \EWCore::log_error(400, 'tr{Content Id is requird}');
@@ -756,12 +757,12 @@ class ContentManagement extends \ew\Module
         , content = ?
         , date_modified = ? WHERE id = ?");
         $stm->bind_param("sssssss", $title, $keywords, $description, $parent_id, $content, $createdModified, $id); */
-      $result = json_decode($this->update_content($id, $title, 'folder', $parent_id, $keywords, $description, $content, null, $labels), TRUE);
+      $result = $this->update_content($id, $title, 'folder', $parent_id, $keywords, $description, $content, null, $labels);
 
-      if ($result["status"] === "success")
+      if ($result["statusCode"] === 200)
       {
          $result["message"] = "tr{Folder has been updated successfully}";
-         return json_encode($result);
+         return $result;
       }
       else
       {
