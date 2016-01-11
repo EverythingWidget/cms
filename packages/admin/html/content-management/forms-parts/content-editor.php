@@ -4,8 +4,8 @@
    var contentEditor;
    $(document).ready(function () {
       $("#<?= $form_id ?>").on("refresh", function (e, content) {
-         if (content.data) {
-            $("#content-editor .ct-content-container").html(content.data.content);
+         if (content) {
+            $("#content-editor .ct-content-container").html(content.content);
          }
          contentEditor.start();
       });

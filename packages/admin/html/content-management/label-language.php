@@ -27,7 +27,7 @@
 
    $("#{{form_id}}").on("refresh", function (e, response) {
       var documentId = response.id;
-      if (ContentForm.getLabel("admin_ContentManagement_document") !== documentId) {
+      if (ContentForm.getLabel("admin_ContentManagement_document") != documentId) {
          documentId = ContentForm.getLabel("admin_ContentManagement_document");
       }
 
@@ -49,13 +49,13 @@
                //$("#{{comp_id}}_select option[value='" + content.value + "']").remove();
                var langItem = $("<li><a rel='ajax' href='#' class='link'>" + languages[content.value] + "<p>" + content["title"] + "</p></a></li>");
 
-               if (content == response.id) {
+               if (content.id == response.id) {
                   langItem.addClass("active");
                   $("#{{comp_id}}_value").val(content.value);
                } else {
                   langItem.find("a").on("click", function () {
-                     $.post("~admin/api/content-management/get-article", {articleId: content.id}, function (data) {
-                        ContentForm.setData(data);
+                     $.post("~admin/api/content-management/get-article", {articleId: content.id}, function (response) {
+                        ContentForm.setData(response.data);
                      }, "json");
                   });
                }

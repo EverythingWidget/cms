@@ -10,7 +10,7 @@ and open the template in the editor.
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:400,300,700);
 
 html,body{
-   font-family: 'Open Sans', sans-serif;
+   font-family: 'Open Sans', sans-serif, Tahoma;
    padding:0px;
    font-size:1.2em;
    height: 100%;   

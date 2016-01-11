@@ -131,7 +131,7 @@ class ContentManagement extends \ew\Module
          return $content_fields;
       }
       $dom = new \DOMDocument;
-      $dom->loadHTML($html);
+      $dom->loadHTML('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">' . $html);
       $xpath = new \DOMXpath($dom);
 
       $fields = $xpath->query('//p[@content-field]');

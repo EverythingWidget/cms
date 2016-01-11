@@ -54,14 +54,14 @@
                      text.val(content.title).change();
                   }
 
-                  if (content.id === formData.id) {
+                  if (content.id == formData.id) {
                      langItem.addClass("active");
                   } else {
                      langItem.find("a").on("click", function () {
                         $.post("~admin/api/content-management/get-article", {
                            articleId: content.id
-                        }, function (data) {
-                           ContentForm.setData(data);
+                        }, function (response) {
+                           ContentForm.setData(response.data);
                         }, "json");
                      });
                   }
