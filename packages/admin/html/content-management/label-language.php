@@ -26,7 +26,7 @@
    });
 
    $("#{{form_id}}").on("refresh", function (e, response) {
-      var documentId = response.data.id;
+      var documentId = response.id;
       if (ContentForm.getLabel("admin_ContentManagement_document") !== documentId) {
          documentId = ContentForm.getLabel("admin_ContentManagement_document");
       }
@@ -49,7 +49,7 @@
                //$("#{{comp_id}}_select option[value='" + content.value + "']").remove();
                var langItem = $("<li><a rel='ajax' href='#' class='link'>" + languages[content.value] + "<p>" + content["title"] + "</p></a></li>");
 
-               if (content.id == response.data.id) {
+               if (content == response.id) {
                   langItem.addClass("active");
                   $("#{{comp_id}}_value").val(content.value);
                } else {

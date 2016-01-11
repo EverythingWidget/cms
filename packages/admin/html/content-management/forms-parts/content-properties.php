@@ -35,7 +35,7 @@
    foreach ($content_components as $comp_id => $label_object)
    {
       $data_array = json_decode($form_config["data"], true);
-      $labels = $data_array["data"]["labels"];
+      $labels = $data_array["labels"];
 
       if (isset($labels))
       {

@@ -35,7 +35,7 @@
          if (!ContentForm.getLabel("{{comp_id}}")) {
             ContentForm.activeLabel("{{comp_id}}", true);
             value.val('$content.id');
-            text.val(formData.data["title"]).change();
+            text.val(formData["title"]).change();
          }
 
          $.post("~admin/api/content-management/contents-labels", {
@@ -54,7 +54,7 @@
                      text.val(content.title).change();
                   }
 
-                  if (content.id === formData.data.id) {
+                  if (content.id === formData.id) {
                      langItem.addClass("active");
                   } else {
                      langItem.find("a").on("click", function () {

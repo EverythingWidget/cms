@@ -126,9 +126,9 @@
          return formData;
       },
       setData: function (contentInfo) {
-         if (contentInfo.data && contentInfo.data.labels) {
-            ContentForm.initLabels(contentInfo.data.labels);
-            ContentForm.setLabels(contentInfo.data.labels);
+         if (contentInfo && contentInfo.labels) {
+            ContentForm.initLabels(contentInfo.labels);
+            ContentForm.setLabels(contentInfo.labels);
          }
 
          EW.setFormData(this.formId, contentInfo || {});

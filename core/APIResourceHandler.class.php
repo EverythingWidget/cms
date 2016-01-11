@@ -17,15 +17,19 @@ class APIResourceHandler extends ResourceHandler
 {
 
   private $verbs = [
-      'GET' => 'get',
-      'POST' => 'create',
-      'PUT' => 'update',
+      'GET'    => 'get',
+      'POST'   => 'create',
+      'PUT'    => 'update',
       'DELETE' => 'delete'
   ];
 
   protected function handle($app, $package, $resource_type, $module_name, $command, $parameters = null)
   {
-    header("Content-Type: application/json");
+    $output_array = $this->get_parameter("output_array");
+    if ($output_array !== true)
+    {
+      header("Content-Type: application/json");
+    }
     // check module name string
     if (preg_match('/[A-Z]/', $module_name))
     {
@@ -143,12 +147,15 @@ class APIResourceHandler extends ResourceHandler
       {
         echo $e->getTraceAsString();
       }
-      //header("Content-Type: application/json");
-      if (is_array($result))
-      {
-        return json_encode($result);
-      }
 
+      if (!isset($output_array))
+      {
+        if (is_array($result))
+        {
+          return json_encode($result);
+        }
+      }
+      //var_dump($result);
       return $result;
     }
     else

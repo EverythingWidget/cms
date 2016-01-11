@@ -295,8 +295,7 @@ class ContentManagement extends \ew\Module
       if (!$value)
          $value = '%';
 
-      $rows = \Illuminate\Database\Capsule\Manager::table('ew_contents_labels')
-                      ->join('ew_contents', 'ew_contents_labels.content_id', '=', 'ew_contents.id')
+      $rows = \ew_contents_labels::join('ew_contents', 'ew_contents_labels.content_id', '=', 'ew_contents.id')
                       ->where(function($query) use ($content_id)
                       {
                          $query->whereIn('content_id', function($query) use ($content_id)
@@ -322,12 +321,13 @@ class ContentManagement extends \ew\Module
           \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")
       ]);
 
-      foreach ($result as $content)
+      $data = array_map(function($e)
       {
-         $content->content_fields = json_decode($content->content_fields, true);
-      }
+         $e["content_fields"] = json_decode($e["content_fields"], true);
+         return $e;
+      }, $result->toArray());
 
-      return \ew\APIResourceHandler::to_api_response($result, ["totalRows" => $rows->count()]);
+      return \ew\APIResourceHandler::to_api_response($data, ["totalRows" => $rows->count()]);
    }
 
    /**
@@ -596,7 +596,7 @@ class ContentManagement extends \ew\Module
 
          $data = array_map(function($e)
          {
-            $e["content_fields"] = json_decode($e["content_fields"]);
+            $e["content_fields"] = json_decode($e["content_fields"], true);
             return $e;
          }, $articles->toArray());
 
@@ -612,7 +612,7 @@ class ContentManagement extends \ew\Module
          $data = array_map(function($e) use ($up_parent_id)
          {
             $e["up_parent_id"] = $up_parent_id;
-            $e["content_fields"] = json_decode($e["content_fields"]);
+            $e["content_fields"] = json_decode($e["content_fields"], true);
             return $e;
          }, $articles->toArray());
 
@@ -679,7 +679,7 @@ class ContentManagement extends \ew\Module
 
       $data = array_map(function($e)
       {
-         $e["content_fields"] = json_decode($e["content_fields"]);
+         $e["content_fields"] = json_decode($e["content_fields"], true);
          return $e;
       }, $contents->toArray());
 

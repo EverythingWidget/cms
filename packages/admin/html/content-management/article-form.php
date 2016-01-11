@@ -1,14 +1,20 @@
 <?php
 
 session_start();
-$articleInfo = ["data"=>[]];
-$articleInfo["data"]["parent_id"] = $_REQUEST["parent"];
-if ($_REQUEST["articleId"])
-   $articleInfo = EWCore::call("admin/api/content-management/get-article", [
-               "articleId" => $_REQUEST["articleId"]
-   ]);
-else
-   $articleInfo = json_encode($articleInfo);
+
+function get_article_data($id)
+{
+   $articleInfo = [];
+   $articleInfo["parent_id"] = $_REQUEST["parent"];
+   if ($_REQUEST["articleId"])
+   {
+      $articleInfo = EWCore::call_api("admin/api/content-management/get-article", [
+                  "articleId" => $id
+              ])["data"];
+   }
+
+   return json_encode($articleInfo);
+}
 
 function inputs()
 {
@@ -38,9 +44,9 @@ function script()
             },
             onDone: function (response) {
                System.UI.components.body.EW().notify(response).show();
-               EW.setHashParameter("articleId", response.data.id, "document");
-               EW.setHashParameter("articleId", response.data.id);
-               ContentForm.setData(response);
+               EW.setHashParameter("articleId", response.id, "document");
+               EW.setHashParameter("articleId", response.id);
+               ContentForm.setData(response.data);
                $(document).trigger("article-list.refresh");
             }}).hide();
 
@@ -74,7 +80,7 @@ function script()
             },
             onDone: function (response) {
                System.UI.components.body.EW().notify(response).show();
-               ContentForm.setData(response);
+               ContentForm.setData(response.data);
                $(document).trigger("article-list.refresh");
             }}).hide();
 
@@ -94,14 +100,14 @@ function script()
             }}).hide();
 
          ContentForm.uiForm.on("refresh", function (e, article) {
-            if (article.data && article.data.id) {
+            if (article && article.id) {
                self.bAdd.comeOut(300);
                self.bEditAndClose.comeIn(300);
                self.bEdit.comeIn(300);
                self.bDelete.comeIn(300);
 
-               ContentForm.uiTitle.html("<span>tr{Edit}</span>" + article.data.title);
-               $("#date_created").val(article.data.round_date_created);
+               ContentForm.uiTitle.html("<span>tr{Edit}</span>" + article.title);
+               $("#date_created").val(article.round_date_created);
 
             } else {
                self.bAdd.comeIn(300);
@@ -125,5 +131,5 @@ EWCore::register_form("ew-content-form-proerties", "article-properties", ["conte
 echo admin\ContentManagement::create_content_form(["formId" => "article-form",
     "contentType" => "article",
     "script" => script(),
-    "data" => $articleInfo]);
+    "data" => get_article_data($_REQUEST["articleId"])]);
 

@@ -140,9 +140,9 @@ class Module
     }
     else if (method_exists($this, $method_name))
     {
-      ob_start();
-      echo $this->invoke_method($verb, $method_name, $parameters);
-      return ob_get_clean();
+      //ob_start();
+      return $this->invoke_method($verb, $method_name, $parameters);
+      //return ob_get_clean();
     }
     //}
 
@@ -204,10 +204,10 @@ class Module
     //$method_object->setAccessible(true);
     $command_result = $method_object->invokeArgs($this, $functions_arguments);
 
-    if (is_array($command_result))
+    /*if (is_array($command_result))
     {
       $command_result = json_encode($command_result);
-    }
+    }*/
     return $command_result;
   }
 

@@ -2,16 +2,14 @@
 
 function get_folder_data($id)
 {
-   $categoryInfo = ["data" => []];
-   $categoryInfo["data"]["parent_id"] = $_REQUEST["parent"];
+   $categoryInfo = [];
+   $categoryInfo["parent_id"] = $_REQUEST["parent"];
    if ($id)
    {
-      return EWCore::call("admin/api/content-management/contents", ["id" => $id]);
+      $categoryInfo = EWCore::call_api("admin/api/content-management/contents", ["id" => $id])["data"];
    }
-   else
-   {
-      return json_encode($categoryInfo);
-   }
+
+   return json_encode($categoryInfo);
 }
 
 function inputs()
@@ -37,8 +35,8 @@ function script()
             var data = ContentForm.getFormData();
             return data;
          },
-         onDone: function (data) {
-            $("body").EW().notify(data).show();
+         onDone: function (response) {
+            $("body").EW().notify(response).show();
             $(document).trigger("article-list.refresh");
             $.EW("getParentDialog", $("#category-form")).trigger("close");
          }}).hide();
@@ -70,18 +68,18 @@ function script()
          },
          onDone: function (response)
          {
-            $("body").EW().notify(response.data).show();
+            $("body").EW().notify(response).show();
             $(document).trigger("article-list.refresh");
             $.EW("getParentDialog", $("#category-form")).trigger("close");
          }}).hide();
 
       $("#category-form").on("refresh", function (e, folder) {
-         if (folder.data && folder.data.id)
+         if (folder && folder.id)
          {
             bSave.comeOut(300);
             bEdit.comeIn(300);
             bDelete.comeIn(300);
-            $("#category-form #form-title").html("<span>tr{Edit}</span>" + folder.data.title);
+            $("#category-form #form-title").html("<span>tr{Edit}</span>" + folder.title);
          } else {
             bSave.comeIn(300);
             bEdit.comeOut(300);
