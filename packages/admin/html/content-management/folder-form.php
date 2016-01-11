@@ -1,9 +1,17 @@
 <?php
 
-$categoryInfo = array();
-if ($_REQUEST["folderId"])
+function get_folder_data($id)
 {
-   $categoryInfo = EWCore::call("admin/api/content-management/contents", ["id" => $_REQUEST["folderId"]]);
+   $categoryInfo = ["data" => []];
+   $categoryInfo["data"]["parent_id"] = $_REQUEST["parent"];
+   if ($id)
+   {
+      return EWCore::call("admin/api/content-management/contents", ["id" => $id]);
+   }
+   else
+   {
+      return json_encode($categoryInfo);
+   }
 }
 
 function inputs()
@@ -91,5 +99,5 @@ echo admin\ContentManagement::create_content_form(["formTitle" => "Folder",
     "formId" => "category-form",
     "contentType" => "folder",
     "script" => script(),
-    "data" => $categoryInfo]);
+    "data" => get_folder_data($_REQUEST["folderId"])]);
 

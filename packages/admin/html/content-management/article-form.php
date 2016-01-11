@@ -1,8 +1,8 @@
 <?php
 
 session_start();
-$articleInfo = array();
-$articleInfo["parent_id"] = $_REQUEST["parent"];
+$articleInfo = ["data"=>[]];
+$articleInfo["data"]["parent_id"] = $_REQUEST["parent"];
 if ($_REQUEST["articleId"])
    $articleInfo = EWCore::call("admin/api/content-management/get-article", [
                "articleId" => $_REQUEST["articleId"]
@@ -40,7 +40,7 @@ function script()
                System.UI.components.body.EW().notify(response).show();
                EW.setHashParameter("articleId", response.data.id, "document");
                EW.setHashParameter("articleId", response.data.id);
-               ContentForm.setData(response.data);
+               ContentForm.setData(response);
                $(document).trigger("article-list.refresh");
             }}).hide();
 
@@ -74,7 +74,7 @@ function script()
             },
             onDone: function (response) {
                System.UI.components.body.EW().notify(response).show();
-               ContentForm.setData(response.data);
+               ContentForm.setData(response);
                $(document).trigger("article-list.refresh");
             }}).hide();
 

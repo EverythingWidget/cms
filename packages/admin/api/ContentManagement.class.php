@@ -295,7 +295,8 @@ class ContentManagement extends \ew\Module
       if (!$value)
          $value = '%';
 
-      $rows = \Illuminate\Database\Capsule\Manager::table('ew_contents_labels')->join('ew_contents', 'ew_contents_labels.content_id', '=', 'ew_contents.id')
+      $rows = \Illuminate\Database\Capsule\Manager::table('ew_contents_labels')
+                      ->join('ew_contents', 'ew_contents_labels.content_id', '=', 'ew_contents.id')
                       ->where(function($query) use ($content_id)
                       {
                          $query->whereIn('content_id', function($query) use ($content_id)
@@ -316,10 +317,17 @@ class ContentManagement extends \ew\Module
       /* return ["totalRows" => $rows->count(),
         "result" => $rows->get(['*',
         \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")])]; */
-      return \ew\APIResourceHandler::to_api_response($rows->get([
-                          '*',
-                          \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")
-                      ]), ["totalRows" => $rows->count()]);
+      $result = $rows->get([
+          '*',
+          \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")
+      ]);
+
+      foreach ($result as $content)
+      {
+         $content->content_fields = json_decode($content->content_fields, true);
+      }
+
+      return \ew\APIResourceHandler::to_api_response($result, ["totalRows" => $rows->count()]);
    }
 
    /**
@@ -633,7 +641,7 @@ class ContentManagement extends \ew\Module
       return \ew\APIResourceHandler::to_api_response($content["data"]["content_fields"]);
    }
 
-   private function get_content_by_id($id, $language=ën)
+   private function get_content_by_id($id, $language = ën)
    {
       if (!isset($id))
          return \EWCore::log_error(400, 'tr{Content Id is requird}');

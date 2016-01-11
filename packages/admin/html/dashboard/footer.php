@@ -654,6 +654,3 @@
       });
    });
 </script>
-
-<script src="~admin/public/js/lib/bootstrap.js" ></script>
-<script src="~admin/public/js/ContentStrike/content-tools.js"></script>

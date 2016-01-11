@@ -81,8 +81,10 @@ $HTML_LINKS = webroot\WidgetsManagement::get_html_links();
       <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
       <script src="~admin/public/js/lib/bootstrap.js" defer></script> 
       <script src="~rm/public/js/gsap/TweenLite.min.js" defer></script>
+      <script src="~rm/public/js/gsap/easing/EasePack.min.js" defer></script>
       <script src="~rm/public/js/gsap/jquery.gsap.min.js" defer></script>
       <script src="~rm/public/js/gsap/plugins/CSSPlugin.min.js" defer></script> 
+
       <script id="widget-data">
          (function () {
             window.ew_widget_data = {};

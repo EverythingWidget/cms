@@ -8433,6 +8433,12 @@
         addContentFieldBar(element, element.attr("content-field"));
       }
     });
+    
+    ContentEdit.Root.get().bind('unmount', function (element) {
+      if (element._contentField && element._contentField.parentNode) {
+        element._contentField.parentNode.removeChild(element._contentField);
+      }
+    });
 
     var addContentFieldBar = function (element, initValue) {
       var container = document.createElement("span"),
@@ -8527,7 +8533,7 @@
         }
 
         setTimeout(function () {
-          if (app._domElement) {
+          if (element._domElement && app._domElement) {
             updatePosition();
           }
         }, 100);

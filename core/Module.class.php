@@ -320,7 +320,7 @@ class Module
     //echo $command . "_listener";
     \EWCore::register_object($command . "_listener", $this->app->get_root() . "/" . $this->current_class->getShortName() . "/" . $function, array(
         "function" => $function,
-        "object"   => $object));
+        "object" => $object));
   }
 
   public function register_content_component($key, $comp_object)
@@ -328,7 +328,9 @@ class Module
     //$ro = new ReflectionClass($this);
     //$defaults = ["componentObject" => $comp_object];
     //$defaults = array_merge($defaults, $comp_object);
-    \EWCore::register_object(\EWCore::$EW_CONTENT_COMPONENT, $this->app->get_root() . '_' . $this->get_section_name() . '_' . $key, $comp_object);
+    //$label_id = \EWCore::camelToHyphen($this->app->get_root() . '-' . $this->get_section_name() . '-' . $key);
+    $label_id = $this->app->get_root() . '_' . $this->get_section_name() . '_' . $key;
+    \EWCore::register_object(\EWCore::$EW_CONTENT_COMPONENT, $label_id, $comp_object);
   }
 
   /**
@@ -339,7 +341,7 @@ class Module
   public function register_content_label($key, $default_value)
   {
     //$ro = new ReflectionClass($this);
-    $defaults = ["app"     => $this->app->get_root(),
+    $defaults = ["app" => $this->app->get_root(),
         "section" => $this->get_section_name(),
         "command" => 'ew_label_' . $key];
     $defaults = array_merge($defaults, $default_value);
@@ -354,10 +356,10 @@ class Module
    */
   public function register_form($name, $id, $form, $resource = 'api')
   {
-    $defaults = ["app"      => $this->app->get_root(),
+    $defaults = ["app" => $this->app->get_root(),
         "resource" => $resource,
-        "module"   => \EWCore::camelToHyphen($this->get_section_name()),
-        "method"   => 'ew-form-' . $id];
+        "module" => \EWCore::camelToHyphen($this->get_section_name()),
+        "method" => 'ew-form-' . $id];
     $form_structure = array_merge($defaults, $form);
     \EWCore::register_object($name, $this->app->get_root() . '_' . $this->get_section_name() . '_' . $id, $form_structure);
   }
@@ -444,7 +446,7 @@ class Module
     {
       //echo $key . " " . $value;
       if (!$this->save_setting($key, $value))
-        return \EWCore::log_error(400, "The configuration has not been saved", ["key"   => $key,
+        return \EWCore::log_error(400, "The configuration has not been saved", ["key" => $key,
                     "value" => $value]);
     }
   }
