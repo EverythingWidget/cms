@@ -123,10 +123,10 @@
              handler.apply(this, args);
              }*/
          },
-         setParam: function (param, value) {
+         setParam: function (param, value, replace) {
             var paramObject = {};
             paramObject[param] = value;
-            System.setHashParameters(paramObject);
+            System.setHashParameters(paramObject, replace);
          },
          setParamIfNone: function (param, value) {
             if (!this.params[param]) {
@@ -150,29 +150,72 @@
          hashChanged: function (navigation, params, hashValue, fullNavPath) {
             var _this = this;
             var moduleNav = navigation;
+
             this.hashHandler.call(this, navigation, params);
             //console.log(navigation)
-            $.each(navigation, function (key, value) {
-               var navHandler = _this.hashListeners[key];
-               // Call same level events handlers    
-               //console.log(key, _this.navigation[key], value.join("/"))
+            var allNavs = $.extend({}, this.navigation, navigation);
+            //console.log(allNavs, navigation);
+
+            if (System.app.activeModule && System.app.activeModule.id === _this.id) {
+               $.each(allNavs, function (key, value) {
+                  var navHandler = _this.hashListeners[key];
+                  if (navHandler) {
+                     if (_this.navigation[key]) {
+                        var currentKeyValue = _this.navigation[key].join("/");
+                        //if (currentKeyValue && !navigation[key] && _this !== System.app.activeModule) {
+                        //console.log("removed: " + key/*, navigation[key], value.join("/")*/);
+                        //   return;
+                        //}
+
+                        if (navigation[key] && currentKeyValue === navigation[key].join("/")) {
+                           //console.log("Same, ignore: " + key/*, navigation[key], value.join("/")*/);
+                           return;
+                        }
+                     }
+                     var args = [];
+                     args.push(navigation[key]);
+                     for (var i = 0; i < value.length; ++i)
+                     {
+                        //i is always valid index in the arguments object
+                        args.push(value[i]);
+                     }
+                     //if (!System.app.activeModule || System.app.activeModule === _this)
+                     console.log(System.app.activeModule, key);
+                     if (!System.app.activeModule || System.app.activeModule.id === _this.id) {
+                        navHandler.apply(_this, args);
+                        console.log("ddd " + key);
+                     } else if (key === "app") {
+                        navHandler.apply(_this, args);
+                        console.log(key);
+                     }
+                  }
+               });
+            } else {
+               var navHandler = _this.hashListeners["app"];
+
                if (navHandler) {
-                  //console.log(key, _this.navigation[key].join("/"), value.join("/"))
-                  if (_this.navigation[key] && _this.navigation[key].join("/") === value.join("/")) {
-                     //console.log("rid")
-                     return;
+                  if (_this.navigation["app"]) {
+                     var currentKeyValue = _this.navigation["app"].join("/");
+
+                     if (navigation["app"] && currentKeyValue === navigation["app"].join("/")) {
+                        //console.log("Same, ignore: " + key/*, navigation[key], value.join("/")*/);
+                        return;
+                     }
                   }
                   var args = [];
-                  args.push(value);
-                  for (var i = 0; i < value.length; ++i)
+                  args.push(navigation["app"]);
+                  /*for (var i = 0; i < value.length; ++i)
                   {
                      //i is always valid index in the arguments object
                      args.push(value[i]);
-                  }
+                  }*/
+                  //if (!System.app.activeModule || System.app.activeModule === _this)
+                  console.log(System.app.activeModule, "APP");
                   navHandler.apply(_this, args);
                }
-            });
-            this.navigation = navigation;
+            }
+            
+                    this.navigation = navigation;
             this.params = params;
             //this.hash = hashValue;
 
@@ -355,14 +398,13 @@
          var self = this;
          var detect = function () {
             //console.log(self.app.oldHash, window.location.hash)
-            if (self.app.oldHash !== window.location.hash || self.app.newHandler) {
-               //alert("change detected");
-               self.app.newHandler = false;
-               var hashValue = window.location.hash;
+            if (self.app.oldHash !== window.location.hash/* || self.app.newHandler*/) {
+               var hashValue = window.location.hash,
+                       navigation = {},
+                       params = {};
+
                hashValue = hashValue.replace(/^#\/?/igm, '');
 
-               var navigation = {};
-               var params = {};
                hashValue.replace(/([^&]*)=([^&]*)/g, function (m, k, v) {
                   navigation[k] = v.split("/").filter(Boolean);
                   params[k] = v;

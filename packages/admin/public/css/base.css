@@ -635,6 +635,9 @@ body.Admin {
    overflow: hidden;
    /* background-color: #fff; */
    color: #fff;
+   line-height: 54px;
+   margin: 0;
+   font-size: 1.7em;
 }
 
 .header-pane h1 span,span.header-label {
@@ -835,29 +838,31 @@ body.Admin {
 }
 
 h1 {
-   margin: 0;
+   margin: 0 0 15px;
    display: block;
-   font-size: 24px;
-   line-height: 54px;
    font-weight: 300;
-   color: #000;
+   color: #222;
    min-height: 30px;
+   font-size: 2.8em;
+   -webkit-font-smoothing: antialiased;
 }
 
 h2 {
-   margin: 5px 0;
+   margin: 0 0 15px;
    display: block;
    font-size: 20px;
    line-height: 30px;
-   font-weight: 300;
-   color: #000;
+   font-weight: 400;
+   color: #222;
    min-height: 30px;
+   font-size: 1.7em;
+   -webkit-font-smoothing: antialiased;
 }
 
 .glass-pane-lock {
    width: 100%;
    height: 100%;
-   background-color: rgba(110,110,110,.58);
+   background-color: rgba(60,60,60,.58);
    position: absolute;
    font-size: 64px;
    text-align: center;
@@ -894,20 +899,6 @@ button {
    background-color: transparent;
    white-space: nowrap;
    overflow: hidden;
-}
-
-.Dialog .Title {
-   float: none;
-   display: block;
-   height: 50px;
-   line-height: 50px;
-   margin: 0;
-   font-size: 21px;
-   color: #3c3c3c;
-   direction: rtl;
-   padding: 0;
-   text-align: center;
-   font-weight: 400;
 }
 
 #nav-bar {
@@ -980,7 +971,7 @@ button {
    float: left;
    margin: 0;
    height: 40px;
-   padding: 5px 4px;
+   padding: 5px 2px;
    color: #000;
    font-size: 15px;
    font-weight: 700;
@@ -1105,6 +1096,33 @@ button {
    overflow-x: hidden;
 }
 
+.title.actions-bar {
+   padding: 0;
+   vertical-align: middle;
+   height: auto;
+   overflow: visible;
+}
+
+.title.actions-bar span {
+   display: inline-block;
+}
+
+.title.actions-bar .btn{
+   margin-left: 30px;
+   font-size: .5em;
+   font-weight: 400;
+   padding: 0 15px;
+   float: none;
+   width: 50px;
+   height: 50px;
+   border-radius: 50%;
+   box-shadow: 0px 1px 3px rgba(0,0,0,.16), 0 2px 6px rgba(0,0,0,.12);
+   /*background-color: transparent;
+   color: #03A9F4;
+   box-shadow: none;*/
+   vertical-align: middle;
+}
+
 h2.actions-bar {
    min-height: 54px;
 }
@@ -1115,10 +1133,58 @@ h2.actions-bar span {
    line-height: 34px;
 }
 
-/*h2.actions-bar > button
-{
-   margin-top:3px
-}*/
+.width-lg-8 {
+   width: 66.6%;
+   display: block;
+   margin-left: auto;
+   margin-right: auto;
+}
+
+.z-index-1 {
+   box-shadow: 0 1px 3px 0 rgba(0,0,0,0.1),0 1px 5px 0 rgba(0,0,0,0.08);
+}
+
+.top-devider {
+   border-top: 1px solid rgba(0,0,0,.1);
+}
+
+.card {
+   background-color: #fefefe;
+   margin: 15px auto;
+   padding: 0;
+}
+
+.card p{
+   padding: 0;
+   margin: 0;
+} 
+
+.card-header,.card-content {
+   padding: 20px;
+}
+
+.card-header h1{
+   margin: 0;
+   font-size: 2em;
+}
+
+.card-action-bar {
+   display: block;
+   padding-top: 10px;
+   margin: 0 -10px -10px;
+}
+
+.card-action-bar .btn {
+   
+}
+
+.card-content-title {
+   font-weight: 500;
+   font-size: 1.4em;
+   margin-bottom: 10px;
+   display: block;
+}
+
 
 ul.actions-bar {
    height: 34px;
@@ -1410,7 +1476,7 @@ ul.links li p {
    line-height: 20px;
 }
 
-div#components-pane {
+#components-pane {
    background-color: transparent;
    position: relative;
    width: 840px;
@@ -1454,7 +1520,7 @@ div#components-pane {
    background-position: 20px center;
    width: 250px;
    height: 54px;
-   color: #444;
+   color: #000;
    padding: 0 30px;
    padding-left: 56px;
    font-size: 15px;
@@ -1870,7 +1936,7 @@ ul.errors-list li {
    padding-top: 5px;
 }
 
-#main-content h1 {
+/*#main-content h1 {
    min-height: 44px;
    line-height: 44px;
    display: block;
@@ -1879,7 +1945,7 @@ ul.errors-list li {
    font-size: 34px;
    color: #222;
    margin: 0;
-}
+}*/
 
 #main-content #toolbar {
    float: right;
@@ -1905,8 +1971,8 @@ ul.errors-list li {
    float: none;
 }
 
-.row h1,.row h3 {
-   /* margin: 8px 0 19px; */;
+/*.row h1,.row h3 {
+   /* margin: 8px 0 19px; 
 }
 
 .row h2,.row h4 {
@@ -1914,6 +1980,14 @@ ul.errors-list li {
 }
 
 .row h4 {
+   text-align: center;
+}*/
+
+.toolbar-title {
+   margin: 15px 0 10px;
+}
+
+.ta-center {
    text-align: center;
 }
 
@@ -3163,7 +3237,7 @@ inline-dialog{
 
 .elements-list {
    min-height: 200px;
-   margin: 15px 0;
+   margin: 15px auto;
    padding: 0 20px;
    position: relative;
 }

@@ -958,15 +958,15 @@ class ContentManagement extends \ew\Module
       try
       {
          $files = array();
+         $include = ["included" => []];
          // Folder
          $files = ew_contents::where('type', 'album')->where('type', 'album')->where('parent_id', $parent_id)->orderBy('title')->get(['*',
                      \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")])->toArray();
-         /* $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents WHERE type = 'album' AND parent_id = '$parent_id' ORDER BY title") or die("safasfasf");
-           while ($r = $result->fetch_assoc())
-           {
-           $files[] = array(title => $r["title"], type => "folder", size => "", ext => "", "parentId" => 0, "id" => $r["id"]);
-           } */
-
+         if (isset($parent_id) && $parent_id !== "0")
+         {
+            $include["included"]["album"] = ew_contents::where('type', 'album')->where('id', $parent_id)->orderBy('title')->get(['*',
+                        \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")])->toArray()[0];
+         }
          // images
          $result = $db->query("SELECT *,ew_contents.id AS content_id, DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents, ew_images WHERE ew_contents.id = ew_images.content_id AND ew_contents.parent_id = '$parent_id' ORDER BY title") or die("safasfasf");
          while ($r = $result->fetch_assoc())
@@ -981,7 +981,6 @@ class ContentManagement extends \ew\Module
 //echo $tumbURL;
             if (!file_exists($file_path))
             {
-
                $files[] = array(
                    "id" => $r["content_id"],
                    title => $r["title"],
@@ -1033,7 +1032,7 @@ class ContentManagement extends \ew\Module
          echo $e->getMessage();
       }
       //var_dump($files);
-      return \ew\APIResourceHandler::to_api_response($files);
+      return \ew\APIResourceHandler::to_api_response($files, $include);
    }
 
    public function albums($_parts__id)
@@ -1250,7 +1249,7 @@ class ContentManagement extends \ew\Module
             if ($foo->processed)
             {
                $result = $this->add_content("image", $foo->file_dst_name_body, $parent_id, "", "", "", "", "");
-               $result = json_decode($result, true);
+               //$result = json_decode($result, true);
                //print_r($result);
                // $stm = $db->prepare("INSERT INTO ew_contents (title , keywords , description , parent_id , source_page_address , html_content , ew_contents.order , date_created,type) 
                //  VALUES (? , ? , ? , ? , ? , ? , ? , ?,'article')") or die($db->error);
