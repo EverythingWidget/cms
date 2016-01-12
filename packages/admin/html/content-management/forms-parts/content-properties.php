@@ -53,7 +53,7 @@
       ?>
       <div class=row>
          <div class='col-xs-12'>
-            <div class='box box-grey content-label disabled' data-activated="false">
+            <div class='box box-grey z-index-1 content-label disabled' data-activated="false">
                <div class='row'>
                   <div class='col-xs-12'>
                      <h3 class="pull-left"><?php echo $label_object["title"] ?></h3>

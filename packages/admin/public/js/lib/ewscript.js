@@ -151,7 +151,7 @@ EverythingWidgets.prototype.addAction = function (text, handler, css, parent)
    action.html(text);
    action.attr("data-label", text);
    action.addClass("btn btn-primary");
-   if (typeof css == "string")
+   if (typeof css === "string")
    {
       parent = css;
    }
@@ -166,12 +166,40 @@ EverythingWidgets.prototype.addAction = function (text, handler, css, parent)
    {
       $(".action-bar-items").last().append(action);
    }
-   if (typeof css != "string" && css)
+   if (typeof css !== "string" && css)
    {
       action.css(css);
       return action;
    }
    //action.width(action.width());
+   return action;
+};
+
+
+EverythingWidgets.prototype.addActionButton = function (config)
+{
+   var settings = $.extend({
+      class: "btn-primary"
+   }, config);
+
+   var action = $(document.createElement("button"));
+   action.html(settings.text);
+   action.attr({
+      "data-label": settings.text,
+      type: "button",
+      class: "btn"
+   });
+
+   action.addClass(settings.class);
+
+   action.click(settings.handler);
+   var parentElement = $("#" + settings.parent);
+   if (parentElement.length) {
+      parentElement.append(action);
+   } else {
+      $(".action-bar-items").last().append(action);
+   }
+
    return action;
 };
 

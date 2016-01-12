@@ -1001,7 +1001,7 @@ class ContentManagement extends \ew\Module
             list($width, $height) = getimagesize($file_path);
             if (!file_exists($root . $path . $file_info["filename"] . ".thumb." . $file_info["extension"]) && $width > 140)
             {
-               $this->create_image_thumb($file_path, 140);
+               $this->create_image_thumb($file_path, 200);
                $tumbURL = 'album-' . $parent_id . $path . $file_info["filename"] . ".thumb." . $file_info["extension"];
             }
             else if ($width <= 140)
@@ -1237,6 +1237,7 @@ class ContentManagement extends \ew\Module
             $files[$i][$k] = $v;
          }
       }
+
       foreach ($files as $file)
       {
          //print_r($file);
@@ -1272,7 +1273,7 @@ class ContentManagement extends \ew\Module
                   }
                }
 
-               $this->create_image_thumb($foo->file_dst_pathname, 140);
+               $this->create_image_thumb($foo->file_dst_pathname, 200);
                $succeed++;
             }
             else

@@ -13,7 +13,15 @@ if (!$_SESSION['login'])
    </div>
 
    <div id="album-data-card" class="card z-index-1 width-lg-8">
-
+      <div  class='card-header'>
+         <h1>
+         </h1>
+         <div id='album-card-action-bar' class='card-action-bar'></div>
+      </div>
+      <div class='card-content top-devider'>
+         <span class='card-content-title'></span>
+         <div class="album-images-list"></div>
+      </div>
    </div>
 </div>
 <script>
@@ -36,7 +44,7 @@ if (!$_SESSION['login'])
       MediaComponent.prototype.init = function () {
          var _this = this;
          this.module.on("album", function (e, id, images) {
-            alert(id + " " + images)
+
             if (id > 0) {
                _this.newAlbumActivity.comeOut();
                _this.uploadFileActivity.comeIn();
@@ -88,6 +96,24 @@ if (!$_SESSION['login'])
          this.currentItem = $();
          this.bDel = $();
          this.listInited = false;
+         this.albumDataCard = $("#album-data-card").hide();
+
+         var albumPropertiesBtn = EW.addActionButton({
+            text: "tr{Properties}",
+            handler: function () {
+               _this.seeAlbumActivity({
+                  albumId: System.getHashNav("album")[0]
+               });
+            },
+            class: "btn-text btn-default",
+            parent: "album-card-action-bar"
+         });
+
+         var deleteAlbumBtn = EW.addAction("tr{Delete}", function () {
+            _this.seeAlbumActivity({
+               albumId: System.getHashNav("album")[0]
+            });
+         }, null, "album-card-action-bar").removeClass("btn-primary").addClass("btn-text btn-danger pull-right");
 
          this.bBack = EW.addAction("tr{Back to Media}", function () {
             System.setHashParameters({
@@ -147,46 +173,32 @@ if (!$_SESSION['login'])
       };
 
       MediaComponent.prototype.listMedia = function () {
-         var _this = this;
+         var component = this;
          //var albums = $("<div class='row box-content'></div>");
          this.itemsList = $("<div class='box-content anim-fade-in'></div>");
          var elementsList = $("#files-list");
          elementsList.html("<h2>Loading...</h2><div class='loader center'></div>");
-         var albumDataCard = $("#album-data-card");
          this.listInited = false;
 
-         System.addActiveRequest($.get('<?php echo EW_ROOT_URL; ?>~admin/api/content-management/get-media-list', {parent_id: _this.parentId}, function (response) {
-            var curp = null;
-            if (_this.parentId === 0) {
-               albumDataCard.hide();
+         System.addActiveRequest($.get('<?php echo EW_ROOT_URL; ?>~admin/api/content-management/get-media-list', {parent_id: component.parentId}, function (response) {
+            var listContainer = null;
+            if (component.parentId === 0) {
+               component.albumDataCard.hide();
                elementsList.html("<h2>tr{Albums}</h2>");
-               curp = elementsList;
+               listContainer = elementsList;
                elementsList.show();
             } else {
                elementsList.hide();
-               albumDataCard.html("<div  class='card-header'><h1>" +
-                       response.included.album.title +
-                       "</h1>" +
-                       "<div id='album-card-action-bar' class='card-action-bar'></div>" +
-                       "</div><div class='card-content top-devider'>" +
-                       "<span class='card-content-title'>tr{Images}</span></div>");
-               curp = albumDataCard.find(".card-content");
-               var prop = EW.addAction("tr{Properties}", function () {
-                  _this.seeAlbumActivity({
-                     albumId: response.included.album.id
-                  });
-               }, null, "album-card-action-bar").removeClass("btn-primary").addClass("btn-text btn-default");
-
-               var deleteAlbum = EW.addAction("tr{Delete}", function () {
-                  _this.seeAlbumActivity({
-                     albumId: response.included.album.id
-                  });
-               }, null, "album-card-action-bar").removeClass("btn-primary").addClass("btn-text btn-danger pull-right");
-               albumDataCard.show();
+               component.albumDataCard.find("h1").text(response.included.album.title);
+               component.albumDataCard.find(".card-content .card-content-title").text("tr{Images}");
+               listContainer = component.albumDataCard.find(".card-content");
+               component.itemsList = component.albumDataCard.find(".card-content .album-images-list").empty();
+               component.itemsList.addClass("anim-fade-in");
+               component.albumDataCard.show();
             }
 
             $.each(response.data, function (index, element) {
-               var temp = _this.createMediaElement(element.title, element.type, element.ext, element.size, element.thumbURL, element.id);
+               var temp = component.createMediaElement(element.title, element.type, element.ext, element.size, element.thumbURL, element.id);
 
                if (element.type === "album") {
                   temp.on('keydown', function (e) {
@@ -204,9 +216,9 @@ if (!$_SESSION['login'])
                   });
 
                   temp.on("focus", function (e) {
-                     _this.module.setParam("select", element.id);
+                     component.module.setParam("select", element.id);
                   });
-                  _this.itemsList.append(temp);
+                  component.itemsList.append(temp);
                } else {
                   temp.attr("data-url", element.url);
                   temp.dblclick(function () {
@@ -223,17 +235,17 @@ if (!$_SESSION['login'])
 
                   });
 
-                  _this.itemsList.append(temp);
+                  component.itemsList.append(temp);
                }
 
             });
 
-            curp.append(_this.itemsList);
-            _this.itemsList.addClass("in");
-            _this.listInited = true;
+            listContainer.append(component.itemsList);
+            component.itemsList.addClass("in");
+            component.listInited = true;
             // Select current item            
-            if (_this.selectedItemId) {
-               $("div[data-item-id='" + _this.selectedItemId + "']").focus();
+            if (component.selectedItemId) {
+               $("div[data-item-id='" + component.selectedItemId + "']").focus();
             }
 
          }, "json"));
@@ -241,10 +253,12 @@ if (!$_SESSION['login'])
 
       MediaComponent.prototype.createMediaElement = function (title, type, ext, size, ImageURL, id) {
          var _this = this,
+                 column = $(document.createElement("div")),
                  div = $(document.createElement("div")),
                  img = $(document.createElement("img"));
 
-         div.addClass("content-item")
+         column.addClass("content-item-col-3");
+         div.addClass("content-item z-index-1")
                  .addClass(type)
                  .addClass(ext);
          div.attr("tabindex", "1");
@@ -268,7 +282,8 @@ if (!$_SESSION['login'])
          }
 
          div.attr("data-item-id", id);
-         return div;
+         column.append(div);
+         return column;
       };
 
       System.module("content-management").module("media", function () {

@@ -8,7 +8,7 @@ $app_config = EWCore::read_settings("ew");
 ?>
 <form name="general-form" id="general-form" class="row">
    <div class="col-lg-6 col-md-6 col-lg-offset-3 col-md-offset-3 margin-bottom" >
-      <div class="box box-white">
+      <div class="box box-white z-index-1">
          <div class="col-xs-12">
             <h2>General Configuration</h2>
          </div>

@@ -949,7 +949,7 @@ fieldset[disabled] .btn-warning.active {
 
 .btn-text.btn-danger{color: #F44336;background-color:transparent;}
 .btn-text.btn-danger:hover,.btn-text.btn-danger:focus{background-color:#ffebee; color: #F44336;}
-.btn-text.btn-default:active{background-color:#ffcdd2}
+.btn-text.btn-danger:active{background-color:#ffcdd2}
 
 .btn-danger:hover,
 .btn-danger:focus,

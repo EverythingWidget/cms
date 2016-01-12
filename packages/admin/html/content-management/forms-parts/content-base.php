@@ -157,7 +157,7 @@
                label.text("Turned On");
                labelBox.addClass("btn-success").removeClass("btn-default");
                $e.stop().animate({
-                  className: "box box-grey content-label"
+                  className: "box box-grey content-label z-index-1"
                }, 500, "Power3.easeInOut");
 
             } else {
