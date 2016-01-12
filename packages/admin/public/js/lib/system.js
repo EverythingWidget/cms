@@ -155,8 +155,9 @@
             //console.log(navigation)
             var allNavs = $.extend({}, this.navigation, navigation);
             //console.log(allNavs, navigation);
-
+console.log(_this.id, System.app.activeModule );
             if (System.app.activeModule && System.app.activeModule.id === _this.id) {
+               alert("yes")
                $.each(allNavs, function (key, value) {
                   var navHandler = _this.hashListeners[key];
                   if (navHandler) {
@@ -204,13 +205,13 @@
                   }
                   var args = [];
                   args.push(navigation["app"]);
-                  /*for (var i = 0; i < value.length; ++i)
+                  for (var i = 0; i < navigation["app"].length; ++i)
                   {
                      //i is always valid index in the arguments object
-                     args.push(value[i]);
-                  }*/
+                     args.push(navigation["app"][i]);
+                  }
                   //if (!System.app.activeModule || System.app.activeModule === _this)
-                  console.log(System.app.activeModule, "APP");
+                  console.log(System.app.activeModule, "APP" , args);
                   navHandler.apply(_this, args);
                }
             }
