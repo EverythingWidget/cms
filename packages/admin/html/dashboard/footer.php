@@ -88,7 +88,7 @@
       }, function (data) {
          var items = ['<ul class="apps-list">'];
          $.each(data, function (key, val) {
-            items.push('<li class=""><a class="app-link" data-app="'
+            items.push('<li class=""><a class="app-link z-index-0" data-app="'
                     + val['id'] + '"><label>'
                     + val['title'] + '</label><p>'
                     + val['description'] + '</p></a></li>');

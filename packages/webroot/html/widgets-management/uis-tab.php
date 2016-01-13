@@ -16,7 +16,7 @@
       <label id='WidgetManagement_name' class="mar-bot">
          Inherit/Default
       </label>
-      <button type="button" id="remove-uis-btn" class="button orange mar-right" onclick="uisTab.removeUIS()">
+      <button type="button" id="remove-uis-btn" class="btn btn-danger mar-right" onclick="uisTab.removeUIS()">
          Remove UIS
       </button>
    </div>

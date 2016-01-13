@@ -7583,6 +7583,7 @@
       var _this = this;
       this._domElement = this.constructor.createDiv(['ct-app']);
       this._domElement.style.display = "none";
+      this._domElement.style.position = "absolute";
 
       if (this._domRegions.length === 1) {
         this._editorContainer = this._domRegions[0];
@@ -7631,7 +7632,7 @@
 
       this._contentContainer.style.marginTop = toolBarRect.height + 'px';
       this._domElement.style.width = rect.width + 'px';
-      this._domElement.style.top = rect.top + 'px';
+      /*this._domElement.style.top = rect.top + 'px';*/
       this.oldRect = toolBarRect;
       ContentEdit.Root.get().trigger('update-position', this);
     };

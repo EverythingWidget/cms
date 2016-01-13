@@ -99,11 +99,11 @@ function get_ew_user_form()
                
    if ($_REQUEST['userId'])
    {
-      $row = EWCore::process_request_command("admin","api", "users-management", "get-user-by-id", array("userId" => $_REQUEST["userId"]));
-      if ($row)
+      $row = EWCore::call_api("admin/api/users-management/get-user-by-id", array("userId" => $_REQUEST["userId"]));
+      if (isset($row["data"]))
       {
          ?>
-            var formData = <?php echo $row; ?>;
+            var formData = <?= json_encode($row["data"]); ?>;
             $("#form-title").html("<span>tr{User Info}</span>" + formData["first_name"]);
             EW.setFormData("#user-form", formData);
             UserForm.bSave.comeIn(300);

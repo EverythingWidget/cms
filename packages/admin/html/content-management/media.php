@@ -258,7 +258,7 @@ if (!$_SESSION['login'])
                  img = $(document.createElement("img"));
 
          column.addClass("content-item-col-3");
-         div.addClass("content-item z-index-1")
+         div.addClass("content-item z-index-0")
                  .addClass(type)
                  .addClass(ext);
          div.attr("tabindex", "1");

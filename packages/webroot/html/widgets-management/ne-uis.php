@@ -5,22 +5,23 @@ session_start();
 ?>
 
 
-<div class="header-pane row">
+<div class="header-pane tabs-bar row">
    <h1 id="form-title" class="col-xs-12">
       <span>tr{New}</span>tr{Layout Structure}
    </h1>  
+   <ul id="ew-uis-editor-tabs" class="nav nav-pills xs-nav-tabs " >
+      <li class="active"><a href="#inspector" data-toggle='tab'>tr{Structure}</a></li>
+      <li class="disable"><a href="#template-control" data-toggle='tab'>tr{Template}</a></li>
+      <li class=""><a href="#pref" data-toggle='tab'>tr{Settings}</a></li>
+   </ul>
 </div>
-<div id="ew-uis-editor" class="form-content row" style="padding:0px;">
+<div id="ew-uis-editor" class="form-content tabs-bar row" style="padding:0px;">
    <div class="list-modal" style="width:400px;z-index:3;background-color:#fff;left:-400px;" id="items-list">      
       <h1 class="pull-left">Select an item</h1><a href='javascript:void(0)' class='close-icon pull-right' style="margin:5px;"></a>      
       <div  id="items-list-content" ></div>
    </div>
    <div class="uis-editor-tool-pane">
-      <ul id="ew-uis-editor-tabs" class="nav nav-pills xs-nav-tabs nav-sm" >
-         <li class="active"><a href="#inspector" data-toggle='tab'>tr{Structure}</a></li>
-         <li class="disable"><a href="#template-control" data-toggle='tab'>tr{Template}</a></li>
-         <li class=""><a href="#pref" data-toggle='tab'>tr{Settings}</a></li>
-      </ul>
+
       <div class="tab-content">
          <div class="tab-pane active" id="inspector">
             <form name="inspector-editor" id="inspector-editor" onsubmit="return false">

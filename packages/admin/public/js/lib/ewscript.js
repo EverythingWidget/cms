@@ -1415,7 +1415,7 @@ EWTable.prototype.createRow = function (val, rc)
                }
             });
 
-            var cancelBtn = $("<button type=button class='btn btn-default btn-text' style='float:right'>Cancel</button>");
+            var cancelBtn = $("<button type=button class='btn btn-text' style='float:right'>Cancel</button>");
             messageRow.append(cancelBtn);
             cancelBtn.on("click", function () {
                messageRow.animate({

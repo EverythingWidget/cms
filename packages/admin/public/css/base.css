@@ -141,7 +141,6 @@ root {
       width: 100%;
       min-width: 320px;
       min-height: 400px;
-      overflow: hidden;
    }
 
    div#components-pane {
@@ -205,7 +204,6 @@ root {
       width: 100%;
       min-width: 320px;
       min-height: 400px;
-      overflow: hidden;
       /* left: 50%; */
       /* margin-left: -496px; */
    }
@@ -271,7 +269,6 @@ root {
       max-width: 1360px;
       min-width: 320px;
       min-height: 400px;
-      overflow: hidden;
       border-radius: 0;
    }
 
@@ -609,8 +606,9 @@ body.Admin {
    top: 41px;
    right: 0;
    bottom: 0;
-   overflow-y: hidden;
-   overflow-x: hidden;
+   /*overflow-y: hidden;
+   overflow-x: hidden;*/
+   overflow: visible;
    border: 0 solid #999;
    border-radius: 0;
    z-index: 10;
@@ -634,10 +632,11 @@ body.Admin {
    text-overflow: ellipsis;
    overflow: hidden;
    /* background-color: #fff; */
-   color: #fff;
+   color: rgba(255,255,255,.9);
    line-height: 54px;
    margin: 0;
    font-size: 1.7em;
+   padding: 0 30px;
 }
 
 .header-pane h1 span,span.header-label {
@@ -653,8 +652,16 @@ body.Admin {
    /* background-color: #fff; */
 }
 
+.top-pane .header-pane {
+   padding-top: 32px;
+   margin-top: -32px;
+   box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
+   position: relative;
+   z-index: 1;
+}
+
 .top-pane .header-pane.tabs-bar {
-   height: 110px;
+   height: 142px;   
 }
 
 .top-pane .form-content.tabs-bar {
@@ -862,7 +869,7 @@ h2 {
 .glass-pane-lock {
    width: 100%;
    height: 100%;
-   background-color: rgba(60,60,60,.58);
+   background-color: rgba(160,160,160,.58);
    position: absolute;
    font-size: 64px;
    text-align: center;
@@ -1048,7 +1055,7 @@ button {
    text-decoration: none;
    border-radius: 3px;
    overflow: hidden;
-   box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+   /*box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);*/
    transition: all .2s ease-out;
    color: #444;
    cursor: pointer;
@@ -1141,7 +1148,12 @@ h2.actions-bar span {
 }
 
 .z-index-1 {
-   box-shadow: 0 1px 3px 0 rgba(0,0,0,0.1),0 2px 5px 0 rgba(0,0,0,0.08);
+   /*box-shadow: 0 1px 3px 0 rgba(0,0,0,0.1),0 2px 5px 0 rgba(0,0,0,0.08);*/
+   box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
+}
+
+.z-index-0 {
+   box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,.1);
 }
 
 .top-devider {
@@ -1175,7 +1187,7 @@ h2.actions-bar span {
 }
 
 .card-action-bar .btn {
-   
+
 }
 
 .card-content-title {
@@ -1971,18 +1983,6 @@ ul.errors-list li {
    float: none;
 }
 
-/*.row h1,.row h3 {
-   /* margin: 8px 0 19px; 
-}
-
-.row h2,.row h4 {
-   margin: 20px 0 10px;
-}
-
-.row h4 {
-   text-align: center;
-}*/
-
 .toolbar-title {
    margin: 15px 0 10px;
 }
@@ -2164,37 +2164,8 @@ textarea.text-field {
    font-size: 14px;
 }
 
-.button,a.button {
-   width: auto;
-   font-size: 16px;
-   background-color: #0be;
-   float: left;
-   border-radius: 3px;
-   min-width: 8px;
-   line-height: 30px;
-   padding: 0 8px;
-   text-align: center;
-   color: #fff;
-   overflow: hidden;
-   border: 2px solid transparent;
-   outline: none;
-   cursor: pointer;
-   text-decoration: none;
-   -webkit-user-select: none;
-   -khtml-user-select: none;
-   -moz-user-select: none;
-   -ms-user-select: none;
-   -o-user-select: none;
-   user-select: none;
-}
-
-.button input {
-   margin-right: 5px;
-}
-
-.white .button,.button.white,.btn-white {
+.btn-white {
    background-color: #eee;
-   border: 1px solid #ddd;
    color: #222;
    text-align: justify;
    white-space: normal;
@@ -2205,25 +2176,6 @@ textarea.text-field {
    color: #444;
    text-shadow: none;
    text-shadow: 0 1px 1px #fff;
-}
-
-.button:hover {
-   border-color: rgba(0,0,0,.5)!important;
-}
-
-.button:active {
-   background-color: #222!important;
-   color: #fff!important;
-}
-
-.button:focus {
-   border-color: #000!important;
-}
-
-.button img {
-   max-height: 30px;
-   float: left;
-   padding-right: 5px;
 }
 
 .ExitBtn {
@@ -2251,50 +2203,6 @@ textarea.text-field {
    color: #63b900;
 }
 
-#pagination {
-   height: 42px;
-}
-
-#pagination.row {
-   padding: 5px;
-}
-
-#paginationContorols {
-   height: 30px;
-   background-color: #eee;
-   border: 1px solid #ccc;
-   border-radius: 2px;
-   padding: 4px;
-   left: 50%;
-   margin-left: -110px;
-   position: absolute;
-   width: 220px;
-}
-
-#paginationContorols #pageNumber {
-   border: 1px solid #ccc;
-   border-radius: 2px;
-   margin: 0;
-   margin-left: 4px;
-   float: left;
-   height: 28px;
-   padding: 0;
-}
-
-#paginationContorols label {
-   height: 30px;
-   line-height: 30px;
-   float: left;
-   padding: 0 0 0 5px;
-   font-family: Arial;
-   font-size: 17px;
-}
-
-#paginationContorols .button {
-   border-radius: 2px;
-   height: 26px;
-}
-
 .report {
    display: block;
    padding: 0;
@@ -2309,7 +2217,7 @@ textarea.text-field {
 
 .report .table-container {
    position: absolute;
-   top: 64px;
+   top: 54px;
    bottom: 0;
    left: 10px;
    right: 10px;
@@ -2353,7 +2261,6 @@ textarea.text-field {
    background-color: #fff;
    border: 0 solid #ccc;
    border-radius: 2px;
-   box-shadow: 0 1px 3px rgba(0,0,0,0.1),0 1px 4px rgba(0,0,0,0.12);
    z-index: 3;
 }
 
@@ -2421,12 +2328,11 @@ textarea.text-field {
 
 .data .btn , .row-block .btn {
    float: left;
-   line-height: 16px;
+   line-height: 14px;
    margin: 0 6px 0 0;
    visibility: hidden;
    background-repeat: no-repeat;
    font-size: 13px;
-   font-weight: 500;
    border-radius: 2px;
    padding: 6px 12px;
 }
@@ -2500,7 +2406,7 @@ textarea.text-field {
    width: 100%;
    border-spacing: 0;
    border: 0 solid #aaa;
-   padding: 10px 3px;
+   padding: 0;
    text-align: left;
    font-size: 13px;
    border-collapse: separate;
@@ -2508,11 +2414,13 @@ textarea.text-field {
 
 .data th {
    cursor: default;
-   height: 40px;
+   height: 50px;
+   line-height: 50px;
    background-color: transparent;
-   padding: 5px 10px 0;
+   padding: 0 10px;
    overflow: hidden;
-   font-size: 16px;
+   font-size: 1.6em;
+   font-weight: 300;
    white-space: nowrap;
 }
 
@@ -2535,8 +2443,9 @@ textarea.text-field {
    background-color: #fff;
    color: #000;
    border-color: rgba(0,0,0,.7);
-   border-left: none;
+   border-left-width: 0;
    padding-left: 11px;
+
 }
 
 .data tr:hover td .btn {
@@ -2555,11 +2464,12 @@ textarea.text-field {
    color: #333;
    border: 0 solid transparent;
    border-width: 1px 0;
-   border-left: 1px solid #fff;
+   font-weight: 500;
 }
 
-.data td:first-child {
+.data td:not(:first-child), .data th:not(:first-child) {
    border-color: transparent;
+   border-left: 1px solid #fff;
 }
 
 .glass-pane-lock.data {
@@ -2601,18 +2511,20 @@ table.contents td {
    min-height: 50px;
    cursor: pointer;
    overflow: hidden;
+   -webkit-transition: all .3s;
+   transition: all .3s;
 }
 
 .content-item.image {
-  padding: 0;
-  width: 100%;
-  max-width: 200px;
-  margin: 0 auto 30px;
-  /* margin-left: 2%; */
-  /* margin-right: 2%; */
-  text-align: left;
-  padding: 0 10px 10px;
-  display: block;
+   padding: 0;
+   width: 100%;
+   max-width: 200px;
+   margin: 0 auto 30px;
+   /* margin-left: 2%; */
+   /* margin-right: 2%; */
+   text-align: left;
+   padding: 0 10px 10px;
+   display: block;
 }
 
 .content-item:last-child {
@@ -2620,7 +2532,7 @@ table.contents td {
 }
 
 .content-item.album {
-   background-color: #f4f5f4;
+   background-color: #f4f4f4;
    width: 260px;
    height: 240px;
    display: block;
@@ -2654,14 +2566,15 @@ table.contents td {
 }
 
 .content-item:hover {
-   background-color: #fafafa;
+   background-color: #fafafa;   
    /* box-shadow: 0 1px 4px -1px rgba(0,0,0,.1); */
 }
 
 .content-item.selected/*,.content-item:focus*/ {
    background-color: #fafafa;
-   box-shadow: 0 9px 22px rgba(0,0,0,0.2), 0 6px 6px rgba(0,0,0,0.22);
-   -webkit-transition: all .3s;
+   border-color: transparent;
+   /*box-shadow: 0 8px 30px rgba(0,0,0,0.2), 0 6px 11px rgba(0,0,0,0.22);*/
+   box-shadow: 0 12px 15px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);   
    outline: none;
 }
 
@@ -2683,7 +2596,7 @@ table.contents td {
 
 .content-item.image img {
    display: block;
-   margin: 0-10px;
+   margin: 0 -10px;
    max-width: 200px;
    max-height: 300px;
    margin-bottom: 10px;
@@ -2839,7 +2752,7 @@ div.notification p,div.notification h4 {
 
 .box-grey {
    margin: 10px 0;
-   background-color: #f2f2f2;
+   background-color: #f0f0f0;
    padding: 15px;
    overflow: hidden;
    /* border-radius: 3px; */
@@ -2904,26 +2817,6 @@ div.notification p,div.notification h4 {
    bottom: 0;
 }
 
-.dashed-box {
-   border: 1px dashed #aaa;
-   overflow: hidden;
-}
-
-.dashed-box.vertical {
-   position: initial;
-   height: 100%;
-}
-
-.dashed-box.vertical .content {
-   position: absolute;
-   top: 55px;
-   bottom: 0;
-   width: auto;
-   margin: 0 16px;
-   left: 0;
-   right: 0;
-}
-
 .mar-top {
    margin-top: 15px;
 }
@@ -2934,34 +2827,6 @@ div.notification p,div.notification h4 {
 
 .margin-bottom,.mar-bot {
    margin-bottom: 15px;
-}
-
-.pad-top {
-   padding-top: 10px;
-}
-
-.pad-right {
-   padding-right: 10px;
-}
-
-.pad-bot {
-   padding-bottom: 10px;
-}
-
-.pad-left {
-   padding-left: 10px;
-}
-
-.aln-left {
-   text-align: left;
-}
-
-.aln-right {
-   text-align: right;
-}
-
-.aln-center {
-   text-align: center;
 }
 
 .row-separator {
@@ -3001,19 +2866,6 @@ div.notification p,div.notification h4 {
    position: relative;
    z-index: 2;
    margin: 10px 0 0;
-}
-
-.btn-refresh {
-   width: 14px;
-   height: 14px;
-   background-color: #666;
-   border-radius: 7px;
-   float: right;
-   cursor: pointer;
-}
-
-.btn-refresh:hover {
-   background-color: #0080f0;
 }
 
 .popover-content {
@@ -3295,9 +3147,9 @@ inline-dialog{
 }
 
 .uis-editor-tool-pane .tab-content {
-   top:41px;
+
 }
 
 .uis-editor-tool-pane .nav-pills {
-   background-color: #00897B;
+   background-color: #0097a7;
 }

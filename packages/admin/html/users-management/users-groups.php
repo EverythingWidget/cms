@@ -13,7 +13,7 @@
          self.userGroupModal = EW.createModal({hash: {key: "form", value: "group"}, onOpen: function () {
                EW.lock(this);
                var groupId = EW.getHashParameter("groupId");
-               $.post("<?php echo EW_ROOT_URL; ?>~admin/users-management/users-group-form.php", {groupId: groupId}, function (data) {
+               $.post("<?php echo EW_ROOT_URL; ?>~admin/html/users-management/users-group-form.php", {groupId: groupId}, function (data) {
                   self.userGroupModal.html(data);
                });
             },

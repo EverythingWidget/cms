@@ -233,9 +233,9 @@ function get_ew_users_permissions_form()
          return new UsersGroupsForm();
       })();
    <?php
-   $row = EWCore::process_request_command("admin","api", "users-management", "get-user-group-by-id", [$_REQUEST["groupId"]]);
+   $row = EWCore::call_api("admin/api/users-management/get-user-group-by-id", ["groupId" => $_REQUEST["groupId"]]);
    ?>
-      var formData = <?= isset($row) ? $row : 'null' ?>;
+      var formData = <?= isset($row) ? json_encode($row["data"]) : 'null' ?>;
       EW.setFormData("#users-group-form", formData);
       if (formData)
       {

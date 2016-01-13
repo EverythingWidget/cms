@@ -313,16 +313,18 @@ class UsersManagement extends \ew\Module
    public function get_user_group_by_id($groupId)
    {
       $db = \EWCore::get_db_connection();
-      if (!$groupId)
-         $groupId = $db->real_escape_string($_REQUEST["groupId"]);
 
-      $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_users_groups WHERE id = '$groupId'") or $db->error;
+      $statement = $db->prepare("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_users_groups WHERE id = ?");
+      $statement->bind_param("i", $groupId);
+      //$result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_users_groups WHERE id = '$groupId'") or $db->error;
+      $statement->execute();
 
-      if ($rows = $result->fetch_assoc())
+
+      if ($user_group_info = $statement->get_result()->fetch_assoc())
       {
-         return $rows;
+         return \ew\APIResourceHandler::to_api_response($user_group_info);
       }
-      return null;
+      return \EWCore::log_error(404, "User group not found");
    }
 
    public static function get_users_group_by_type($type)
@@ -343,14 +345,14 @@ class UsersManagement extends \ew\Module
    public function add_group($title = null, $description = null, $permission = null)
    {
       $db = \EWCore::get_db_connection();
-      if (!$title)
+      /*if (!$title)
          $title = $db->real_escape_string($_REQUEST["title"]);
       if (!$description)
          $description = $db->real_escape_string($_REQUEST["description"]);
       if (!$permission)
-         $permission = $db->real_escape_string($_REQUEST["permission"]);
+         $permission = $db->real_escape_string($_REQUEST["permission"]);*/
 
-      $stm = $db->prepare("INSERT INTO ew_users_groups (title, description, permission,date_created)
+      $stm = $db->prepare("INSERT INTO ew_users_groups (title, description, permission, date_created)
             VALUES (?, ?, ?, ?)");
       $stm->bind_param("ssss", $title, $description, $permission, date('Y-m-d H:i:s'));
 
@@ -466,19 +468,21 @@ class UsersManagement extends \ew\Module
       return EWCore::log_error("400", "tr{Users group has been NOT deleted}", $db->error_list);
    }
 
-   public static function get_user_by_id($userId = null)
+   public static function get_user_by_id($userId)
    {
       $db = \EWCore::get_db_connection();
-      if (!$userId)
-         $userId = $db->real_escape_string($_REQUEST["userId"]);
 
-      $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_users WHERE id = '$userId'") or $db->error;
+      $statement = $db->prepare("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_users WHERE id = ?");
+      $statement->bind_param("i", $userId);
+      $statement->execute();
+      //$result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_users WHERE id = '$userId'") or $db->error;
 
-      if ($rows = $result->fetch_assoc())
+      if ($user_info = $statement->get_result()->fetch_assoc())
       {
          $db->close();
-         return json_encode($rows);
+         return \ew\APIResourceHandler::to_api_response($user_info);
       }
+      return \EWCore::log_error(404, "User not found");
    }
 
    public static function get_user($userId = null)
