@@ -19,7 +19,7 @@ $default_page = json_decode(webroot\WidgetsManagement::get_path_uis("@DEFAULT"),
    </div> 
    <div class="tab-pane col-lg-7 col-md-6 col-sm-12 col-xs-12 pull-right" id="pages-uis">
       <form id="apps-page-uis" onsubmit="return false;">         
-         <div class="box box-white">
+         <div class="box box-white z-index-1">
             <div class="col-xs-12">
                <h2>Contents Layouts</h2>
             </div>
