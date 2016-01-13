@@ -612,6 +612,7 @@ body.Admin {
    border: 0 solid #999;
    border-radius: 0;
    z-index: 10;
+   box-shadow: 0 0px 3px rgba(0,0,0,.12);
    /* padding-top: 40px; */
 }
 
@@ -869,7 +870,7 @@ h2 {
 .glass-pane-lock {
    width: 100%;
    height: 100%;
-   background-color: rgba(160,160,160,.58);
+   background-color: rgba(0,0,0,.42);
    position: absolute;
    font-size: 64px;
    text-align: center;
