@@ -418,14 +418,14 @@ class WidgetsManagement extends \ew\Module
          }
          $stm->close();
          $db->close();
-         echo json_encode(array(
+         return json_encode(array(
              status => "success",
              "message" => "tr{The layout has been saved successfully}",
              "data" => [title => $name]));
       }
       else
       {
-         echo json_encode(array(
+         return json_encode(array(
              status => "unsuccess",
              message => $error));
       }
@@ -471,12 +471,12 @@ class WidgetsManagement extends \ew\Module
       $statement->bind_param("s", $uisId);
       if ($statement->execute())
       {
-         echo json_encode(array(
+         return json_encode(array(
              status => "success"));
       }
       else
       {
-         echo json_encode(array(
+         return json_encode(array(
              status => "unsuccess"));
       }
    }
@@ -771,7 +771,7 @@ class WidgetsManagement extends \ew\Module
       echo '</form>';
       if (function_exists("get_script"))
          echo get_script();
-      echo ob_get_clean();
+      return ob_get_clean();
    }
 
    private static $widget_data = array();
