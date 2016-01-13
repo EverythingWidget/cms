@@ -8,18 +8,21 @@ and open the template in the editor.
     Author     : Eeliya
 */
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:400,300,700);
+html {
+   position: relative;
+} 
 
 html,body{
    font-family: 'Open Sans', sans-serif, Tahoma;
    padding:0px;
    font-size:1.2em;
-   height: 100%;   
+   min-height: 100%;   
 }
 
 body {
-   position: relative;
    background-color: #fafafa;
    overflow-x: hidden;
+   overflow-y: auto;
 }
 
 .block.header{padding:15px;border-bottom:1px solid #222;min-height:70px;box-shadow:0px 0px 15px rgba(0,0,0,.2);}
