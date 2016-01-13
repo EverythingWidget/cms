@@ -295,6 +295,133 @@
             }
          });
       },
+      blastTo: function (conf) {
+         var t = conf.time || system.UI.DEFAULTS.animationDuration;
+         var sourceRect = conf.from.getBoundingClientRect();
+         var distRect = conf.to.getBoundingClientRect();
+         var wrapper = document.createElement("div");
+         var blast = document.createElement("div");
+         var sourceStyle = window.getComputedStyle(conf.from, null);
+         var ds = window.getComputedStyle(conf.to, null);         
+         var radius = distRect.width > distRect.height ? distRect.width : distRect.height;
+         
+         wrapper.style.position = "absolute";
+         wrapper.style.textAlign = "center";
+         wrapper.style.borderRadius = conf.to.style.borderRadius;
+         wrapper.style.color = conf.textColor || sourceStyle.color;
+         wrapper.style.fontSize = "3em";
+         wrapper.style.fontWeight = sourceStyle.fontWeight;
+         wrapper.style.lineHeight = radius + 'px';
+         wrapper.style.textTransform = sourceStyle.textTransform;
+         wrapper.style.whiteSpace = "nowrap";
+         wrapper.style.zIndex = (ds.zIndex === "0" || ds.zIndex === "auto") ? 1 : ds.zIndex;
+         wrapper.style.overflow = "hidden";
+         //wrapper.style.transformOrigin = "top left";
+         //wrapper.style.width = distRect.width + "px";
+         //wrapper.style.height = distRect.height + "px";
+         //wrapper.style.top = sourceRect.top + (sourceRect.height / 2) - (distRect.height / 2) + "px";
+         //wrapper.style.left = sourceRect.left + (sourceRect.width / 2) - (distRect.width / 2) + "px";
+         wrapper.style.width = wrapper.style.height = "100%";
+         wrapper.style.top = wrapper.style.left = 0;
+         
+
+         blast.style.position = "absolute";
+         blast.style.backgroundColor = (ds.backgroundColor.indexOf("rgba") !== -1 ||
+                 ds.backgroundColor === "transparent") ? "rgb(190,190,190)" : ds.backgroundColor;
+         //blast.style.top = "50%";
+         //blast.style.left = "50%";
+         //blast.style.marginLeft = blast.style.marginTop = -(radius / 2) + "px";
+         blast.style.width = blast.style.height = radius + "px";
+         blast.style.borderRadius = "50%";
+         
+         var initScale = sourceRect.width < sourceRect.height ? sourceRect.width / distRect.width : sourceRect.height / distRect.height;
+         blast.style.transform = "scale(" + initScale + ")";
+         //blast.style.transform = "scale(0)";
+         blast.style.top = sourceRect.top + (sourceRect.height / 2) - (radius / 2) + "px";
+         blast.style.left = sourceRect.left + (sourceRect.width / 2) - (radius / 2) + "px";
+
+         if (conf.text) {
+            blast.innerHTML = conf.text;
+         }
+
+         conf.to.style.visibility = "hidden";
+         if (conf.flow) {
+            conf.from.style.visibility = "hidden";
+            conf.from.style.transition = "none";
+         }
+
+         wrapper.appendChild(blast);
+         system.UI.body.appendChild(wrapper);
+
+         tween.to(wrapper, t, {
+            left: distRect.left,
+            top: distRect.top,
+            width: distRect.width,
+            height: distRect.height,
+            ease: "Power1.easeOut"
+         });
+
+         tween.to(blast, t, {
+            transform: "scale(1.42)",
+            top: (distRect.height - radius) / 2,
+            left: (distRect.width - radius) / 2,
+            ease: "Power1.easeOut",
+            onComplete: function ()
+            {
+               conf.to.style.visibility = "";
+               conf.from.style.transition = "";
+               if (conf.fade > 0) {
+                  tween.to(wrapper, conf.fade, {
+                     opacity: 0,
+                     ease: "Power0.easeNone",
+                     onComplete: function () {
+                        wrapper.parentNode.removeChild(wrapper);
+                     }
+                  });
+               } else {
+                  wrapper.parentNode.removeChild(wrapper);
+               }
+
+               if (conf.onComplete)
+                  conf.onComplete();
+            }
+         });
+
+         /*tween.to(wrapper, t, {
+          left: distRect.left,
+          top: distRect.top,
+          //width: distRect.width,
+          //height: distRect.height,
+          ease: "Power1.easeOut"
+          });
+          
+          tween.to(blast, t, {
+          transform: "scale(1.42)",
+          opacity: 1,
+          //top: (distRect.height - radius) / 2,
+          //left: (distRect.width - radius) / 2,
+          ease: "Power1.easeOut",
+          onComplete: function ()
+          {
+          conf.to.style.visibility = "";
+          conf.from.style.transition = "";
+          if (conf.fade > 0) {
+          tween.to(wrapper, conf.fade, {
+          opacity: 0,
+          ease: "Power0.easeNone",
+          onComplete: function () {
+          wrapper.parentNode.removeChild(wrapper);
+          }
+          });
+          } else {
+          wrapper.parentNode.removeChild(wrapper);
+          }
+          
+          if (conf.onComplete)
+          conf.onComplete();
+          }
+          });*/
+      },
       transform: function (conf)
       {
          var t = conf.time || system.UI.DEFAULTS.animationDuration;
@@ -315,8 +442,14 @@
          transformBox.style.fontWeight = sourceStyle.fontWeight;
          transformBox.style.lineHeight = sourceRect.height + 'px';
          transformBox.style.textTransform = sourceStyle.textTransform;
+         //transformBox.style.textOverflow = "clip";
+         transformBox.style.whiteSpace = "nowrap";
          transformBox.style.zIndex = (ds.zIndex === "0" || ds.zIndex === "auto") ? 1 : ds.zIndex;
          transformBox.style.overflow = "hidden";
+         transformBox.style.transformOrigin = "top left";
+         //transformBox.style.width = distRect.width + "px";
+         //transformBox.style.height = distRect.height + "px"
+
          if (conf.text) {
             transformBox.innerHTML = conf.text;
          }
@@ -329,47 +462,55 @@
 
          system.UI.body.appendChild(transformBox);
 
-         tween.fromTo(transformBox, t,
-                 {
-                    width: sourceRect.width,
-                    height: sourceRect.height,
-                    left: sourceRect.left,
-                    top: sourceRect.top,
-                    //opacity: 1
-                 },
-                 {
-                    width: distRect.width,
-                    height: distRect.height,
-                    left: distRect.left,
-                    top: distRect.top,
-                    lineHeight: distRect.height + 'px',
-                    fontSize: '3em',
-                    backgroundColor: (ds.backgroundColor.indexOf("rgba") !== -1 ||
-                            ds.backgroundColor === "transparent") ? "rgb(190,190,190)" : ds.backgroundColor,
-                    boxShadow: ds.boxShadow,
-                    borderRadius: ds.borderRadius,
-                    ease: conf.ease || "Power2.easeInOut",
-                    delay: conf.delay || 0,
-                    onComplete: function ()
-                    {
-                       conf.to.style.visibility = "";
-                       conf.from.style.transition = "";
-                       if (conf.fade > 0) {
-                          tween.to(transformBox, conf.fade, {
-                             opacity: 0,
-                             ease: "Power0.easeNone",
-                             onComplete: function () {
-                                transformBox.parentNode.removeChild(transformBox);
-                             }
-                          });
-                       } else {
-                          transformBox.parentNode.removeChild(transformBox);
-                       }
+         tween.fromTo(transformBox, t, {
+            width: sourceRect.width,
+            height: sourceRect.height,
+            left: sourceRect.left,
+            top: sourceRect.top
+                    //------------------
+                    /*transform: "scale(" + (sourceRect.width / distRect.width) + "," + (sourceRect.height / distRect.height) + ")",
+                     lineHeight: distRect.height + 'px',
+                     fontSize: '3em'*/
+         }, {
+            width: distRect.width,
+            height: distRect.height,
+            //transform: "scale(1,1)",
+            left: distRect.left,
+            top: distRect.top,
+            lineHeight: distRect.height + 'px',
+            fontSize: '3em',
+            backgroundColor: (ds.backgroundColor.indexOf("rgba") !== -1 ||
+                    ds.backgroundColor === "transparent") ? "rgb(190,190,190)" : ds.backgroundColor,
+            boxShadow: ds.boxShadow,
+            borderRadius: ds.borderRadius,
+            ease: conf.ease || "Power2.easeInOut",
+            delay: conf.delay || 0,
+            onComplete: function ()
+            {
 
-                       if (conf.onComplete)
-                          conf.onComplete();
-                    }
-                 });
+               conf.from.style.transition = "";
+               conf.to.style.visibility = "";
+
+
+               if (conf.fade > 0) {
+                  tween.to(transformBox, conf.fade, {
+                     opacity: 0,
+                     ease: "Power0.easeNone",
+                     delay: .01,
+                     onComplete: function () {
+                        transformBox.parentNode.removeChild(transformBox);
+                     }
+                  });
+               } else {
+                  transformBox.parentNode.removeChild(transformBox);
+               }
+
+
+
+               if (conf.onComplete)
+                  conf.onComplete();
+            }
+         });
       },
       /**
        * 

@@ -59,8 +59,9 @@
                      }, "json");
                   });
                }
-
+               //langItem.hide();
                $("#{{comp_id}}_languages").append(langItem);
+               //langItem.animate({"height": "toggle"}, 300);
             });
          }
       }, "json");

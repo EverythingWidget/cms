@@ -720,7 +720,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
       if (!modalPane.isOpen)
       {
          if (settings.lockUI || settings.class === "full") {
-            self.lock(basePane, " ", 500);
+            self.lock(basePane, " ", .5);
          }
 
          if (!$.contains(document.body, modalPane)) {
@@ -754,10 +754,22 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
                originElement = originElement.parent();
             }
             System.UI.body = $('#base-pane')[0];
+            /*System.UI.Animation.blastTo({from: originElement[0],
+             to: modalPane[0],
+             time: .6,
+             ease: "Power1.easeOut",
+             fade: .5,
+             flow: true,
+             text: originElement.data("label"),
+             textColor: "#fff",
+             onComplete: function () {
+             methods.setCloseButton();
+             modalPane.isOpen = true;
+             }});*/
             System.UI.Animation.transform({
                from: originElement[0],
                to: modalPane[0],
-               time: .6,
+               time: .7,
                ease: "Power2.easeInOut",
                fade: .3,
                flow: true,
@@ -1239,15 +1251,17 @@ EverythingWidgets.prototype.lock = function (obj, string, delay)
     460, "Power3.easeInOut");
     }*/
    //var height = $(obj).outerHeight(true) === 0 ? "100%" : $(obj).outerHeight(true) - 20;
-   glass.animate({
-      opacity: 1
-   }, delay || 0);
+   /*glass.animate({
+    opacity: 1
+    }, delay || 0);*/
+   glass.css("transition", "opacity " + delay + "s");
+   glass.css("opacity", 1);
    return glass;
 };
 
 EverythingWidgets.prototype.unlock = function (obj, dur) {
    var ll = $(obj).children(".glass-pane-lock:not(.unlock)").last();
-   ll.addClass("unlock").animate({
+   ll.addClass("unlock").css("transition", "none").animate({
       opacity: 0
    }, dur || 0, function () {
       $(this).remove();
