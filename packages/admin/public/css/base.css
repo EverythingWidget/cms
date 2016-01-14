@@ -909,6 +909,40 @@ button {
    overflow: hidden;
 }
 
+.apps-menu {
+   position: absolute;
+   height: 94px;
+   width: 94px;
+   text-align: center;
+   background-color: #1b2433;
+   left: 0;
+   top: 0;
+   box-shadow: 0 2px 5px rgba(0,0,0,.24) , 0 2px 9px rgba(0,0,0,.2);
+   z-index: 6;
+   /* border-radius: 47px; */
+}
+
+.apps-menu-title {
+   color: #fff;
+   font-size: 1.2em;
+   font-weight: 400;
+   margin: 0;
+   padding: 5px 0;
+   line-height: 30px;
+   display: block;
+}
+
+.apps-menu-icon {
+   float: none;
+   display: block;
+   height: 27px;
+}
+
+.apps-menu.expand {
+   height: 55%;
+   border-radius: 0;
+}
+
 #nav-bar {
    height: 40px;
    background-color: transparent;
@@ -974,7 +1008,7 @@ button {
 #nav-bar .btn-home-app:focus {
    outline: 1px dotted rgba(0,0,0,.4);
 }
-
+/*
 .nav-bar h1 {
    float: left;
    margin: 0;
@@ -984,26 +1018,27 @@ button {
    font-size: 15px;
    font-weight: 700;
    line-height: 30px;
-}
+}*/
 
 .app-bar {
    background-color: #fff;
    height: 94px;
    position: absolute;
-   top: -54px;
+   top: 0;
    width: 100%;
-   z-index: 5;/*transition:all .3s ease-out*/
+   z-index: 5;
+   /*transition:all .3s ease-out*/
    box-shadow: 0 0px 0px 0px rgba(0,0,0,0.06),0 0px 0px rgba(0,0,0,0.1);
 }
 
 .app-bar.in {
    top: 0;
-   box-shadow: 0 2px 5px 0px rgba(0,0,0,0.13),0 0px 11px rgba(0,0,0,0.16);
+   box-shadow: 0 0px 3px 0px rgba(0,0,0,0.24);
 }
 
 .app-bar .action-pane {
    display: block;
-   margin: 40px 0 0 250px;
+   margin: 40px 0 0 350px;
 }
 
 .overlay {
@@ -1019,7 +1054,7 @@ button {
 .home-pane {
    width: 100%;
    position: absolute;
-   padding-top: 50px;   
+   padding-top: 94px;
    transform: scale(.86);
    opacity: 0;
 }
@@ -1504,18 +1539,21 @@ ul.links li p {
 }
 
 .app-bar-nav {
-   background-color: #fff;
+   background-color: #5cb1cc;
    position: absolute;
-   top: 40px;
-   left: 0;
+   top: 0px;
+   left: 94px;
    width: 250px;
    /* height: 54px; */
    border-radius: 0;
-   overflow: hidden;
-   font-size: 13px;
+   overflow: visible;
+   font-size: 14px;
    margin: 0;
    z-index: 5;
    padding:  0;
+   /* margin-top: 10px; */
+   /* box-shadow: 0 1px 3px rgba(0,0,0,.14) , 0 1px 7px rgba(0,0,0,.1); */
+   color: #fff;
 }
 
 .app-bar-nav > label,.app-bar-nav > * {
@@ -1527,19 +1565,19 @@ ul.links li p {
 }
 
 .app-bar-nav .btn-current-tab {
-   background-color: #FFF;
+   /* background-color: #fff; */
    background-image: url(images/side-bar-btn.png);
    background-repeat: no-repeat;
-   background-position: 20px center;
+   background-position: 14px center;
    width: 250px;
-   height: 54px;
-   color: #000;
+   height: 94px;
+   color: #FFF;
    padding: 0 30px;
-   padding-left: 56px;
-   font-size: 15px;
+   padding-left: 52px;
+   font-size: 1.2em;
    float: left;
    display: inline;
-   font-weight: 700;
+   font-weight: 500;
    box-shadow: none;
    text-align: left;
    text-transform: none;
@@ -1549,15 +1587,15 @@ ul.links li p {
 }
 
 .app-bar-nav.in {
-   left: 0;
-   top: 40px;
+   /* top: 40px; */
    height: auto;
    width: 250px;
    border-radius: 0;
-   box-shadow: 0 3px 8px 0px rgba(0,0,0,0.3), 0 1px 24px 0px rgba(0,0,0,.34);
+   /* box-shadow: 0 2px 5px rgba(0,0,0,.24) , 0 2px 9px rgba(0,0,0,.2); */
    z-index: 6;
    padding-top: 15px;
    padding-bottom: 15px;
+   /* bottom: 0px; */
 }
 
 .app-bar-nav.in .btn-current-tab {
@@ -1583,27 +1621,30 @@ ul.links li p {
 
 .app-bar-nav label {
    min-width: 200px;
-   line-height: 20px;
-   /* font-size: 14px; */
+   line-height: 30px;
+   font-size: 1.5em;
    font-weight: bold;
-   padding: 16px 10px 16px 18px;
+   padding: 15px 10px 15px 52px;
    overflow: hidden;
    border-left-width: 0;
-   color: #777;
+   /* color: #444; */
    display: block;
+   font-weight: 300;
 }
 
 .app-bar-nav label:first-child {
-   margin-top: -11px;
+   /* margin-top: -11px; */
 }
 
 .app-bar-nav ul {
-   font-size: 16px;
+   font-size: 1.2em;
    font-weight: 500;
    list-style: none;
    padding: 0;
    margin: 0;
    min-width: 250px;
+   /* float: left; */
+   /* overflow: hidden; */
 }
 
 .app-bar-nav ul + ul {
@@ -1611,7 +1652,7 @@ ul.links li p {
    padding: 0;
    margin: 15px 0 0;
    min-width: 250px;
-   border-top: 1px solid #eee;
+   /* border-top: 1px solid #eee; */
 }
 
 .app-bar-nav ul + ul label:first-child {
@@ -1627,12 +1668,12 @@ ul.links li p {
 .app-bar-nav li a {
    background-position: right center;
    background-repeat: no-repeat;
-   color: #444;
+   color: #fff;
    text-decoration: none;
-   padding: 16px 10px;
-   padding-left: 56px;
+   padding: 15px 10px;
+   padding-left: 52px;
    display: block;
-   line-height: 20px;
+   line-height: 30px;
    min-height: 42px;
    vertical-align: middle;
    position: relative;
@@ -1651,7 +1692,7 @@ ul.links li p {
 }
 
 .app-bar-nav li a:hover {
-   background-color: rgba(0,0,0,.06);
+   background-color: rgba(0,0,0,.18);
 }
 
 .app-bar-nav li a:active {
@@ -1665,11 +1706,12 @@ ul.links li p {
 }
 
 .app-bar-nav li a.selected {
-   background-color: rgba(0,0,0,.06);
-   color: #03A9F4;
+   background-color: rgba(0,0,0,.30);
+   color: #fff;
    /* border-left: 0px solid #03A9F4; */
    cursor: default;
-   padding-left: 56px;
+   padding-left: 52px;
+   /* box-shadow: 0 3px 5px rgba(0,0,0,.1); */
 }
 
 .texture {

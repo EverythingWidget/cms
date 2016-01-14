@@ -1,60 +1,61 @@
 <script>
    System.init();
-
+   
    System.goToHomeApp = function () {
       System.abortAllRequests();
       $("#action-bar-items").children().animate({
          opacity: 0
       }, 300);
-
+      
       System.UI.components.appTitle.text("Home");
-      System.UI.components.homeButton.stop().comeOut(500);
-
-
+      //System.UI.components.homeButton.stop().comeOut(500);
+      
+      
       $("#main-content").stop().animate({
-         transform: "scale(1.14)",
+         //transform: "scale(1.14)",
+         top: "-=94px",
          opacity: 0
       }, 500, "Power2.easeInOut", function () {
          this.remove();
       });
-
+      
       $("#app-bar-nav").stop().animate({opacity: 0}, 300, function () {
          this.remove();
-
+         
       });
-
+      
       System.UI.components.appBar.animate({className: "app-bar"}, 500, "Power2.easeInOut");
       System.UI.components.homePane.animate({className: "home-pane in"}, 500, "Power2.easeInOut");
    };
-
+   
    System.onLoadApp = function (app) {
-
+      
       System.UI.components.appTitle.text(app.title);
-      System.UI.components.homeButton.stop().comeIn(300);
+      //System.UI.components.homeButton.stop().comeIn(300);
       $("#action-bar-items").empty();
       System.UI.components.appBar.animate({className: "app-bar in"}, 500, "Power2.easeInOut");
       System.UI.components.homePane.animate({className: "home-pane"}, 500, "Power2.easeInOut");
       return true;
    };
-
+   
    System.onAppLoaded = function (app, response, s) {
       setTimeout(function () {
          // if user immidietly returned to home, then stop here
          if (System.getHashNav("app")[0] === "Home") {
             return;
          }
-
+         
          $("#app-content").append(response);
          System.UI.components.mainContent = $("#main-content");
-
+         
          EW.initSideBar();
-
+         
          if (app.type === "app") {
             app.start();
          }
       }, 500);
    };
-
+   
    System.app.hashHandler = function (nav, params) {
       //console.log(nav)
       if ((!nav["app"] || nav["app"][0] === "Home") && "Home" !== EW.oldApp) {
@@ -64,13 +65,13 @@
          }, true);
       }
    };
-
+   
    System.on('app', function (path, app, sec) {
       if (!app || app === "Home") {
          System.goToHomeApp();
          return;
       }
-
+      
       if (app !== EW.oldApp) {
          EW.oldApp = app;
          //console.log(app);
@@ -79,7 +80,7 @@
          return;
       }
    });
-
+   
    EverythingWidgets.prototype.loadSections = function () {
       var self = this;
       this.apps = {Home: {id: "Home"}};
@@ -97,10 +98,10 @@
             val.id = val['id'];
             self.apps[val['id']] = val;
          });
-
+         
          items.push('</ul>');
          $(items.join('')).appendTo("#home-pane");
-
+         
          $("#home-pane .apps-list a").click(function (e) {
             e.preventDefault();
             System.setHashParameters({app: $(this).attr("data-app")}, null);
@@ -108,7 +109,7 @@
          System.start();
       }, "json");
    };
-
+   
    /*EverythingWidgets.prototype.loadApp = function (data) {
     
     if (data.app !== this.oldApp) {
@@ -132,7 +133,7 @@
     }, 500);
     }
     };*/
-
+   
    $.fn.textWidth = function () {
       var html_org = $(this).html();
       var html_calc = '<span style="white-space:nowrap">' + html_org + '</span>';
@@ -141,31 +142,31 @@
       $(this).html(html_org);
       return width;
    };
-
+   
    $.fn.comeIn = function (dur) {
-
+      
       if (!this.is(":visible") || this.css("visibility") !== "visible") {
          var orgClass = "";
          this.stop(true, true);
-
+         
          if (this.prop("class")) {
             orgClass = this.prop("class").replace('btn-hide', '');
          }
-
+         
          this.addClass("btn-hide").css({
             display: ""
          });
-
+         
          this.animate({
             className: orgClass
          }, dur || 300, "Power2.easeInOut");
       }
-
+      
       return this;
    };
-
+   
    $.fn.comeOut = function (dur) {
-
+      
       if (!this.hasClass("btn-hide")) {
          this.stop(true, true).animate({
             className: this.prop("class") + " btn-hide"
@@ -173,14 +174,14 @@
             this.hide();
          });
       }
-
+      
       return this;
    };
-
+   
    $.fn.loadingText = function (t) {
       return this;
    };
-
+   
    ew_plugins.linkChooser = function (options) {
       var defaults = {
          callbackName: "function-reference"
@@ -219,7 +220,7 @@
             }
          });
       }
-
+      
       return this.each(function () {
          if (!$.data(this, "ew_plugin_link_chooser")) {
             $.data(this, "ew_plugin_link_chooser", true);
@@ -227,7 +228,7 @@
          }
       });
    };
-
+   
    ew_plugins.imageChooser = function (options) {
       var ACTIVE_PLUGIN_ATTR = "data-active-plugin-image-chooser";
       var defaults = {
@@ -241,11 +242,11 @@
          $element.on("change.image-chooser", function () {
             image.attr("src", $element.val() || "asset/images/no-image.png");
          });
-
+         
          defaults.callback = function (link) {
             imageChooserDialog.dispose();
          };
-
+         
          var settings = $.extend({
          }, defaults, options);
          if (!$element.parent().attr("data-element-wrapper"))
@@ -260,7 +261,7 @@
             console.log(image);
             wrapper.find("div").append(image);
          }
-
+         
          image.css("max-height", $element.css("max-height"));
          var imageChooserBtn;
          // if the plugin has been called later again on same element
@@ -279,7 +280,7 @@
                float: "",
                margin: "2px auto 2px auto"
             });
-
+            
             imageChooserBtn = $("<button type='button' class='btn btn-xs btn-link btn-link-chooser' >Choose Image</button>");
             imageChooserBtn.css({
                position: "absolute",
@@ -289,7 +290,7 @@
             wrapper.append(imageChooserBtn);
             $element.attr(ACTIVE_PLUGIN_ATTR, true);
          }
-
+         
          imageChooserBtn.click(function () {
             imageChooserDialog = EW.createModal({
                autoOpen: false,
@@ -314,7 +315,7 @@
                   } else {
                      bSelectPhoto.comeOut(200);
                   }
-
+                  
                   if (EW.getHashParameter("select-photo", "media")) {
                      EW.setHashParameter("select-photo", null, "media");
                      imageChooserDialog.dispose();
@@ -327,27 +328,27 @@
                };
                EW.addURLHandler(EWhandler, "media.ImageChooser");
             });
-
+            
             imageChooserDialog.open();
          });
       }
-
+      
       return this.each(function () {
          if (!$.data(this, ACTIVE_PLUGIN_ATTR)) {
             $.data(this, ACTIVE_PLUGIN_ATTR, new ImageChooser(this, options));
          }
       });
    };
-
+   
    function initPlugins(element) {
-
+      
       if (!element.innerHTML && element.nodeName.toLowerCase() !== 'input' && element.nodeName.toLowerCase() !== 'textarea') {
          return;
       }
-
+      
       var $element = $(element);
       EW.initPlugins($element);
-
+      
       $element.find("a[rel='ajax']").each(function () {
          var a = $(this);
          if (a.attr("rel") === "ajax") {
@@ -364,43 +365,43 @@
          }
       });
    }
-
+   
    EverythingWidgets.prototype.initSideBar = function () {
       this.appNav = this.appNav || {};
       var $sidebar = $("#app-bar-nav");
       //var sbb = $("#side-bar-btn");
       $sidebar.prepend(EW.sidebarButton);
-      $sidebar.css({
-         left: "-250px"
-      });
-
+      /*$sidebar.css({
+       left: "-250px"
+       });*/
+      
       $("#app-bar").prepend($sidebar);
-      $sidebar.stop().animate({
-         left: 0
-      }, 250, "Power2.easeOut");
+      /* $sidebar.stop().animate({
+       left: 0
+       }, 250, "Power2.easeOut");*/
       //sidebar.attr("tabindex", 1);
       $sidebar.off("mouseleave");
       $sidebar.on("mouseleave", function () {
          $sidebar.stop().css({
             overflowY: "hidden"
          });
-
+         
          $("#app-bar-nav.in").animate({
             className: "app-bar-nav"
          }, 360, "Power3.easeOut");
       });
-
+      
       $sidebar.off("click");
       $sidebar.on("click", function (e) {
          e.stopPropagation();
       });
-
+      
       EW.sidebarButton.off("click mouseenter focus");
       EW.sidebarButton.on("click mouseenter focus", function (event) {
          $sidebar.css({
             maxHeight: $(window).height() - 100
          });
-
+         
          $("#app-bar-nav:not(.in)").animate({
             className: "app-bar-nav in",
             width: "250px"
@@ -408,19 +409,19 @@
             $sidebar.stop().css({
                overflowY: "auto"
             });
-
+            
             if (event.type === 'focus') {
                $sidebar.find("a:first").focus();
             }
          });
-
+         
          event.stopPropagation();
          $(window).on("click.sidebar", function () {
             $sidebar.trigger("mouseleave");
             $(window).off("click.sidebar");
          });
       });
-
+      
       $("#app-bar-nav a").each(function () {
          var a = $(this);
          if (a.attr("rel") === "ajax") {
@@ -435,9 +436,9 @@
                   EW.setHashParameter(kv[0], kv[1]);
                }
             });
-
+            
             var currentNav = System.getHashNav("app")[1];
-
+            
             if (a.attr("data-default") && !currentNav && System.getHashNav("app")[0] !== "Home") {
                if (System.getHashNav("app")[1] !== a.attr("data-ew-nav")) {
                   //if (System.getHashNav("app")[0]) {
@@ -451,7 +452,7 @@
             }
          }
       });
-
+      
       this.appNav.currentTab = null;
       var oldHref = null;
       var oldRequest = null;
@@ -461,7 +462,7 @@
             this.currentTab.removeClass("selected");
             oldHref = this.currentTab.attr("href");
          }
-
+         
          if (element) {
             if (element !== this.currentTab) {
                EW.sidebarButton.text(element.text());
@@ -470,27 +471,27 @@
                   element.addClass("inline-loader");
                   $("#action-bar-items").find("button,div").remove();
                   System.UI.components.mainContent.empty();
-
+                  
                   System.abortAllRequests();
-
+                  
                   System.load(element.prop("href"), function (data) {
                      $("#action-bar-items").find("button,div").remove();
-
+                     
                      if (!System.getHashNav("app")[0]) {
                         return;
                      }
-
+                     
                      System.UI.components.mainContent.html(data);
-
+                     
                      if (anim) {
                         anim.pause();
                      }
-
+                     
                      System.startLastLoadedModule();
-
+                     
                      $sidebar.children(".btn-current-tab").removeClass("inline-loader");
                      element.removeClass("inline-loader");
-
+                     
                      anim = TweenLite.fromTo(System.UI.components.mainContent[0], .5, {
                         opacity: 0,
                         ease: "Power2.easeInOut",
@@ -505,16 +506,28 @@
                }
             }
          }
-
+         
          element.addClass("selected");
          this.currentTab = element;
       };
    };
-
+   
    // Plugins which initilize when document is ready
    //var EW = null;
    $(document).ready(function () {
-
+      var appsMenu = $("#apps-menu");
+      appsMenu.on("mouseenter", function () {
+         appsMenu.animate({
+            className: "apps-menu expand"
+         },360,"Power4.easeOut");
+      });
+      
+      appsMenu.on("mouseleave", function () {
+         appsMenu.stop().animate({
+            className: "apps-menu"
+         },360,"Power3.easeOut");
+      });
+      
       System.UI.components = {
          homeButton: $("#apps"),
          appTitle: $("#app-title"),
@@ -524,13 +537,13 @@
          body: $("body"),
          document: $(document)
       };
-
+      
       System.UI.body = $("body")[0];
-
+      
       var hashDetection = new hashHandler();
       EW.activities = <?php echo EWCore::read_activities(); ?>;
       EW.oldApp = null;
-
+      
       // Init EW plugins
       initPlugins(document);
       EW.initSideBar() & EW.loadSections();
@@ -538,7 +551,7 @@
          if (event.target.activeElement) {
          }
       });
-
+      
       $(document).ajaxComplete(function (event, data) {
       });
       // Notify error if an ajax request fail
@@ -550,7 +563,7 @@
             EW.customAjaxErrorHandler = false;
             return;
          }
-
+         
          try
          {
             var errorsList = '<ul>';
@@ -563,7 +576,7 @@
             console.log(e, status);
             console.log(data);
          }
-
+         
          $("body").EW().notify({
             "message": {
                html: (!data.responseJSON) ? "---ERROR---" : data.responseJSON.message + errorsList
@@ -573,21 +586,21 @@
             delay: "stay"
          }).show();
       });
-
+      
       $('select').selectpicker({
          container: "body"
       });
-
+      
       document.addEventListener("DOMNodeInserted", function (event) {
          if (event.target) {
             initPlugins(event.target);
          }
-
+         
          $(".nav.xs-nav-tabs").data("xs-nav-bar-active", function (e) {
             if ($(e).hasClass("xs-nav-tabs-active") || $(e).data("nav-xs-btn")) {
                return;
             }
-
+            
             var nav = $(e);
             // Show default nav style when the window is wide enough
             $(window).one("ew.screen.sm ew.screen.md ew.screen.lg", function () {
@@ -604,7 +617,7 @@
                   nav.data("nav-xs-btn", null);
                }
             });
-
+            
             nav.data("oldClass", nav.attr("class"));
             nav.data("nav-xs-btn", true);
             nav.data("menu", nav);
@@ -620,14 +633,14 @@
             nav.css({
                top: xsNavBarBtn.offset().top
             });
-
+            
             nav.hide();
             xsNavBarBtn.hover(function () {
                nav.show();
                nav = nav.detach();
                $("body").append(nav);
             });
-
+            
             nav.hover(function (e) {
                nav.stop().animate({
                   className: "nav nav-pills xs-nav-tabs-active nav-stacked dropdown in"
@@ -641,13 +654,13 @@
                });
             });
          });
-
+         
          if ($(window).width() < 768) {
             $(window).trigger("ew.screen.xs");
          }
       });
    });
-
+   
    $(window).on("ew.screen.xs", function () {
       $(".nav.xs-nav-tabs:not(.xs-nav-tabs-active)").each(function (i) {
          $(this).data("xs-nav-bar-active")(this);

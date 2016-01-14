@@ -24,9 +24,15 @@ if (!isset($_SESSION['login']))
 
       <div id="base-pane" class="container">      
          <div id="app-content" >
-            <div id="nav-bar" class="nav-bar">
-               <a type="button" id="apps" class="btn btn-text btn-home-app component-chooser" data-ew-nav="" href="./~admin/#"></a>
-               <h1 id="app-title">tr{Apps}</h1>
+            <!--<div id="nav-bar" class="nav-bar">
+
+            </div>-->
+            <a id="apps-menu" class="apps-menu" data-ew-nav="" href="./~admin/#app=Home">
+               <span type="button" id="apps" class="apps-menu-icon" ></span>
+               <span id="app-title" class="apps-menu-title">tr{Apps}</span>
+            </a>
+            <div id="app-bar" class="app-bar">
+
                <div  class="col-xs-2 col-sm-2 col-md-2 col-lg-1 pull-right">
                   <?php
                   if ($_SESSION['login'])
@@ -34,9 +40,7 @@ if (!isset($_SESSION['login']))
                      echo '<a class="ExitBtn" href="~admin/api/users-management/logout?url=' . EW_DIR_URL . '~admin/" ></a>';
                   }
                   ?>
-               </div>            
-            </div>
-            <div id="app-bar" class="app-bar">
+               </div>  
                <button class="btn btn-current-tab" id="side-bar-btn" >  
                </button>   
                <div class="action-pane" >
