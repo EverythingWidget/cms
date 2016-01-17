@@ -2,6 +2,9 @@
 
 <script>
    var contentEditor;
+   contentEditor = ContentTools.EditorApp.getNew();
+   contentEditor.init('#content-editor');
+
    $(document).ready(function () {
       $("#<?= $form_id ?>").on("refresh", function (e, content) {
          if (content) {
@@ -14,17 +17,23 @@
          contentEditor.destroy();
       });
 
-      contentEditor = ContentTools.EditorApp.get();
-      contentEditor.init('#content-editor');
-
-      //console.log($("#<?= $form_id ?>"));   
-      EW.getParentDialog($("#<?= $form_id ?>")).one("beforeClose", function (e) {
-         if (contentEditor.revert())
+      EW.getParentDialog($("#<?= $form_id ?>")).off("beforeClose.editor");
+      EW.getParentDialog($("#<?= $form_id ?>")).on("beforeClose.editor", function (e) {
+         //console.log(ContentEdit.Root.get().lastModified(), contentEditor._rootLastModified)
+         if (ContentEdit.Root.get().lastModified() !== contentEditor._rootLastModified)
          {
+            var confirmMessage = ContentEdit._('Your changes have not been saved, do you really want to lose them?');
+            if (window.confirm(confirmMessage)) {
+               contentEditor.destroy();
+               contentEditor = null;
+               return true;
+            }
+         } else {
             contentEditor.destroy();
             contentEditor = null;
             return true;
          }
+
          return false;
       });
    });

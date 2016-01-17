@@ -33,35 +33,63 @@ function script()
    <script>
       (function (System) {
 
-         System.module("widgets-management", function () {
-
-            this.type = "app";
-            this.onInit = function () {
+         function WidgetsManagementComponent(module) {
+            var component = this;
+            this.module = module;
+            this.module.type = "app";
+            this.data = {};
+            
+            this.module.onInit = function () {
+               component.init();
             };
-
-            this.onStart = function () {
-               this.data.tab = null;
+            
+            this.module.onStart = function () {
+               component.start();
             };
+         }
 
-            this.onActive = function () {
-            };
 
-            this.on("app", function (p, section) {   
-               if (!section || section === this.data.tab)
-                  return;
+         WidgetsManagementComponent.prototype.init = function () {
+            this.module.on("app", function (p, section) {
                
-               this.data.tab = section;
-               EW.appNav.setCurrentTab($("a[data-ew-nav='" + section + "']"));
-            });
+               if (!section /*|| section === this.data.tab*/) {
+                  System.UI.components.sectionsMenuList[0].value = '0';
+                  return;
+               }
 
-            return this;
+               this.data.tab = section;
+               EW.loadSection(section);
+            });
+         };
+         
+         WidgetsManagementComponent.prototype.start = function () {
+            this.data.tab = null;
+            this.module.data.sections = [
+               {
+                  title: "tr{Layouts}",
+                  id: "widgets-management/uis-list",
+                  url: "~webroot/html/widgets-management/uis-list.php"
+               },
+               {
+                  title: "tr{Layouts and Contents}",
+                  id: "widgets-management/pages-uis",
+                  url: "~webroot/html/widgets-management/pages-uis.php"
+               }
+            ];
+            
+            System.UI.components.sectionsMenuList[0].setAttribute("data", this.module.data.sections);
+         };
+
+         System.module("widgets-management", function () {
+            new WidgetsManagementComponent(this);
          });
+
       })(System);
    </script>
    <?php
    return ob_get_clean();
 }
 
-EWCore::register_form("ew-section-main-form", "sidebar", ["content" => sidebar()]);
+//EWCore::register_form("ew-section-main-form", "sidebar", ["content" => sidebar()]);
 //EWCore::register_form("ew-section-main-form", "content", ["content" => content()]);
 echo admin\AppsManagement::create_section_main_form(["script" => script()]);

@@ -8,6 +8,13 @@
 <link rel="stylesheet" href="~admin/public/css/theme/ew/theme.css"  type="text/css">
 <link rel="stylesheet" href="~admin/public/js/ContentStrike/content-tools.min.css">
 
+<!--[if IE]>
+    <script type="text/javascript">
+         alert("Your browser (IE 8) is not supported");
+         window.location = "http://www.whatbrowser.org/";
+    </script>
+<![endif]-->
+
 <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>       
 <script src="~rm/public/js/gsap/TweenLite.min.js"></script>
 <script src="~admin/public/js/lib/system.js"></script>  
@@ -17,7 +24,7 @@
 <script src="~rm/public/js/gsap/jquery.gsap.min.js" defer></script>
 
 <script src="~rm/public/js/x-tag/x-tag-core.min.js" defer></script>
-<!--<script src="~admin/public/js/ew-tags/ew-table.js"></script>-->
+<script src="~admin/public/js/ew-tags/ew-tags.js" defer></script>
 
 <script src="~admin/public/js/lib/sortable.js" defer></script>      
 <script src="~admin/public/js/lib/bootstrap-datepicker.js" defer></script>

@@ -71,6 +71,8 @@
       return new UsersGroups();
    })();
 
+   System.module("users-management").module("users-groups", function () {
 
+   });
 
 </script>

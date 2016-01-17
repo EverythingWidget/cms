@@ -23,6 +23,7 @@ $.fn.serializeJSON = function (flag)
    return flag ? pureObject : JSON.stringify(pureObject);
 };
 
+
 var customHashes = new Object();
 function EverythingWidgets()
 {
@@ -553,7 +554,32 @@ EverythingWidgets.prototype.createDropMenu = function (element, config)
    if (settings.button)
       settings.button.on("click", showDropMenu);
    return size;
-}
+};
+
+EverythingWidgets.prototype.createList = function (config) {
+   var list = {
+      element: document.createDocumentFragment(),
+      data: [],
+      selectedItem: null,
+      selectedIndex: null,
+      template: "",
+      select: function (index) {
+
+      },
+      setData: function (data) {
+         
+         
+
+         for (var i = 0, len = data.length; i < len; i++) {
+
+         }
+
+      }
+   };
+
+   return $.extend(list, config);
+};
+
 /**
  * Create new modal pane and add it to the DOM
  * @param {mixed} onClose
@@ -2423,7 +2449,7 @@ var EW;
 $(document).ready(function () {
    EW = new EverythingWidgets();
    //EW.sibebar = $("#sidebar");
-   EW.sidebarButton = $("#side-bar-btn").detach();
+   //EW.sidebarButton = $("#side-bar-btn")/*.detach()*/;
    // ew_activity handler
    var oldEWActivity = null;
    var modal = null;

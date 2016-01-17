@@ -52,6 +52,7 @@ class APIResourceHandler extends ResourceHandler
     $app_name = $app->get_root();
     $resource_name = $resource_type;
     $real_class_name = $app_name . '\\' . $module_class_name;
+    $call = false;
 
     if (!$module_class_name)
     {
@@ -75,14 +76,16 @@ class APIResourceHandler extends ResourceHandler
         if (\admin\UsersManagement::group_has_permission($app_name, $module_name, $permission_id, $_SESSION['EW.USER_GROUP_ID']))
         {
           $result = $app_section_object->process_request($verb, $method_name, $parameters);
+          $call = true;
         }
       }
       else if ($app_section_object->is_unathorized_method_invoke())
       {
         $result = $app_section_object->process_request($verb, $method_name, $parameters);
+        $call = true;
       }
 
-      if (!isset($result))
+      if (!isset($result) && $call === false)
       {
         return \EWCore::log_error(403, "You do not have corresponding permission to invoke this api request", array(
                     "Access Denied" => "$app_name/$module_class_name/$method_name"));

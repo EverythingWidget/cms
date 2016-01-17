@@ -70,8 +70,9 @@
             id = this.id + '/' + id;
 
             //if forceReload is true, then init the module again
-            if (/*!object && */!forceReload && this.modules[id]) {
+            if (!object && !forceReload/* && this.modules[id]*/) {
                // Add the module to notYetStarted list so it can be started by startLastLoadedModule method
+               //if (this.modules[id])
                System.notYetStarted.push(id);
                return this.modules[id];
             }
@@ -154,6 +155,7 @@
             var moduleNavigation = navigation;
 
             var fullNavPath = params["app"];
+
             //console.log(this.id,"system/" + fullNavPath,this.params,System.app.activeModule)
             if (this.id === "system/" + fullNavPath/* && System.app.activeModule !== this*/) {
                System.app.activeModule = this;
@@ -162,6 +164,8 @@
                System.app.activeModule = null;
                this.active = false;
             }
+
+            //alert(this.id +" --- "+ "system/" + fullNavPath+" "+this.active)
 
             this.hashHandler.call(this, navigation, params);
             //console.log(navigation)
@@ -284,27 +288,32 @@
          if (self.onLoadQueue[0] && self.currentOnLoad !== self.onLoadQueue[0])
          {
             self.currentOnLoad = self.onLoadQueue[0];
-            //console.log("Loading app: " + self.currentOnLoad.id);
+            //console.log("Loading app: " + self.currentOnLoad.id);0px 1px 1px rgba(0,0,0,.12) , 0 0px 3px rgba(0,0,0,.14)
             var package = self.currentOnLoad.package,
                     id = self.currentOnLoad.id,
+                    moduleName = self.currentOnLoad.module,
                     file = self.currentOnLoad.file,
                     data = self.currentOnLoad.data;
 
             if (self.onLoadApp(self.currentOnLoad)) {
-               /*if (System.modules["system/" + id]) {
-                return;
-                }*/
-               self.loadingAppXHR = self.load(package + '/' + id + '/' + file, data).done(function (response, status) {
+               if (System.modules["system/" + id]) {
+                  $("#system_" + id.replace(/[\/-]/g, "_")).remove();
+                  //return;
+               }
+               self.loadingAppXHR = self.load(self.url || (package + '/' + moduleName + '/' + file), data).done(function (response, status) {
                   //if (self.navHashes["system/" + id])
                   //window.location.hash = self.navHashes["system/" + id];
                   //alert("app current nav hash: "+self.navHashes[id]);
                   var html = $(response);
                   var scripts = html.filter("script").detach();
+
+
                   $("head").append(scripts);
                   //var html = res;
                   //System.apps[id] = $.extend({}, System.module, self.apps[id]);
                   //System.activityTree.unshift(System.apps[id]);
                   var module = System.module(id);
+                  scripts.attr("id", module.id.replace(/[\/-]/g, "_"));
 
                   self.onAppLoaded(module, html, status);
                   //
@@ -543,6 +552,34 @@
 
          }));
       },
+      loadModule: function (mod, onDone) {
+
+         this.load(mod.url, function (response) {
+            if (System.modules["system/" + mod.id]) {
+               $("#system_" + mod.id.replace(/[\/-]/g, "_")).remove();
+               //return;
+            }
+
+            var html = $(response);
+            var scripts = html.filter("script").detach();
+
+            $("head").append(scripts);
+            //var html = res;
+            //System.apps[id] = $.extend({}, System.module, self.apps[id]);
+            //System.activityTree.unshift(System.apps[id]);
+            //console.log(System.app.modules);
+            var module = System.module(mod.id);
+            if (!module) {
+               alert("Invalid module: " + mod.id);
+               return;
+            }
+            scripts.attr("id", module.id.replace(/[\/-]/g, "_"));
+
+            if ("function" === typeof (onDone)) {
+               onDone.call(this, response);
+            }
+         });
+      },
       ajax: function (href, onDone) {
 
       },
@@ -594,6 +631,7 @@
       },
       startLastLoadedModule: function () {
          if (this.notYetStarted.length > 0) {
+            //alert(this.modules[this.notYetStarted[this.notYetStarted.length - 1]].id)
             this.modules[this.notYetStarted[this.notYetStarted.length - 1]].start();
          }
       },

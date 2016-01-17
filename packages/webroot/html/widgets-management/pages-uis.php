@@ -235,6 +235,6 @@ if ($path_uis_list)
          };
       };
 
-      System.module("widget-management").module("pages-uis", Section);
+      System.module("widgets-management").module("pages-uis", Section);
    }(System));
 </script>

@@ -6,12 +6,12 @@
  */
 
 $app_main_form = EWCore::read_registry("ew-section-main-form");
-if ($app_main_form && $form_config)
+if (isset($app_main_form) && $form_config)
    $app_main_form = array_merge_recursive($app_main_form, $form_config);
 
 if ($app_main_form["sidebar"])
 {
-   echo '<div id="app-bar-nav" class="app-bar-nav">'
+   echo '<div id="sections-menu" class="sections-menu">'
    . $app_main_form["sidebar"]["content"]
    . '</div>';
 }

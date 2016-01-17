@@ -1434,8 +1434,11 @@ class EWCore
       $apps[] = array(
           "title"       => "tr:{$app->get_app()->get_root()}" . "{" . $app->get_title() . "}",
           "package"     => '~' . $app->get_app()->get_root(),
+          "module"      => EWCore::camelToHyphen($app->get_section_name()),
+          "file"        => "index.php",
           "className"   => $app->get_section_name(),
           "id"          => EWCore::camelToHyphen($app->get_section_name()),
+          "url"         => '~' . $app->get_app()->get_root() . '/' . EWCore::camelToHyphen($app->get_section_name()) . '/index.php',
           "description" => "tr:{$app->get_app()->get_root()}" . "{" . $app->get_description() . "}");
     }
 
@@ -1788,6 +1791,5 @@ class EWCore
     echo var_dump($_REQUEST);
     return var_dump(static::call($path));
   }
-
 
 }

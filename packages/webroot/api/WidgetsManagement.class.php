@@ -459,7 +459,7 @@ class WidgetsManagement extends \ew\Module
       }
       else
       {
-         return null;
+         return [];
       }
    }
 

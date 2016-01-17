@@ -45,7 +45,7 @@ function script()
                }
                this.data.tab = section;
 
-               EW.appNav.setCurrentTab($("a[data-ew-nav='" + section + "']"));
+               //EW.appNav.setCurrentTab($("a[data-ew-nav='" + section + "']"));
             });
 
             return this;
@@ -56,7 +56,7 @@ function script()
    return ob_get_clean();
 }
 
-EWCore::register_form("ew-section-main-form", "sidebar", ["content" => sidebar()]);
+//EWCore::register_form("ew-section-main-form", "sidebar", ["content" => sidebar()]);
 //EWCore::register_form("ew-section-main-form", "content", ["content" => content()]);
 echo admin\AppsManagement::create_section_main_form(["script" => script()]);
 

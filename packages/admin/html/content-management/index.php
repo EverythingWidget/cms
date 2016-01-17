@@ -18,7 +18,7 @@ function sidebar()
    return $html;
 }
 
-EWCore::register_form("ew-section-main-form", "sidebar", ["content" => sidebar()]);
+//EWCore::register_form("ew-section-main-form", "sidebar", ["content" => sidebar()]);
 //EWCore::register_form("ew-section-main-form", "content", ["content" => content()]);
 echo admin\AppsManagement::create_section_main_form();
 
@@ -35,15 +35,28 @@ echo admin\AppsManagement::create_section_main_form();
          };
 
          this.onStart = function () {
+            System.UI.components.sectionsMenuList[0].setAttribute("data", [
+               {
+                  title: "tr{Documents}",
+                  id: "content-management/documents",
+                  url: "~admin/html/content-management/documents.php"
+               },
+               {
+                  title: "tr{Media}",
+                  id: "content-management/media",
+                  url: "~admin/html/content-management/media.php"
+               }
+            ]);
          };
 
          this.on("app", function (p, section) {
             if (!section) {
+               System.UI.components.sectionsMenuList[0].value = '0';
                return;
             }
+            
             this.data.tab = section;
-
-            EW.appNav.setCurrentTab($("a[data-ew-nav='" + section + "']"));
+            EW.loadSection(section);
          });
 
          return this;

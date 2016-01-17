@@ -3093,6 +3093,10 @@
       return instance != null ? instance : instance = new _Root();
     };
 
+    Root.reset = function () {
+      instance = null;
+    };
+
     return Root;
 
   })();
@@ -7494,6 +7498,7 @@
       this._inspector = new ContentTools.InspectorUI();
       this.attach(this._inspector);
       this._state = ContentTools.EditorApp.READY;
+      
       ContentEdit.Root.get().bind('detach', (function (_this) {
         return function (element) {
           return _this._preventEmptyRegions();
@@ -7716,7 +7721,6 @@
       if (ContentEdit.Root.get().lastModified() > this._rootLastModified && !window.confirm(confirmMessage)) {
         return false;
       }
-      clearInterval(this._updatePositionInterval);
       this.revertToSnapshot(this.history.goTo(0), false);
       return true;
     };
@@ -7921,6 +7925,13 @@
       var cls;
       cls = ContentTools.EditorApp.getCls();
       return instance != null ? instance : instance = new cls();
+    };
+
+    EditorApp.getNew = function () {
+      var cls;
+      cls = ContentTools.EditorApp.getCls();
+      ContentEdit.Root.reset();
+      return new cls();
     };
 
     EditorApp.getCls = function () {
