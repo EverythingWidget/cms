@@ -31,7 +31,7 @@ if (!isset($_SESSION['login']))
                   </span>
                   <ew-list id="sections-menu-list" class="sections-menu-list">
                      <div class="sections-menu-item">
-                        <a class="sections-menu-item-link" href="{{id}}">{{title}}</a>
+                        <a class="sections-menu-item-link" href="{{id}}" >{{title}}</a>
                      </div>
                   </ew-list>
                </div>

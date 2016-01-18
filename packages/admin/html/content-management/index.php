@@ -42,33 +42,26 @@ echo admin\AppsManagement::create_section_main_form();
                   title: "tr{Media}",
                   id: "content-management/media",
                   url: "~admin/html/content-management/media.php"
-               },
+               }
+            ];
+
+            this.libs = [
                {
                   title: "tr{Documents}",
-                  id: "content-management/documents1",
+                  id: "content-management/documents",
                   url: "~admin/html/content-management/documents.php"
                },
                {
                   title: "tr{Media}",
-                  id: "content-management/media1",
-                  url: "~admin/html/content-management/media.php"
-               },
-               {
-                  title: "tr{Documents}",
-                  id: "content-management/documents2",
-                  url: "~admin/html/content-management/documents.php"
-               },
-               {
-                  title: "tr{Media}",
-                  id: "content-management/media2",
+                  id: "content-management/media",
                   url: "~admin/html/content-management/media.php"
                }
             ];
          };
 
          this.onStart = function () {
-            
-            
+
+
             //System.UI.components.sectionsMenuList[0].setAttribute("data", this.data.sections);
          };
 

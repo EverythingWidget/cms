@@ -523,8 +523,8 @@ html,body {
    left: 20px;
    top: 50%;
    border: 3px solid transparent;
-   border-top-color: #444;
-   border-right-color: #444;
+   border-top-color: rgba(0,0,0,.7);
+   border-right-color: rgba(0,0,0,.7);
    margin: -10px 4px;
 }
 
@@ -967,7 +967,7 @@ a.apps-menu-link:hover {
    color:#fff;
    background-color: rgba(0,0,0,.18);}
 
-.apps-menu-link.selected {
+.apps-menu-link.selected,.apps-menu-link.selected:hover {
    color: #fff;
    background-color: rgba(0,0,0,.24);
    box-shadow: 0px 3px 7px rgba(0,0,0,.3),0 2px 9px 0px rgba(0,0,0,.24);
@@ -1651,6 +1651,11 @@ ul.links li p {
    display: none;
 }
 
+.sections-menu.out {
+   height: 94px; 
+   opacity:0;
+}
+
 .sections-menu label {
    min-width: 200px;
    line-height: 30px;
@@ -1721,25 +1726,25 @@ ul.links li p {
 }
 
 .sections-menu li a:hover , .sections-menu-item-link:hover{
-   background-color: rgba(0,0,0,.1);
+   background-color: rgba(255,255,255,.1);
    color: #fff;
 }
 
 .sections-menu li a:active , .sections-menu-item-link:active{
-   background-color: rgba(0,0,0,.2);
+   background-color: rgba(255,255,255,.1);
    color: #fff;
 }
 
 .sections-menu li a:focus , .sections-menu-item-link:focus{
-   background-color: rgba(0,0,0,.2);
+   background-color: rgba(255,255,255,.1);
    outline: 1px solid #3cf;
    outline-offset: -1px;
    color: #fff;
 }
 
 .sections-menu li a.selected , .sections-menu-item-link.selected{
-   background-color: rgba(0,0,0,.24);
-   color: #fff;
+   background-color: rgba(255,255,255,.2);
+   color: rgba(0,0,0,.7);
    cursor: default;
    padding-left: 52px;
 }

@@ -4,7 +4,8 @@
       populate: function (template, data) {
          template = template.replace(this.viewRegex, function (match, key) {
             //eval make it possible to reach nested objects
-            return eval("data." + key) || "";
+            var val = eval("data." + key);
+            return "undefined" === typeof val ? "" : val;
          });
          return template;
       },
@@ -17,7 +18,15 @@
          return value;
          //return true;
       },
+      hasCSSClass: function (element, className) {
+         if (element.classList)
+            return  element.classList.contains(className);
+         else
+            return new RegExp('(^| )' + className + '( |$)', 'gi').test(element.className);
+      },
       addCSSClass: function (element, className) {
+         if (this.hasCSSClass(element, className))
+            return;
          if (element.classList)
             element.classList.add(className);
          else
@@ -43,9 +52,10 @@
          this.innerHTML = "";
          var a = null;
          for (var i = 0, len = data.length; i < len; i++) {
+            data[i]._itemIndex = i;
             var item = xtag.createFragment(UIUtil.populate(this.template, data[i]));
             a = xtag.query(item, "a")[0];
-            
+
             if (data[i].id)
                this.links[data[i].id] = a;
 
@@ -60,12 +70,12 @@
             EW_List.methods.onItemSelected(EW_List._element.data[i], i, element);
          }
 
-         if (EW_List.selectedElement) {
-            UIUtil.removeCSSClass(EW_List.selectedElement, "selected");
-         }
-
-         EW_List.selectedElement = element;
-         UIUtil.addCSSClass(EW_List.selectedElement, "selected");
+         /*if (EW_List.selectedElement) {
+          UIUtil.removeCSSClass(EW_List.selectedElement, "selected");
+          }
+          
+          EW_List.selectedElement = element;
+          UIUtil.addCSSClass(EW_List.selectedElement, "selected");*/
       }
    };
    EW_List.lifecycle = {
@@ -95,7 +105,7 @@
       data: {
          attribute: {},
          set: function (value) {
-            
+
             EW_List.value = null;
             if ("object" !== typeof value) {
                EW_List.data = [];
@@ -132,7 +142,7 @@
          set: function (value) {
             value = parseInt(value);
 
-            if (value > -1 && value !== this.value && EW_List.data.length) {
+            if (value > -1 /*&& value !== this.value*/ && EW_List.data.length) {
                EW_List.selectItem(value, this.links[value]);
             }
 

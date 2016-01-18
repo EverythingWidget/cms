@@ -31,13 +31,18 @@
    System.onLoadApp = function (app) {
 
       System.UI.components.appTitle.text(app.title);
-      //System.UI.components.homeButton.stop().comeIn(300);
-      //$("#sections-menu").remove();
-      //System.UI.components.sectionsMenuList[0].data = [];
+      if (EW.selectedApp) {
+         UIUtil.removeCSSClass(EW.selectedApp, "selected");
+      }
+
+      EW.selectedApp = $(".apps-menu-link[data-app='" + app.id + "']").addClass("selected")[0];
+
+      System.UI.components.sectionsMenuTitle.addClass("inline-loader");
+      if (EW.selectedSection)
+         UIUtil.addCSSClass(EW.selectedSection, "inline-loader");
+
       $("#action-bar-items").empty();
       $("#main-content").remove();
-      //System.UI.components.appBar.animate({className: "app-bar in"}, 500, "Power2.easeInOut");
-      //System.UI.components.homePane.animate({className: "home-pane"}, 500, "Power2.easeInOut");
       return true;
    };
 
@@ -88,8 +93,7 @@
    });
 
    var anim = false;
-   EverythingWidgets.prototype.loadSection = function (sectionId) {
-      //alert("Sec "+sectionId);
+   EverythingWidgets.prototype.loadSection = function (sectionId) {      
       var element = System.UI.components.sectionsMenuList[0].links[EW.oldApp + "/" + sectionId];
       //console.log(System.UI.components.sectionsMenuList[0].links);
       System.UI.components.sectionsMenuList[0].value = element.dataset.index;
@@ -102,8 +106,7 @@
          EW.oldSectionId = sectionData.id;
          System.UI.components.sectionsMenuTitle.text(sectionData.title);
          System.UI.components.sectionsMenuTitle.addClass("inline-loader");
-         //UIUtil.addCSSClass(element, "selected");
-         UIUtil.addCSSClass(element, "inline-loader");
+         UIUtil.addCSSClass(EW.selectedSection, "inline-loader");
 
          $("#action-bar-items").find("button,div").remove();
 
@@ -167,6 +170,10 @@
 
          });
 
+         items.push('</ul>');
+
+         $(items.join('')).appendTo("#apps-menu");
+
          System.start();
 
          $.each(_this.apps, function (e, v) {
@@ -178,21 +185,19 @@
             }
          });
 
-         items.push('</ul>');
-         //$(items.join('')).appendTo("#home-pane");
-         $(items.join('')).appendTo("#apps-menu");
+
          var $oldAppLink = $();
-         $("#navigation-menu .apps-menu-link").click(function (event) {
-            event.preventDefault();
-            $oldAppLink.removeClass("selected");
-            $oldAppLink = $(this);
-            $oldAppLink.addClass("selected");
-
-            System.setHashParameters({
-               app: $oldAppLink.attr("data-app")
-            }, null);
-
-         });
+         /*$("#navigation-menu .apps-menu-link").click(function (event) {
+          event.preventDefault();
+          $oldAppLink.removeClass("selected");
+          $oldAppLink = $(this);
+          $oldAppLink.addClass("selected");
+          
+          System.setHashParameters({
+          app: $oldAppLink.attr("data-app")
+          }, null);
+          
+          });*/
 
       }, "json");
    };
@@ -472,28 +477,47 @@
          sectionsMenuTitle: $("#sections-menu-title")
       };
 
-      /*$("#sections-menu-list").on("itemSelected",function (e) {
-       console.log(e);
-       });*/
       var mouseInNavMenu = false;
+
       System.UI.components.sectionsMenuList[0].onSetData = function (data) {
          if (data.length) {
-            if (mouseInNavMenu)
-               System.UI.components.sectionsMenu.stop().animate({
-                  className: "sections-menu in"
-               }, 200);
+            if (mouseInNavMenu) {
+               TweenLite.to(System.UI.components.sectionsMenu[0], .3, {
+                  className: "sections-menu in",
+                  ease: "Power2.easeInOut"
+               });
+            }
          } else {
-            //System.UI.components.sectionsMenuTitle.text("...").addClass("inline-loader");
-            System.UI.components.sectionsMenu.stop().animate({
-               className: "sections-menu"
-            }, 200);
+            //alert(System.UI.components.sectionsMenu.height());
+            //System.UI.components.sectionsMenu.css("height", System.UI.components.sectionsMenu.height());
+            TweenLite.fromTo(System.UI.components.sectionsMenu[0], .2, {
+               height: System.UI.components.sectionsMenu.css("height")
+            }, {
+               className: "sections-menu in out",
+               height: "94px",
+               ease: "Power2.easeInOut",
+               onComplete: function () {
+                  System.UI.components.sectionsMenu.css("height", "");
+               }
+            });
          }
       };
 
+      var currentSectionIndex = null;
       System.UI.components.sectionsMenuList[0].onItemSelected = function (item, i, element) {
+         currentSectionIndex = i;
+
+         if (EW.selectedSection) {
+            UIUtil.removeCSSClass(EW.selectedSection, "selected");
+         }
+
+         EW.selectedSection = element;
+         UIUtil.addCSSClass(EW.selectedSection, "selected");
+
          System.setHashParameters({
             app: item.id
          }, true);
+
       };
 
       var navigationMenu = $("#navigation-menu");
@@ -508,8 +532,8 @@
 
          if (System.UI.components.sectionsMenuList[0].data.length) {
             $("#sections-menu:not(.in)").animate({
-               className: "sections-menu in",
-               width: "250px"
+               className: "sections-menu in"
+                       //width: "250px"
                        //top: e.pageY
             }, 360, "Power4.easeOut", function () {
                /*$sidebar.stop().css({
@@ -529,11 +553,18 @@
       appsMenu.on("mouseenter", "a", function (e) {
          //var rect = appBarNav[0].getBoundingClientRect();
          EW.hoverApp = "system/" + e.target.dataset.app;
-         console.log(System.modules["system/" + e.target.dataset.app].data.sections);
+         console.log(e.target.dataset.app);
+
          System.UI.components.sectionsMenuList[0].setAttribute("data", System.modules["system/" + e.target.dataset.app].data.sections);
+
+         if (EW.oldApp === e.target.dataset.app) {
+            System.UI.components.sectionsMenuList[0].value = currentSectionIndex;
+         }
+
          if (moveAnim) {
             moveAnim.pause();
          }
+
          moveAnim = TweenLite.to(System.UI.components.sectionsMenu[0], .2, {
             marginTop: e.target.getBoundingClientRect().top
          });
@@ -541,30 +572,18 @@
 
       navigationMenu.on("mouseleave", function () {
          mouseInNavMenu = false;
-         //if (EW.hoverApp !== "system/" + EW.oldApp)
-         //{
-            System.UI.components.sectionsMenuList[0].setAttribute("data", EW.currentAppSections);
-         //}
-         
+         System.UI.components.sectionsMenuList[0].setAttribute("data", EW.currentAppSections);
+         System.UI.components.sectionsMenuList[0].value = currentSectionIndex;
+
          navigationMenu.removeClass("expand");
-         appsMenu.stop().animate({
+         appsMenu.animate({
             className: "apps-menu"
          }, 360, "Power3.easeOut");
-         System.UI.components.sectionsMenu.animate({
+         TweenLite.to(System.UI.components.sectionsMenu[0], .36, {
             className: "sections-menu",
-            marginTop: 0
-         }, 360, "Power3.easeOut", function () {
-            /*$sidebar.stop().css({
-             overflowY: "auto"
-             });
-             
-             if (event.type === 'focus') {
-             $sidebar.find("a:first").focus();
-             }*/
+            marginTop: 0,
+            ease: "Power3.easeOut"
          });
-         /*appBarNav.css({
-          top: ""
-          });*/
       });
 
 

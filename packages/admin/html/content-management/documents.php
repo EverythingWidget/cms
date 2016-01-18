@@ -73,6 +73,8 @@
                }
             }
          });
+         
+         alert("Document init");
       };
 
       Documents.prototype.start = function () {

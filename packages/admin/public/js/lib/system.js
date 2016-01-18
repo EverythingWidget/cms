@@ -554,7 +554,7 @@
       },
       loadModule: function (mod, onDone) {
 
-         this.load(mod.url, function (response) {
+         $.get(mod.url, function (response) {
             if (System.modules["system/" + mod.id]) {
                $("#system_" + mod.id.replace(/[\/-]/g, "_")).remove();
                //return;
@@ -568,12 +568,12 @@
             //System.apps[id] = $.extend({}, System.module, self.apps[id]);
             //System.activityTree.unshift(System.apps[id]);
             //console.log(System.app.modules);
-            var module = System.module(mod.id);
-            if (!module) {
+            //var module = System.module(mod.id);
+            if (!System.modules["system/" + mod.id]) {
                alert("Invalid module: " + mod.id);
                return;
             }
-            scripts.attr("id", module.id.replace(/[\/-]/g, "_"));
+            scripts.attr("id", System.modules["system/" + mod.id].id.replace(/[\/-]/g, "_"));
 
             if ("function" === typeof (onDone)) {
                onDone.call(this, response);
