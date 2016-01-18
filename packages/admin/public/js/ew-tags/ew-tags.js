@@ -41,15 +41,16 @@
       render: function (data) {
          //var data = this.data;
          this.innerHTML = "";
-
+         var a = null;
          for (var i = 0, len = data.length; i < len; i++) {
             var item = xtag.createFragment(UIUtil.populate(this.template, data[i]));
-
+            a = xtag.query(item, "a")[0];
+            
             if (data[i].id)
-               this.links[data[i].id] = xtag.query(item, "a")[0];
+               this.links[data[i].id] = a;
 
-            this.links[i] = xtag.query(item, "a")[0];
-            xtag.query(item, "a")[0].dataset.index = i;
+            this.links[i] = a;
+            a.dataset.index = i;
 
             this.appendChild(item);
          }
@@ -94,10 +95,12 @@
       data: {
          attribute: {},
          set: function (value) {
+            
             EW_List.value = null;
             if ("object" !== typeof value) {
                EW_List.data = [];
-               return;
+               value = [];
+               //return;
             }
 
             EW_List.data = value;

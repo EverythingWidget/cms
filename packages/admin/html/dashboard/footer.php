@@ -33,7 +33,7 @@
       System.UI.components.appTitle.text(app.title);
       //System.UI.components.homeButton.stop().comeIn(300);
       //$("#sections-menu").remove();
-      System.UI.components.sectionsMenuList[0].data = [];
+      //System.UI.components.sectionsMenuList[0].data = [];
       $("#action-bar-items").empty();
       $("#main-content").remove();
       //System.UI.components.appBar.animate({className: "app-bar in"}, 500, "Power2.easeInOut");
@@ -54,11 +54,10 @@
          //EW.initSideBar();
 
          if (app.type === "app"/* && app.id === "system/" + System.getHashParam("app")*/) {
-            //EW.oldApp = System.getHashParam("app");
-            //alert(app.id + " haaaaaa");
-            //setTimeout(function () {
+            EW.currentAppSections = System.modules[app.id].data.sections;
+            EW.hoverApp = app.id;
+            System.UI.components.sectionsMenuList[0].setAttribute("data", EW.currentAppSections);
             app.start();
-            //}, 2000);
          }
       }, 100);
    };
@@ -484,7 +483,7 @@
                   className: "sections-menu in"
                }, 200);
          } else {
-            System.UI.components.sectionsMenuTitle.text("...").addClass("inline-loader");
+            //System.UI.components.sectionsMenuTitle.text("...").addClass("inline-loader");
             System.UI.components.sectionsMenu.stop().animate({
                className: "sections-menu"
             }, 200);
@@ -526,8 +525,12 @@
       });
 
       var moveAnim = null;
+      //var hoverApp = null;
       appsMenu.on("mouseenter", "a", function (e) {
          //var rect = appBarNav[0].getBoundingClientRect();
+         EW.hoverApp = "system/" + e.target.dataset.app;
+         console.log(System.modules["system/" + e.target.dataset.app].data.sections);
+         System.UI.components.sectionsMenuList[0].setAttribute("data", System.modules["system/" + e.target.dataset.app].data.sections);
          if (moveAnim) {
             moveAnim.pause();
          }
@@ -538,6 +541,11 @@
 
       navigationMenu.on("mouseleave", function () {
          mouseInNavMenu = false;
+         //if (EW.hoverApp !== "system/" + EW.oldApp)
+         //{
+            System.UI.components.sectionsMenuList[0].setAttribute("data", EW.currentAppSections);
+         //}
+         
          navigationMenu.removeClass("expand");
          appsMenu.stop().animate({
             className: "apps-menu"

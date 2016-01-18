@@ -218,7 +218,8 @@ if ($_REQUEST["callback"] == "function-reference")
 else
    echo $_REQUEST["callback"] . '(this.document);';
 ?>
-      }
+      };
+      
       return new LinkChooserDocuments();
    })();
 

@@ -46,20 +46,7 @@ function script()
 
          UsersManagementComponent.prototype.init = function () {
             var component = this;
-            
-            this.module.on("app", function (path, section) {
-               if (!section /*|| section === component.data.tab*/) {
-                  System.UI.components.sectionsMenuList[0].value = '0';
-                  return;
-               }
-               
-               component.data.tab = section;
-               EW.loadSection(section);
-            });
-         };
 
-         UsersManagementComponent.prototype.start = function () {
-            this.data.tab = null;
             this.module.data.sections = [
                {
                   title: "tr{Users}",
@@ -73,13 +60,28 @@ function script()
                }
             ];
 
-            System.UI.components.sectionsMenuList[0].setAttribute("data", this.module.data.sections);
+            this.module.on("app", function (path, section) {
+               if (!section /*|| section === component.data.tab*/) {
+                  System.UI.components.sectionsMenuList[0].value = '0';
+                  return;
+               }
+
+               component.data.tab = section;
+               EW.loadSection(section);
+            });
+         };
+
+         UsersManagementComponent.prototype.start = function () {
+            this.data.tab = null;
+
+
+            //System.UI.components.sectionsMenuList[0].setAttribute("data", this.module.data.sections);
          };
 
          System.module("users-management", function () {
             new UsersManagementComponent(this);
          });
-         
+
       }(System));
    </script>
    <?php

@@ -32,10 +32,7 @@ echo admin\AppsManagement::create_section_main_form();
          this.type = "app";
 
          this.onInit = function (nav) {
-         };
-
-         this.onStart = function () {
-            System.UI.components.sectionsMenuList[0].setAttribute("data", [
+            this.data.sections = [
                {
                   title: "tr{Documents}",
                   id: "content-management/documents",
@@ -45,8 +42,34 @@ echo admin\AppsManagement::create_section_main_form();
                   title: "tr{Media}",
                   id: "content-management/media",
                   url: "~admin/html/content-management/media.php"
+               },
+               {
+                  title: "tr{Documents}",
+                  id: "content-management/documents1",
+                  url: "~admin/html/content-management/documents.php"
+               },
+               {
+                  title: "tr{Media}",
+                  id: "content-management/media1",
+                  url: "~admin/html/content-management/media.php"
+               },
+               {
+                  title: "tr{Documents}",
+                  id: "content-management/documents2",
+                  url: "~admin/html/content-management/documents.php"
+               },
+               {
+                  title: "tr{Media}",
+                  id: "content-management/media2",
+                  url: "~admin/html/content-management/media.php"
                }
-            ]);
+            ];
+         };
+
+         this.onStart = function () {
+            
+            
+            //System.UI.components.sectionsMenuList[0].setAttribute("data", this.data.sections);
          };
 
          this.on("app", function (p, section) {
@@ -54,7 +77,7 @@ echo admin\AppsManagement::create_section_main_form();
                System.UI.components.sectionsMenuList[0].value = '0';
                return;
             }
-            
+
             this.data.tab = section;
             EW.loadSection(section);
          });

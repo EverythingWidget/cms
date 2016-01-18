@@ -38,11 +38,11 @@ function script()
             this.module = module;
             this.module.type = "app";
             this.data = {};
-            
+
             this.module.onInit = function () {
                component.init();
             };
-            
+
             this.module.onStart = function () {
                component.start();
             };
@@ -50,20 +50,7 @@ function script()
 
 
          WidgetsManagementComponent.prototype.init = function () {
-            this.module.on("app", function (p, section) {
-               
-               if (!section /*|| section === this.data.tab*/) {
-                  System.UI.components.sectionsMenuList[0].value = '0';
-                  return;
-               }
 
-               this.data.tab = section;
-               EW.loadSection(section);
-            });
-         };
-         
-         WidgetsManagementComponent.prototype.start = function () {
-            this.data.tab = null;
             this.module.data.sections = [
                {
                   title: "tr{Layouts}",
@@ -76,8 +63,24 @@ function script()
                   url: "~webroot/html/widgets-management/pages-uis.php"
                }
             ];
-            
-            System.UI.components.sectionsMenuList[0].setAttribute("data", this.module.data.sections);
+
+            this.module.on("app", function (p, section) {
+
+               if (!section /*|| section === this.data.tab*/) {
+                  System.UI.components.sectionsMenuList[0].value = '0';
+                  return;
+               }
+
+               this.data.tab = section;
+               EW.loadSection(section);
+            });
+         };
+
+         WidgetsManagementComponent.prototype.start = function () {
+            this.data.tab = null;
+
+
+//            System.UI.components.sectionsMenuList[0].setAttribute("data", this.module.data.sections);
          };
 
          System.module("widgets-management", function () {
