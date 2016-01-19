@@ -159,6 +159,7 @@
          this.bNewFolder.comeIn();
 
          this.module.setParamIfNone("dir", "0/list");
+         alert("Document Started");
       };
 
       Documents.prototype.preCategory = function () {

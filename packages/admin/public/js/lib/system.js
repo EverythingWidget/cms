@@ -9,6 +9,7 @@
       activeModule: null,
       notYetStarted: [],
       activeRequests: {},
+      onModuleLoaded: {},
       /*activeHashHandler: function () {
        },*/
       UI: {},
@@ -21,6 +22,7 @@
          params: {},
          html: "",
          modules: {},
+         installModules: [],
          activeModule: null,
          init: function (navigations, params, html)
          {
@@ -29,6 +31,13 @@
             this.params = params;
             this.html = html;
             this.trigger("onInit");
+
+            this.installModules.forEach(function (lib) {
+               alert("install: " + lib.id);
+               System.loadModule(lib/*, function () {
+                  alert("install completed: " + lib.id);
+               }*/);
+            });
          },
          start: function ()
          {
@@ -74,6 +83,11 @@
                // Add the module to notYetStarted list so it can be started by startLastLoadedModule method
                //if (this.modules[id])
                System.notYetStarted.push(id);
+               return this.modules[id];
+            }
+
+            if (this.modules[id]) {
+               alert("already registered: " + id);
                return this.modules[id];
             }
 
@@ -553,6 +567,27 @@
          }));
       },
       loadModule: function (mod, onDone) {
+         System.onModuleLoaded["system/" + mod.id] = onDone;
+
+         if (System.modules["system/" + mod.id]) {
+
+            if ("function" === typeof (System.onModuleLoaded["system/" + mod.id])) {
+               //onDone.call(this, System.modules["system/" + mod.id], System.modules["system/" + mod.id].html);
+               System.onModuleLoaded["system/" + mod.id].call(this, System.modules["system/" + mod.id],
+                       System.modules["system/" + mod.id].html);
+            }
+
+            return;
+         }
+
+         if (System.onLoadQueue["system/" + mod.id]) {
+            //System.onModuleLoaded["system/" + mod.id] = onDone;
+            //System.onModuleLoaded["system/" + mod.id] = onDone;
+            //call(null, System.onLoadQueue["system/" + mod.id]);
+            return;
+         }
+
+         System.onLoadQueue["system/" + mod.id] = true;
 
          $.get(mod.url, function (response) {
             if (System.modules["system/" + mod.id]) {
@@ -573,11 +608,19 @@
                alert("Invalid module: " + mod.id);
                return;
             }
+
+            System.modules["system/" + mod.id].html = html;
+
             scripts.attr("id", System.modules["system/" + mod.id].id.replace(/[\/-]/g, "_"));
 
-            if ("function" === typeof (onDone)) {
-               onDone.call(this, response);
+            if ("function" === typeof (System.onModuleLoaded["system/" + mod.id])) {
+               //onDone.call(this, System.modules["system/" + mod.id], response);
+               System.onModuleLoaded["system/" + mod.id].call(this, System.modules["system/" + mod.id], html);
             }
+
+            /*if (System.startAfterLoad === System.modules["system/" + mod.id].id) {
+             System.modules["system/" + mod.id].start();
+             }*/
          });
       },
       ajax: function (href, onDone) {
@@ -635,10 +678,12 @@
             this.modules[this.notYetStarted[this.notYetStarted.length - 1]].start();
          }
       },
-      init: function () {
+      init: function (mods) {
          this.app = $.extend(true, {}, System.MODULE_ABSTRACT);
          this.app.moduleIdentifier = this.moduleIdentifier;
          this.app.id = "system";
+         this.app.installModules = mods;
+         this.app.init({}, {}, "");
          //this.activeModule = this.app;
       }
    };

@@ -45,7 +45,7 @@ echo admin\AppsManagement::create_section_main_form();
                }
             ];
 
-            this.libs = [
+            this.installModules = [
                {
                   title: "tr{Documents}",
                   id: "content-management/documents",

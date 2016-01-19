@@ -1,5 +1,5 @@
 <script>
-   System.init();
+
 
    System.goToHomeApp = function () {
       System.abortAllRequests();
@@ -46,7 +46,7 @@
       return true;
    };
 
-   System.onAppLoaded = function (app, response, s) {
+   System.onAppLoaded = function (app, response) {
       setTimeout(function () {
          // if user immidietly returned to home, then stop here
          /*if (System.getHashNav("app")[0] === "Home") {
@@ -61,39 +61,17 @@
          if (app.type === "app"/* && app.id === "system/" + System.getHashParam("app")*/) {
             EW.currentAppSections = System.modules[app.id].data.sections;
             EW.hoverApp = app.id;
+
             System.UI.components.sectionsMenuList[0].setAttribute("data", EW.currentAppSections);
             app.start();
          }
       }, 100);
    };
 
-   System.app.hashHandler = function (nav, params) {
-      if ((!nav["app"] || nav["app"][0] === "Home") && "content-management" !== EW.oldApp) {
-         //EW.oldApp = "content-management";
-         System.setHashParameters({
-            app: "content-management"
-         }, true);
-      }
-   };
 
-   System.on('app', function (path, app) {
-      /*if (!app || app === "Home") {
-       System.goToHomeApp();
-       return;
-       }*/
-      //alert(app + " @ " + EW.oldApp)
-      if (/*EW.apps[app] && */app !== EW.oldApp) {
-         EW.oldApp = app;
-         //alert(app)
-         //System.UI.components.appTitle.text(EW.apps[app].title);
-         System.openApp(EW.apps[app]);
-         return;
-      }
-
-   });
 
    var anim = false;
-   EverythingWidgets.prototype.loadSection = function (sectionId) {      
+   EverythingWidgets.prototype.loadSection = function (sectionId) {
       var element = System.UI.components.sectionsMenuList[0].links[EW.oldApp + "/" + sectionId];
       //console.log(System.UI.components.sectionsMenuList[0].links);
       System.UI.components.sectionsMenuList[0].value = element.dataset.index;
@@ -113,34 +91,34 @@
          System.UI.components.mainContent.empty();
          System.abortAllRequests();
 
-         System.load(sectionData.url, function (data) {
+         System.loadModule(sectionData, function (mod, data) {
             $("#action-bar-items").find("button,div").remove();
 
             if (!System.getHashNav("app")[0]) {
                return;
             }
-
+            alert("section loaded: " + mod.id);
             System.UI.components.mainContent.html(data);
-
-            if (anim) {
-               anim.pause();
-            }
-
-            System.startLastLoadedModule();
-
-            System.UI.components.sectionsMenuTitle.removeClass("inline-loader");
-            UIUtil.removeCSSClass(element, "inline-loader");
-
-            anim = TweenLite.fromTo(System.UI.components.mainContent[0], .5, {
-               opacity: 0,
-               ease: "Power2.easeInOut",
-               top: "-=94px"
-            }, {
-               top: "+=94px",
-               opacity: 1,
-               onComplete: function () {
-               }
-            });
+            mod.start();
+            /*if (anim) {
+             anim.pause();
+             }
+             
+             //System.startLastLoadedModule();
+             
+             System.UI.components.sectionsMenuTitle.removeClass("inline-loader");
+             UIUtil.removeCSSClass(element, "inline-loader");
+             
+             anim = TweenLite.fromTo(System.UI.components.mainContent[0], .5, {
+             opacity: 0,
+             ease: "Power2.easeInOut",
+             top: "-=94px"
+             }, {
+             top: "+=94px",
+             opacity: 1,
+             onComplete: function () {
+             }
+             });*/
          });
       }
 
@@ -595,7 +573,67 @@
 
       // Init EW plugins
       initPlugins(document);
-      EW.readApps();
+
+      var installModules = <?= EWCore::read_apps(); ?>;
+      installModules.forEach(function (e) {
+         EW.apps[e.id] = e;
+      });
+
+      var items = ['<ul class="apps-menu-list">'];
+      $.each(installModules, function (key, val) {
+
+         items.push('<li class=""><a class="apps-menu-link" data-app="'
+                 + val['id'] + '"><span class="">'
+                 + val['title'] + '</span></a></li>');
+
+         val.file = "index.php";
+         val.id = val['id'];
+         EW.apps[val['id']] = val;
+
+      });
+      items.push('</ul>');
+      $(items.join('')).appendTo("#apps-menu");
+
+      System.init(installModules);
+
+      System.app.hashHandler = function (nav, params) {
+         if ((!nav["app"] || nav["app"][0] === "Home") && "content-management" !== EW.oldApp) {
+            //EW.oldApp = "content-management";
+            System.setHashParameters({
+               app: "content-management"
+            }, true);
+         }
+      };
+
+      System.on('app', function (path, app) {
+         /*if (!app || app === "Home") {
+          System.goToHomeApp();
+          return;
+          }*/
+
+         //alert(app + " @ " + EW.oldApp)
+         if (/*EW.apps[app] && */app !== EW.oldApp) {
+            EW.oldApp = app;
+            //alert(app)
+            //System.UI.components.appTitle.text(EW.apps[app].title);
+            //System.openApp(EW.apps[app]);
+            alert("started the app: " + app)
+            // before load
+            System.onLoadApp(EW.apps[app]);
+            System.loadModule(EW.apps[app], function (mod) {
+               // after load
+               alert("aha -> " + mod.id);
+               //mod.start();
+               System.onAppLoaded(mod, mod.html);
+
+            });
+            return;
+         }
+
+      });
+      alert("system start");
+      System.start();
+      //EW.readApps();
 
       $(document).ajaxStart(function (event, data) {
          if (event.target.activeElement) {
