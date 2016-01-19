@@ -74,7 +74,7 @@
             }
          });
          
-         alert("Document init");
+         //alert("Document init");
       };
 
       Documents.prototype.start = function () {
@@ -159,7 +159,7 @@
          this.bNewFolder.comeIn();
 
          this.module.setParamIfNone("dir", "0/list");
-         alert("Document Started");
+         //alert("Document Started");
       };
 
       Documents.prototype.preCategory = function () {

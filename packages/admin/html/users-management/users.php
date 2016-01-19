@@ -12,8 +12,6 @@
          this.module.onStart = function () {
             component.start();
          };
-
-
       }
 
       UsersComponent.prototype.init = function () {

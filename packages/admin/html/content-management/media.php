@@ -44,7 +44,7 @@ if (!$_SESSION['login'])
       MediaComponent.prototype.init = function () {
          var _this = this;
          this.module.on("album", function (e, id, images) {
-
+alert("mediaaaaaaaaaaaaaaaaaa");
             if (id > 0) {
                _this.newAlbumActivity.comeOut();
                _this.uploadFileActivity.comeIn();

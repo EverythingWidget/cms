@@ -27,16 +27,16 @@
          init: function (navigations, params, html)
          {
             this.inited = true;
-            this.navigation = navigations;
-            this.params = params;
-            this.html = html;
+            //this.navigation = navigations;
+            //this.params = params;
+            //this.html = html;
             this.trigger("onInit");
 
             this.installModules.forEach(function (lib) {
-               alert("install: " + lib.id);
+               //alert("install: " + lib.id);
                System.loadModule(lib/*, function () {
-                  alert("install completed: " + lib.id);
-               }*/);
+                alert("install completed: " + lib.id);
+                }*/);
             });
          },
          start: function ()
@@ -45,13 +45,22 @@
             this.active = true;
             //System.app.activeModule = this;
             this.trigger("onStart");
-            var n = this.navigation;
-            var p = this.params;
+            /*var modNav = this.navigation[this.moduleIdentifier] ? this.navigation[this.moduleIdentifier].slice(1) : [];
+             var newNav = $.extend(true, {}, this.navigation);
+             newNav[this.moduleIdentifier] = modNav;*/
+            //var modNav = System.app.navigation[this.moduleIdentifier] ? System.app.navigation[this.moduleIdentifier].slice(1) : [];
+            var newNav = $.extend(true, {}, System.app.navigation);
+            var st = "system/" + System.app.params[this.moduleIdentifier];
+            var napPath = st.indexOf(this.id) === 0 ? st.substr(this.id.length).split("/").filter(Boolean) : [];
+
+            newNav[this.moduleIdentifier] = napPath;
+            var n = newNav;
+            var p = System.app.params;
             this.navigation = {};
             this.params = {};
             // Empty navigation and params before call the hashChanged method at the starting phase.
             // This will force the module to call all its event handlers
-            console.log("Module started: " + this.id);
+            //console.log("Module started: " + this.id, n, p);
             this.hashChanged(n, p, this.hash, System.getHashParam(this.moduleIdentifier));
 
             var index = System.notYetStarted.indexOf(this.id);
@@ -87,7 +96,7 @@
             }
 
             if (this.modules[id]) {
-               alert("already registered: " + id);
+               //alert("already registered: " + id);
                return this.modules[id];
             }
 
@@ -288,7 +297,7 @@
          return this.app.module(id, object);
       },
       // Open app
-      openApp: function (app, reload)
+      /*openApp: function (app, reload)
       {
          // Start the opening app process
          this.onLoadQueue.push(app);
@@ -361,7 +370,7 @@
          setTimeout(function () {
             self.appLoaderService();
          }, 1);
-      },
+      },*/
       /** This method will be called whenever System attempts to load an app
        * 
        * @param {Object} app
@@ -475,7 +484,7 @@
          if (nav && System.modulesHashes[nav] && System.app.activeModule !== System.modules["system/" + nav]) {
             //window.location.hash = System.modulesHashes[nav];
             // When the navigation path is changed
-            //alert(System.modulesHashes[nav] + " YES");
+            //alert(System.modulesHashes[nav] + " YES " + nav);
          } else if (nav && !this.firstTime) {
             // first time indicates that the page is (re)loaded and the window.location.hash should be set
             // as the module hash value for the module which is specified by app parameter in the hash value.
@@ -506,8 +515,12 @@
          //var originHash = hashValue;
          var nav = parameters["app"];
          if (nav && !System.modulesHashes[nav]) {
+            //console.log(hashValue, nav)
             System.modulesHashes[nav] = hashValue = "app=" + nav;
+
          } else if (nav && System.modulesHashes[nav]) {
+            //console.log(hashValue, nav , System.modulesHashes[nav]);
+            //alert("---------");
             hashValue = System.modulesHashes[nav];
          }
          //console.log(parameters, nav, System.modulesHashes[nav]);
@@ -539,17 +552,6 @@
          });
          newHash = newHash.replace(/\&$/, '');
 
-         /*if (System.modulesHashes[System.getHashParam("app")] && System.modulesHashes[System.getHashParam("app")] !== newHash) {
-          
-          alert(System.getHashParam("app") + " " + newHash);
-          //System.modulesHashes[System.getHashParam("app")] = newHash;
-          }*/
-
-         /*if (moduleId && this.modulesHashes[moduleId]) {
-          this.modulesHashes[moduleId] = newHash;
-          //console.log(moduleId, hashValue, newHash);
-          }*/
-
          if (replace) {
             window.location.replace(('' + window.location).split('#')[0] + newHash);
          } else {
@@ -570,20 +572,19 @@
          System.onModuleLoaded["system/" + mod.id] = onDone;
 
          if (System.modules["system/" + mod.id]) {
-
+            //alert("loaded so call onDone " + mod.id + " " + System.onModuleLoaded["system/" + mod.id]);
             if ("function" === typeof (System.onModuleLoaded["system/" + mod.id])) {
                //onDone.call(this, System.modules["system/" + mod.id], System.modules["system/" + mod.id].html);
                System.onModuleLoaded["system/" + mod.id].call(this, System.modules["system/" + mod.id],
                        System.modules["system/" + mod.id].html);
+
+               System.onModuleLoaded["system/" + mod.id] = null;
             }
 
             return;
          }
 
          if (System.onLoadQueue["system/" + mod.id]) {
-            //System.onModuleLoaded["system/" + mod.id] = onDone;
-            //System.onModuleLoaded["system/" + mod.id] = onDone;
-            //call(null, System.onLoadQueue["system/" + mod.id]);
             return;
          }
 
@@ -616,6 +617,7 @@
             if ("function" === typeof (System.onModuleLoaded["system/" + mod.id])) {
                //onDone.call(this, System.modules["system/" + mod.id], response);
                System.onModuleLoaded["system/" + mod.id].call(this, System.modules["system/" + mod.id], html);
+               System.onModuleLoaded["system/" + mod.id] = null;
             }
 
             /*if (System.startAfterLoad === System.modules["system/" + mod.id].id) {

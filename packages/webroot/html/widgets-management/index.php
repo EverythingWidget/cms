@@ -64,6 +64,8 @@ function script()
                }
             ];
 
+            this.module.data.installModules = this.module.data.sections;
+
             this.module.on("app", function (p, section) {
 
                if (!section /*|| section === this.data.tab*/) {
@@ -80,7 +82,7 @@ function script()
             this.data.tab = null;
 
 
-//            System.UI.components.sectionsMenuList[0].setAttribute("data", this.module.data.sections);
+   //            System.UI.components.sectionsMenuList[0].setAttribute("data", this.module.data.sections);
          };
 
          System.module("widgets-management", function () {

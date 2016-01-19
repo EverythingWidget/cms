@@ -68,11 +68,13 @@
          $("#main-content").html(this.table.container);
          this.table.read();
       };
-      return new UsersGroups();
+      return UsersGroups;
    })();
 
    System.module("users-management").module("users-groups", function () {
-
+      this.onStart = function () {
+         new UsersGroups();
+      };
    });
 
 </script>

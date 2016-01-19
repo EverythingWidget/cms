@@ -59,6 +59,8 @@ function script()
                   url: "~admin/html/users-management/users-groups.php"
                }
             ];
+            
+            this.module.installModules = this.module.data.sections;
 
             this.module.on("app", function (path, section) {
                if (!section /*|| section === component.data.tab*/) {
