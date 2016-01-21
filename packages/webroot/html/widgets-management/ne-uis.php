@@ -232,8 +232,7 @@ session_start();
       var addBlockBtn = $("<button type='button' class='btn btn-primary btn-sm'>tr{Add Block}</button>");
       addBlockBtn.css({
          float: "none",
-         margin: "0px auto",
-         marginBottom: "10px",
+         margin: "10px auto",
          display: "block"
       });
       addBlockBtn.on("click", $.proxy(this.blockForm, this, null));
@@ -351,7 +350,7 @@ session_start();
    {
       var self = this;
       var frameBody = $(document.getElementById("fr").contentDocument.body);
-      frameBody.children(".widget-glass-pane").remove();
+      //frameBody.children(".widget-glass-pane").remove();
       //var editorGlassPane = frameBody.children("#editor-glass-pane");
 
       var children = $(element).children();
@@ -364,6 +363,7 @@ session_start();
       var skipChildren = false;
       //var liUl = null;
       var itemLabel;
+
       $.each(children, function (k, v)
       {
          v = $(v);
@@ -371,7 +371,7 @@ session_start();
          //var div = $("<div></div>");
          if (v.hasClass("panel") || v.hasClass("block"))
          {
-            liUl = $("<li><div><div href='#' class='item-label'><img src='~admin/public/css/images/panel-icon.png' class='handle'/></div><a href='#' class='btn btn-primary add-item'>Add</a><a href='#' class='close-icon' ></a></div></li>");
+            liUl = $("<li><div href='#' class='item-label'><img src='~admin/public/css/images/panel-icon.png' class='handle'/></div><a href='#' class='btn btn-primary add-item'>Add</a><a href='#' class='close-icon' ></a></li>");
             itemLabel = liUl.find(".item-label");
             liUl.attr("data-linked-panel-id", v.attr("data-panel-id"));
             skipBoxBlock = false;
@@ -471,10 +471,12 @@ session_start();
                result.push(liUl);
             }
          }
-         if (v.hasClass("widget-container"))
-         {
+
+         if (v.hasClass("widget-container")) {
+
             //v.find(".widget-glass-pane").remove();
-            var widgetGlassPane = $("<div class='widget-glass-pane'>");
+            var widgetGlassPane = $(document.createElement("div"));
+            widgetGlassPane.addClass("widget-glass-pane");
             widgetGlassPane.data("widget-element", v);
             frameBody.append(widgetGlassPane);
 
@@ -483,7 +485,7 @@ session_start();
                e.preventDefault();
             };
 
-            var li = $("<li class='widget'><div><div href='#' class='item-label'><img src='~admin/public/css/images/widget-icon.png' class='handle'/></div><a href='#' class='close-icon' ></a></div></li>");
+            var li = $("<li class='widget'><div href='#' class='item-label'><img src='~admin/public/css/images/widget-icon.png' class='handle'/></div><a href='#' class='close-icon' ></a></li>");
             li.attr("data-linked-widget-id", v.children().attr("data-widget-id"));
             var widgetTitle = li.find(".item-label");
             widgetTitle.append(/*v.children().data("widget-id") +*/ v.children().attr("data-widget-title"));
@@ -510,7 +512,7 @@ session_start();
             // Show bloack glass on hover for widget
 
             //var widgetClone = widget.clone();
-            li.find("a").hover(function ()
+            li.hover(function ()
             {
                var widget = frameBody.find("[data-widget-id='" + v.children().attr('data-widget-id') + "']");
                // Scroll to the widget if the panel is not in view port
@@ -568,17 +570,18 @@ session_start();
       inspectorEditorList.empty();
 
       // Add div to create glass effect to make the iframe content unselectable
-      frameBody.find("#editor-glass-pane").remove();
-      var editorGlassPane = $("<div>");
-      editorGlassPane.css({
-         position: "fixed",
-         top: "0px",
-         left: "0px",
-         width: "100%",
-         height: "100%",
-         zIndex: 12
-      });
-      editorGlassPane.attr("id", "editor-glass-pane");
+      //frameBody.find("#editor-glass-pane").remove();
+      frameBody.children(".widget-glass-pane").remove();
+      /*var editorGlassPane = $("<div>");
+       editorGlassPane.css({
+       position: "fixed",
+       top: "0px",
+       left: "0px",
+       width: "100%",
+       height: "100%",
+       zIndex: 12
+       });
+       editorGlassPane.attr("id", "editor-glass-pane");*/
       //frameBody.append(editorGlassPane);
 
       // Add a div to represent the highlight of current element
@@ -694,14 +697,15 @@ session_start();
             //var widgetContainer = $(el).parent();
             var widgetContainer = $(el).data("widget-element");
             var widget = widgetContainer.children("[data-widget]");
-            var widgetoffset = widget.offset();
+            //var widgetoffset = widget.offset();
+            var rect = widget[0].getBoundingClientRect();
             $(el).css({
-               top: widgetoffset.top,
-               left: widgetoffset.left,
-               width: widget.outerWidth(),
-               height: widget.outerHeight()
+               top: rect.top,
+               left: rect.left,
+               width: rect.width,
+               height: rect.height
             });
-
+//console.log(widgetContainer);
          });
       if (!repTimeout)
          repTimeout = setTimeout(function () {

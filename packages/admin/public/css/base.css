@@ -1785,6 +1785,7 @@ ul.items li {
    overflow: hidden;
    min-height: 34px;
    border: 1px solid transparent;
+   position: relative;
 }
 
 ul.items li.block.highlight,ul.items li.highlight {
@@ -1837,10 +1838,11 @@ ul.items li.panel > ul {
 ul.items li.widget {
    border: none;
    padding: 0;
+   overflow: hidden;
 }
 
-ul.items li.widget div > .item-label {
-   background-color: #3399cf;
+ul.items li.widget > .item-label {
+   background-color: #0080bb;
    border-radius:2px;
    color: #fff;
    float: none;
@@ -1849,8 +1851,8 @@ ul.items li.widget div > .item-label {
    box-shadow: 0 1px 3px -1px rgba(0,0,0,.3);
 }
 
-ul.items li.widget div > .item-label:hover {
-   background-color: #0080bb;
+ul.items li.widget > .item-label:hover {
+   background-color: #3399cf;
    box-shadow: 0 2px 6px -2px rgba(0,0,0,.5);
 }
 
@@ -1877,7 +1879,7 @@ ul.items .button {
 }
 
 ul.items li > div {
-   overflow: hidden;
+   /*overflow: hidden;*/
    top: 0;
    display: block;
    position: relative;
@@ -1927,6 +1929,7 @@ ul.items ul {
    padding: 0 0 10px 15px;
    overflow: hidden;
    margin-right: -1px;
+   width: 100%;
 }
 
 .dragged {
@@ -3227,6 +3230,7 @@ inline-dialog{
    height: 100%;
    position: relative;
    width: 400px;
+   overflow: auto;
 }
 
 .uis-editor-tool-pane .tab-content {

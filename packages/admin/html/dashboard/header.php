@@ -35,5 +35,5 @@
 
 <script src="~admin/public/js/lib/system-ui.js" defer></script>   
 <script src="~admin/public/js/lib/bootstrap.js" defer></script>
-<script src="~admin/public/js/ContentStrike/content-tools.min.js" defer></script>
+<script src="~admin/public/js/ContentStrike/content-tools.js" defer></script>
 

@@ -5,7 +5,7 @@ session_start();
 function get_article_data($id)
 {
    $articleInfo = [];
-   $articleInfo["parent_id"] = $_REQUEST["parent"];
+   $articleInfo["parent_id"] = $_REQUEST["folder"];
    if ($_REQUEST["articleId"])
    {
       $articleInfo = EWCore::call_api("admin/api/content-management/get-article", [
@@ -69,7 +69,7 @@ function script()
                $(document).trigger("article-list.refresh");
             }}).hide();
 
-         this.bEdit = EW.addActivity({title: "tr{Save}", defaultClass: "btn-success", activity: "admin/api/content-management/update-article",
+         this.bUpdate = EW.addActivity({title: "tr{Update}", defaultClass: "btn-success", activity: "admin/api/content-management/update-article",
             postData: function () {
                if (!$("#article-form").EW().validate()) {
                   return false;
@@ -103,7 +103,7 @@ function script()
             if (article && article.id) {
                self.bAdd.comeOut(300);
                self.bEditAndClose.comeIn(300);
-               self.bEdit.comeIn(300);
+               self.bUpdate.comeIn(300);
                self.bDelete.comeIn(300);
 
                ContentForm.uiTitle.html("<span>tr{Edit}</span>" + article.title);
@@ -112,7 +112,7 @@ function script()
             } else {
                self.bAdd.comeIn(300);
                self.bEditAndClose.comeOut(300);
-               self.bEdit.comeOut(300);
+               self.bUpdate.comeOut(300);
                self.bDelete.comeOut(300);
 
             }

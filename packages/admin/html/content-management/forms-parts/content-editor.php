@@ -2,7 +2,7 @@
 
 <script>
    var contentEditor;
-   contentEditor = ContentTools.EditorApp.getNew();
+   contentEditor = ContentTools.EditorApp.get();
    contentEditor.init('#content-editor');
 
    $(document).ready(function () {
