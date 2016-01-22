@@ -430,8 +430,6 @@ class ContentManagement extends \ew\Module
 
       if ($content->id)
       {
-         $res = ["status" => "success",
-             "data" => $content->toArray()];
          $id = $content->id;
          $labels = json_decode($labels, true);
          foreach ($labels as $key => $value)
