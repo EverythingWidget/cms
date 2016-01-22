@@ -209,7 +209,7 @@ session_start();
          activity: "webroot/api/widgets-management/export-uis"
       }))
       {
-         $("#uis-preference-actions").append("<a class='btn btn-link pull-right export-btn' href=~webroot/api/widgets-management/export-uis?uis_id=" + this.uisId + ">Export Layout</a>");
+         $("#uis-preference-actions").append("<a class='btn btn-text btn-primary pull-right export-btn' href=~webroot/api/widgets-management/export-uis?uis_id=" + this.uisId + ">Export Layout</a>");
          this.bExportLayout = $("#uis-preference-actions a.export-btn");
          this.bExportLayout.hide();
       }
