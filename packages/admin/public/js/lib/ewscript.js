@@ -567,8 +567,8 @@ EverythingWidgets.prototype.createList = function (config) {
 
       },
       setData: function (data) {
-         
-         
+
+
 
          for (var i = 0, len = data.length; i < len; i++) {
 
@@ -701,7 +701,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
             settings.onClose.apply(modalPane, null);
          }
 
-         if (settings.class === "left") {
+         if (settings.class.indexOf("left") > -1) {
             xButton.remove();
             System.UI.Animation.slideOut({
                time: .3,
@@ -754,7 +754,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction)
             basePane.append(modalPane, xButton);
          }
 
-         if (settings.class !== "left") {
+         if (settings.class.indexOf("left") === -1) {
             /*modalPane.css("left", ($(window).width() - modalPane.outerWidth(true)) / 2);*/
          } else {
             System.UI.Animation.slideIn({

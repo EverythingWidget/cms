@@ -144,7 +144,26 @@ class ContentManagement extends \ew\Module
          {
             $html .= $dom->saveHTML($child);
          }
-         $content_fields->{$field->getAttribute("content-field")} = ["content" => trim($html)];
+
+         $current_field_value = $content_fields->{$field->getAttribute("content-field")};
+         if ($current_field_value)
+         {
+            if (is_array($current_field_value["content"]))
+            {
+               $content_fields->{$field->getAttribute("content-field")}["content"][] = trim($html);
+            }
+            else
+            {
+               $content_fields->{$field->getAttribute("content-field")} = ["content" => [
+                       $current_field_value["content"],
+                       trim($html)
+               ]];
+            }
+         }
+         else
+         {
+            $content_fields->{$field->getAttribute("content-field")} = ["content" => trim($html)];
+         }
       }
 
       return $content_fields;
@@ -459,17 +478,18 @@ class ContentManagement extends \ew\Module
 
       $articles = $this->contents_labels($id, "admin_ContentManagement_language", $language);
       $article = [];
-
+      
       if ($articles)
       {
          $article = $articles["data"][0];
-         $result["html"] = "WIDGET_DATA_MODEL";
-         $result["title"] = $article->title;
-         $result["content"] = $article->content;
-         return $result;
+         //$result["html"] = "WIDGET_DATA_MODEL";
+         $result["title"] = $article["title"];
+         $result["content"] = $article["content"];
+         $result["content_fields"] = $article["content_fields"];
+         return \ew\APIResourceHandler::to_api_response($result,["type"=>"object"]);
       }
 
-      return NULL;
+      return \ew\APIResourceHandler::to_api_response([]);
    }
 
    public function ew_list_feeder_folder($id, $token = 0, $size)

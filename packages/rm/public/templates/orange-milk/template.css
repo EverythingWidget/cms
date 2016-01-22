@@ -8,8 +8,10 @@ and open the template in the editor.
     Author     : Eeliya
 */
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,300,500,700);
+@import url(https://fonts.googleapis.com/css?family=Amiri:400,700&subset=arabic);
 body {
-  font-family: 'Roboto', sans-serf;
+  font-family: 'Roboto', 'Amiri';
+  font-size: 17px;
   position: relative; }
 
 .content-box, .widget.nav-menu ul {

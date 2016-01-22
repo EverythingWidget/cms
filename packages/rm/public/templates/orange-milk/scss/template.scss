@@ -8,6 +8,7 @@ and open the template in the editor.
     Author     : Eeliya
 */
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,300,500,700);
+@import url(https://fonts.googleapis.com/css?family=Amiri:400,700&subset=arabic);
 
 $background-color: #fff;
 $akcent-background-color: #ddd;
@@ -16,18 +17,19 @@ $font-akcent-color: orange;
 $nav-bar-bg: rgba(0,0,0,.32);
 
 body {
-   font-family: 'Roboto', sans-serf;
-   position: relative;
+  font-family: 'Roboto', 'Amiri';
+  font-size: 17px;
+  position: relative;
 }
 
 .content-box {
-   padding: 0;
-   margin: 0;
+  padding: 0;
+  margin: 0;
 }
 
 .container {
 
-   width: 100%;
+  width: 100%;
 }
 
 .block {
@@ -35,101 +37,101 @@ body {
 }
 
 .block.nav-bar {
-   background-color: $nav-bar-bg;
-   height: 80px;
-   margin: 30px 0;
-   display: block;
-   position: absolute;
-   top: 0;
-   z-index: 10;
+  background-color: $nav-bar-bg;
+  height: 80px;
+  margin: 30px 0;
+  display: block;
+  position: absolute;
+  top: 0;
+  z-index: 10;
 }
 
 .block.float.nav-bar {
-   position: fixed;
-   top: 0;
-   left: 0;
-   width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
 }
 
 .block.section {
-   position: relative;
+  position: relative;
 }
 
 .block.text {
-   background-color: #ddd;
-   text-align: center;
-   font-size: 1.4em;
-   padding: 20px 0;
+  background-color: #ddd;
+  text-align: center;
+  font-size: 1.4em;
+  padding: 20px 0;
 
-   h1 {
-      font-weight: 500;
-      margin: 5px 0;
-      font-size: 2.3em;
-   }
+  h1 {
+    font-weight: 500;
+    margin: 5px 0;
+    font-size: 2.3em;
+  }
 
-   h3 {
-      font-weight: 500;
-      margin: 15px 0;
-   }
+  h3 {
+    font-weight: 500;
+    margin: 15px 0;
+  }
 }
 
 .widget.text-center {
-   text-align: center;
+  text-align: center;
 }
 
 .widget.nav-menu {
-   font-size: 1.2em;
-   overflow: hidden;
+  font-size: 1.2em;
+  overflow: hidden;
 
-   ul {
-      @extend .content-box;
-      list-style: none;    
-      text-transform: uppercase;
+  ul {
+    @extend .content-box;
+    list-style: none;    
+    text-transform: uppercase;
 
-      li {
-         float: left;
-         padding: 15px;
-         line-height: 50px;
-      }
-   }
+    li {
+      float: left;
+      padding: 15px;
+      line-height: 50px;
+    }
+  }
 
-   a {
-      color: #fff;
-      font-weight: 500;
-   } 
+  a {
+    color: #fff;
+    font-weight: 500;
+  } 
 
-   a.selected {
-      color: $font-akcent-color;
-   } 
+  a.selected {
+    color: $font-akcent-color;
+  } 
 }
 
 .widget.right.nav-menu {
-   float: right;
-   ul {
-      li {
-         float: right;
-      }
-   }
+  float: right;
+  ul {
+    li {
+      float: right;
+    }
+  }
 }
 
 .widget.slider {
-   border: 0px solid red;
-   height: 650px;
+  border: 0px solid red;
+  height: 650px;
 }
 
 .widget.daily-quote {
-   margin: 45px 0;
-   padding: 30px 15px;
-   box-shadow: 0 3px 12px rgba(0,0,0,.22), 0 0px 22px rgba(0,0,0,.16);
-   z-index: 1;
+  margin: 45px 0;
+  padding: 30px 15px;
+  box-shadow: 0 3px 12px rgba(0,0,0,.22), 0 0px 22px rgba(0,0,0,.16);
+  z-index: 1;
 }
 
 .widget.list-col-3 {
-   margin: 45px 0;
-   
-   .list-item-cell {
-      background-color: $akcent-background-color;
-      min-height: 450px;
-      overflow: hidden;
-   }
+  margin: 45px 0;
+
+  .list-item-cell {
+    background-color: $akcent-background-color;
+    min-height: 450px;
+    overflow: hidden;
+  }
 }

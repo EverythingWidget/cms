@@ -848,6 +848,10 @@ body.Admin {
    right: auto;
 }
 
+.top-pane.left.big {
+   width: 55%;
+}
+
 h1 {
    margin: 0 0 15px;
    display: block;
@@ -1768,8 +1772,8 @@ ul.links li p {
 
 ul.items {
    margin: 0;
-   padding: 0;
-   padding-left: 5px;
+   padding: 0 5px;
+   /* padding-left: 5px; */
    font-size: 13px;
    font-weight: 700;
    list-style: none;
@@ -1786,11 +1790,12 @@ ul.items li {
    min-height: 34px;
    border: 1px solid transparent;
    position: relative;
+   background-color: rgba(0,0,0,.1);
 }
 
 ul.items li.block.highlight,ul.items li.highlight {
-   box-shadow: 0 2px 13px -1px rgba(0,0,0,.46);
-   border: 1px solid rgba(0,0,0,.3);
+   box-shadow: 0 1px 2px rgba(0,0,0,.2) ,0 3px 6px rgba(0,0,0,.14);
+   border: 1px solid rgba(0,0,0,.5);
 }
 
 ul.items li.block {
@@ -1799,9 +1804,9 @@ ul.items li.block {
    display: block;
    overflow: hidden;
    min-height: 34px;
-   border: 1px solid rgba(0,0,0,.1);
+   border: 1px solid transparent;
    border-radius: 0;
-   background-color: #eee;
+   /* background-color: #eee; */
 }
 
 ul.items li .item-label {
@@ -1839,6 +1844,7 @@ ul.items li.widget {
    border: none;
    padding: 0;
    overflow: hidden;
+   background-color: transparent;
 }
 
 ul.items li.widget > .item-label {
@@ -1897,12 +1903,13 @@ ul.items li > .title {
 ul.items li a.btn {
    padding: 0 5px;
    line-height: 18px;
-   color: #fff;
+   /* color: #fff; */
    margin: 6px 10px;
-   font-size: 13px;
-   border-radius: 2px;
-   display: none;
+   font-size: 24px;
+   /* border-radius: 2px; */
+   /* display: none; */
    float: left;
+   /* font-weight: 300; */
 }
 
 ul.items li .close-icon {

@@ -16,7 +16,7 @@ session_start();
    </ul>
 </div>
 <div id="ew-uis-editor" class="form-content tabs-bar row" style="padding:0px;">
-   <div class="list-modal" style="width:400px;z-index:3;background-color:#fff;left:-400px;" id="items-list">      
+   <div class="list-modal z-index-1" style="width:400px;z-index:3;background-color:#fff;left:-400px;" id="items-list">      
       <h1 class="pull-left">Select an item</h1><a href='javascript:void(0)' class='close-icon pull-right' style="margin:5px;"></a>      
       <div  id="items-list-content" ></div>
    </div>
@@ -306,6 +306,7 @@ session_start();
             self.uisId = data.id;
             $("#uis-preference-actions .export-btn").attr("href", "~webroot/api/widgets-management/export-uis?uis_id=" + self.uisId);
             self.uisTemplate = data.template;
+            console.log(data.template_settings)
             if (data.template_settings) {
                self.templateSettings = JSON.parse(data.template_settings);
             } else
@@ -319,19 +320,17 @@ session_start();
       self.relocateGlassPanes();
    }
 
-   UISForm.prototype.setTemplateSettings = function (settings)
-   {
-      if (typeof settings === "object")
+   UISForm.prototype.setTemplateSettings = function (settings)   {
+      /*if (typeof settings === "object")
       {
-         settings = JSON.stringify(settings);
-      }
-      this.templateSettings = settings;
-   }
+         settings = JSON.stringify(settings || {});
+      }*/
+      this.templateSettings = settings || {};
+   };
 
-   UISForm.prototype.previewLayout = function ()
-   {
+   UISForm.prototype.previewLayout = function ()   {
       window.open('<?php echo EW_ROOT_URL ?>' + '?_uis=' + this.uisId + '&editMode=true');
-   }
+   };
 
    UISForm.prototype.clearEditor = function ()
    {
@@ -371,7 +370,7 @@ session_start();
          //var div = $("<div></div>");
          if (v.hasClass("panel") || v.hasClass("block"))
          {
-            liUl = $("<li><div href='#' class='item-label'><img src='~admin/public/css/images/panel-icon.png' class='handle'/></div><a href='#' class='btn btn-primary add-item'>Add</a><a href='#' class='close-icon' ></a></li>");
+            liUl = $("<li><div href='#' class='item-label'><img src='~admin/public/css/images/panel-icon.png' class='handle'/></div><a href='#' class='btn btn-primary btn-text add-item'>+</a><a href='#' class='close-icon' ></a></li>");
             itemLabel = liUl.find(".item-label");
             liUl.attr("data-linked-panel-id", v.attr("data-panel-id"));
             skipBoxBlock = false;
@@ -421,7 +420,7 @@ session_start();
                self.removePanel(v.attr('data-panel-id'));
             });
 
-            liUl.children("div").hover(function () {
+            liUl.find(".item-label").hover(function () {
                var panel = frameBody.find("[data-panel-id='" + v.attr('data-panel-id') + "']");
                // Scroll to the panel if the panel is not in view port
                if (panel.offset().top > (frameBody.scrollTop() + frameBody.innerHeight())
@@ -442,10 +441,10 @@ session_start();
                });
 
                self.currentElementHighlight.show();
-               addItem.stop().fadeIn(300);
+               //addItem.stop().fadeIn(300);
             }, function () {
                self.currentElementHighlight.hide();
-               addItem.hide();
+               //addItem.hide();
             });
 
             var ul = $("<ul></ul>");
@@ -1237,7 +1236,7 @@ session_start();
    UISForm.prototype.editWidget = function (wId)
    {
       var self = this;
-      var d = EW.createModal({class: "center"});
+      var d = EW.createModal({class: "left big"});
       self.currentDialog = d;
 
       var w = self.getEditorItem(wId);

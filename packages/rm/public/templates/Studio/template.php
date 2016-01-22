@@ -175,8 +175,8 @@ class template extends TemplateControl
                uisForm.updateTemplateBody();
             });
          });
-         $("#template_settings_form").on("getData", function (e)
-         {
+         
+         $("#template_settings_form").on("getData", function (e)         {
             var data = $.parseJSON($("#template_settings_form").serializeJSON());
             //if (data)
             //  data.pages = $("#website_pages").EW().dynamicList("getJSON");
