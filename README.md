@@ -7,3 +7,5 @@ It is a app based CMS and you can implement your bussiness logic by creating an 
 
 It also provides very flexible template & layout system. You can create your template and manage your layouts with the EW Layout Editor.
 You can also create pre-built layouts for your customers
+
+For more information head to : www.ewcms.org
