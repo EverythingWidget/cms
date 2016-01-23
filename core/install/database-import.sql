@@ -132,7 +132,7 @@ CREATE TABLE `ew_users` (
 --
 
 INSERT INTO `ew_users` (`id`, `email`, `password`, `first_name`, `last_name`, `type`, `group_id`, `permission`, `date_created`, `verification_code`, `verified`, `verification_date`, `disable`) VALUES
-(1, 'admin', 'admin', 'Eeliya', 'Rasta', 1, 9, 'admin.dashboard.dashboard', NULL, NULL, NULL, NULL, 0);
+(1, 'admin', 'admin', 'Eeliya', 'Rasta', 1, 2, 'admin.dashboard.dashboard', NULL, NULL, NULL, NULL, 0);
 
 -- --------------------------------------------------------
 
