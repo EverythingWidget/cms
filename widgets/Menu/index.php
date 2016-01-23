@@ -21,8 +21,9 @@ if ($feeder) {
   if ($content_fields) {
     //print_r($content_fields["menu-title"]["content"]);
     $titles = $content_fields["menu-title"]["content"];
-    $links = $content_fields["link"]["content"];
-    $icons = $content_fields["icon"]["content"];
+    $links = $content_fields["menu-link"]["content"];
+    $icons = $content_fields["menu-icon"]["content"];
+    //print_r($links);
   }
 }
 ?>

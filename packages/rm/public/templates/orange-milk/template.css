@@ -40,7 +40,7 @@ body {
   position: relative; }
 
 .block.text {
-  background-color: #ddd;
+  background-color: #eee;
   text-align: center;
   font-size: 1.4em;
   padding: 20px 0; }
@@ -83,7 +83,7 @@ body {
 .widget.daily-quote {
   margin: 45px 0;
   padding: 30px 15px;
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.22), 0 0px 22px rgba(0, 0, 0, 0.16);
+  /*box-shadow: 0 3px 12px rgba(0,0,0,.22), 0 0px 22px rgba(0,0,0,.16);*/
   z-index: 1; }
 
 .widget.list-col-3 {
@@ -91,6 +91,10 @@ body {
   .widget.list-col-3 .list-item-cell {
     background-color: #ddd;
     min-height: 450px;
-    overflow: hidden; }
+    overflow: hidden;
+    padding: 0 15px;
+    border-bottom: 3px solid orange; }
+    .widget.list-col-3 .list-item-cell h2 {
+      font-weight: 500; }
 
 /*# sourceMappingURL=template.css.map */

@@ -696,13 +696,13 @@ session_start();
             //var widgetContainer = $(el).parent();
             var widgetContainer = $(el).data("widget-element");
             var widget = widgetContainer.children("[data-widget]");
-            //var widgetoffset = widget.offset();
-            var rect = widget[0].getBoundingClientRect();
+            var widgetoffset = widget.offset();
+            //var rect = widget[0].getBoundingClientRect();
             $(el).css({
-               top: rect.top,
-               left: rect.left,
-               width: rect.width,
-               height: rect.height
+               top: widgetoffset.top,
+               left: widgetoffset.left,
+               width: widgetoffset.outerWidth,
+               height: widgetoffset.outerHeight
             });
 //console.log(widgetContainer);
          });

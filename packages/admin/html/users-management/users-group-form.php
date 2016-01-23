@@ -188,7 +188,7 @@ function get_ew_users_permissions_form()
                formParams["permission"] = $self.readPermission().toString();
                EW.lock($("#users-group-form"), "Saving...");
                $.post('<?php echo EW_ROOT_URL; ?>~admin/api/users-management/update-group', formParams, function (data) {
-                  UsersGroups.usersGroupsList();
+                  $(document).trigger("users-groups-list.refresh");
                   $("body").EW().notify(data).show();
 
                   EW.unlock($("#users-group-form"));

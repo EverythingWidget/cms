@@ -73,7 +73,7 @@
                }
             }
          });
-         
+
          //alert("Document init");
       };
 
@@ -86,7 +86,7 @@
          this.currentItem = $();
          this.bUp = EW.addAction("tr{Up}", $.proxy(this.preCategory, this), {
             display: "none"
-         });
+         }, "action-bar-items");
 
          this.bUp.css("float", "right");
          this.bNewFolder = EW.addActivity({

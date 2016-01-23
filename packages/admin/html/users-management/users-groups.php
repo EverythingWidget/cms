@@ -4,17 +4,24 @@
 
       function UsersGroups()
       {
-         var self = this;
+         var _this = this;
          this.bNewGroup = EW.addAction("tr{New Group}", function () {
             EW.setHashParameter("groupId", null);
             EW.setHashParameter("form", "group");
          }).hide().comeIn(300);
+
+         $(document).off("users-groups-list.refresh");
+         $(document).on("users-groups-list.refresh", function () {
+            _this.usersGroupsList();
+         });
+         
          this.usersGroupsList();
-         self.userGroupModal = EW.createModal({hash: {key: "form", value: "group"}, onOpen: function () {
+         
+         _this.userGroupModal = EW.createModal({hash: {key: "form", value: "group"}, onOpen: function () {
                EW.lock(this);
                var groupId = EW.getHashParameter("groupId");
                $.post("<?php echo EW_ROOT_URL; ?>~admin/html/users-management/users-group-form.php", {groupId: groupId}, function (data) {
-                  self.userGroupModal.html(data);
+                  _this.userGroupModal.html(data);
                });
             },
             onClose: function () {
