@@ -16,7 +16,7 @@
    </div>
 </div>
 <script>
-   (function (System) {
+   (function component(System) {
 
       function MediaComponent(module) {
          var _this = this;
