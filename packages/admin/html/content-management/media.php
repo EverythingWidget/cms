@@ -1,13 +1,4 @@
-<?php
-session_start();
-if (!$_SESSION['login'])
-{
-   header('Location: Login.php');
-   return;
-}
-?>
-
-<div id="media-items-container" class="row">
+<div id="media-items-container" >
    <div id="files-list" class="elements-list">
 
    </div>

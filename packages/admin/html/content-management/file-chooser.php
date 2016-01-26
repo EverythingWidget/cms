@@ -15,10 +15,9 @@ function custom_widget_feeder_tab()
    return ob_get_clean();
 }
 
-EWCore::register_form("ew-link-chooser-form-default", "custom-url", ["title" => "URL",
+EWCore::register_form("ew/ui/components/link-chooser", "custom-url", ["title" => "URL",
     "content" => custom_url_tab()]);
-$tabsDefault = EWCore::read_registry("ew-link-chooser-form-default");
-$tabs = EWCore::read_registry("ew-link-chooser-form");
+$tabs = EWCore::read_registry("ew/ui/components/link-chooser");
 
 ?>
 <div class="header-pane tabs-bar row">
@@ -27,16 +26,12 @@ $tabs = EWCore::read_registry("ew-link-chooser-form");
    </h1>  
    <ul class="nav nav-pills xs-nav-tabs">    
       <?php
-      foreach ($tabsDefault as $id => $tab)
+      foreach ($tabs as $id => $tab)
       {
-         if ($id == "contents-list")
+         if ($id == "content-chooser")
             echo "<li class='active '><a href='#{$id}' data-toggle='tab'>{$tab["title"]}</a></li>";
          else
             echo "<li class=''><a href='#{$id}' data-toggle='tab'>{$tab["title"]}</a></li>";
-      }
-      foreach ($tabs as $id => $tab)
-      {
-         echo "<li class='' ><a href='#{$id}' data-toggle='tab'>{$tab["title"]}</a></li>";
       }
       ?>
    </ul>
@@ -45,16 +40,12 @@ $tabs = EWCore::read_registry("ew-link-chooser-form");
    <div class="form-content tabs-bar no-footer">
      <div class="tab-content">
       <?php
-      foreach ($tabsDefault as $id => $tab)
+      foreach ($tabs as $id => $tab)
       {
-         if ($id == "contents-list")
+         if ($id == "content-chooser")
             echo "<div class='tab-pane active' id='{$id}'>{$tab["content"]}</div>";
          else
             echo "<div class='tab-pane' id='{$id}'>{$tab["content"]}</div>";
-      }
-      foreach ($tabs as $id => $tab)
-      {
-         echo "<div class='tab-pane' id='{$id}'>{$tab["content"]}</div>";
       }
       ?>
      </div>

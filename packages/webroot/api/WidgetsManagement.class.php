@@ -37,7 +37,7 @@ class WidgetsManagement extends \ew\Module
 
    protected function install_permissions()
    {
-      EWCore::register_form("ew-link-chooser-form-default", "link-chooser-uis-list", ["title" => "UI Structures",
+      EWCore::register_form("ew/ui/components/link-chooser", "uis-chooser", ["title" => "UI Structures",
           "content" => $this->link_chooser_form]);
 
       $this->register_permission("view", "User can view the widgets section", array(

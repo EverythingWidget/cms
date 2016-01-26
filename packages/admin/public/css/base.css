@@ -688,8 +688,8 @@ body.Admin {
    width: 100%;
    position: absolute;
    overflow: auto;
-   padding-left: 15px;
-   padding-right: 15px;
+   padding-left: 0px;
+   padding-right: 0px;
    display: block;
    top: 94px;
    left: 0;
@@ -829,6 +829,18 @@ body.Admin {
    width: auto;
 }
 
+.top-pane.center.slim {
+   margin: 0;
+   top: 0px;
+   left: 50%;
+   bottom: 15px;
+   right: auto;
+   margin-left: -520px;
+   min-width: 320px;
+   width: 1040px;
+   background-color: #757575 ;
+}
+
 .top-pane.right {
    top: 4px;
    bottom: 8px;
@@ -867,7 +879,7 @@ h2 {
    display: block;
    font-size: 20px;
    line-height: 30px;
-   font-weight: 400;
+   font-weight: 300;
    color: #222;
    min-height: 30px;
    font-size: 1.7em;
@@ -953,7 +965,7 @@ button {
    margin: 0;
    padding: 5px 0;
    height: 94px;
-   line-height: 94px;
+   line-height: 84px;
    display: block;   
 }
 
@@ -1630,19 +1642,19 @@ ul.links li p {
    background-repeat: no-repeat;
    background-position: 14px center;
    width: 250px;
-   height: 94px;
-   line-height: 94px;
+   height: 54px;
+   line-height: 54px;
    color: #FFF;
    padding: 0 30px;
    padding-left: 52px;
    font-size: 1.2em;
    float: left;
    display: inline;
-   font-weight: 500;
+   font-weight: normal;
    box-shadow: none;
    text-align: left;
    text-transform: none;
-   margin: 0;
+   margin: 20px 0 0 0;
    border-radius: 0;
    border: 0;
 }
@@ -1680,7 +1692,7 @@ ul.links li p {
 
 .sections-menu ul , .sections-menu-list {
    font-size: 1.2em;
-   font-weight: 500;
+   font-weight: normal;
    list-style: none;
    padding: 0;
    margin: 0;
@@ -1745,15 +1757,16 @@ ul.links li p {
 
 .sections-menu li a:focus , .sections-menu-item-link:focus{
    background-color: rgba(255,255,255,.1);
-   outline: 1px solid #3cf;
+   /*outline: 1px solid #3cf;*/
    outline-offset: -1px;
    color: #fff;
 }
 
 .sections-menu li a.selected , .sections-menu-item-link.selected{
    background-color: rgba(255,255,255,.2);
-   color: rgba(0,0,0,.7);
+   color: rgba(0,0,0,.64);
    cursor: default;
+   font-weight: 500;
    padding-left: 52px;
 }
 

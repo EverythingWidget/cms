@@ -40,10 +40,17 @@ class ContentManagement extends \ew\Module {
     ob_start();
     include EW_PACKAGES_DIR . '/admin/html/content-management/link-chooser-document.php';
     $lcd = ob_get_clean();
+    
+    ob_start();
+    include EW_PACKAGES_DIR . '/admin/html/content-management/link-chooser-document.php';
+    $link_chooser_media = ob_get_clean();
 
-    EWCore::register_form("ew-link-chooser-form-default", "contents-list", ["title"   => "Contents",
+    EWCore::register_form("ew/ui/components/link-chooser", "content-chooser", ["title"   => "Contents",
         "content" => $lcd]);
-    // $this->file_types 
+    
+    /*EWCore::register_form("ew/ui/components/link-chooser", "media-chooser", ["title"   => "Media",
+        "content" => $link_chooser_media]);*/
+        
     EWCore::register_resource("images", array(
         $this,
         "image_loader"));

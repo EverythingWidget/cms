@@ -324,7 +324,7 @@ class UsersManagement extends \ew\Module
       {
          return \ew\APIResourceHandler::to_api_response($user_group_info);
       }
-      return \EWCore::log_error(404, "User group not found");
+      return \ew\APIResourceHandler::to_api_response(null);
    }
 
    public static function get_users_group_by_type($type)

@@ -680,6 +680,9 @@
             this.modules[this.notYetStarted[this.notYetStarted.length - 1]].start();
          }
       },
+      envoirmenet: function (id) {
+      
+      },
       init: function (mods) {
          this.app = $.extend(true, {}, System.MODULE_ABSTRACT);
          this.app.moduleIdentifier = this.moduleIdentifier;
