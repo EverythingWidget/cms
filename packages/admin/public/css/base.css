@@ -320,6 +320,11 @@ root {
    }
 }
 
+.btn.pull-right {
+  margin-right: 0;
+  margin-left: 10px;
+}
+
 .glass-pane-lock.top-pane {
    width: 100%;
    margin: 0;
@@ -862,6 +867,7 @@ body.Admin {
 
 .top-pane.left.big {
    width: 55%;
+   max-width: 1040px;
 }
 
 h1 {

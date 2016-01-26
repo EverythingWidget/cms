@@ -16,6 +16,8 @@
    </div>
 </div>
 <script>
+  
+  var d = System.getDomain();
    (function component(System) {
 
       function MediaComponent(module) {
@@ -276,9 +278,11 @@
          return column;
       };
 
-      System.module("content-management").module("media", function () {
+      System.module("content-management/media", function () {
          new MediaComponent(this);
       });
    }(System));
+   //d.init();
+   //d.start();
 
 </script>

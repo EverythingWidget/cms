@@ -1,5 +1,5 @@
 (function () {
-  //System = system;
+
   System = {
     moduleIdentifier: "app",
     modules: {},
@@ -13,10 +13,9 @@
     ],
     activeRequests: {},
     onModuleLoaded: {},
-    /*activeHashHandler: function () {
-     },*/
     UI: {},
     MODULE_ABSTRACT: {
+      domain: null,
       inited: false,
       started: false,
       active: false,
@@ -24,12 +23,11 @@
       navigation: {},
       params: {},
       html: "",
-      modules: {},
+      //modules: {},
       installModules: [
       ],
-      activeModule: null,
-      init: function (navigations, params, html)
-      {
+      //activeModule: null,
+      init: function (navigations, params, html) {
         this.inited = true;
         //this.navigation = navigations;
         //this.params = params;
@@ -43,8 +41,7 @@
            }*/);
         });
       },
-      start: function ()
-      {
+      start: function () {
         this.started = true;
         this.active = true;
         //System.app.activeModule = this;
@@ -73,8 +70,7 @@
           System.notYetStarted.splice(index, 1);
         }
       },
-      dispose: function ()
-      {
+      dispose: function () {
 
       },
       /** Creates a system module if does not exist and returns it.
@@ -88,21 +84,23 @@
        * @param {Boolean} set true to force the system to re init the module
        * @returns {System.MODULE_ABSTRACT}
        */
-      module: function (id, object, forceReload) {
+      module: function (id, object, forceReload, domain) {
         var module;
+        domain = domain || this.domain;
+        if (!domain) {
+          throw "Domain can NOT be null";
+        }
         id = this.id + '/' + id;
 
         //if forceReload is true, then init the module again
         if (!object && !forceReload/* && this.modules[id]*/) {
           // Add the module to notYetStarted list so it can be started by startLastLoadedModule method
-          //if (this.modules[id])
-          System.notYetStarted.push(id);
-          return this.modules[id];
+          domain.notYetStarted.push(id);
+          return domain.modules[id];
         }
 
-        if (this.modules[id]) {
-          //alert("already registered: " + id);
-          return this.modules[id];
+        if (domain.modules[id]) {
+          return domain.modules[id];
         }
 
         if (typeof (object) === "function") {
@@ -112,6 +110,7 @@
           module = $.extend(true, {}, System.MODULE_ABSTRACT, object || {});
         }
 
+        module.domain = domain;
         module.id = id;
 
         var modNav = this.navigation[module.moduleIdentifier] ? this.navigation[module.moduleIdentifier].slice(1) : [
@@ -119,8 +118,8 @@
         var newNav = $.extend(true, {}, this.navigation);
         newNav[module.moduleIdentifier] = modNav;
 
-        System.modules[id] = this.modules[id] = module;
-        System.notYetStarted.push(id);
+        domain.modules[id] /*= this.modules[id]*/ = module;
+        domain.notYetStarted.push(id);
 
         // Set module hash for this module when its inited
         // module hash will be set in the hashChanged method as well
@@ -128,7 +127,6 @@
         //module.hash = System.modulesHashes[id.replace("system/", "")] = module.moduleIdentifier + "=" + id.replace("system/", "");
 
         module.init(newNav, this.params);
-        //console.log("Module is inited: " + id);
 
         return module;
       },
@@ -140,31 +138,19 @@
        * @param {Function} handler
        * @returns {undefined}
        */
-      on: function (id, handler)
-      {
+      on: function (id, handler) {
         this.hashListeners[id] = handler;
-        //System.main.newHandler = true;
-        /*if (this.navigation[id])
-         {
-         var args = [];
-         args.push(this.navigation[id]);
-         for (var i = 0; i < this.navigation[id].length; ++i)
-         {
-         args.push(this.navigation[id][i]);
-         }
-         handler.apply(this, args);
-         }*/
       },
       setParam: function (param, value, replace) {
         var paramObject = {};
         paramObject[param] = value;
-        System.setHashParameters(paramObject, replace);
+        this.domain.setHashParameters(paramObject, replace);
       },
       setParamIfNone: function (param, value) {
         if (!this.params[param]) {
           var paramObject = {};
           paramObject[param] = value;
-          System.setHashParameters(paramObject, true);
+          this.domain.setHashParameters(paramObject, true);
         }
       },
       /**
@@ -187,22 +173,17 @@
 
         //console.log(this.id,"system/" + fullNavPath,this.params,System.app.activeModule)
         if (this.id === "system/" + fullNavPath/* && System.app.activeModule !== this*/) {
-          System.app.activeModule = this;
+          this.domain.app.activeModule = this;
 
         } else {
-          System.app.activeModule = null;
+          this.domain.app.activeModule = null;
           this.active = false;
         }
 
-        //alert(this.id +" --- "+ "system/" + fullNavPath+" "+this.active)
-
         this.hashHandler.call(this, navigation, params);
-        //console.log(navigation)
         var allNavigations = $.extend({}, this.navigation, navigation);
-        //console.log(allNavs, navigation);
 
-        if (System.app.activeModule && this.active && System.app.activeModule.id === _this.id) {
-          //console.log(_this.id, allNavigations, params["app"]);
+        if (this.domain.app.activeModule && this.active && this.domain.app.activeModule.id === _this.id) {
           $.each(allNavigations, function (key, value) {
             var navHandler = _this.hashListeners[key];
             if (navHandler) {
@@ -235,8 +216,6 @@
               ];
 
               if (navigation["app"] && currentKeyValue !== navigation["app"].join("/")) {
-                //console.log(navigation["app"].join("/"));
-                //alert(currentKeyValue)
                 var args = [
                 ];
                 args.push(navigation["app"]);
@@ -244,8 +223,7 @@
                   //i is always valid index in the arguments object
                   args.push(navigation["app"][i]);
                 }
-                //if (!System.app.activeModule || System.app.activeModule === _this)
-                //console.log(System.app.activeModule, "APP", args);
+                
                 navHandler.apply(_this, args);
               }
             }
@@ -260,8 +238,8 @@
         if (this.moduleIdentifier && navigation[this.moduleIdentifier] && navigation[this.moduleIdentifier][0])
         {
           // Set the app.activeModule according to the current navigation path
-          if (this.modules[this.id + "/" + navigation[this.moduleIdentifier][0]]) {
-            /*System.app.activeModule = */this.activeModule = this.modules[this.id + "/" + navigation[this.moduleIdentifier][0]];
+          if (System.modules[this.id + "/" + navigation[this.moduleIdentifier][0]]) {
+            /*System.app.activeModule = */this.activeModule = System.modules[this.id + "/" + navigation[this.moduleIdentifier][0]];
           }
         } else {
           this.activeModule = null;
@@ -298,9 +276,8 @@
      * @param {Object} object
      * @returns {sys.ABSTRACT_MODULE}
      */
-    module: function (id, object)
-    {
-      return this.app.module(id, object);
+    module: function (id, object) {
+      return this.app.module(id, object, false, System);
     },
     /** This method will be called whenever System attempts to load an app
      * 
@@ -359,8 +336,8 @@
         //console.log(self.app.oldHash, window.location.hash)
         if (self.app.oldHash !== window.location.hash/* || self.app.newHandler*/) {
           var hashValue = window.location.hash,
-            navigation = {},
-            params = {};
+                  navigation = {},
+                  params = {};
 
           hashValue = hashValue.replace(/^#\/?/igm, '');
 
@@ -382,8 +359,7 @@
         detect();
       }, 50);
     },
-    setURLHash: function (hash)
-    {
+    setURLHash: function (hash) {
       //var hash = hash;
       hash = hash.replace(/^#\/?/igm, '');
 
@@ -432,7 +408,6 @@
         // When the hash parameters value is changed from the browser url bar or originated from url bar
         System.modulesHashes[nav] = hashValue;
       }
-
     },
     /** Set parameters for app/nav. if app/nav was not in parameters, then set paraters for current app/nav
      * 
@@ -508,7 +483,7 @@
         if ("function" === typeof (System.onModuleLoaded["system/" + mod.id])) {
           //onDone.call(this, System.modules["system/" + mod.id], System.modules["system/" + mod.id].html);
           System.onModuleLoaded["system/" + mod.id].call(this, System.modules["system/" + mod.id],
-            System.modules["system/" + mod.id].html);
+                  System.modules["system/" + mod.id].html);
 
           System.onModuleLoaded["system/" + mod.id] = null;
         }
@@ -557,13 +532,10 @@
          }*/
       });
     },
-    ajax: function (href, onDone) {
-
-    },
     addActiveRequest: function (request) {
       var _this = this,
-        parentSuccess = request.done,
-        id;
+              parentSuccess = request.done,
+              id;
       // Overwrite the done method in order to remove the request from the activeRequest list
       request.done = function (callback) {
         parentSuccess.call(this, callback);
@@ -613,22 +585,16 @@
         this.modules[this.notYetStarted[this.notYetStarted.length - 1]].start();
       }
     },
-    envoirmenet: function (id) {
-      var env = {
-        loadModule: function (mod) {
-          
-        }
-      };
-      
-      return env;
-    },
     init: function (mods) {
       this.app = $.extend(true, {}, System.MODULE_ABSTRACT);
+      this.app.domain = this;
       this.app.moduleIdentifier = this.moduleIdentifier;
       this.app.id = "system";
       this.app.installModules = mods;
       this.app.init({}, {}, "");
-      //this.activeModule = this.app;
+    },
+    getDomain: function () {
+      return new System.Domain();
     }
   };
 }());
