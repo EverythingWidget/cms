@@ -1,10 +1,29 @@
-<div class="elements-list" id="categories-list"  >
+<div id="folders-card" class="card z-index-1 width-lg-8">
+  <div  class='card-header'>
+    <h1>
+      tr{Contents}
+    </h1>
+    <div id='folders-card-action-bar' class='card-action-bar'></div>
+  </div>
+  <div class='card-content top-devider'>
+    <span class='card-content-title'>
+      tr{Folders}
+    </span>
+    <div id="categories-list"  >
 
+    </div>
+  </div>
+  <div class='card-content top-devider'>
+    <span class='card-content-title'>
+      tr{Articles}
+    </span>
+    <div class="elements-list"  id="articles-list">
+
+    </div>
+  </div>
 </div>
 
-<div class="elements-list"  id="articles-list">
 
-</div>
 
 <script>
   (function (System) {
@@ -76,21 +95,28 @@
 
     Documents.prototype.start = function () {
       var _this = this;
+
       this.parentId = null;
       this.folderId = 0;
       this.articleId = 0;
       this.upParentId = 0;
       this.currentItem = $();
-      this.bUp = EW.addAction("tr{Up}", $.proxy(this.preCategory, this), {
-        display: "none"
-      },
-      "action-bar-items");
+      
+      $("#folders-card-action-bar").empty();
+      
+      this.bUp = EW.addActionButton({
+        text: "tr{Back}",
+        class: "btn-text btn-default pull-right",
+        handler: $.proxy(this.preCategory, this),
+        parent: "folders-card-action-bar"
+      });
 
       this.bUp.css("float", "right");
       this.bNewFolder = EW.addActivity({
         title: "tr{New Folder}",
+        //class: "btn-text btn-primary",
         activity: "admin/html/content-management/folder-form.php",
-        parent: "action-bar-items",
+        parent: "folders-card-action-bar",
         hash: {
           folderId: null
         }
@@ -98,8 +124,9 @@
 
       this.bNewFile = EW.addActivity({
         title: "tr{New Article}",
+        //class: "btn-text btn-primary",
         activity: "admin/html/content-management/article-form.php_new",
-        parent: "action-bar-items",
+        parent: "folders-card-action-bar",
         hash: {
           articleId: null
         },
@@ -129,7 +156,12 @@
       });
 
       if (this.seeArticleActivity || this.seeFolderActivity)
-        this.bSee = EW.addAction("tr{See}", $.proxy(this.seeDetails, this), null, "action-bar-items").hide();
+        this.bSee = EW.addActionButton({
+          text: "tr{See}",
+          //class: "btn-text btn-primary",
+          handler: $.proxy(this.seeDetails, this),
+          parent: "folders-card-action-bar"
+        }).hide();
       else
         this.bSee = $();
 
@@ -142,7 +174,7 @@
               folderId: null,
               articleId: eventData.data.id
             },
-            "document");
+                    "document");
           }
 
           if (eventData.data.type === "folder") {
@@ -150,7 +182,7 @@
               folderId: eventData.data.id,
               articleId: null
             },
-            "document");
+                    "document");
           }
         }
       });
@@ -185,10 +217,10 @@
 
     Documents.prototype.listCategories = function () {
       var _this = this,
-        pId = 0,
-        hasNode = false,
-        article = System.getHashParam("article"),
-        folder = System.getHashParam("folder");
+              pId = 0,
+              hasNode = false,
+              article = System.getHashParam("article"),
+              folder = System.getHashParam("folder");
       /*lockFolders = System.UI.lock({
        element: $("#categories-list")[0],
        akcent: "loader top"
@@ -197,66 +229,66 @@
        element: $("#articles-list")[0],
        akcent: "loader top"
        }, .3);*/
-
-      $("#categories-list").html("<h2 >Loading Folders</h2><div class='loader center'></div>");
+      
+      $("#categories-list").html("<div class='loader center'></div>");
       System.addActiveRequest($.get('~admin/api/content-management/contents-folders', {
         parent_id: _this.parentId
       },
-      function (data) {
-        $("#categories-list").html("<h2 id='cate-title'>tr{Folders}</h2><div class='box-content anim-fade-in'></div>");
-        //$("#cate-title").loadingText();
+              function (data) {
+                $("#categories-list").html("<div class='box-content anim-fade-in'></div>");
+                //$("#cate-title").loadingText();
 
-        var foldersPane = $("#categories-list .box-content");
-        $.each(data.data, function (index, element) {
-          pId = element.up_parent_id;
-          hasNode = true;
-          var temp = _this.createFolderElement(element.title, element.round_date_created, element.id, element);
-          //temp.addClass("anim-scale-in");
-          if (element.id == folder) {
-            temp.addClass("selected");
-            _this.currentItem = temp;
-          }
-          foldersPane.append(temp);
-          //temp.addClass("in");
-        });
+                var foldersPane = $("#categories-list .box-content");
+                $.each(data.data, function (index, element) {
+                  pId = element.up_parent_id;
+                  hasNode = true;
+                  var temp = _this.createFolderElement(element.title, element.round_date_created, element.id, element);
+                  //temp.addClass("anim-scale-in");
+                  if (element.id == folder) {
+                    temp.addClass("selected");
+                    _this.currentItem = temp;
+                  }
+                  foldersPane.append(temp);
+                  //temp.addClass("in");
+                });
 
-        if (hasNode) {
-          _this.upParentId = pId;
-        }
-        $("#categories-list").find(".box-content").addClass("in");
-        //lockFolders.dispose();
-      }, "json"));
+                if (hasNode) {
+                  _this.upParentId = pId;
+                }
+                $("#categories-list").find(".box-content").addClass("in");
+                //lockFolders.dispose();
+              }, "json"));
 
-      $("#articles-list").html("<h2>Loading Article</h2><div class='loader center'></div>");
+      $("#articles-list").html("<div class='loader center'></div>");
       System.addActiveRequest($.get('~admin/api/content-management/contents-articles', {
         parent_id: _this.parentId
       },
-      function (data) {
-        $("#articles-list").html("<h2>tr{Articles}</h2><div class='box-content anim-fade-in'></div>");
+              function (data) {
+                $("#articles-list").html("<div class='box-content anim-fade-in'></div>");
 
-        var articlesPane = $("#articles-list .box-content");
-        $.each(data.data, function (index, element) {
-          pId = element.up_parent_id;
-          hasNode = true;
-          var temp = _this.createArticleElement(element.title, element.round_date_created, element.id, element);
-          //temp.addClass("anim-scale-in");
-          if (element.id == article) {
-            temp.addClass("selected");
-            _this.currentItem = temp;
-          }
-          articlesPane.append(temp);
-          // setTimeout(function ()            {
-          //temp.addClass("in");
-          //}, 1);
+                var articlesPane = $("#articles-list .box-content");
+                $.each(data.data, function (index, element) {
+                  pId = element.up_parent_id;
+                  hasNode = true;
+                  var temp = _this.createArticleElement(element.title, element.round_date_created, element.id, element);
+                  //temp.addClass("anim-scale-in");
+                  if (element.id == article) {
+                    temp.addClass("selected");
+                    _this.currentItem = temp;
+                  }
+                  articlesPane.append(temp);
+                  // setTimeout(function ()            {
+                  //temp.addClass("in");
+                  //}, 1);
 
-        });
+                });
 
-        if (hasNode) {
-          _this.upParentId = pId;
-        }
-        $("#articles-list").find(".box-content").addClass("in");
-        //lockArticles.dispose();
-      }, "json"));
+                if (hasNode) {
+                  _this.upParentId = pId;
+                }
+                $("#articles-list").find(".box-content").addClass("in");
+                //lockArticles.dispose();
+              }, "json"));
     };
 
     Documents.prototype.focusOn = function (item) {

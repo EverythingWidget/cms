@@ -175,8 +175,8 @@
       paramObject[param] = value;
       this.domain.setHashParameters(paramObject, replace);
     },
-    setParamIfNone: function (param, value) {
-      if (!this.params[param]) {
+    setParamIfNone: function (param, value) {      
+      if (!this.domain.getHashParam(param)) {
         var paramObject = {};
         paramObject[param] = value;
         this.domain.setHashParameters(paramObject, true);
