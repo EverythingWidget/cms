@@ -92,7 +92,7 @@
          });
       };
 
-      System.module("users-management").module("users", function () {
+      System.module("users-management/users", function () {
          new UsersComponent(this);
       });
 

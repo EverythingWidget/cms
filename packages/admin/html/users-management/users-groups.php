@@ -78,7 +78,7 @@
       return UsersGroups;
    })();
 
-   System.module("users-management").module("users-groups", function () {
+   System.module("users-management/users-groups", function () {
       this.onStart = function () {
          new UsersGroups();
       };

@@ -310,6 +310,6 @@
       new Documents(this);
     };
 
-    System.module("content-management").module("documents", module);
+    System.module("content-management/documents", module);
   }(System));
 </script>

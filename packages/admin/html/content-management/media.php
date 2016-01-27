@@ -17,7 +17,7 @@
 </div>
 <script>
   
-  var d = System.getDomain();
+  //var d = System.getDomain();
    (function component(System) {
 
       function MediaComponent(module) {

@@ -16,7 +16,13 @@
   </div>
 </div>
 <script>
-  (function (System) {
+  var LinkChooserDomain = new System.Domain();
+  LinkChooserDomain.init([
+  ]);
+
+  LinkChooserDomain.domainHashString = "#app=media-chooser";
+
+  (function (Domain) {
 
     function MediaComponent(module) {
       var _this = this;
@@ -92,7 +98,7 @@
         text: "tr{Properties}",
         handler: function () {
           _this.seeAlbumActivity({
-            albumId: System.getHashNav("album")[0]
+            albumId: Domain.getHashNav("album")[0]
           });
         },
         class: "btn-text btn-default",
@@ -101,19 +107,19 @@
 
       var deleteAlbumBtn = EW.addAction("tr{Delete}", function () {
         _this.seeAlbumActivity({
-          albumId: System.getHashNav("album")[0]
+          albumId: Domain.getHashNav("album")[0]
         });
       }, null, "album-card-action-bar").removeClass("btn-primary").addClass("btn-text btn-danger pull-right");
 
       this.bBack = EW.addAction("tr{Back to Media}", function () {
-        System.setHashParameters({
+        Domain.setHashParameters({
           album: "0/images"
         });
       }, {
         float: "right",
         display: "none"
       },
-      "action-bar-items").removeClass("btn-primary").addClass("btn-default");
+        "action-bar-items").removeClass("btn-primary").addClass("btn-default");
 
       this.newAlbumActivity = EW.addActivity({
         title: "tr{New Album}",
@@ -127,7 +133,7 @@
         parent: "action-bar-items",
         hash: function () {
           return {
-            parentId: System.getHashNav("album")[0]
+            parentId: Domain.getHashNav("album")[0]
           };
         },
         onDone: function () {
@@ -176,79 +182,79 @@
       System.addActiveRequest($.get('<?php echo EW_ROOT_URL; ?>~admin/api/content-management/get-media-list', {
         parent_id: component.parentId
       },
-      function (response) {
-        var listContainer = null;
-        if (component.parentId === 0) {
-          component.albumDataCard.hide();
-          elementsList.html("<h2>tr{Albums}</h2>");
-          listContainer = elementsList;
-          elementsList.show();
-        } else {
-          elementsList.hide();
-          component.albumDataCard.find("h1").text(response.included.album.title);
-          component.albumDataCard.find(".card-content .card-content-title").text("tr{Images}");
-          listContainer = component.albumDataCard.find(".card-content");
-          component.itemsList = component.albumDataCard.find(".card-content .album-images-list").empty();
-          component.itemsList.addClass("anim-fade-in");
-          component.albumDataCard.show();
-        }
-
-        $.each(response.data, function (index, element) {
-          var temp = component.createMediaElement(element.title, element.type, element.ext, element.size, element.thumbURL, element.id);
-
-          if (element.type === "album") {
-            temp.on('keydown', function (e) {
-              if (e.which === 13) {
-                System.setHashParameters({
-                  album: element.id + "/images"
-                });
-              }
-            });
-
-            temp.dblclick(function () {
-              System.setHashParameters({
-                album: element.id + "/images"
-              });
-            });
-
-            temp.on("focus", function (e) {
-              component.module.setParam("select", element.id);
-            });
-            component.itemsList.append(temp);
+        function (response) {
+          var listContainer = null;
+          if (component.parentId === 0) {
+            component.albumDataCard.hide();
+            elementsList.html("<h2>tr{Albums}</h2>");
+            listContainer = elementsList;
+            elementsList.show();
           } else {
-            temp.attr("data-url", element.url);
-            temp.dblclick(function () {
-              EW.setHashParameter("cmd", "preview", "media");
-            });
-
-            temp.on("focus", function () {
-              EW.setHashParameter("itemId", element.id, "media");
-              EW.setHashParameter("url", element.url, "media");
-              EW.setHashParameter("filename", element.filename, "media");
-              EW.setHashParameter("fileExtension", element.fileExtension, "media");
-              EW.setHashParameter("absUrl", element.absUrl, "media");
-              EW.setHashParameters({
-                albumId: null,
-                "imageId": element.id
-              },
-              "media");
-
-            });
-
-            component.itemsList.append(temp);
+            elementsList.hide();
+            component.albumDataCard.find("h1").text(response.included.album.title);
+            component.albumDataCard.find(".card-content .card-content-title").text("tr{Images}");
+            listContainer = component.albumDataCard.find(".card-content");
+            component.itemsList = component.albumDataCard.find(".card-content .album-images-list").empty();
+            component.itemsList.addClass("anim-fade-in");
+            component.albumDataCard.show();
           }
 
-        });
+          $.each(response.data, function (index, element) {
+            var temp = component.createMediaElement(element.title, element.type, element.ext, element.size, element.thumbURL, element.id);
 
-        listContainer.append(component.itemsList);
-        component.itemsList.addClass("in");
-        component.listInited = true;
-        // Select current item            
-        if (component.selectedItemId) {
-          $("div[data-item-id='" + component.selectedItemId + "']").focus();
-        }
+            if (element.type === "album") {
+              temp.on('keydown', function (e) {
+                if (e.which === 13) {
+                  Domain.setHashParameters({
+                    album: element.id + "/images"
+                  });
+                }
+              });
 
-      }, "json"));
+              temp.dblclick(function () {
+                Domain.setHashParameters({
+                  album: element.id + "/images"
+                });
+              });
+
+              temp.on("focus", function (e) {
+                component.module.setParam("select", element.id);
+              });
+              component.itemsList.append(temp);
+            } else {
+              temp.attr("data-url", element.url);
+              temp.dblclick(function () {
+                EW.setHashParameter("cmd", "preview", "media");
+              });
+
+              temp.on("focus", function () {
+                EW.setHashParameter("itemId", element.id, "media");
+                EW.setHashParameter("url", element.url, "media");
+                EW.setHashParameter("filename", element.filename, "media");
+                EW.setHashParameter("fileExtension", element.fileExtension, "media");
+                EW.setHashParameter("absUrl", element.absUrl, "media");
+                EW.setHashParameters({
+                  albumId: null,
+                  "imageId": element.id
+                },
+                  "media");
+
+              });
+
+              component.itemsList.append(temp);
+            }
+
+          });
+
+          listContainer.append(component.itemsList);
+          component.itemsList.addClass("in");
+          component.listInited = true;
+          // Select current item            
+          if (component.selectedItemId) {
+            $("div[data-item-id='" + component.selectedItemId + "']").focus();
+          }
+
+        }, "json"));
     };
 
     MediaComponent.prototype.createMediaElement = function (title, type, ext, size, ImageURL, id) {
@@ -286,9 +292,13 @@
       return column;
     };
 
-    System.module("content-management").module("media", function () {
+    Domain.module("media-chooser", function () {
       new MediaComponent(this);
     });
-  }(System));
+
+  }(LinkChooserDomain));
+
+  LinkChooserDomain.start();
+  LinkChooserDomain.module("media-chooser").start();
 
 </script>

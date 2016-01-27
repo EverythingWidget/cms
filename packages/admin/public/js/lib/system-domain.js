@@ -4,10 +4,14 @@
     this.domainHashString = "";
     this.moduleIdentifier = "app";
     this.modules = {};
+    this.modulesHashes= {};
     this.appPathfiledName = null;
-    this.activityTree = [];
-    this.onLoadQueue = [];
-    this.notYetStarted = [];
+    this.activityTree = [
+    ];
+    this.onLoadQueue = [
+    ];
+    this.notYetStarted = [
+    ];
     this.activeRequests = {};
     this.onModuleLoaded = {};
   }
@@ -25,7 +29,7 @@
       // Other modules get default hash value
       this.modulesHashes[nav] = hashValue;
       this.firstTime = true;
-      //alert("first time: " + System.modulesHashes[nav] + " " + hashValue);
+      //alert("first time: " + this.modulesHashes[nav] + " " + hashValue);
     } else if (nav && !this.modulesHashes[nav]) {
       // When the module does not exist 
       this.modulesHashes[nav] = "app=" + nav;
@@ -38,6 +42,7 @@
 
   Domain.prototype.init = function (mods) {
     this.app = $.extend(true, {}, System.MODULE_ABSTRACT);
+    this.app.domain = this;
     this.app.moduleIdentifier = this.moduleIdentifier;
     this.app.id = "system";
     this.app.installModules = mods;
@@ -49,8 +54,8 @@
     var detect = function () {
       if (_this.app.oldHash !== _this.domainHashString) {
         var hashValue = _this.domainHashString,
-                navigation = {},
-                params = {};
+          navigation = {},
+          params = {};
 
         hashValue = hashValue.replace(/^#\/?/igm, '');
 
@@ -92,13 +97,13 @@
     this.lastHashParams = parameters;
     var hashValue = this.domainHashString;
     var nav = parameters["app"];
-    if (nav && !System.modulesHashes[nav]) {
+    if (nav && !this.modulesHashes[nav]) {
       //console.log(hashValue, nav)
-      System.modulesHashes[nav] = hashValue = "app=" + nav;
+      this.modulesHashes[nav] = hashValue = "app=" + nav;
 
-    } else if (nav && System.modulesHashes[nav]) {
+    } else if (nav && this.modulesHashes[nav]) {
       //console.log(hashValue, nav , System.modulesHashes[nav]);
-      hashValue = System.modulesHashes[nav];
+      hashValue = this.modulesHashes[nav];
     }
     //console.log(parameters, nav, System.modulesHashes[nav]);
 
@@ -136,6 +141,15 @@
      }*/
 
     this.domainHashString = newHash.replace(/\&$/, '');
+  };
+
+  Domain.prototype.getHashParam = function (key, hashName) {
+    return this.app.params[key] || null;
+  };
+
+  Domain.prototype.getHashNav = function (key, hashName) {
+    return this.app.navigation[key] || [
+    ];
   };
 
   Domain.prototype.module = function (id, object) {

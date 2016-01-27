@@ -10009,13 +10009,13 @@
         autoOpen: false,
         class: "center"
       });
-      imageChooserDialog.append("<div class='form-content'></div><div class='footer-pane row actions-bar action-bar-items' ></div>");
-      $.post("~admin/html/content-management/media.php", {
+      imageChooserDialog.append("<div class='form-content no-footer'></div>");
+      $.post("~admin/html/content-management/link-chooser-media.php", {
         callback: ""
       },
       function (data) {
         imageChooserDialog.find(".form-content:first").append(data);
-        imageChooserDialog.prepend("<h1 class='form-title'>Media</h1>");
+        imageChooserDialog.prepend("<div class='header-pane row'><h1 class='form-title'>Media</h1></div>");
         var bSelectPhoto = EW.addAction("Select Photo", function () {
           EW.setHashParameter("select-photo", true, "media");
         }, {
