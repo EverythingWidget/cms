@@ -246,7 +246,7 @@ root {
 
   .actions-bar > button,.actions-bar > .btn-group {
     margin-right: 10px;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     float: left;
   }
 
@@ -664,7 +664,7 @@ body.Admin {
 .top-pane .header-pane {
   padding-top: 32px;
   margin-top: -32px;
-  box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
+  /* box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12); */
   position: relative;
   z-index: 1;
 }
@@ -877,7 +877,7 @@ body.Admin {
 h1 {
   margin: 0 0 15px;
   display: block;
-  font-weight: 300;
+  font-weight: 400;
   color: #000;
   min-height: 30px;
   font-size: 2.8em;
@@ -1106,7 +1106,7 @@ a.apps-menu-link:hover {
   width: 100%;
   z-index: 5;
   /*transition:all .3s ease-out*/
-  box-shadow: 0 0px 0px 0px rgba(0,0,0,0.06),0 0px 0px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 3px 0px rgba(0,0,0,0.06),0 0px 5px rgba(0,0,0,0.1);
 }
 
 .app-bar.in {
@@ -1292,7 +1292,7 @@ h2.actions-bar span {
 
 .card-header h1{
   margin: 0;
-  font-size: 2.4em;
+  font-size: 2.2em;
 }
 
 .card-action-bar {
@@ -1302,7 +1302,7 @@ h2.actions-bar span {
 }
 
 .card-action-bar .btn {
-  margin-left: 13px;
+  margin-left: 10px;
 }
 
 .card-action-bar .btn.btn-text {
@@ -1320,7 +1320,7 @@ h2.actions-bar span {
   font-size: 1.7em;
   display: block;
   margin-bottom: 15px;
-  color: #3a3a3a;
+  color: #000;
 }
 
 
@@ -2660,8 +2660,8 @@ table.contents td {
 
 .content-item.album {
   background-color: #f4f4f4;
-  width: 260px;
-  height: 240px;
+  width: 200px;
+  height: 200px;
   display: block;
   margin: 0 auto 30px;
 }

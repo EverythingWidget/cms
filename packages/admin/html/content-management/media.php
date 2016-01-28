@@ -1,16 +1,13 @@
 <div id="media-items-container" >
-  <div id="files-list" class="elements-list">
-
-  </div>
-
   <div id="album-data-card" class="card z-index-1 width-lg-8">
     <div  class='card-header'>
       <h1>
+        tr{Media}
       </h1>
       <div id='album-card-action-bar' class='card-action-bar'></div>
     </div>
     <div class='card-content top-devider'>
-      <span class='card-content-title'></span>
+      <!--<span class='card-content-title'></span>-->
       <div class="album-images-list"></div>
     </div>
   </div>
@@ -88,45 +85,49 @@
       this.currentItem = $();
       this.bDel = $();
       this.listInited = false;
-      this.albumDataCard = $("#album-data-card").hide();
+      this.albumDataCard = $("#album-data-card");
       $("#album-card-action-bar").empty();
 
-      var albumPropertiesBtn = EW.addActionButton({
+      this.albumPropertiesBtn = EW.addActionButton({
         text: "tr{Properties}",
         handler: function () {
           _this.seeAlbumActivity({
             albumId: System.getHashNav("album")[0]
           });
         },
-        class: "btn-text btn-default",
+        class: "btn-default",
         parent: "album-card-action-bar"
-      });
+      }).hide();
 
-      var deleteAlbumBtn = EW.addAction("tr{Delete}", function () {
-        _this.seeAlbumActivity({
-          albumId: System.getHashNav("album")[0]
-        });
-      }, null, "album-card-action-bar").removeClass("btn-primary").addClass("btn-text btn-danger pull-right");
+      this.deleteAlbumBtn = EW.addActionButton({
+        text: "tr{Delete}",
+        class: "btn-text btn-danger pull-right",
+        handler: function () {
+          _this.seeAlbumActivity({
+            albumId: System.getHashNav("album")[0]
+          });
+        },
+        parent: "album-card-action-bar"}).hide();
 
-      this.bBack = EW.addAction("tr{Back to Media}", function () {
-        System.setHashParameters({
-          album: "0/images"
-        });
-      }, {
-        float: "right",
-        display: "none"
-      }, "action-bar-items").removeClass("btn-primary").addClass("btn-default");
+      this.bBack = EW.addActionButton({
+        text: "tr{Back to Media}",
+        class: "btn-text btn-default pull-right",
+        handler: function () {
+          System.setHashParameters({
+            album: "0/images"
+          });
+        }, parent: "album-card-action-bar"});
 
       this.newAlbumActivity = EW.addActivity({
         title: "tr{New Album}",
         activity: "admin/html/content-management/album-form.php",
-        parent: "action-bar-items"
+        parent: "album-card-action-bar"
       }).hide();
 
       this.uploadFileActivity = EW.addActivity({
         title: "tr{Upload Photo}",
         activity: "admin/html/content-management/upload-form.php",
-        parent: "action-bar-items",
+        parent: "album-card-action-bar",
         hash: function () {
           return {
             parentId: System.getHashNav("album")[0]
@@ -175,22 +176,23 @@
       var elementsList = $("#files-list");
       elementsList.html("<h2>Loading...</h2><div class='loader center'></div>");
       this.listInited = false;
-
+      var listContainer = component.albumDataCard.find(".card-content");
+      component.itemsList = component.albumDataCard.find(".card-content .album-images-list").empty();
+      if (component.parentId === 0) {
+        this.albumPropertiesBtn.comeOut();
+        this.deleteAlbumBtn.comeOut();
+      } else {
+        this.albumPropertiesBtn.comeIn();
+        this.deleteAlbumBtn.comeIn();
+      }
       System.addActiveRequest($.get('<?php echo EW_ROOT_URL; ?>~admin/api/content-management/get-media-list', {parent_id: component.parentId}, function (response) {
-        var listContainer = null;
+        //var listContainer = null;
         if (component.parentId === 0) {
-          component.albumDataCard.hide();
-          elementsList.html("<h2>tr{Albums}</h2>");
-          listContainer = elementsList;
-          elementsList.show();
+          component.albumDataCard.find("h1").html("tr{Albums}");
         } else {
-          elementsList.hide();
           component.albumDataCard.find("h1").text(response.included.album.title);
-          component.albumDataCard.find(".card-content .card-content-title").text("tr{Images}");
-          listContainer = component.albumDataCard.find(".card-content");
-          component.itemsList = component.albumDataCard.find(".card-content .album-images-list").empty();
-          component.itemsList.addClass("anim-fade-in");
-          component.albumDataCard.show();
+          //component.albumDataCard.find(".card-content .card-content-title").text("tr{Images}");
+
         }
 
         $.each(response.data, function (index, element) {

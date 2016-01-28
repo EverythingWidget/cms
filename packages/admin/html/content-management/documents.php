@@ -6,18 +6,14 @@
     <div id='folders-card-action-bar' class='card-action-bar'></div>
   </div>
   <div class='card-content top-devider'>
-    <span class='card-content-title'>
-      tr{Folders}
-    </span>
+    
     <div id="categories-list"  >
 
     </div>
   </div>
   <div class='card-content top-devider'>
-    <span class='card-content-title'>
-      tr{Articles}
-    </span>
-    <div class="elements-list"  id="articles-list">
+    
+    <div id="articles-list">
 
     </div>
   </div>
