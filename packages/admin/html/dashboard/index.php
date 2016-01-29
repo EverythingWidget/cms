@@ -26,7 +26,10 @@ if (!isset($_SESSION['login']))
                   <!--<span type="button" id="apps" class="apps-menu-icon" ></span>-->
                   <span id="app-title" class="apps-menu-title">tr{Apps}</span>
                </div>
-               <div id="sections-menu" class="sections-menu">
+               
+            </div>
+            
+            <div id="sections-menu" class="sections-menu">
                   <span class="sections-menu-title" id="sections-menu-title" >  
                   </span>
                   <ew-list id="sections-menu-list" class="sections-menu-list">
@@ -35,7 +38,6 @@ if (!isset($_SESSION['login']))
                      </div>
                   </ew-list>
                </div>
-            </div>
             <div id="app-bar" class="app-bar">
 
                <div  class="col-xs-2 col-sm-2 col-md-2 col-lg-1 pull-right">

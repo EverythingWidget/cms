@@ -690,14 +690,14 @@ body.Admin {
 #main-content {
   width: auto;
   min-width: 320px;
-  width: 100%;
+  width: calc(100% - 94px);
   position: absolute;
   overflow: auto;
   padding-left: 0px;
   padding-right: 0px;
   display: block;
   top: 94px;
-  left: 0;
+  left: 94px;
   bottom: 0;
 }
 
@@ -941,12 +941,16 @@ button {
 .navigation-menu {
   position: absolute;
   overflow: hidden;
-  width: 350px;
+  width: 104px;
+  height: 100%;
   z-index: 10;
   float: left;
-  height: auto;
-  padding-bottom: 15px;
+  padding-bottom: 0;
   padding-right: 6px;
+}
+
+.navigation-menu.expand {
+  /*width: 350px;*/
 }
 
 .navigation-menu.expand .apps-menu{
@@ -955,7 +959,8 @@ button {
 
 .apps-menu {
   position: relative;
-  height: 94px;
+  /*height: 94px;*/
+  height: 100%;
   width: 94px;
   text-align: center;
   background-color: #1b2433;
@@ -1004,7 +1009,7 @@ a.apps-menu-link:hover {
 }
 
 .apps-menu.expand {
-  height: 55%;
+  height: 100%;
   border-radius: 0;
 }
 
@@ -1630,9 +1635,10 @@ ul.links li p {
 
 .sections-menu {
   background-color: #5cb1cc;
-  position: relative;
-  top: 0px;
+  position: absolute;
+  /*top: 0px;*/
   left: 0;
+  opacity: 0;
   width: 250px;
   /* height: 54px; */
   border-radius: 0;
@@ -1640,7 +1646,7 @@ ul.links li p {
   font-size: 14px;
   margin: 0;
   /* z-index: 5; */
-  padding:  0;
+  padding:  15px 0;
   /* margin-top: 10px; */
   box-shadow: 0 1px 1px rgba(0,0,0,.1) , 0 0px 3px rgba(0,0,0,.14);
   color: #fff;
@@ -1650,7 +1656,7 @@ ul.links li p {
 }
 
 .sections-menu > label,.sections-menu > * {
-  display: none;
+  /*display: none;*/
 }
 
 .sections-menu.in > * {
@@ -1678,14 +1684,17 @@ ul.links li p {
   margin: 20px 0 0 0;
   border-radius: 0;
   border: 0;
+  display: none;
 }
 
 .sections-menu.in {
   height: auto;
+  left: 94px;
   width: 250px;
   border-radius: 0;
   padding-top: 15px;
   padding-bottom: 15px;
+  opacity: 1;
 }
 
 .sections-menu.in .sections-menu-title {

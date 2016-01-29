@@ -532,6 +532,7 @@
       });
 
       if (System.UI.components.sectionsMenuList[0].data.length) {
+        //System.UI.components.sectionsMenu[0].style.top = 
         TweenLite.to(System.UI.components.sectionsMenu[0], .36, {
           className: "sections-menu in",
           ease: "Power4.easeOut"
@@ -558,8 +559,11 @@
       }
 
       moveAnim = TweenLite.to(System.UI.components.sectionsMenu[0], .2, {
-        marginTop: e.target.getBoundingClientRect().top
+        top: e.target.getBoundingClientRect().top
       });
+    });
+    
+    System.UI.components.sectionsMenu.on("mouseleave", function(){
     });
 
     navigationMenu.on("mouseleave", function () {
