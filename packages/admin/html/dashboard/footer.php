@@ -4,7 +4,7 @@
     $("#action-bar-items").children().animate({
       opacity: 0
     },
-    300);
+            300);
 
     System.UI.components.appTitle.text("Home");
     //System.UI.components.homeButton.stop().comeOut(500);
@@ -26,11 +26,11 @@
     System.UI.components.appBar.animate({
       className: "app-bar"
     },
-    500, "Power2.easeInOut");
+            500, "Power2.easeInOut");
     System.UI.components.homePane.animate({
       className: "home-pane in"
     },
-    500, "Power2.easeInOut");
+            500, "Power2.easeInOut");
   };
 
   System.onLoadApp = function (app) {
@@ -120,12 +120,12 @@
           ease: "Power2.easeInOut",
           top: "-=94px"
         },
-        {
-          top: "+=94px",
-          opacity: 1,
-          onComplete: function () {
-          }
-        });
+                {
+                  top: "+=94px",
+                  opacity: 1,
+                  onComplete: function () {
+                  }
+                });
       });
     }
 
@@ -138,57 +138,57 @@
     $.get('~admin/api/EWCore/read_apps', {
       appDir: "admin"
     },
-    function (data) {
+            function (data) {
 
-      var items = [
-        '<ul class="apps-menu-list">'
-      ];
-      $.each(data, function (key, val) {
-        /*items.push('<li class=""><a class="app-link z-index-0" data-app="'
-         + val['id'] + '"><label>'
-         + val['title'] + '</label><p>'
-         + val['description'] + '</p></a></li>');*/
+              var items = [
+                '<ul class="apps-menu-list">'
+              ];
+              $.each(data, function (key, val) {
+                /*items.push('<li class=""><a class="app-link z-index-0" data-app="'
+                 + val['id'] + '"><label>'
+                 + val['title'] + '</label><p>'
+                 + val['description'] + '</p></a></li>');*/
 
-        items.push('<li class=""><a class="apps-menu-link" data-app="'
-          + val['id'] + '"><span class="">'
-          + val['title'] + '</span></a></li>');
-        //val.package = "~admin";
-        val.file = "index.php";
-        val.id = val['id'];
-        _this.apps[val['id']] = val;
+                items.push('<li class=""><a class="apps-menu-link" data-app="'
+                        + val['id'] + '"><span class="">'
+                        + val['title'] + '</span></a></li>');
+                //val.package = "~admin";
+                val.file = "index.php";
+                val.id = val['id'];
+                _this.apps[val['id']] = val;
 
-      });
+              });
 
-      items.push('</ul>');
+              items.push('</ul>');
 
-      $(items.join('')).appendTo("#apps-menu");
+              $(items.join('')).appendTo("#apps-menu");
 
-      System.start();
+              System.start();
 
-      $.each(_this.apps, function (e, v) {
-        if (v.id !== EW.oldApp) {
-          //alert(System.getHashParam("app") + " >>> " + v.id + " @ " + EW.oldApp);
-          System.loadModule(v, function () {
-            //alert("sdfsdfsdfsdf")
-          });
-        }
-      });
+              $.each(_this.apps, function (e, v) {
+                if (v.id !== EW.oldApp) {
+                  //alert(System.getHashParam("app") + " >>> " + v.id + " @ " + EW.oldApp);
+                  System.loadModule(v, function () {
+                    //alert("sdfsdfsdfsdf")
+                  });
+                }
+              });
 
 
-      var $oldAppLink = $();
-      /*$("#navigation-menu .apps-menu-link").click(function (event) {
-       event.preventDefault();
-       $oldAppLink.removeClass("selected");
-       $oldAppLink = $(this);
-       $oldAppLink.addClass("selected");
-       
-       System.setHashParameters({
-       app: $oldAppLink.attr("data-app")
-       }, null);
-       
-       });*/
+              var $oldAppLink = $();
+              /*$("#navigation-menu .apps-menu-link").click(function (event) {
+               event.preventDefault();
+               $oldAppLink.removeClass("selected");
+               $oldAppLink = $(this);
+               $oldAppLink.addClass("selected");
+               
+               System.setHashParameters({
+               app: $oldAppLink.attr("data-app")
+               }, null);
+               
+               });*/
 
-    }, "json");
+            }, "json");
   };
 
   /*EverythingWidgets.prototype.loadApp = function (data) {
@@ -241,7 +241,7 @@
       this.animate({
         className: orgClass
       },
-      dur || 300, "Power2.easeInOut");
+              dur || 300, "Power2.easeInOut");
     }
 
     return this;
@@ -253,9 +253,9 @@
       this.stop(true, true).animate({
         className: this.prop("class") + " btn-hide"
       },
-      dur || 300, "Power2.easeInOut", function () {
-        this.hide();
-      });
+              dur || 300, "Power2.easeInOut", function () {
+                this.hide();
+              });
     }
 
     return this;
@@ -297,13 +297,13 @@
             data: $element.val(),
             contentType: $element.data("content-type") || "all"
           },
-          function (data) {
-            var functionRefrence = $("<div style='display:none;' id='function-reference'></div>");
-            functionRefrence.data("callback", settings.callback);
-            e = $(data);
-            e.append(functionRefrence);
-            linkChooserDialog.html(e);
-          });
+                  function (data) {
+                    var functionRefrence = $("<div style='display:none;' id='function-reference'></div>");
+                    functionRefrence.data("callback", settings.callback);
+                    e = $(data);
+                    e.append(functionRefrence);
+                    linkChooserDialog.html(e);
+                  });
         }
       });
     }
@@ -387,35 +387,35 @@
         $.post("<?php echo EW_DIR ?>~admin/html/content-management/Media.php", {
           callback: settings.callbackName
         },
-        function (data) {
-          imageChooserDialog.find(".form-content:first").append(data);
-          imageChooserDialog.prepend("<h1>Media</h1>");
-          var bSelectPhoto = EW.addAction("Select Photo", function () {
-            EW.setHashParameter("select-photo", true, "media");
-          }, {
-            display: "none"
-          }).addClass("btn-success");
-          // create handler to track selected
-          var EWhandler = function () {
-            var url = EW.getHashParameter("absUrl", "media");
-            if (url) {
-              bSelectPhoto.comeIn(300);
-            } else {
-              bSelectPhoto.comeOut(200);
-            }
+                function (data) {
+                  imageChooserDialog.find(".form-content:first").append(data);
+                  imageChooserDialog.prepend("<h1>Media</h1>");
+                  var bSelectPhoto = EW.addAction("Select Photo", function () {
+                    EW.setHashParameter("select-photo", true, "media");
+                  }, {
+                    display: "none"
+                  }).addClass("btn-success");
+                  // create handler to track selected
+                  var EWhandler = function () {
+                    var url = EW.getHashParameter("absUrl", "media");
+                    if (url) {
+                      bSelectPhoto.comeIn(300);
+                    } else {
+                      bSelectPhoto.comeOut(200);
+                    }
 
-            if (EW.getHashParameter("select-photo", "media")) {
-              EW.setHashParameter("select-photo", null, "media");
-              imageChooserDialog.dispose();
-              //if (EW.getHashParameter("url", "Media"))
-              $element.val(EW.getHashParameter("absUrl", "media")).change();
-              $element.attr("data-filename", EW.getHashParameter("filename", "media"));
-              $element.attr("data-file-extension", EW.getHashParameter("fileExtension", "media"));
-              $element.attr("data-url", EW.getHashParameter("url", "media"));
-            }
-          };
-          EW.addURLHandler(EWhandler, "media.ImageChooser");
-        });
+                    if (EW.getHashParameter("select-photo", "media")) {
+                      EW.setHashParameter("select-photo", null, "media");
+                      imageChooserDialog.dispose();
+                      //if (EW.getHashParameter("url", "Media"))
+                      $element.val(EW.getHashParameter("absUrl", "media")).change();
+                      $element.attr("data-filename", EW.getHashParameter("filename", "media"));
+                      $element.attr("data-file-extension", EW.getHashParameter("fileExtension", "media"));
+                      $element.attr("data-url", EW.getHashParameter("url", "media"));
+                    }
+                  };
+                  EW.addURLHandler(EWhandler, "media.ImageChooser");
+                });
 
         imageChooserDialog.open();
       });
@@ -468,12 +468,17 @@
       mainContent: $("#main-content"),
       body: $("body"),
       document: $(document),
+      navigationMenu: $("#navigation-menu"),
+      appsMenu: $("#apps-menu"),
       sectionsMenu: $("#sections-menu"),
       sectionsMenuList: $("#sections-menu-list"),
       sectionsMenuTitle: $("#sections-menu-title")
     };
 
-    var mouseInNavMenu = false;
+    var mouseInNavMenu = false,
+            enterOnLink = false,
+            currentSectionIndex = null;
+
 
     System.UI.components.sectionsMenuList[0].onSetData = function (data) {
       if (data.length) {
@@ -485,12 +490,9 @@
         }
       } else {
         //alert(System.UI.components.sectionsMenu.height());
-        //System.UI.components.sectionsMenu.css("height", System.UI.components.sectionsMenu.height());
-        TweenLite.fromTo(System.UI.components.sectionsMenu[0], .2, {
-          height: System.UI.components.sectionsMenu.css("height")
-        },
-        {
-          className: "sections-menu in out",
+        System.UI.components.sectionsMenu.css("height", System.UI.components.sectionsMenu.height());
+        TweenLite.to(System.UI.components.sectionsMenu[0], .2, {
+          className: "sections-menu out",
           height: "94px",
           ease: "Power2.easeInOut",
           onComplete: function () {
@@ -500,11 +502,9 @@
       }
     };
 
-    var currentSectionIndex = null;
-    System.UI.components.sectionsMenuList[0].onItemSelected = function (item, i, element) {
-      currentSectionIndex = i;
 
-      //EW.currentAppSections = System.modules[app.id].data.sections;
+    System.UI.components.sectionsMenuList[0].onItemSelected = function (item, index, element) {
+      currentSectionIndex = index;
 
       if (EW.selectedSection) {
         UIUtil.removeCSSClass(EW.selectedSection, "selected");
@@ -512,79 +512,69 @@
 
       EW.selectedSection = element;
       UIUtil.addCSSClass(EW.selectedSection, "selected");
-//if(EW.oldApp === item.id)
       System.setHashParameters({
         app: item.id
-      },
-      true);
+      }, true);
 
-    };
+    };    
 
-    var navigationMenu = $("#navigation-menu");
-    var appsMenu = $("#apps-menu");
+    System.UI.components.navigationMenu.on("mouseenter", function (e) {
+      if (mouseInNavMenu)
+        return;
 
-    navigationMenu.on("mouseenter", function (e) {
       mouseInNavMenu = true;
-      navigationMenu.addClass("expand");
-      TweenLite.to(appsMenu[0], .36, {
-        className: "apps-menu expand",
-        ease: "Power4.easeOut"
-      });
+      System.UI.components.navigationMenu.addClass("expand");
 
       if (System.UI.components.sectionsMenuList[0].data.length) {
-        //System.UI.components.sectionsMenu[0].style.top = 
-        TweenLite.to(System.UI.components.sectionsMenu[0], .36, {
+        if (!enterOnLink)
+          System.UI.components.sectionsMenu[0].style.top = System.UI.components.appsMenu.find(".apps-menu-link.selected")[0].getBoundingClientRect().top + "px";
+
+        TweenLite.to(System.UI.components.sectionsMenu[0], .3, {
           className: "sections-menu in",
-          ease: "Power4.easeOut"
+          ease: "Power2.easeInOut"
         });
       }
-      //appBarNav = $("#app-bar-nav");
     });
 
     var moveAnim = null;
-    //var hoverApp = null;
-    appsMenu.on("mouseenter", "a", function (e) {
-      //var rect = appBarNav[0].getBoundingClientRect();
-      EW.hoverApp = "system/" + e.target.dataset.app;
-      //console.log(e.target.dataset.app);
 
-      System.UI.components.sectionsMenuList[0].setAttribute("data", System.modules["system/" + e.target.dataset.app].data.sections);
+    System.UI.components.appsMenu.on("mouseenter", "a", function (e) {
+      EW.hoverApp = "system/" + e.target.dataset.app;
+
+      var sections = System.modules["system/" + e.target.dataset.app] ? System.modules["system/" + e.target.dataset.app].data.sections : [];
+      System.UI.components.sectionsMenuList[0].setAttribute("data", sections);
 
       if (EW.oldApp === e.target.dataset.app) {
         System.UI.components.sectionsMenuList[0].value = currentSectionIndex;
       }
 
-      if (moveAnim) {
-        moveAnim.pause();
+      if (!mouseInNavMenu) {
+        System.UI.components.sectionsMenu[0].style.top = e.target.getBoundingClientRect().top + "px";
+        enterOnLink = true;
+        return;
       }
 
       moveAnim = TweenLite.to(System.UI.components.sectionsMenu[0], .2, {
         top: e.target.getBoundingClientRect().top
       });
     });
-    
-    System.UI.components.sectionsMenu.on("mouseleave", function(){
-    });
 
-    navigationMenu.on("mouseleave", function () {
+    System.UI.components.navigationMenu.on("mouseleave", function () {
       mouseInNavMenu = false;
-      if (!EW.loadingApp) {
-        System.UI.components.sectionsMenuList[0].setAttribute("data", EW.currentAppSections);
-        System.UI.components.sectionsMenuList[0].value = currentSectionIndex;
-      }
-      //console.log(EW.currentAppSections);
-      //alert("mouse Left" + currentSectionIndex);
-      navigationMenu.removeClass("expand");
+      enterOnLink = false;
 
-      TweenLite.to(appsMenu[0], .36, {
-        className: "apps-menu",
-        ease: "Power2.easeOut"
-      });
+      System.UI.components.navigationMenu.removeClass("expand");
 
-      TweenLite.to(System.UI.components.sectionsMenu[0], .36, {
+      TweenLite.to(System.UI.components.sectionsMenu[0], .2, {
         className: "sections-menu",
         marginTop: 0,
-        ease: "Power2.easeOut"
+        ease: "Power2.easeInOut",
+        onComplete: function () {
+          if (!EW.loadingApp && currentSectionIndex !== System.UI.components.sectionsMenuList[0].value) {
+            System.UI.components.sectionsMenuList[0].setAttribute("data", EW.currentAppSections);
+            System.UI.components.sectionsMenuList[0].value = currentSectionIndex;
+          }
+        }
       });
     });
 
@@ -609,8 +599,8 @@
     $.each(installModules, function (key, val) {
 
       items.push('<li class=""><a class="apps-menu-link" data-app="'
-        + val['id'] + '"><span class="">'
-        + val['title'] + '</span></a></li>');
+              + val['id'] + '"><span class="">'
+              + val['title'] + '</span></a></li>');
 
       val.file = "index.php";
       val.id = val['id'];
@@ -628,7 +618,7 @@
         System.setHashParameters({
           app: "content-management"
         },
-        true);
+                true);
       }
     };
 
@@ -763,15 +753,15 @@
           nav.stop().animate({
             className: "nav nav-pills xs-nav-tabs-active nav-stacked dropdown in"
           },
-          300, "Power3.easeOut");
+                  300, "Power3.easeOut");
           e.preventDefault();
         }, function () {
           nav.stop().animate({
             className: "nav nav-pills xs-nav-tabs-active nav-stacked dropdown"
           },
-          300, "Power3.easeOut", function () {
-            nav = nav.detach();
-          });
+                  300, "Power3.easeOut", function () {
+                    nav = nav.detach();
+                  });
         });
       });
 

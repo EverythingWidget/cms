@@ -57,8 +57,6 @@
     },
     inserted: function () {
     },
-    removed: function () {
-    },
     attributeChanged: function (attrName, oldValue, newValue) {
     }
   };
@@ -170,4 +168,106 @@
   };
 
   xtag.register("ew-list", ewList);
+
+  // EW Actions Container
+
+  var ewFloatPane = {
+    lifecycle: {
+      created: function () {
+        var _this = this;
+        this.xtag.indicator = document.createElement("div");
+        this.xtag.indicator.className = this.className + "-indicator";
+        this.xtag.indicator.style.position = "absolute";
+
+        this.xtag.indicator.addEventListener("click", function () {
+           if (_this.expanded) {
+            _this.contract();
+
+          } else {
+          _this.expand();
+          }
+        });
+
+        this.style.position = "absolute";
+        this.xtag.originClassName = this.className;
+
+        this.render();
+      },
+      inserted: function () {
+        this.parentNode.appendChild(this.xtag.indicator);
+      },
+      removed: function () {
+        if (this.xtag.indicator.parentNode)
+          this.xtag.indicator.parentNode.removeChild(this.xtag.indicator);
+      }
+    },
+    accessors: {
+      position: {
+        attribute: {}
+      }
+    },
+    methods: {
+      render: function () {
+        switch (this.position || "se") {
+          case "se":
+          default:
+            this.xtag.indicator.style.right = this.style.right = "5%";
+            this.xtag.indicator.style.bottom = this.style.bottom = "5%";
+
+            break;
+        }
+      },
+      expand: function () {
+        if (this.expanded)
+          return;
+        this.expanded = true;
+        var originDim = this.getBoundingClientRect();
+        //this.className += " expand";
+        //this.style.width = "auto";
+        //this.style.height = "auto";
+
+        var distDim = this.getBoundingClientRect();
+        //this.className = this.xtag.originClassNaame;
+        /*TweenLite.fromTo(this, 1, {
+         width: originDim.width,
+         height: originDim.height
+         }, {
+         width: distDim.width,
+         height: distDim.height
+         });*/
+
+        TweenLite.to(this, .3, {
+          className: this.xtag.originClassName + " expand",
+          ease: "Power2.easeInOut"
+        });
+
+        TweenLite.to(this.xtag.indicator, .3, {
+          className: this.xtag.originClassName + "-indicator active",
+          ease: "Power2.easeInOut"
+        });
+      },
+      contract: function () {
+        if (!this.expanded)
+          return;
+        this.expanded = false;
+        TweenLite.to(this, .2, {
+          className: this.xtag.originClassName,
+          ease: "Power2.easeInOut"
+        });
+
+        TweenLite.to(this.xtag.indicator, .2, {
+          className: this.xtag.originClassName + "-indicator",
+          ease: "Power2.easeInOut"
+        });
+      }
+    },
+    events: {
+      "mouseleave": function () {
+        //this.contract();
+      }
+    }
+  };
+
+  xtag.register("ew-float-menu", ewFloatPane);
+
 })(xtag);

@@ -1371,7 +1371,7 @@ EWTable.prototype.createHeadersRow = function (headers)
    var ths = [];
    $.each(headers, function (k, v) {
       if (v)
-         ths.push('<th style=width:', v.width || 0, 'px;', v.display ? 'display:' + v.display : '', '>', k, '</th>');
+         ths.push('<th style=width:', v.width || "auto", v.display ? 'display:' + v.display : '', '>', k, '</th>');
       else
          ths.push('<th>', k, '</th>');
       //alert(k);

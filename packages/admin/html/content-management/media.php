@@ -1,5 +1,11 @@
-<div id="media-items-container" >
-  <div id="album-data-card" class="card z-index-1 width-lg-8">
+<div class="block-row">  
+  <div id="albums-list" class="block-column anim-fade-in">
+
+  </div>
+</div>
+
+<div  class="col-lg-12">
+  <div id="album-data-card" class="card z-index-1 center-block col-lg-9 col-md-10 col-xs-12">
     <div  class='card-header'>
       <h1>
         tr{Media}
@@ -12,6 +18,11 @@
     </div>
   </div>
 </div>
+
+<ew-float-menu id='main-actions' class="ew-float-menu">
+  
+</ew-float-menu>
+
 <script>
 
   //var d = System.getDomain();
@@ -35,12 +46,12 @@
       var _this = this;
       this.module.on("album", function (e, id, images) {
         if (id > 0) {
-          _this.newAlbumActivity.comeOut();
-          _this.uploadFileActivity.comeIn();
+          _this.newAlbumActivity.hide();
+          _this.uploadFileActivity.show();
           _this.bBack.comeIn();
         } else {
-          _this.newAlbumActivity.comeIn();
-          _this.uploadFileActivity.comeOut();
+          _this.newAlbumActivity.show();
+          _this.uploadFileActivity.hide();
           _this.bBack.comeOut();
         }
 
@@ -121,13 +132,13 @@
       this.newAlbumActivity = EW.addActivity({
         title: "tr{New Album}",
         activity: "admin/html/content-management/album-form.php",
-        parent: "album-card-action-bar"
-      }).hide();
+        parent: "main-actions"
+      });           
 
       this.uploadFileActivity = EW.addActivity({
         title: "tr{Upload Photo}",
         activity: "admin/html/content-management/upload-form.php",
-        parent: "album-card-action-bar",
+        parent: "main-actions",
         hash: function () {
           return {
             parentId: System.getHashNav("album")[0]
@@ -136,7 +147,7 @@
         onDone: function () {
           EW.setHashParameter("parentId", null);
         }
-      }).hide();
+      });
 
       this.seeAlbumActivity = EW.getActivity({
         activity: "admin/html/content-management/album-form.php",
@@ -178,6 +189,7 @@
       this.listInited = false;
       var listContainer = component.albumDataCard.find(".card-content");
       component.itemsList = component.albumDataCard.find(".card-content .album-images-list").empty();
+      var albumsList = $("#albums-list");
       if (component.parentId === 0) {
         this.albumPropertiesBtn.comeOut();
         this.deleteAlbumBtn.comeOut();
@@ -189,6 +201,7 @@
         //var listContainer = null;
         if (component.parentId === 0) {
           component.albumDataCard.find("h1").html("tr{Albums}");
+          component.itemsList = albumsList;
         } else {
           component.albumDataCard.find("h1").text(response.included.album.title);
           //component.albumDataCard.find(".card-content .card-content-title").text("tr{Images}");
@@ -196,7 +209,7 @@
         }
 
         $.each(response.data, function (index, element) {
-          var temp = component.createMediaElement(element.title, element.type, element.ext, element.size, element.thumbURL, element.id);
+          var temp = component.createAlbumElement(element.title, element.type, element.ext, element.size, element.thumbURL, element.id);
 
           if (element.type === "album") {
             temp.on('keydown', function (e) {
@@ -238,7 +251,7 @@
 
         });
 
-        listContainer.append(component.itemsList);
+        //listContainer.append(component.itemsList);
         component.itemsList.addClass("in");
         component.listInited = true;
         // Select current item            
@@ -255,7 +268,7 @@
               div = $(document.createElement("div")),
               img = $(document.createElement("img"));
 
-      column.addClass("content-item-col-3");
+      column.addClass("col-lg-3 col-md-4 col-xs-6");
       div.addClass("content-item z-index-0")
               .addClass(type)
               .addClass(ext);
@@ -282,6 +295,41 @@
       div.attr("data-item-id", id);
       column.append(div);
       return column;
+    };
+
+    MediaComponent.prototype.createAlbumElement = function (title, type, ext, size, ImageURL, id) {
+      var _this = this,
+              column = $(document.createElement("div")),
+              div = $(document.createElement("div")),
+              img = $(document.createElement("img"));
+
+      //column.addClass("col-lg-3 col-md-4 col-xs-6");
+      div.addClass("content-item")
+              .addClass(type)
+              .addClass(ext);
+      div.attr("tabindex", "1");
+      div.on("focus click", function () {
+        _this.currentItem.removeClass("selected");
+        div.addClass("selected");
+        _this.currentItem = div;
+      });
+
+      if (ImageURL) {
+        img.attr("src", ImageURL);
+        div.append(img);
+      } else {
+        div.append("<span></span>");
+      }
+
+      div.append("<p>" + title + "</p>");
+
+      if (size) {
+        div.append("<p class='date'>" + size + " KB</p>");
+      }
+
+      div.attr("data-item-id", id);
+      //column.append(div);
+      return div;
     };
 
     System.module("content-management/media", function () {

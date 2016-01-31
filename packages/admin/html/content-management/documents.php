@@ -1,25 +1,29 @@
-<div id="folders-card" class="card z-index-1 width-lg-8">
-  <div  class='card-header'>
-    <h1>
-      tr{Contents}
-    </h1>
-    <div id='folders-card-action-bar' class='card-action-bar'></div>
-  </div>
-  <div class='card-content top-devider'>
-    
-    <div id="categories-list"  >
-
+<div class="col-xs-12">
+  <div id="folders-card" class="card z-index-1 center-block col-lg-9 col-md-10 col-xs-12">
+    <div  class='card-header'>
+      <h1>
+        tr{Contents}
+      </h1>
+      <div  class='card-action-bar'></div>
     </div>
-  </div>
-  <div class='card-content top-devider'>
-    
-    <div id="articles-list">
+    <div class='card-content top-devider'>
 
+      <div id="categories-list"  >
+
+      </div>
+    </div>
+    <div class='card-content top-devider'>
+
+      <div id="articles-list">
+
+      </div>
     </div>
   </div>
 </div>
 
-
+<ew-float-menu id='folders-card-action-bar' class="ew-float-menu">
+  
+</ew-float-menu>
 
 <script>
   (function (System) {
@@ -97,9 +101,9 @@
       this.articleId = 0;
       this.upParentId = 0;
       this.currentItem = $();
-      
+
       $("#folders-card-action-bar").empty();
-      
+
       this.bUp = EW.addActionButton({
         text: "tr{Back}",
         class: "btn-text btn-default pull-right",
@@ -225,7 +229,7 @@
        element: $("#articles-list")[0],
        akcent: "loader top"
        }, .3);*/
-      
+
       $("#categories-list").html("<div class='loader center'></div>");
       System.addActiveRequest($.get('~admin/api/content-management/contents-folders', {
         parent_id: _this.parentId
