@@ -21,7 +21,7 @@
   </div>
 </div>
 
-<ew-float-menu id='folders-card-action-bar' class="ew-float-menu">
+<ew-float-menu id='folders-card-action-bar' position="css" parent="app-content" class="ew-float-menu">
   
 </ew-float-menu>
 
@@ -101,6 +101,8 @@
       this.articleId = 0;
       this.upParentId = 0;
       this.currentItem = $();
+      
+      $("#app-content").append($("#folders-card-action-bar"));
 
       $("#folders-card-action-bar").empty();
 

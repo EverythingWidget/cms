@@ -171,44 +171,79 @@
 
   // EW Actions Container
 
-  var ewFloatPane = {
+  var ewFloatMenu = {
     lifecycle: {
       created: function () {
         var _this = this;
         this.xtag.indicator = document.createElement("div");
         this.xtag.indicator.className = this.className + "-indicator";
-        this.xtag.indicator.style.position = "absolute";
+        this.xtag.indicator.style.position = "fixed";
 
         this.xtag.indicator.addEventListener("click", function () {
-           if (_this.expanded) {
+          if (_this.expanded) {
             _this.contract();
 
           } else {
-          _this.expand();
+            _this.expand();
           }
         });
 
-        this.style.position = "absolute";
+        this.style.position = "fixed";
         this.xtag.originClassName = this.className;
 
         this.render();
       },
       inserted: function () {
+        if (document.getElementById(this.parent) !== null && this.parentNode !== document.getElementById(this.parent)) {
+          this.className = this.xtag.originClassName;
+          this.xtag.indicator.className = this.xtag.originClassName + "-indicator";
+          this.xtag.skipRemove = true;
+          document.getElementById(this.parent).appendChild(this);
+          return;
+        }
+
         this.parentNode.appendChild(this.xtag.indicator);
       },
       removed: function () {
-        if (this.xtag.indicator.parentNode)
-          this.xtag.indicator.parentNode.removeChild(this.xtag.indicator);
+        if (this.xtag.skipRemove) {
+          this.xtag.skipRemove = false;
+          return;
+        }
+        //if (this.xtag.indicator.parentNode)
+        //      this.xtag.indicator.parentNode.removeChild(this.xtag.indicator);
+        this.destroy();
       }
     },
     accessors: {
       position: {
         attribute: {}
+      },
+      parent: {
+        attribute: {}
+      },
+      onAttached: {
+        attribute: {},
+        set: function (value) {
+          this.xtag.onAttached = value;
+        },
+        get: function (value) {
+          return this.xtag.onAttached;
+        }
       }
     },
     methods: {
       render: function () {
-        switch (this.position || "se") {
+        switch (this.position || "css") {
+          case "css":
+            this.xtag.indicator.style.right = this.style.right = "";
+            this.xtag.indicator.style.top = this.style.bottom = "";
+            this.xtag.indicator.style.position = "";
+            this.style.position = "";
+            break;
+          case "ne":
+            this.xtag.indicator.style.right = this.style.right = "5%";
+            this.xtag.indicator.style.top = this.style.bottom = "5%";
+            break;
           case "se":
           default:
             this.xtag.indicator.style.right = this.style.right = "5%";
@@ -250,15 +285,35 @@
         if (!this.expanded)
           return;
         this.expanded = false;
-        TweenLite.to(this, .2, {
+        TweenLite.to(this, .4, {
           className: this.xtag.originClassName,
           ease: "Power2.easeInOut"
         });
 
-        TweenLite.to(this.xtag.indicator, .2, {
+        TweenLite.to(this.xtag.indicator, .4, {
           className: this.xtag.originClassName + "-indicator",
           ease: "Power2.easeInOut"
         });
+      },
+      destroy: function () {
+        var _this = this;
+        /*TweenLite.to(this, .3, {
+         className: this.xtag.originClassName + " destroy",
+         ease: "Power2.easeInOut"
+         });*/
+        //if (!this.parentNode)
+        console.log(_this.xtag.indicator.parentNode, this.parentNode);
+        if (_this.xtag.indicator.parentNode && !this.parentNode) {
+          TweenLite.to(this.xtag.indicator, .3, {
+            className: this.xtag.originClassName + "-indicator destroy",
+            ease: "Power2.easeInOut",
+            onComplete: function () {
+
+              if (_this.xtag.indicator.parentNode)
+                _this.xtag.indicator.parentNode.removeChild(_this.xtag.indicator);
+            }
+          });
+        }
       }
     },
     events: {
@@ -268,6 +323,6 @@
     }
   };
 
-  xtag.register("ew-float-menu", ewFloatPane);
+  xtag.register("ew-float-menu", ewFloatMenu);
 
 })(xtag);

@@ -19,9 +19,9 @@
   </div>
 </div>
 
-<ew-float-menu id='main-actions' class="ew-float-menu">
+<!--<ew-float-menu id='main-actions' class="ew-float-menu">
   
-</ew-float-menu>
+</ew-float-menu>-->
 
 <script>
 

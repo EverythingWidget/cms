@@ -55,42 +55,48 @@ root {
   }
 
   .ew-float-menu {
-    background-color: transparent;
-    /* position: absolute; */
+    position: absolute;
     /* bottom: 5%; */
     /* right: 5%; */
+    right: 5%;
+    top:69px;
     z-index: 5;
-    width: 30px;
-    height: 0;
-    padding:0 10px;
-    margin-right: -10px;
-    margin-bottom: 35px;
+    width: 50px;
+    height: 50px;
+    padding: 6px;
+    margin-right: 0px;
+    margin-top: 0px;
     overflow: hidden;
     text-align: right;
-    opacity: 0;
+    opacity: 1;
+    border-radius: 100px;
+    transform: scale(0);
+    transform-origin: 175px 25px;
+    width: 200px;
+    min-height: 200px;
+    height: auto;
   }
 
   .ew-float-menu.expand {
-    width: auto;
-    height: auto;
+    margin-top: 40px;
     border-radius: 0;
-    padding: 10px;
-    margin-bottom: 0;
-    padding-bottom: 50px;
-    opacity: 1;
+    transform: scale(1);
   }
 
   .ew-float-menu-indicator {
+    top: 69px;
+    right: 5%;
     cursor: pointer;
-    background-color: #03A9F4;
+    /*background-color: #03A9F4;*/
+    background-color: #1B2433;
     width: 50px;
     height: 50px;
     border-radius: 25px;
     position: absolute;
     opacity: 1;
-    display: block;   
-    z-index: 6;    
-    box-shadow: 0 2px 5px 0 rgba(0,0,0,0.18),0 2px 10px 0 rgba(0,0,0,0.14);
+    display: block;
+    z-index: 6;
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,0.2),0 2px 10px 0 rgba(0,0,0,0.16);
   }
 
   .ew-float-menu-indicator:after {
@@ -103,31 +109,30 @@ root {
     position: absolute;
     border-radius: inherit;
     transition: all .2s;
-
   }
 
-  .ew-float-menu-indicator.active {  
+  .ew-float-menu-indicator.active { 
   }
 
   .ew-float-menu-indicator.active:after {
-    
     transform: rotate(135deg);    
+  }
+  
+  .ew-float-menu-indicator.destroy { 
+    transform: scale(0);
   }
 
   .ew-float-menu > .btn {
     width: auto;
-    float: right;
     display: block;
-    margin-bottom: 10px;
+    float: right;
+    margin-top: 15px;
     clear: right;
-    /* padding: 0; */
-    position: relative;
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.18),0 2px 9px 0 rgba(0,0,0,0.14);
+    border-radius: 19px;
   }
 
-
-
-  .ew-float-menu > .btn:hover {
-
+  .ew-float-menu.expand > .btn {
   }
 
   .block-row {
@@ -2479,7 +2484,7 @@ textarea.text-field {
   width: 28px;
   height: 28px;
   float: right;
-  margin: 18px 0;
+  margin: 0px 0;
   margin-left: 15px;
   cursor: pointer;
   background-size: cover;

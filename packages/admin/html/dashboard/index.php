@@ -1,7 +1,8 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['login'])) {
+if (!isset($_SESSION['login']))
+{
   include "Login.php";
   return;
 }
@@ -12,11 +13,12 @@ if (!isset($_SESSION['login'])) {
     <title>
       EW Admin
     </title>
-    <?php include 'header.php'; ?>
+<?php include 'header.php'; ?>
   </head>
   <body class="Admin <?php echo EWCore::get_language_dir($_REQUEST["_language"]); ?>" >
     <div id="base-pane" class="container">      
       <div id="app-content" >
+
         <!--<div id="nav-bar" class="nav-bar">
 
         </div>-->
@@ -43,7 +45,8 @@ if (!isset($_SESSION['login'])) {
           </div>
           <div class="action-center">
             <?php
-            if ($_SESSION['login']) {
+            if ($_SESSION['login'])
+            {
               echo '<a class="ExitBtn" href="~admin/api/users-management/logout?url=' . EW_DIR_URL . '~admin/" ></a>';
             }
             ?>
@@ -64,6 +67,6 @@ if (!isset($_SESSION['login'])) {
 
     <div id="notifications-panel"></div>   
 
-    <?php include 'footer.php'; ?>      
+<?php include 'footer.php'; ?>      
   </body>
 </html>

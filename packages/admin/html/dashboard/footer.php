@@ -4,7 +4,7 @@
     $("#action-bar-items").children().animate({
       opacity: 0
     },
-            300);
+      300);
 
     System.UI.components.appTitle.text("Home");
     //System.UI.components.homeButton.stop().comeOut(500);
@@ -26,11 +26,11 @@
     System.UI.components.appBar.animate({
       className: "app-bar"
     },
-            500, "Power2.easeInOut");
+      500, "Power2.easeInOut");
     System.UI.components.homePane.animate({
       className: "home-pane in"
     },
-            500, "Power2.easeInOut");
+      500, "Power2.easeInOut");
   };
 
   System.onLoadApp = function (app) {
@@ -92,6 +92,7 @@
       UIUtil.addCSSClass(element, "inline-loader");
 
       $("#action-bar-items").find("button,div").remove();
+      $("#app-content").find("ew-float-menu").remove();
 
       System.UI.components.mainContent.empty();
       System.abortAllRequests();
@@ -120,12 +121,12 @@
           ease: "Power2.easeInOut",
           top: "-=94px"
         },
-                {
-                  top: "+=94px",
-                  opacity: 1,
-                  onComplete: function () {
-                  }
-                });
+        {
+          top: "+=94px",
+          opacity: 1,
+          onComplete: function () {
+          }
+        });
       });
     }
 
@@ -138,57 +139,57 @@
     $.get('~admin/api/EWCore/read_apps', {
       appDir: "admin"
     },
-            function (data) {
+      function (data) {
 
-              var items = [
-                '<ul class="apps-menu-list">'
-              ];
-              $.each(data, function (key, val) {
-                /*items.push('<li class=""><a class="app-link z-index-0" data-app="'
-                 + val['id'] + '"><label>'
-                 + val['title'] + '</label><p>'
-                 + val['description'] + '</p></a></li>');*/
+        var items = [
+          '<ul class="apps-menu-list">'
+        ];
+        $.each(data, function (key, val) {
+          /*items.push('<li class=""><a class="app-link z-index-0" data-app="'
+           + val['id'] + '"><label>'
+           + val['title'] + '</label><p>'
+           + val['description'] + '</p></a></li>');*/
 
-                items.push('<li class=""><a class="apps-menu-link" data-app="'
-                        + val['id'] + '"><span class="">'
-                        + val['title'] + '</span></a></li>');
-                //val.package = "~admin";
-                val.file = "index.php";
-                val.id = val['id'];
-                _this.apps[val['id']] = val;
+          items.push('<li class=""><a class="apps-menu-link" data-app="'
+            + val['id'] + '"><span class="">'
+            + val['title'] + '</span></a></li>');
+          //val.package = "~admin";
+          val.file = "index.php";
+          val.id = val['id'];
+          _this.apps[val['id']] = val;
 
-              });
+        });
 
-              items.push('</ul>');
+        items.push('</ul>');
 
-              $(items.join('')).appendTo("#apps-menu");
+        $(items.join('')).appendTo("#apps-menu");
 
-              System.start();
+        System.start();
 
-              $.each(_this.apps, function (e, v) {
-                if (v.id !== EW.oldApp) {
-                  //alert(System.getHashParam("app") + " >>> " + v.id + " @ " + EW.oldApp);
-                  System.loadModule(v, function () {
-                    //alert("sdfsdfsdfsdf")
-                  });
-                }
-              });
+        $.each(_this.apps, function (e, v) {
+          if (v.id !== EW.oldApp) {
+            //alert(System.getHashParam("app") + " >>> " + v.id + " @ " + EW.oldApp);
+            System.loadModule(v, function () {
+              //alert("sdfsdfsdfsdf")
+            });
+          }
+        });
 
 
-              var $oldAppLink = $();
-              /*$("#navigation-menu .apps-menu-link").click(function (event) {
-               event.preventDefault();
-               $oldAppLink.removeClass("selected");
-               $oldAppLink = $(this);
-               $oldAppLink.addClass("selected");
-               
-               System.setHashParameters({
-               app: $oldAppLink.attr("data-app")
-               }, null);
-               
-               });*/
+        var $oldAppLink = $();
+        /*$("#navigation-menu .apps-menu-link").click(function (event) {
+         event.preventDefault();
+         $oldAppLink.removeClass("selected");
+         $oldAppLink = $(this);
+         $oldAppLink.addClass("selected");
+         
+         System.setHashParameters({
+         app: $oldAppLink.attr("data-app")
+         }, null);
+         
+         });*/
 
-            }, "json");
+      }, "json");
   };
 
   /*EverythingWidgets.prototype.loadApp = function (data) {
@@ -241,7 +242,7 @@
       this.animate({
         className: orgClass
       },
-              dur || 300, "Power2.easeInOut");
+        dur || 300, "Power2.easeInOut");
     }
 
     return this;
@@ -253,9 +254,9 @@
       this.stop(true, true).animate({
         className: this.prop("class") + " btn-hide"
       },
-              dur || 300, "Power2.easeInOut", function () {
-                this.hide();
-              });
+        dur || 300, "Power2.easeInOut", function () {
+          this.hide();
+        });
     }
 
     return this;
@@ -297,13 +298,13 @@
             data: $element.val(),
             contentType: $element.data("content-type") || "all"
           },
-                  function (data) {
-                    var functionRefrence = $("<div style='display:none;' id='function-reference'></div>");
-                    functionRefrence.data("callback", settings.callback);
-                    e = $(data);
-                    e.append(functionRefrence);
-                    linkChooserDialog.html(e);
-                  });
+            function (data) {
+              var functionRefrence = $("<div style='display:none;' id='function-reference'></div>");
+              functionRefrence.data("callback", settings.callback);
+              e = $(data);
+              e.append(functionRefrence);
+              linkChooserDialog.html(e);
+            });
         }
       });
     }
@@ -387,35 +388,35 @@
         $.post("<?php echo EW_DIR ?>~admin/html/content-management/Media.php", {
           callback: settings.callbackName
         },
-                function (data) {
-                  imageChooserDialog.find(".form-content:first").append(data);
-                  imageChooserDialog.prepend("<h1>Media</h1>");
-                  var bSelectPhoto = EW.addAction("Select Photo", function () {
-                    EW.setHashParameter("select-photo", true, "media");
-                  }, {
-                    display: "none"
-                  }).addClass("btn-success");
-                  // create handler to track selected
-                  var EWhandler = function () {
-                    var url = EW.getHashParameter("absUrl", "media");
-                    if (url) {
-                      bSelectPhoto.comeIn(300);
-                    } else {
-                      bSelectPhoto.comeOut(200);
-                    }
+          function (data) {
+            imageChooserDialog.find(".form-content:first").append(data);
+            imageChooserDialog.prepend("<h1>Media</h1>");
+            var bSelectPhoto = EW.addAction("Select Photo", function () {
+              EW.setHashParameter("select-photo", true, "media");
+            }, {
+              display: "none"
+            }).addClass("btn-success");
+            // create handler to track selected
+            var EWhandler = function () {
+              var url = EW.getHashParameter("absUrl", "media");
+              if (url) {
+                bSelectPhoto.comeIn(300);
+              } else {
+                bSelectPhoto.comeOut(200);
+              }
 
-                    if (EW.getHashParameter("select-photo", "media")) {
-                      EW.setHashParameter("select-photo", null, "media");
-                      imageChooserDialog.dispose();
-                      //if (EW.getHashParameter("url", "Media"))
-                      $element.val(EW.getHashParameter("absUrl", "media")).change();
-                      $element.attr("data-filename", EW.getHashParameter("filename", "media"));
-                      $element.attr("data-file-extension", EW.getHashParameter("fileExtension", "media"));
-                      $element.attr("data-url", EW.getHashParameter("url", "media"));
-                    }
-                  };
-                  EW.addURLHandler(EWhandler, "media.ImageChooser");
-                });
+              if (EW.getHashParameter("select-photo", "media")) {
+                EW.setHashParameter("select-photo", null, "media");
+                imageChooserDialog.dispose();
+                //if (EW.getHashParameter("url", "Media"))
+                $element.val(EW.getHashParameter("absUrl", "media")).change();
+                $element.attr("data-filename", EW.getHashParameter("filename", "media"));
+                $element.attr("data-file-extension", EW.getHashParameter("fileExtension", "media"));
+                $element.attr("data-url", EW.getHashParameter("url", "media"));
+              }
+            };
+            EW.addURLHandler(EWhandler, "media.ImageChooser");
+          });
 
         imageChooserDialog.open();
       });
@@ -476,8 +477,8 @@
     };
 
     var mouseInNavMenu = false,
-            enterOnLink = false,
-            currentSectionIndex = null;
+      enterOnLink = false,
+      currentSectionIndex = null;
 
 
     System.UI.components.sectionsMenuList[0].onSetData = function (data) {
@@ -514,9 +515,10 @@
       UIUtil.addCSSClass(EW.selectedSection, "selected");
       System.setHashParameters({
         app: item.id
-      }, true);
+      },
+      true);
 
-    };    
+    };
 
     System.UI.components.navigationMenu.on("mouseenter", function (e) {
       if (mouseInNavMenu)
@@ -541,7 +543,8 @@
     System.UI.components.appsMenu.on("mouseenter", "a", function (e) {
       EW.hoverApp = "system/" + e.target.dataset.app;
 
-      var sections = System.modules["system/" + e.target.dataset.app] ? System.modules["system/" + e.target.dataset.app].data.sections : [];
+      var sections = System.modules["system/" + e.target.dataset.app] ? System.modules["system/" + e.target.dataset.app].data.sections : [
+      ];
       System.UI.components.sectionsMenuList[0].setAttribute("data", sections);
 
       if (EW.oldApp === e.target.dataset.app) {
@@ -599,8 +602,8 @@
     $.each(installModules, function (key, val) {
 
       items.push('<li class=""><a class="apps-menu-link" data-app="'
-              + val['id'] + '"><span class="">'
-              + val['title'] + '</span></a></li>');
+        + val['id'] + '"><span class="">'
+        + val['title'] + '</span></a></li>');
 
       val.file = "index.php";
       val.id = val['id'];
@@ -618,7 +621,7 @@
         System.setHashParameters({
           app: "content-management"
         },
-                true);
+          true);
       }
     };
 
@@ -753,15 +756,15 @@
           nav.stop().animate({
             className: "nav nav-pills xs-nav-tabs-active nav-stacked dropdown in"
           },
-                  300, "Power3.easeOut");
+            300, "Power3.easeOut");
           e.preventDefault();
         }, function () {
           nav.stop().animate({
             className: "nav nav-pills xs-nav-tabs-active nav-stacked dropdown"
           },
-                  300, "Power3.easeOut", function () {
-                    nav = nav.detach();
-                  });
+            300, "Power3.easeOut", function () {
+              nav = nav.detach();
+            });
         });
       });
 
