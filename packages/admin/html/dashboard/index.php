@@ -18,10 +18,7 @@ if (!isset($_SESSION['login']))
   <body class="Admin <?php echo EWCore::get_language_dir($_REQUEST["_language"]); ?>" >
     <div id="base-pane" class="container">      
       <div id="app-content" >
-
-        <!--<div id="nav-bar" class="nav-bar">
-
-        </div>-->
+        
         <div id="navigation-menu" class="navigation-menu">
           <div id="apps-menu" class="apps-menu" >
              <!--<span type="button" id="apps" class="apps-menu-icon" ></span>-->
@@ -57,10 +54,14 @@ if (!isset($_SESSION['login']))
             </div>
           </div>
         </div>
+        
+        <ew-float-menu id="main-float-menu" class="ew-float-menu">
+          
+        </ew-float-menu>
+        
         <div id="home-pane" class="home-pane" >
         </div>
         <?php
-//echo ($compPage);
         ?>
       </div>
     </div>

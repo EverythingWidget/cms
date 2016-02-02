@@ -251,11 +251,22 @@
           $("#system_" + mod.id.replace(/[\/-]/g, "_")).remove();
           //return;
         }
+        var scripts = null;
+        var raw = $(response);
+        //var scripts = raw.filter("script").remove();
+        var html = raw.filter(function (i, e) {
 
-        var html = $(response);
-        var scripts = html.filter("script").detach();
+          if (e.tagName && e.tagName.toLowerCase() === "script") {
+            //console.log(e.tagName);
+            scripts = $(e);
+            return false;
+          }
+          return true;
 
-        $("head").append(scripts);
+        });
+
+        if (scripts)
+          $("head").append(scripts);
         //var html = res;
         //System.apps[id] = $.extend({}, System.module, self.apps[id]);
         //System.activityTree.unshift(System.apps[id]);
@@ -268,7 +279,8 @@
 
         System.modules["system/" + mod.id].html = html;
 
-        scripts.attr("id", System.modules["system/" + mod.id].id.replace(/[\/-]/g, "_"));
+        if (scripts)
+          scripts.attr("id", System.modules["system/" + mod.id].id.replace(/[\/-]/g, "_"));
 
         if ("function" === typeof (System.onModuleLoaded["system/" + mod.id])) {
           //onDone.call(this, System.modules["system/" + mod.id], response);
@@ -334,7 +346,7 @@
         this.modules[this.notYetStarted[this.notYetStarted.length - 1]].start();
       }
     },
-    init: function (mods) {      
+    init: function (mods) {
       this.app = $.extend(true, {}, System.MODULE_ABSTRACT);
       this.app.domain = this;
       this.app.moduleIdentifier = this.moduleIdentifier;
@@ -342,8 +354,8 @@
       this.app.installModules = mods;
       this.app.init({}, {}, "");
     }/*,
-    getDomain: function () {
-      return new System.Domain();
-    }*/
+     getDomain: function () {
+     return new System.Domain();
+     }*/
   };
 }());

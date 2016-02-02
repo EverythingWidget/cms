@@ -97,6 +97,7 @@ root {
     display: block;
     z-index: 6;
     box-shadow: 0 2px 5px 0 rgba(0,0,0,0.2),0 2px 10px 0 rgba(0,0,0,0.16);
+    /*transition: all 1s;*/
   }
 
   .ew-float-menu-indicator:after {
@@ -118,7 +119,7 @@ root {
     transform: rotate(135deg);    
   }
   
-  .ew-float-menu-indicator.destroy { 
+  .ew-float-menu-indicator.destroy {
     transform: scale(0);
   }
 
@@ -403,7 +404,7 @@ root {
 
   .actions-bar > .btn, .actions-bar > .btn-group {
     margin-right: 10px;
-    margin-bottom: 6px;
+    margin-bottom: 2px;
     float: left;
     width: auto;
   }

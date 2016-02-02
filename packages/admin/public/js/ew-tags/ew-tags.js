@@ -193,25 +193,15 @@
 
         this.render();
       },
-      inserted: function () {
-        if (document.getElementById(this.parent) !== null && this.parentNode !== document.getElementById(this.parent)) {
-          this.className = this.xtag.originClassName;
-          this.xtag.indicator.className = this.xtag.originClassName + "-indicator";
-          this.xtag.skipRemove = true;
-          document.getElementById(this.parent).appendChild(this);
-          return;
-        }
-
+      inserted: function () {        
+        this.className = this.xtag.originClassName;
+        this.xtag.indicator.className = this.xtag.originClassName + "-indicator";
         this.parentNode.appendChild(this.xtag.indicator);
       },
+      attributeChanged: function (attrName, oldValue, newValue) {
+      },
       removed: function () {
-        if (this.xtag.skipRemove) {
-          this.xtag.skipRemove = false;
-          return;
-        }
-        //if (this.xtag.indicator.parentNode)
-        //      this.xtag.indicator.parentNode.removeChild(this.xtag.indicator);
-        this.destroy();
+        this.off(true);
       }
     },
     accessors: {
@@ -295,21 +285,25 @@
           ease: "Power2.easeInOut"
         });
       },
-      destroy: function () {
-        var _this = this;
-        /*TweenLite.to(this, .3, {
-         className: this.xtag.originClassName + " destroy",
-         ease: "Power2.easeInOut"
-         });*/
-        //if (!this.parentNode)
-        console.log(_this.xtag.indicator.parentNode, this.parentNode);
-        if (_this.xtag.indicator.parentNode && !this.parentNode) {
-          TweenLite.to(this.xtag.indicator, .3, {
-            className: this.xtag.originClassName + "-indicator destroy",
-            ease: "Power2.easeInOut",
+      on: function (flag) {
+        if (this.xtag.indicator.parentNode) {
+          //this.xtag.indicator.className = this.xtag.originClassName + "-indicator";
+          TweenLite.to(this.xtag.indicator, .4, {
+            className: "-=destroy",
             onComplete: function () {
+            }
+          });
+        }
+      },
+      off: function (flag) {
+        var _this = this;
+        if (_this.xtag.indicator.parentNode) {
+          this.xtag.indicator.className = this.xtag.originClassName + "-indicator";
 
-              if (_this.xtag.indicator.parentNode)
+          TweenLite.to(this.xtag.indicator, .3, {
+            className: "+=destroy",
+            onComplete: function () {
+              if (flag)
                 _this.xtag.indicator.parentNode.removeChild(_this.xtag.indicator);
             }
           });

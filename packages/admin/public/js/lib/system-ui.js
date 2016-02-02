@@ -289,22 +289,23 @@
     },
     blastTo: function (conf) {
       var t = conf.time || system.UI.DEFAULTS.animationDuration;
-      var sourceRect = conf.from.getBoundingClientRect();
+      //var sourceRect = conf.from.getBoundingClientRect();
+      var sourceRect = conf.from;
       var distRect = conf.to.getBoundingClientRect();
       var wrapper = document.createElement("div");
       var blast = document.createElement("div");
-      var sourceStyle = window.getComputedStyle(conf.from, null);
+      //var sourceStyle = window.getComputedStyle(conf.from, null);
       var ds = window.getComputedStyle(conf.to, null);
       var radius = distRect.width > distRect.height ? distRect.width : distRect.height;
 
-      wrapper.style.position = "absolute";
+      wrapper.style.position = "fixed";
       wrapper.style.textAlign = "center";
       wrapper.style.borderRadius = conf.to.style.borderRadius;
-      wrapper.style.color = conf.textColor || sourceStyle.color;
+      //wrapper.style.color = conf.textColor || sourceStyle.color;
       wrapper.style.fontSize = "3em";
-      wrapper.style.fontWeight = sourceStyle.fontWeight;
+      //wrapper.style.fontWeight = sourceStyle.fontWeight;
       wrapper.style.lineHeight = radius + 'px';
-      wrapper.style.textTransform = sourceStyle.textTransform;
+      //wrapper.style.textTransform = sourceStyle.textTransform;
       wrapper.style.whiteSpace = "nowrap";
       wrapper.style.zIndex = (ds.zIndex === "0" || ds.zIndex === "auto") ? 1 : ds.zIndex;
       wrapper.style.overflow = "hidden";
@@ -320,17 +321,20 @@
       blast.style.position = "absolute";
       blast.style.backgroundColor = (ds.backgroundColor.indexOf("rgba") !== -1 ||
         ds.backgroundColor === "transparent") ? "rgb(190,190,190)" : ds.backgroundColor;
+      blast.style.backgroundColor = "red";
       //blast.style.top = "50%";
       //blast.style.left = "50%";
       //blast.style.marginLeft = blast.style.marginTop = -(radius / 2) + "px";
-      blast.style.width = blast.style.height = radius + "px";
+      blast.style.width = blast.style.height = radius  + "px";
       blast.style.borderRadius = "50%";
 
       var initScale = sourceRect.width < sourceRect.height ? sourceRect.width / distRect.width : sourceRect.height / distRect.height;
-      blast.style.transform = "scale(" + initScale + ")";
-      //blast.style.transform = "scale(0)";
-      blast.style.top = sourceRect.top + (sourceRect.height / 2) - (radius / 2) + "px";
-      blast.style.left = sourceRect.left + (sourceRect.width / 2) - (radius / 2) + "px";
+      //blast.style.transform = "scale(" + initScale + ")";
+      blast.style.transform = "scale(0)";
+//      blast.style.top = sourceRect.top + (sourceRect.height / 2) - (radius / 2) + "px";
+//      blast.style.left = sourceRect.left + (sourceRect.width / 2) - (radius / 2) + "px";
+      blast.style.top = (sourceRect.top + (sourceRect.height / 2)) -(radius/2) - distRect.top + "px";
+      blast.style.left = (sourceRect.left + (sourceRect.width / 2)) -(radius/2) - distRect.left + "px";
 
       if (conf.text) {
         blast.innerHTML = conf.text;
@@ -338,14 +342,16 @@
 
       conf.to.style.visibility = "hidden";
       if (conf.flow) {
-        conf.from.style.visibility = "hidden";
-        conf.from.style.transition = "none";
+        //conf.from.style.visibility = "hidden";
+        //conf.from.style.transition = "none";
       }
 
       wrapper.appendChild(blast);
-      system.UI.body.appendChild(wrapper);
 
-      tween.to(wrapper, t, {
+      //wrapper
+      conf.to.parentNode.appendChild(wrapper);
+
+      tween.to(wrapper, 0, {
         left: distRect.left,
         top: distRect.top,
         width: distRect.width,
@@ -354,13 +360,15 @@
       });
 
       tween.to(blast, t, {
-        transform: "scale(1.42)",
-        top: (distRect.height - radius) / 2,
-        left: (distRect.width - radius) / 2,
+        transform: "scale(1.5)",
+        top: (distRect.height - radius ) / 2,
+        left: (distRect.width - radius ) / 2,
+        //top: (sourceRect.top-radius)/2,
+        //left: (sourceRect.left-radius)/2,
         ease: "Power1.easeOut",
         onComplete: function () {
           conf.to.style.visibility = "";
-          conf.from.style.transition = "";
+          //conf.from.style.transition = "";
           if (conf.fade > 0) {
             tween.to(wrapper, conf.fade, {
               opacity: 0,

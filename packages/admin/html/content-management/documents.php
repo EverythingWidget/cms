@@ -21,9 +21,9 @@
   </div>
 </div>
 
-<ew-float-menu id='folders-card-action-bar' position="css" parent="app-content" class="ew-float-menu">
+<!--<ew-float-menu id='folders-card-action-bar' position="css" parent="app-content" class="ew-float-menu">
   
-</ew-float-menu>
+</ew-float-menu>-->
 
 <script>
   (function (System) {
@@ -101,10 +101,11 @@
       this.articleId = 0;
       this.upParentId = 0;
       this.currentItem = $();
-      
-      $("#app-content").append($("#folders-card-action-bar"));
+      this.foldersCard = $("#folders-card");
 
-      $("#folders-card-action-bar").empty();
+      //$("#app-content").append($("#folders-card-action-bar"));
+
+      //$("#folders-card-action-bar").empty();
 
       this.bUp = EW.addActionButton({
         text: "tr{Back}",
@@ -118,7 +119,7 @@
         title: "tr{New Folder}",
         //class: "btn-text btn-primary",
         activity: "admin/html/content-management/folder-form.php",
-        parent: "folders-card-action-bar",
+        parent: "main-float-menu",
         hash: {
           folderId: null
         }
@@ -128,7 +129,7 @@
         title: "tr{New Article}",
         //class: "btn-text btn-primary",
         activity: "admin/html/content-management/article-form.php_new",
-        parent: "folders-card-action-bar",
+        parent: "main-float-menu",
         hash: {
           articleId: null
         },
@@ -176,7 +177,7 @@
               folderId: null,
               articleId: eventData.data.id
             },
-                    "document");
+              "document");
           }
 
           if (eventData.data.type === "folder") {
@@ -184,7 +185,7 @@
               folderId: eventData.data.id,
               articleId: null
             },
-                    "document");
+              "document");
           }
         }
       });
@@ -219,10 +220,10 @@
 
     Documents.prototype.listCategories = function () {
       var _this = this,
-              pId = 0,
-              hasNode = false,
-              article = System.getHashParam("article"),
-              folder = System.getHashParam("folder");
+        pId = 0,
+        hasNode = false,
+        article = System.getHashParam("article"),
+        folder = System.getHashParam("folder");
       /*lockFolders = System.UI.lock({
        element: $("#categories-list")[0],
        akcent: "loader top"
@@ -231,66 +232,76 @@
        element: $("#articles-list")[0],
        akcent: "loader top"
        }, .3);*/
-
+      var sss = _this.currentItem[0] ? _this.currentItem[0].getBoundingClientRect() : {};
+      _this.foldersCard.css("visibility", "hidden");
       $("#categories-list").html("<div class='loader center'></div>");
       System.addActiveRequest($.get('~admin/api/content-management/contents-folders', {
         parent_id: _this.parentId
       },
-              function (data) {
-                $("#categories-list").html("<div class='box-content anim-fade-in'></div>");
-                //$("#cate-title").loadingText();
+        function (data) {
+          
+          $("#categories-list").html("<div class='box-content anim-fade-in'></div>");
+          //$("#cate-title").loadingText();
 
-                var foldersPane = $("#categories-list .box-content");
-                $.each(data.data, function (index, element) {
-                  pId = element.up_parent_id;
-                  hasNode = true;
-                  var temp = _this.createFolderElement(element.title, element.round_date_created, element.id, element);
-                  //temp.addClass("anim-scale-in");
-                  if (element.id == folder) {
-                    temp.addClass("selected");
-                    _this.currentItem = temp;
-                  }
-                  foldersPane.append(temp);
-                  //temp.addClass("in");
-                });
+          var foldersPane = $("#categories-list .box-content");
+          $.each(data.data, function (index, element) {
+            pId = element.up_parent_id;
+            hasNode = true;
+            var temp = _this.createFolderElement(element.title, element.round_date_created, element.id, element);
+            //temp.addClass("anim-scale-in");
+            if (element.id == folder) {
+              temp.addClass("selected");
+              _this.currentItem = temp;
+            }
+            foldersPane.append(temp);
+            //temp.addClass("in");
+          });
 
-                if (hasNode) {
-                  _this.upParentId = pId;
-                }
-                $("#categories-list").find(".box-content").addClass("in");
-                //lockFolders.dispose();
-              }, "json"));
+          if (hasNode) {
+            _this.upParentId = pId;
+          }
+          $("#categories-list").find(".box-content").addClass("in");
+          //lockFolders.dispose();
+        }, "json"));
 
       $("#articles-list").html("<div class='loader center'></div>");
       System.addActiveRequest($.get('~admin/api/content-management/contents-articles', {
         parent_id: _this.parentId
       },
-              function (data) {
-                $("#articles-list").html("<div class='box-content anim-fade-in'></div>");
+        function (data) {
 
-                var articlesPane = $("#articles-list .box-content");
-                $.each(data.data, function (index, element) {
-                  pId = element.up_parent_id;
-                  hasNode = true;
-                  var temp = _this.createArticleElement(element.title, element.round_date_created, element.id, element);
-                  //temp.addClass("anim-scale-in");
-                  if (element.id == article) {
-                    temp.addClass("selected");
-                    _this.currentItem = temp;
-                  }
-                  articlesPane.append(temp);
-                  // setTimeout(function ()            {
-                  //temp.addClass("in");
-                  //}, 1);
+          $("#articles-list").html("<div class='box-content anim-fade-in'></div>");
 
-                });
+          var articlesPane = $("#articles-list .box-content");
+          $.each(data.data, function (index, element) {
+            pId = element.up_parent_id;
+            hasNode = true;
+            var temp = _this.createArticleElement(element.title, element.round_date_created, element.id, element);
+            //temp.addClass("anim-scale-in");
+            if (element.id == article) {
+              temp.addClass("selected");
+              _this.currentItem = temp;
+            }
+            articlesPane.append(temp);
+            // setTimeout(function ()            {
+            //temp.addClass("in");
+            //}, 1);
 
-                if (hasNode) {
-                  _this.upParentId = pId;
-                }
-                $("#articles-list").find(".box-content").addClass("in");
-                //lockArticles.dispose();
-              }, "json"));
+          });
+
+          if (hasNode) {
+            _this.upParentId = pId;
+          }
+          $("#articles-list").find(".box-content").addClass("in");
+
+          System.UI.Animation.blastTo({
+            from: sss,
+            to: _this.foldersCard[0],
+            time: 2,
+            fade: .5
+          });
+          //lockArticles.dispose();
+        }, "json"));
     };
 
     Documents.prototype.focusOn = function (item) {
@@ -306,6 +317,7 @@
       var div = $("<div tabindex='1' class='content-item folder' data-category-id='{id}'><span></span><p>{title}</p><p class='date'>{round_date_created}</p></div>").EW().createView(model);
       div.dblclick(function () {
         self.module.setParam("dir", id + "/list");
+
       });
 
       div.on('focus', function () {

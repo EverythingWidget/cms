@@ -92,7 +92,8 @@
       UIUtil.addCSSClass(element, "inline-loader");
 
       $("#action-bar-items").find("button,div").remove();
-      $("#app-content").find("ew-float-menu").remove();
+      System.UI.components.mainFloatMenu.empty();
+      System.UI.components.mainFloatMenu[0].off();
 
       System.UI.components.mainContent.empty();
       System.abortAllRequests();
@@ -112,6 +113,9 @@
         }
         //alert("section loaded: " + mod.id);
         //System.startLastLoadedModule();
+        if (System.UI.components.mainFloatMenu.children().length > 0) {
+          System.UI.components.mainFloatMenu[0].on();
+        }
 
         System.UI.components.sectionsMenuTitle.removeClass("inline-loader");
         UIUtil.removeCSSClass(element, "inline-loader");
@@ -121,12 +125,12 @@
           ease: "Power2.easeInOut",
           top: "-=94px"
         },
-        {
-          top: "+=94px",
-          opacity: 1,
-          onComplete: function () {
-          }
-        });
+          {
+            top: "+=94px",
+            opacity: 1,
+            onComplete: function () {
+            }
+          });
       });
     }
 
@@ -473,7 +477,8 @@
       appsMenu: $("#apps-menu"),
       sectionsMenu: $("#sections-menu"),
       sectionsMenuList: $("#sections-menu-list"),
-      sectionsMenuTitle: $("#sections-menu-title")
+      sectionsMenuTitle: $("#sections-menu-title"),
+      mainFloatMenu: $("#main-float-menu")
     };
 
     var mouseInNavMenu = false,
@@ -516,7 +521,7 @@
       System.setHashParameters({
         app: item.id
       },
-      true);
+        true);
 
     };
 
