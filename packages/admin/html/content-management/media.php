@@ -7,12 +7,14 @@
 <div  class="col-lg-12">
   <div id="album-data-card" class="card z-index-1 center-block col-lg-9 col-md-10 col-xs-12">
     <div  class='card-header'>
+      <div class="card-title-action"></div>
+      <div class="card-title-action-right"></div>
       <h1>
         tr{Media}
       </h1>
-      <div id='album-card-action-bar' class='card-action-bar'></div>
+      
     </div>
-    <div class='card-content top-devider'>
+    <div class='card-content top-devider block-row'>
       <!--<span class='card-content-title'></span>-->
       <div class="album-images-list"></div>
     </div>
@@ -74,12 +76,12 @@
       this.module.on("select", function (itemId) {
         if (itemId > 0) {
           _this.selectedItemId = itemId;
-          _this.seeAction.comeIn();
+          //_this.seeAction.comeIn();
 
           _this.currentItem.removeClass("selected");
           $("div[data-item-id='" + _this.selectedItemId + "']").focus();
         } else {
-          _this.seeAction.comeOut();
+          //_this.seeAction.comeOut();
         }
       });
 
@@ -96,7 +98,9 @@
       this.currentItem = $();
       this.bDel = $();
       this.listInited = false;
-      this.albumDataCard = $("#album-data-card");
+      this.albumCard = $("#album-data-card");
+      this.albumCardTitleAction = this.albumCard.find(".card-title-action");
+      this.albumCardTitleActionRight = this.albumCard.find(".card-title-action-right");
       $("#album-card-action-bar").empty();
 
       this.albumPropertiesBtn = EW.addActionButton({
@@ -107,38 +111,41 @@
           });
         },
         class: "btn-default",
-        parent: "album-card-action-bar"
+        parent: System.UI.components.mainFloatMenu
       }).hide();
 
       this.deleteAlbumBtn = EW.addActionButton({
-        text: "tr{Delete}",
-        class: "btn-text btn-danger pull-right",
+        text: "tr{}",
+        class: "btn-text btn-circle btn-danger icon-delete",
+        parent: this.albumCardTitleActionRight,
         handler: function () {
           _this.seeAlbumActivity({
             albumId: System.getHashNav("album")[0]
           });
-        },
-        parent: "album-card-action-bar"}).hide();
+        }
+      });
 
       this.bBack = EW.addActionButton({
-        text: "tr{Back to Media}",
-        class: "btn-text btn-default pull-right",
+        text: "",
+        class: "btn-text btn-default btn-circle icon-back",
         handler: function () {
           System.setHashParameters({
             album: "0/images"
           });
-        }, parent: "album-card-action-bar"});
+        },
+        parent: this.albumCardTitleAction
+      });
 
       this.newAlbumActivity = EW.addActivity({
         title: "tr{New Album}",
         activity: "admin/html/content-management/album-form.php",
-        parent: "main-actions"
-      });           
+        parent: System.UI.components.mainFloatMenu
+      });
 
       this.uploadFileActivity = EW.addActivity({
         title: "tr{Upload Photo}",
         activity: "admin/html/content-management/upload-form.php",
-        parent: "main-actions",
+        parent: System.UI.components.mainFloatMenu,
         hash: function () {
           return {
             parentId: System.getHashNav("album")[0]
@@ -158,11 +165,11 @@
       });
       //this.seeArticleActivity = EW.getActivity({activity: "admin/api/ContentManagement/article-form.php_see"});
 
-      if (this.seeAlbumActivity) {
+      /*if (this.seeAlbumActivity) {
         this.seeAction = EW.addAction("tr{See}", $.proxy(this.seeItemDetails, this)).hide();
       } else {
         this.seeAction = $();
-      }
+      }*/
 
       _this.module.setParamIfNone("album", "0/images");
     };
@@ -187,30 +194,41 @@
       var elementsList = $("#files-list");
       elementsList.html("<h2>Loading...</h2><div class='loader center'></div>");
       this.listInited = false;
-      var listContainer = component.albumDataCard.find(".card-content");
-      component.itemsList = component.albumDataCard.find(".card-content .album-images-list").empty();
+      var listContainer = component.albumCard.find(".card-content");
+      component.itemsList = component.albumCard.find(".card-content .album-images-list").empty();
       var albumsList = $("#albums-list");
       if (component.parentId === 0) {
         this.albumPropertiesBtn.comeOut();
-        this.deleteAlbumBtn.comeOut();
+        //this.deleteAlbumBtn.comeOut();
       } else {
         this.albumPropertiesBtn.comeIn();
-        this.deleteAlbumBtn.comeIn();
+        //this.deleteAlbumBtn.comeIn();
       }
       System.addActiveRequest($.get('<?php echo EW_ROOT_URL; ?>~admin/api/content-management/get-media-list', {parent_id: component.parentId}, function (response) {
         //var listContainer = null;
         if (component.parentId === 0) {
-          component.albumDataCard.find("h1").html("tr{Albums}");
+          component.albumCard.hide();
+          albumsList.show();
+          //component.albumDataCard.find("h1").html("tr{Albums}");
           component.itemsList = albumsList;
+          albumsList.empty();
+          //component.albumCard.removeClass("action-bar-active");
         } else {
-          component.albumDataCard.find("h1").text(response.included.album.title);
+          component.albumCard.show();
+          albumsList.hide();
+          component.albumCard.find("h1").text(response.included.album.title);
+          //component.albumCard.addClass("action-bar-active");
           //component.albumDataCard.find(".card-content .card-content-title").text("tr{Images}");
 
         }
 
         $.each(response.data, function (index, element) {
-          var temp = component.createAlbumElement(element.title, element.type, element.ext, element.size, element.thumbURL, element.id);
-
+          var temp;
+          if (component.parentId === 0) {
+            temp = component.createAlbumElement(element.title, element.type, element.ext, element.size, element.thumbURL, element.id);
+          } else {
+            temp = component.createImageElement(element.title, element.type, element.ext, element.size, element.thumbURL, element.id);
+          }
           if (element.type === "album") {
             temp.on('keydown', function (e) {
               if (e.which === 13) {
@@ -262,7 +280,7 @@
       }, "json"));
     };
 
-    MediaComponent.prototype.createMediaElement = function (title, type, ext, size, ImageURL, id) {
+    MediaComponent.prototype.createImageElement = function (title, type, ext, size, ImageURL, id) {
       var _this = this,
               column = $(document.createElement("div")),
               div = $(document.createElement("div")),

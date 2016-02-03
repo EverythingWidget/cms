@@ -118,7 +118,7 @@ root {
   .ew-float-menu-indicator.active:after {
     transform: rotate(135deg);    
   }
-  
+
   .ew-float-menu-indicator.destroy {
     transform: scale(0);
   }
@@ -507,6 +507,20 @@ root {
     padding: 0 10px;
     color: rgba(0,0,0,.6);
   }
+}
+
+.icon-back ,.icon-back:active{
+  background-image: url('images/back-arrow-black.png');
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 24px;
+}
+
+.icon-delete ,.icon-delete:active{
+  background-image: url('images/delete-icon.png');
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 24px;
 }
 
 .btn.pull-right {
@@ -1457,19 +1471,48 @@ h2.actions-bar span {
   margin: 0;
 } 
 
-.card-header,.card-content {
-  padding: 30px 25px 25px;
+.card-header {
+  padding: 30px 25px 0px;
+  /* vertical-align: super; */
+  /* height: 105px; */
 }
 
 .card-header h1{
   margin: 0;
   font-size: 2.2em;
+  /* vertical-align: middle; */
+  /* display: inline; */
+}
+
+.card-header h1:last-child {
+  padding-bottom: 25px;
+}
+
+.card-title-action {
+  float: left;
+}
+
+.card-title-action-right {
+  float: right;
+}
+
+.card-header .btn {
+  float: left;
 }
 
 .card-action-bar {
   display: block;
-  padding-top: 10px;
-  margin: 0 -10px -10px;
+  padding: 5px 0;
+  margin: 0 -10px 0px;
+  height: 20px;
+  transition: height .2s;
+  overflow: hidden;
+  opacity: 0;
+}
+
+.action-bar-active .card-action-bar{
+  height: 52px;
+  opacity: 1;
 }
 
 .card-action-bar .btn {
@@ -1492,6 +1535,18 @@ h2.actions-bar span {
   display: block;
   margin-bottom: 15px;
   color: #000;
+}
+
+.card-content {
+  padding: 30px 25px 25px;
+}
+
+.btn-circle {
+  width: 44px;
+  height: 44px;
+  margin: 0;
+  border-radius: 22px;
+  margin-right: 5px;
 }
 
 .center-block {

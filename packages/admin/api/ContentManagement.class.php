@@ -40,17 +40,17 @@ class ContentManagement extends \ew\Module {
     ob_start();
     include EW_PACKAGES_DIR . '/admin/html/content-management/link-chooser-document.php';
     $lcd = ob_get_clean();
-    
+
     ob_start();
     include EW_PACKAGES_DIR . '/admin/html/content-management/link-chooser-document.php';
     $link_chooser_media = ob_get_clean();
 
     EWCore::register_form("ew/ui/components/link-chooser", "content-chooser", ["title"   => "Contents",
         "content" => $lcd]);
-    
-    /*EWCore::register_form("ew/ui/components/link-chooser", "media-chooser", ["title"   => "Media",
-        "content" => $link_chooser_media]);*/
-        
+
+    /* EWCore::register_form("ew/ui/components/link-chooser", "media-chooser", ["title"   => "Media",
+      "content" => $link_chooser_media]); */
+
     EWCore::register_resource("images", array(
         $this,
         "image_loader"));
@@ -573,11 +573,11 @@ class ContentManagement extends \ew\Module {
       $i["up_parent_id"] = $up_parent_id;
       $rows[] = $i;
     }
-    /* $out = array(
-      "totalRows" => $folders->count(),
-      "items" => $rows);
-      return json_encode($out); */
-    return \ew\APIResourceHandler::to_api_response($rows, ["totalRows" => $folders->count()]);
+
+    return \ew\APIResourceHandler::to_api_response($rows, [
+                "totalRows" => $folders->count(),
+                "parent"    => isset($container_id) ? $container_id : []
+    ]);
   }
 
   public function contents_articles($parent_id = null, $token, $size) {
@@ -930,8 +930,8 @@ class ContentManagement extends \ew\Module {
         $file_info = pathinfo($file_path);
 
         // create thumb for image if doesn't exist
-        $tumbURL = 'album-' . $parent_id . $path . $file_info["filename"] . ".thumb." . $file_info["extension"];
-//echo $tumbURL;
+        $tumbnailURL = 'album-' . $parent_id . $path . $file_info["filename"] . ".thumb." . $file_info["extension"];
+
         if (!file_exists($file_path)) {
           $files[] = array(
               "id"          => $r["content_id"],
@@ -951,17 +951,15 @@ class ContentManagement extends \ew\Module {
         }
 
         list($width, $height) = getimagesize($file_path);
-        if (!file_exists($root . $path . $file_info["filename"] . ".thumb." . $file_info["extension"]) && $width > 140) {
+        if (!file_exists($root . $path . $tumbnailURL) && $width > 200) {
           $this->create_image_thumb($file_path, 200);
-          $tumbURL = 'album-' . $parent_id . $path . $file_info["filename"] . ".thumb." . $file_info["extension"];
+          $tumbnailURL = 'album-' . $parent_id . $path . $file_info["filename"] . ".thumb." . $file_info["extension"];
         }
-        else if ($width <= 140) {
-          $tumbURL = 'album-' . $parent_id . $path . $file;
+        else if ($width <= 200) {
+          $tumbnailURL = 'album-' . $parent_id . $path . $file;
         }
 
-//echo $file_info["extension"]." ".$this->file_types["jpg"];
-//print_r($this->file_types);
-        $files[] = array(
+        $files[] = [
             "id"          => $r["content_id"],
             title         => $r["title"],
             "parentId"    => $container_id,
@@ -973,8 +971,9 @@ class ContentManagement extends \ew\Module {
             originalUrl   => EW_ROOT_URL . "~rm/public/media/$file",
             filename      => $file_info["filename"],
             fileExtension => $file_info["extension"],
-            thumbURL      => EW_DIR . '~rm/public/media/' . $tumbURL,
-            path          => $file_path);
+            thumbURL      => EW_DIR . '~rm/public/media/' . $tumbnailURL,
+            path          => $file_path
+        ];
       }
     }
     catch (Exception $e) {

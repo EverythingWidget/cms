@@ -1,20 +1,20 @@
 <div  class="col-xs-12">
   <div id="folders-card" class="card z-index-1 center-block col-lg-9 col-md-10 col-xs-12">
     <div  class='card-header'>
+      <div class="card-title-action"></div>
+      <div class="card-title-action-right"></div>
       <h1>
         tr{Contents}
       </h1>
-      <div  class='card-action-bar'></div>
     </div>
+
     <div class='card-content top-devider'>
 
       <div id="categories-list"  >
 
       </div>
-    </div>
-    <div class='card-content top-devider'>
 
-      <div id="articles-list">
+      <div id="articles-list" class="mar-top">
 
       </div>
     </div>
@@ -47,23 +47,23 @@
       var component = this;
       this.module.on("article", function (full, id) {
         if (!id) {
-          component.bSee.comeOut();
+          //component.bSee.comeOut();
           component.currentItem.removeClass("selected");
         }
 
         if (id) {
-          component.bSee.comeIn();
+          //component.bSee.comeOut();
         }
       });
 
       this.module.on("folder", function (full, id, command) {
         if (!id) {
-          component.bSee.comeOut();
+          //component.bSee.comeOut();
           component.currentItem.removeClass("selected");
         }
 
         if (id) {
-          component.bSee.comeIn();
+          //component.bSee.comeIn();
         }
       });
 
@@ -84,10 +84,12 @@
 
           if (id === "0") {
             component.bUp.comeOut(300);
+            component.bSee.comeOut();
           }
 
           if (id > 0) {
             component.bUp.comeIn(300);
+            component.bSee.comeIn();
           }
         }
       });
@@ -104,24 +106,25 @@
       this.upParentId = 0;
       this.currentItem = $();
       this.foldersCard = $("#folders-card");
+      this.foldersCardTitle = this.foldersCard.find(".card-header h1");
+      this.foldersCardTitleActionRight = this.foldersCard.find(".card-title-action-right");
 
       //$("#app-content").append($("#folders-card-action-bar"));
 
       //$("#folders-card-action-bar").empty();
 
       this.bUp = EW.addActionButton({
-        text: "tr{Back}",
-        class: "btn-text btn-default pull-right",
+        text: "",
+        class: "btn-text icon-back btn-circle",
         handler: $.proxy(this.preCategory, this),
-        parent: "folders-card-action-bar"
+        parent: this.foldersCard.find(".card-title-action")
       });
 
-      this.bUp.css("float", "right");
       this.bNewFolder = EW.addActivity({
         title: "tr{New Folder}",
         //class: "btn-text btn-primary",
         activity: "admin/html/content-management/folder-form.php",
-        parent: "main-float-menu",
+        parent: System.UI.components.mainFloatMenu,
         hash: {
           folderId: null
         }
@@ -131,7 +134,7 @@
         title: "tr{New Article}",
         //class: "btn-text btn-primary",
         activity: "admin/html/content-management/article-form.php_new",
-        parent: "main-float-menu",
+        parent: System.UI.components.mainFloatMenu,
         hash: {
           articleId: null
         },
@@ -163,9 +166,9 @@
       if (this.seeArticleActivity || this.seeFolderActivity)
         this.bSee = EW.addActionButton({
           text: "tr{See}",
-          //class: "btn-text btn-primary",
+          class: "btn-text btn-primary",
           handler: $.proxy(this.seeDetails, this),
-          parent: "folders-card-action-bar"
+          parent: this.foldersCardTitleActionRight
         }).hide();
       else
         this.bSee = $();
@@ -179,7 +182,7 @@
               folderId: null,
               articleId: eventData.data.id
             },
-              "document");
+                    "document");
           }
 
           if (eventData.data.type === "folder") {
@@ -187,7 +190,7 @@
               folderId: eventData.data.id,
               articleId: null
             },
-              "document");
+                    "document");
           }
         }
       });
@@ -200,13 +203,14 @@
     };
 
     Documents.prototype.preCategory = function () {
+      this.currentItem = null;
       this.module.setParam("dir", this.upParentId + "/list");
     };
 
     Documents.prototype.seeDetails = function () {
       var tFolderId = System.getHashParam("folder");
       var tArticleId = System.getHashParam("article");
-      EW.activeElement = this.currentItem;
+      EW.activeElement = this.foldersCard.find(".card-header");
       if (tFolderId) {
         this.folderId = tFolderId;
         this.seeFolderActivity({
@@ -222,88 +226,89 @@
 
     Documents.prototype.listCategories = function () {
       var _this = this,
-        pId = 0,
-        hasNode = false,
-        article = System.getHashParam("article"),
-        folder = System.getHashParam("folder");
+              pId = 0,
+              hasNode = false,
+              article = System.getHashParam("article"),
+              folder = System.getHashParam("folder");
       var loader = $("<div class='loader center'></div>");
-      $("#categories-list").append(loader);
+      this.foldersCard.find(".card-content").append(loader);
+      
       System.addActiveRequest($.get('~admin/api/content-management/contents-folders', {
         parent_id: _this.parentId
-      },
-        function (data) {
-          var startPoint = _this.currentItem[0] ? _this.currentItem[0].getBoundingClientRect() : {};
-          System.UI.Animation.blastTo({
-            fromPoint: startPoint,
-            to: _this.foldersCard[0],
-            area: System.UI.components.mainContent[0],
-            time: .5,
-            fade: .3,
-            color: "#e8ebed",
-            onComplete: function () {
-              loader.remove();
-              //$("#categories-list").html("<div class='box-content anim-fade-in'></div>");
-              //$("#cate-title").loadingText();
+      }, function (data) {
+        _this.foldersCardTitle.text(data.parent.title || "tr{Contents}");
+        var startPoint = (_this.currentItem && _this.currentItem[0]) ?
+                _this.currentItem[0].getBoundingClientRect() : _this.bUp[0].getBoundingClientRect();
 
-              var foldersPane = $("#categories-list");
-              foldersPane.empty();
-              $.each(data.data, function (index, element) {
+        System.UI.Animation.blastTo({
+          fromPoint: startPoint,
+          to: _this.foldersCard[0],
+          area: _this.foldersCard.find(".card-content")[0],
+          time: .5,
+          fade: .3,
+          color: "#eee",
+          onComplete: function () {
+            loader.remove();
+            //$("#categories-list").html("<div class='box-content anim-fade-in'></div>");
+            //$("#cate-title").loadingText();
+
+            var foldersPane = $("#categories-list");
+            foldersPane.empty();
+            $.each(data.data, function (index, element) {
+              pId = element.up_parent_id;
+              hasNode = true;
+              var temp = _this.createFolderElement(element.title, element.round_date_created, element.id, element);
+              //temp.addClass("anim-scale-in");
+              if (element.id == folder) {
+                temp.addClass("selected");
+                _this.currentItem = temp;
+              }
+              foldersPane.append(temp);
+              //temp.addClass("in");
+            });
+
+            if (hasNode) {
+              _this.upParentId = pId;
+            }
+
+            //var articleLoader = $("<div class='loader center'></div>");
+            //$("#articles-list").append(articleLoader);
+            $("#articles-list").html("<div class='box-content anim-fade-in'></div>");
+            System.addActiveRequest($.get('~admin/api/content-management/contents-articles', {
+              parent_id: _this.parentId
+            }, function (response) {
+
+
+              var articlesPane = $("#articles-list .box-content");
+              $.each(response.data, function (index, element) {
                 pId = element.up_parent_id;
                 hasNode = true;
-                var temp = _this.createFolderElement(element.title, element.round_date_created, element.id, element);
+                var temp = _this.createArticleElement(element.title, element.round_date_created, element.id, element);
                 //temp.addClass("anim-scale-in");
-                if (element.id == folder) {
+                if (element.id == article) {
                   temp.addClass("selected");
                   _this.currentItem = temp;
                 }
-                foldersPane.append(temp);
+                articlesPane.append(temp);
+                // setTimeout(function ()            {
                 //temp.addClass("in");
+                //}, 1);
+
               });
 
               if (hasNode) {
                 _this.upParentId = pId;
               }
-
-              //var articleLoader = $("<div class='loader center'></div>");
-              //$("#articles-list").append(articleLoader);
-              $("#articles-list").html("<div class='box-content anim-fade-in'></div>");
-              System.addActiveRequest($.get('~admin/api/content-management/contents-articles', {
-                parent_id: _this.parentId
-              },
-                function (data) {
-//articleLoader.remove();
-                  
-
-                  var articlesPane = $("#articles-list .box-content");
-                  $.each(data.data, function (index, element) {
-                    pId = element.up_parent_id;
-                    hasNode = true;
-                    var temp = _this.createArticleElement(element.title, element.round_date_created, element.id, element);
-                    //temp.addClass("anim-scale-in");
-                    if (element.id == article) {
-                      temp.addClass("selected");
-                      _this.currentItem = temp;
-                    }
-                    articlesPane.append(temp);
-                    // setTimeout(function ()            {
-                    //temp.addClass("in");
-                    //}, 1);
-
-                  });
-
-                  if (hasNode) {
-                    _this.upParentId = pId;
-                  }
-                  $("#articles-list").find(".box-content").addClass("in");
+              $("#articles-list").find(".box-content").addClass("in");
 
 
-                  //lockArticles.dispose();
-                }, "json"));
-            }
-          });
-          //$("#categories-list").find(".box-content").addClass("in");
-          //lockFolders.dispose();
-        }, "json"));
+              //lockArticles.dispose();
+            }, "json"));
+          }
+        });
+        //$("#categories-list").find(".box-content").addClass("in");
+        //lockFolders.dispose();
+      }, "json"));
 
 
 
