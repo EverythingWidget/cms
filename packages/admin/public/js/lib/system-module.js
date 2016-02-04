@@ -53,15 +53,17 @@
     ],
     //activeModule: null,
     init: function (navigations, params, html) {
+      var _this = this;
       this.inited = true;
       //this.navigation = navigations;
       //this.params = params;
       //this.html = html;
-      this.trigger("onInit",html);
+      //console.log(this.id,System.uiTemplates[this.id]);
+      this.trigger("onInit", [System.uiTemplates[this.id]]);
 
       this.installModules.forEach(function (lib) {
         //alert("install: " + lib.id);
-        System.loadModule(lib/*, function () {
+        _this.domain.loadModule(lib/*, function () {
          alert("install completed: " + lib.id);
          }*/);
       });
@@ -175,7 +177,7 @@
       paramObject[param] = value;
       this.domain.setHashParameters(paramObject, replace);
     },
-    setParamIfNone: function (param, value) {      
+    setParamIfNone: function (param, value) {
       if (!this.domain.getHashParam(param)) {
         var paramObject = {};
         paramObject[param] = value;

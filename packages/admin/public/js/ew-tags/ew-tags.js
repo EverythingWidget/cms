@@ -238,7 +238,7 @@
           default:
             //this.xtag.indicator.style.right = this.style.right = "5%";
             //this.xtag.indicator.style.bottom = this.style.bottom = "5%";
-            this.xtag.indicator.setAttribute("position" , "se");
+            this.xtag.indicator.setAttribute("position", "se");
             break;
         }
       },
@@ -267,13 +267,13 @@
         });
 
         TweenLite.to(this.xtag.indicator, .3, {
-          className:  "+=active",
+          className: "+=active",
           ease: "Power2.easeInOut"
         });
       },
       contract: function () {
-        if (!this.expanded)
-          return;
+        /*if (!this.expanded)
+          return;*/
         this.expanded = false;
         TweenLite.to(this, .4, {
           className: this.xtag.originClassName,
@@ -281,7 +281,7 @@
         });
 
         TweenLite.to(this.xtag.indicator, .4, {
-          className:  "-=active",
+          className: this.xtag.originClassName + "-indicator",
           ease: "Power2.easeInOut"
         });
       },
@@ -293,6 +293,11 @@
             onComplete: function () {
             }
           });
+          
+          TweenLite.to(this.xtag.indicator, .4, {
+          className: this.xtag.originClassName + "-indicator",
+          ease: "Power2.easeInOut"
+        });
         }
       },
       off: function (flag) {

@@ -4,7 +4,7 @@
     this.domainHashString = "";
     this.moduleIdentifier = "app";
     this.modules = {};
-    this.modulesHashes= {};
+    this.modulesHashes = {};
     this.appPathfiledName = null;
     this.activityTree = [
     ];
@@ -54,8 +54,8 @@
     var detect = function () {
       if (_this.app.oldHash !== _this.domainHashString) {
         var hashValue = _this.domainHashString,
-          navigation = {},
-          params = {};
+                navigation = {},
+                params = {};
 
         hashValue = hashValue.replace(/^#\/?/igm, '');
 
@@ -155,6 +155,6 @@
   Domain.prototype.module = function (id, object) {
     return this.app.module(id, object, false, this);
   };
-
+    
   System.Domain = Domain;
 })(System);

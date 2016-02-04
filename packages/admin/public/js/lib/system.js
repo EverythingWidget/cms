@@ -3,6 +3,7 @@
   System = {
     moduleIdentifier: "app",
     modules: {},
+    uiTemplates: {},
     appPathfiledName: null,
     activityTree: [
     ],
@@ -85,8 +86,8 @@
         //console.log(self.app.oldHash, window.location.hash)
         if (self.app.oldHash !== window.location.hash/* || self.app.newHandler*/) {
           var hashValue = window.location.hash,
-            navigation = {},
-            params = {};
+                  navigation = {},
+                  params = {};
 
           hashValue = hashValue.replace(/^#\/?/igm, '');
 
@@ -232,7 +233,7 @@
         if ("function" === typeof (System.onModuleLoaded["system/" + mod.id])) {
           //onDone.call(this, System.modules["system/" + mod.id], System.modules["system/" + mod.id].html);
           System.onModuleLoaded["system/" + mod.id].call(this, System.modules["system/" + mod.id],
-            System.modules["system/" + mod.id].html);
+                  System.modules["system/" + mod.id].html);
 
           System.onModuleLoaded["system/" + mod.id] = null;
         }
@@ -264,6 +265,19 @@
           return true;
 
         });
+        var templates = {};
+        html = html.filter(function (i, e) {
+
+          if (e.dataset && e.dataset.uiTemplate) {
+            //console.log(e.tagName);
+            templates[e.dataset.uiTemplate] = e;
+            return false;
+          }
+          return true;
+
+        });
+
+        System.uiTemplates["system/" + mod.id] = templates;
 
         if (scripts)
           $("head").append(scripts);
@@ -295,8 +309,8 @@
     },
     addActiveRequest: function (request) {
       var _this = this,
-        parentSuccess = request.done,
-        id;
+              parentSuccess = request.done,
+              id;
       // Overwrite the done method in order to remove the request from the activeRequest list
       request.done = function (callback) {
         parentSuccess.call(this, callback);

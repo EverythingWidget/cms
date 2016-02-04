@@ -93,7 +93,8 @@
 
       $("#action-bar-items").find("button,div").remove();
       System.UI.components.mainFloatMenu[0].clean();
-      System.UI.components.mainFloatMenu[0].off();
+      System.UI.components.mainFloatMenu[0].contract();
+      
 
       System.UI.components.mainContent.empty();
       System.abortAllRequests();
@@ -113,6 +114,7 @@
         }
         //alert("section loaded: " + mod.id);
         //System.startLastLoadedModule();
+        
         if (System.UI.components.mainFloatMenu.children().length > 0) {
           System.UI.components.mainFloatMenu[0].on();
         }

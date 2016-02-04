@@ -152,7 +152,7 @@ EverythingWidgets.prototype.addAction = function (text, handler, css, parent) {
   }
 
   action.attr("type", "button");
-  action.click(handler);
+  action[0].addEventListener("click", handler);
   var parentElement = $("#" + parent);
   if (parentElement.length != 0)
   {
@@ -186,7 +186,7 @@ EverythingWidgets.prototype.addActionButton = function (config) {
 
   action.addClass(settings.class);
 
-  action.click(settings.handler);
+  action[0].addEventListener("click", settings.handler);
   var parentElement = settings.parent;
   if ("string" === typeof settings.parent) {
     parentElement = $("#" + settings.parent);
