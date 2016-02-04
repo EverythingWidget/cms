@@ -57,7 +57,7 @@
       //this.navigation = navigations;
       //this.params = params;
       //this.html = html;
-      this.trigger("onInit");
+      this.trigger("onInit",html);
 
       this.installModules.forEach(function (lib) {
         //alert("install: " + lib.id);

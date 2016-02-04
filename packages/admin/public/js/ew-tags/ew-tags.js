@@ -176,8 +176,8 @@
       created: function () {
         var _this = this;
         this.xtag.indicator = document.createElement("div");
-        this.xtag.indicator.className = this.className + "-indicator";
-        this.xtag.indicator.style.position = "fixed";
+        this.xtag.indicator.className = "ew-float-menu-indicator";
+        this.xtag.indicator.style.position = "absolute";
 
         this.xtag.indicator.addEventListener("click", function () {
           if (_this.expanded) {
@@ -188,14 +188,14 @@
           }
         });
 
-        this.style.position = "fixed";
+        this.style.position = "absolute";
         this.xtag.originClassName = this.className;
 
         this.render();
       },
-      inserted: function () {        
+      inserted: function () {
         this.className = this.xtag.originClassName;
-        this.xtag.indicator.className = this.xtag.originClassName + "-indicator";
+        this.xtag.indicator.className = "ew-float-menu-indicator";
         this.parentNode.appendChild(this.xtag.indicator);
       },
       attributeChanged: function (attrName, oldValue, newValue) {
@@ -230,15 +230,15 @@
             this.xtag.indicator.style.position = "";
             this.style.position = "";
             break;
-          case "ne":
-            this.xtag.indicator.style.right = this.style.right = "5%";
-            this.xtag.indicator.style.top = this.style.bottom = "5%";
+            /*case "ne":
+             this.xtag.indicator.style.right = this.style.right = "5%";
+             this.xtag.indicator.style.top = this.style.bottom = "5%";*/
             break;
           case "se":
           default:
-            this.xtag.indicator.style.right = this.style.right = "5%";
-            this.xtag.indicator.style.bottom = this.style.bottom = "5%";
-
+            //this.xtag.indicator.style.right = this.style.right = "5%";
+            //this.xtag.indicator.style.bottom = this.style.bottom = "5%";
+            this.xtag.indicator.setAttribute("position" , "se");
             break;
         }
       },
@@ -267,7 +267,7 @@
         });
 
         TweenLite.to(this.xtag.indicator, .3, {
-          className: this.xtag.originClassName + "-indicator active",
+          className:  "+=active",
           ease: "Power2.easeInOut"
         });
       },
@@ -281,7 +281,7 @@
         });
 
         TweenLite.to(this.xtag.indicator, .4, {
-          className: this.xtag.originClassName + "-indicator",
+          className:  "-=active",
           ease: "Power2.easeInOut"
         });
       },
@@ -298,7 +298,7 @@
       off: function (flag) {
         var _this = this;
         if (_this.xtag.indicator.parentNode) {
-          this.xtag.indicator.className = this.xtag.originClassName + "-indicator";
+          this.xtag.indicator.className = "ew-float-menu-indicator";
 
           TweenLite.to(this.xtag.indicator, .3, {
             className: "+=destroy",
@@ -308,6 +308,10 @@
             }
           });
         }
+      },
+      clean: function () {
+        this.innerHTML = "";
+        //this.appendChild(this.xtag.indicator);
       }
     },
     events: {

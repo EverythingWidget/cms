@@ -108,6 +108,7 @@
       this.foldersCard = $("#folders-card");
       this.foldersCardTitle = this.foldersCard.find(".card-header h1");
       this.foldersCardTitleActionRight = this.foldersCard.find(".card-title-action-right");
+      this.articlesList = $("#articles-list");
 
       //$("#app-content").append($("#folders-card-action-bar"));
 
@@ -182,7 +183,7 @@
               folderId: null,
               articleId: eventData.data.id
             },
-                    "document");
+              "document");
           }
 
           if (eventData.data.type === "folder") {
@@ -190,7 +191,7 @@
               folderId: eventData.data.id,
               articleId: null
             },
-                    "document");
+              "document");
           }
         }
       });
@@ -226,19 +227,20 @@
 
     Documents.prototype.listCategories = function () {
       var _this = this,
-              pId = 0,
-              hasNode = false,
-              article = System.getHashParam("article"),
-              folder = System.getHashParam("folder");
-      var loader = $("<div class='loader center'></div>");
+        pId = 0,
+        hasNode = false,
+        article = System.getHashParam("article"),
+        folder = System.getHashParam("folder");
+      var loader = $("<div class='loader top'></div>");
       this.foldersCard.find(".card-content").append(loader);
-      
+
       System.addActiveRequest($.get('~admin/api/content-management/contents-folders', {
         parent_id: _this.parentId
-      }, function (data) {
+      },
+      function (data) {
         _this.foldersCardTitle.text(data.parent.title || "tr{Contents}");
         var startPoint = (_this.currentItem && _this.currentItem[0]) ?
-                _this.currentItem[0].getBoundingClientRect() : _this.bUp[0].getBoundingClientRect();
+          _this.currentItem[0].getBoundingClientRect() : _this.bUp[0].getBoundingClientRect();
 
         System.UI.Animation.blastTo({
           fromPoint: startPoint,
@@ -248,7 +250,6 @@
           fade: .3,
           color: "#eee",
           onComplete: function () {
-            loader.remove();
             //$("#categories-list").html("<div class='box-content anim-fade-in'></div>");
             //$("#cate-title").loadingText();
 
@@ -270,40 +271,41 @@
             if (hasNode) {
               _this.upParentId = pId;
             }
-
+            loader.remove();
+            _this.articlesList.empty();
             //var articleLoader = $("<div class='loader center'></div>");
             //$("#articles-list").append(articleLoader);
-            $("#articles-list").html("<div class='box-content anim-fade-in'></div>");
+            //$("#articles-list").html("<div class='box-content anim-fade-in'></div>");
             System.addActiveRequest($.get('~admin/api/content-management/contents-articles', {
               parent_id: _this.parentId
-            }, function (response) {
+            },
+              function (response) {
 
+                //var articlesPane = $("#articles-list");
+                $.each(response.data, function (index, element) {
+                  pId = element.up_parent_id;
+                  hasNode = true;
+                  var temp = _this.createArticleElement(element.title, element.round_date_created, element.id, element);
+                  //temp.addClass("anim-scale-in");
+                  if (element.id == article) {
+                    temp.addClass("selected");
+                    _this.currentItem = temp;
+                  }
+                  _this.articlesList.append(temp);
+                  // setTimeout(function ()            {
+                  //temp.addClass("in");
+                  //}, 1);
 
-              var articlesPane = $("#articles-list .box-content");
-              $.each(response.data, function (index, element) {
-                pId = element.up_parent_id;
-                hasNode = true;
-                var temp = _this.createArticleElement(element.title, element.round_date_created, element.id, element);
-                //temp.addClass("anim-scale-in");
-                if (element.id == article) {
-                  temp.addClass("selected");
-                  _this.currentItem = temp;
+                });
+
+                if (hasNode) {
+                  _this.upParentId = pId;
                 }
-                articlesPane.append(temp);
-                // setTimeout(function ()            {
-                //temp.addClass("in");
-                //}, 1);
-
-              });
-
-              if (hasNode) {
-                _this.upParentId = pId;
-              }
-              $("#articles-list").find(".box-content").addClass("in");
+                //$("#articles-list").find(".box-content").addClass("in");
 
 
-              //lockArticles.dispose();
-            }, "json"));
+                //lockArticles.dispose();
+              }, "json"));
           }
         });
         //$("#categories-list").find(".box-content").addClass("in");

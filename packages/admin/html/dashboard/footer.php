@@ -92,7 +92,7 @@
       UIUtil.addCSSClass(element, "inline-loader");
 
       $("#action-bar-items").find("button,div").remove();
-      System.UI.components.mainFloatMenu.empty();
+      System.UI.components.mainFloatMenu[0].clean();
       System.UI.components.mainFloatMenu[0].off();
 
       System.UI.components.mainContent.empty();

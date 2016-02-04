@@ -163,6 +163,7 @@ class ContentManagement extends \ew\Module {
       }
 
       $current_field_value = $content_fields->{$field->getAttribute("content-field")};
+      
       if ($current_field_value) {
         if (is_array($current_field_value["content"])) {
           $link = $this->get_node_link($field);
@@ -172,6 +173,8 @@ class ContentManagement extends \ew\Module {
           $field_value["link"][] = $this->get_node_link($field);
 
           $field_value["src"][] = $this->get_node_src($field);
+          
+          $content_fields->{$field->getAttribute("content-field")} = $field_value;
         }
         else {
           $link = $this->get_node_link($field);
@@ -190,7 +193,7 @@ class ContentManagement extends \ew\Module {
         }
       }
       else {
-        $link = $link = $this->get_node_link($field);
+        $link = $this->get_node_link($field);
         $content_fields->{$field->getAttribute("content-field")} = ["content" => trim($html),
             "link"    => $link,
             "src"     => $link];

@@ -22,7 +22,7 @@
          this.table = null;
          this.bAddUser = EW.addActivity({
             title: "tr{New User}",
-            parent: "action-bar-items",
+            parent: System.UI.components.mainFloatMenu,
             modal: {
                class: "center"
             },

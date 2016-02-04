@@ -61,26 +61,35 @@ root {
     right: 5%;
     top:69px;
     z-index: 5;
-    width: 50px;
-    height: 50px;
+    /* width: 50px; */
+    /* height: 50px; */
     padding: 6px;
-    margin-right: 0px;
-    margin-top: 0px;
     overflow: hidden;
     text-align: right;
     opacity: 1;
     border-radius: 100px;
-    transform: scale(0);
     transform-origin: 175px 25px;
-    width: 200px;
-    min-height: 200px;
-    height: auto;
+    width: 0px;
+    height: 0px;
   }
 
   .ew-float-menu.expand {
-    margin-top: 40px;
+    height: auto;
+    width: auto;
+    margin-top: 55px;
     border-radius: 0;
-    transform: scale(1);
+   
+  }
+  
+  .ew-float-menu[position='se'] {
+    top: auto;
+    bottom: 31px;
+    flex-direction: column-reverse;
+    
+  }
+  .ew-float-menu.expand[position='se'] {
+    margin-top: 0;
+    margin-bottom: 55px;
   }
 
   .ew-float-menu-indicator {
@@ -122,18 +131,25 @@ root {
   .ew-float-menu-indicator.destroy {
     transform: scale(0);
   }
+  
+  .ew-float-menu-indicator[position='se'] {
+    top: auto;
+    bottom: 31px;
+  }
 
   .ew-float-menu > .btn {
     width: auto;
     display: block;
     float: right;
-    margin-top: 15px;
+    margin: 5px 0;
     clear: right;
     box-shadow: 0 2px 4px 0 rgba(0,0,0,0.18),0 2px 9px 0 rgba(0,0,0,0.14);
     border-radius: 19px;
   }
 
+
   .ew-float-menu.expand > .btn {
+  /* display: flex; */
   }
 
   .block-row {
@@ -773,7 +789,7 @@ html,body {
   position: absolute;
   margin-top: -32px;
   margin-left: -32px;
-  top: 25%;
+  top: 47px;
   left: 50%;
 }
 
@@ -1464,6 +1480,9 @@ h2.actions-bar span {
   margin: 15px auto;
   padding: 0;
   border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
 }
 
 .card p{
@@ -1539,6 +1558,8 @@ h2.actions-bar span {
 
 .card-content {
   padding: 30px 25px 25px;
+  position: relative;
+  z-index: 1;
 }
 
 .btn-circle {
@@ -1552,6 +1573,7 @@ h2.actions-bar span {
 .center-block {
   float: none;
   display: block;
+  position: relative;
 }
 
 ul.actions-bar {
