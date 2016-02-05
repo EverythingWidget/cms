@@ -284,7 +284,7 @@ EverythingWidgets.prototype.getActivity = function (conf) {
     };
     // Call hash if it is a function
     if (typeof hash === 'function') {
-      hash = hash();
+      hash = hash(hashParameters) || {};
     }
 
     $.extend(hashParameters, hash);
@@ -2403,22 +2403,22 @@ $(document).ready(function () {
         onOpen: function () {
           var modal = this;
           //EW.lock(this);
-          var postData = EW.getHashParameters();
+          var activityParameters = EW.getHashParameters();
           // Manage post data if it is set
-          if (currentActivity.postData) {
+          if (currentActivity.parameters) {
             // Add user defined post data to the postData variable
             // Call post data if it is a function
-            if (typeof currentActivity.postData === 'function') {
-              $.extend(postData, currentActivity.postData());
+            if (typeof currentActivity.parameters === 'function') {
+              $.extend(activityParameters, currentActivity.parameters());
             } else {
-              $.extend(postData, currentActivity.postData);
+              $.extend(activityParameters, currentActivity.parameters);
             }
           }
 
           $.ajax({
             type: EW.activities[activityName].verb || "POST",
             url: EW.activities[activityName].url,
-            data: postData,
+            data: activityParameters,
             success: function (data) {
               modal.html(data);
             },
@@ -2500,20 +2500,20 @@ $(document).ready(function () {
       if (currentActivity) {
         // Trigger activityName.call event
         EW.$docuement.trigger(activity + ".call", currentActivity);
-        var postData = EW.getHashParameters("FORMLESS_ACTIVITY");
+        var activityParameters = EW.getHashParameters("FORMLESS_ACTIVITY");
         // Manage post data if it is set
-        if (currentActivity.postData) {
+        if (currentActivity.parameters) {
           // Overwrite the content of postData variable  with the user defined post data
           // Call postData if it is a function
-          if (typeof currentActivity.postData === 'function') {
-            postData = currentActivity.postData.call(currentActivity);
+          if (typeof currentActivity.parameters === 'function') {
+            activityParameters = currentActivity.parameters.call(currentActivity);
           } else {
-            postData = currentActivity.postData;
+            activityParameters = currentActivity.parameters;
           }
         }
 
         // Do not proceed further if postData is null
-        if (!postData) {
+        if (!activityParameters) {
           // set hash ew_activity to null
           EW.setHashParameters({
             ew_activity: null
@@ -2521,7 +2521,7 @@ $(document).ready(function () {
           return;
         }
 
-        $.post(currentActivity.url, postData, function (data) {
+        $.post(currentActivity.url, activityParameters, function (data) {
           if (currentActivity.onDone) {
             currentActivity.onDone.apply(currentActivity, [data]);
           }

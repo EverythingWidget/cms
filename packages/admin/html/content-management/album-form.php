@@ -21,7 +21,7 @@ function scripts()
       function AlbumForm() {
          var self = this;
          this.bAdd = EW.addActivity({title: "tr{Save}", defaultClass: "btn-success", activity: "admin/api/content-management/add-album",
-            postData: function () {
+            parameters: function () {
                if (!$("#album-form").EW().validate()) {
                   return false;
                }

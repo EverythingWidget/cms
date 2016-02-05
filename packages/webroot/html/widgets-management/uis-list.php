@@ -23,10 +23,14 @@
       }
     }).hide();
 
-    if (EW.getActivity({
+    this.importUISActivity = EW.getActivity({
       activity: "webroot/api/widgets-management/import-uis"
-    }))
-    {
+    });
+    this.exportUISActivity = EW.getActivity({
+      activity: "webroot/api/widgets-management/export-uis"
+    });
+
+    if (this.importUISActivity) {
       var fileInput = $("<input type=file id=uis_file name=uis_file accept='.json'/>");
       var button = $("<div class='btn btn-file btn-primary' >tr{Import Layout}</div>").hide();
       parent: System.UI.components.mainFloatMenu.append(button.append(fileInput));
@@ -58,15 +62,14 @@
         });
       });
     }
+    
     var exportAction = null;
-    if (EW.getActivity({
-      activity: "webroot/api/widgets-management/export-uis"
-    }))
-    {
+    if (this.exportUISActivity) {
       exportAction = function (row) {
         window.open("~webroot/api/widgets-management/export-uis?uis_id=" + row.data("field-id"));
       };
     }
+    
     $(document).off("uis-list.refresh");
     $(document).on("uis-list.refresh", function () {
       self.table.refresh();
@@ -93,13 +96,13 @@
           $.post('<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/delete-uis', {
             uisId: id
           },
-          function (data) {
-            EW.setHashParameter("categoryId", null);
-            $("body").EW().notify(data).show();
-            self.table.removeRow(id);
-            _this._messageRow.remove();
-            return true;
-          }, "json");
+            function (data) {
+              EW.setHashParameter("categoryId", null);
+              $("body").EW().notify(data).show();
+              self.table.removeRow(id);
+              _this._messageRow.remove();
+              return true;
+            }, "json");
         });
       },
       onEdit: ((editActivity = EW.getActivity({
@@ -124,10 +127,10 @@
             $.post('<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/clone-uis', {
               uisId: row.data("field-id")
             },
-            function (data) {
-              self.table.refresh();
-              $("body").EW().notify(data).show();
-            }, "json");
+              function (data) {
+                self.table.refresh();
+                $("body").EW().notify(data).show();
+              }, "json");
           }
         }
         ,
@@ -193,9 +196,9 @@
     $.post('<?php echo EW_ROOT_URL; ?>~webroot/widgets-management/ne-uis.php', {
       uisId: EW.getHashParameter("uis-id")
     },
-    function (data) {
-      tp.html(data);
-    });
+      function (data) {
+        tp.html(data);
+      });
   };
 
   UIStructureList.prototype.deleteUIS = function (id) {
@@ -203,13 +206,13 @@
     $.post('<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/delete-uis', {
       uisId: id
     },
-    function (data) {
-      EW.setHashParameter("categoryId", null);
-      $("body").EW().notify(data).show();
-      self.table.removeRow(id);
-      return true;
+      function (data) {
+        EW.setHashParameter("categoryId", null);
+        $("body").EW().notify(data).show();
+        self.table.removeRow(id);
+        return true;
 
-    }, "json");
+      }, "json");
   };
 
 

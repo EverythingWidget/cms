@@ -5,7 +5,7 @@ session_start();
 function get_article_data($id)
 {
    $articleInfo = [];
-   $articleInfo["parent_id"] = $_REQUEST["folder"];
+   $articleInfo["parent_id"] = $_REQUEST["parent"];
    if ($_REQUEST["articleId"])
    {
       $articleInfo = EWCore::call_api("admin/api/content-management/get-article", [
@@ -34,7 +34,7 @@ function script()
       function Article() {
          var self = this;
          this.bAdd = EW.addActivity({title: "tr{Save}", defaultClass: "btn-success", activity: "admin/api/content-management/add-article",
-            postData: function () {
+            parameters: function () {
                if (!$("#article-form").EW().validate()) {
                   return false;
                }
@@ -53,7 +53,7 @@ function script()
          this.bEditAndClose = EW.addActivity({title: "tr{Save and Close}",
             defaultClass: "btn-success pull-right",
             activity: "admin/api/content-management/update-article",
-            postData: function () {
+            parameters: function () {
                if (!$("#article-form").EW().validate()) {
                   return false;
                }
@@ -70,7 +70,7 @@ function script()
             }}).hide();
 
          this.bUpdate = EW.addActivity({title: "tr{Update}", defaultClass: "btn-success", activity: "admin/api/content-management/update-article",
-            postData: function () {
+            parameters: function () {
                if (!$("#article-form").EW().validate()) {
                   return false;
                }
@@ -85,7 +85,7 @@ function script()
             }}).hide();
 
          this.bDelete = EW.addActivity({title: "tr{Delete}", defaultClass: "btn-danger", activity: "admin/api/content-management/delete-article",
-            postData: function () {
+            parameters: function () {
                if (confirm("tr{Delete this article?}")) {
                   return {id: $("#id").val()};
                } else {
