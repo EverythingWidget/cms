@@ -45,7 +45,7 @@ if (strpos($path, '?') !== false)
    $path = substr($path, 0, strpos($path, '?'));
 $elements = explode('/', $path);
 $parameter_index = 0;
-if (strpos(EW_DIR, $elements[0]))
+if (isset($elements[0]) && strpos(EW_DIR, $elements[0]))
 {
    $root_dir = array_shift($elements);
    //$parameter_index = 1;
