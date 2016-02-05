@@ -26,9 +26,9 @@ For more information head to : www.ewcms.org
   7. Open htdocs/**[EverythingWidget-master]**/core/config/database_config.php with your text editor and specify your database host, user name and password. EW CMS creates a database with name that you specified for `database` property.
   8. Open your browser and go to http://localhost/**[EverythingWidget-master]**/ and click on install. Done!
   
-  **As default you have no permission to see the webpage content**
+  **As default you have no permission to see the webpage content as a geust. You can manage permission in administration panel**
   
-  Then you can go to http://localhost/**[EverythingWidget-master]**/~admin/ for administration panel:
+  You can go to http://localhost/**[EverythingWidget-master]**/~admin/ to access administration panel:
 
     **User:** admin
     
