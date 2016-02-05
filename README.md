@@ -10,4 +10,29 @@ You can also create pre-built layouts for your customers
 
 For more information head to : www.ewcms.org
 
-**EW CMS is still under development process and can't be used in production**
+**EW CMS is still in the development process and can't be used in production**
+
+
+# How to install
+**XAMPP installation guide**
+  1. Download and install composer.
+  2. Download master branch repo as zip.
+  3. Extract the zip content inside the htdocs directory.
+  4. Change the name of the extracted directory `EverythingWidget-master` to whatever you like. (optinal)
+  5. Go to htdocs/**[EverythingWidget-master]**/core and run `composer install`
+  6. Open htdocs/**[EverythingWidget-master]**/core/config/config.php with your text editor:
+    - `EW_DIR` should be the root directory where EW CMS is installed. For example: `/EverythingWidget-master/`
+    - `EW_DIR_URL` should be the url path to EW CMS root directory. In the case of XAMPP, this is equal to the `EW_DIR`.
+  7. Open htdocs/**[EverythingWidget-master]**/core/config/database_config.php with your text editor and specify your database host, user name and password. EW CMS creates a database with name that you specified for `database` property.
+  8. Open your browser and go to http://localhost/**[EverythingWidget-master]**/ and click on install. Done!
+  
+  Then you can go to http://localhost/**[EverythingWidget-master]**/~admin/ for administration panel:
+
+    **User:** admin
+    
+    **Password:** admin
+  
+
+# Requirments 
+PHP 5.5 and above
+MySQL 5.6.26
