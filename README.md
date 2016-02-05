@@ -21,10 +21,12 @@ For more information head to : www.ewcms.org
   4. Change the name of the extracted directory `EverythingWidget-master` to whatever you like. (optinal)
   5. Go to htdocs/**[EverythingWidget-master]**/core and run `composer install`
   6. Open htdocs/**[EverythingWidget-master]**/core/config/config.php with your text editor:
-    - `EW_DIR` should be the root directory where EW CMS is installed. For example: `/EverythingWidget-master/`
-    - `EW_DIR_URL` should be the url path to EW CMS root directory. In the case of XAMPP, this is equal to the `EW_DIR`.
+    - `EW_DIR` should be the root directory where EW CMS is installed. For example: `/EverythingWidget-master/` or `/` if EW CMS is already in the root folder
+    - `EW_DIR_URL` should be the url path to EW CMS root directory. In the case of XAMPP, this is equal to the value of `EW_DIR`.
   7. Open htdocs/**[EverythingWidget-master]**/core/config/database_config.php with your text editor and specify your database host, user name and password. EW CMS creates a database with name that you specified for `database` property.
   8. Open your browser and go to http://localhost/**[EverythingWidget-master]**/ and click on install. Done!
+  
+  **As default you have no permission to see the webpage content**
   
   Then you can go to http://localhost/**[EverythingWidget-master]**/~admin/ for administration panel:
 
