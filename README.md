@@ -9,3 +9,5 @@ It also provides very flexible template & layout system. You can create your tem
 You can also create pre-built layouts for your customers
 
 For more information head to : www.ewcms.org
+
+**EW CMS is still under development process and can't be used in production**
