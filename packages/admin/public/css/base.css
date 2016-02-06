@@ -78,14 +78,14 @@ root {
     width: auto;
     margin-top: 55px;
     border-radius: 0;
-   
+
   }
-  
+
   .ew-float-menu[position='se'] {
     top: auto;
     bottom: 31px;
     flex-direction: column-reverse;
-    
+
   }
   .ew-float-menu.expand[position='se'] {
     margin-top: 0;
@@ -131,7 +131,7 @@ root {
   .ew-float-menu-indicator.destroy {
     transform: scale(0);
   }
-  
+
   .ew-float-menu-indicator[position='se'] {
     top: auto;
     bottom: 31px;
@@ -149,7 +149,7 @@ root {
 
 
   .ew-float-menu.expand > .btn {
-  /* display: flex; */
+    /* display: flex; */
   }
 
   .block-row {
@@ -190,11 +190,16 @@ root {
   }
 
   .top-pane.center {
+    position: absolute;
+    left: 0;
+    margin: 0;
     top: 0;
     bottom: 0;
     right: 0;
-
-    border: none;
+    max-width: 100%;
+    width: 100%;
+    min-width: 320px;
+    min-height: 400px;
   }
 
   .tabs-bar.tab-pane-xs {
@@ -213,7 +218,7 @@ root {
 
   .form-content.tab-content.tab-pane-xs > .active {
     display: block;
-  }
+  }  
 
   .tab-pane-xs .static-block {
     position: absolute!important;
@@ -252,6 +257,14 @@ root {
     height: 62px;
   }
 
+  .top-pane .form-content {
+    bottom: 55px;
+  }
+
+  .top-pane .footer-pane,#main-content .footer-pane {
+    height: 56px;
+  }
+
   .content-item.album {
     background-color: #fff;
     width: 160px;
@@ -271,18 +284,6 @@ root {
     color: rgba(0,0,0,.6);
   }
 
-  .top-pane.center {
-    position: absolute;
-    left: 0;
-    margin: 0;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    max-width: 100%;
-    width: 100%;
-    min-width: 320px;
-    min-height: 400px;
-  }
 
   div#components-pane {
     max-width: 580px;
@@ -319,15 +320,6 @@ root {
     top: 0!important;
     bottom: 0!important;
   }
-
-  .top-pane .form-content {
-    bottom: 55px;
-  }
-
-  .top-pane .footer-pane,#main-content .footer-pane {
-    height: 56px;
-  }
-
 
   .navigation-menu {
     position: absolute;
@@ -634,6 +626,10 @@ root {
 
 .tabs-bar.tab-pane-xs .tab-pane {
   display: inherit;
+}
+
+.form-content.grid {
+  background-color: #eaeaea;
 }
 
 .form-content.tab-content .tab-pane.static-block, .static-block {
@@ -973,10 +969,6 @@ body.Admin {
   line-height: 30px;
 }
 
-.top-pane .form-content > .row {
-  /*margin: 0;*/
-}
-
 .form-content.no-footer {
   bottom: 0;
   border-bottom: 0 solid #ddd;
@@ -995,10 +987,6 @@ body.Admin {
   /*top: 55px;*/
 }
 
-.top-pane .form-content .tab-content {
-  /*top: 0;*/
-}
-
 #main-content > .header-pane.tabs-bar {
   height: auto;
   /* padding-top: 13px; */;
@@ -1014,10 +1002,6 @@ body.Admin {
   bottom: 0;
   right: 0;
   width: auto;
-}
-
-.top-pane .row h3 {
-  /* margin:25px 0 0 */;
 }
 
 .footer-pane {

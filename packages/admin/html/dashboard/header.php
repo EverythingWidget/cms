@@ -27,7 +27,7 @@
 <script src="~rm/public/js/gsap/jquery.gsap.min.js" defer></script>
 
 <script src="~rm/public/js/x-tag/x-tag-core.min.js" defer></script>
-<script src="~admin/public/js/ew-tags/ew-tags.js" defer></script>
+<script src="~admin/public/js/lib/system-tags.js" defer></script>
 
 <script src="~admin/public/js/lib/sortable.js" defer></script>      
 <script src="~admin/public/js/lib/bootstrap-datepicker.js" defer></script>

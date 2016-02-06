@@ -41,7 +41,7 @@
   };
 })();
 
-(function (xtag) {
+(function (xtag, System) {
   var ewList = {
   };
 
@@ -167,7 +167,7 @@
     }
   };
 
-  xtag.register("ew-list", ewList);
+  xtag.register("system-list", ewList);
 
   // EW Actions Container
 
@@ -273,7 +273,7 @@
       },
       contract: function () {
         /*if (!this.expanded)
-          return;*/
+         return;*/
         this.expanded = false;
         TweenLite.to(this, .4, {
           className: this.xtag.originClassName,
@@ -293,11 +293,11 @@
             onComplete: function () {
             }
           });
-          
+
           TweenLite.to(this.xtag.indicator, .4, {
-          className: this.xtag.originClassName + "-indicator",
-          ease: "Power2.easeInOut"
-        });
+            className: this.xtag.originClassName + "-indicator",
+            ease: "Power2.easeInOut"
+          });
         }
       },
       off: function (flag) {
@@ -326,24 +326,50 @@
     }
   };
 
-  xtag.register("ew-float-menu", ewFloatMenu);
-  
+  xtag.register("system-float-menu", ewFloatMenu);
+
   var ewUITemplate = {
     lifecycle: {
       created: function () {
-       
+        this.xtag.validate = false;
+        if (!this.name) {
+          throw "system-ui-view missing the `name` attribute";
+        }
       },
       inserted: function () {
-       alert("ew-ui-template");
-      },
-      attributeChanged: function (attrName, oldValue, newValue) {
+        if (this.validate)
+          return;
+        
+        if (!System.uiTemplates["system/" + this.module]) {
+          System.uiTemplates["system/" + this.module] = {};
+        }
+
+        System.uiTemplates["system/" + this.module][this.name] = this.parentNode.removeChild(this);
+        this.xtag.validate = true;
       },
       removed: function () {
-      
+
+      }
+    },
+    accessors: {
+      name: {
+        attribute: {}
+      },
+      module: {
+        attribute: {}
+      },
+      validate: {
+        attribute: {},
+        set: function (value) {
+          this.xtag.validate = value;
+        },
+        get: function (value) {
+          return this.xtag.validate;
+        }
       }
     }
   };
-  
-  xtag.register("ew-ui-template", ewUITemplate);
 
-})(xtag);
+  xtag.register("system-ui-view", ewUITemplate);
+
+})(xtag, System);
