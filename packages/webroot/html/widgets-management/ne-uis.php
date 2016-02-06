@@ -1170,7 +1170,7 @@ session_start();
          class: "left"
       });
       self.currentDialog = d;
-      $.post('<?php echo EW_ROOT_URL; ?>~webroot/widgets-management/UISPanel.php', {
+      $.post('<?php echo EW_ROOT_URL; ?>~webroot/widgets-management/uis-panel.php', {
          template: self.uisTemplate,
          uisId: self.uisId,
          containerId: containerId
@@ -1188,7 +1188,7 @@ session_start();
          class: "left"
       });
       self.currentDialog = d;
-      $.post('<?php echo EW_ROOT_URL; ?>~webroot/widgets-management/UISPanel.php', {
+      $.post('<?php echo EW_ROOT_URL; ?>~webroot/widgets-management/uis-panel.php', {
          template: self.uisTemplate,
          uisId: self.uisId,
          panelId: pid,

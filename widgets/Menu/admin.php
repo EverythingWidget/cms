@@ -5,12 +5,12 @@
  * feeder_type: menu
  */
 ?>
-<div class="row">
+<div class="block-row mt">
    <div class="col-xs-12 ">      
       <input class="text-field" name="feeder" id="feeder" data-label="Default Content" data-ew-plugin="link-chooser" >    
    </div>
 </div>
-<div class="row">
+<div class="block-row">
       <ul id="menu" class="list arrangeable">
          <li class="" style="">
             <div class="wrapper">

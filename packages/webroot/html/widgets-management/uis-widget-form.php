@@ -20,25 +20,25 @@ function get_properties_form()
    global $widget_info;
    ob_start();
    ?>
-   <div class="row">
+   <div class="block-row mt">
       <div class="col-xs-12">
          <input data-label="ID" class="text-field" value="<?php echo $widget_info["style_id"] ?>" name="style_id" id="style_id" >
 
          <input data-label="Class" id="style_class" name="style_class" class="text-field" >
-         <label class="small" id="used-classes"></label>
+         <label class="block-row small" id="used-classes"></label>
       </div>
    </div>
-   <div class="row">
+   <div class="block-row">
       <div class="col-xs-12" >
-         <h3 class="line-header">Used</h3>
-         <div class="options-panel" id="widget-classes" data-toggle="buttons">
+         <h3 class="line-header">Applied classes</h3>
+         <div class=" block-row options-panel" id="widget-classes" data-toggle="buttons">
          </div>
       </div>
    </div>
-   <div class="row">
+   <div class="block-row">
       <div class="col-xs-12"  >
-         <h3 class="line-header">Classes</h3>
-         <div class="options-panel" id="available-classes" data-toggle="buttons">
+         <h3 class="line-header">Available classes</h3>
+         <div class="block-row options-panel" id="available-classes" data-toggle="buttons">
             <?php
             if ($_REQUEST["template"])
             {
@@ -93,7 +93,7 @@ $tabs = EWCore::read_registry("uis-widget-form");
 
 <div id="widget-control-panel" class="form-content tabs-bar row" >
    <input type="hidden" name="cmd" id="cmd" >
-   <div class="tab-content col-xs-12">
+   <div class="tab-content">
       <?php
       foreach ($tabs as $id => $tab)
       {

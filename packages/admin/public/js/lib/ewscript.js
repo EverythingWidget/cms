@@ -2120,7 +2120,7 @@ function ExtendableList(element, cSettings) {
   //this.$element.find("li:first-child").prepend('<div class="handle"></div>');
 
   this.firstItemClone = this.$element.find("li:first-child").clone();
-  this.lastRow = $("<div data-add-item-row='true' class='row row-buttons'></div>").addClass(this.$element.attr("class"));
+  this.lastRow = $("<div data-add-item-row='true' class='block-row row-buttons'></div>").addClass(this.$element.attr("class"));
   this.addNewRow = $("<button type='button' class='btn btn-text btn-primary pull-right'>Add</button>");
   this.addNewRow.on("click", function () {
     var ni = base.createItem();

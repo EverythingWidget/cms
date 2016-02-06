@@ -3502,3 +3502,17 @@ inline-dialog{
 .uis-editor-tool-pane .nav-pills {
   background-color: #0097a7;
 }
+.mt {
+  margin-top: 15px;
+}
+
+.mt\+ {
+  margin-top: 30px;
+}
+
+.mb {
+  margin-bottom: 15px;
+}
+.mb\+ {
+  margin-bottom: 30px;
+}
