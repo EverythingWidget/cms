@@ -1,6 +1,5 @@
 <system-ui-view name="albums-list" module="media-chooser" class="block-row">  
   <div  class="block-column anim-fade-in">
-
   </div>
 </system-ui-view>
 
@@ -54,13 +53,24 @@
       this.albumCardTitleActionRight = this.albumCard.find(".card-title-action-right");
       this.albumsList = $(templates["albums-list"]);
 
-      this.deleteAlbumBtn = EW.addActionButton({
+      this.deleteAlbumActivity = EW.addActivity({
+        activity: "admin/api/content-management/delete-album",
         text: "tr{}",
         class: "btn-text btn-circle btn-danger icon-delete",
         parent: this.albumCardTitleActionRight,
-        handler: function () {
-          component.seeAlbumActivity({
-            albumId: Domain.getHashNav("album")[0]
+        parameters: function () {
+          if (!confirm("tr{Are you sure of deleting this album?}")) {
+            return false;
+          }
+
+          return {
+            id: component.albumId
+          };
+        },
+        onDone: function (response) {
+          $("body").EW().notify(response).show();
+          Domain.setHashParameters({
+            album: "0/images"
           });
         }
       });

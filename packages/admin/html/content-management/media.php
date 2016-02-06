@@ -1,5 +1,5 @@
 <div data-ui-template="albums-list" class="block-row">  
-  <div  class="block-column anim-fade-in">
+  <div class="block-column anim-fade-in">
 
   </div>
 </div>
@@ -46,7 +46,7 @@
       this.albumsList = $(templates["albums-list"]);
 
 
-      this.deleteAlbumBtn = EW.addActivity({
+      this.deleteAlbumActivity = EW.addActivity({
         activity: "admin/api/content-management/delete-album",
         text: "tr{}",
         class: "btn-text btn-circle btn-danger icon-delete",
@@ -135,7 +135,7 @@
     };
 
     MediaComponent.prototype.start = function () {
-      var _this = this;
+      var component = this;
       this.albumId = null;
       this.itemsList = $();
       this.currentItem = $();
@@ -145,7 +145,7 @@
       this.albumPropertiesBtn = EW.addActionButton({
         text: "tr{Properties}",
         handler: function () {
-          _this.seeAlbumActivity({
+          component.seeAlbumActivity({
             albumId: System.getHashNav("album")[0]
           });
         },
@@ -173,16 +173,10 @@
         }
       });
 
-      //$("#album-card-action-bar").empty();
       System.UI.components.mainContent.append(this.albumCard);
       System.UI.components.mainContent.append(this.albumsList);
 
-
-
-      _this.module.setParamIfNone("album", "0/images");
-      //alert(_this.module.html);
-      //console.log(_this.albumCard);
-      //_this.module.html = "";
+      component.module.setParamIfNone("album", "0/images");
     };
 
     MediaComponent.prototype.seeItemDetails = function () {
@@ -289,7 +283,6 @@
 
           });
 
-          //listContainer.append(component.itemsList);
           component.itemsList.addClass("in");
           component.listInited = true;
           // Select current item            

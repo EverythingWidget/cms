@@ -175,6 +175,10 @@ EverythingWidgets.prototype.addActionButton = function (config) {
   var settings = $.extend({
     class: "btn-primary"
   }, config);
+  
+  if(settings.activity){
+    throw "Action button does not support `activity` property, Use `addActivity` instead";
+  }
 
   var action = $(document.createElement("button"));
   action.html(settings.text);
