@@ -77,8 +77,10 @@
 
   var anim = false;
   EverythingWidgets.prototype.loadSection = function (sectionId) {
+    
+    //console.log(System.UI.components.sectionsMenuList[0].xtag);
     var element = System.UI.components.sectionsMenuList[0].links[EW.oldApp + "/" + sectionId];
-    //console.log(System.UI.components.sectionsMenuList[0].links);
+    
     System.UI.components.sectionsMenuList[0].value = element.dataset.index;
     //alert(EW.oldApp + "/" + sectionId)
     if (element) {

@@ -27,11 +27,11 @@ if (!isset($_SESSION['login']))
           <div id="sections-menu" class="sections-menu">
             <!--<span class="sections-menu-title" id="sections-menu-title" >  
             </span>-->
-            <ew-list id="sections-menu-list" class="sections-menu-list">
+            <system-list id="sections-menu-list" class="sections-menu-list">
               <div class="sections-menu-item">
                 <a class="sections-menu-item-link" href="{{id}}" >{{title}}</a>
               </div>
-            </ew-list>
+            </system-list>
           </div>
         </div>
 
@@ -55,9 +55,9 @@ if (!isset($_SESSION['login']))
           </div>
         </div>
         
-        <ew-float-menu id="main-float-menu" class="ew-float-menu">
+        <system-float-menu id="main-float-menu" class="ew-float-menu">
           
-        </ew-float-menu>
+        </system-float-menu>
         
         <div id="home-pane" class="home-pane" >
         </div>

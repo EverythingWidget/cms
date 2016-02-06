@@ -1,5 +1,6 @@
 (function (System) {
   function Domain() {
+    this.UI ={};
     this.app = null;
     this.domainHashString = "";
     this.moduleIdentifier = "app";
