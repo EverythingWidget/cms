@@ -2053,16 +2053,13 @@ ul.items {
 
 ul.items li {
   padding: 0;
-  margin: 6px 0 0;
+  margin: 5px 0 0;
   display: block;
   overflow: hidden;
   min-height: 34px;
   border: 1px solid transparent;
   position: relative;
   background-color: rgba(0,0,0,.1);
-}
-ul.items li:last-child {
-  margin-bottom: 6px;
 }
 
 ul.items li.block.highlight,ul.items li.highlight {
@@ -2109,8 +2106,7 @@ ul.items li.panel {
 ul.items li.panel > ul {
   padding: 0;
   padding-left: 4px;
-  /* padding-bottom: 4px; */
-  min-height: 40px;
+  padding-bottom: 4px;
 }
 
 ul.items li.widget {
@@ -2139,28 +2135,13 @@ ul.items li.widget .close-icon {
   right: 11px;
 }
 
-ul.items li .handle {
+ul.items li img {
   width: 32px;
   height: 32px;
   float: left;
   margin: -5px;
   margin-right: 5px;
   padding: 2px;
-  cursor: move;
-  background-repeat: no-repeat;
-  background-position: center center;
-}
-
-.handle.block {
-  background-image: url('images/block-icon.png');
-}
-
-.handle.panel {
-  background-image: url('images/panel-icon.png');
-}
-
-.handle.widget {
-  background-image: url('images/widget-icon.png');
 }
 
 ul.items .button {
@@ -2212,16 +2193,19 @@ ul.items li .close-icon:hover {
   background-color: transparent;
 }
 
+img.handle {
+  cursor: move;
+}
+
 ul.active {
   background-color: #fcc;
 }
 
 ul.items ul {
-  padding: 0 0 0px 15px;
+  padding: 0 0 10px 15px;
   overflow: hidden;
   margin-right: -1px;
   width: 100%;
-  min-height: 40px;
 }
 
 .dragged {
@@ -2234,14 +2218,11 @@ ul.items ul {
 }
 
 ul.items li.placeholder {
-  min-height: 34px;
+  min-height: 28px;
   background-color: transparent;
-  border-radius: 2px;
-  border: 0px dashed #555;
+  border-radius: 3px;
+  border: 2px dashed #555;
   display: block;
-  /*margin-bottom: -10px;*/
-  z-index: 1;
-  background-color: rgba(0,0,0,.5)
 }
 
 ul.items li.placeholder:before {
@@ -3534,12 +3515,4 @@ inline-dialog{
 }
 .mb\+ {
   margin-bottom: 30px;
-}
-
-.input-number button {
-  float: right;
-  margin: 0px 5px;
-  width: 30px;
-  font-size: inherit;
-  line-height: inherit;
 }

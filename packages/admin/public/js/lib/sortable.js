@@ -321,7 +321,6 @@
 
             if (!distance || this.options.pullPlaceholder) {
                var container = this.containers[index];
-               
                if (!container.disabled) {
                   if (!this.$getOffsetParent()) {
                      var offsetParent = container.getItemOffsetParent();
@@ -450,14 +449,13 @@
                  validTarget = !rootGroup.options.isValidTarget ||
                  rootGroup.options.isValidTarget(rootGroup.item, this);
 
-        if (!i && validTarget) {
+         if (!i && validTarget) {
             rootGroup.movePlaceholder(this, this.el, "append");
             return true;
          } else
             while (i--) {
                var index = distances[i][0],
                        distance = distances[i][1];
-               
                if (!distance && this.hasChildGroup(index)) {
                   var found = this.getContainerGroup(index).searchValidTarget(pointer, lastPointer);
                   if (found)
@@ -598,7 +596,6 @@
     * @returns {sortable_L31.$@call;map}
     */
    $.fn[pluginName] = function (methodOrOptions) {
-     
       var args = Array.prototype.slice.call(arguments, 1);
 
       return this.map(function () {
