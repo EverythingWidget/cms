@@ -9,6 +9,15 @@ and open the template in the editor.
 */
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,300,500,700);
 @import url(https://fonts.googleapis.com/css?family=Amiri:400,700&subset=arabic);
+@media (min-width: 768px) {
+  .panel.section {
+    width: 720px; } }
+@media (min-width: 1024px) {
+  .panel.section {
+    width: 960px; } }
+@media (min-width: 1280px) {
+  .panel.section {
+    width: 1200px; } }
 body {
   font-family: 'Roboto', 'Amiri';
   font-size: 17px;
@@ -51,6 +60,9 @@ body {
   .block.text h3 {
     font-weight: 500;
     margin: 15px 0; }
+
+.panel.clearfix {
+  margin: 0 auto; }
 
 .widget.text-center {
   text-align: center; }

@@ -377,6 +377,12 @@
       created: function () {
         this.xtag.placeHolder = document.createElement("li");
         this.xtag.placeHolder.className += "placeholder";
+
+        this.xtag.glass = document.createElement("div");
+        this.xtag.glass.style.position = "absolute";
+        this.xtag.glass.style.width = "100%";
+        this.xtag.glass.style.height = "100%";
+
         this.style.overflow = "hidden";
         this.isValidParent = function () {
           return true;
@@ -412,6 +418,10 @@
         draggedItem.style.position = "fixed";
         draggedItem.style.width = diDimension.width + "px";
         draggedItem.style.height = diDimension.height + "px";
+        e.currentTarget.xtag.glass.width = diDimension.width + "px";
+        e.currentTarget.xtag.glass.height = diDimension.height + "px";
+        draggedItem.appendChild(e.currentTarget.xtag.glass);
+        UIUtil.addCSSClass(draggedItem, "dragged");
 
         //console.log(e, draggedItem);
         e.stopPropagation();
@@ -469,8 +479,8 @@
                 //console.log(childDim, event.pageY, n)
                 break;
               } else if (event.pageY >= childDim.top + (childDim.height / 2) /*&& event.pageY < childDim.bottom*/) {
-                index = n;
-                indexElement = childElements[index].nextSibling;
+                index = n + 1;
+                indexElement = childElements[index];
                 //console.log("lower", index);
                 //console.log(childDim, event.pageY, n)
                 break;
@@ -486,8 +496,8 @@
           }
         }
 
-        this.xtag.draggedItem.style.left = event.pageX + 1 + "px";
-        this.xtag.draggedItem.style.top = event.pageY + 1 + "px";
+        this.xtag.draggedItem.style.left = event.pageX - this.xtag.initDragPosition.x + "px";
+        this.xtag.draggedItem.style.top = event.pageY - this.xtag.initDragPosition.y + "px";
 
         if (parent && (this.xtag.tempParent !== parent || this.xtag.tempIndexElement !== indexElement)) {
           this.xtag.tempParent = parent;
@@ -510,6 +520,8 @@
           this.xtag.draggedItem.style.height = "";
           this.xtag.draggedItem.style.left = "";
           this.xtag.draggedItem.style.top = "";
+          this.xtag.draggedItem.removeChild(this.xtag.glass);
+          UIUtil.removeCSSClass(this.xtag.draggedItem, "dragged");
 
           if (this.xtag.placeHolder.parentNode) {
             this.onDrop(this.xtag.draggedItem, this.xtag.tempParent, this.xtag.tempIndex);
@@ -520,7 +532,10 @@
           this.xtag.tempParent = null;
           this.xtag.tempIndex = null;
         }
+        event.preventDefault();
+        event.stopPropagation();
       }
+
     }
   };
 
@@ -538,7 +553,7 @@
         this.appendChild(this.xtag.input);
       },
       removed: function () {
-        
+
       }
     },
     accessors: {
@@ -554,7 +569,7 @@
     },
     methods: {
       increase: function () {
-        
+
       }
     },
     events: {

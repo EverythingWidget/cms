@@ -244,7 +244,7 @@ session_start();
     };
 
     this.inspectorEditor[0].onDrop = function (item, parent, index) {
-
+//console.log(parent,index)
       var frameBody = $(document.getElementById("fr").contentDocument.body);
       if (!parent) {
         return;
@@ -283,7 +283,7 @@ session_start();
         //alert(linkedWidgetId);
         var widget = frameBody.find("[data-widget-id='" + linkedWidgetId + "']").parent().detach();
 
-        console.log($parent, $parent.children().length, index);
+        //console.log($parent, $parent.children().length, index);
 
         if ($parent.children().length <= index) {
           $parent.append(widget);
@@ -310,7 +310,7 @@ session_start();
 
     };
 
-    console.log(this.inspectorEditor[0]);
+    //console.log(this.inspectorEditor[0]);
 
     // Add 'Add Block' button to the inspector-panel
     var addBlockBtn = $("<button type='button' class='btn btn-primary btn-sm'>tr{Add Block}</button>");

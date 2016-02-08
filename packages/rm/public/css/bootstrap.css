@@ -808,7 +808,14 @@ fieldset[disabled] .btn {
    box-shadow: none;
 }
 
-.btn.btn-text{background-color:transparent;font-weight:500;font-size:1.15em;padding:8px;border-color:transparent;box-shadow:none;}
+.btn.btn-text{
+  background-color:transparent;
+  font-weight:500;
+  font-size:1.15em;
+  padding:9px;
+  border-color:transparent;
+  box-shadow:none;
+}
 .btn.btn-text:hover{box-shadow:none;background-color: rgba(0,0,0,.12);}
 .btn.btn-text:active{box-shadow:none;background-color:rgba(0,0,0,.62);}
 .btn-file {

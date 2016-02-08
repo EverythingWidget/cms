@@ -55,14 +55,14 @@
         Width and Offset
       </h2>
       <div class="col-lg-6 col-xs-12 mb+">
-        <div class="block-row">
+        <div class="row">
           <label class="ta-center">
             Width large Screen
           </label>        
           <input class="col-xs-12" type="text" name="col-lg-" id="col-lg-" value="12" data-slider="true" data-slider-range="1,12" data-slider-snap="true" data-slider-highlight="true" data-slider-step="1" >
         </div>
 
-        <div class="block-row">
+        <div class="row">
           <label class="ta-center">
             Offset large Screen
           </label>        

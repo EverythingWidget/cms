@@ -2226,7 +2226,7 @@ ul.items ul {
 
 .dragged {
   position: absolute;
-  opacity: .95;
+  opacity: .85;
   z-index: 2000;
   box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
   transition-property: box-shadow;

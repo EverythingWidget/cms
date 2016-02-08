@@ -16,6 +16,26 @@ $font-color: #fff;
 $font-akcent-color: orange;
 $nav-bar-bg: rgba(0,0,0,.32);
 
+@media (min-width: 768px) {
+  .panel.section {
+    width: 720px;  
+  }
+}
+
+@media (min-width: 1024px) {
+
+  .panel.section {
+    width: 960px;  
+  }
+}
+
+@media (min-width: 1280px) {
+
+  .panel.section {
+    width: 1200px;  
+  }
+}
+
 body {
   font-family: 'Roboto', 'Amiri';
   font-size: 17px;
@@ -73,6 +93,10 @@ body {
     font-weight: 500;
     margin: 15px 0;
   }
+}
+
+.panel.clearfix {
+  margin: 0 auto;
 }
 
 .widget.text-center {
@@ -135,9 +159,9 @@ body {
     overflow: hidden;
     padding: 0 15px;
     border-bottom: 3px solid $font-akcent-color;
-    
+
     h2 {
-       font-weight: 500;
+      font-weight: 500;
     }
   }
 }
