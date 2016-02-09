@@ -94,7 +94,7 @@ root {
 
   .ew-float-menu-indicator {
     top: 69px;
-    right: 5%;
+    right: 50px;
     cursor: pointer;
     /*background-color: #03A9F4;*/
     background-color: #1B2433;
@@ -132,7 +132,7 @@ root {
     transform: scale(0);
   }
 
-  .ew-float-menu-indicator[position='se'] {
+  .ew-float-menu-indicator[position='se'], .btn.pos-se {
     top: auto;
     bottom: 31px;
   }
@@ -526,6 +526,13 @@ root {
 
 .icon-delete ,.icon-delete:active{
   background-image: url('images/delete-icon.png');
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 24px;
+}
+
+.icon-ok, .icon-ok:active {
+  background-image: url('images/check-icon-24.png');
   background-repeat: no-repeat;
   background-position: center center;
   background-size: 24px;
@@ -3542,4 +3549,20 @@ inline-dialog{
   width: 30px;
   font-size: inherit;
   line-height: inherit;
+}
+
+.btn-float {
+  position: absolute;
+  right: 115px;
+  z-index: 10;
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+  padding: 0;
+  box-shadow: 0 2px 5px 0 rgba(0,0,0,0.2),0 2px 10px 0 rgba(0,0,0,0.16);
+  top: 69px
+}
+
+.priority-2 {
+  right: 230px;
 }

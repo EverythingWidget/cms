@@ -50,8 +50,7 @@
       this.foldersList = this.foldersCard.find("#categories-list");
       this.articlesList = this.foldersCard.find("#articles-list");
 
-
-      this.bUp = EW.addActionButton({
+      this.upAction = EW.addActionButton({
         text: "",
         class: "btn-text icon-back btn-circle",
         handler: $.proxy(this.preCategory, this),
@@ -91,6 +90,26 @@
       else
         this.bSee = $();
 
+      this.deleteFolderActivity = EW.addActivity({
+        title: "",
+        defaultClass: "btn-text btn-circle icon-delete btn-danger",
+        activity: "admin/api/content-management/delete-folder",
+        parent: this.foldersCardTitleActionRight,
+        parameters: function () {
+          if (!confirm("tr{Are you sure of deleting this folder?}")) {
+            return false;
+          }
+
+          return {
+            id: _this.parentId
+          };
+        },
+        onDone: function (response) {
+          $("body").EW().notify(response).show();
+          _this.preCategory();
+        }
+      }).hide();
+
       this.installStateHandlers(this.module);
     };
 
@@ -124,15 +143,15 @@
           }
 
           if (id === "0") {
-            component.bUp.comeOut(300);
+            component.upAction.comeOut(300);
             component.bSee.comeOut();
-            component.aDeleteFolder.comeOut();
+            component.deleteFolderActivity.comeOut();
           }
 
           if (id > 0) {
-            component.bUp.comeIn(300);
+            component.upAction.comeIn(300);
             component.bSee.comeIn();
-            component.aDeleteFolder.comeIn();
+            component.deleteFolderActivity.comeIn();
           }
         }
       });
@@ -178,26 +197,6 @@
         }
       }).hide();
 
-      this.aDeleteFolder = EW.addActivity({
-        title: "",
-        defaultClass: "btn-text btn-circle icon-delete btn-danger",
-        activity: "admin/api/content-management/delete-folder",
-        parent: this.foldersCardTitleActionRight,
-        parameters: function () {
-          if (!confirm("tr{Are you sure of deleting this folder?}")) {
-            return false;
-          }
-          
-          return {
-            id: _this.parentId
-          };
-        },
-        onDone: function (response)        {
-          $("body").EW().notify(response).show();
-          _this.preCategory();
-        }
-      }).hide();
-
       $(document).off("article-list");
       $(document).on("article-list.refresh", function (e, eventData) {
         _this.listCategories();
@@ -207,7 +206,7 @@
               folderId: null,
               articleId: eventData.data.id
             },
-              "document");
+                    "document");
           }
 
           if (eventData.data.type === "folder") {
@@ -215,7 +214,7 @@
               folderId: eventData.data.id,
               articleId: null
             },
-              "document");
+                    "document");
           }
         }
       });
@@ -251,86 +250,86 @@
 
     Documents.prototype.listCategories = function () {
       var _this = this,
-        pId = 0,
-        hasNode = false,
-        article = System.getHashParam("article"),
-        folder = System.getHashParam("folder");
+              pId = 0,
+              hasNode = false,
+              article = System.getHashParam("article"),
+              folder = System.getHashParam("folder");
       var loader = $("<div class='loader top'></div>");
       this.foldersCard.find(".card-content").append(loader);
 
       System.addActiveRequest($.get('~admin/api/content-management/contents-folders', {
         parent_id: _this.parentId
       },
-        function (data) {
-          _this.foldersCardTitle.text(data.parent.title || "tr{Contents}");
-          var startPoint = (_this.currentItem && _this.currentItem[0]) ?
-            _this.currentItem[0].getBoundingClientRect() : _this.bUp[0].getBoundingClientRect();
+              function (data) {
+                _this.foldersCardTitle.text(data.parent.title || "tr{Contents}");
+                var startPoint = (_this.currentItem && _this.currentItem[0]) ?
+                        _this.currentItem[0].getBoundingClientRect() : _this.upAction[0].getBoundingClientRect();
 
-          System.UI.Animation.blastTo({
-            fromPoint: startPoint,
-            to: _this.foldersCard[0],
-            area: _this.foldersCard.find(".card-content")[0],
-            time: .5,
-            fade: .3,
-            color: "#eee",
-            onComplete: function () {
-              _this.foldersList.empty();
-              $.each(data.data, function (index, element) {
-                pId = element.up_parent_id;
-                hasNode = true;
-                var temp = _this.createFolderElement(element.title, element.round_date_created, element.id, element);
-                //temp.addClass("anim-scale-in");
-                if (element.id == folder) {
-                  temp.addClass("selected");
-                  _this.currentItem = temp;
-                }
-                _this.foldersList.append(temp);
-                //temp.addClass("in");
-              });
+                System.UI.Animation.blastTo({
+                  fromPoint: startPoint,
+                  to: _this.foldersCard[0],
+                  area: _this.foldersCard.find(".card-content")[0],
+                  time: .5,
+                  fade: .3,
+                  color: "#eee",
+                  onComplete: function () {
+                    _this.foldersList.empty();
+                    $.each(data.data, function (index, element) {
+                      pId = element.up_parent_id;
+                      hasNode = true;
+                      var temp = _this.createFolderElement(element.title, element.round_date_created, element.id, element);
+                      //temp.addClass("anim-scale-in");
+                      if (element.id == folder) {
+                        temp.addClass("selected");
+                        _this.currentItem = temp;
+                      }
+                      _this.foldersList.append(temp);
+                      //temp.addClass("in");
+                    });
 
-              if (hasNode) {
-                _this.upParentId = pId;
-              }
-              loader.remove();
-              _this.articlesList.empty();
-              //var articleLoader = $("<div class='loader center'></div>");
-              //$("#articles-list").append(articleLoader);
-              //$("#articles-list").html("<div class='box-content anim-fade-in'></div>");
-              System.addActiveRequest($.get('~admin/api/content-management/contents-articles', {
-                parent_id: _this.parentId
-              },
-                function (response) {
-
-                  //var articlesPane = $("#articles-list");
-                  $.each(response.data, function (index, element) {
-                    pId = element.up_parent_id;
-                    hasNode = true;
-                    var temp = _this.createArticleElement(element.title, element.round_date_created, element.id, element);
-                    //temp.addClass("anim-scale-in");
-                    if (element.id == article) {
-                      temp.addClass("selected");
-                      _this.currentItem = temp;
+                    if (hasNode) {
+                      _this.upParentId = pId;
                     }
-                    _this.articlesList.append(temp);
-                    // setTimeout(function ()            {
-                    //temp.addClass("in");
-                    //}, 1);
+                    loader.remove();
+                    _this.articlesList.empty();
+                    //var articleLoader = $("<div class='loader center'></div>");
+                    //$("#articles-list").append(articleLoader);
+                    //$("#articles-list").html("<div class='box-content anim-fade-in'></div>");
+                    System.addActiveRequest($.get('~admin/api/content-management/contents-articles', {
+                      parent_id: _this.parentId
+                    },
+                            function (response) {
 
-                  });
+                              //var articlesPane = $("#articles-list");
+                              $.each(response.data, function (index, element) {
+                                pId = element.up_parent_id;
+                                hasNode = true;
+                                var temp = _this.createArticleElement(element.title, element.round_date_created, element.id, element);
+                                //temp.addClass("anim-scale-in");
+                                if (element.id == article) {
+                                  temp.addClass("selected");
+                                  _this.currentItem = temp;
+                                }
+                                _this.articlesList.append(temp);
+                                // setTimeout(function ()            {
+                                //temp.addClass("in");
+                                //}, 1);
 
-                  if (hasNode) {
-                    _this.upParentId = pId;
+                              });
+
+                              if (hasNode) {
+                                _this.upParentId = pId;
+                              }
+                              //$("#articles-list").find(".box-content").addClass("in");
+
+
+                              //lockArticles.dispose();
+                            }, "json"));
                   }
-                  //$("#articles-list").find(".box-content").addClass("in");
-
-
-                  //lockArticles.dispose();
-                }, "json"));
-            }
-          });
-          //$("#categories-list").find(".box-content").addClass("in");
-          //lockFolders.dispose();
-        }, "json"));
+                });
+                //$("#categories-list").find(".box-content").addClass("in");
+                //lockFolders.dispose();
+              }, "json"));
 
 
 

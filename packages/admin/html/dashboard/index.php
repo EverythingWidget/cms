@@ -59,6 +59,8 @@ if (!isset($_SESSION['login']))
           
         </system-float-menu>
         
+        
+        
         <div id="home-pane" class="home-pane" >
         </div>
         <?php

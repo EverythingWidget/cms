@@ -45,7 +45,6 @@
       this.albumCardTitleActionRight = this.albumCard.find(".card-title-action-right");
       this.albumsList = $(templates["albums-list"]);
 
-
       this.deleteAlbumActivity = EW.addActivity({
         activity: "admin/api/content-management/delete-album",
         text: "tr{}",

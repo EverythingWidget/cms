@@ -8,12 +8,25 @@ and open the template in the editor.
     Author     : Eeliya
 */
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,300,500,700);
-@import url(https://fonts.googleapis.com/css?family=Amiri:400,700&subset=arabic);
+
+@font-face {
+  font-family: 'FarNazaninBold';
+  src: url('fonts/FarNazaninBold.eot') format('embedded-opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'FarNazaninBold';
+  src:  url(data:application/x-font-woff;charset=utf-8;base64,) format('woff'), url('fonts/FarNazaninBold.ttf')  format('truetype'), url('fonts/FarNazaninBold.svg#FarNazaninBold') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
 
 $background-color: #fff;
 $akcent-background-color: #ddd;
 $font-color: #fff;
-$font-akcent-color: orange;
+$font-akcent-color: #f50808;
 $nav-bar-bg: rgba(0,0,0,.32);
 
 @media (min-width: 768px) {
@@ -37,7 +50,7 @@ $nav-bar-bg: rgba(0,0,0,.32);
 }
 
 body {
-  font-family: 'Roboto', 'Amiri';
+  font-family: 'Roboto', 'FarNazaninBold';
   font-size: 17px;
   position: relative;
 }
@@ -75,6 +88,12 @@ body {
 
 .block.section {
   position: relative;
+}
+
+.block.daily-quote {
+  background-image: url('images/daily-feed.jpg');
+  background-position: center center;
+  background-size: cover;
 }
 
 .block.text {
@@ -117,7 +136,7 @@ body {
       padding: 15px;
       line-height: 50px;
     }
-  }
+  }   
 
   a {
     color: #fff;
@@ -127,6 +146,14 @@ body {
   a.selected {
     color: $font-akcent-color;
   } 
+}
+
+.rtl .widget.nav-menu {
+  ul {
+    li {
+      float: right;
+    }
+  }   
 }
 
 .widget.right.nav-menu {
@@ -140,14 +167,31 @@ body {
 
 .widget.slider {
   border: 0px solid red;
-  height: 650px;
+  margin: 0 -15px;
 }
 
-.widget.daily-quote {
-  margin: 45px 0;
+.slider .owl-controls {
+  margin: 0;
+  margin-top: -30px;
+  height: 30px;
+  position: relative;
+  z-index: 10;
+}
+
+.slider img {
+  width: auto;
+  max-width: 100%;
+  height: auto;
+}
+
+.widget.daily-quote {  
+  margin: 0;
   padding: 30px 15px;
-  /*box-shadow: 0 3px 12px rgba(0,0,0,.22), 0 0px 22px rgba(0,0,0,.16);*/
+  color: #fff;
   z-index: 1;
+  text-align: center;
+  font-size: 1.2em;
+  font-weight: 300;
 }
 
 .widget.list-col-3 {
@@ -157,7 +201,7 @@ body {
     background-color: $akcent-background-color;
     min-height: 450px;
     overflow: hidden;
-    padding: 0 15px;
+    padding: 15px;
     border-bottom: 3px solid $font-akcent-color;
 
     h2 {

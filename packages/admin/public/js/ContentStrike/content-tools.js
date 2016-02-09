@@ -7958,6 +7958,7 @@
         this._contentContainer = this.constructor.createDiv([
           'ct-content-container'
         ]);
+        this._contentContainer.dir = "auto";
         this._contentContainer.innerHTML = html;
 
         this._editorContainer.appendChild(this._contentContainer);
@@ -9864,9 +9865,9 @@
 
     var addContentFieldBar = function (element, initValue) {
       var container = document.createElement("span"),
-        input = document.createElement("input"),
-        removeButton = document.createElement("div"),
-        title = document.createElement("p");
+              input = document.createElement("input"),
+              removeButton = document.createElement("div"),
+              title = document.createElement("p");
 
       container.className = "ew-content-field__bar";
       container.setAttribute("contenteditable", false);
@@ -9919,7 +9920,7 @@
       app._contentContainer.appendChild(container);
 
       var parentRect = app._contentContainer.getBoundingClientRect(),
-        rect = element._domElement.getBoundingClientRect();
+              rect = element._domElement.getBoundingClientRect();
 
       container.style.top = rect.top - parentRect.top + "px";
       container.style.left = rect.left - parentRect.left + "px";
@@ -10003,44 +10004,26 @@
     };
 
     EWMedia.apply = function (element, selection, callback) {
-      var app, forceAdd, paragraph, region;
+      var app, forceAdd, paragraph, region, _this = this;
       app = ContentTools.EditorApp.get();
       var imageChooserDialog = EW.createModal({
         autoOpen: false,
         class: "center"
       });
-      imageChooserDialog.append("<div class='form-content no-footer'></div>");
+      imageChooserDialog.append("<div class='form-content grid tabs-bar no-footer'></div>");
       $.post("~admin/html/content-management/link-chooser-media.php", {
         callback: ""
-      },
-      function (data) {
+      }, function (data) {
         imageChooserDialog.find(".form-content:first").append(data);
-        imageChooserDialog.prepend("<div class='header-pane row'><h1 class='form-title'>Media</h1></div>");
-        var bSelectPhoto = EW.addAction("Select Photo", function () {
-          EW.setHashParameter("select-photo", true, "media");
-        }, {
-          display: "none"
-        }).addClass("btn-success");
-        // create handler to track selected
-        var EWhandler = function () {
-          var url = EW.getHashParameter("absUrl", "media");
-          if (url) {
-            bSelectPhoto.comeIn(300);
-          } else {
-            bSelectPhoto.comeOut(200);
-          }
-
-          if (EW.getHashParameter("select-photo", "media")) {
-            EW.setHashParameter("select-photo", null, "media");
-            imageChooserDialog.dispose();
-            //if (EW.getHashParameter("url", "Media"))
-            /*$element.val(EW.getHashParameter("absUrl", "media")).change();
-            $element.attr("data-filename", EW.getHashParameter("filename", "media"));
-            $element.attr("data-file-extension", EW.getHashParameter("fileExtension", "media"));
-            $element.attr("data-url", EW.getHashParameter("url", "media"));*/
-          }
+        imageChooserDialog.prepend("<div class='header-pane tabs-bar row'><h1 class='form-title'>Media</h1></div>");
+        var ref = _this._insertAt(element), node = ref[0], index = ref[1];
+        imageChooserDialog[0].selectMedia = function (image) {
+          var image = new ContentEdit.Image(image);
+          node.parent().attach(image, index);
+          image.focus();
+          imageChooserDialog.dispose();
         };
-        EW.addURLHandler(EWhandler, "media.ImageChooser");
+
       });
 
       imageChooserDialog.open();
@@ -10215,7 +10198,7 @@
       var containerRect = app._editorContainer.getBoundingClientRect();
       var dialogRect = dialog._domElement.getBoundingClientRect();
       var x = (rect.left + (rect.width / 2)) - containerRect.left - (dialogRect.width / 2),
-        y = rect.top - containerRect.top;
+              y = rect.top - containerRect.top;
       dialog.position([
         x > 0 ? x : 0,
         y > 0 ? y : 0

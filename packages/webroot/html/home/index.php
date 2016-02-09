@@ -60,6 +60,7 @@ $HTML_TITLE = (webroot\WidgetsManagement::get_html_title()) ? webroot\WidgetsMan
 $HTML_KEYWORDS = webroot\WidgetsManagement::get_html_keywords();
 $HTML_SCRIPTS = webroot\WidgetsManagement::get_html_scripts();
 $HTML_LINKS = webroot\WidgetsManagement::get_html_links();
+
 ?>
 <!DOCTYPE html> 
 <html>
@@ -95,7 +96,7 @@ $HTML_LINKS = webroot\WidgetsManagement::get_html_links();
       <?= $TEMPLATE_SCRIPT; ?>      
 
    </head>
-   <body class="">
+   <body class="<?= EWCore::get_language_dir($_REQUEST["_language"])?>">
       <div id="base-content-pane" class="container">
          <?= $HTML_BODY; ?>
       </div>

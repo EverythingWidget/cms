@@ -20,6 +20,7 @@
 <system-float-menu id='media-chooser-main-actions' class="ew-float-menu" position="se">  
 </system-float-menu>
 
+
 <script>
   var LinkChooserDomain = new System.Domain();
   LinkChooserDomain.init([
@@ -127,8 +128,15 @@
           component.currentItem.removeClass("selected");
           $("div[data-item-id='" + component.selectedItemId + "']").focus();
         } else {
+          component.selectMediaAction.comeOut();
           //_this.seeAction.comeOut();
         }
+      });
+
+      this.module.on("image", function (imageId) {
+        console.log(imageId)
+        if (component.parentId && parseInt(imageId) !== component.parentId)
+          component.selectMediaAction.comeIn();
       });
 
       System.UI.components.document.off("media-list");
@@ -144,6 +152,16 @@
       this.currentItem = $();
       this.bDel = $();
       this.listInited = false;
+      this.mediaChooserDialog = EW.getParentDialog($("#media-chooser-main-actions"));
+
+      this.selectMediaAction = EW.addActionButton({
+        text: "",
+        handler: function () {
+          _this.selectMedia(_this.selectedImage);
+        },
+        class: "btn-float btn-success icon-ok pos-se",
+        parent: this.mediaChooserDialog
+      }).hide();
 
       this.albumPropertiesBtn = EW.addActionButton({
         text: "tr{Properties}",
@@ -182,6 +200,22 @@
 
 
       _this.module.setParamIfNone("album", "0/images");
+    };
+
+    MediaComponent.prototype.selectMedia = function (image) {
+      var _this = this;
+      var img = new Image();
+      img.onerror = function (e) {
+        alert('Image is invalid');
+      };
+
+      img.onload = function () {
+        _this.selectedImage.width = img.width;
+        _this.selectedImage.height = img.height;
+        _this.mediaChooserDialog[0].selectMedia(_this.selectedImage);
+      };
+
+      img.src = image.src;
     };
 
     MediaComponent.prototype.seeItemDetails = function () {
@@ -241,7 +275,7 @@
           if (component.parentId === 0) {
             temp = component.createAlbumElement(element.title, element.type, element.ext, element.size, element.thumbURL, element.id);
           } else {
-            temp = component.createImageElement(element.title, element.type, element.ext, element.size, element.thumbURL, element.id);
+            temp = component.createImageElement(element);
           }
           if (element.type === "album") {
             temp.on('keydown', function (e) {
@@ -254,29 +288,22 @@
               component.module.setParam("album", element.id + "/images");
             });
 
-            temp.on("focus", function (e) {
+            temp.on("click", function (e) {
               component.module.setParam("select", element.id);
             });
             component.itemsList.append(temp);
           } else {
-            /*temp.attr("data-url", element.url);
-             temp.dblclick(function () {
-             EW.setHashParameter("cmd", "preview", "media");
-             });
-             
-             temp.on("focus", function () {
-             EW.setHashParameter("itemId", element.id, "media");
-             EW.setHashParameter("url", element.url, "media");
-             EW.setHashParameter("filename", element.filename, "media");
-             EW.setHashParameter("fileExtension", element.fileExtension, "media");
-             EW.setHashParameter("absUrl", element.absUrl, "media");
-             EW.setHashParameters({
-             albumId: null,
-             "imageId": element.id
-             },
-             "media");
-             
-             });*/
+
+            temp.on("click", function (e) {
+              component.selectedImage = {
+                src: element.absURL
+              };
+              component.module.setParam("image", element.id);
+            });
+
+            temp.on("dblclick", function (e) {
+              component.selectMedia(component.selectedImage);
+            });
 
             component.itemsList.append(temp);
           }
@@ -294,7 +321,7 @@
       }, "json"));
     };
 
-    MediaComponent.prototype.createImageElement = function (title, type, ext, size, ImageURL, id) {
+    MediaComponent.prototype.createImageElement = function (image) {
       var _this = this,
               column = $(document.createElement("div")),
               div = $(document.createElement("div")),
@@ -302,8 +329,8 @@
 
       column.addClass("col-lg-3 col-md-4 col-xs-6");
       div.addClass("content-item z-index-0")
-              .addClass(type)
-              .addClass(ext);
+              .addClass(image.type)
+              .addClass(image.ext);
       div.attr("tabindex", "1");
       div.on("focus click", function () {
         _this.currentItem.removeClass("selected");
@@ -311,20 +338,20 @@
         _this.currentItem = div;
       });
 
-      if (ImageURL) {
-        img.attr("src", ImageURL);
+      if (image.thumbURL) {
+        img.attr("src", image.thumbURL);
         div.append(img);
       } else {
         div.append("<span></span>");
       }
 
-      div.append("<p>" + title + "</p>");
+      div.append("<p>" + image.title + "</p>");
 
-      if (size) {
-        div.append("<p class='date'>" + size + " KB</p>");
+      if (image.size) {
+        div.append("<p class='date'>" + image.size + " KB</p>");
       }
 
-      div.attr("data-item-id", id);
+      div.attr("data-item-id", image.id);
       column.append(div);
       return column;
     };
