@@ -18,7 +18,6 @@ ob_end_clean();
 if (ob_get_level())
    ob_end_clean();
 
-
 $_file = null;
 error_reporting(E_WARNING | E_ERROR);
 /* $api_call = urldecode($_SERVER['REQUEST_URI']);
