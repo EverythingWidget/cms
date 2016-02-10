@@ -40,7 +40,8 @@ PHP 5.5 and above
 MySQL 5.6.26
 
 # Have a question or you wanna help
-Email me: eeliya.rasta@gmail.com
+
+Join to [EW CMS Slack](https://ewcms.slack.com/ EW CMS Slack) 
 
 Any help is more than welcome. 
 
