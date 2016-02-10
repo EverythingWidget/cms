@@ -1,6 +1,7 @@
 # EverythingWidget
 
 [![Join the chat at https://gitter.im/Eeliya/EverythingWidget](https://badges.gitter.im/Eeliya/EverythingWidget.svg)](https://gitter.im/Eeliya/EverythingWidget?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 A content management system for developers
 
 EW helps you to build your website faster. It does not limit developer.
