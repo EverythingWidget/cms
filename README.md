@@ -39,5 +39,12 @@ For more information head to : www.ewcms.org
 PHP 5.5 and above
 MySQL 5.6.26
 
-# Have a question
+# Have a question or you wanna help
 Email me: eeliya.rasta@gmail.com
+
+Any help is more than welcome. 
+
+# You can contribute by
+ - Finding bugs and reporting them.
+ - Suggesting new and useful features.
+ - Helping to create tutorials for end users.
