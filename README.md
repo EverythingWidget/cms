@@ -38,3 +38,6 @@ For more information head to : www.ewcms.org
 # Requirments 
 PHP 5.5 and above
 MySQL 5.6.26
+
+# Have a question
+Email me: eeliya.rasta@gmail.com
