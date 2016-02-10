@@ -7,8 +7,7 @@
  *
  * @author Eeliya
  */
-class EWCore
-{
+class EWCore {
 
   private $apps_root;
   private $request;
@@ -24,8 +23,7 @@ class EWCore
   public static $EW_CONTENT_COMPONENT = "ew-content-component";
   public static $EW_APP = "ew-app";
 
-  public function __construct()
-  {
+  public function __construct() {
     static::$languages = include('config/languages.php');
     $this->apps_root = EW_PACKAGES_DIR . '/';
     $this->request = $_REQUEST;
@@ -39,8 +37,7 @@ class EWCore
     self::$loaders_installed = true;
     self::init_sections_plugins();
 
-    if ($database_config["database_library"] == TRUE)
-    {
+    if ($database_config["database_library"] == TRUE) {
       static::$DB = new Illuminate\Database\Capsule\Manager;
       static::$DB->addConnection([
           'driver' => 'mysql',
@@ -57,32 +54,26 @@ class EWCore
     }
   }
 
-  public function load_modules()
-  {
+  public function load_modules() {
     require 'modules/autoload.php';
   }
 
-  public function process($parameters = null)
-  {
+  public function process($parameters = null) {
     $db = \EWCore::get_db_connection();
     // If parameters is null set the request as parameters
-    if (!$parameters)
-    {
+    if (!$parameters) {
       $parameters = $_REQUEST;
     }
 
-    if ($parameters['_method_name'] && method_exists($this, $parameters['_method_name']))
-    {
+    if ($parameters['_method_name'] && method_exists($this, $parameters['_method_name'])) {
       //echo call_user_func(array($this, $this->request['_function_name']));
       $method_object = new ReflectionMethod($this, $parameters['_method_name']);
       $params = $method_object->getParameters();
       $functions_arguments = array();
       $this->current_method_args = array();
-      foreach ($params as $param)
-      {
+      foreach ($params as $param) {
         $temp = null;
-        if (is_array($parameters[$param->getName()]))
-        {
+        if (is_array($parameters[$param->getName()])) {
           //var_dump($parameters[$param->getName()]);
           $temp = array_map(function($val) use ($db) {
 
@@ -91,8 +82,7 @@ class EWCore
 
           //$temp = $parameters[$param->getName()];
         }
-        else
-        {
+        else {
           $temp = $db->real_escape_string($parameters[$param->getName()]);
         }
         $functions_arguments[] = $temp;
@@ -104,14 +94,12 @@ class EWCore
       return ob_get_clean();
       $this->current_method_args = array();
     }
-    else
-    {
+    else {
       echo "No such command existed: " . $parameters['_method_name'];
     }
   }
 
-  public static function call($url, $parameters = [])
-  {
+  public static function call($url, $parameters = []) {
     $parts = explode('/', $url);
     $pars = array_merge($_REQUEST, [
         '_file' => implode('/', array_slice($parts, 3))
@@ -120,8 +108,7 @@ class EWCore
     return static::process_request_command($parts[0], $parts[1], $parts[2], $parts[3], $pars);
   }
 
-  public static function call_api($url, $parameters = [])
-  {
+  public static function call_api($url, $parameters = []) {
     $parts = explode('/', $url);
     $pars = array_merge($_REQUEST, [
         '_file' => implode('/', array_slice($parts, 3))
@@ -132,10 +119,8 @@ class EWCore
     return static::process_request_command($parts[0], $parts[1], $parts[2], $parts[3], $pars);
   }
 
-  public static function process_request_command($package, $resource_type, $section_name, $function_name, $parameters)
-  {
-    if (!$package /* || !$section_name || !$function_name */)
-    {
+  public static function process_request_command($package, $resource_type, $section_name, $function_name, $parameters) {
+    if (!$package /* || !$section_name || !$function_name */) {
       $RESULT_CONTENT = EWCore::log_error(400, "Wrong command");
       return $RESULT_CONTENT;
     }
@@ -157,45 +142,37 @@ class EWCore
       $function_name = "index";
       $parameters['_function_name'] = $function_name;
       } */
-    if ($section_name == "EWCore")
-    {
+    if ($section_name == "EWCore") {
       $EW = new \EWCore();
       $RESULT_CONTENT = $EW->process($parameters);
     }
-    else
-    {
+    else {
       $class_exist = false;
       //var_dump(class_exists($app_name.'\\'.  ucfirst($app_name)));
-      if (class_exists($real_class_name))
-      {
+      if (class_exists($real_class_name)) {
         // Create an instance of section with its parent App
         $app_object = new $real_class_name;
         $class_exist = true;
         $RESULT_CONTENT = $app_object->process_command($package, $resource_type, $section_name, $function_name, $parameters);
       }
-      else
-      {
+      else {
         return \EWCore::log_error(404, "<h4>App not found</h4><p>Requested app `$package`, not found</p>");
       }
     }
     return $RESULT_CONTENT;
   }
 
-  public static function create_arguments($method, $parameters)
-  {
+  public static function create_arguments($method, $parameters) {
     $arguments = $method->getParameters();
     $method_arguments = array();
-    foreach ($arguments as $arg)
-    {
+    foreach ($arguments as $arg) {
       $temp = null;
-      if ($arg->getName() === "_data" || $arg->getName() === "_input")
-      {
+      if ($arg->getName() === "_data" || $arg->getName() === "_input") {
         $method_arguments[] = $parameters;
         continue;
       }
 
-      if (isset($parameters[$arg->getName()]))
-      {
+      if (isset($parameters[$arg->getName()])) {
         $temp = $parameters[$arg->getName()];
       }
       $method_arguments[] = $temp;
@@ -207,11 +184,9 @@ class EWCore
    * Function to import SQL for a given $file
    */
 
-  public static function import_sql($file, $database_name = "", $delimiter = ';')
-  {
+  public static function import_sql($file, $database_name = "", $delimiter = ';') {
     $database_config = include('config/database_config.php');
-    if (!$database_config['database'])
-    {
+    if (!$database_config['database']) {
       die("Please configure the core/config/database_config.php");
     }
     // default database connection
@@ -226,18 +201,14 @@ class EWCore
     $sql = "USE {$database_config['database']};";
     $db->query($sql);
     $db->commit();
-    foreach ($lines as $line)
-    {
-      if (substr($line, 0, 2) == '--' || $line == '')//This IF Remove Comment Inside SQL FILE
-      {
+    foreach ($lines as $line) {
+      if (substr($line, 0, 2) == '--' || $line == '') {//This IF Remove Comment Inside SQL FILE
         continue;
       }
       $op_data .= $line;
-      if (substr(trim($line), -1, 1) == ';')//Breack Line Upto ';' NEW QUERY
-      {
+      if (substr(trim($line), -1, 1) == ';') {//Breack Line Upto ';' NEW QUERY
         $db->multi_query($op_data);
-        if (!$db->commit())
-        {
+        if (!$db->commit()) {
           $db->rollback();
           return false;
         }
@@ -251,8 +222,7 @@ class EWCore
     return true;
   }
 
-  public static function set_db_connection($db_con)
-  {
+  public static function set_db_connection($db_con) {
     self::$db_connection = $db_con;
   }
 
@@ -262,8 +232,7 @@ class EWCore
    * If you need new connection object use global function <code>get_db_connection</code>
    * @return mysqli
    */
-  public static function get_db_connection()
-  {
+  public static function get_db_connection() {
     $database_config = include('config/database_config.php');
     // default database connection
     mysqli_report(MYSQLI_REPORT_STRICT);
@@ -271,16 +240,14 @@ class EWCore
     $db = new mysqli($database_config['host'], $database_config['username'], $database_config['password']);
     $result = $db->query("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '{$database_config['database']}'");
 
-    if ($result->num_rows !== 1)
-    {
+    if ($result->num_rows !== 1) {
       include "/install/index.php";
       die();
     }
 
     $db = new mysqli($database_config['host'], $database_config['username'], $database_config['password'], $database_config['database']);
     //var_dump($db->connect_errno);
-    if ($db->connect_errno)
-    {
+    if ($db->connect_errno) {
       return static::log_error(500, "Failed to connect to MySQL: () ");
     }
     $db->set_charset("utf8");
@@ -289,32 +256,44 @@ class EWCore
     return self::$db_connection;
   }
 
-  protected function get_current_method_args()
-  {
+  public static function get_db_PDO() {
+    $database_config = include('config/database_config.php');
+    // default database connection
+    $dsn = 'mysql:dbname=' . $database_config['database'] . ';host=' . $database_config['host'].';charset=utf8';
+    $user = $database_config['username'];
+    $password = $database_config['password'];
+    
+    try {
+    $pdo = new \PDO($dsn, $user, $password);
+    }
+    catch (Exception $e){
+      print_r($e);
+      die();
+    }
+    return $pdo;
+  }
+
+  protected function get_current_method_args() {
     return $this->current_method_args;
   }
 
-  public function get_page_content($page)
-  {
+  public function get_page_content($page) {
     ob_start();
     include $page;
     return ob_get_clean();
   }
 
-  public static function get_action_registry()
-  {
+  public static function get_action_registry() {
     self::init_sections_plugins();
     return self::$action_registry;
   }
 
-  public static function get_users_premissions()
-  {
+  public static function get_users_premissions() {
 
     return $_SESSION["EW.USERS_PREMISSION"];
   }
 
-  public static function get_apps($type = "app")
-  {
+  public static function get_apps($type = "app") {
     $path = EW_PACKAGES_DIR . '/';
 
     $apps_dirs = opendir($path);
@@ -340,8 +319,7 @@ class EWCore
       }
       }
       } */
-    while ($app_dir = readdir($apps_dirs))
-    {
+    while ($app_dir = readdir($apps_dirs)) {
       if (strpos($app_dir, '.') === 0)
         continue;
 
@@ -350,25 +328,21 @@ class EWCore
 
       $app_dir_content = opendir($path . $app_dir);
 
-      while ($file = readdir($app_dir_content))
-      {
+      while ($file = readdir($app_dir_content)) {
 
         if (strpos($file, '.') === 0)
           continue;
         //$i = strpos($file, '.ini');
 
-        if (strpos($file, ".app.php") != 0)
-        {
+        if (strpos($file, ".app.php") != 0) {
           require_once EW_PACKAGES_DIR . "/" . $app_dir . "/" . $file;
           $app_class_name = $app_dir . "\\" . substr($file, 0, strpos($file, "."));
           //echo EW_PACKAGES_DIR . "/" . $app_dir . "/" . $file;
           $app_object = new $app_class_name();
-          if ($type == "all")
-          {
+          if ($type == "all") {
             $apps[] = $app_object->get_app_details();
           }
-          else if ($app_object->get_type() == $type)
-          {
+          else if ($app_object->get_type() == $type) {
             $apps[] = $app_object->get_app_details();
           }
         }
@@ -382,21 +356,18 @@ class EWCore
    * @param type $appDir
    * @return \Module
    */
-  public static function get_app_instance($appDir)
-  {
+  public static function get_app_instance($appDir) {
     $path = EW_PACKAGES_DIR . "/$appDir";
 
     $app_dir_content = opendir($path);
 
-    while ($file = readdir($app_dir_content))
-    {
+    while ($file = readdir($app_dir_content)) {
 
       if (strpos($file, '.') === 0)
         continue;
       //$i = strpos($file, '.ini');
 
-      if (strpos($file, ".app.php") != 0)
-      {
+      if (strpos($file, ".app.php") != 0) {
         require_once EW_PACKAGES_DIR . "/" . $appDir . "/" . $file;
         $app_class_name = $appDir . "\\" . substr($file, 0, strpos($file, "."));
         //echo EW_PACKAGES_DIR . "/" . $app_dir . "/" . $file;
@@ -405,29 +376,24 @@ class EWCore
     }
   }
 
-  private function save_setting($key = null, $value = null)
-  {
+  private function save_setting($key = null, $value = null) {
     $db = \EWCore::get_db_connection();
 
     $setting = $db->query("SELECT * FROM ew_settings WHERE `key` = '$key' ") or die($db->error);
-    if ($user_info = $setting->fetch_assoc())
-    {
+    if ($user_info = $setting->fetch_assoc()) {
       $db->query("UPDATE ew_settings SET value = '$value' WHERE `key` = '$key' ") or die($db->error);
       return TRUE;
     }
-    else
-    {
+    else {
       $db->query("INSERT INTO ew_settings(`key`, `value`) VALUES('$key','$value')") or die($db->error);
       return TRUE;
     }
     return FALSE;
   }
 
-  public function save_settings($params)
-  {
+  public function save_settings($params) {
     $params = json_decode(stripslashes($params), TRUE);
-    foreach ($params as $key => $value)
-    {
+    foreach ($params as $key => $value) {
       if (!$this->save_setting("ew/" . $key, $value))
         return json_encode([
             status => "error",
@@ -441,16 +407,14 @@ class EWCore
     ]);
   }
 
-  public static function read_settings($app)
-  {
+  public static function read_settings($app) {
     $db = \EWCore::get_db_connection();
     if ($app)
       $app .='/%';
 
     $setting = $db->query("SELECT * FROM ew_settings WHERE `key` LIKE '$app'") or die($db->error);
     $rows = array();
-    while ($r = $setting->fetch_assoc())
-    {
+    while ($r = $setting->fetch_assoc()) {
       // Remove the 'app/' part from the key
       $key = substr($r["key"], strlen($app) - 1);
       $rows[$key] = $r["value"];
@@ -459,15 +423,13 @@ class EWCore
     return json_encode($rows);
   }
 
-  public static function read_setting($key)
-  {
+  public static function read_setting($key) {
     $db = \EWCore::get_db_connection();
     if (!$key)
       $key = $db->real_escape_string($_REQUEST["key"]);
     $setting = $db->query("SELECT * FROM ew_settings WHERE `key` = '$key'") or die($db->error);
 
-    while ($r = $setting->fetch_assoc())
-    {
+    while ($r = $setting->fetch_assoc()) {
       return $r["value"];
     }
 
@@ -477,92 +439,78 @@ class EWCore
 
   private static $existed_classes = array();
 
-  public static function init_sections_plugins()
-  {
-    if (!self::$loaders_installed)
-    {
+  public static function init_sections_plugins() {
+    if (!self::$loaders_installed) {
       spl_autoload_register([
           self,
           'autoload_core']);
       self::$loaders_installed = true;
     }
 
-    if (self::$plugins_initialized)
-    {
+    if (self::$plugins_initialized) {
       return;
     }
 
     $apps_dirs = opendir(EW_PACKAGES_DIR);
     $apps = array();
-    while ($app_dir = readdir($apps_dirs))
-    {
+    while ($app_dir = readdir($apps_dirs)) {
       if (strpos($app_dir, '.') === 0)
         continue;
 
-      if (is_dir($app_dir))
-      {
+      if (is_dir($app_dir)) {
         $app_dir_content = opendir($app_dir);
 
         //echo EW_PACKAGES_DIR . '/' . $app_dir . "\\App" . "<br/>";
         if (!file_exists(EW_PACKAGES_DIR . "/" . $app_dir . "/App.app.php"))
           continue;
-        try
-        {
+        try {
           require_once EW_PACKAGES_DIR . "/" . $app_dir . "/App.app.php";
           $app_class_name = $app_dir . "\\App";
 
           $apps[] = new $app_class_name();
         }
-        catch (Exception $ex)
-        {
+        catch (Exception $ex) {
           echo $ex->getTraceAsString();
         }
       }
     }
 
-    for ($in = 0, $len = count($apps); $in < $len; $in++)
-    {
+    for ($in = 0, $len = count($apps); $in < $len; $in++) {
       $apps[$in]->init_app();
     }
     // Optimization tip
     self::$plugins_initialized = true;
   }
 
-  public static function is_url_exist($url)
-  {
+  public static function is_url_exist($url) {
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_NOBODY, true);
     curl_exec($ch);
     $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
-    if ($code == 200)
-    {
+    if ($code == 200) {
       $status = true;
     }
-    else
-    {
+    else {
       $status = false;
     }
     curl_close($ch);
     return $status;
   }
 
-  public static function set_parameter()
-  {
+  public static function set_parameter() {
     
   }
 
   //public function get_category   
 
-  public function get_page()
-  {
+  public function get_page() {
     $path = EW_PACKAGES_DIR . '/' . $this->request["_app_name"] . '/sections/' . $this->request["page"];
     //echo $path;
     include_once $path;
   }
 
-  public function get_page_from_url($app_name, $section_name, $page_name)
-  {
+  public function get_page_from_url($app_name, $section_name, $page_name) {
     // Search in the app's root's directory
     $path = EW_PACKAGES_DIR . '/' . $app_name . '/' . $section_name . '/' . $page_name;
     if (!file_exists($path))
@@ -571,32 +519,26 @@ class EWCore
     include_once $path;
   }
 
-  private static function autoload_core($class_name)
-  {
-    if (strpos($class_name, '\\'))
-    {
+  private static function autoload_core($class_name) {
+    if (strpos($class_name, '\\')) {
       $class_name = end(explode('\\', $class_name));
     }
     $file = EW_ROOT_DIR . 'core/' . $class_name . '.class.php';
     //echo $file."<br>";
-    if (file_exists($file))
-    {
+    if (file_exists($file)) {
       require_once $file;
     }
   }
 
-  public static function my_str_split($string)
-  {
+  public static function my_str_split($string) {
     $slen = strlen($string);
-    for ($i = 0; $i < $slen; $i++)
-    {
+    for ($i = 0; $i < $slen; $i++) {
       $sArray[$i] = $string{$i};
     }
     return $sArray;
   }
 
-  public static function no_diacritics($string)
-  {
+  public static function no_diacritics($string) {
     //cyrylic transcription
     $cyrylicFrom = array(
         'А',
@@ -1087,18 +1029,15 @@ class EWCore
     return $newstring;
   }
 
-  public static function remove_duplicates($sSearch, $sReplace, $sSubject)
-  {
+  public static function remove_duplicates($sSearch, $sReplace, $sSubject) {
     $i = 0;
-    do
-    {
+    do {
 
       $sSubject = str_replace($sSearch, $sReplace, $sSubject);
       $pos = strpos($sSubject, $sSearch);
 
       $i++;
-      if ($i > 100)
-      {
+      if ($i > 100) {
         die('removeDuplicates() loop error');
       }
     }
@@ -1107,16 +1046,13 @@ class EWCore
     return $sSubject;
   }
 
-  public static function make_slugs($string, $maxlen = 0)
-  {
+  public static function make_slugs($string, $maxlen = 0) {
     $newStringTab = array();
     $string = strtolower(self::no_diacritics($string));
-    if (function_exists('str_split'))
-    {
+    if (function_exists('str_split')) {
       $stringTab = str_split($string);
     }
-    else
-    {
+    else {
       $stringTab = self::my_str_split($string);
     }
 
@@ -1134,39 +1070,32 @@ class EWCore
         "-");
     //$numbers=array("0","1","2","3","4","5","6","7","8","9");
 
-    foreach ($stringTab as $letter)
-    {
-      if (in_array($letter, range("a", "z")) || in_array($letter, $numbers))
-      {
+    foreach ($stringTab as $letter) {
+      if (in_array($letter, range("a", "z")) || in_array($letter, $numbers)) {
         $newStringTab[] = $letter;
         //print($letter);
       }
-      elseif ($letter == " ")
-      {
+      elseif ($letter == " ") {
         $newStringTab[] = "-";
       }
     }
 
-    if (count($newStringTab))
-    {
+    if (count($newStringTab)) {
       $newString = implode($newStringTab);
-      if ($maxlen > 0)
-      {
+      if ($maxlen > 0) {
         $newString = substr($newString, 0, $maxlen);
       }
 
       $newString = self::remove_duplicates('--', '-', $newString);
     }
-    else
-    {
+    else {
       $newString = '';
     }
 
     return $newString;
   }
 
-  public static function to_slug($title, $table_name, $field_name = "slug")
-  {
+  public static function to_slug($title, $table_name, $field_name = "slug") {
     $db = \EWCore::get_db_connection();
     $slug = self::make_slugs($title);
     //echo $slug;
@@ -1178,22 +1107,18 @@ class EWCore
     return ($numHits > 0) ? ($slug . '-' . $numHits) : $slug;
   }
 
-  public static function register_form($name, $id, $conf)
-  {
+  public static function register_form($name, $id, $conf) {
     EWCore::register_object($name, $id, $conf);
   }
 
-  public static function register_permission($app_pack_name, $module_name, $id, $app_title, $section_title, $description, $permissions = array())
-  {
+  public static function register_permission($app_pack_name, $module_name, $id, $app_title, $section_title, $description, $permissions = array()) {
     $permission_group = "$app_pack_name.$module_name";
-    if (!array_key_exists($app_pack_name, self::$permissions_groups))
-    {
+    if (!array_key_exists($app_pack_name, self::$permissions_groups)) {
       self::$permissions_groups[$app_pack_name] = array(
           "appTitle" => $app_title,
           "section" => array());
     }
-    if (!array_key_exists($module_name, self::$permissions_groups[$app_pack_name]["section"]))
-    {
+    if (!array_key_exists($module_name, self::$permissions_groups[$app_pack_name]["section"])) {
       self::$permissions_groups[$app_pack_name]["section"][$module_name] = array(
           "sectionTitle" => $section_title,
           "permission" => array());
@@ -1202,8 +1127,7 @@ class EWCore
     $permission_info = array(
         "description" => $description,
         "methods" => array());
-    if (!array_key_exists($id, self::$permissions_groups[$app_pack_name]["section"][$module_name]["permission"]))
-    {
+    if (!array_key_exists($id, self::$permissions_groups[$app_pack_name]["section"][$module_name]["permission"])) {
       self::$permissions_groups[$app_pack_name]["section"][$module_name]["permission"][$id] = $permission_info;
     }
 
@@ -1214,43 +1138,33 @@ class EWCore
     self::$permissions_groups[$app_pack_name]["section"][$module_name]["permission"][$id] = $permission_info;
   }
 
-  public static function register_category($id, $categories = array())
-  {
+  public static function register_category($id, $categories = array()) {
     EWCore::register_object("ew-category", $id, $categories);
   }
 
-  public static function register_resource($id, $function)
-  {
+  public static function register_resource($id, $function) {
     EWCore::register_object("ew-resource", $id, $function);
   }
 
-  public static function read_activities()
-  {
+  public static function read_activities() {
     EWCore::init_sections_plugins();
     $pers = self::$permissions_groups;
     $allowed_activities = array();
 
-    foreach ($pers as $app_name => $sections)
-    {
-      foreach ($sections["section"] as $section_name => $sections_permissions)
-      {
-        foreach ($sections_permissions["permission"] as $permission_name => $permission_info)
-        {
-          if (admin\UsersManagement::group_has_permission($app_name, $section_name, [$permission_name], $_SESSION['EW.USER_GROUP_ID']))
-          {
-            foreach ($permission_info["methods"] as $method)
-            {
+    foreach ($pers as $app_name => $sections) {
+      foreach ($sections["section"] as $section_name => $sections_permissions) {
+        foreach ($sections_permissions["permission"] as $permission_name => $permission_info) {
+          if (admin\UsersManagement::group_has_permission($app_name, $section_name, [$permission_name], $_SESSION['EW.USER_GROUP_ID'])) {
+            foreach ($permission_info["methods"] as $method) {
               $parts = explode('/', $method, 2);
-              if (count($parts) < 2)
-              {
+              if (count($parts) < 2) {
                 //throw new Exception("Activity name is wrong");
                 return EWCore::log_error('500', 'Wrong actovity name', ["$app_name | $section_name | $method_name"]);
               }
               $resource_name = $parts[0];
               $method_name = $parts[1];
               $title = $method_name;
-              if (strpos($method, ':'))
-              {
+              if (strpos($method, ':')) {
                 $temp = explode(':', $method_name, 2);
                 $method = $temp[0];
                 $title = $temp[1];
@@ -1282,34 +1196,28 @@ class EWCore
    * @param type $id id of current item
    * @param type $object
    */
-  public static function register_object($registry_id, $id, $object = array())
-  {
-    if (!array_key_exists($registry_id, self::$registry))
-    {
+  public static function register_object($registry_id, $id, $object = array()) {
+    if (!array_key_exists($registry_id, self::$registry)) {
       self::$registry[$registry_id] = array();
     }
 
     self::$registry[$registry_id][$id] = $object;
   }
 
-  public static function deregister($name, $id = null)
-  {
-    if (!$id)
-    {
+  public static function deregister($name, $id = null) {
+    if (!$id) {
       unset(self::$registry[$name]);
     }
     else
       unset(self::$registry[$name][$id]);
   }
 
-  public static function read_registry($name)
-  {
+  public static function read_registry($name) {
     EWCore::init_sections_plugins();
     return isset(self::$registry[$name]) ? self::$registry[$name] : [];
   }
 
-  public static function get_registry($_parts)
-  {
+  public static function get_registry($_parts) {
     return json_encode(static::read_registry($_parts[0]));
   }
 
@@ -1317,33 +1225,27 @@ class EWCore
    * Returns the list of registred categories.
    * 
    */
-  public static function read_category_registry()
-  {
+  public static function read_category_registry() {
     EWCore::init_sections_plugins();
     return self::$registry["ew-category"];
   }
 
-  public static function read_permissions()
-  {
+  public static function read_permissions() {
     EWCore::init_sections_plugins();
     return json_encode(self::$permissions_groups);
   }
 
-  public static function read_permissions_titles()
-  {
+  public static function read_permissions_titles() {
     EWCore::init_sections_plugins();
     $pers = self::$permissions_groups;
     $permissions_titles = array();
-    foreach ($pers as $app_name => $sections)
-    {
+    foreach ($pers as $app_name => $sections) {
       $permissions_titles[$app_name] = [
           "appTitle" => $sections["appTitle"]
       ];
-      foreach ($sections["section"] as $section_name => $sections_permissions)
-      {
+      foreach ($sections["section"] as $section_name => $sections_permissions) {
         $permissions_titles[$app_name]["section"][$section_name] = ["sectionTitle" => $sections_permissions["sectionTitle"]];
-        foreach ($sections_permissions["permission"] as $permission_name => $permission_info)
-        {
+        foreach ($sections_permissions["permission"] as $permission_name => $permission_info) {
           $permissions_titles[$app_name]["section"][$section_name]["permission"][$permission_name] = [
               "parent" => "$app_name.$section_name",
               "title" => $permission_name,
@@ -1355,16 +1257,13 @@ class EWCore
     return $permissions_titles;
   }
 
-  public static function has_permission($app_name, $class_name)
-  {
+  public static function has_permission($app_name, $class_name) {
     EWCore::init_sections_plugins();
 
     $pers = self::$permissions_groups[$app_name . "." . $class_name];
     //$permissions_titles = array();
-    foreach ($pers as $key => $value)
-    {
-      foreach ($value["methods"] as $method)
-      {
+    foreach ($pers as $key => $value) {
+      foreach ($value["methods"] as $method) {
         if ($method_name === $method)
           return TRUE;
       }
@@ -1379,14 +1278,12 @@ class EWCore
    * @param type $method_name
    * @return mixed <b>FALSE</B> if there is no need for any permission or <b>permissionId</b> if there is need for permission
    */
-  public static function does_need_permission($app_name, $module_name = null, $method_name = null)
-  {
+  public static function does_need_permission($app_name, $module_name = null, $method_name = null) {
     EWCore::init_sections_plugins();
 
     $pers = isset(self::$permissions_groups[$app_name]) ? self::$permissions_groups[$app_name]["section"] : false;
 
-    if ($module_name === null)
-    {
+    if ($module_name === null) {
       return $pers ? true : false;
     }
 
@@ -1396,18 +1293,14 @@ class EWCore
 
     $result = array();
     $flag = false;
-    if (is_array($pers))
-    {
-      foreach ($pers as $key => $value)
-      {
+    if (is_array($pers)) {
+      foreach ($pers as $key => $value) {
 
-        foreach ($value["methods"] as $method)
-        {
+        foreach ($value["methods"] as $method) {
           //echo $method." -> $method_name<br>";
           //if(strpos(':', $method))
           //explode(':', $method);
-          if ($method_name === $method)
-          {
+          if ($method_name === $method) {
             $result[] = $key;
             $flag = true;
             //return $key;
@@ -1416,24 +1309,20 @@ class EWCore
       }
     }
 
-    if ($flag)
-    {
+    if ($flag) {
       return $result;
     }
     return FALSE;
   }
 
-  public static function register_app($id, $object)
-  {
+  public static function register_app($id, $object) {
     return static::register_object(static::$EW_APP, $id, $object);
   }
 
-  public static function read_apps()
-  {
+  public static function read_apps() {
     $apps_list = static::read_registry(static::$EW_APP);
     $apps = [];
-    foreach ($apps_list as $app)
-    {
+    foreach ($apps_list as $app) {
       $apps[] = array(
           "title" => "tr:{$app->get_app()->get_root()}" . "{" . $app->get_title() . "}",
           "package" => '~' . $app->get_app()->get_root(),
@@ -1448,10 +1337,8 @@ class EWCore
     return json_encode($apps);
   }
 
-  public static function register_action($name, $id, $function = null, $object)
-  {
-    if (!is_array(self::$action_registry[$name]))
-    {
+  public static function register_action($name, $id, $function = null, $object) {
+    if (!is_array(self::$action_registry[$name])) {
       self::$action_registry[$name] = array();
     }
 
@@ -1460,20 +1347,17 @@ class EWCore
         "class" => $object);
   }
 
-  public static function deregister_action($name, $id)
-  {
+  public static function deregister_action($name, $id) {
 
     unset(self::$action_registry[$name][$id]);
   }
 
-  public static function read_actions_registry($name)
-  {
+  public static function read_actions_registry($name) {
     EWCore::init_sections_plugins();
     return self::$action_registry[$name];
   }
 
-  public static function get_default_users_group()
-  {
+  public static function get_default_users_group() {
     return admin\UsersManagement::get_users_group_by_type("default");
   }
 
@@ -1482,8 +1366,7 @@ class EWCore
 
     } */
 
-  public static function parse_css($path, $className = "panel")
-  {
+  public static function parse_css($path, $className = "panel") {
     if (isset($_REQUEST["path"]))
       $path = $_REQUEST["path"];
     //Grab contents of css file
@@ -1513,10 +1396,8 @@ class EWCore
 
   //put your code here
 
-  public function save_app_config($assoc_arr, $app_dir, $has_sections = FALSE)
-  {
-    if (!isset($assoc_arr))
-    {
+  public function save_app_config($assoc_arr, $app_dir, $has_sections = FALSE) {
+    if (!isset($assoc_arr)) {
       $assoc_arr = $_REQUEST["params"];
     }
     if (!isset($app_dir))
@@ -1536,22 +1417,16 @@ class EWCore
           message => "App configurations has NOT been saved, Please try again"));
   }
 
-  function write_php_ini($assoc_arr, $path, $has_sections = FALSE)
-  {
+  function write_php_ini($assoc_arr, $path, $has_sections = FALSE) {
     //print_r($assoc_arr);
     $content = "";
 
-    if ($has_sections)
-    {
-      foreach ($assoc_arr as $key => $elem)
-      {
+    if ($has_sections) {
+      foreach ($assoc_arr as $key => $elem) {
         $content .= "[" . $key . "]\n";
-        foreach ($elem as $key2 => $elem2)
-        {
-          if (is_array($elem2))
-          {
-            for ($i = 0; $i < count($elem2); $i++)
-            {
+        foreach ($elem as $key2 => $elem2) {
+          if (is_array($elem2)) {
+            for ($i = 0; $i < count($elem2); $i++) {
               $content .= $key2 . "[] = \"" . $elem2[$i] . "\"\n";
             }
           }
@@ -1562,14 +1437,10 @@ class EWCore
         }
       }
     }
-    else
-    {
-      foreach ($assoc_arr as $key => $elem)
-      {
-        if (is_array($elem))
-        {
-          for ($i = 0; $i < count($elem); $i++)
-          {
+    else {
+      foreach ($assoc_arr as $key => $elem) {
+        if (is_array($elem)) {
+          for ($i = 0; $i < count($elem); $i++) {
             $content .= $key . "[] = \"" . $elem[$i] . "\"\n";
           }
         }
@@ -1580,30 +1451,24 @@ class EWCore
       }
     }
 
-    if (!$handle = fopen($path, 'w'))
-    {
+    if (!$handle = fopen($path, 'w')) {
       return false;
     }
-    if (!fwrite($handle, $content))
-    {
+    if (!fwrite($handle, $content)) {
       return false;
     }
     fclose($handle);
     return true;
   }
 
-  public static function get_comment_parameter($param, $filename)
-  {
-    if (!file_exists($filename))
-    {
+  public static function get_comment_parameter($param, $filename) {
+    if (!file_exists($filename)) {
       return null;
     }
     $source = file_get_contents($filename);
     $tokens = token_get_all($source);
-    foreach ($tokens as $token)
-    {
-      if ($token[0] == T_COMMENT)
-      {
+    foreach ($tokens as $token) {
+      if ($token[0] == T_COMMENT) {
         //$matches[] = $token[1];
         preg_match('/' . $param . ':\s?([^\n\r]*)/', $token[1], $matches);
         return $matches[1];
@@ -1613,8 +1478,7 @@ class EWCore
 
   private static $apps_locales = "admin";
 
-  public static function set_default_locale($app_name)
-  {
+  public static function set_default_locale($app_name) {
     /* if (!array_key_exists($app_name, self::$apps_locales))
       {
       //echo "-$app_name:";
@@ -1624,8 +1488,7 @@ class EWCore
     self::$apps_locales = $app_name;
   }
 
-  public static function get_app_languages($app)
-  {
+  public static function get_app_languages($app) {
     $path = EW_PACKAGES_DIR . "/" . $app . "/locale/";
 //echo $path;
     if (!file_exists($path))
@@ -1633,12 +1496,10 @@ class EWCore
     $locale_dir = opendir($path);
     $languages = array();
 
-    while ($language_file = readdir($locale_dir))
-    {
+    while ($language_file = readdir($locale_dir)) {
       if (strpos($language_file, '.') === 0)
         continue;
-      if (strpos($language_file, ".json"))
-      {
+      if (strpos($language_file, ".json")) {
         $lang_file = json_decode(file_get_contents(EW_PACKAGES_DIR . '/' . $app . '/locale/' . $language_file), true);
         $languages[$language_file] = $lang_file["conf"];
         //echo $lang_file["conf"]["name"];
@@ -1649,23 +1510,19 @@ class EWCore
 
   private static $languages_strings = null;
 
-  public static function translate_to_locale($match, $language)
-  {
+  public static function translate_to_locale($match, $language) {
     //global $app_name;
 
-    if ($language == "en")
-    {
+    if ($language == "en") {
       return $match[2];
     }
     $source_app_name = self::$apps_locales;
     $not_translated = array();
-    if ($match[1])
-    {
+    if ($match[1]) {
       $source_app_name = substr($match[1], 1);
     }
     //echo ("-$source_app_name-");
-    if (!self::$languages_strings && file_exists(EW_PACKAGES_DIR . '/' . $source_app_name . '/locale/' . $language . '.json'))
-    {
+    if (!self::$languages_strings && file_exists(EW_PACKAGES_DIR . '/' . $source_app_name . '/locale/' . $language . '.json')) {
       //$lang_file = parse_ini_file(EW_PACKAGES_DIR . '/' . $app_name . '/locale/' . $language . '.ini', true);
       $lang_file = json_decode(file_get_contents(EW_PACKAGES_DIR . '/' . $source_app_name . '/locale/' . $language . '.json'), true);
 
@@ -1679,8 +1536,7 @@ class EWCore
       $lang_file["strings"] = self::$languages_strings;
       $fp = file_put_contents(EW_PACKAGES_DIR . '/' . $source_app_name . '/locale/' . $language . '.json', json_encode($lang_file, JSON_UNESCAPED_UNICODE));
       }
-      else */if (self::$languages_strings[$match[2]])
-    {
+      else */if (self::$languages_strings[$match[2]]) {
       return self::$languages_strings[$match[2]];
     }
 
@@ -1690,16 +1546,13 @@ class EWCore
   private static $rtl_languages = ["fa",
       "ar"];
 
-  public static function get_language_dir($language)
-  {
+  public static function get_language_dir($language) {
     //echo "----".$language."-----";
     //print_r(static::$rtl_languages);
-    if (array_search($language, static::$rtl_languages) == false)
-    {
+    if (array_search($language, static::$rtl_languages) == false) {
       return "rtl";
     }
-    else
-    {
+    else {
       return "ltr";
     }
   }
@@ -1712,10 +1565,8 @@ class EWCore
    * @param array $reason An array that contains the reason(s) that cause error 
    * @return type
    */
-  public static function log_error($header_code = 400, $message, $reason = NULL, $send_header = TRUE)
-  {
-    if ($send_header)
-    {
+  public static function log_error($header_code = 400, $message, $reason = NULL, $send_header = TRUE) {
+    if ($send_header) {
       http_response_code($header_code);
       header('Content-Type: application/json');
     }
@@ -1736,16 +1587,13 @@ class EWCore
       } */
   }
 
-  public static function process_content_component($action, $id, $content_id, $content_data, $label_data)
-  {
+  public static function process_content_component($action, $id, $content_id, $content_data, $label_data) {
 //      if(class_exists($class_name))
   }
 
-  public static function load_file($path, $form_config = null)
-  {
+  public static function load_file($path, $form_config = null) {
     $full_path = EW_PACKAGES_DIR . '/' . $path;
-    if (!file_exists($path))
-    {
+    if (!file_exists($path)) {
       return \EWCore::log_error(404, "<h4>File not found</h4><p>File `$path`, not found</p>");
     }
     ob_start();
@@ -1753,24 +1601,20 @@ class EWCore
     return ob_get_clean();
   }
 
-  public static function hyphenToCamel($val)
-  {
+  public static function hyphenToCamel($val) {
     $val = str_replace(' ', '', ucwords(str_replace('-', ' ', $val)));
     $val = substr($val, 0);
     return $val;
   }
 
-  public static function camelToHyphen($val)
-  {
+  public static function camelToHyphen($val) {
     return str_replace('_', '-', strtolower(preg_replace('/([a-zA-Z])(?=[A-Z])/', '$1-', $val)));
   }
 
-  public static function get_view($path, $view_data)
-  {
+  public static function get_view($path, $view_data) {
     $full_path = EW_PACKAGES_DIR . '/' . $path;
 
-    if (!file_exists($full_path))
-    {
+    if (!file_exists($full_path)) {
       return \EWCore::log_error(404, "<h4>View: File not found</h4><p>File `$full_path`, not found</p>");
     }
     ob_start();
@@ -1782,15 +1626,13 @@ class EWCore
     }, $res);
   }
 
-  public static function populate_view($view_html, $view_data)
-  {
+  public static function populate_view($view_html, $view_data) {
     return preg_replace_callback("/\{\{([\w]*)\}\}/", function($match) use ($view_data) {
       return $view_data[$match[1]];
     }, $view_html);
   }
 
-  public static function testy($path)
-  {
+  public static function testy($path) {
     echo var_dump($_REQUEST);
     return var_dump(static::call($path));
   }

@@ -80,21 +80,13 @@ class UsersManagement extends \ew\Module
    public static function login($username, $password)
    {
       $user_info = null;
-      $db = \EWCore::get_db_connection();
-      /* if (!$username)
-        $username = $db->real_escape_string($_POST["username"]);
-        if (!$password)
-        $password = $db->real_escape_string($_POST["password"]); */
+      $db = \EWCore::get_db_PDO();
 
       $stm = $db->prepare("SELECT ew_users.id, group_id, email FROM ew_users, ew_users_groups WHERE ew_users.group_id = ew_users_groups.id AND ew_users.email = ? AND password = ? LIMIT 1") or die($db->error);
-      $stm->bind_param("ss", $username, $password);
 
-      $stm->execute();
+      $stm->execute([$username, $password]);
 
-      //$stm->store_result();
-      $result = $stm->get_result() or die($stm->errno);
-
-      if ($user_info = $result->fetch_assoc())
+      if ($user_info = $stm->fetch(\PDO::FETCH_ASSOC))
       {
          $_SESSION['login'] = '1';
          $_SESSION['sesUserName'] = $username;
@@ -102,7 +94,7 @@ class UsersManagement extends \ew\Module
          $_SESSION['EW.USER_GROUP_ID'] = $user_info["group_id"];
          $_SESSION['EW.USERNAME'] = $user_info["email"];
 
-         $stm->free_result();
+         //$stm->free_result();
          return TRUE;
       }
 
@@ -312,15 +304,13 @@ class UsersManagement extends \ew\Module
 
    public function get_user_group_by_id($groupId)
    {
-      $db = \EWCore::get_db_connection();
+      $db = \EWCore::get_db_PDO();
 
-      $statement = $db->prepare("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_users_groups WHERE id = ?");
-      $statement->bind_param("i", $groupId);
-      //$result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_users_groups WHERE id = '$groupId'") or $db->error;
-      $statement->execute();
+      $statement = $db->prepare("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_users_groups WHERE id = ?");      
+      $statement->execute([$groupId]);
 
 
-      if ($user_group_info = $statement->get_result()->fetch_assoc())
+      if ($user_group_info = $statement->fetch(\PDO::FETCH_ASSOC))
       {
          return \ew\APIResourceHandler::to_api_response($user_group_info);
       }
@@ -470,16 +460,15 @@ class UsersManagement extends \ew\Module
 
    public static function get_user_by_id($userId)
    {
-      $db = \EWCore::get_db_connection();
+      $db = \EWCore::get_db_PDO();
 
       $statement = $db->prepare("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_users WHERE id = ?");
-      $statement->bind_param("i", $userId);
-      $statement->execute();
+      $statement->execute([$userId]);
       //$result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_users WHERE id = '$userId'") or $db->error;
 
-      if ($user_info = $statement->get_result()->fetch_assoc())
+      if ($user_info = $statement->fetch(\PDO::FETCH_ASSOC))
       {
-         $db->close();
+         //$db->close();
          return \ew\APIResourceHandler::to_api_response($user_info);
       }
       return \EWCore::log_error(404, "User not found");

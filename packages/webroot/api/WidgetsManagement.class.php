@@ -433,23 +433,18 @@ class WidgetsManagement extends \ew\Module
 
    public static function get_uis($uisId = null)
    {
-      $db = \EWCore::get_db_connection();
+      $db = \EWCore::get_db_PDO();
 
       if (!$uisId)
          return;
 
       $stm = $db->prepare("SELECT id, name, template, template_settings, perview_url, structure FROM ew_ui_structures WHERE id = ?");
-      $stm->bind_param("s", $uisId);
-
-      if ($stm->execute())
-      {
-         $result = $stm->get_result();
-      }
-
+      $stm->execute([$uisId]);
+      
       $default_uis = json_decode(WidgetsManagement::get_path_uis("@DEFAULT"), true);
       $home_uis = json_decode(WidgetsManagement::get_path_uis("@HOME_PAGE"), true);
 
-      if ($row = $result->fetch_assoc())
+      if ($row = $stm->fetch(\PDO::FETCH_ASSOC))
       {
          if ($default_uis["id"] == $uisId)
             $row["uis-default"] = "true";

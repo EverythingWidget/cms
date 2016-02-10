@@ -165,7 +165,7 @@ class HTMLResourceHandler extends ResourceHandler
 
   public static function get_url_uis($url)
   {
-    $dbc = \EWCore::get_db_connection();
+    $dbc = \EWCore::get_db_PDO();
     // if the url is the root, the home layout will be set
     if ($url == "/")
     {
@@ -175,17 +175,21 @@ class HTMLResourceHandler extends ResourceHandler
     //echo $url."ssss";
     $stm = $dbc->prepare("SELECT * FROM ew_pages_ui_structures,ew_ui_structures "
             . "WHERE ew_ui_structures.id = ew_pages_ui_structures.ui_structure_id AND path LIKE ?") or die($dbc->error);
-    $stm->bind_param("s", $url);
-    $stm->execute();
-    $uis = $stm->get_result();
-    if ($row = $uis->fetch_assoc())
+    $stm->execute([$url]);
+
+    if ($row = $stm->fetch(\PDO::FETCH_ASSOC))
     {
       
     }
     else
     {
-      $uis = $dbc->query("SELECT * FROM ew_pages_ui_structures,ew_ui_structures WHERE ew_ui_structures.id = ew_pages_ui_structures.ui_structure_id AND path =  '@DEFAULT' ") or die($dbc->error);
-      $row = $uis->fetch_assoc();
+      $dbc = \EWCore::get_db_PDO();
+      $stm = $dbc->query("SELECT ui_structure_id, template, template_settings "
+              . "FROM ew_pages_ui_structures,ew_ui_structures "
+              . "WHERE ew_ui_structures.id = ew_pages_ui_structures.ui_structure_id "
+              . "AND path = '@DEFAULT' ");
+      $stm->execute();
+      $row = $stm->fetch(\PDO::FETCH_ASSOC);
     }
     return [
         "uis_id"                => $row["ui_structure_id"],
