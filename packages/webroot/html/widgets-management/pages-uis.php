@@ -68,14 +68,15 @@ $default_page = json_decode(webroot\WidgetsManagement::get_path_uis("@DEFAULT"),
   {
     var self = this;
     //this.bSelect = EW.addAction("Save Changes", $.proxy(this.save, this));
-    $(".app-page-uis").EW().inputButton({
+    $(".app-page-uis:not(.inited)").EW().inputButton({
       title: "<i class='uis-icon'></i>",
       class: "btn-default",
       onClick: function (e) {
         pageUIS.currentElement = e;
         pageUIS.uisListDialog(pageUIS.setPageUIS);
       }
-    });
+    }).addClass("inited");
+    //$(".app-page-uis").addClass("inited");
 
     this.allUISList = EW.createTable({
       name: "pages-and-uis-list",

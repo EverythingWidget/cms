@@ -58,7 +58,7 @@ root {
     position: absolute;
     /* bottom: 5%; */
     /* right: 5%; */
-    right: 5%;
+    right: 50px;
     top:69px;
     z-index: 5;
     /* width: 50px; */

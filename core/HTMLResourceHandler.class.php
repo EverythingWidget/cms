@@ -156,6 +156,8 @@ class HTMLResourceHandler extends ResourceHandler
       if (!$_REQUEST["_uis_template_settings"])
         $_REQUEST["_uis_template_settings"] = $uis_data["template_settings"];
     }
+    
+    //var_dump($uis_data);
 
     if (isset($_REQUEST["_parameters"]))
     {
@@ -167,7 +169,7 @@ class HTMLResourceHandler extends ResourceHandler
   {
     $dbc = \EWCore::get_db_PDO();
     // if the url is the root, the home layout will be set
-    if ($url == "/")
+    if ($url == "/" || $url === EW_DIR)
     {
       $url = "@HOME_PAGE";
     }

@@ -70,6 +70,7 @@ class WidgetsManagement extends \ew\Module
           "api/update_uis",
           "api/ew_form_uis_tab",
           "api/delete_uis",
+          "api/clone_uis",
           "html/ne-uis.php",
           'html/' . $this->get_index()));
 

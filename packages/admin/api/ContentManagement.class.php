@@ -502,7 +502,10 @@ class ContentManagement extends \ew\Module {
     $result = [];
     if (isset($articles["data"])) {
       foreach ($articles["data"] as $article) {
-        $result[] = ["html" => "{$article["content"]}"];
+        $result[] = [
+            "id"   => $article["id"],
+            "html" => "{$article["content"]}"
+        ];
       }
     }
     return \ew\APIResourceHandler::to_api_response($result, ["totalRows" => $articles["totalRows"]]);

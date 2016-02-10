@@ -97,6 +97,7 @@
       System.UI.components.mainFloatMenu[0].clean();
       System.UI.components.mainFloatMenu[0].contract();
       
+      
 
       System.UI.components.mainContent.empty();
       System.abortAllRequests();
@@ -119,6 +120,8 @@
         
         if (System.UI.components.mainFloatMenu.children().length > 0) {
           System.UI.components.mainFloatMenu[0].on();
+        } else {
+          System.UI.components.mainFloatMenu[0].off();
         }
 
         System.UI.components.sectionsMenuTitle.removeClass("inline-loader");
