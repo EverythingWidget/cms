@@ -44,7 +44,7 @@ MySQL 5.6.26
 
 # Have a question or you wanna help
 
-Join to [EW CMS Slack](https://ewcms.slack.com/ EW CMS Slack) 
+[![Join the chat at https://gitter.im/Eeliya/EverythingWidget](https://badges.gitter.im/Eeliya/EverythingWidget.svg)](https://gitter.im/Eeliya/EverythingWidget?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Any help is more than welcome. 
 
