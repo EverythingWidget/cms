@@ -1,0 +1,10 @@
+{
+  "name": "eeliya/everything-widget",
+  "description": "A CMS made for web developers",
+  "require": {
+    "php": ">=5.6.0",
+    "illuminate/database": "*",
+    "simple-validator/simple-validator": "dev-master",
+    "vlucas/valitron": "1.2.3"
+  }
+}

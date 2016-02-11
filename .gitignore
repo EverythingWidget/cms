@@ -1,3 +1,4 @@
-/core/modules/
 /media/
 /packages/rm/public/media/
+/vendor/
+/composer.lock

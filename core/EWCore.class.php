@@ -55,7 +55,8 @@ class EWCore {
   }
 
   public function load_modules() {
-    require 'modules/autoload.php';
+    //require 'modules/autoload.php';
+    require '../vendor/autoload.php';
   }
 
   public function process($parameters = null) {
