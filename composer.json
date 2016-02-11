@@ -1,6 +1,19 @@
 {
-  "name": "eeliya/everything-widget",
+  "name": "ewcms/ewcms",
   "description": "A CMS made for web developers",
+  "keywords": [
+    "cms",
+    "content management system"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Eeliya Rasta",
+      "email": "eeliya.rasta@gmail.com",
+      "homepage": "https://about.me/eeliya",
+      "role": "Developer"
+    }
+  ],
   "require": {
     "php": ">=5.6.0",
     "illuminate/database": "*",
