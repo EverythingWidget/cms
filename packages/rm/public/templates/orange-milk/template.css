@@ -78,6 +78,12 @@ body {
 .panel.clearfix {
   margin: 0 auto; }
 
+.widget.title {
+  font-size: 1.35em; }
+
+.title h1 {
+  margin: 45px auto 0; }
+
 .widget.text-center {
   text-align: center; }
 
@@ -123,7 +129,7 @@ body {
 
 .widget.daily-quote {
   margin: 0;
-  padding: 30px 15px;
+  padding: 45px 15px;
   color: #fff;
   z-index: 1;
   text-align: center;
@@ -137,8 +143,24 @@ body {
     min-height: 450px;
     overflow: hidden;
     padding: 15px;
-    border-bottom: 3px solid #f50808; }
+    border-bottom: 3px solid #f50808;
+    position: relative;
+    color: #666; }
     .widget.list-col-3 .list-item-cell h2 {
       font-weight: 500; }
+    .widget.list-col-3 .list-item-cell a {
+      width: 100%;
+      display: block;
+      color: #000;
+      position: absolute;
+      bottom: 0;
+      padding: 15px 0;
+      left: 0;
+      font-weight: 500;
+      text-align: center;
+      transition: all .3s; }
+    .widget.list-col-3 .list-item-cell a:hover {
+      background-color: #f50808;
+      color: #fff; }
 
 /*# sourceMappingURL=template.css.map */

@@ -147,7 +147,8 @@
     var _this = this;
     this.apps = {/*Home: {id: "Home"}*/
     };
-    $.get('~admin/api/EWCore/read_apps', {
+    
+    $.get('~admin/api/EWCore/read_apps_sections', {
       appDir: "admin"
     },
       function (data) {
@@ -603,7 +604,7 @@
     // Init EW plugins
     initPlugins(document);
 
-    var installModules = <?= EWCore::read_apps(); ?>;
+    var installModules = <?= EWCore::read_apps_sections(); ?>;
     installModules.forEach(function (e) {
       EW.apps[e.id] = e;
     });

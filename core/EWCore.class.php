@@ -1320,7 +1320,7 @@ class EWCore {
     return static::register_object(static::$EW_APP, $id, $object);
   }
 
-  public static function read_apps() {
+  public static function read_apps_sections() {
     $apps_list = static::read_registry(static::$EW_APP);
     $apps = [];
     foreach ($apps_list as $app) {

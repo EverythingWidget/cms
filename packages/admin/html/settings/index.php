@@ -34,6 +34,8 @@ function script()
          System.module("settings", function () {
             this.type = "app";
             this.onInit = function (nav) {
+               this.data.sections = <?= EWCore::call("admin/api/apps-management/get-apps")?>
+
             };
 
             this.onStart = function () {

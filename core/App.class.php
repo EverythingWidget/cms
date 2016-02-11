@@ -159,6 +159,7 @@ class App
   {
     return array(
         "name"        => $this->name,
+        "title"        => $this->name,
         "description" => $this->description,
         "version"     => $this->version,
         "type"        => $this->type,
