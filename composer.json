@@ -5,6 +5,7 @@
     "cms",
     "content management system"
   ],
+  "type": "cms",
   "license": "MIT",
   "authors": [
     {
