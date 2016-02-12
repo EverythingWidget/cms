@@ -6,8 +6,11 @@
  */
 ?>
 <div class="block-row mt">
-   <div class="col-xs-12 ">      
-      <input class="text-field" name="repo" id="repo" data-label="User/Repo Name" >    
+   <div class="col-xs-6 ">      
+      <input class="text-field" name="user" id="user" data-label="User" >    
+   </div>
+  <div class="col-xs-6 ">      
+      <input class="text-field" name="repo" id="repo" data-label="Repo Name" >    
    </div>
 </div>
 <div class="block-row">
@@ -16,24 +19,15 @@
       Buttons
     </h2>
   </div>
-  <div class="btn-group-vertical col-xs-12" data-toggle="buttons">       
-    <label class="btn btn-default active">
-      <input type="checkbox" name="follow" id="buttons" value="follow" checked="true"> Follow
+  <div class="btn-group-vertical col-xs-12" data-toggle="buttons">           
+    <label class="btn btn-default ">
+      <input type="checkbox" name="star" id="star" value="star"> Star
     </label>
     <label class="btn btn-default ">
-      <input type="checkbox" name="watch" id="buttons" value="watch"> Watch
+      <input type="checkbox" name="watch" id="watch" value="watch"> Watch
     </label>
-    <label class="btn btn-default ">
-      <input type="checkbox" name="star" id="buttons" value="star"> Star
-    </label>
-    <label class="btn btn-default ">
-      <input type="checkbox" name="fork" id="buttons" value="fork"> Fork
-    </label>
-    <label class="btn btn-default ">
-      <input type="checkbox" name="issue" id="buttons" value="issue"> Issue
-    </label>
-    <label class="btn btn-default ">
-      <input type="checkbox" name="download" id="buttons" value="download"> Download
+    <label class="btn btn-default">
+      <input type="checkbox" name="follow" id="follow" value="follow"> Follow
     </label>
   </div>
 </div>

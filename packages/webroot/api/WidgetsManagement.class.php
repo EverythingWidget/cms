@@ -767,12 +767,11 @@ class WidgetsManagement extends \ew\Module {
     } */
 
   public static function add_html_script($src, $script = "") {
-    if (is_array($script)) {
+    if (is_array($src)) {
       self::$html_scripts[] = array(
-          "id" => $script["id"],
-          "src" => $script["src"],
-          "script" => $script["script"]);
-
+          "id" => $src["id"],
+          "src" => $src["src"], 
+          "script" => $src["script"]);
       return;
     }
 

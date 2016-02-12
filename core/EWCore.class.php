@@ -1568,11 +1568,12 @@ class EWCore {
    */
   public static function log_error($header_code = 400, $message, $reason = NULL, $send_header = TRUE) {
     if ($send_header) {
-      http_response_code($header_code);
+      //http_response_code($header_code);
       header('Content-Type: application/json');
     }
     $error_content = array(
         "statusCode" => $header_code,
+        "code" => $header_code,
         //"url" => $_REQUEST["_app_name"] . "/" . $_REQUEST["_section_name"] . "/" . $_REQUEST["_function_name"],
         "url" => $_SERVER["REQUEST_URI"],
         "message" => $message,
@@ -1580,7 +1581,7 @@ class EWCore {
     /* if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
       { */
 
-    return json_encode($error_content);
+    return $error_content;
     /* }
       else
       {

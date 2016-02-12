@@ -974,7 +974,7 @@ class ContentManagement extends \ew\Module {
           $tumbnailURL = 'album-' . $parent_id . $path . $file_info["filename"] . ".thumb." . $file_info["extension"];
         }
         else if ($width <= 200) {
-          $tumbnailURL = 'album-' . $parent_id . $path . $file;
+          $tumbnailURL =  $path . $file;
         }
 
         $files[] = [
@@ -989,7 +989,7 @@ class ContentManagement extends \ew\Module {
             originalUrl   => EW_ROOT_URL . "~rm/public/media/$file",
             filename      => $file_info["filename"],
             fileExtension => $file_info["extension"],
-            thumbURL      => EW_DIR . '~rm/public/media/' . $tumbnailURL,
+            thumbURL      => EW_ROOT_URL . '~rm/public/media/' . $tumbnailURL,
             path          => $file_path
         ];
       }

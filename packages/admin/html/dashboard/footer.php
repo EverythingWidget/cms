@@ -77,13 +77,14 @@
 
   var anim = false;
   EverythingWidgets.prototype.loadSection = function (sectionId) {
-    
     //console.log(System.UI.components.sectionsMenuList[0].xtag);
     var element = System.UI.components.sectionsMenuList[0].links[EW.oldApp + "/" + sectionId];
-    
+
     System.UI.components.sectionsMenuList[0].value = element.dataset.index;
+
     //alert(EW.oldApp + "/" + sectionId)
     if (element) {
+
       //alert(EW.oldApp+"/"+sectionId)
       var sectionData = System.UI.components.sectionsMenuList[0].data[element.dataset.index];
       if (!sectionData/* || sectionData.id === EW.oldSectionId*/)
@@ -95,9 +96,7 @@
 
       $("#action-bar-items").find("button,div").remove();
       System.UI.components.mainFloatMenu[0].clean();
-      System.UI.components.mainFloatMenu[0].contract();
-      
-      
+      //System.UI.components.mainFloatMenu[0].contract();
 
       System.UI.components.mainContent.empty();
       System.abortAllRequests();
@@ -117,7 +116,7 @@
         }
         //alert("section loaded: " + mod.id);
         //System.startLastLoadedModule();
-        
+
         if (System.UI.components.mainFloatMenu.children().length > 0) {
           System.UI.components.mainFloatMenu[0].on();
         } else {
@@ -147,7 +146,7 @@
     var _this = this;
     this.apps = {/*Home: {id: "Home"}*/
     };
-    
+
     $.get('~admin/api/EWCore/read_apps_sections', {
       appDir: "admin"
     },
@@ -396,38 +395,50 @@
           autoOpen: false,
           class: "center"
         });
-        imageChooserDialog.append("<div class='form-content'></div><div class='footer-pane row actions-bar action-bar-items' ></div>");
-        $.post("<?php echo EW_DIR ?>~admin/html/content-management/Media.php", {
+        imageChooserDialog.append("<div class='form-content grid no-footer'></div>");
+        $.post("~admin/html/content-management/link-chooser-media.php", {
           callback: settings.callbackName
         },
           function (data) {
             imageChooserDialog.find(".form-content:first").append(data);
-            imageChooserDialog.prepend("<h1>Media</h1>");
-            var bSelectPhoto = EW.addAction("Select Photo", function () {
-              EW.setHashParameter("select-photo", true, "media");
-            }, {
-              display: "none"
-            }).addClass("btn-success");
-            // create handler to track selected
-            var EWhandler = function () {
-              var url = EW.getHashParameter("absUrl", "media");
-              if (url) {
-                bSelectPhoto.comeIn(300);
-              } else {
-                bSelectPhoto.comeOut(200);
-              }
+            imageChooserDialog.prepend("<div class='header-pane row'><h1 class='form-title'>Media</h1></div>");
 
-              if (EW.getHashParameter("select-photo", "media")) {
-                EW.setHashParameter("select-photo", null, "media");
-                imageChooserDialog.dispose();
-                //if (EW.getHashParameter("url", "Media"))
-                $element.val(EW.getHashParameter("absUrl", "media")).change();
-                $element.attr("data-filename", EW.getHashParameter("filename", "media"));
-                $element.attr("data-file-extension", EW.getHashParameter("fileExtension", "media"));
-                $element.attr("data-url", EW.getHashParameter("url", "media"));
-              }
+            imageChooserDialog[0].selectMedia = function (image) {
+              //var image = new ContentEdit.Image(image);
+              //node.parent().attach(image, index);
+              //image.focus();
+              $element.val(image.src).change();
+              //$element.attr("data-filename", EW.getHashParameter("filename", "media"));
+              //$element.attr("data-file-extension", EW.getHashParameter("fileExtension", "media"));
+              //$element.attr("data-url", EW.getHashParameter("url", "media"));
+              imageChooserDialog.dispose();
             };
-            EW.addURLHandler(EWhandler, "media.ImageChooser");
+
+            /*var bSelectPhoto = EW.addAction("Select Photo", function () {
+             EW.setHashParameter("select-photo", true, "media");
+             }, {
+             display: "none"
+             }).addClass("btn-success");
+             // create handler to track selected
+             var EWhandler = function () {
+             var url = EW.getHashParameter("absUrl", "media");
+             if (url) {
+             bSelectPhoto.comeIn(300);
+             } else {
+             bSelectPhoto.comeOut(200);
+             }
+             
+             if (EW.getHashParameter("select-photo", "media")) {
+             EW.setHashParameter("select-photo", null, "media");
+             imageChooserDialog.dispose();
+             //if (EW.getHashParameter("url", "Media"))
+             $element.val(EW.getHashParameter("absUrl", "media")).change();
+             $element.attr("data-filename", EW.getHashParameter("filename", "media"));
+             $element.attr("data-file-extension", EW.getHashParameter("fileExtension", "media"));
+             $element.attr("data-url", EW.getHashParameter("url", "media"));
+             }
+             };
+             EW.addURLHandler(EWhandler, "media.ImageChooser");*/
           });
 
         imageChooserDialog.open();

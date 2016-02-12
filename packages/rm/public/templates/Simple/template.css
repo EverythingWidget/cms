@@ -247,6 +247,15 @@ body {
   position: relative;
 }
 
+.widget.mt-30px {
+  margin-top: 30px;
+}
+
+.github-buttons iframe {
+  display: inline-block;
+  padding: 15px;
+}
+
 
 @keyframes ripple {
   from {

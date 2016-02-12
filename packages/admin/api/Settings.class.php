@@ -18,6 +18,9 @@ class Settings extends \ew\Module
    {
       \EWCore::register_app("settings", $this);
       include_once 'models/ew_settings.php';
+      
+      \EWCore::register_form("ew/ui/settings/general", "ew-admin-settings", ["title" => "EW Admin",
+        "content" => ""]);
    }
 
    public function get_title()
