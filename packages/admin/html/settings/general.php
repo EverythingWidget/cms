@@ -44,7 +44,7 @@
       settingsCard.empty();
 
       for (var app in apps) {
-        console.log(apps[app]);
+        //console.log(apps[app]);
         if (!apps[app].url) {
           continue;
         }

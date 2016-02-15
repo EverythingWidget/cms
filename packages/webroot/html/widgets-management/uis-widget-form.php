@@ -65,14 +65,14 @@ function get_size_layout_form()
    return ob_get_clean();
 }
 
-EWCore::register_form("uis-widget-form", "widget-cp", ["title" => "Widget CP",
+EWCore::register_form("ew/ui/widget-form", "widget-cp", ["title" => "Widget CP",
     "content" => webroot\WidgetsManagement::get_widget_cp($widget_type)]);
-EWCore::register_form("uis-widget-form", "size-layout", ["title" => "Size & Layout",
+EWCore::register_form("ew/ui/widget-form", "size-layout", ["title" => "Size & Layout",
     "content" => get_size_layout_form()]);
-EWCore::register_form("uis-widget-form", "properties", ["title" => "Properties",
+EWCore::register_form("ew/ui/widget-form", "properties", ["title" => "Properties",
     "content" => get_properties_form()]);
 
-$tabs = EWCore::read_registry("uis-widget-form");
+$tabs = EWCore::read_registry("ew/ui/widget-form");
 ?>
 <div class="header-pane  tabs-bar row">
    <h1 id="uis-widget-title" class="col-xs-12">

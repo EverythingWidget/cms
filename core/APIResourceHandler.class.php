@@ -103,7 +103,7 @@ class APIResourceHandler extends ResourceHandler
         "Access Denied" => "$app_name/$module_class_name/$method_name"));
         } */
 
-      $listeners = \EWCore::read_registry("$app_name-$resource_name/$module_class_name/$method_name" . '_listener');
+      $listeners = \EWCore::read_registry("$app_name/$resource_name/$module_name/$command_name");
 
       if (isset($listeners) && !is_array($result))
       {
@@ -131,9 +131,9 @@ class APIResourceHandler extends ResourceHandler
 
           foreach ($listeners as $id => $listener)
           {
-            if (method_exists($listener["object"], $listener["function"]))
+            if (method_exists($listener["object"], $listener["method"]))
             {
-              $listener_method_object = new \ReflectionMethod($listener["object"], $listener["function"]);
+              $listener_method_object = new \ReflectionMethod($listener["object"], $listener["method"]);
               $arguments = \EWCore::create_arguments($listener_method_object, $parameters);
 
               $listener_result = $listener_method_object->invokeArgs($listener["object"], $arguments);
