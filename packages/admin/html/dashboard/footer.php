@@ -95,6 +95,7 @@
       UIUtil.addCSSClass(element, "inline-loader");
 
       $("#action-bar-items").find("button,div").remove();
+      System.UI.components.appMainActions.empty();
       System.UI.components.mainFloatMenu[0].clean();
       //System.UI.components.mainFloatMenu[0].contract();
 
@@ -489,6 +490,7 @@
       appTitle: $("#app-title"),
       appBar: $("#app-bar"),
       homePane: $("#home-pane"),
+      appMainActions: $("#app-main-actions"),
       mainContent: $("#main-content"),
       body: $("body"),
       document: $(document),

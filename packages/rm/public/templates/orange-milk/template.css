@@ -101,7 +101,7 @@ body {
     color: #fff;
     font-weight: 500; }
   .widget.nav-menu a.selected {
-    color: #f50808; }
+    color: #0BB4D1; }
 
 .rtl .widget.nav-menu ul li {
   float: right; }
@@ -143,7 +143,7 @@ body {
     min-height: 450px;
     overflow: hidden;
     padding: 15px;
-    border-bottom: 3px solid #f50808;
+    border-bottom: 3px solid #0BB4D1;
     position: relative;
     color: #666; }
     .widget.list-col-3 .list-item-cell h2 {
@@ -160,7 +160,7 @@ body {
       text-align: center;
       transition: all .3s; }
     .widget.list-col-3 .list-item-cell a:hover {
-      background-color: #f50808;
+      background-color: #0BB4D1;
       color: #fff; }
 
 /*# sourceMappingURL=template.css.map */

@@ -8,7 +8,7 @@ return [
 // User Password
     'password' => '',
 // Database name
-    'database' => "ew",
+    'database' => "church",
     'database_library' => true
 ];
 

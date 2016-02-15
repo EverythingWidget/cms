@@ -20,7 +20,7 @@ class Settings extends \ew\Module {
   protected function install_assets() {
     \EWCore::register_form("ew/ui/settings/general", "webroot-settings", ["title" => "Webroot",
         "content" => "",
-        "url" => "webroot/html/settings/index.php"]);
+        "url" => "~webroot/html/settings/index.php"]);
   }
 
   public function get_title() {

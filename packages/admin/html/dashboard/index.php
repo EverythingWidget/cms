@@ -54,9 +54,10 @@ if (!isset($_SESSION['login']))
             </div>
           </div>
         </div>
+         
+         <div id="app-main-actions"></div>
         
-        <system-float-menu id="main-float-menu" class="ew-float-menu">
-          
+        <system-float-menu id="main-float-menu" class="ew-float-menu">          
         </system-float-menu>
         
         

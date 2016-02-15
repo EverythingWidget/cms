@@ -8,7 +8,7 @@
   </div>
 
   <div class='card-content top-devider'>
-
+     <h2 class="ta-center">Nothing to configurate</h2>
   </div>
 </div>
 </div>
