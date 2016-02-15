@@ -4,7 +4,7 @@ global $rootAddress, $pageAddress;
 
 $app = "webroot";
 
-$currentAppConf = json_decode(admin\Settings::read_settings(), true);
+$currentAppConf = json_decode(admin\Settings::read_settings("webroot"), true);
 
 $website_title = $currentAppConf["webroot/web-title"];
 $pageDescription = $currentAppConf["webroot/web-description"];

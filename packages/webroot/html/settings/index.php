@@ -8,9 +8,9 @@
   </div>
 
   <div class='card-content top-devider'>
-    <input class="text-field" data-label="Title" />
-    <input class="text-field" data-label="Keywords" />
-    <textarea class="text-field" data-label="Description" ></textarea>
+    <input class="text-field" data-label="Title" name="webroot/title" />
+    <input class="text-field" data-label="Keywords" name="webroot/keywords" />
+    <textarea class="text-field" data-label="Description" name="webroot/description" ></textarea>
     
     <div class="mt+">
       <label>

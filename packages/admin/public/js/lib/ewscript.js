@@ -6,14 +6,16 @@ $.fn.serializeJSON = function (flag) {
   $.each(a, function () {
     if (pureObject[this.name] !== undefined) {
       if (!pureObject[this.name].push) {
-        pureObject[this.name] = [pureObject[this.name]];
+        pureObject[this.name] = [
+          pureObject[this.name]
+        ];
       }
       pureObject[this.name].push(this.value || '');
     } else {
       pureObject[this.name] = this.value || '';
     }
   });
-  //console.log(o);
+  //console.log(this);
   if ($.isEmptyObject(pureObject))
   {
     return null;
@@ -29,9 +31,12 @@ function EverythingWidgets() {
   this.urlHandlers = new Array();
   this.mainContent = $("#main-content");
   this.currentTab = null;
-  this.widget_data = [];
-  this.activityCounter = [];
-  this.originalActivity = [];
+  this.widget_data = [
+  ];
+  this.activityCounter = [
+  ];
+  this.originalActivity = [
+  ];
   //$("#components-pane").hide();
   var oldSize = "";
   $(document).mousedown(function (event) {
@@ -76,7 +81,7 @@ EverythingWidgets.prototype.showAllComponents = function () {
     transform: "translateZ(0)",
     opacity: 1
   },
-          500, "Power3.easeOut").addClass("in");
+    500, "Power3.easeOut").addClass("in");
   /*$("#base-pane").animate({
    top: "100%"
    },
@@ -85,7 +90,7 @@ EverythingWidgets.prototype.showAllComponents = function () {
     //top: "0px",
     transform: "translateZ(-150px)"
   },
-          500, "Power3.easeOut");
+    500, "Power3.easeOut");
   this.lock("body", " ");
   $(".glass-pane-lock").bind("click", function (e) {
 
@@ -98,14 +103,14 @@ EverythingWidgets.prototype.showAllComponents = function () {
         opacity: 0,
         display: "none"
       },
-              500, "Power3.easeOut", function () {
-                //$("#components-pane").hide(0);
-              }).removeClass("in");
+        500, "Power3.easeOut", function () {
+          //$("#components-pane").hide(0);
+        }).removeClass("in");
       $("#base-pane").stop().animate({
         //top: "0px",
         transform: "translateZ(0px)"
       },
-              500, "Power3.easeOut");
+        500, "Power3.easeOut");
       //cPane.removeClass("zoom-out")
       self.unlock("body");
       $("#base-pane").removeClass("blur");
@@ -174,9 +179,10 @@ EverythingWidgets.prototype.addAction = function (text, handler, css, parent) {
 EverythingWidgets.prototype.addActionButton = function (config) {
   var settings = $.extend({
     class: "btn-primary"
-  }, config);
-  
-  if(settings.activity){
+  },
+  config);
+
+  if (settings.activity) {
     throw "Action button does not support `activity` property, Use `addActivity` instead";
   }
 
@@ -219,7 +225,8 @@ EverythingWidgets.prototype.addNotification = function (css) {
     } else {
       notification.animate({
         width: "toggle"
-      }, 500, function () {
+      },
+      500, function () {
         notification.attr({
           class: ""
         });
@@ -389,27 +396,23 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler) {
   {
     jsonData["status"] = "error";
     jsonData["delay"] = "stay";
-    form.trigger("error", [jsonData]);
-    //$(formId).html("<div class='box box-error'><label class='value'>" + jsonData["message"] + "</label></div>");
+    form.trigger("error", [
+      jsonData
+    ]);
     $(formId).EW().notify(jsonData).show();
     return;
   }
-  //alert(JSON.stringify(jsonData));
-  //jsonData = $.parseJSON(JSON.stringify(jsonData));
+  
   var setInputData = function (key, val, form) {
-    //alert(typeof (val)) ;
-    //alert(JSON.stringify(val));
-
+    key = key.replace(/(:|\.|\[|\]|,|\/)/g, "\\$1");
     if (handler)
     {
-      //$(formId + " [id='" + key + "']").val(handler(key, val));
       form.find("[id='" + key + "']").val(handler(key, val));
     } else
     {
       var elm = $();
       try
       {
-        //elm = $(formId + " :input[name='" + key + "'][value='" + val + "']");
         elm = form.find(" :input[name='" + key + "'][value='" + val + "']");
       } catch (e)
       {
@@ -417,12 +420,10 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler) {
       }
       if (elm.length === 0)
       {
-        //elm = $(formId + " :input[name='" + key + "']");
         elm = form.find(":input[name='" + key + "']");
       }
       if (elm.length === 0)
       {
-        //elm = $(formId + " #" + key);
         elm = form.find("#" + key);
       } else
       {
@@ -478,7 +479,9 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler) {
         field.text("");
     });
     form.data("form-data", {});
-    form.trigger("refresh", [{}]);
+    form.trigger("refresh", [
+      {}
+    ]);
     return;
   }
 
@@ -494,7 +497,9 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler) {
   });
   //alert(formId);
   form.data("form-data", jsonData);
-  form.trigger("refresh", [jsonData]);
+  form.trigger("refresh", [
+    jsonData
+  ]);
 };
 
 EverythingWidgets.prototype.getParentDialog = function (element) {
@@ -508,7 +513,7 @@ EverythingWidgets.prototype.createDropMenu = function (element, config) {
     parent: "body",
     eventParent: $(window)
   },
-          config);
+    config);
   var size = $("<div class='dropdown-menu'><div class='col-xs-12'></div></div>");
   size.css({
     width: settings.width,
@@ -542,7 +547,7 @@ EverythingWidgets.prototype.createDropMenu = function (element, config) {
     size.animate({
       height: "toggle"
     },
-            200, "Power3.easeOut");
+      200, "Power3.easeOut");
     isVisible = true;
   }
 
@@ -555,7 +560,8 @@ EverythingWidgets.prototype.createDropMenu = function (element, config) {
 EverythingWidgets.prototype.createList = function (config) {
   var list = {
     element: document.createDocumentFragment(),
-    data: [],
+    data: [
+    ],
     selectedItem: null,
     selectedIndex: null,
     template: "",
@@ -710,7 +716,8 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction) {
         xButton.detach();
         modalPane.stop().animate({
           transform: "scale(.0)"
-        }, 400, "Power2.easeInOut", function () {
+        },
+        400, "Power2.easeInOut", function () {
 
           closeAction();
         });
@@ -802,7 +809,8 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction) {
       } else {
         modalPane.animate({
           opacity: "1"
-        }, 520, "Power3.easeOut", function () {
+        },
+        520, "Power3.easeOut", function () {
           //modalPane.css("left", "");
           methods.setCloseButton();
           modalPane.isOpen = true;
@@ -889,7 +897,8 @@ JSON.stringify = JSON.stringify || function (obj) {
     return String(obj);
   } else {
     // recurse array or object
-    var n, v, json = [], arr = (obj && obj.constructor == Array);
+    var n, v, json = [
+    ], arr = (obj && obj.constructor == Array);
     for (n in obj) {
       v = obj[n];
       t = typeof (v);
@@ -1093,8 +1102,10 @@ EverythingWidgets.prototype.getHashParameter = function (key, hashName) {
 
 EverythingWidgets.prototype.Router = {
   baseURL: "#",
-  routers: [],
-  routes: [],
+  routers: [
+  ],
+  routes: [
+  ],
   /*registerRouter: function (baseURL)
    {
    var clonedRouter = $.extend({}, this);
@@ -1115,7 +1126,8 @@ EverythingWidgets.prototype.Router = {
   getInstance: function (baseURL) {
     var clonedRouter = $.extend({}, this);
     clonedRouter.baseURL = this.baseURL + baseURL;
-    clonedRouter.routes = [];
+    clonedRouter.routes = [
+    ];
     /*for (var i = 0; i < this.routers.length; i++)
      {
      if (this.routers[i].baseURL == baseURL)
@@ -1263,7 +1275,8 @@ EverythingWidgets.prototype.unlock = function (obj, dur) {
   var ll = $(obj).children(".glass-pane-lock:not(.unlock)").last();
   ll.addClass("unlock").css("transition", "none").animate({
     opacity: 0
-  }, dur || 0, function () {
+  },
+  dur || 0, function () {
     $(this).remove();
   });
 };
@@ -1274,7 +1287,7 @@ function EWTable(config) {
     pageSize: 10,
     urlData: {}
   },
-          config);
+    config);
   this.container = $("<div class='report row'></div>");
   this.tableHeaderDiv = $("<div class='table-header' ></div>");
   this.tableBodyDiv = $("<div class='table-body'></div>");
@@ -1296,11 +1309,11 @@ function EWTable(config) {
   this.container.append(this.controls);
   this.container.append(this.tableContainer);
   this.tableHeaderDiv.css(
-          {
-            position: "absolute",
-            display: "none",
-            zIndex: "2"
-          });
+    {
+      position: "absolute",
+      display: "none",
+      zIndex: "2"
+    });
   this.tableBodyDiv.scroll(function () {
     if ($(this).scrollTop() > 0 && !$base.tableHeaderDiv.is(":visible"))
     {
@@ -1336,7 +1349,8 @@ function EWTable(config) {
 
 EWTable.prototype.createHeadersRow = function (headers) {
   var tr = $(document.createElement("tr"));
-  var ths = [];
+  var ths = [
+  ];
   $.each(headers, function (k, v) {
     if (v)
       ths.push('<th style=width:', v.width || "auto", v.display ? 'display:' + v.display : '', '>', k, '</th>');
@@ -1372,7 +1386,8 @@ EWTable.prototype.createRow = function (val, rc) {
   }
 
   var actionsCell = $(document.createElement("td"));
-  var actionsCellBtns = [];
+  var actionsCellBtns = [
+  ];
   if (ewTable.config.onEdit)
   {
     var edit = $(document.createElement("button"));
@@ -1428,11 +1443,11 @@ EWTable.prototype.createRow = function (val, rc) {
           messageRow.animate({
             transform: "scale(0,1)"
           },
-                  400,
-                  "Power3.easeInOut",
-                  function () {
-                    messageRow.remove();
-                  });
+            400,
+            "Power3.easeInOut",
+            function () {
+              messageRow.remove();
+            });
         });
 
         $(document).one("keydown", function (e) {
@@ -1444,8 +1459,8 @@ EWTable.prototype.createRow = function (val, rc) {
         messageRow.animate({
           transform: "scale(1,1)"
         },
-                400,
-                "Power2.easeInOut");
+          400,
+          "Power2.easeInOut");
       };
       if (ewTable.config.onDelete.apply(tableRow, new Array(fieldId)))
         tableRow.removeRow(fieldId);
@@ -1550,12 +1565,14 @@ EWTable.prototype.read = function (customURLData) {
   var lock = System.UI.lock({
     element: self.tableBodyDiv[0],
     akcent: "loader top"
-  }, .3);
+  },
+  .3);
 
   var urlData = $.extend(self.urlData, {
     token: self.token,
     size: self.pageSize
-  }, customURLData);
+  },
+  customURLData);
 
   setTimeout(function () {
     $.ajax({
@@ -1594,12 +1611,14 @@ EWTable.prototype.read = function (customURLData) {
         self.table.animate({
           marginTop: "0px",
           opacity: 1
-        }, 400, "Power2.easeOut");
+        },
+        400, "Power2.easeOut");
       },
       error: function (o) {
         //console.log(o);
         self.data = {
-          result: []
+          result: [
+          ]
         };
         self.table.empty();
         self.next.css('visibility', 'hidden');
@@ -1982,10 +2001,10 @@ EWNotification.prototype.show = function () {
     marginLeft: "-=50",
     opacity: "1"
   },
-          300, function () {
-            if ($this.options.delay !== "stay")
-              $this.$note.delay($this.options.delay || 3000).fadeOut('slow', $.proxy($this.closeNotification, $this));
-          });
+    300, function () {
+      if ($this.options.delay !== "stay")
+        $this.$note.delay($this.options.delay || 3000).fadeOut('slow', $.proxy($this.closeNotification, $this));
+    });
 };
 EWNotification.prototype.hide = function () {
   //if (this.options.fadeOut.enabled)
@@ -2114,9 +2133,10 @@ function ExtendableList(element, cSettings) {
   var base = this;
   this.$element = $(element);
   this.settings = $.extend({
-    value: []
+    value: [
+    ]
   },
-          cSettings);
+    cSettings);
   //this.$element.find("li:first-child").prepend('<div class="handle"></div>');
 
   this.firstItemClone = this.$element.find("li:first-child").clone();
@@ -2126,7 +2146,10 @@ function ExtendableList(element, cSettings) {
     var ni = base.createItem();
     ni.hide();
     base.$element.append(ni);
-    ni.animate({height: "toggle"}, 200);
+    ni.animate({
+      height: "toggle"
+    },
+    200);
   });
   this.lastRow.append(this.addNewRow);
   base.$element.empty();
@@ -2189,14 +2212,16 @@ ExtendableList.prototype.createItem = function () {
       height: "toggle",
       opacity: 0
     },
-            300, "Power2.easeOut", function () {
-              originalModelClone.remove();
-            });
+      300, "Power2.easeOut", function () {
+        originalModelClone.remove();
+      });
   });
   controlRow.append(removeBtn);
   originalModelClone.prepend(controlRow);
   if (this.settings.onNewItem)
-    this.settings.onNewItem.apply(this, [originalModelClone]);
+    this.settings.onNewItem.apply(this, [
+      originalModelClone
+    ]);
   return originalModelClone;
 };
 
@@ -2403,7 +2428,6 @@ $(document).ready(function () {
     if (activityName && activityName !== oldEWActivity) {
       var settings = {
         closeHash: {}, /*hash: {key: "ew_activity", value: activity},*/
-
         onOpen: function () {
           var modal = this;
           //EW.lock(this);
@@ -2521,13 +2545,16 @@ $(document).ready(function () {
           // set hash ew_activity to null
           EW.setHashParameters({
             ew_activity: null
-          }, "FORMLESS_ACTIVITY");
+          },
+          "FORMLESS_ACTIVITY");
           return;
         }
 
         $.post(currentActivity.url, activityParameters, function (data) {
           if (currentActivity.onDone) {
-            currentActivity.onDone.apply(currentActivity, [data]);
+            currentActivity.onDone.apply(currentActivity, [
+              data
+            ]);
           }
           // Trigger activityName.done event
           EW.$docuement.trigger(activity + ".done", data);
@@ -2539,6 +2566,7 @@ $(document).ready(function () {
     }
     EW.setHashParameters({
       ew_activity: null
-    }, "FORMLESS_ACTIVITY");
+    },
+    "FORMLESS_ACTIVITY");
   }, "FORMLESS_ACTIVITY");
 });

@@ -436,7 +436,7 @@ class Module
     return FALSE;
   }
 
-  protected function save_settings($params)
+  /*protected function save_settings($params)
   {
     //$db = \EWCore::get_db_connection();
     if (!$params)
@@ -454,6 +454,6 @@ class Module
   public static function read_settings()
   {
     return \EWCore::read_settings($this->app->get_root());
-  }
+  }*/
 
 }
