@@ -260,14 +260,14 @@ class EWCore {
   public static function get_db_PDO() {
     $database_config = include('config/database_config.php');
     // default database connection
-    $dsn = 'mysql:dbname=' . $database_config['database'] . ';host=' . $database_config['host'].';charset=utf8';
+    $dsn = 'mysql:dbname=' . $database_config['database'] . ';host=' . $database_config['host'] . ';charset=utf8';
     $user = $database_config['username'];
     $password = $database_config['password'];
-    
+
     try {
-    $pdo = new \PDO($dsn, $user, $password);
+      $pdo = new \PDO($dsn, $user, $password);
     }
-    catch (Exception $e){
+    catch (Exception $e) {
       print_r($e);
       die();
     }
@@ -1256,6 +1256,21 @@ class EWCore {
       }
     }
     return $permissions_titles;
+  }
+
+  public static function read_permissions_ids() {
+    EWCore::init_sections_plugins();
+    $pers = self::$permissions_groups;
+    $permissions_ids = array();
+    foreach ($pers as $app_name => $sections) {
+
+      foreach ($sections["section"] as $section_name => $sections_permissions) {
+        foreach ($sections_permissions["permission"] as $permission_name => $permission_info) {
+          $permissions_ids[] = $app_name . "." . $section_name . "." . $permission_name;
+        }
+      }
+    }
+    return $permissions_ids;
   }
 
   public static function has_permission($app_name, $class_name) {

@@ -155,8 +155,8 @@ CREATE TABLE `ew_users_groups` (
 --
 
 INSERT INTO `ew_users_groups` (`id`, `parent_id`, `title`, `description`, `type`, `date_created`, `permission`) VALUES
-(1, NULL, 'Guest', 'All the visitors', 'default', '2014-03-06 22:27:36', 'admin.content-management.see-content,admin.users-management.see-users,admin.users-management.see-groups,webroot.widgets-management.view,admin.dashboard.dashboard,webroot.widgets-management.view'),
-(2, NULL, 'Administration', 'Website administrators', 'user', '2014-03-08 16:27:31', 'admin.content-management.see-content,admin.content-management.manipulate-content,admin.dashboard.dashboard,admin.users-management.see-users,admin.users-management.manipulate-users,admin.users-management.see-groups,admin.users-management.manipulate-groups,webroot.home.hompage,webroot.widgets-management.view,webroot.widgets-management.manipulate,webroot.widgets-management.export-uis,webroot.widgets-management.import-uis');
+(1, NULL, 'Guest', 'All the visitors', 'default', '2014-03-06 22:27:36', 'admin.content-management.see-content,admin.dashboard.dashboard,webroot.home.hompage'),
+(2, NULL, 'Administration', 'Website administrators', 'superuser', '2014-03-08 16:27:31', '');
 
 -- --------------------------------------------------------
 
