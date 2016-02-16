@@ -7,13 +7,14 @@ and open the template in the editor.
     Created on : Mar 14, 2015, 12:56:29 PM
     Author     : Eeliya
 */
-@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,300,700);
+@import url(https://fonts.googleapis.com/css?family=Ubuntu:400,300,700);
+
 html {
   position: relative;
 } 
 
 html,body{
-  font-family: 'Open Sans', sans-serif, Tahoma;
+  font-family: 'Ubuntu', sans-serif, Tahoma;
   padding:0px;
   font-size:1.2em;
   min-height: 100%;   
@@ -23,6 +24,10 @@ body {
   background-color: #ddd;
   overflow-x: hidden;
   overflow-y: auto;
+}
+
+h1 {
+  font-weight: normal;
 }
 
 .panel.header {
@@ -52,8 +57,6 @@ body {
 
 .block.middle {
   background-color: #f7f7f7;
-  border-bottom-left-radius: 24px;
-  border-bottom-right-radius: 24px;
   padding-bottom: 75px;
   box-shadow:0px 3px 7px rgba(0,0,0,.14), 0 8px 18px rgba(0,0,0,.1);
   z-index: 1;
@@ -90,8 +93,8 @@ body {
   background-color: #fff;
   border:0px solid rgba(0,0,0,.35);
   border-width:0px 0px;
-  padding:15px;
   margin: 0 auto;
+  padding: 0;
   float: none;
   display: block;
   box-shadow:0px 1px 3px rgba(0,0,0,.14), 0 2px 5px rgba(0,0,0,.1);
@@ -117,7 +120,12 @@ body {
 .widget.list{}
 
 .list h1 {
-  font-size: 1.56em;
+  font-size: 1.2em;
+  margin: 0;
+}
+
+.list p {
+  margin: 10px 0;
 }
 
 .list ul {
@@ -131,7 +139,7 @@ body {
 }
 
 .list .list-item {
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #eee;
 }
 
 .list .list-item:last-child {
@@ -141,7 +149,7 @@ body {
 .list .list-item-cell {
   display: block;
   overflow: hidden;
-
+  padding: 10px 15px;
 }
 
 .list .list-item-cell:last-child {
@@ -153,7 +161,7 @@ body {
   line-height:30px;
   padding:12px 10px;
   margin-bottom:5px;
-  color:#3377aa;
+  color:#33ccff;
   font-weight: 500;
   border-radius: 4px;
   text-align: center;
@@ -161,7 +169,7 @@ body {
 }
 
 .list li:last-child a{margin-bottom:0px;}
-.list a:hover{background-color:#cff6ff}
+.list a:hover{background-color:#dff8ff}
 .list .active a{font-weight:bold;}
 
 .widget.ta-center {
