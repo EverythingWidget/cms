@@ -358,7 +358,7 @@
       var image = wrapper.find("img");
       if (image.length <= 0) {
         image = $("<img>");
-        console.log(image);
+        //console.log(image);
         wrapper.find("div").append(image);
       }
 

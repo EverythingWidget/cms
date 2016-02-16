@@ -2430,7 +2430,7 @@ label.label-float.focused {
 
 .label-float-input, .text-field.label-float-input {
   margin-top: 0px;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
   -webkit-transition: padding .3s ease;
   -moz-transition: padding .3s ease;
   -ms-transition: padding .3s ease;

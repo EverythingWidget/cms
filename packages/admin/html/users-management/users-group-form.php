@@ -258,12 +258,12 @@ function get_ew_users_permissions_form()
   return ob_get_clean();
 }
 
-EWCore::register_form("ew-user-form-default", "ew-user-form", ["title" => "Group Info",
+EWCore::register_form("ew/ui/user-form", "ew-user-form", ["title" => "Group Info",
     "content" => get_ew_user_form()]);
-EWCore::register_form("ew-user-form-default", "ew-user-permissions", ["title" => "Permissions",
+EWCore::register_form("ew/ui/user-form", "ew-user-permissions", ["title" => "Permissions",
     "content" => get_ew_users_permissions_form()]);
-$tabsDefault = EWCore::read_registry("ew-user-form-default");
-$tabs = EWCore::read_registry("ew-user-form");
+
+$tabs = EWCore::read_registry("ew/ui/user-form");
 ?>
 <form id="users-group-form"  action="#" method="POST" onsubmit="return false;">
   <div class="header-pane  tabs-bar row">
@@ -272,19 +272,12 @@ $tabs = EWCore::read_registry("ew-user-form");
     </h1>
     <ul class="nav nav-pills">
       <?php
-      foreach ($tabsDefault as $id => $tab)
+      foreach ($tabs as $id => $tab)
       {
         if ($id == "ew-user-form")
           echo "<li class='active'><a href='#{$id}' data-toggle='tab'>tr{" . $tab["title"] . "}</a></li>";
         else
           echo "<li ><a href='#{$id}' data-toggle='tab'>tr{" . $tab["title"] . "}</a></li>";
-      }
-      if (isset($tabs))
-      {
-        foreach ($tabs as $id => $tab)
-        {
-          echo "<li ><a href='#{$id}' data-toggle='tab'>tr{" . $tab["title"] . "}</a></li>";
-        }
       }
       ?>
     </ul>
@@ -293,19 +286,12 @@ $tabs = EWCore::read_registry("ew-user-form");
 
     <div class="tab-content col-xs-12" style="height:100%;position:absolute;">
       <?php
-      foreach ($tabsDefault as $id => $tab)
+      foreach ($tabs as $id => $tab)
       {
         if ($id == "ew-user-form")
           echo "<div class='tab-pane active' id='{$id}'>{$tab["content"]}</div>";
         else
           echo "<div class='tab-pane' id='{$id}'>{$tab["content"]}</div>";
-      }
-      if (isset($tabs))
-      {
-        foreach ($tabs as $id => $tab)
-        {
-          echo "<div class='tab-pane' id='{$id}'>{$tab["content"]}</div>";
-        }
       }
       ?>
     </div>

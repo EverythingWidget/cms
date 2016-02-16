@@ -208,6 +208,7 @@ class ContentManagement extends \ew\Module {
   }
 
   public function image_loader($file) {
+    echo "asdad";
     preg_match('/(.*)\.?(\d*)?,?(\d*)?\.([^\.]\w*)/', $file, $match);
 
     $file = EW_MEDIA_DIR . "/" . $file;

@@ -168,7 +168,7 @@ class EWCore {
     $method_arguments = array();
     foreach ($arguments as $arg) {
       $temp = null;
-      if ($arg->getName() === "_data" || $arg->getName() === "_input") {
+      if (/*$arg->getName() === "_data" || */$arg->getName() === "__input") {
         $method_arguments[] = $parameters;
         continue;
       }

@@ -201,7 +201,7 @@ class Module
       $functions_arguments[] = $temp;
       $this->current_method_args[$param->getName()] = $temp;
     }
-    //$method_object->setAccessible(true);
+    $method_object->setAccessible(true);
     $command_result = $method_object->invokeArgs($this, $functions_arguments);
 
     /*if (is_array($command_result))
@@ -318,8 +318,8 @@ class Module
       $object = $this;
     }
     //echo $command . "_listener";
-    \EWCore::register_object($command . "_listener", $this->app->get_root() . "/" . $this->current_class->getShortName() . "/" . $function, array(
-        "function" => $function,
+    \EWCore::register_object($command, $this->app->get_root() . "/" . $this->current_class->getShortName() . "/" . $function, array(
+        "method" => $function,
         "object" => $object));
   }
 
@@ -354,7 +354,7 @@ class Module
    * @param type $id if of new section
    * @param type $form
    */
-  public function register_form($name, $id, $form, $resource = 'api')
+  /*public function register_form($name, $id, $form, $resource = 'api')
   {
     $defaults = ["app" => $this->app->get_root(),
         "resource" => $resource,
@@ -362,7 +362,7 @@ class Module
         "method" => 'ew-form-' . $id];
     $form_structure = array_merge($defaults, $form);
     \EWCore::register_object($name, $this->app->get_root() . '_' . $this->get_section_name() . '_' . $id, $form_structure);
-  }
+  }*/
 
   /**
    * In order to EWCore can find the function which is binded to this feeder id, the function name should be defined in the follow format: ew_<b>[feeder_type]</b>_feeder_<b>[function_name]</b>

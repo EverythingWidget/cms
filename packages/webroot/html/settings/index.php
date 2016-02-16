@@ -16,7 +16,7 @@
       <label>
          tr{Favicon}
       </label>
-      <input type="hidden" name="image" alt="Image" data-ew-plugin="image-chooser" style="max-height:32px;">
+      <input type="hidden" name="webroot/favicon" alt="Image" data-ew-plugin="image-chooser" style="max-height:32px;">
    </div>
   </div>
 </div>

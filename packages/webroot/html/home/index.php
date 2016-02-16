@@ -4,11 +4,14 @@ global $rootAddress, $pageAddress;
 
 $app = "webroot";
 
-$currentAppConf = json_decode(admin\Settings::read_settings("webroot"), true);
+$currentAppConf = EWCore::call_api("admin/api/settings/read-settings", [
+            "app_name" => "webroot"
+        ]);
 
-$website_title = $currentAppConf["webroot/web-title"];
-$pageDescription = $currentAppConf["webroot/web-description"];
-$defaultKeywords = $currentAppConf["webroot/web-keywords"];
+$website_title = $currentAppConf["webroot/title"];
+$pageDescription = $currentAppConf["webroot/description"];
+$defaultKeywords = $currentAppConf["webroot/keywords"];
+$favicon = $currentAppConf["webroot/favicon"];
 
 $_SESSION['ROOT_DIR'] = EW_ROOT_DIR;
 $_REQUEST['cmdResult'] = '';
@@ -64,11 +67,15 @@ $HTML_LINKS = webroot\WidgetsManagement::get_html_links();
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1" />  
 
-<?php
-echo '<title>' . $HTML_TITLE . '</title>';
-echo "<meta name='description' content='$pageDescription'/>";
-echo "<meta name='keywords' content='$defaultKeywords, $HTML_KEYWORDS, $website_title'/>";
-?>      
+    <?php
+    echo '<title>' . $HTML_TITLE . '</title>';
+    echo "<meta name='description' content='$pageDescription'/>";
+    echo "<meta name='keywords' content='$defaultKeywords, $HTML_KEYWORDS, $website_title'/>";
+    echo "<link rel='shortcut icon' href='$favicon'>";
+    echo "<link rel='apple-touch-icon-precomposed' href='$favicon'>";
+    echo '<meta name="msapplication-TileColor" content="#FFFFFF">';
+    echo "<meta name='msapplication-TileImage' content='$favicon'>"
+    ?>      
 
     <link rel="stylesheet" href="~rm/public/css/bootstrap.css" >  
     <?= $HTML_LINKS; ?>
@@ -87,13 +94,13 @@ echo "<meta name='keywords' content='$defaultKeywords, $HTML_KEYWORDS, $website_
 <?= $WIDGET_DATA; ?>
       })();
     </script>
-<?= $HTML_SCRIPTS; ?>
-<?= $TEMPLATE_SCRIPT; ?>      
+    <?= $HTML_SCRIPTS; ?>
+    <?= $TEMPLATE_SCRIPT; ?>      
 
   </head>
   <body class="<?= EWCore::get_language_dir($_REQUEST["_language"]) ?>">
     <div id="base-content-pane" class="container">
-    <?= $HTML_BODY; ?>
+      <?= $HTML_BODY; ?>
     </div>
   </body>  
 </html>
