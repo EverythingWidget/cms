@@ -12,6 +12,7 @@ $website_title = $currentAppConf["webroot/title"];
 $pageDescription = $currentAppConf["webroot/description"];
 $defaultKeywords = $currentAppConf["webroot/keywords"];
 $favicon = $currentAppConf["webroot/favicon"];
+$google_analytics_id = $currentAppConf["webroot/google-analytics-id"];
 
 $_SESSION['ROOT_DIR'] = EW_ROOT_DIR;
 $_REQUEST['cmdResult'] = '';
@@ -74,7 +75,30 @@ $HTML_LINKS = webroot\WidgetsManagement::get_html_links();
     echo "<link rel='shortcut icon' href='$favicon'>";
     echo "<link rel='apple-touch-icon-precomposed' href='$favicon'>";
     echo '<meta name="msapplication-TileColor" content="#FFFFFF">';
-    echo "<meta name='msapplication-TileImage' content='$favicon'>"
+    echo "<meta name='msapplication-TileImage' content='$favicon'>";
+
+    if (isset($google_analytics_id)) {
+      ?>
+      <script>
+        (function (i, s, o, g, r, a, m) {
+          i['GoogleAnalyticsObject'] = r;
+          i[r] = i[r] || function () {
+            (i[r].q = i[r].q || [
+            ]).push(arguments)
+          }, i[r].l = 1 * new Date();
+          a = s.createElement(o),
+            m = s.getElementsByTagName(o)[0];
+          a.async = 1;
+          a.src = g;
+          m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+        ga('create', '<?= $google_analytics_id ?>', 'auto');
+        ga('send', 'pageview');
+
+      </script>
+      <?php
+    }
     ?>      
 
     <link rel="stylesheet" href="~rm/public/css/bootstrap.css" >  

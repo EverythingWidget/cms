@@ -72,6 +72,7 @@ body {
   color:#555;
   padding-top: 35px;
   margin-top: -20px;
+  z-index: 0;
 }
 
 .block.footer p {

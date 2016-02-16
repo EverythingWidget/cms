@@ -180,7 +180,7 @@ EverythingWidgets.prototype.addActionButton = function (config) {
   var settings = $.extend({
     class: "btn-primary"
   },
-  config);
+    config);
 
   if (settings.activity) {
     throw "Action button does not support `activity` property, Use `addActivity` instead";
@@ -226,13 +226,13 @@ EverythingWidgets.prototype.addNotification = function (css) {
       notification.animate({
         width: "toggle"
       },
-      500, function () {
-        notification.attr({
-          class: ""
+        500, function () {
+          notification.attr({
+            class: ""
+          });
+          notification.text("");
+          li.remove();
         });
-        notification.text("");
-        li.remove();
-      });
     }
 
     if (time)
@@ -402,9 +402,11 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler) {
     $(formId).EW().notify(jsonData).show();
     return;
   }
-  
-  var setInputData = function (key, val, form) {
-    key = key.replace(/(:|\.|\[|\]|,|\/)/g, "\\$1");
+
+  var setInputData = function (key, val, form) {    
+    if ("string" === typeof key)
+      key = key.replace(/(:|\.|\[|\]|,|\/)/g, "\\$1");
+    
     if (handler)
     {
       form.find("[id='" + key + "']").val(handler(key, val));
@@ -717,10 +719,10 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction) {
         modalPane.stop().animate({
           transform: "scale(.0)"
         },
-        400, "Power2.easeInOut", function () {
+          400, "Power2.easeInOut", function () {
 
-          closeAction();
-        });
+            closeAction();
+          });
         return;
       } else {
         System.UI.body = $('#base-pane')[0];
@@ -810,14 +812,14 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction) {
         modalPane.animate({
           opacity: "1"
         },
-        520, "Power3.easeOut", function () {
-          //modalPane.css("left", "");
-          methods.setCloseButton();
-          modalPane.isOpen = true;
-          if (settings.class === "full")
-          {
-          }
-        });
+          520, "Power3.easeOut", function () {
+            //modalPane.css("left", "");
+            methods.setCloseButton();
+            modalPane.isOpen = true;
+            if (settings.class === "full")
+            {
+            }
+          });
       }
 
       if (settings.onOpen)
@@ -1276,9 +1278,9 @@ EverythingWidgets.prototype.unlock = function (obj, dur) {
   ll.addClass("unlock").css("transition", "none").animate({
     opacity: 0
   },
-  dur || 0, function () {
-    $(this).remove();
-  });
+    dur || 0, function () {
+      $(this).remove();
+    });
 };
 
 function EWTable(config) {
@@ -1566,13 +1568,13 @@ EWTable.prototype.read = function (customURLData) {
     element: self.tableBodyDiv[0],
     akcent: "loader top"
   },
-  .3);
+    .3);
 
   var urlData = $.extend(self.urlData, {
     token: self.token,
     size: self.pageSize
   },
-  customURLData);
+    customURLData);
 
   setTimeout(function () {
     $.ajax({
@@ -1612,7 +1614,7 @@ EWTable.prototype.read = function (customURLData) {
           marginTop: "0px",
           opacity: 1
         },
-        400, "Power2.easeOut");
+          400, "Power2.easeOut");
       },
       error: function (o) {
         //console.log(o);
@@ -2149,7 +2151,7 @@ function ExtendableList(element, cSettings) {
     ni.animate({
       height: "toggle"
     },
-    200);
+      200);
   });
   this.lastRow.append(this.addNewRow);
   base.$element.empty();
@@ -2546,7 +2548,7 @@ $(document).ready(function () {
           EW.setHashParameters({
             ew_activity: null
           },
-          "FORMLESS_ACTIVITY");
+            "FORMLESS_ACTIVITY");
           return;
         }
 
@@ -2567,6 +2569,6 @@ $(document).ready(function () {
     EW.setHashParameters({
       ew_activity: null
     },
-    "FORMLESS_ACTIVITY");
+      "FORMLESS_ACTIVITY");
   }, "FORMLESS_ACTIVITY");
 });

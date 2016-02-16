@@ -11,12 +11,19 @@
     <input class="text-field" data-label="Title" name="webroot/title" />
     <input class="text-field" data-label="Keywords" name="webroot/keywords" />
     <textarea class="text-field" data-label="Description" name="webroot/description" ></textarea>
-    
+
     <div class="mt+">
       <label>
-         tr{Favicon}
+        tr{Favicon}
       </label>
       <input type="hidden" name="webroot/favicon" alt="Image" data-ew-plugin="image-chooser" style="max-height:32px;">
-   </div>
+    </div>
+  </div>
+
+  <div  class='card-header top-devider'>
+    <h1>Google Analytics</h1>
+  </div>
+  <div class='card-content'>
+    <input class="text-field" data-label="Google analytics ID" name="webroot/google-analytics-id" />
   </div>
 </div>
