@@ -9,7 +9,7 @@ and open the template in the editor.
 */
 @import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,700);
 
-@media (min-width: 400px) {
+@media (min-width: 1px) and (max-width: 991px) {
   .panel.width-960 {
     width: 600px;
     margin: 0 auto;
