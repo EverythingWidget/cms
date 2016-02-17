@@ -7,8 +7,7 @@ namespace ew;
  *
  * @author Eeliya Rashidi
  */
-class Module
-{
+class Module {
 
   var $sectionName;
   protected $resource = null;
@@ -26,15 +25,13 @@ class Module
    * 
    * @param App $app An instance of owener app of this section
    */
-  public function __construct($app)
-  {
+  public function __construct($app) {
     $this->app = $app;
     $this->initParameters();
     $this->current_class = new \ReflectionClass($this);
   }
 
-  public function init()
-  {
+  public function init() {
     $this->install_assets();
 
     $this->pre_processors = $this->get_pre_processors();
@@ -42,8 +39,7 @@ class Module
     $this->install_permissions();
   }
 
-  public function get_resource()
-  {
+  public function get_resource() {
     if (!isset($this->resource))
       throw new \Exception("Resource can't be NULL");
     return $this->resource;
@@ -53,64 +49,52 @@ class Module
    * Return the app instance that used to create section instance
    * @return \ew\App The app of this section
    */
-  public function get_app()
-  {
+  public function get_app() {
     return $this->app;
   }
 
-  function initParameters()
-  {
+  function initParameters() {
     
   }
 
   /**
    * Override this method to include all the external resource that you are going to use in this module
    */
-  protected function install_assets()
-  {
+  protected function install_assets() {
     
   }
 
   /**
    * Override this method to registare your plugins
    */
-  protected function install_permissions()
-  {
+  protected function install_permissions() {
     
   }
 
-  public function is_unathorized_method_invoke()
-  {
+  public function is_unathorized_method_invoke() {
     return $this->unauthorized_method_invoke;
   }
 
   /**
    * Override this method and register your pre processors
    */
-  protected function get_pre_processors()
-  {
+  protected function get_pre_processors() {
     return [];
   }
 
-  public function add_pre_processor($pre_rocessor)
-  {
-    if (!in_array($pre_rocessor, $this->pre_processors))
-    {
+  public function add_pre_processor($pre_rocessor) {
+    if (!in_array($pre_rocessor, $this->pre_processors)) {
       $this->pre_processors[] = $pre_rocessor;
     }
   }
 
-  public function run_pre_processors($verb, $method_name, $parameters)
-  {
-    for ($i = 0, $len = count($this->pre_processors); $i < $len; $i++)
-    {
+  public function run_pre_processors($verb, $method_name, $parameters) {
+    for ($i = 0, $len = count($this->pre_processors); $i < $len; $i++) {
       $result = $this->pre_processors[$i]->process($this, $verb, $method_name, $parameters);
-      if ($result === true)
-      {
+      if ($result === true) {
         continue;
       }
-      else
-      {
+      else {
         return ($result === false || $result === null) ?
                 \EWCore::log_error(400, "API request is not executed", [
                     "Pre processor has stopped the process: " . get_class($this->pre_processors[$i]),
@@ -121,25 +105,20 @@ class Module
     return true;
   }
 
-  public function process_request($verb, $method_name, $parameters = null)
-  {
-    if (!$verb)
-    {
+  public function process_request($verb, $method_name, $parameters = null) {
+    if (!$verb) {
       return \EWCore::log_error(400, "Wrong command: Request method is not defined");
     }
     $parameters['_verb'] = $verb;
 
-    if (!$method_name)
-    {
+    if (!$method_name) {
       return \EWCore::log_error(400, "Wrong command: {$this->app->get_root()}/{$this->current_class->getShortName()}. Method can not be null.");
     }
 
-    if (preg_match('/(.*)\.(.*)?/', $method_name))
-    {
+    if (preg_match('/(.*)\.(.*)?/', $method_name)) {
       $path = EW_PACKAGES_DIR . '/' . $this->app->get_root() . '/' . $this->current_class->getShortName() . '/' . $method_name;
     }
-    else if (method_exists($this, $method_name))
-    {
+    else if (method_exists($this, $method_name)) {
       //ob_start();
       return $this->invoke_method($verb, $method_name, $parameters);
       //return ob_get_clean();
@@ -147,31 +126,26 @@ class Module
     //}
 
     $this->current_method_args = NULL;
-    if ($path && file_exists($path))
-    {
+    if ($path && file_exists($path)) {
       ob_start();
 
       include $path;
       return ob_get_clean();
     }
-    else if ($path)
-    {
+    else if ($path) {
       $tp = $this->app->get_root() . '/' . $this->current_class->getShortName() . '/' . $method_name;
       return \EWCore::log_error(404, "<h4>API not found</h4><p>API call: {$tp}</p>");
     }
-    else
-    {
+    else {
       return \EWCore::log_error(404, "API not found: {$method_name}");
     }
   }
 
-  private function invoke_method($verb, $method_name, $parameters)
-  {
+  private function invoke_method($verb, $method_name, $parameters) {
     // Run all the pre processors
     // If an error accures, then error will be returned
     $preProcessorsResult = $this->run_pre_processors($verb, $method_name, $parameters);
-    if ($preProcessorsResult !== true)
-    {
+    if ($preProcessorsResult !== true) {
       return $preProcessorsResult;
     }
     $db = \EWCore::get_db_connection();
@@ -181,21 +155,17 @@ class Module
     $functions_arguments = array();
     $this->current_method_args = array();
     $part_index = 0;
-    foreach ($params as $param)
-    {
+    foreach ($params as $param) {
       $temp = NULL;
       $param_name = $param->getName();
 
-      if (strpos($param_name, "_parts__") === 0)
-      {
+      if (strpos($param_name, "_parts__") === 0) {
         $temp = $parameters[str_replace("_parts__", "", $param_name)];
-        if (!isset($temp))
-        {
+        if (!isset($temp)) {
           $temp = $parameters["_parts"][$part_index++];
         }
       }
-      if (isset($parameters[$param_name]))
-      {
+      if (isset($parameters[$param_name])) {
         $temp = $parameters[$param_name];
       }
       $functions_arguments[] = $temp;
@@ -204,10 +174,10 @@ class Module
     $method_object->setAccessible(true);
     $command_result = $method_object->invokeArgs($this, $functions_arguments);
 
-    /*if (is_array($command_result))
-    {
+    /* if (is_array($command_result))
+      {
       $command_result = json_encode($command_result);
-    }*/
+      } */
     return $command_result;
   }
 
@@ -215,8 +185,7 @@ class Module
    * 
    * @param ew\PreProcess $preProcessObj An instance of pre process object
    */
-  public function registerPreProcesser($preProcessObj)
-  {
+  public function registerPreProcesser($preProcessObj) {
     
   }
 
@@ -224,8 +193,7 @@ class Module
    * Get the parameters which has been passed to the currently called command
    * @return array An array of parameters which have been passed to the currently called method
    */
-  protected function get_current_command_args()
-  {
+  protected function get_current_command_args() {
     return $this->current_method_args;
   }
 
@@ -233,13 +201,11 @@ class Module
    * Add parameters to the current command parameters
    * @param array $params An array in key, value format to be added to the current parameters
    */
-  protected function add_parameter($params)
-  {
+  protected function add_parameter($params) {
     $this->current_method_args = array_merge($this->current_method_args, $params);
   }
 
-  public function is_hidden()
-  {
+  public function is_hidden() {
     return false;
   }
 
@@ -248,18 +214,15 @@ class Module
    * Whenever user request a page from this section, He/She will see the corresponding title
    * @param type $page
    */
-  function setPageTitles($pageTitles)
-  {
+  function setPageTitles($pageTitles) {
     $this->pageTitles = $pageTitles;
   }
 
-  function getPageTitle()
-  {
+  function getPageTitle() {
     return $this->pageTitle;
   }
 
-  function getContent()
-  {
+  function getContent() {
     global $HOST_ROOT_DIR;
     if ($this->page)
       return $this->sectionName . '/' . $this->page;
@@ -267,39 +230,32 @@ class Module
       return $this->sectionName . '/index.php';
   }
 
-  public function get_param($param)
-  {
+  public function get_param($param) {
     return $this->request[$param];
   }
 
-  public function get_name()
-  {
+  public function get_name() {
     return $this->current_class->getShortName();
   }
 
-  public function index()
-  {
+  public function index() {
     $path = $this->app->get_root() . '/' . $this->get_section_name() . '/index.php';
     include $path;
   }
 
-  public function get_index()
-  {
+  public function get_index() {
     return "index.php";
   }
 
-  public function get_title()
-  {
+  public function get_title() {
     return null;
   }
 
-  public function get_description()
-  {
+  public function get_description() {
     return null;
   }
 
-  public function get_section_name()
-  {
+  public function get_section_name() {
     return $this->current_class->getShortName();
   }
 
@@ -310,11 +266,9 @@ class Module
    * @param string $function <p>The name of function that should be triggered whenever the command called</p>
    * @param Module $object [optional] <p><b>Section</b> object that contains the function</p>
    */
-  public function add_listener($command, $function, $object = null)
-  {
+  public function add_listener($command, $function, $object = null) {
     //self::$action_registry[$name][$command] = array("function" => $function, "class" => $object);
-    if (!$object)
-    {
+    if (!$object) {
       $object = $this;
     }
     //echo $command . "_listener";
@@ -323,8 +277,7 @@ class Module
         "object" => $object));
   }
 
-  public function register_content_component($key, $comp_object)
-  {
+  public function register_content_component($key, $comp_object) {
     //$ro = new ReflectionClass($this);
     //$defaults = ["componentObject" => $comp_object];
     //$defaults = array_merge($defaults, $comp_object);
@@ -338,10 +291,9 @@ class Module
    * @param type $key
    * @param type $default_value
    */
-  public function register_content_label($key, $default_value)
-  {
+  public function register_content_label($key, $default_value) {
     //$ro = new ReflectionClass($this);
-    $defaults = ["app" => $this->app->get_root(),
+    $defaults = ["app"     => $this->app->get_root(),
         "section" => $this->get_section_name(),
         "command" => 'ew_label_' . $key];
     $defaults = array_merge($defaults, $default_value);
@@ -354,15 +306,15 @@ class Module
    * @param type $id if of new section
    * @param type $form
    */
-  /*public function register_form($name, $id, $form, $resource = 'api')
-  {
+  /* public function register_form($name, $id, $form, $resource = 'api')
+    {
     $defaults = ["app" => $this->app->get_root(),
-        "resource" => $resource,
-        "module" => \EWCore::camelToHyphen($this->get_section_name()),
-        "method" => 'ew-form-' . $id];
+    "resource" => $resource,
+    "module" => \EWCore::camelToHyphen($this->get_section_name()),
+    "method" => 'ew-form-' . $id];
     $form_structure = array_merge($defaults, $form);
     \EWCore::register_object($name, $this->app->get_root() . '_' . $this->get_section_name() . '_' . $id, $form_structure);
-  }*/
+    } */
 
   /**
    * In order to EWCore can find the function which is binded to this feeder id, the function name should be defined in the follow format: ew_<b>[feeder_type]</b>_feeder_<b>[function_name]</b>
@@ -386,14 +338,16 @@ class Module
     \webroot\WidgetsManagement::add_widget_feeder($type, $this->app->get_root(), $id, $function_name);
     } */
 
-  public function register_content_type($type_name, $get, $get_list)
-  {
+  public function register_content_type($type_name, $get, $get_list) {
     
   }
 
-  public function register_permission($id, $description, $permissions)
-  {
+  public function register_permission($id, $description, $permissions) {
     \EWCore::register_permission($this->app->get_root(), \EWCore::camelToHyphen($this->current_class->getShortName()), \EWCore::camelToHyphen($id), $this->app->get_name(), $this->get_title(), $description, $permissions);
+  }
+
+  public function register_public_access($methods) {
+    \EWCore::register_public_access($this->app->get_root(), \EWCore::camelToHyphen($this->current_class->getShortName()), $methods);
   }
 
   /**
@@ -404,10 +358,8 @@ class Module
    * @param type $id 
    * @param array $parameters
    */
-  public function register_activity($id, $parameters)
-  {
-    if (!$parameters["compId"])
-    {
+  public function register_activity($id, $parameters) {
+    if (!$parameters["compId"]) {
       $parameters["compId"] = "AppsManagement";
     }
     $parameters["app"] = $this->app->get_root();
@@ -418,42 +370,38 @@ class Module
     \EWCore::register_object("ew-activity", "app-" . $this->app->get_root() . "/" . $this->current_class->getShortName() . "/" . $id, $parameters);
   }
 
-  private function save_setting($key = null, $value = null)
-  {
+  private function save_setting($key = null, $value = null) {
     $db = \EWCore::get_db_connection();
     $app_root = $this->app->get_root();
     $setting = $db->query("SELECT * FROM ew_settings WHERE `key` = '$app_root/$key' ") or die($db->error);
-    if ($user_info = $setting->fetch_assoc())
-    {
+    if ($user_info = $setting->fetch_assoc()) {
       $db->query("UPDATE ew_settings SET value = '$value' WHERE `key` = '$app_root/$key' ") or die($db->error);
       return TRUE;
     }
-    else
-    {
+    else {
       $db->query("INSERT INTO ew_settings(`key`, `value`) VALUES('$app_root/$key','$value')") or die($db->error);
       return TRUE;
     }
     return FALSE;
   }
 
-  /*protected function save_settings($params)
-  {
+  /* protected function save_settings($params)
+    {
     //$db = \EWCore::get_db_connection();
     if (!$params)
-      return \EWCore::log_error(400, "Please specify the paramaters");
+    return \EWCore::log_error(400, "Please specify the paramaters");
     $params = json_decode($params, TRUE);
     foreach ($params as $key => $value)
     {
-      //echo $key . " " . $value;
-      if (!$this->save_setting($key, $value))
-        return \EWCore::log_error(400, "The configuration has not been saved", ["key" => $key,
-                    "value" => $value]);
+    //echo $key . " " . $value;
+    if (!$this->save_setting($key, $value))
+    return \EWCore::log_error(400, "The configuration has not been saved", ["key" => $key,
+    "value" => $value]);
     }
-  }
+    }
 
-  public static function read_settings()
-  {
+    public static function read_settings()
+    {
     return \EWCore::read_settings($this->app->get_root());
-  }*/
-
+    } */
 }
