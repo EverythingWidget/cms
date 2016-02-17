@@ -1145,7 +1145,7 @@ class EWCore {
 
     $methods = array_map(function($str) {
       return str_replace('_', '-', $str);
-    },$methods);
+    }, $methods);
 
 
     self::$no_permission_needed[$permission_group] = $methods;
@@ -1667,6 +1667,19 @@ class EWCore {
   public static function testy($path) {
     echo var_dump($_REQUEST);
     return var_dump(static::call($path));
+  }
+
+  public static function file_force_contents($dir, $contents) {
+    $parts = explode('/', $dir);
+    $file = array_pop($parts);
+    $dir = '';
+    foreach ($parts as $part) {
+      if (!is_dir($dir .= "$part/")) {
+        mkdir($dir);
+      }
+    }
+
+    file_put_contents("$dir/$file", $contents);
   }
 
 }

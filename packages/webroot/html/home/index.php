@@ -17,8 +17,13 @@ $google_analytics_id = $currentAppConf["webroot/google-analytics-id"];
 $_SESSION['ROOT_DIR'] = EW_ROOT_DIR;
 $_REQUEST['cmdResult'] = '';
 
-//$WM = new admin\WidgetsManagement("WidgetsManagement", $_REQUEST);
-//$HTML_BODY = admin\WidgetsManagement::generate_view($_REQUEST["_uis"]);
+webroot\WidgetsManagement::add_html_script(["include" => "admin/public/js/lib/bootstrap.js"]);
+webroot\WidgetsManagement::add_html_script(["include" => "rm/public/js/gsap/TweenLite.min.js"]);
+webroot\WidgetsManagement::add_html_script(["include" => "rm/public/js/gsap/easing/EasePack.min.js"]);
+webroot\WidgetsManagement::add_html_script(["include" => "rm/public/js/gsap/jquery.gsap.min.js"]);
+webroot\WidgetsManagement::add_html_script(["include" => "rm/public/js/gsap/plugins/CSSPlugin.min.js"]);
+
+
 $VIEW = webroot\WidgetsManagement::generate_view($_REQUEST["_uis"]);
 $HTML_BODY = $VIEW["body_html"];
 $WIDGET_DATA = $VIEW["widget_data"];
@@ -87,7 +92,7 @@ $HTML_LINKS = webroot\WidgetsManagement::get_html_links();
             ]).push(arguments)
           }, i[r].l = 1 * new Date();
           a = s.createElement(o),
-            m = s.getElementsByTagName(o)[0];
+                  m = s.getElementsByTagName(o)[0];
           a.async = 1;
           a.src = g;
           m.parentNode.insertBefore(a, m)
@@ -105,12 +110,7 @@ $HTML_LINKS = webroot\WidgetsManagement::get_html_links();
     <?= $HTML_LINKS; ?>
     <?= $TEMPLATE_LINK; ?>      
 
-    <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
-    <script src="~admin/public/js/lib/bootstrap.js" defer></script> 
-    <script src="~rm/public/js/gsap/TweenLite.min.js" defer></script>
-    <script src="~rm/public/js/gsap/easing/EasePack.min.js" defer></script>
-    <script src="~rm/public/js/gsap/jquery.gsap.min.js" defer></script>
-    <script src="~rm/public/js/gsap/plugins/CSSPlugin.min.js" defer></script> 
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>    
 
     <script id="widget-data">
       (function () {
