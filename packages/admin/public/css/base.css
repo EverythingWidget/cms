@@ -2403,7 +2403,7 @@ textarea.text-field {
   text-shadow: 0 1px 1px #fff;
 }
 
-/*.ExitBtn {
+.ExitBtn {
   background-image: url(images/ExitBtn.png);
   background-repeat: no-repeat;
   width: 28px;
@@ -2421,7 +2421,7 @@ textarea.text-field {
 
 .ExitBtn:active {
   background-position: 0 -56px;
-}*/
+}
 
 .green,.green label,.green h1 {
   border-color: #63b900;

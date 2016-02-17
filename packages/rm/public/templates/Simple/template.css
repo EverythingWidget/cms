@@ -260,9 +260,9 @@ h1 {
   margin-top: 30px;
 }
 
-.github-buttons iframe {
+.widget.github-buttons iframe {
   display: inline-block;
-  padding: 15px;
+  border: none;
 }
 
 

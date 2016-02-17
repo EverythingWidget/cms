@@ -13,33 +13,27 @@ if (!isset($repo) || !isset($user)) {
 
 if ($widget_parameters["star"]) {
   ?>
-  <iframe src="https://ghbtns.com/github-btn.html?user=<?= $user ?>&repo=<?= $repo ?>&type=star&count=true&size=large"
-          frameborder="0"
-          scrolling="0"
-          width="180px" 
-          height="30px">
+  <iframe src="https://ghbtns.com/github-btn.html?user=<?= $user ?>&repo=<?= $repo ?>&type=star&count=true&size=large"          
+          width="180" 
+          height="30">
   </iframe>
   <?php
 }
 
 if ($widget_parameters["watch"]) {
   ?>
-<iframe src="https://ghbtns.com/github-btn.html?user=<?= $user ?>&repo=<?= $repo ?>&type=watch&count=true&size=large&v=2" 
-        frameborder="0" 
-        scrolling="0" 
-        width="180px" 
-        height="30px">  
+<iframe src="https://ghbtns.com/github-btn.html?user=<?= $user ?>&repo=<?= $repo ?>&type=watch&count=true&size=large&v=2"         
+        width="180" 
+        height="30">  
 </iframe>
   <?php
 }
 
 if ($widget_parameters["follow"]) {
   ?>
-<iframe src="https://ghbtns.com/github-btn.html?user=<?= $user ?>&type=follow&count=true&size=large" 
-        frameborder="0" 
-        scrolling="0" 
-        width="180px" 
-        height="30px">  
+<iframe src="https://ghbtns.com/github-btn.html?user=<?= $user ?>&type=follow&count=true&size=large"  
+        width="180" 
+        height="30">  
 </iframe>
   <?php
 }
