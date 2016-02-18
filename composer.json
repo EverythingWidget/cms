@@ -21,6 +21,7 @@
   "require-dev": {
     "illuminate/database": "*",
     "simple-validator/simple-validator": "dev-master",
-    "vlucas/valitron": "1.2.3"
+    "vlucas/valitron": "1.2.3",
+    "tedivm/jshrink": "~1.0"
   }
 }

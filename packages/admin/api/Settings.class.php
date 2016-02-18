@@ -17,15 +17,18 @@ class Settings extends \ew\Module {
     \EWCore::register_app("settings", $this);
     include_once 'models/ew_settings.php';
 
-    \EWCore::register_form("ew/ui/settings/general", "ew-admin-settings", ["title" => "EW Admin",
+    \EWCore::register_form("ew/ui/settings/general", "ew-admin-settings", ["title"   => "EW Admin",
         "content" => "",
-        "url" => "~admin/html/settings/settings-index.php"]);
+        "url"     => "~admin/html/settings/settings-index.php"]);
   }
 
   protected function install_permissions() {
+    $this->register_public_access([
+        'api/read_settings'
+    ]);
+
     $this->register_permission("settings", "User can view EW Admin general settings and configure them", [
         'api/save_settings',
-        'api/read_settings',
         'html/settings-index.php'
     ]);
   }
@@ -45,7 +48,7 @@ class Settings extends \ew\Module {
     $setting = $db_pdo->prepare('SELECT * FROM `ew_settings` WHERE `key`= ?');
     $setting->execute([$key]);
     $row_count = $setting->rowCount();
-    
+
     if ($row_count > 0) {
       $db_pdo = \EWCore::get_db_PDO();
       $stm = $db_pdo->prepare("UPDATE ew_settings SET value = ? WHERE `key`= ? ");
@@ -66,14 +69,14 @@ class Settings extends \ew\Module {
       foreach ($params as $key => $value) {
         if (!self::save_setting($key, $value)) {
           return [
-              status => "error",
+              status  => "error",
               message => "App configurations has NOT been saved, Please try again"
           ];
         }
       }
     }
-    return \ew\APIResourceHandler::to_api_response($params,[
-                "status" => "success",
+    return \ew\APIResourceHandler::to_api_response($params, [
+                "status"  => "success",
                 "message" => "App configurations has been saved succesfully"
     ]);
   }
@@ -86,6 +89,7 @@ class Settings extends \ew\Module {
     foreach ($settings as $set) {
       $rows[$set["key"]] = $set["value"];
     }
+    
     return $rows;
   }
 
@@ -117,7 +121,7 @@ class Settings extends \ew\Module {
     }
 
     return json_encode(array(
-        "id" => array_keys($lang_file["strings"]),
+        "id"   => array_keys($lang_file["strings"]),
         "text" => array_values($lang_file["strings"])));
   }
 
@@ -130,7 +134,7 @@ class Settings extends \ew\Module {
       $fp = file_put_contents($path, json_encode($lang_file, JSON_UNESCAPED_UNICODE));
 
       return json_encode(array(
-          status => "success",
+          status  => "success",
           message => "tr{The language file has been updated successfully}"));
     }
     return \EWCore::log_error(400, "Can't find the language file");

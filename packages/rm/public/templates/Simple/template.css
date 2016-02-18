@@ -7,14 +7,101 @@ and open the template in the editor.
     Created on : Mar 14, 2015, 12:56:29 PM
     Author     : Eeliya
 */
-@import url(https://fonts.googleapis.com/css?family=Ubuntu:400,300,700);
+@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,700);
+
+@media (min-width: 1px) and (max-width: 991px) {
+  .panel.width-960 {
+    width: 600px;
+    margin: 0 auto;
+  }
+
+  .panel.header {
+    width: 580px;
+  }
+
+  .timer .days-wrapper,
+  .timer .hours-wrapper,
+  .timer .minutes-wrapper,
+  .timer .seconds-wrapper {
+    width: 100px;
+    height: 100px;
+    font-size: 50px;
+    font-size: .8em;
+  }
+
+  .timer .days,
+  .timer .hours,
+  .timer .minutes,
+  .timer .seconds {
+    font-size: 50px;
+    line-height: 50px;
+    margin-top: 15px;
+    margin-bottom: -35px;
+  }
+}
+
+@media (min-width: 992px) {
+  .panel.width-960 {
+    width: 960px;
+    margin: 0 auto;
+
+  }
+
+  .panel.header {
+    width: 900px;
+  }
+
+  .timer .days-wrapper,
+  .timer .hours-wrapper,
+  .timer .minutes-wrapper,
+  .timer .seconds-wrapper {
+    width: 140px;
+    height: 140px;
+  }
+
+  .timer .days,
+  .timer .hours,
+  .timer .minutes,
+  .timer .seconds {
+    font-size: 60px;
+    line-height: 60px;  
+    margin-top: 30px;
+    margin-bottom: -30px;
+  }
+}
+
+@media (min-width: 1360px) {
+  .panel.header {
+    width: 1080px;
+  }
+
+  .timer .days-wrapper,
+  .timer .hours-wrapper,
+  .timer .minutes-wrapper,
+  .timer .seconds-wrapper {
+    width: 160px;
+    height: 160px;
+  }
+
+  .timer .days,
+  .timer .hours,
+  .timer .minutes,
+  .timer .seconds {
+    display: block;
+    font-size: 80px;
+    line-height: 80px;   
+    margin-top: 30px;
+    margin-bottom: -30px;
+    position: relative;
+  }
+}
 
 html {
   position: relative;
 } 
 
 html,body{
-  font-family: 'Ubuntu', sans-serif, Tahoma;
+  font-family: 'Source Sans Pro', sans-serif, Tahoma;
   padding:0px;
   font-size:1.2em;
   min-height: 100%;   
@@ -26,20 +113,16 @@ body {
   overflow-y: auto;
 }
 
-h1 {
-  font-weight: normal;
-}
-
 .panel.header {
   background-color: #fff;
   padding:15px;
   border-bottom:0px solid rgba(0,0,0,.35);
   min-height:70px;
-  box-shadow:0px 3px 7px rgba(0,0,0,.14), 0 8px 18px rgba(0,0,0,.1);
+  box-shadow:0px 5px 7px rgba(0,0,0,.03), 0 5px 15px rgba(0,0,0,.1);
   position: relative;
   z-index: 10;
   margin: 0 auto;
-  width: 1080px;
+
   border-bottom-left-radius: 16px;
   border-bottom-right-radius: 16px;
 }
@@ -62,7 +145,7 @@ h1 {
   z-index: 1;
 }
 
-.section p{font-size:1.1em;font-weight:300;}
+.section p{font-weight:300;}
 
 .block.footer {
   background-color:#ddd;
@@ -104,12 +187,6 @@ h1 {
 .panel.section:last-child {
 }
 
-.panel.width-960 {
-  width: 960px;
-  margin: 0 auto;
-
-}
-
 .widget.menu-bar{} 
 .menu-bar ul{list-style:none;margin:0px;overflow:hidden;padding:0;}
 .menu-bar li{float:left;margin-right:10px;}
@@ -117,15 +194,19 @@ h1 {
 .menu-bar a{display:block;padding:5px 15px;line-height:30px;border-radius:22px;border:2px solid transparent;color:#222;}
 .menu-bar a:hover{background-color:#ddd;}
 
-.widget.list{}
+.widget.list{
+  font-size: 1em;
+}
 
 .list h1 {
-  font-size: 1.2em;
+  font-size: 1em;
   margin: 0;
+  font-weight: normal;
 }
 
 .list p {
-  margin: 10px 0;
+  margin: 0;
+  margin-bottom: 10px;
 }
 
 .list ul {
@@ -149,7 +230,7 @@ h1 {
 .list .list-item-cell {
   display: block;
   overflow: hidden;
-  padding: 10px 15px;
+  padding: 15px 20px 5px;
 }
 
 .list .list-item-cell:last-child {
@@ -159,17 +240,17 @@ h1 {
 .list a {
   float: right;
   line-height:30px;
-  padding:12px 10px;
+  padding:4px 8px;
   margin-bottom:5px;
   color:#33ccff;
   font-weight: 500;
-  border-radius: 4px;
+  border-radius: 6px;
   text-align: center;
   text-transform: uppercase;
 }
 
 .list li:last-child a{margin-bottom:0px;}
-.list a:hover{background-color:#dff8ff}
+.list a:hover{background-color:#dff8ff; color:#22afef;}
 .list .active a{font-weight:bold;}
 
 .widget.ta-center {
@@ -187,17 +268,14 @@ h1 {
 .timer .hours-wrapper,
 .timer .minutes-wrapper,
 .timer .seconds-wrapper {
-  display: inline-block;
-  width: 160px;
-  height: 160px;
+  display: inline-block;  
   margin: 0 10px;
   text-align: center;
   color: #fff;/* browsers that don't support rgba */
   /* background: rgba(45,45,45,.7); */
-  font-size: 18px;
-  -moz-border-radius: 80px;
-  -webkit-border-radius: 80px;
-  border-radius: 80px;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  border-radius: 50%;
   box-shadow: 0 3px 5px rgba(0,0,0,.12), 0 1px 14px rgba(0,0,0,.16);
   position: relative;
   z-index: 1;
@@ -249,10 +327,6 @@ h1 {
 .timer .minutes,
 .timer .seconds {
   display: block;
-  font-size: 80px;
-  line-height: 80px;
-  margin-top: 30px;
-  margin-bottom: -30px;
   position: relative;
 }
 
@@ -263,6 +337,17 @@ h1 {
 .widget.github-buttons iframe {
   display: inline-block;
   border: none;
+  color: rgba(0,0,0,.9);
+}
+
+.widget.slogan h2{
+  margin: 0;
+  margin-bottom: 30px;
+  font-weight: 300;
+}
+
+.widget.welcome h1{
+  margin-bottom: 0;
 }
 
 

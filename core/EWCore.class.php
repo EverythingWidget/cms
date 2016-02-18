@@ -14,6 +14,7 @@ class EWCore {
   private static $registry = array();
   private static $action_registry;
   private static $permissions_groups = array();
+  private static $no_permission_needed = array();
   private static $loaders_installed = false;
   private static $plugins_initialized = false;
   private static $db_connection = null;
@@ -40,14 +41,14 @@ class EWCore {
     if ($database_config["database_library"] == TRUE) {
       static::$DB = new Illuminate\Database\Capsule\Manager;
       static::$DB->addConnection([
-          'driver' => 'mysql',
-          'host' => $database_config['host'],
-          'database' => $database_config['database'],
-          'username' => $database_config['username'],
-          'password' => $database_config['password'],
-          'charset' => 'utf8',
+          'driver'    => 'mysql',
+          'host'      => $database_config['host'],
+          'database'  => $database_config['database'],
+          'username'  => $database_config['username'],
+          'password'  => $database_config['password'],
+          'charset'   => 'utf8',
           'collation' => 'utf8_unicode_ci',
-          'prefix' => '',
+          'prefix'    => '',
       ]);
       static::$DB->setAsGlobal();
       static::$DB->bootEloquent();
@@ -168,7 +169,7 @@ class EWCore {
     $method_arguments = array();
     foreach ($arguments as $arg) {
       $temp = null;
-      if (/*$arg->getName() === "_data" || */$arg->getName() === "__input") {
+      if (/* $arg->getName() === "_data" || */$arg->getName() === "__input") {
         $method_arguments[] = $parameters;
         continue;
       }
@@ -397,13 +398,13 @@ class EWCore {
     foreach ($params as $key => $value) {
       if (!$this->save_setting("ew/" . $key, $value))
         return json_encode([
-            status => "error",
+            status  => "error",
             message => "Configurations has NOT been saved, Please try again"
         ]);
     }
 
     return json_encode([
-        status => "success",
+        status  => "success",
         message => "Configurations has been saved succesfully"
     ]);
   }
@@ -1117,17 +1118,17 @@ class EWCore {
     if (!array_key_exists($app_pack_name, self::$permissions_groups)) {
       self::$permissions_groups[$app_pack_name] = array(
           "appTitle" => $app_title,
-          "section" => array());
+          "section"  => array());
     }
     if (!array_key_exists($module_name, self::$permissions_groups[$app_pack_name]["section"])) {
       self::$permissions_groups[$app_pack_name]["section"][$module_name] = array(
           "sectionTitle" => $section_title,
-          "permission" => array());
+          "permission"   => array());
     }
     // If permissions for the specified id is null then initilize it
     $permission_info = array(
         "description" => $description,
-        "methods" => array());
+        "methods"     => array());
     if (!array_key_exists($id, self::$permissions_groups[$app_pack_name]["section"][$module_name]["permission"])) {
       self::$permissions_groups[$app_pack_name]["section"][$module_name]["permission"][$id] = $permission_info;
     }
@@ -1137,6 +1138,17 @@ class EWCore {
             }, $permissions
     ));
     self::$permissions_groups[$app_pack_name]["section"][$module_name]["permission"][$id] = $permission_info;
+  }
+
+  public static function register_public_access($app_pack_name, $module_name, $methods = array()) {
+    $permission_group = "$app_pack_name/$module_name";
+
+    $methods = array_map(function($str) {
+      return str_replace('_', '-', $str);
+    }, $methods);
+
+
+    self::$no_permission_needed[$permission_group] = $methods;
   }
 
   public static function register_category($id, $categories = array()) {
@@ -1176,12 +1188,12 @@ class EWCore {
               //echo $url;
               $allowed_activities["$app_name/$resource_name/$section_name/$method_name"] = [
                   "activityTitle" => $title,
-                  "app" => $app_name,
-                  "appTitle" => "tr:$app_name{" . $sections["appTitle"] . "}",
-                  "section" => $section_name,
-                  "sectionTitle" => "tr:$app_name{" . $sections_permissions["sectionTitle"] . "}",
-                  "url" => $url,
-                  "form" => $is_form
+                  "app"           => $app_name,
+                  "appTitle"      => "tr:$app_name{" . $sections["appTitle"] . "}",
+                  "section"       => $section_name,
+                  "sectionTitle"  => "tr:$app_name{" . $sections_permissions["sectionTitle"] . "}",
+                  "url"           => $url,
+                  "form"          => $is_form
               ];
             }
           }
@@ -1248,8 +1260,8 @@ class EWCore {
         $permissions_titles[$app_name]["section"][$section_name] = ["sectionTitle" => $sections_permissions["sectionTitle"]];
         foreach ($sections_permissions["permission"] as $permission_name => $permission_info) {
           $permissions_titles[$app_name]["section"][$section_name]["permission"][$permission_name] = [
-              "parent" => "$app_name.$section_name",
-              "title" => $permission_name,
+              "parent"      => "$app_name.$section_name",
+              "title"       => $permission_name,
               "description" => $permission_info["description"]
           ];
         }
@@ -1297,6 +1309,9 @@ class EWCore {
   public static function does_need_permission($app_name, $module_name = null, $method_name = null) {
     EWCore::init_sections_plugins();
 
+    if (isset(self::$no_permission_needed["$app_name/$module_name"]) && in_array($method_name, self::$no_permission_needed["$app_name/$module_name"]))
+      return "public-access";
+
     $pers = isset(self::$permissions_groups[$app_name]) ? self::$permissions_groups[$app_name]["section"] : false;
 
     if ($module_name === null) {
@@ -1340,13 +1355,13 @@ class EWCore {
     $apps = [];
     foreach ($apps_list as $app) {
       $apps[] = array(
-          "title" => "tr:{$app->get_app()->get_root()}" . "{" . $app->get_title() . "}",
-          "package" => '~' . $app->get_app()->get_root(),
-          "module" => EWCore::camelToHyphen($app->get_section_name()),
-          "file" => "index.php",
-          "className" => $app->get_section_name(),
-          "id" => EWCore::camelToHyphen($app->get_section_name()),
-          "url" => '~' . $app->get_app()->get_root() . '/' . EWCore::camelToHyphen($app->get_section_name()) . '/index.php',
+          "title"       => "tr:{$app->get_app()->get_root()}" . "{" . $app->get_title() . "}",
+          "package"     => '~' . $app->get_app()->get_root(),
+          "module"      => EWCore::camelToHyphen($app->get_section_name()),
+          "file"        => "index.php",
+          "className"   => $app->get_section_name(),
+          "id"          => EWCore::camelToHyphen($app->get_section_name()),
+          "url"         => '~' . $app->get_app()->get_root() . '/' . EWCore::camelToHyphen($app->get_section_name()) . '/index.php',
           "description" => "tr:{$app->get_app()->get_root()}" . "{" . $app->get_description() . "}");
     }
 
@@ -1360,7 +1375,7 @@ class EWCore {
 
     self::$action_registry[$name][$id] = array(
         "function" => $function,
-        "class" => $object);
+        "class"    => $object);
   }
 
   public static function deregister_action($name, $id) {
@@ -1425,11 +1440,11 @@ class EWCore {
     $res = array_replace_recursive($oldConf, $arr);
     if ($this->write_php_ini($res, $file_path))
       return json_encode(array(
-          status => "success",
+          status  => "success",
           message => "App configurations has been saved succesfully"));
     else
       return json_encode(array(
-          status => "error",
+          status  => "error",
           message => "App configurations has NOT been saved, Please try again"));
   }
 
@@ -1588,11 +1603,11 @@ class EWCore {
     }
     $error_content = array(
         "statusCode" => $header_code,
-        "code" => $header_code,
+        "code"       => $header_code,
         //"url" => $_REQUEST["_app_name"] . "/" . $_REQUEST["_section_name"] . "/" . $_REQUEST["_function_name"],
-        "url" => $_SERVER["REQUEST_URI"],
-        "message" => $message,
-        "reason" => $reason);
+        "url"        => $_SERVER["REQUEST_URI"],
+        "message"    => $message,
+        "reason"     => $reason);
     /* if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
       { */
 
@@ -1652,6 +1667,19 @@ class EWCore {
   public static function testy($path) {
     echo var_dump($_REQUEST);
     return var_dump(static::call($path));
+  }
+
+  public static function file_force_contents($dir, $contents) {
+    $parts = explode('/', $dir);
+    $file = array_pop($parts);
+    $dir = '';
+    foreach ($parts as $part) {
+      if (!is_dir($dir .= "$part/")) {
+        mkdir($dir);
+      }
+    }
+
+    file_put_contents("$dir/$file", $contents);
   }
 
 }
