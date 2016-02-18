@@ -15,7 +15,7 @@
     </script>
 <![endif]-->
 
-<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>       
+<script src="https://code.jquery.com/jquery-2.1.0.min.js"></script>       
 <script src="~rm/public/js/gsap/TweenLite.min.js"></script>
 <script src="~rm/public/js/gsap/TimelineLite.min.js"></script>
 <script src="~admin/public/js/lib/system.js"></script>  

@@ -281,10 +281,12 @@ class UsersManagement extends \ew\Module {
     while ($r = $result->fetch_assoc()) {
       $rows[] = $r;
     }
-    $db->close();
+    
     $out = array(
         "totalRows" => $totalRows['COUNT(*)'],
         "result" => $rows);
+    $db->close();
+    
     return json_encode($out);
   }
 
