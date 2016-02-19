@@ -53,6 +53,10 @@ class UsersManagement extends \ew\Module {
         "api/delete_group",
         "html/users-group-form.php:tr{New Group}",
         'html/' . $this->get_index()));
+    
+    $this->register_public_access([
+        "api/am-i-in"
+    ]);
 
     //$this->add_listener("admin-api/UsersManagement/get_user_by_id", "test_plugin");
   }
@@ -132,6 +136,10 @@ class UsersManagement extends \ew\Module {
     if (!$url)
       $url = '/';
     header("Location: $url");
+  }
+  
+  public function am_i_in(){
+    
   }
 
   public static function sign_up() {

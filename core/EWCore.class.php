@@ -1507,6 +1507,18 @@ class EWCore {
     }
   }
 
+  public static function get_comment_parameters($param, $source) {
+
+    $tokens = token_get_all($source);
+    foreach ($tokens as $token) {
+      if ($token[0] == T_COMMENT) {
+        //$matches[] = $token[1];
+        preg_match('/' . $param . ':\s?([^\n\r]*)/', $token[1], $matches);
+        return $matches[1];
+      }
+    }
+  }
+
   private static $apps_locales = "admin";
 
   public static function set_default_locale($app_name) {

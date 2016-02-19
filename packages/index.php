@@ -3,13 +3,14 @@
 ini_set('session.cookie_httponly', 1);
 session_start();
 header_remove("X-Powered-By");
-
+//$before = microtime(true);
 // 05 November, 2013
 // Do NOT touch this file unless you are expert in Everything Widget CMS
 // All contents inside the apps directory is reached throuth this file
 // parse app_name, section_name, function_name from url
 //$time_start = microtime(true);
 // ([^\/\s]{2,3}\/)?~?([^\/\s]*)\/?([^\/\s]*)?\/?([^\/\s]*)?\/?([^\/\s]*)?\/
+
 ob_start();
 require '../core/config/config.php';
 require '../core/config/database_config.php';
@@ -139,7 +140,10 @@ if (isset($elements[$parameter_index])) {
   $parameter_index++;
 }
 // Create instance of EWCore class 
-//global $EW;
+
+if (!ob_start("ob_gzhandler"))
+  ob_start();
+
 $EW = new \EWCore();
 
 // set default user group if no user group has been spacified
@@ -158,6 +162,7 @@ function translate($match) {
   return EWCore::translate_to_locale($match, $language);
 }
 
+
 // show the result
 if ($RESULT_CONTENT) {
   //$RESULT_CONTENT = preg_replace_callback("/\{\{([^\|]*)\|?([^\|]*)\}\}/", $callback, $RESULT_CONTENT);
@@ -168,4 +173,6 @@ if ($RESULT_CONTENT) {
   //$time = $time_end - $time_start;
   //echo  round($time,2) . " s";
 }
+//$after = microtime(true);
+//echo ($after-$before) . " sec/serialize\n";
 

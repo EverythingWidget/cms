@@ -529,8 +529,9 @@ class WidgetsManagement extends \ew\Module {
       $widget_parameters = $params;
       $params = json_encode($params);
     }
-    else if ($params)
+    else if ($params) {
       $widget_parameters = json_decode($params, true);
+    }
     //$widget_parameters = json_encode($params);
     $widget_title = WidgetsManagement::get_widget_details($widget_type)["title"];
     // Include widget content
@@ -656,17 +657,19 @@ class WidgetsManagement extends \ew\Module {
 
     $title = "";
     $description = "";
-    //print_r($tokens);
-    $title = EWCore::get_comment_parameter("title", $path);
-    $description = EWCore::get_comment_parameter("description", $path);
-    $feeder_type = EWCore::get_comment_parameter("feeder_type", $path);
+    $source = file_get_contents($path);
 
-    return array(
+    $title = \EWCore::get_comment_parameters("title", $source);
+    $description = \EWCore::get_comment_parameters("description", $source);
+    $feeder_type = \EWCore::get_comment_parameters("feeder_type", $source);
+
+    return [
         "name"        => $widget_type,
         "path"        => $widget_type,
         "title"       => $title,
         "description" => $description,
-        "feeder_type" => $feeder_type);
+        "feeder_type" => $feeder_type
+    ];
   }
 
   public static function get_widget_cp($widgetName = null) {
@@ -714,15 +717,15 @@ class WidgetsManagement extends \ew\Module {
 
   public static function generate_view($uisId, $index = 0, $no_data = false) {
     $RESULT_HTML = '';
-    $db = \EWCore::get_db_connection();
+    $db = \EWCore::get_db_PDO();
     if (!$no_data) {
       $no_data = false;
     }
 
     $statement = $db->prepare("SELECT structure FROM ew_ui_structures WHERE id = ? ") or die($db->error);
-    $statement->bind_param("s", $uisId);
-    $statement->execute();
-    $statement->bind_result($structure);
+
+
+    //$statement->bind_result($structure);
     //$rows = $blocks->fetch_assoc();
     // Create unigue set of ID's every time when generate_view is called
     $timestamp = time();
@@ -735,15 +738,9 @@ class WidgetsManagement extends \ew\Module {
     self::$current_timestamp = strval($timestamp);
     self::$panel_index = 0;
     self::$widget_index = 0;
-    if ($statement->fetch()) {
-      $structure_array = json_decode($structure, true);
-      //echo json_encode($rows["structure"]);
-      //echo json_decode(stripslashes($rows["structure"]));
-      /* if (json_last_error() != JSON_ERROR_NONE)
-        {
-        $res = json_decode(stripslashes($rows["structure"]), true);
-        var_dump(json_last_error_msg() );
-        } */
+    if ($statement->execute([$uisId])) {
+      $structure = $statement->fetch(\PDO::FETCH_NUM);
+      $structure_array = json_decode($structure[0], true);
     }
 
     if (isset($structure_array)) {
@@ -822,7 +819,8 @@ class WidgetsManagement extends \ew\Module {
       $minified_code = true;
     }
     else {
-      array_map('unlink', glob(EW_PACKAGES_DIR . '/rm/public/cache/' . "*"));
+      //echo "$cache_file_name";
+      //array_map('unlink', glob(EW_PACKAGES_DIR . '/rm/public/cache/' . "*"));
       foreach ($includes as $source) {
         $src = EW_PACKAGES_DIR . '/' . $source;
         $minified_code .= \JShrink\Minifier::minify(file_get_contents($src));

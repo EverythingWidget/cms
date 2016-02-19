@@ -23,7 +23,7 @@ webroot\WidgetsManagement::add_html_script(["include" => "rm/public/js/gsap/easi
 webroot\WidgetsManagement::add_html_script(["include" => "rm/public/js/gsap/jquery.gsap.min.js"]);
 webroot\WidgetsManagement::add_html_script(["include" => "rm/public/js/gsap/plugins/CSSPlugin.min.js"]);
 
-
+$VIEW = [];
 $VIEW = webroot\WidgetsManagement::generate_view($_REQUEST["_uis"]);
 $HTML_BODY = $VIEW["body_html"];
 $WIDGET_DATA = $VIEW["widget_data"];
@@ -110,7 +110,7 @@ $HTML_LINKS = webroot\WidgetsManagement::get_html_links();
     <?= $HTML_LINKS; ?>
     <?= $TEMPLATE_LINK; ?>      
 
-    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>    
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js" ></script>    
 
     <script id="widget-data">
       (function () {

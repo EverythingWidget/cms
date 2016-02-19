@@ -9,6 +9,10 @@ if ($_POST['username'] && !$_SESSION['login'])
    }
    else
    {
+     if($_POST['username'] && $_POST["password"])
+     {
+       $message = "tr{Wrong user name or password}";
+     }
       unset($_POST['username']);
    }
 }
@@ -39,7 +43,7 @@ $tabs = \EWCore::read_registry("ew-login-form");
                      EW CPanel
                   </h1>
                   <label style="text-align:center;">
-                     version 0.9
+                     version 0.9.2
                   </label>
                </div>
                <div class="col-xs-12 margin-bottom">

@@ -333,36 +333,11 @@ session_start();
 
     // Load inspector editor when the content of frame has been loaded
     this.editorIFrame.load(function () {
-      //EW.unlock(self.editorWindow);
       $(document.getElementById("fr").contentDocument.head).append("<style id='editor-style'>" + $("#editor-css").html() + "</style>");
       self.oldStructure = self.createContentHeirarchy();
       $("#template").off("change").change($.proxy(self.reloadFrame, self));
-      //$("#template").change($.proxy(self.reloadFrame, self));
       self.changeTemplate();
     });
-
-    // Adjust the width of preview window according to the screen resolution
-    /*$(window).resize(function () {
-     var eww = $(window).width() - 400;
-     var screen = "large";
-     if (eww >= 420)
-     {
-     screen = "mobile";
-     }
-     if (eww >= 800)
-     {
-     screen = "tablet";
-     }
-     if (eww >= 1100)
-     {
-     screen = "normal";
-     }
-     if (eww >= 1360)
-     {
-     screen = "large";
-     }
-     EW.setHashParameter("screen", screen, "neuis");
-     });*/
 
     // Destroy preference modal on close
     $.EW("getParentDialog", $("#ew-uis-editor")).on("close", function () {
@@ -380,15 +355,11 @@ session_start();
     });
 
     $("#uis-preference").on("refresh", function (e, data) {
-      if (data.id)
-      {
-        //EW.setFormData("#inspector_data", data);
+      if (data.id)      {
         $('#form-title').html('<span>tr{Edit}</span>' + data.name);
-        //alert(JSON.stringify(data));
         self.uisId = data.id;
         $("#uis-preference-actions .export-btn").attr("href", "~webroot/api/widgets-management/export-uis?uis_id=" + self.uisId);
         self.uisTemplate = data.template;
-        //console.log(data.template_settings)
         if (data.template_settings) {
           self.templateSettings = JSON.parse(data.template_settings);
         } else
@@ -403,10 +374,6 @@ session_start();
   }
 
   UISForm.prototype.setTemplateSettings = function (settings) {
-    /*if (typeof settings === "object")
-     {
-     settings = JSON.stringify(settings || {});
-     }*/
     this.templateSettings = settings || {};
   };
 
@@ -771,8 +738,9 @@ session_start();
   var repTimeout = repTimeout || null;
   UISForm.prototype.relocateGlassPanes = function () {
     var self = this;
-    if (document.getElementById("fr")) {
-      $.each(document.getElementById("fr").contentDocument.body.querySelectorAll(".widget-glass-pane"), function (i, el) {
+    var fr = document.getElementById("fr");
+    if (fr) {
+      $.each(fr.contentDocument.body && fr.contentDocument.body.querySelectorAll(".widget-glass-pane"), function (i, el) {
         var glass = $(el);
         var widgetContainer = glass.data("widget-element");
         var widget = widgetContainer.children().eq(0);
@@ -918,6 +886,7 @@ session_start();
       $.post("<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/get-template-settings-form", {
         path: template
       }, function (data) {
+        self.frameLoader.dispose();
         self.uisTemplate = template;
         self.templateSettingsForm.off("getData");
         self.templateSettingsForm.html(data);
@@ -1164,6 +1133,10 @@ session_start();
 
   UISForm.prototype.reloadFrame = function (t) {
     var url = !($("#perview_url").val) ? "index.php" : $("#perview_url").val();
+    this.frameLoader = System.UI.lock({
+      element: $.EW("getParentDialog", $("#ew-uis-editor"))[0],
+      akcent: "loader center"
+    }, .5);
     //EW.lock($("#editor-container"));
     //$("#inspector-panel").empty();
     $("#inspector-editor > .items").empty();
