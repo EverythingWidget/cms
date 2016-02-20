@@ -28,7 +28,6 @@ function get_properties($form_config, $form_id)
    return ob_get_clean();
 }
 
-$tabsDefault = EWCore::read_registry("ew-article-form-default");
-$tabs = EWCore::read_registry("ew-article-form-tab");
+$tabs = EWCore::read_registry("ew/ui/form/content/tab");
 
 include 'forms-parts/content-base.php';

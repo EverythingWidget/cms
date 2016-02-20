@@ -114,7 +114,7 @@ function script()
   return ob_get_clean();
 }
 
-EWCore::register_form("ew-content-form-proerties", "category-properties", ["content" => inputs()]);
+EWCore::register_form("ew/ui/form/content/properties", "category-properties", ["content" => inputs()]);
 echo admin\ContentManagement::create_content_form(["formTitle" => "Folder",
     "formId" => "category-form",
     "contentType" => "folder",

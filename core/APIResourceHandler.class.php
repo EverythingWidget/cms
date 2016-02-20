@@ -87,22 +87,9 @@ class APIResourceHandler extends ResourceHandler {
                     "Access Denied" => "$app_name/$module_class_name/$method_name")));
       }
 
-      /* if (\admin\UsersManagement::user_has_permission($app_name, 'api', $module_name, $command_name))
-        {
-        // add _file as the _parts into the parameters list
-        $parameters["_parts"] = array_slice(explode('/', $parameters["_file"]), 1);
-        $app_section_object = new $real_class_name($app);
-        $result = $app_section_object->process_request($verb, $method_name, $parameters);
-        }
-        else
-        {
-        return \EWCore::log_error(403, "You do not have corresponding permission to invode this api request", array(
-        "Access Denied" => "$app_name/$module_class_name/$method_name"));
-        } */
+      $api_listeners = \EWCore::read_registry("$app_name/$resource_name/$module_name/$command_name");
 
-      $listeners = \EWCore::read_registry("$app_name/$resource_name/$module_name/$command_name");
-
-      if (isset($listeners) && !is_array($result)) {
+      if (isset($api_listeners) && !is_array($result)) {
 
         $converted_result = json_decode($result, true);
         if (json_last_error() === JSON_ERROR_NONE) {
@@ -112,7 +99,7 @@ class APIResourceHandler extends ResourceHandler {
 
       try {
         // Call the listeners with the same data as the command data
-        if (isset($listeners)) {
+        if (isset($api_listeners)) {
           if (!is_array($result)) {
             $converted_result = json_decode($result, true);
             if (json_last_error() === JSON_ERROR_NONE) {
@@ -120,10 +107,10 @@ class APIResourceHandler extends ResourceHandler {
             }
           }
 
-          foreach ($listeners as $id => $listener) {
+          foreach ($api_listeners as $id => $listener) {
             if (method_exists($listener["object"], $listener["method"])) {
               $listener_method_object = new \ReflectionMethod($listener["object"], $listener["method"]);
-              $arguments = \EWCore::create_arguments($listener_method_object, $parameters);
+              $arguments = \EWCore::create_arguments($listener_method_object, $parameters, $result);
 
               $listener_result = $listener_method_object->invokeArgs($listener["object"], $arguments);
 
@@ -143,7 +130,6 @@ class APIResourceHandler extends ResourceHandler {
           return json_encode($result);
         }
       }
-      //var_dump($result);
       return $result;
     }
     else {

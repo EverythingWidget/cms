@@ -31,6 +31,17 @@ class WidgetsManagement extends \ew\Module {
     ob_start();
     include EW_PACKAGES_DIR . '/webroot/html/widgets-management/link-chooser-uis.php';
     $this->link_chooser_form = ob_get_clean();
+
+    ob_start();
+    include EW_PACKAGES_DIR . '/webroot/html/widgets-management/uis-tab.php';
+    $uis_content_tab = ob_get_clean();
+
+    EWCore::register_form("ew/ui/form/content/tab", "uis-tab", [
+        "title" => "UI",
+        "form"  => $uis_content_tab
+    ]);
+    $this->add_listener("admin/api/content-management/update-folder", "call_on_folder_update");
+    $this->add_listener("admin/api/content-management/contents", "call_on_folder_get");
   }
 
   protected function install_permissions() {
@@ -71,21 +82,6 @@ class WidgetsManagement extends \ew\Module {
         "html/ne-uis.php",
         'html/' . $this->get_index()));
 
-    //$this->register_form("ew-article-form-tab", "uis-tab", ["title" => "UI"]);
-    //$this->register_form("ew-category-form-tab", "uis-tab", ["title" => "UI"]);
-    //EWCore::register_action("ew-category-action-add", "WidgetsManagement.category_action_add", "category_action_update", $this);
-    //EWCore::register_action("ew-category-action-update", "WidgetsManagement.category_action_update", "category_action_update", $this);
-    //EWCore::register_action("ew-category-action-get", "WidgetsManagement.category_action_get", "category_action_get", $this);
-    //$this->add_listener("admin/api/ContentManagement/add_category", "category_action_update");
-    //$this->add_listener("admin/api/ContentManagement/update_category", "category_action_update");
-    //$this->add_listener("admin/api/ContentManagement/get_category", "category_action_get");
-    //EWCore::register_action("ew-article-action-add", "WidgetsManagement.article_action_add", "article_action_update", $this);
-    //EWCore::register_action("ew-article-action-update", "WidgetsManagement.article_action_update", "article_action_update", $this);
-    //EWCore::register_action("ew-article-action-get", "WidgetsManagement.article_action_get", "article_action_get", $this);
-    //$this->add_listener("admin/api/ContentManagement/add_article", "article_action_update");
-    //$this->add_listener("admin/api/ContentManagement/update_article", "article_action_update");
-    //$this->add_listener("admin/api/ContentManagement/get_article", "article_action_get");
-    //$this->add_listener("admin/api/UsersManagement/update_user", "article_action_get");
 
     $this->register_permission("export-uis", "User can export UIS", array(
         "api/export_uis",
@@ -95,6 +91,25 @@ class WidgetsManagement extends \ew\Module {
         "html/ne-uis.php"));
 
     //$this->register_content_label("uis", "");
+  }
+
+  public function call_on_folder_update($id, $WidgetManagement_pageUisId) {
+    if (isset($id) && $WidgetManagement_pageUisId) {
+      $this->set_uis("/folder/" . $id, $WidgetManagement_pageUisId);
+    }
+    else {
+      $this->set_uis("/folder/" . $id, null);
+    }
+  }
+
+  public function call_on_folder_get($__response_data) {
+    if (isset($__response_data["data"]) && $__response_data["data"]["id"]) {
+      $uis_id = $__response_data["data"]["id"];
+      $page_uis = json_decode($this->get_path_uis("/folder/$uis_id"), true);
+      $__response_data["data"]["WidgetManagement_pageUisId"] = ($page_uis["id"]) ? $page_uis["id"] : "";
+      $__response_data["data"]["WidgetManagement_name"] = ($page_uis["name"]) ? $page_uis["name"] : "Inherit/Default";
+    }
+    return $__response_data;
   }
 
   public function get_templates() {
@@ -499,8 +514,9 @@ class WidgetsManagement extends \ew\Module {
    * @param String $class class name
    */
   public static function set_widget_style_class($class) {
-    if (!$class)
+    if (!$class) {
       return false;
+    }
     self::$widget_style_class.="$class ";
   }
 
@@ -520,9 +536,10 @@ class WidgetsManagement extends \ew\Module {
    */
   public static function open_widget($widget_id, $widget_type, $style_class, $widget_style_class, $style_id, $params, $no_data = false) {
     // Empty widget style class when creating a widget
-    $result_html = '';
-    if ($style_id)
+    $__widget_html_output = '';
+    if ($style_id) {
       $WIDGET_STYLE_ID = "id='$style_id'";
+    }
     //echo $params;
 
     if (is_array($params)) {
@@ -538,8 +555,8 @@ class WidgetsManagement extends \ew\Module {
     if (file_exists(EW_WIDGETS_DIR . '/' . $widget_type . '/index.php')) {
       ob_start();
       include EW_WIDGETS_DIR . '/' . $widget_type . '/index.php';
-      $widget_content = ob_get_clean();
-      $widget_content = preg_replace('/\{\$widget_id\}/', $widget_id, $widget_content);
+      $widget_content_raw = ob_get_clean();
+      $widget_content = preg_replace('/\{\$widget_id\}/', $widget_id, $widget_content_raw);
     }
     // Add widget style class which specified with UIS editor to the widget
     self::set_widget_style_class($widget_style_class);
@@ -551,13 +568,13 @@ class WidgetsManagement extends \ew\Module {
     $widget_type_string = "data-widget-type='$widget_type'";
     $widget_title_string = "data-widget-title='$widget_title'";
     //}
-    $result_html.= "<div class='widget-container $style_class' data-widget-container='true'>";
-    $result_html.= "<div class='widget $WIDGET_STYLE_CLASS' $WIDGET_STYLE_ID data-widget-id='$widget_id' $widget_type_string $widget_title_string data-widget='true'>";
-    $result_html.= $widget_content;
+    $__widget_html_output.= "<div class='widget-container $style_class' data-widget-container='true'>";
+    $__widget_html_output.= "<div class='widget $WIDGET_STYLE_CLASS' $WIDGET_STYLE_ID data-widget-id='$widget_id' $widget_type_string $widget_title_string data-widget='true'>";
+    $__widget_html_output.= $widget_content;
     self::$widget_style_class = "";
     self::add_widget_data($widget_id, $params);
 
-    return $result_html;
+    return $__widget_html_output;
   }
 
   public static function close_widget() {

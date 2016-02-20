@@ -61,7 +61,7 @@
                         $.post("~admin/api/content-management/get-article", {
                            articleId: content.id
                         }, function (response) {
-                           ContentForm.setData(response.data);
+                           ContentForm.setData(response.data[0]);
                         }, "json");
                      });
                   }

@@ -1,5 +1,8 @@
 <?php
-
+//$before = microtime(true);
+/*echo '<pre>' . var_export($_SERVER, true) . '</pre>';
+echo '<pre>' . var_export($_REQUEST, true) . '</pre>';
+die();*/
 ini_set('session.cookie_httponly', 1);
 session_start();
 header_remove("X-Powered-By");

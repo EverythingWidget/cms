@@ -121,10 +121,10 @@ class EWCore {
     return static::process_request_command($parts[0], $parts[1], $parts[2], $parts[3], $pars);
   }
 
-  public static function process_request_command($package, $resource_type, $section_name, $function_name, $parameters) {
+  public static function process_request_command($package, $resource_type, $module_name, $method_name, $parameters) {
     if (!$package /* || !$section_name || !$function_name */) {
-      $RESULT_CONTENT = EWCore::log_error(400, "Wrong command");
-      return $RESULT_CONTENT;
+      $response_data = EWCore::log_error(400, "Wrong command");
+      return $response_data;
     }
 
     //echo " $app_name  $section_name  $function_name";
@@ -133,8 +133,8 @@ class EWCore {
     //echo $real_class_name;
     $parameters["_app_name"] = $package;
     $parameters["_resource_type"] = $resource_type;
-    $parameters["_module_name"] = $section_name;
-    $parameters["_method_name"] = $function_name;
+    $parameters["_module_name"] = $module_name;
+    $parameters["_method_name"] = $method_name;
     $parameters["_parts"] = array_slice(explode('/', $parameters["_file"]), 1);
 
     //print_r($parameters);
@@ -144,9 +144,9 @@ class EWCore {
       $function_name = "index";
       $parameters['_function_name'] = $function_name;
       } */
-    if ($section_name == "EWCore") {
+    if ($module_name == "EWCore") {
       $EW = new \EWCore();
-      $RESULT_CONTENT = $EW->process($parameters);
+      $response_data = $EW->process($parameters);
     }
     else {
       $class_exist = false;
@@ -155,22 +155,73 @@ class EWCore {
         // Create an instance of section with its parent App
         $app_object = new $real_class_name;
         $class_exist = true;
-        $RESULT_CONTENT = $app_object->process_command($package, $resource_type, $section_name, $function_name, $parameters);
+        $response_data = $app_object->process_command($package, $resource_type, $module_name, $method_name, $parameters);
+
+        /* $listeners = \EWCore::read_registry("$package/$resource_type/$module_name/$method_name");
+
+          if (isset($listeners) && !is_array($response_data)) {
+          $converted_result = json_decode($response_data, true);
+          if (json_last_error() === JSON_ERROR_NONE) {
+          $converted = true;
+          $response_data = $converted_result;
+          }
+          }
+
+          try {
+          // Call the listeners with the same data as the command data
+          if (isset($listeners)) {
+          if (!is_array($response_data)) {
+          $converted_result = json_decode($response_data, true);
+          if (json_last_error() === JSON_ERROR_NONE) {
+          $response_data = $converted_result;
+          }
+          }
+
+          foreach ($listeners as $id => $listener) {
+          if (method_exists($listener["object"], $listener["method"])) {
+          $listener_method_object = new \ReflectionMethod($listener["object"], $listener["method"]);
+          $arguments = \EWCore::create_arguments($listener_method_object, $parameters, $response_data);
+
+          $listener_result = $listener_method_object->invokeArgs($listener["object"], $arguments);
+
+          if (isset($listener_result)) {
+          $response_data = array_merge($response_data, $listener_result);
+          }
+          }
+          }
+          }
+          }
+          catch (Exception $e) {
+          echo $e->getTraceAsString();
+          }
+
+          if ($converted) {
+
+          if (is_array($response_data)) {
+          return json_encode($response_data);
+          }
+          } */
       }
       else {
         return \EWCore::log_error(404, "<h4>App not found</h4><p>Requested app `$package`, not found</p>");
       }
     }
-    return $RESULT_CONTENT;
+
+    return $response_data;
   }
 
-  public static function create_arguments($method, $parameters) {
+  public static function create_arguments($method, $parameters, $response_data) {
     $arguments = $method->getParameters();
     $method_arguments = array();
     foreach ($arguments as $arg) {
       $temp = null;
-      if (/* $arg->getName() === "_data" || */$arg->getName() === "__input") {
+      if (/* $arg->getName() === "_data" || */$arg->getName() === "__parameters") {
         $method_arguments[] = $parameters;
+        continue;
+      }
+
+      if ($arg->getName() === "__response_data") {
+        $method_arguments[] = $response_data;
         continue;
       }
 
@@ -1610,7 +1661,7 @@ class EWCore {
    */
   public static function log_error($header_code = 400, $message, $reason = NULL, $send_header = TRUE) {
     if ($send_header) {
-      //http_response_code($header_code);
+      http_response_code($header_code);
       header('Content-Type: application/json');
     }
     $error_content = array(

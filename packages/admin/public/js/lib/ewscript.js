@@ -404,6 +404,7 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler) {
   }
 
   var setInputData = function (key, val, form) {    
+    //alert(key + " "+val)
     if ("string" === typeof key)
       key = key.replace(/(:|\.|\[|\]|,|\/)/g, "\\$1");
     
@@ -489,11 +490,11 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler) {
 
   $.each(jsonData, function (key, val) {
     //alert(typeof(val) + " " + key);
-    if (typeof (val) == "object" && typeof (key) && val)
+    if (val && typeof (val) === "object")
     {
-      $.each(val, function (key1, val1) {
-        setInputData(key1, val1, form);
-      });
+      //$.each(val, function (key1, val1) {
+        setInputData(key, val, form);
+      //});
     } else
       setInputData(key, val, form);
   });

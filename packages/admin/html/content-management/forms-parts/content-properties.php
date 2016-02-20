@@ -18,7 +18,7 @@
    </div>
    <?php
    // App custom inputs
-   $input_groups = EWCore::read_registry("ew-content-form-proerties");
+   $input_groups = EWCore::read_registry("ew/ui/form/content/properties");
    foreach ($input_groups as $id => $inputs)
    {
       echo "<div class=row><div class='col-xs-12'><h3>{$inputs["title"]}</h3></div></div>";
