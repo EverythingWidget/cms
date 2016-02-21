@@ -19,9 +19,9 @@
     "php": ">=5.5.0"
   },
   "require-dev": {
-    "illuminate/database": "*",
+    "illuminate/database": "5.2.19",
     "simple-validator/simple-validator": "dev-master",
     "vlucas/valitron": "1.2.3",
-    "tedivm/jshrink": "~1.0"
+    "tedivm/jshrink": "1.0"
   }
 }

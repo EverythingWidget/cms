@@ -295,7 +295,7 @@
           });
 
           TweenLite.to(this.xtag.indicator, .4, {
-            className: this.xtag.originClassName + "-indicator",
+            className: "-=destroy",
             ease: "Power2.easeInOut"
           });
         }
@@ -304,13 +304,18 @@
         var _this = this;
         if (_this.xtag.indicator.parentNode) {
           this.xtag.indicator.className = "ew-float-menu-indicator";
-
+          this.expanded = false;
           TweenLite.to(this.xtag.indicator, .3, {
             className: "+=destroy",
             onComplete: function () {
               if (flag)
                 _this.xtag.indicator.parentNode.removeChild(_this.xtag.indicator);
             }
+          });
+
+          TweenLite.to(_this, .4, {
+            className: "-=expand",
+            ease: "Power2.easeInOut"
           });
         }
       },
@@ -328,7 +333,7 @@
 
   xtag.register("system-float-menu", ewFloatMenu);
 
-  var ewUITemplate = {
+  var SystemUITemplate = {
     lifecycle: {
       created: function () {
         this.xtag.validate = false;
@@ -370,7 +375,7 @@
     }
   };
 
-  xtag.register("system-ui-view", ewUITemplate);
+  xtag.register("system-ui-view", SystemUITemplate);
 
   var sortableList = {
     lifecycle: {

@@ -378,11 +378,27 @@ class ContentManagement extends \ew\Module {
    * @return JSON json object which hold the result, if the opration is succesful get new row id with "id"
    */
   public function add_content($type, $title, $parent_id, $keywords, $description, $html_content, $featured_image, $labels, $date_created = null, $date_modified = null) {
-    $validator = \SimpleValidator\Validator::validate(compact(['title',
+    /* $validator = \SimpleValidator\Validator::validate(compact(['title',
+      'type',
+      'parent_id']), ew_contents::$rules);
+      if (!$validator->isSuccess())
+      return EWCore::log_error("400", "tr{Content has not been added}", $validator->getErrors()); */
+
+    $v = new \Valitron\Validator(compact(['title',
                 'type',
-                'parent_id']), ew_contents::$rules);
-    if (!$validator->isSuccess())
-      return EWCore::log_error("400", "tr{Content has not been added}", $validator->getErrors());
+                'parent_id'
+    ]));
+
+    $v->rules([
+        "required" => [
+            ["title"], ["type"]
+        ],
+        "integer"  => "parent_id"
+    ]);
+
+    if (!$v->validate()) {
+      return EWCore::log_error("400", "tr{Content has not been added}", $v->errors());
+    }
 
 
     $content = new ew_contents;
@@ -414,11 +430,21 @@ class ContentManagement extends \ew\Module {
   }
 
   public function update_content($id, $title, $type, $parent_id, $keywords, $description, $html_content, $featured_image, $labels) {
-    $validator = \SimpleValidator\Validator::validate(compact(['title',
+    $v = new \Valitron\Validator(compact(['title',
                 'type',
-                'parent_id']), ew_contents::$rules);
-    if (!$validator->isSuccess())
-      return EWCore::log_error("400", "tr{Content has not been added}", $validator->getErrors());
+                'parent_id'
+    ]));
+
+    $v->rules([
+        "required" => [
+            ["title"], ["type"]
+        ],
+        "integer"  => "parent_id"
+    ]);
+
+    if (!$v->validate()) {
+      return EWCore::log_error("400", "tr{Content has not been updated}", $v->errors());
+    }
 
     $content = ew_contents::find($id);
     $content->author_id = $_SESSION['EW.USER_ID'];
@@ -975,7 +1001,7 @@ class ContentManagement extends \ew\Module {
           $tumbnailURL = 'album-' . $parent_id . $path . $file_info["filename"] . ".thumb." . $file_info["extension"];
         }
         else if ($width <= 200) {
-          $tumbnailURL =  $path . $file;
+          $tumbnailURL = $path . $file;
         }
 
         $files[] = [

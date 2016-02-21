@@ -15,6 +15,13 @@
     activeRequests: {},
     onModuleLoaded: {},
     UI: {},
+    controllers: {},
+    controller: function (controllerId, controllerObject) {
+      if (!controllerObject) {
+        return this.controllers[controllerId];
+      }
+      return this.controllers[controllerId] = controllerObject;
+    },
     // Apps Management
     /* registerApp: function (id, object)
      {

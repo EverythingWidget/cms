@@ -51,7 +51,7 @@
 
         $.get(apps[app].url, function (response) {
           settingsCard.append(response);
-          EW.setFormData("#settings-cards",<?= EWCore::call("admin/api/settings/read-settings") ?>)
+          EW.setFormData("#settings-cards",<?= EWCore::call("admin/api/settings/read-settings") ?>);
         });
       }
     };
@@ -65,7 +65,6 @@
       function (response) {
         System.UI.components.body.EW().notify(response).show();
       });
-
     };
 
 
