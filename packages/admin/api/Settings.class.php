@@ -156,7 +156,7 @@ class Settings extends \ew\Module {
       die($e);
       //couldn't access Github API
     }
-    echo EW_ROOT_DIR . 'core/config';
+
     return \ew\APIResourceHandler::to_api_response($is_up_to_date);
   }
 
