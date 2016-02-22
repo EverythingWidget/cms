@@ -24,11 +24,13 @@ class Settings extends \ew\Module {
 
   protected function install_permissions() {
     $this->register_public_access([
-        'api/read_settings'
+        'api/read_settings',
+        'api/check_for_updates'
     ]);
 
     $this->register_permission("settings", "User can view EW Admin general settings and configure them", [
         'api/save_settings',
+        'api/do_update',
         'html/settings-index.php'
     ]);
   }
@@ -89,7 +91,7 @@ class Settings extends \ew\Module {
     foreach ($settings as $set) {
       $rows[$set["key"]] = $set["value"];
     }
-    
+
     return $rows;
   }
 
@@ -138,6 +140,85 @@ class Settings extends \ew\Module {
           message => "tr{The language file has been updated successfully}"));
     }
     return \EWCore::log_error(400, "Can't find the language file");
+  }
+
+  public function check_for_updates() {
+    $user = 'Eeliya';
+    $repository = 'EverythingWidget';
+    $localVersion = 'v0.9.0';
+
+    $updater = new PhpGithubUpdater($user, $repository);
+    try {
+
+      $is_up_to_date = $updater->next_version_info($localVersion);
+    }
+    catch (PguRemoteException $e) {
+      die($e);
+      //couldn't access Github API
+    }
+    echo EW_ROOT_DIR . 'core/config';
+    return \ew\APIResourceHandler::to_api_response($is_up_to_date);
+  }
+
+  public function do_update() {
+    $user = 'Eeliya';
+    $repository = 'EverythingWidget';
+    $localVersion = 'v0.8';
+
+    $updater = new PhpGithubUpdater($user, $repository);
+
+    $root = EW_ROOT_DIR;
+    $tempDir = EW_ROOT_DIR . 'temp-new-version-download';
+    echo EW_ROOT_DIR . '\n';
+
+    //download zip file onto your server in a temporary directory
+    /*try {
+      $archive = $updater->downloadVersion('v0.9.2', $tempDir);
+      echo $archive . '\n';
+    }
+    catch (PguRemoteException $e) {
+      die($e);
+      //couldn't download latest version
+    }
+
+    //extract zip file to the same temporary directory
+    try {
+
+      $updater->extractArchive($archive);
+      unlink($archive);
+    }
+    catch (PguRemoteException $e) {
+      die($e);
+      //the zip is corrupted or you don't have persmission to write to the extract location
+    }
+
+    //BACKUP: you could do a backup here
+    //get a description of the update to show to your user
+    //$updateTitle = $updater->getTitle($nextVersion);
+    //$updateDescription = $updater->getDescription($nextVersion);
+
+    try {
+      $update_folder_name = "";
+      $scanned_directory = array_values(array_diff(scandir($tempDir), array('..', '.')));
+      var_dump($scanned_directory);
+      $update_folder_name = $scanned_directory[0];
+      //note that $tempDir, $extractDir and $root were defined in the previous script
+      $result = $updater->moveFilesRecursive(
+              $tempDir . DIRECTORY_SEPARATOR . $update_folder_name, $root
+              , [
+          EW_ROOT_DIR . 'config'
+      ]);
+      rmdir($tempDir);
+    }
+    catch (PguOverwriteException $e) {
+      die($e);
+      //couldn't overwrite existing installation
+      // /!\ WARNING /!\ You should restore your backup here!
+    }*/
+    /*$host = $_SERVER['HTTP_HOST'];
+    $uri = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+    $extra = '~admin/';
+    header("Location: http://$host$uri/$extra");*/
   }
 
   //put your code here

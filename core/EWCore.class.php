@@ -25,14 +25,14 @@ class EWCore {
   public static $EW_APP = "ew-app";
 
   public function __construct() {
-    static::$languages = include('config/languages.php');
+    static::$languages = include('../config/languages.php');
     $this->apps_root = EW_PACKAGES_DIR . '/';
     $this->request = $_REQUEST;
     spl_autoload_register(array(
         $this,
         'autoload_core'));
 
-    $database_config = include('config/database_config.php');
+    $database_config = include('../config/database_config.php');
 
     $this->load_modules();
     self::$loaders_installed = true;
@@ -238,9 +238,9 @@ class EWCore {
    */
 
   public static function import_sql($file, $database_name = "", $delimiter = ';') {
-    $database_config = include('config/database_config.php');
+    $database_config = include('../config/database_config.php');
     if (!$database_config['database']) {
-      die("Please configure the core/config/database_config.php");
+      die("Please configure the /config/database_config.php");
     }
     // default database connection
     mysqli_report(MYSQLI_REPORT_STRICT);
@@ -286,7 +286,7 @@ class EWCore {
    * @return mysqli
    */
   public static function get_db_connection() {
-    $database_config = include('config/database_config.php');
+    $database_config = include('../config/database_config.php');
     // default database connection
     mysqli_report(MYSQLI_REPORT_STRICT);
 
@@ -310,7 +310,7 @@ class EWCore {
   }
 
   public static function get_db_PDO() {
-    $database_config = include('config/database_config.php');
+    $database_config = include('../config/database_config.php');
     // default database connection
     $dsn = 'mysql:dbname=' . $database_config['database'] . ';host=' . $database_config['host'] . ';charset=utf8';
     $user = $database_config['username'];

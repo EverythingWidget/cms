@@ -15,8 +15,8 @@ header_remove("X-Powered-By");
 // ([^\/\s]{2,3}\/)?~?([^\/\s]*)\/?([^\/\s]*)?\/?([^\/\s]*)?\/?([^\/\s]*)?\/
 
 ob_start();
-require '../core/config/config.php';
-require '../core/config/database_config.php';
+require '../config/config.php';
+/*require '../config/database_config.php';*/
 require '../core/EWCore.class.php';
 /* require '../core/modules/Valitron/Validator.php'; */
 ob_end_clean();
