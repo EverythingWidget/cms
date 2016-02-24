@@ -34,9 +34,9 @@ class EWCore {
 
     $database_config = include('../config/database_config.php');
 
-    $this->load_modules();
+    $this->load_vendors();
     self::$loaders_installed = true;
-    self::init_sections_plugins();
+    self::init_packages();
 
     if ($database_config["database_library"] == TRUE) {
       static::$DB = new Illuminate\Database\Capsule\Manager;
@@ -55,7 +55,7 @@ class EWCore {
     }
   }
 
-  public function load_modules() {
+  public function load_vendors() {
     //require 'modules/autoload.php';
     require '../vendor/autoload.php';
   }
@@ -337,7 +337,7 @@ class EWCore {
   }
 
   public static function get_action_registry() {
-    self::init_sections_plugins();
+    self::init_packages();
     return self::$action_registry;
   }
 
@@ -492,7 +492,7 @@ class EWCore {
 
   private static $existed_classes = array();
 
-  public static function init_sections_plugins() {
+  public static function init_packages() {
     if (!self::$loaders_installed) {
       spl_autoload_register([
           self,
@@ -1211,7 +1211,7 @@ class EWCore {
   }
 
   public static function read_activities() {
-    EWCore::init_sections_plugins();
+    EWCore::init_packages();
     $pers = self::$permissions_groups;
     $allowed_activities = array();
 
@@ -1277,7 +1277,7 @@ class EWCore {
   }
 
   public static function read_registry($name) {
-    EWCore::init_sections_plugins();
+    EWCore::init_packages();
     return isset(self::$registry[$name]) ? self::$registry[$name] : [];
   }
 
@@ -1290,17 +1290,17 @@ class EWCore {
    * 
    */
   public static function read_category_registry() {
-    EWCore::init_sections_plugins();
+    EWCore::init_packages();
     return self::$registry["ew-category"];
   }
 
   public static function read_permissions() {
-    EWCore::init_sections_plugins();
+    EWCore::init_packages();
     return json_encode(self::$permissions_groups);
   }
 
   public static function read_permissions_titles() {
-    EWCore::init_sections_plugins();
+    EWCore::init_packages();
     $pers = self::$permissions_groups;
     $permissions_titles = array();
     foreach ($pers as $app_name => $sections) {
@@ -1322,7 +1322,7 @@ class EWCore {
   }
 
   public static function read_permissions_ids() {
-    EWCore::init_sections_plugins();
+    EWCore::init_packages();
     $pers = self::$permissions_groups;
     $permissions_ids = array();
     foreach ($pers as $app_name => $sections) {
@@ -1337,7 +1337,7 @@ class EWCore {
   }
 
   public static function has_permission($app_name, $class_name) {
-    EWCore::init_sections_plugins();
+    EWCore::init_packages();
 
     $pers = self::$permissions_groups[$app_name . "." . $class_name];
     //$permissions_titles = array();
@@ -1358,7 +1358,7 @@ class EWCore {
    * @return mixed <b>FALSE</B> if there is no need for any permission or <b>permissionId</b> if there is need for permission
    */
   public static function does_need_permission($app_name, $module_name = null, $method_name = null) {
-    EWCore::init_sections_plugins();
+    EWCore::init_packages();
 
     if (isset(self::$no_permission_needed["$app_name/$module_name"]) && in_array($method_name, self::$no_permission_needed["$app_name/$module_name"]))
       return "public-access";
@@ -1435,7 +1435,7 @@ class EWCore {
   }
 
   public static function read_actions_registry($name) {
-    EWCore::init_sections_plugins();
+    EWCore::init_packages();
     return self::$action_registry[$name];
   }
 
@@ -1641,9 +1641,7 @@ class EWCore {
       "ar"];
 
   public static function get_language_dir($language) {
-    //echo "----".$language."-----";
-    //print_r(static::$rtl_languages);
-    if (array_search($language, static::$rtl_languages) == false) {
+    if (array_search($language, static::$rtl_languages) !== false) {
       return "rtl";
     }
     else {

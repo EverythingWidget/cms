@@ -115,13 +115,32 @@ body {
   }
 }
 
+.block.contact-us {
+  margin: 45px 0;
+}
+
+.block.light-grey {
+  background-color: #eee;
+}
+
+.block.footer {
+  background-color: $akcent-background-color;
+  min-height: 150px;
+  padding: 20px 0 50px;
+  
+  h2 {
+    margin-bottom: 0;
+    padding: 0 10px;
+  }
+}
+
 .panel.clearfix {
   margin: 0 auto;
 }
 
 .widget.title {
   font-size: 1.35em;
-  
+
 }
 
 .title h1 {
@@ -153,7 +172,7 @@ body {
     font-weight: 500;
   } 
 
-  a.selected {
+  .active > a, a.selected {
     color: $font-akcent-color;
   } 
 }
@@ -167,6 +186,48 @@ body {
 }
 
 .widget.right.nav-menu {
+  float: right;
+  ul {
+    li {
+      float: right;
+    }
+  }
+}
+
+.widget.nav-menu-footer {
+  font-size: 1em;
+  overflow: hidden;
+
+  ul {
+    @extend .content-box;
+    list-style: none;    
+    text-transform: uppercase;
+
+    li {      
+      padding: 10px;
+      line-height: 20px;
+    }
+  }   
+
+  a {
+    color: $font-color;
+    font-weight: 300;
+  } 
+
+  .active > a, a.selected {
+    color: $font-akcent-color;
+  } 
+}
+
+.rtl .widget.nav-menu-footer {
+  ul {
+    li {
+      float: right;
+    }
+  }   
+}
+
+.widget.right.nav-menu-footer {
   float: right;
   ul {
     li {
@@ -219,7 +280,7 @@ body {
     h2 {
       font-weight: 500;
     }
-    
+
     a {
       width: 100%;
       display: block;
@@ -232,10 +293,69 @@ body {
       text-align: center;
       transition: all .3s;
     }
-    
+
     a:hover {
       background-color: $font-akcent-color;
       color: #fff;
     }
   }
+}
+
+.widget.people {
+  
+  position: relative;
+  text-align: center;
+  margin: 45px 0; 
+  padding: 20px 15px;  
+  
+  * {
+    position: relative;
+    z-index: 1;
+  }
+
+  h2 {    
+    font-weight: normal;
+    color: $font-akcent-color;    
+  }
+
+  img {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background-color: #fff;
+    margin: 15px auto;  
+    display: block;
+    overflow: hidden;
+    border: 15px solid #fff;    
+  }
+}
+
+.people:before {
+  
+  content: '';
+  position: absolute;
+  background-color: #fff;
+  width: 200px;
+  height: 200px;
+  border-radius: 100%;
+  transition: all .3s;
+  z-index: 0;
+  margin-left: -100px;
+  left: 50%;
+  top: 35px;
+  box-shadow: 0 3px 5px rgba(0,0,0,.1), 0 5px 9px rgba(0,0,0,.1);    
+}
+
+.people:hover:before {
+  width: 100%;
+  height: 100%;
+  border-radius: 5%;
+  margin-left: 0;
+  left: 0;
+  top: 0;
+}
+
+
+.widget.footer-text-pages {
+  
 }
