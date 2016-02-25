@@ -2173,24 +2173,30 @@ function ExtendableList(element, cSettings) {
           oneValue = true;
           items.push(ci);
         }
+        
         el.val(v).change();
       }
 
       if (!oneValue) {
+        //alert(k+" "+v);
         if (!init) {
           // Create the list and set the value for the first key
           for (var i = 0; i < v.length; i++)
-          {
-            //alert(k+" "+typeof (v));
+          {            
+            //alert(k+" "+v[i]);
             ci = base.createItem();
             ci.find(":input[name='" + k + "']").val(v[i]).change();
+            
             items.push(ci);
             init = true;
           }
+          //console.log(items);
         } else {
+          //alert(k+" "+v);
           // Set the value for the other keys
           for (var i = 0; i < v.length; i++) {
             items[i].find(":input[name='" + k + "']").val(v[i]).change();
+            
           }
         }
       }

@@ -55,7 +55,7 @@
                } else {
                   langItem.find("a").on("click", function () {
                      $.post("~admin/api/content-management/get-article", {articleId: content.id}, function (response) {
-                        ContentForm.setData(response.data[0]);
+                        ContentForm.setData(response.data);
                      }, "json");
                   });
                }

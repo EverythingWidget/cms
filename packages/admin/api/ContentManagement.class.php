@@ -173,6 +173,7 @@ class ContentManagement extends \ew\Module {
           $field_value["link"][] = $this->get_node_link($field);
 
           $field_value["src"][] = $this->get_node_src($field);
+          $field_value["tag"][] = $field->tagName;
 
           $content_fields->{$field->getAttribute("content-field")} = $field_value;
         }
@@ -188,6 +189,10 @@ class ContentManagement extends \ew\Module {
               "src"     => [
                   $current_field_value["src"],
                   $this->get_node_src($field)
+              ],
+              "tag"     => [
+                  $current_field_value["tag"],
+                  $field->tagName
               ]
           ];
         }
@@ -196,7 +201,9 @@ class ContentManagement extends \ew\Module {
         $link = $this->get_node_link($field);
         $content_fields->{$field->getAttribute("content-field")} = ["content" => trim($html),
             "link"    => $link,
-            "src"     => $link];
+            "src"     => $link,
+            "tag"     => $field->tagName
+        ];
       }
     }
 
@@ -518,20 +525,21 @@ class ContentManagement extends \ew\Module {
     return \ew\APIResourceHandler::to_api_response([]);
   }
 
-  public function ew_list_feeder_folder($id, $token = 0, $size, $order_by = null) {
+  public function ew_list_feeder_folder($id, $token = 0, $size, $order_by = null, $_language = 'en') {
     if (!$token)
       $token = 0;
     if (!$size)
       $size = 30;
 
-    $articles = $this->contents_articles($id, $token, $size, $order_by);
+    $articles = $this->contents_articles($id, $token, $size, $order_by, $_language);
 
     $result = [];
     if (isset($articles["data"])) {
       foreach ($articles["data"] as $article) {
         $result[] = [
-            "id"   => $article["id"],
-            "html" => "{$article["content"]}"
+            "id"             => $article["id"],
+            "html"           => $article["content"],
+            "content_fields" => $article["content_fields"]
         ];
       }
     }
@@ -554,16 +562,19 @@ class ContentManagement extends \ew\Module {
 
   public function get_article($articleId) {
     //echo "$articleId";
+
     if (!$articleId) {
       return EWCore::log_error(400, 'tr{Article Id is requierd}');
     }
     $article = ew_contents::find($articleId, ['*',
                 \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
+
     if (!isset($article)) {
       return \EWCore::log_error(404, "Requested article not found", "article is not exist: $articleId");
     }
     $article = $article->toArray();
     $article["labels"] = $this->get_content_labels($articleId);
+
     return \ew\APIResourceHandler::to_api_response($article);
   }
 
@@ -613,7 +624,7 @@ class ContentManagement extends \ew\Module {
     ]);
   }
 
-  public function contents_articles($parent_id = null, $token, $size, $order_by = null) {
+  public function contents_articles($parent_id = null, $token, $size, $order_by = null, $_language = 'en') {
     if (!isset($token)) {
       $token = 0;
     }
@@ -624,6 +635,7 @@ class ContentManagement extends \ew\Module {
     // if there is no parent_id then select all the articles
     if (is_null($parent_id) && $parent_id != 0) {
       $articles = ew_contents::where('type', 'article')->orderBy('title')->get(['*',
+          'ew_contents.id',
           \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
 
       $data = array_map(function($e) {
@@ -638,16 +650,30 @@ class ContentManagement extends \ew\Module {
       $up_parent_id = isset($container_id['parent_id']) ? $container_id['parent_id'] : 0;
       if (isset($order_by)) {
         $articles = ew_contents::where('parent_id', '=', $parent_id)
+                ->join('ew_contents_labels', 'ew_contents.id', '=', 'ew_contents_labels.content_id')
                 ->where('type', 'article')
+                ->where('ew_contents_labels.key', 'admin_ContentManagement_language')
+                ->where('ew_contents_labels.value', $_language)
                 ->take($size)
                 ->skip($token)
                 ->orderBy("date_modified", $order_by)
                 ->get(['*',
+            'ew_contents.id',
             \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
       }
       else {
-        $articles = ew_contents::where('parent_id', '=', $parent_id)->where('type', 'article')->take($size)->skip($token)->get(['*',
-            \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
+        $articles = ew_contents::where('parent_id', '=', $parent_id)->where('type', 'article')
+                ->join('ew_contents_labels', 'ew_contents.id', '=', 'ew_contents_labels.content_id')
+                ->where('type', 'article')
+                ->where('ew_contents_labels.key', 'admin_ContentManagement_language')
+                ->where('ew_contents_labels.value', $_language)
+                ->take($size)
+                ->skip($token)
+                ->get([
+            '*',
+            'ew_contents.id',
+            \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")
+        ]);
       }
 
       $data = array_map(function($e) use ($up_parent_id) {

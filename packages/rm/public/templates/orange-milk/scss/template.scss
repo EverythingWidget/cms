@@ -24,11 +24,13 @@ and open the template in the editor.
 }
 
 $background-color: #fff;
-$akcent-background-color: #ddd;
-$font-color: #666;
+$akcent-background-color: #eee;
+$font-color: #444;
 //$font-akcent-color: #f50808;
 $font-akcent-color: #0BB4D1;
-$nav-bar-bg: rgba(0,0,0,.32);
+//$font-akcent-color: #FE9322;
+//$font-akcent-color: #69C923;
+$nav-bar-bg: rgba(255,255,255,.82);
 
 @media (min-width: 768px) {
   .panel.section {
@@ -36,14 +38,14 @@ $nav-bar-bg: rgba(0,0,0,.32);
   }
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 992px) {
 
   .panel.section {
-    width: 960px;  
+    width: 940px;  
   }
 }
 
-@media (min-width: 1280px) {
+@media (min-width: 1360px) {
 
   .panel.section {
     width: 1200px;  
@@ -73,7 +75,7 @@ body {
 .block.nav-bar {
   background-color: $nav-bar-bg;
   height: 80px;
-  margin: 30px 0;
+  margin: 0px 0;
   display: block;
   position: absolute;
   top: 0;
@@ -89,6 +91,23 @@ body {
 
 .block.section {
   position: relative;
+  padding-bottom: 60px;
+}
+
+.block.content {
+  margin-top: 120px;
+  padding-bottom: 120px;
+
+  font-size: 1.5em;
+
+  h2 {
+    font-size: 1.8em;
+    font-weight: 300;
+  }
+
+  p {
+
+  }
 }
 
 .block.daily-quote {
@@ -116,18 +135,33 @@ body {
 }
 
 .block.contact-us {
-  margin: 45px 0;
+  background-color: $font-akcent-color;
+  margin-top: 45px;
+  padding: 60px 0;
+  color: #fff;
+  font-weight: 300;
+
+  h1 {
+    font-weight: 300;
+    margin: 0;
+    font-size: 2.6em;
+  }
+
+  p {
+    font-size: 1.5em;
+  }
 }
 
 .block.light-grey {
   background-color: #eee;
+
 }
 
 .block.footer {
-  background-color: $akcent-background-color;
+  background-color: #ddd;
   min-height: 150px;
   padding: 20px 0 50px;
-  
+
   h2 {
     margin-bottom: 0;
     padding: 0 10px;
@@ -144,7 +178,7 @@ body {
 }
 
 .title h1 {
-  margin: 45px auto 0;
+  margin: 60px auto 0;
 }
 
 .widget.text-center {
@@ -162,18 +196,21 @@ body {
 
     li {
       float: left;
-      padding: 15px;
-      line-height: 50px;
+
     }
   }   
 
   a {
-    color: #fff;
-    font-weight: 500;
+    color: $font-color;
+    font-weight: normal;
+    padding: 15px;
+    line-height: 50px;
+    display: block;
   } 
 
   .active > a, a.selected {
-    color: $font-akcent-color;
+    background-color: $font-akcent-color;
+    color: #fff;
   } 
 }
 
@@ -195,7 +232,7 @@ body {
 }
 
 .widget.nav-menu-footer {
-  font-size: 1em;
+  font-size: 1.5em;
   overflow: hidden;
 
   ul {
@@ -205,7 +242,7 @@ body {
 
     li {      
       padding: 10px;
-      line-height: 20px;
+      line-height: 30px;
     }
   }   
 
@@ -222,7 +259,7 @@ body {
 .rtl .widget.nav-menu-footer {
   ul {
     li {
-      float: right;
+      text-align: right;
     }
   }   
 }
@@ -237,8 +274,9 @@ body {
 }
 
 .widget.slider {
-  border: 0px solid red;
   margin: 0 -15px;
+  height: 100%;
+  position: relative;
 }
 
 .slider .owl-controls {
@@ -249,15 +287,25 @@ body {
   z-index: 10;
 }
 
+.slider .owl-stage-outer {
+  height: 100% !important;    
+}
+
+.slider .owl-carousel, .slider .owl-stage, .slider .owl-item {
+  height: 100%;
+}
+
 .slider img {
-  width: auto;
-  max-width: 100%;
-  height: auto;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  bottom: 0;
+  position: absolute;
 }
 
 .widget.daily-quote {  
   margin: 0;
-  padding: 45px 15px;
+  padding-top: 60px;
   color: #fff;
   z-index: 1;
   text-align: center;
@@ -284,7 +332,7 @@ body {
     a {
       width: 100%;
       display: block;
-      color: #000;
+      color: $font-akcent-color;
       position: absolute;
       bottom: 0;
       padding: 15px 0;  
@@ -302,12 +350,12 @@ body {
 }
 
 .widget.people {
-  
+
   position: relative;
   text-align: center;
-  margin: 45px 0; 
+  margin: 30px 0; 
   padding: 20px 15px;  
-  
+
   * {
     position: relative;
     z-index: 1;
@@ -326,18 +374,25 @@ body {
     margin: 15px auto;  
     display: block;
     overflow: hidden;
-    border: 15px solid #fff;    
+    border: 10px solid #fff; 
+    transition: all .3s;
+  }
+}
+
+.rtl {
+  h2 {    
+    text-align: right;
   }
 }
 
 .people:before {
-  
+
   content: '';
   position: absolute;
   background-color: #fff;
   width: 200px;
   height: 200px;
-  border-radius: 100%;
+  border-radius: 100px;
   transition: all .3s;
   z-index: 0;
   margin-left: -100px;
@@ -349,13 +404,60 @@ body {
 .people:hover:before {
   width: 100%;
   height: 100%;
-  border-radius: 5%;
+  border-radius: 16px;
   margin-left: 0;
   left: 0;
   top: 0;
 }
 
+.people:hover img {
+  transform: scale(1.2);
+}
+
 
 .widget.footer-text-pages {
-  
+
+}
+
+.widget.contact-us-form {
+  display: block;
+  font-weight: 300;
+  font-size: 1.5em;  
+
+  .text-field {
+    width: 100%;
+    display: block;
+    border: none;
+    padding: 15px 20px;
+    background-color: #fff;
+    border: 2px solid transparent;
+  }
+
+  .text-field:focus {
+    border-color: $font-akcent-color;
+    outline: none;
+  }
+
+  label {
+    display: block;
+    padding-bottom: 5px;
+  }
+
+  .block-row {
+    padding: 5px 10px;
+  }
+
+}
+
+.block-row {
+  display: block;
+}
+
+.block-row:before,.block-row:after{
+  content: " ";
+  display: table;
+}
+
+.block-row:after {
+  clear: both;
 }
