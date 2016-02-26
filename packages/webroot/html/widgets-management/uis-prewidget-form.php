@@ -147,7 +147,7 @@ $panelId = $_REQUEST['panelId'];
     if (self.getWidgetData) {
       wp = $.extend($.parseJSON(wp), self.getWidgetData.apply(null, null));
     }
-    console.log(wp);
+    //console.log(wp);
     //alert(wp);
     var styleId = $("#style_id").val();
     var styleClass = $("#used-classes").text();
