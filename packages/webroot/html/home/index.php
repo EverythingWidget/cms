@@ -58,7 +58,9 @@ if (file_exists($template_php)) {
 // if template.js exist, then include it in HTML_SCRIPTS
 $template_js = EW_PACKAGES_DIR . '/rm/public/' . $_REQUEST["_uis_template"] . '/template.js';
 if (file_exists($template_js)) {
-  \webroot\WidgetsManagement::add_html_script('~rm/public/' . $_REQUEST["_uis_template"] . '/template.js', $script);
+  \webroot\WidgetsManagement::add_html_script([
+      'src' => '~rm/public/' . $_REQUEST["_uis_template"] . '/template.js'
+  ]);
 }
 
 $HTML_TITLE = (webroot\WidgetsManagement::get_html_title()) ? webroot\WidgetsManagement::get_html_title() . " - " . $website_title : $website_title;
@@ -92,7 +94,7 @@ $HTML_LINKS = webroot\WidgetsManagement::get_html_links();
             ]).push(arguments)
           }, i[r].l = 1 * new Date();
           a = s.createElement(o),
-                  m = s.getElementsByTagName(o)[0];
+            m = s.getElementsByTagName(o)[0];
           a.async = 1;
           a.src = g;
           m.parentNode.insertBefore(a, m)
@@ -113,10 +115,10 @@ $HTML_LINKS = webroot\WidgetsManagement::get_html_links();
     <script src="https://code.jquery.com/jquery-2.1.4.min.js" ></script>    
 
     <script id="widget-data">
-      (function () {
-        window.ew_widget_data = {};
+        (function () {
+          window.ew_widget_data = {};
 <?= $WIDGET_DATA; ?>
-      })();
+        })();
     </script>
     <?= $HTML_SCRIPTS; ?>
     <?= $TEMPLATE_SCRIPT; ?>      

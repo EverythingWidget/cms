@@ -84,8 +84,14 @@ $container_id = $_REQUEST["containerId"];
 
 
   function UISPanel() {
-    this.bAdd = EW.addAction("tr{Add}", $.proxy(this.addPanel, this), {display: "none"}, "uis-panel-actions");
-    this.bEdit = EW.addAction("tr{Save}", $.proxy(this.updatePanel, this), {display: "none"}, "uis-panel-actions");
+    this.bAdd = EW.addAction("tr{Add}", $.proxy(this.addPanel, this), {
+      display: "none"
+    },
+      "uis-panel-actions");
+    this.bEdit = EW.addAction("tr{Save}", $.proxy(this.updatePanel, this), {
+      display: "none"
+    },
+      "uis-panel-actions");
     $("#appearance-conf input[name='title']").change(function () {
 
       if ($(this).val() == "")
@@ -118,63 +124,78 @@ $container_id = $_REQUEST["containerId"];
 
   UISPanel.prototype.readClasses = function () {
     var self = this;
+    var $sizeAndLayout = $("#size-layout");
     var classes = $("#used-classes").text();
-    classes = classes.split(" ");
+    classes = classes.replace('panel', '');
+    classes = classes.split(' ');
+    
     $.each($("#available-classes").find("label"), function (k, classBtn) {
-      var a = $("<input type='checkbox'>");
+      var flag = $("<input type='checkbox'>");
       classBtn = $(classBtn);
-      a.val(classBtn.text().substring(7));
+      flag.val(classBtn.text().substring(7));
       classBtn.text(classBtn.text().substring(7));
-      a.change(function (event) {
+
+      flag.change(function (event) {
         if ($(this).is(":checked"))
         {
-          classBtn.removeClass("btn-default");
-          classBtn.addClass("btn-success");
-          $("#panel-classes").append($(classBtn));
+          classBtn.removeClass("btn-default").addClass("btn-success");
+          $("#panel-classes").append(classBtn);
         } else
         {
-          classBtn.removeClass("btn-success");
-          classBtn.addClass("btn-default");
-          $("#available-classes").append($(classBtn));
+          classBtn.removeClass("btn-success").addClass("btn-default");
+          $("#available-classes").append(classBtn);
         }
         self.setClasses();
       });
+
       classBtn.addClass("btn btn-default btn-xs");
-      classBtn.prepend(a);
+      classBtn.prepend(flag);
+
+      var value = flag.val();
       $.each(classes, function (i, c) {
-        if (a.val() === (c))
-        {
-          classBtn.removeClass("btn-default");
-          classBtn.addClass("btn-success active");
-          a.prop('checked', true);
+        if (value === c) {
+          classBtn.removeClass("btn-default").addClass("btn-success active");
+          flag.prop('checked', true);
           $("#panel-classes").append(classBtn);
-          classes.slice(i, 0);
+          classes.splice(i, 1);
         }
       });
     });
-    $.each($("#size-layout").find("input:radio,input:checkbox"), function (k, v) {
-      $.each(classes, function (i, c) {
-        if ($(v).val() === c && !$(v).is(":checked"))
-        {
-          $(v).click();
-          $(v).prop("checked", true);
+
+    $.each($sizeAndLayout.find("input:radio, input:checkbox"), function (k, v) {
+      var $v = $(v), value = $v.val();
+          
+
+      $.each(classes, function (i, c) {         
+        if (value === c /*&& !$v.is(":checked")*/) {
+          $v.click();
+          $v.prop("checked", true);
+          classes.splice(i, 1);
         }
       });
     });
-    $.each($("#size-layout").find("input[data-slider]"), function (k, v) {
+
+    $.each($sizeAndLayout.find("input[data-slider]"), function (k, v) {
       $.each(classes, function (i, c) {
+         if(!c)
+            return;
         var sub = c.match(/(\D+)(\d*)/);
         if (sub && $(v).attr("name") === sub[1])
         {
           $(v).val(sub[2]).change();
+          classes.splice(i, 1);
         }
       });
     });
+    
     $("#size-layout input:radio,#size-layout input:checkbox,input[data-slider]").change(function (event) {
       self.setClasses();
     });
+
+    $("#style_class").val(classes.join(' ').trim()).change();
     self.setClasses();
   };
+
   UISPanel.prototype.setClasses = function () {
     var styleClass = $("#style_class").val() + " ";
     $("#used-classes").text("");

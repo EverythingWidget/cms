@@ -63,8 +63,14 @@ $name = $_REQUEST["name"];
   var BlockForm = (function () {
     function BlockForm() {
       var self = this;
-      this.bAdd = EW.addAction("tr{Add}", $.proxy(this.addBlock, this), {display: "none"}, "uis-panel-actions");
-      this.bEdit = EW.addAction("tr{Save}", $.proxy(this.updateBlock, this), {display: "none"}, "uis-panel-actions");
+      this.bAdd = EW.addAction("tr{Add}", $.proxy(this.addBlock, this), {
+        display: "none"
+      },
+        "uis-panel-actions");
+      this.bEdit = EW.addAction("tr{Save}", $.proxy(this.updateBlock, this), {
+        display: "none"
+      },
+        "uis-panel-actions");
       $("#appearance-conf input:radio").change(function () {
         if ($(this).val() == "no")
         {
@@ -112,23 +118,27 @@ $name = $_REQUEST["name"];
 
     BlockForm.prototype.readClasses = function () {
       var $this = this;
+      var $availableClasses = $("#available-classes");
+      var $blockClasses = $("#panel-classes");
       var classes = $("#used-classes").text();
-      classes = classes.split(" ");
-      $.each($("#available-classes").find("label"), function (k, classBtn) {
+      classes = classes.replace('block', '');
+      classes = classes.replace('row', '');
+      classes = classes.split(' ');
+      
+      $.each($availableClasses.find("label"), function (k, classBtn) {
         classBtn = $(classBtn);
+        
         var a = $("<input type='checkbox'>");
         a.val(classBtn.text().substring(7));
         classBtn.text($(classBtn).text().substring(7));
         a.change(function (event) {
           if ($(this).is(":checked")) {
-            classBtn.removeClass("btn-default");
-            classBtn.addClass("btn-success");
-            $("#panel-classes").append(classBtn);
+            classBtn.removeClass("btn-default").addClass("btn-success");
+            $blockClasses.append(classBtn);
           } else
           {
-            classBtn.removeClass("btn-success");
-            classBtn.addClass("btn-default");
-            $("#available-classes").append(classBtn);
+            classBtn.removeClass("btn-success").addClass("btn-default");
+            $availableClasses.append(classBtn);
           }
 
           $this.setClasses();
@@ -142,11 +152,13 @@ $name = $_REQUEST["name"];
             classBtn.removeClass("btn-default");
             classBtn.addClass("btn-success active");
             a.prop('checked', true);
-            $("#panel-classes").append(classBtn);
+            $blockClasses.append(classBtn);
             classes[i] = null;
           }
         });
       });
+      
+      $("#style_class").val(classes.join(' ').trim()).change();
       this.setClasses();
     };
 
@@ -192,7 +204,7 @@ $name = $_REQUEST["name"];
       div.attr("id", $("#style_id").val());
       div.attr("data-panel-parameters", params);
 
-      div.prop("class", "panel block row " + $("#used-classes").text());
+      div.prop("class", "block row " + $("#used-classes").text());
       $("#inspector-editor").trigger("refresh");
 
       $.EW("getParentDialog", $("#block-form")).trigger("close");

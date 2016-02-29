@@ -18,43 +18,7 @@ class template extends TemplateControl {
   }
 
   public function get_template_script($template_settings) {
-    ob_start();
-    ?>
-    <script>
-      /*(function ($) {
-        $.fn.detectFont = function () {
-          var fonts = $(this).css('font-family').split(",");
-          if (fonts.length == 1)
-            return fonts[0];
-
-          var element = $(this);
-          var detectedFont = null;
-          fonts.forEach(function (font) {
-            var clone = element.clone().css({'visibility': 'hidden', 'font-family': font}).appendTo('body');
-            if (element.width() == clone.width())
-              detectedFont = font;
-            clone.remove();
-          });
-
-          return detectedFont.trim();
-        }
-
-
-        $(document).ready(function () {
-          setTimeout(function () {
-            var f = $("body").detectFont();
-            if (f === "Amiri")
-            {
-              $("body").css("font-size", "18px");
-            }
-          }, 1000);
-
-        });
-      }(jQuery));*/
-    </script>
-    <?php
-
-    return ob_get_clean();
+    \webroot\WidgetsManagement::add_html_script(["src" => "~/rm/public/js/scroll-it/scroll-it.js"]);
   }
 
   public function get_template_settings_form() {

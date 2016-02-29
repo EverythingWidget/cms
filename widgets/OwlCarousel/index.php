@@ -104,6 +104,7 @@ webroot\WidgetsManagement::add_html_link("~rm/public/js/owl-carousel/owl.theme.d
          autoplay:<?php echo $auto_play ?>,
          autoplayTimeout: <?php echo $slide_timeout ?>,
          autoplayHoverPause:<?php echo $autoPlayPause ?>,
+         smartSpeed: 1000,
          responsive: {
             0: {
                items: <?php echo $item_per_slide_xs ?>
