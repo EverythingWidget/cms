@@ -128,7 +128,7 @@ $container_id = $_REQUEST["containerId"];
     var classes = $("#used-classes").text();
     classes = classes.replace('panel', '');
     classes = classes.split(' ');
-
+    
     $.each($("#available-classes").find("label"), function (k, classBtn) {
       var flag = $("<input type='checkbox'>");
       classBtn = $(classBtn);
@@ -162,10 +162,12 @@ $container_id = $_REQUEST["containerId"];
       });
     });
 
-    $.each($sizeAndLayout.find("input:radio,input:checkbox"), function (k, v) {
+    $.each($sizeAndLayout.find("input:radio, input:checkbox"), function (k, v) {
       var $v = $(v), value = $v.val();
-      $.each(classes, function (i, c) {
-        if (value === c && !$v.is(":checked")) {
+          
+
+      $.each(classes, function (i, c) {         
+        if (value === c /*&& !$v.is(":checked")*/) {
           $v.click();
           $v.prop("checked", true);
           classes.splice(i, 1);
@@ -175,10 +177,13 @@ $container_id = $_REQUEST["containerId"];
 
     $.each($sizeAndLayout.find("input[data-slider]"), function (k, v) {
       $.each(classes, function (i, c) {
+         if(!c)
+            return;
         var sub = c.match(/(\D+)(\d*)/);
         if (sub && $(v).attr("name") === sub[1])
         {
           $(v).val(sub[2]).change();
+          classes.splice(i, 1);
         }
       });
     });

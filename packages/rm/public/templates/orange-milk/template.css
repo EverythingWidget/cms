@@ -61,7 +61,8 @@ body {
 .block.content {
   margin-top: 120px;
   padding-bottom: 120px;
-  font-size: 1.5em; }
+  direction: rtl;
+  font-size: 1.3em; }
   .block.content h2 {
     font-size: 1.8em;
     font-weight: 300; }
@@ -85,7 +86,7 @@ body {
     margin: 15px 0; }
 
 .block.contact-us {
-  background-color: #0BB4D1;
+  background-color: #69C923;
   margin-top: 45px;
   padding: 60px 0;
   color: #fff;
@@ -115,7 +116,7 @@ body {
   font-size: 1.35em; }
 
 .title h1 {
-  margin: 60px auto 0; }
+  margin: 90px auto 0; }
 
 .widget.text-center {
   text-align: center; }
@@ -135,7 +136,7 @@ body {
     line-height: 50px;
     display: block; }
   .widget.nav-menu .active > a, .widget.nav-menu a.selected {
-    background-color: #0BB4D1;
+    background-color: #69C923;
     color: #fff; }
 
 .rtl .widget.nav-menu ul li {
@@ -159,7 +160,7 @@ body {
     color: #444;
     font-weight: 300; }
   .widget.nav-menu-footer .active > a, .widget.nav-menu-footer a.selected {
-    color: #0BB4D1; }
+    color: #69C923; }
 
 .rtl .widget.nav-menu-footer ul li {
   text-align: right; }
@@ -173,6 +174,14 @@ body {
   margin: 0 -15px;
   height: 100%;
   position: relative; }
+  .widget.slider .item h2 {
+    font-size: 3em;
+    color: #fff;
+    position: absolute;
+    top: 120px;
+    width: 100%;
+    text-align: center;
+    text-shadow: 0 0 7px rgba(0, 0, 0, 0.9); }
 
 .slider .owl-controls {
   margin: 0;
@@ -210,15 +219,19 @@ body {
     min-height: 450px;
     overflow: hidden;
     padding: 15px;
-    border-bottom: 3px solid #0BB4D1;
+    border-bottom: 3px solid #69C923;
     position: relative;
-    color: #444; }
+    color: #444;
+    text-align: center; }
+    .widget.list-col-3 .list-item-cell .title {
+      font-size: 1.5em;
+      margin: 0; }
     .widget.list-col-3 .list-item-cell h2 {
       font-weight: 500; }
     .widget.list-col-3 .list-item-cell a {
       width: 100%;
       display: block;
-      color: #0BB4D1;
+      color: #69C923;
       position: absolute;
       bottom: 0;
       padding: 15px 0;
@@ -227,7 +240,7 @@ body {
       text-align: center;
       transition: all .3s; }
     .widget.list-col-3 .list-item-cell a:hover {
-      background-color: #0BB4D1;
+      background-color: #69C923;
       color: #fff; }
 
 .widget.people {
@@ -240,7 +253,7 @@ body {
     z-index: 1; }
   .widget.people h2 {
     font-weight: normal;
-    color: #0BB4D1; }
+    color: #69C923; }
   .widget.people img {
     width: 200px;
     height: 200px;
@@ -292,7 +305,7 @@ body {
     background-color: #fff;
     border: 2px solid transparent; }
   .widget.contact-us-form .text-field:focus {
-    border-color: #0BB4D1;
+    border-color: #69C923;
     outline: none; }
   .widget.contact-us-form label {
     display: block;

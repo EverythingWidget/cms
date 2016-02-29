@@ -251,9 +251,12 @@ $panelId = $_REQUEST['panelId'];
 
   UISWidget.prototype.readClasses = function () {
     var widgetClasses = ($("#style_class").val()) ? $("#style_class").val() : "";
+    widgetClasses = widgetClasses.replace('widget', '');
     widgetClasses = widgetClasses.split(" ");
+    
     var classes = $("#used-classes").text();
     classes = classes.split(" ");
+    
     $.each($("#available-classes").find("label"), function (k, classBtn) {
       var a = $("<input type='checkbox'>");
       classBtn = $(classBtn);
@@ -263,14 +266,12 @@ $panelId = $_REQUEST['panelId'];
       a.change(function (event) {
         if ($(this).is(":checked"))
         {
-          classBtn.removeClass("btn-default");
-          classBtn.addClass("btn-success");
-          $("#widget-classes").append($(classBtn));
+          classBtn.removeClass("btn-default").addClass("btn-success");
+          $("#widget-classes").append(classBtn);
         } else
         {
-          classBtn.removeClass("btn-success");
-          classBtn.addClass("btn-default");
-          $("#available-classes").append($(classBtn));
+          classBtn.removeClass("btn-success").addClass("btn-default");
+          $("#available-classes").append(classBtn);
         }
         uisWidget.setClasses();
         //event.preventDefault()
@@ -284,8 +285,8 @@ $panelId = $_REQUEST['panelId'];
           classBtn.removeClass("btn-default");
           classBtn.addClass("btn-success active");
           a.prop('checked', true);
-          $("#widget-classes").append($(classBtn));
-          widgetClasses.slice(i, 1);
+          $("#widget-classes").append(classBtn);
+          //widgetClasses.splice(i, 1);
         }
       });
     });
@@ -310,9 +311,12 @@ $panelId = $_REQUEST['panelId'];
         }
       });
     });
+    
     $("#size-layout input:radio,#size-layout input:checkbox,input[data-slider]").change(function (event) {
       uisWidget.setClasses();
     });
+    
+    $("#style_class").val(widgetClasses.join(' ').trim()).change();
     uisWidget.setClasses();
   };
 
