@@ -9838,13 +9838,44 @@
 
   })(ContentTools.Tools.Heading);
 
-  ContentTools.Tools.ContentFiels = (function (superClass) {
+// content-fields
+
+  ContentTools.Tools.ContentFields = (function (superClass) {
     extend(ContentField, superClass);
-
+    
     function ContentField() {
-
       return ContentField.__super__.constructor.apply(this, arguments);
     }
+
+    var addImage = function (element,callback) {
+      var app, forceAdd, paragraph, region;
+      app = ContentTools.EditorApp.get();
+      var imageChooserDialog = EW.createModal({
+        autoOpen: false,
+        class: "center"
+      });
+      imageChooserDialog.append("<div class='form-content grid tabs-bar no-footer'></div>");
+      $.post("~admin/html/content-management/link-chooser-media.php", {
+        callback: ""
+      }, function (data) {
+        imageChooserDialog.find(".form-content:first").append(data);
+        imageChooserDialog.prepend("<div class='header-pane tabs-bar row'><h1 class='form-title'>Media</h1></div>");
+        var ref = ContentField._insertAt(element), node = ref[0], index = ref[1];
+        imageChooserDialog[0].selectMedia = function (image) {
+          var image = new ContentEdit.Image(image);
+          node.parent().attach(image, index);
+          element._domElement.parentNode.removeChild(element._domElement);
+          element._domElement = image._domElement;
+          element.addCSSClass('ew-content-field');
+          image.focus();
+          imageChooserDialog.dispose();
+        };
+
+      });
+
+      imageChooserDialog.open();
+      //return callback(true);
+    };
 
     ContentTools.ToolShelf.stow(ContentField, 'content-field');
 
@@ -9867,6 +9898,7 @@
       var container = document.createElement("span"),
               input = document.createElement("input"),
               removeButton = document.createElement("div"),
+              img = document.createElement("button"),
               title = document.createElement("p");
 
       container.className = "ew-content-field__bar";
@@ -9874,10 +9906,18 @@
       title.className = "ew-content-field__title";
       input.className = "ew-content-field__input";
       input.value = element.attr("content-field");
-      removeButton.className = "ew-content-field__remove";
+      removeButton.className = "ew-content-field__remove btn-danger";
+      img.className = 'ew-content-field__img-btn btn-default';
+      img.innerHTML = 'M';
+      img.type = 'button';
 
       container.appendChild(input);
       container.appendChild(removeButton);
+      container.appendChild(img);
+
+      img.addEventListener('click', function (e) {
+        addImage(element);
+      });
 
       input.addEventListener("keydown", function (e) {
         if (e.keyCode === 32) {
