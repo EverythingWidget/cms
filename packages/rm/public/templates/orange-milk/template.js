@@ -14,7 +14,5 @@
     e.dataset.scrollIndex = i;
   });
   
-  $('.widget.nav-menu').first().scrollIt({
-    nav: 'li'
-  });
+  $('.widget.nav-menu:not(.no-scroll-it)').first().scrollIt();
 })();

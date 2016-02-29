@@ -27,9 +27,9 @@ $background-color: #fff;
 $akcent-background-color: #eee;
 $font-color: #444;
 //$font-akcent-color: #f50808;
-$font-akcent-color: #0BB4D1;
+//$font-akcent-color: #0BB4D1;
 //$font-akcent-color: #FE9322;
-//$font-akcent-color: #69C923;
+$font-akcent-color: #69C923;
 $nav-bar-bg: rgba(255,255,255,.82);
 
 @media (min-width: 768px) {
@@ -97,8 +97,8 @@ body {
 .block.content {
   margin-top: 120px;
   padding-bottom: 120px;
-
-  font-size: 1.5em;
+  direction: rtl;
+  font-size: 1.3em;
 
   h2 {
     font-size: 1.8em;
@@ -178,7 +178,7 @@ body {
 }
 
 .title h1 {
-  margin: 60px auto 0;
+  margin: 90px auto 0;
 }
 
 .widget.text-center {
@@ -277,6 +277,18 @@ body {
   margin: 0 -15px;
   height: 100%;
   position: relative;
+  
+  .item {
+     h2 {
+        font-size: 3em;
+        color: #fff;
+        position: absolute;
+        top: 120px;
+        width: 100%;
+        text-align: center;
+        text-shadow: 0 0 7px rgba(0,0,0,.9)
+     }
+  }
 }
 
 .slider .owl-controls {
@@ -324,6 +336,12 @@ body {
     border-bottom: 3px solid $font-akcent-color;
     position: relative;
     color: $font-color;
+    text-align: center;
+    
+    .title {
+       font-size: 1.5em;
+       margin: 0;
+    }
 
     h2 {
       font-weight: 500;
