@@ -129,7 +129,7 @@ class ContentManagement extends \ew\Module {
 
   private function get_node_link($node) {
     $link = null;
-    if ($node->nodeName === "a") {
+    if ($node->tagName === "a") {
       $link = $node->getAttribute("href");
     }
 
@@ -138,9 +138,10 @@ class ContentManagement extends \ew\Module {
 
   private function get_node_src($node) {
     $link = null;
-    if ($node->nodeName === "img") {
+    if ($node->tagName === "img") {      
       $link = $node->getAttribute("src");
     }
+    
     return $link;
   }
 
@@ -199,9 +200,10 @@ class ContentManagement extends \ew\Module {
       }
       else {
         $link = $this->get_node_link($field);
+        $src = $this->get_node_src($field);
         $content_fields->{$field->getAttribute("content-field")} = ["content" => trim($html),
             "link"    => $link,
-            "src"     => $link,
+            "src"     => $src,
             "tag"     => $field->tagName
         ];
       }
