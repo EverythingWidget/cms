@@ -119,7 +119,7 @@ class App {
 
   public function get_root() {
     $ro = new \ReflectionClass($this);
-    return $ro->getNamespaceName();
+    return str_replace('-','\\',$ro->getNamespaceName());
   }
 
   public function get_name() {
@@ -178,7 +178,7 @@ class App {
 
   public function index() {
     return [
-        'module' => 'html',
+        'module' => 'home',
         'file' => 'index.php'
     ];
   }

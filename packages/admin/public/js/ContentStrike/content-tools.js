@@ -4997,6 +4997,7 @@
 
     function Image(attributes, a) {
       var size;
+
       Image.__super__.constructor.call(this, 'img', attributes);
       this.a = a ? a : null;
       size = this.size();
@@ -5042,12 +5043,16 @@
 
     Image.prototype.mount = function () {
       var classes, style;
+
       this._domElement = document.createElement('div');
+      if (this._attributes['content-field']) {
+        this._domElement.setAttribute('content-field', this._attributes['content-field']);
+      }
       var img = document.createElement('img');
 
       img.style.display = 'block';
       img.style.height = '100%';
-      
+
       classes = '';
       if (this.a && this.a['class']) {
         classes += ' ' + this.a['class'];
@@ -5067,7 +5072,6 @@
       this._domElement.setAttribute('style', style);
       img.src = this._attributes['src'];
       this._domElement.appendChild(img);
-      console.log(this);
       return Image.__super__.mount.call(this);
     };
 
@@ -10003,13 +10007,10 @@
         var ref = ContentField._insertAt(element), node = ref[0], index = ref[1];
         imageChooserDialog[0].selectMedia = function (image) {
           var image = new ContentEdit.Image(image);
-
           node.parent().attach(image, index);
           node.parent().detach(element);
-
-          toContentField(image, 'testy');
+          toContentField(image, element.attr('content-field'));
           imageChooserDialog.dispose();
-          //element.updatePosition();
         };
 
       });
@@ -10100,6 +10101,7 @@
         container.parentNode.removeChild(container);
       });
       input.value = title.innerHTML = initValue;
+      element.attr("content-field", initValue);
       element.addCSSClass("ew-content-field");
 
       container.style.position = "absolute";

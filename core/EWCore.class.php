@@ -509,6 +509,8 @@ class EWCore {
     while ($app_dir = readdir($apps_dirs)) {
       if (strpos($app_dir, '.') === 0)
         continue;
+      
+      $package = str_replace('-', '\\', $app_dir);
 
       if (is_dir($app_dir)) {
         $app_dir_content = opendir($app_dir);
@@ -518,7 +520,7 @@ class EWCore {
           continue;
         try {
           require_once EW_PACKAGES_DIR . "/" . $app_dir . "/App.app.php";
-          $app_class_name = $app_dir . "\\App";
+          $app_class_name = $package . "\\App";
 
           $apps[] = new $app_class_name();
         }

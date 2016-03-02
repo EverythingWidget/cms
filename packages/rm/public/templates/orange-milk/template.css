@@ -86,7 +86,11 @@ body {
     margin: 15px 0; }
 
 .block.contact-us {
-  background-color: #69C923;
+  background-image: url(images/bg-1.jpg);
+  background-attachment: fixed;
+  background-size: contain;
+  background-position: center;
+  position: relative;
   margin-top: 45px;
   padding: 60px 0;
   color: #fff;
@@ -98,15 +102,25 @@ body {
   .block.contact-us p {
     font-size: 1.5em; }
 
+.contact-us:before {
+  position: absolute;
+  content: '';
+  display: block;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.36); }
+
 .block.light-grey {
   background-color: #eee; }
 
 .block.footer {
   background-color: #ddd;
   min-height: 150px;
-  padding: 20px 0 50px; }
+  padding: 0px 0 0px; }
   .block.footer h2 {
-    margin-bottom: 0;
+    margin: 0 0 15px;
     padding: 0 10px; }
 
 .panel.clearfix {
@@ -216,13 +230,18 @@ body {
   margin: 45px 0; }
   .widget.list-col-3 .list-item-cell {
     background-color: #eee;
-    min-height: 450px;
+    min-height: 400px;
     overflow: hidden;
     padding: 15px;
     border-bottom: 3px solid #69C923;
     position: relative;
     color: #444;
     text-align: center; }
+    .widget.list-col-3 .list-item-cell .front-image {
+      width: 100%;
+      max-height: 220px;
+      display: block;
+      margin: 0 auto 20px; }
     .widget.list-col-3 .list-item-cell .title {
       font-size: 1.5em;
       margin: 0; }
@@ -296,12 +315,12 @@ body {
 .widget.contact-us-form {
   display: block;
   font-weight: 300;
-  font-size: 1.5em; }
+  font-size: 1.3em; }
   .widget.contact-us-form .text-field {
     width: 100%;
     display: block;
     border: none;
-    padding: 15px 20px;
+    padding: 10px 15px;
     background-color: #fff;
     border: 2px solid transparent; }
   .widget.contact-us-form .text-field:focus {
@@ -312,6 +331,15 @@ body {
     padding-bottom: 5px; }
   .widget.contact-us-form .block-row {
     padding: 5px 10px; }
+
+.widget.google-map {
+  width: 100%;
+  height: 450px;
+  display: block; }
+  .widget.google-map .map-container {
+    width: 100%;
+    height: 100%;
+    display: block; }
 
 .block-row {
   display: block; }
