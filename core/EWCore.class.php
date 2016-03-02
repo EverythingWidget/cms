@@ -129,7 +129,7 @@ class EWCore {
 
     //echo " $app_name  $section_name  $function_name";
     //$app_namespace = explode('/', $package);
-    $real_class_name = $package . '\\App';
+    $real_class_name = str_replace('-', '\\', $package) . '\\App';
     //echo $real_class_name;
     $parameters["_app_name"] = $package;
     $parameters["_resource_type"] = $resource_type;
@@ -509,8 +509,9 @@ class EWCore {
     while ($app_dir = readdir($apps_dirs)) {
       if (strpos($app_dir, '.') === 0)
         continue;
-      
+
       $package = str_replace('-', '\\', $app_dir);
+
 
       if (is_dir($app_dir)) {
         $app_dir_content = opendir($app_dir);

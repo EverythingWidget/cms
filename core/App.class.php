@@ -26,6 +26,7 @@ class App {
   private $loaded_modules = [];
 
   public function __construct() {
+    
     $this->load_assets();
     $this->install_resource_handlers();
   }
@@ -37,12 +38,14 @@ class App {
   protected function install_resource_handlers() {
     $this->addResource("api", new APIResourceHandler($this));
     $this->addResource($this->default_resource, new HTMLResourceHandler($this));
+    
   }
 
   public function init_app() {
     for ($in = 0, $len = count($this->loaded_modules); $in < $len; $in++) {
       $this->loaded_modules[$in]->init();
     }
+    
   }
 
   public function load_modules($dir) {
@@ -85,16 +88,17 @@ class App {
 //      {
 //         if (\admin\UsersManagement::user_has_permission_for_resource($app_name, $app_resource_path[1], $_SESSION['EW.USER_GROUP_ID']))
 //         {
+    
     if ($this->resources[$resource_type]) {
       return $this->resources[$resource_type]->process($this, $package, $resource_type, $module_name, $method_name, $parameters);
     }
     else {
 
       $error = \EWCore::log_error(404, "Resource not found: `$resource_type/$module_name/$method_name`", [
-                  "package" => $package,
+                  "package"  => $package,
                   "resource" => $resource_type,
-                  "module" => $module_name,
-                  "method" => $method_name
+                  "module"   => $module_name,
+                  "method"   => $method_name
       ]);
 
       if ($parameters["_APIResourceHandler_output_array"])
@@ -119,7 +123,7 @@ class App {
 
   public function get_root() {
     $ro = new \ReflectionClass($this);
-    return str_replace('-','\\',$ro->getNamespaceName());
+    return $ro->getNamespaceName();
   }
 
   public function get_name() {
@@ -141,12 +145,12 @@ class App {
 
   public function get_app_details() {
     return array(
-        "name" => $this->name,
-        "title" => $this->name,
+        "name"        => $this->name,
+        "title"       => $this->name,
         "description" => $this->description,
-        "version" => $this->version,
-        "type" => $this->type,
-        "root" => $this->get_root());
+        "version"     => $this->version,
+        "type"        => $this->type,
+        "root"        => $this->get_root());
   }
 
   public function get_path($path) {
@@ -179,7 +183,7 @@ class App {
   public function index() {
     return [
         'module' => 'home',
-        'file' => 'index.php'
+        'file'   => 'index.php'
     ];
   }
 
@@ -202,7 +206,7 @@ class App {
       //$i = strpos($section_dir, '.class.php');
       $module_full_name = substr($module_file, 0, strpos($module_file, '.class.php'));
       $module_name = $module_full_name;
-      $namespace_class_name = $root . "\\" . $module_full_name;
+      $namespace_class_name = str_replace('-', '\\', $root) . "\\" . $module_full_name;
       //echo $namespace_class_name . "<br>";
       if (class_exists($namespace_class_name)) {
         $module_full_name = $namespace_class_name;
@@ -221,8 +225,8 @@ class App {
 
         if ($module->get_title() && !$module->is_hidden())
           $sections[] = array(
-              "title" => "tr:$appDir" . "{" . $module->get_title() . "}",
-              "className" => $module_name,
+              "title"       => "tr:$appDir" . "{" . $module->get_title() . "}",
+              "className"   => $module_name,
               "description" => "tr:$appDir" . "{" . $module->get_description() . "}");
       }
     }

@@ -94,7 +94,6 @@ class HTMLResourceHandler extends ResourceHandler {
         header("content-type: " . $type);
         return file_get_contents(EW_PACKAGES_DIR . '/' . $path, NULL);
         } */
-
       if (\admin\UsersManagement::user_has_permission($app->get_root(), 'html', $module_name, $method_name)) {
         $res = $this->load_file(EW_PACKAGES_DIR . '/' . $path, $type, $parameters);
         header("Content-Type: text/html");
