@@ -3,3 +3,4 @@
 /vendor/
 /composer.lock
 /packages/rm/public/cache/
+/node_modules/
