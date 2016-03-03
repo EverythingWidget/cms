@@ -121,13 +121,13 @@ session_start();
   .focus-current-item .current-item, .current-item  {/*  visibility:hidden;  */}
   .current-element
   {
-  border:2px solid #3cf;
+  border:1px solid #fff;
   border-radius:0px;
-  background-color:rgba(240,240,240,.3);
+  background-color:rgba(200,240,240,.3);
   z-index:15;
   position:absolute;
   display:none;
-  box-shadow:0px 0px 3px 1px rgba(0,0,0,.9)
+  box-shadow:0px 0px 8px rgba(0,0,0,.7)
   }
   .highlight
   {
@@ -141,8 +141,8 @@ session_start();
   .widget-glass-pane
   {
   position:absolute;
-  border: 1px solid #222;
-  outline: 1px solid #ddd;
+  border: 2px solid #222;
+  outline: 1px solid #fff;
   outline-offset: -1px;
   z-index:10;
   }
@@ -319,12 +319,13 @@ session_start();
       margin: "10px auto",
       display: "block"
     });
+
     addBlockBtn.on("click", $.proxy(this.blockForm, this, null));
-    $("#inspector-editor").append(addBlockBtn);
+    this.inspectorEditor.append(addBlockBtn);
 
     //Add refresh event to inspector editor
-    $("#inspector-editor").off("refresh");
-    $("#inspector-editor").on("refresh", function () {
+    this.inspectorEditor.off("refresh");
+    this.inspectorEditor.on("refresh", function () {
       self.loadInspectorEditor();
     });
 
@@ -355,7 +356,7 @@ session_start();
     });
 
     $("#uis-preference").on("refresh", function (e, data) {
-      if (data.id)      {
+      if (data.id) {
         $('#form-title').html('<span>tr{Edit}</span>' + data.name);
         self.uisId = data.id;
         $("#uis-preference-actions .export-btn").attr("href", "~webroot/api/widgets-management/export-uis?uis_id=" + self.uisId);
@@ -410,35 +411,34 @@ session_start();
     //var liUl = null;
     var itemLabel;
 
-    $.each(children, function (k, v) {
-      v = $(v);
+    $.each(children, function (k, inspectorItem) {
+      inspectorItem = $(inspectorItem);
       var liUl = null;
       //var div = $("<div></div>");
-      if (v.hasClass("panel") || v.hasClass("block"))
-      {
+      if (inspectorItem.hasClass("panel") || inspectorItem.hasClass("block")) {
         liUl = $("<li><div href='#' class='item-label'>\n\
       <span class='handle panel'></span></div><a href='#' class='btn btn-primary btn-text add-item'>+</a><a href='#' class='close-icon' ></a></li>");
         itemLabel = liUl.find(".item-label");
-        liUl.attr("data-linked-panel-id", v.attr("data-panel-id"));
+        liUl.attr("data-linked-panel-id", inspectorItem.attr("data-panel-id"));
         skipBoxBlock = false;
 
-        if (v.hasClass("row")) {
+        if (inspectorItem.hasClass("row")) {
           itemLabel.append("Block");
           liUl.find(".handle").attr("class", "handle block");
           liUl.addClass("block");
-          liUl.find(".item-label").click(function (e) {
-            self.blockForm(v.attr('data-panel-id'));
+          itemLabel.click(function (e) {
+            self.blockForm(inspectorItem.attr('data-panel-id'));
             e.preventDefault();
           });
-        } else if (v.children(".row").length > 0) {
+        } else if (inspectorItem.children(".row").length > 0) {
           itemLabel.append("Panel");
           liUl.addClass("panel");
           // Set data link panel id for the panel
-          liUl.attr("data-linked-panel-id", v.attr('data-panel-id'));
+          liUl.attr("data-linked-panel-id", inspectorItem.attr('data-panel-id'));
           self.lastItem = liUl;
 
           itemLabel.click(function (e) {
-            self.editPanel(v.attr('data-panel-id'), v.attr('data-container-id'));
+            self.editPanel(inspectorItem.attr('data-panel-id'), inspectorItem.attr('data-container-id'));
             e.preventDefault();
           });
           //skipBoxBlock = true;
@@ -447,14 +447,14 @@ session_start();
           itemLabel.append("Panel");
           liUl.addClass("panel");
           itemLabel.click(function (e) {
-            self.editPanel(v.attr('data-panel-id'), v.attr('data-container-id'));
+            self.editPanel(inspectorItem.attr('data-panel-id'), inspectorItem.attr('data-container-id'));
             e.preventDefault();
           });
         }
 
         // Add widget button for panels
         var addItem = liUl.find(".add-item");
-        addItem.click($.proxy(self.showWidgetsList, self, v.attr('data-panel-id')));
+        addItem.click($.proxy(self.showWidgetsList, self, inspectorItem.attr('data-panel-id')));
         addItem.hover(function () {
           liUl.addClass("highlight");
         }, function () {
@@ -464,52 +464,52 @@ session_start();
         // Remove button
         liUl.find(".close-icon").click(function (e) {
           e.preventDefault();
-          self.removePanel(v.attr('data-panel-id'));
+          self.removePanel(inspectorItem.attr('data-panel-id'));
         });
 
-        liUl.find(".item-label").hover(function () {
-          var panel = frameBody.find("[data-panel-id='" + v.attr('data-panel-id') + "']");
+        itemLabel.hover(function () {
+          var panel = frameBody.find("[data-panel-id='" + inspectorItem.attr('data-panel-id') + "']");
           // Scroll to the panel if the panel is not in view port
-          if (panel.offset().top > (frameBody.scrollTop() + frameBody.innerHeight())
-                  || panel.offset().top + panel.outerHeight() < frameBody.scrollTop())
-          {
+          var offset = panel.offset();
+          var scrollTop = frameBody.scrollTop();
+
+          if (offset.top > (scrollTop + self.editorIFrame.height()) || offset.top + panel.outerHeight() < scrollTop) {
             frameBody.stop().animate({
-              scrollTop: panel.offset().top
+              scrollTop: offset.top
             }, 500);
           }
 
           self.currentElementHighlight.css({
-            top: panel.offset().top,
-            left: panel.offset().left,
+            top: offset.top,
+            left: offset.left,
             position: "absolute",
             width: panel.outerWidth(),
             height: panel.outerHeight(),
-            margin: "0px"
+            margin: "0"
           });
 
           self.currentElementHighlight.show();
-          //addItem.stop().fadeIn(300);
         }, function () {
           self.currentElementHighlight.hide();
-          //addItem.hide();
         });
 
         var ul = $("<ul></ul>");
-        ul.append(self.createInspector(v));
+        ul.append(self.createInspector(inspectorItem));
         // Skip adding panel block to the editor
         if (skipBoxBlock) {
-          $(self.lastItem).find(".add-item").unbind("click").click(function (e) {
-            e.preventDefault();
-            self.showWidgetsList(v.attr('data-panel-id'));
-          });
-//$($this.lastItem).find("ul").remove();
-          $(self.lastItem).append(ul);
-          self.lastItem = null;
-          //$this.lastItem = null;
+          if (self.lastItem) {
+            self.lastItem.find(".add-item").unbind("click").click(function (e) {
+              e.preventDefault();
+              self.showWidgetsList(inspectorItem.attr('data-panel-id'));
+            });
+
+            self.lastItem.append(ul);
+            self.lastItem = null;
+          }
         } else {
           if (skipChildren) {
             skipChildren = false;
-            ul.html(self.createInspector(v.children().eq(0)));
+            ul.html(self.createInspector(inspectorItem.children().eq(0)));
             liUl.append(ul);
           } else {
             liUl.append(ul);
@@ -518,39 +518,37 @@ session_start();
         }
       }
 
-      if (v.hasClass("widget-container")) {
-
-        //v.find(".widget-glass-pane").remove();
+      if (inspectorItem.hasClass("widget-container")) {
         var widgetGlassPane = $(document.createElement("div"));
         widgetGlassPane.addClass("widget-glass-pane");
-        widgetGlassPane.data("widget-element", v);
+        widgetGlassPane.data("widget-element", inspectorItem);
         frameBody.append(widgetGlassPane);
 
         var editWidget = function (e) {
-          self.editWidget(v.children().attr('data-widget-id'));
+          self.editWidget(inspectorItem.children().attr('data-widget-id'));
           e.preventDefault();
         };
 
         var li = $("<li class='widget'><div href='#' class='item-label'><span class='handle widget'></span></div><a href='#' class='close-icon' ></a></li>");
-        li.attr("data-linked-widget-id", v.children().attr("data-widget-id"));
+        li.attr("data-linked-widget-id", inspectorItem.children().attr("data-widget-id"));
         var widgetTitle = li.find(".item-label");
-        widgetTitle.append(/*v.children().data("widget-id") +*/ v.children().attr("data-widget-title"));
+        widgetTitle.append(/*v.children().data("widget-id") +*/ inspectorItem.children().attr("data-widget-title"));
         widgetTitle.click(editWidget);
 
         li.find(".close-icon").click(function (e) {
           e.preventDefault();
-          self.removeWidget(v.children().attr('data-widget-id'));
+          self.removeWidget(inspectorItem.children().attr('data-widget-id'));
         });
 
-        var inlineEditor = self.inlineEditor[v.children().attr('data-widget-id')];
+        var inlineEditor = self.inlineEditor[inspectorItem.children().attr('data-widget-id')];
 
         if (inlineEditor)
         {
           inlineEditor.css({
             fontSize: "24px",
             position: "absolute",
-            top: v.children().offset().top,
-            left: v.children().offset().left,
+            top: inspectorItem.children().offset().top,
+            left: inspectorItem.children().offset().left,
             backgroundColor: "rgba(255,255,255,.8)"
           });
           frameBody.find("#editor-glass-pane").append(inlineEditor);
@@ -559,17 +557,18 @@ session_start();
 
         //var widgetClone = widget.clone();
         li.hover(function () {
-          var widget = frameBody.find("[data-widget-id='" + v.children().attr('data-widget-id') + "']");
+          var widget = frameBody.find("[data-widget-id='" + inspectorItem.children().attr('data-widget-id') + "']");
           // Scroll to the widget if the panel is not in view port
-          if (widget.offset().top > (frameBody.scrollTop() + frameBody.innerHeight())
-                  || widget.offset().top + widget.outerHeight() < frameBody.scrollTop())
-          {
+          var offset = widget.offset();
+          var scrollTop = frameBody.scrollTop();
+
+          if (offset.top > (scrollTop + self.editorIFrame.height()) || offset.top + widget.outerHeight() < scrollTop) {
+
             frameBody.stop().animate({
               scrollTop: widget.offset().top
-            },
-                    500);
+            }, 500);
           }
-          //widgetClone.addClass("highlight");
+
           self.currentElementHighlight.css({
             top: widget.offset().top,
             left: widget.offset().left,
@@ -578,7 +577,8 @@ session_start();
             height: widget.outerHeight()
           });
           self.currentElementHighlight.show();
-        }, function () {
+        }
+        , function () {
           self.currentElementHighlight.hide();
 
         });
@@ -596,38 +596,29 @@ session_start();
     var panelIndex = 1;
     var widgetIndex = 1;
 
-    $.each(parentNode.find(".block,.panel,.widget"), function (i, e) {
-      e = $(e);
-      //console.log(e.attr("data-panel-id"));
-      if (e.is(".panel") || e.is(".block")) {
-        if (!e.attr("data-panel-id"))
-          e.attr("data-panel-id", "panel-" + panelIndex);
-        panelIndex++;
-      }
+    if (parentNode[0]) {
+      $.each(parentNode[0].querySelectorAll(".block, .panel, .widget"), function (i, element) {
+        element = $(element);
 
-      if (e.is(".widget")) {
-        if (!e.attr("data-widget-id"))
-          e.attr("data-widget-id", "widget-" + widgetIndex);
-        widgetIndex++;
-      }
-    });
-    var inspectorEditorList = $("#inspector-editor").children(".items");
+        if (element.hasClass("panel") || element.hasClass("block")) {
+          if (!element.attr("data-panel-id"))
+            element.attr("data-panel-id", "panel-" + panelIndex);
+          panelIndex++;
+        }
+
+        if (element.hasClass("widget")) {
+          if (!element.attr("data-widget-id"))
+            element.attr("data-widget-id", "widget-" + widgetIndex);
+          widgetIndex++;
+        }
+      });
+    }
+    
+    var inspectorEditorList = this.inspectorEditor.children(".items");
     inspectorEditorList.empty();
 
     // Add div to create glass effect to make the iframe content unselectable
-    //frameBody.find("#editor-glass-pane").remove();
     frameBody.children(".widget-glass-pane").remove();
-    /*var editorGlassPane = $("<div>");
-     editorGlassPane.css({
-     position: "fixed",
-     top: "0px",
-     left: "0px",
-     width: "100%",
-     height: "100%",
-     zIndex: 12
-     });
-     editorGlassPane.attr("id", "editor-glass-pane");*/
-    //frameBody.append(editorGlassPane);
 
     // Add a div to represent the highlight of current element
     frameBody.find("div.current-element").remove();
@@ -635,101 +626,6 @@ session_start();
     frameBody.append(this.currentElementHighlight);
 
     inspectorEditorList.append(self.createInspector(parentNode, true));
-    var oldContainer;
-    var oldIndex;
-    /*inspectorEditorList.sortable({
-     handle: 'img.handle',
-     isValidTarget: function (item, container) {
-     //alert(item.attrclass"));
-     //console.log(container.el,container.options.group)
-     if(item.hasClass("widget")){
-     //console.log(container.el,container.options.group)
-     }
-     if (item.hasClass("block") && !container.el.is(".items"))
-     {
-     return false;
-     }
-     if (item.hasClass("widget") && container.el.is(".items"))
-     {
-     
-     return false;
-     }
-     if (item.hasClass("panel") && container.el.is(".items"))
-     {
-     //console.log(item.index() + "  " + container.el.children().eq(item.index() - 1).hasClass("block"));
-     return false;
-     }
-     
-     if (oldContainer)
-     oldContainer.removeClass("highlight");
-     container.el.parent().addClass("highlight");
-     oldContainer = container.el.parent();
-     //console.log(container);
-     return true;
-     },
-     onDrop: function (item, container, _super) {
-     frameBody = $(document.getElementById("fr").contentDocument.body);
-     if (!container)
-     {
-     return;
-     }
-     var linkedParentId = container.el.parent().attr("data-linked-panel-id");
-     var linkedPanelId = item.attr("data-linked-panel-id");
-     var linkedWidgetId = item.attr("data-linked-widget-id");
-     oldContainer.removeClass("highlight");
-     var parent = frameBody.find("[data-panel-id='" + linkedParentId + "']");
-     var baseContentPane = frameBody.find("#base-content-pane");
-     
-     if (!parent.attr("data-block"))
-     {
-     parent = parent.children().eq(0);
-     }
-     if (parent.length <= 0)
-     {
-     var panel = frameBody.find("[data-panel-id='" + linkedPanelId + "']").detach();
-     if (baseContentPane.children().length <= item.index())
-     {
-     baseContentPane.append(panel);
-     } else
-     {
-     baseContentPane.children().eq(item.index()).before(panel);
-     }
-     _super(item);
-     return;
-     }
-     
-     if (linkedWidgetId)
-     {
-     //alert(linkedWidgetId);
-     var widget = frameBody.find("[data-widget-id='" + linkedWidgetId + "']").parent().detach();
-     
-     if (parent.children().length <= item.index())
-     {
-     parent.append(widget);
-     } else
-     {
-     parent.children().eq(item.index()).before(widget);
-     }
-     }
-     if (linkedPanelId)
-     {
-     var panel = frameBody.find("[data-panel-id='" + linkedPanelId + "']").detach();
-     if (parent.length == 0)
-     {
-     parent = baseContentPane;
-     }
-     if (parent.children().length <= item.index())
-     {
-     parent.append(panel);
-     } else
-     {
-     parent.children().eq(item.index()).before(panel);
-     }
-     }
-     
-     _super(item);
-     }
-     });*/
   };
 
   /**
@@ -739,26 +635,32 @@ session_start();
   UISForm.prototype.relocateGlassPanes = function () {
     var self = this;
     var fr = document.getElementById("fr");
-    if (fr) {
-      $.each(fr.contentDocument.body && fr.contentDocument.body.querySelectorAll(".widget-glass-pane"), function (i, el) {
-        var glass = $(el);
-        var widgetContainer = glass.data("widget-element");
-        var widget = widgetContainer.children().eq(0);
-        var widgetoffset = widget.offset();
-        //var rect = widget[0].getBoundingClientRect();
+    if (fr && fr.contentDocument.body) {
+      $.each(fr.contentDocument.body.querySelectorAll(".widget-glass-pane"), function (i, glass) {
+        glass = $(glass);
+        var widgetContainer = glass.data("widget-element"),
+                widget = widgetContainer.children().eq(0),
+                widgetoffset = widget.offset(),
+                pos = widgetoffset.top + '' + widgetoffset.left + '' + widget.outerWidth() + '' + widget.outerHeight();
+
+        if (pos === glass[0].dataset.position)
+          return;
+
         glass.css({
           top: widgetoffset.top,
           left: widgetoffset.left,
-          width: widget.width(),
-          height: widget.height()
+          width: widget.outerWidth(),
+          height: widget.outerHeight()
         });
+
+        glass[0].dataset.position = pos;
       });
     }
     if (!repTimeout) {
       repTimeout = setTimeout(function () {
         repTimeout = null;
         self.relocateGlassPanes();
-      }, 1000);
+      }, 100);
     }
   };
 
@@ -878,6 +780,7 @@ session_start();
       self.bExportLayout.hide();
     }
   };
+
   UISForm.prototype.changeTemplate = function () {
     var self = this;
     var template = $("#template").val();
@@ -897,17 +800,6 @@ session_start();
   };
 
   UISForm.prototype.readTemplateClassAndId = function () {
-    /*$("#cai").html("");
-     if ($("#template").val())
-     $.post("<?php echo EW_ROOT_URL; ?>admin/api/EWCore/parse_css", {
-     path: $("#template").val() + "/template.css"
-     },
-     function (data)
-     {
-     $.each(data, function (k, v) {
-     $("#cai").append(v + "<br>");
-     });
-     }, "json");*/
   };
 
   UISForm.prototype.addUIStructure = function () {
@@ -1137,38 +1029,35 @@ session_start();
       element: $.EW("getParentDialog", $("#ew-uis-editor"))[0],
       akcent: "loader center"
     }, .5);
-    //EW.lock($("#editor-container"));
-    //$("#inspector-panel").empty();
+    
     $("#inspector-editor > .items").empty();
     $('#fr').attr({
-      src: '<?php echo EW_ROOT_URL ?>' + url + '?_uis=' + this.uisId + '&editMode=true'
+      src: '<?= EW_ROOT_URL ?>' + url + '?_uis=' + this.uisId + '&editMode=true'
     });
   };
 
   UISForm.prototype.showWidgetsList = function (parentId) {
-    var self = this;
-    //var d = EW.createModal();
-    //neuis.currentDialog = d;
-    var $this = this;
+    var _this = this;
+    
     $("#items-list").stop().animate({
       left: "0px"
     },
             300);
     var listItemContent = $("#items-list #items-list-content");
     listItemContent.html("<h2 style='text-align:center;'>Please Wait</h2>");
-    $.post('<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/get-widgets-types', {
-      template: self.uisTemplate,
-      uisId: self.uisId
+    $.post('~webroot/api/widgets-management/get-widgets-types', {
+      template: _this.uisTemplate,
+      uisId: _this.uisId
     }, function (data) {
       var items = [];
 
       // Add panel item
       var e = $("<div class='text-icon' data-label='Panel'><h4>Panel</h4><p>Add a panel</p></div>");
-      e.on("click", $.proxy($this.addPanel, $this, parentId));
+      e.on("click", $.proxy(_this.addPanel, _this, parentId));
       items.push(e);
       $.each(data["result"], function (k, v) {
         e = $("<div class='text-icon' data-label='" + v["title"] + "'><h4>" + v["title"] + "</h4><p>" + ((v["description"]) ? v["description"] : "") + "</p></div>");
-        e.on("click", $.proxy($this.widgetForm, $this, v["path"], parentId, v["feeder_type"]));
+        e.on("click", $.proxy(_this.widgetForm, _this, v["path"], parentId, v["feeder_type"]));
         items.push(e);
       });
 
@@ -1179,12 +1068,12 @@ session_start();
 
   UISForm.prototype.blockForm = function (id, name) {
     var self = this;
-    //$("#items-list").stop().animate({left: "-300px"}, 300);
     var d = EW.createModal({
       class: "left"
     });
+    
     self.currentDialog = d;
-    $.post('<?php echo EW_ROOT_URL; ?>~webroot/widgets-management/block-form.php', {
+    $.post('~webroot/widgets-management/block-form.php', {
       template: self.uisTemplate,
       uisId: self.uisId,
       id: id
