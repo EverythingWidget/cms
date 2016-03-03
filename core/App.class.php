@@ -24,28 +24,34 @@ class App {
   protected $default_resource = "html";
   private $resources = [];
   private $loaded_modules = [];
+  private $loaded = false;
 
   public function __construct() {
-    
+    if ($this->loaded) {
+      return;
+    }
+
+    $this->loaded = true;
     $this->load_assets();
     $this->install_resource_handlers();
   }
 
   protected function load_assets() {
+    $app_root = $this->get_root();
+    $path = EW_PACKAGES_DIR . '/' . $app_root . '/' . $dir;
+
     $this->load_modules("api");
   }
 
   protected function install_resource_handlers() {
     $this->addResource("api", new APIResourceHandler($this));
     $this->addResource($this->default_resource, new HTMLResourceHandler($this));
-    
   }
 
   public function init_app() {
     for ($in = 0, $len = count($this->loaded_modules); $in < $len; $in++) {
       $this->loaded_modules[$in]->init();
     }
-    
   }
 
   public function load_modules($dir) {
@@ -59,6 +65,7 @@ class App {
 
     for ($in = 0, $len = count($sections); $in < $len; $in++) {
       $section_name = $sections[$in];
+
       if (strpos($section_name, '.') === 0) {
         continue;
       }
@@ -88,7 +95,7 @@ class App {
 //      {
 //         if (\admin\UsersManagement::user_has_permission_for_resource($app_name, $app_resource_path[1], $_SESSION['EW.USER_GROUP_ID']))
 //         {
-    
+
     if ($this->resources[$resource_type]) {
       return $this->resources[$resource_type]->process($this, $package, $resource_type, $module_name, $method_name, $parameters);
     }

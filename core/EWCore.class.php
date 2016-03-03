@@ -23,6 +23,7 @@ class EWCore {
   public static $languages;
   public static $EW_CONTENT_COMPONENT = "ew-content-component";
   public static $EW_APP = "ew-app";
+  public static $APPS = [];
 
   public function __construct() {
     static::$languages = include('../config/languages.php');
@@ -129,7 +130,7 @@ class EWCore {
 
     //echo " $app_name  $section_name  $function_name";
     //$app_namespace = explode('/', $package);
-    $real_class_name = str_replace('-', '\\', $package) . '\\App';
+    $real_class_name = str_replace('-', '_', $package) . '\\App';
     //echo $real_class_name;
     $parameters["_app_name"] = $package;
     $parameters["_resource_type"] = $resource_type;
@@ -429,6 +430,15 @@ class EWCore {
     }
   }
 
+  /**
+   * 
+   * @param type $appDir
+   * @return \Module
+   */
+  public static function get_app($app_name) {
+    return self::$APPS[$app_name];
+  }
+
   private function save_setting($key = null, $value = null) {
     $db = \EWCore::get_db_connection();
 
@@ -523,7 +533,7 @@ class EWCore {
           require_once EW_PACKAGES_DIR . "/" . $app_dir . "/App.app.php";
           $app_class_name = $package . "\\App";
 
-          $apps[] = new $app_class_name();
+          self::$APPS[$package] = new $app_class_name();
         }
         catch (Exception $ex) {
           echo $ex->getTraceAsString();
@@ -531,8 +541,8 @@ class EWCore {
       }
     }
 
-    for ($in = 0, $len = count($apps); $in < $len; $in++) {
-      $apps[$in]->init_app();
+    foreach (self::$APPS as $key => $app) {
+      $app->init_app();
     }
     // Optimization tip
     self::$plugins_initialized = true;
@@ -1744,6 +1754,25 @@ class EWCore {
     }
 
     file_put_contents("$dir/$file", $contents);
+  }
+
+  public static function create_table($table, $fields) {
+
+    $sql = "CREATE TABLE IF NOT EXISTS `$table` (";
+    $pk = '';
+
+    foreach ($fields as $field => $type) {
+      $sql.= "`$field` $type,";
+
+      if (preg_match('/AUTO_INCREMENT/i', $type)) {
+        $pk = $field;
+      }
+    }
+
+    $sql = rtrim($sql, ',') /* . ', PRIMARY KEY (`' . $pk . '`)' */;
+
+    $sql .= ") CHARACTER SET utf8 COLLATE utf8_general_ci";
+    return $sql;
   }
 
 }

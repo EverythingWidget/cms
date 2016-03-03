@@ -5,7 +5,6 @@
 <script>
   function initMap() {
     var mapDiv = document.querySelector('[data-widget-id={$widget_id}] .map-container');
-    console.log(mapDiv)
     var map = new google.maps.Map(mapDiv, {
       center: {lat: 52.336025, lng: 5.220869},
       zoom: 15,

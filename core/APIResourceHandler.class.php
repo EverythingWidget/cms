@@ -47,15 +47,16 @@ class APIResourceHandler extends ResourceHandler {
     $app_name = $app->get_root();
     $resource_name = $resource_type;
     $real_class_name = $app_name . '\\' . $module_class_name;
+    
     $call = false;
 
     if (!$module_class_name) {
       return \EWCore::log_error(400, "<h4>$app_name-api </h4><p>Please specify the api command</p>");
     }
-
+    
     if (class_exists($real_class_name)) {
       $permission_id = \EWCore::does_need_permission($app_name, $module_name, $resource_name . '/' . $command_name);
-
+      
       $parameters["_parts"] = array_slice(explode('/', $parameters["_file"]), 1);
       $app_section_object = new $real_class_name($app);
 

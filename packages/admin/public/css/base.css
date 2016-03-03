@@ -2748,7 +2748,8 @@ table.contents td {
   /* margin-left: 2%; */
   /* margin-right: 2%; */
   text-align: left;
-  padding: 0 10px 10px;
+  padding: 0;
+  padding-bottom: 10px;
   display: block;
 }
 
@@ -2758,8 +2759,9 @@ table.contents td {
 
 .content-item p {
   display: block;
-  margin: 10px 0 0;
-  padding: 0;
+  margin: 0;
+  padding: 10px;
+  padding-bottom: 0;
   /* direction: rtl; */
   overflow: hidden;
   word-wrap: break-word;
@@ -2767,8 +2769,8 @@ table.contents td {
 
 .content-item p.date {
   display: block;
-  margin: 10px 0 0;
-  padding: 0;
+  margin: 0;
+  padding: 13px 10px;
   direction: ltr;
   color: #666;
   font-weight: 400;
@@ -2804,7 +2806,7 @@ table.contents td {
 
 .content-item.image img {
   display: block;
-  margin: 0 -10px;
+  margin: 0 auto;
   max-width: 200px;
   max-height: 300px;
   margin-bottom: 10px;

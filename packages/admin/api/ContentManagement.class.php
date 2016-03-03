@@ -90,6 +90,7 @@ class ContentManagement extends \ew\Module {
         "api/delete_folder",
         "api/delete_article",
         "api/delete_album",
+        "api/delete_image",
         "api/upload_file",
         "html/article-form.php:tr{New Article}",
         "html/folder-form.php:tr{New Folder}",
@@ -138,10 +139,10 @@ class ContentManagement extends \ew\Module {
 
   private function get_node_src($node) {
     $link = null;
-    if ($node->tagName === "img") {      
+    if ($node->tagName === "img") {
       $link = $node->getAttribute("src");
     }
-    
+
     return $link;
   }
 
@@ -830,35 +831,33 @@ class ContentManagement extends \ew\Module {
   }
 
   public function delete_image($id) {
-    $db = \EWCore::get_db_connection();
-    if (!$id)
-      $id = $db->real_escape_string($_REQUEST["id"]);
-    $result = $db->query("SELECT * FROM ew_contents WHERE parent_id = '$id' LIMIT 1");
-    if ($result->fetch_assoc()) {
-      return json_encode(array(
-          status      => "unable",
-          status_code => 2));
-      return;
-    }
-    $result = $db->query("SELECT * FROM ew_contents, ew_images WHERE ew_contents.id = ew_images.content_id AND ew_contents.id = '$id' LIMIT 1");
-    if ($file = $result->fetch_assoc()) {
+    $pdo = \EWCore::get_db_PDO();
+
+    $result = $pdo->prepare("SELECT * FROM ew_contents, ew_images WHERE ew_contents.id = ew_images.content_id AND ew_contents.id = ? LIMIT 1");
+    $result->execute([$id]);
+    if ($file = $result->fetchAll(\PDO::FETCH_ASSOC)) {
       $path_parts = pathinfo(EW_MEDIA_DIR . '/' . $file["source"]);
-      unlink(EW_MEDIA_DIR . '/' . $path_parts["basename"]);
-      unlink(EW_MEDIA_DIR . '/' . $path_parts["filename"] . '.thumb.' . $path_parts["extension"]);
+      if (file_exists(EW_MEDIA_DIR . '/' . $path_parts["basename"])) {
+        unlink(EW_MEDIA_DIR . '/' . $path_parts["basename"]);
+        unlink(EW_MEDIA_DIR . '/' . $path_parts["filename"] . '.thumb.' . $path_parts["extension"]);
+      }
     }
-    $result = $db->query("DELETE FROM ew_contents WHERE type = 'image' AND id = '$id'");
-    $db->close();
-    if ($result) {
-      return json_encode(array(
-          "status"      => "success",
-          "status_code" => 1,
-          "message"     => ""));
+    
+    
+
+    $result = $pdo->prepare("DELETE FROM ew_contents WHERE type = 'image' AND id = ?");
+    $result->execute([$id]);
+    
+    $result = $pdo->prepare("DELETE FROM ew_images WHERE content_id = ?");
+    if ($result->execute([$id])) {
+      return \ew\APIResourceHandler::to_api_response([
+                  "status"      => "success",
+                  "status_code" => 200,
+                  "message"     => "Image has been deleted succesfully"
+      ]);
     }
     else {
-      return json_encode(array(
-          "status"      => "unsuccess",
-          "status_code" => 0,
-          "message"     => ""));
+      return \EWCore::log_error(400, "Unable to delete the image");
     }
   }
 

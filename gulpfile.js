@@ -43,12 +43,12 @@ gulp.task('watch-webroot-templates', [
   });
 });
 
-gulp.task('start-development', [
+gulp.task('ser-dev-backend', [
   'watch-webroot-templates'
 ], function () {
   browserSync.init({
     port: 5555,
-    proxy: 'localhost/EverythingWidget',
+    proxy: 'localhost:8000/EverythingWidget',
     logFileChanges : true
   });
 

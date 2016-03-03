@@ -81,7 +81,7 @@ EverythingWidgets.prototype.showAllComponents = function () {
     transform: "translateZ(0)",
     opacity: 1
   },
-    500, "Power3.easeOut").addClass("in");
+          500, "Power3.easeOut").addClass("in");
   /*$("#base-pane").animate({
    top: "100%"
    },
@@ -90,7 +90,7 @@ EverythingWidgets.prototype.showAllComponents = function () {
     //top: "0px",
     transform: "translateZ(-150px)"
   },
-    500, "Power3.easeOut");
+          500, "Power3.easeOut");
   this.lock("body", " ");
   $(".glass-pane-lock").bind("click", function (e) {
 
@@ -103,14 +103,14 @@ EverythingWidgets.prototype.showAllComponents = function () {
         opacity: 0,
         display: "none"
       },
-        500, "Power3.easeOut", function () {
-          //$("#components-pane").hide(0);
-        }).removeClass("in");
+              500, "Power3.easeOut", function () {
+                //$("#components-pane").hide(0);
+              }).removeClass("in");
       $("#base-pane").stop().animate({
         //top: "0px",
         transform: "translateZ(0px)"
       },
-        500, "Power3.easeOut");
+              500, "Power3.easeOut");
       //cPane.removeClass("zoom-out")
       self.unlock("body");
       $("#base-pane").removeClass("blur");
@@ -180,7 +180,7 @@ EverythingWidgets.prototype.addActionButton = function (config) {
   var settings = $.extend({
     class: "btn-primary"
   },
-    config);
+          config);
 
   if (settings.activity) {
     throw "Action button does not support `activity` property, Use `addActivity` instead";
@@ -226,13 +226,13 @@ EverythingWidgets.prototype.addNotification = function (css) {
       notification.animate({
         width: "toggle"
       },
-        500, function () {
-          notification.attr({
-            class: ""
-          });
-          notification.text("");
-          li.remove();
-        });
+              500, function () {
+                notification.attr({
+                  class: ""
+                });
+                notification.text("");
+                li.remove();
+              });
     }
 
     if (time)
@@ -403,11 +403,11 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler) {
     return;
   }
 
-  var setInputData = function (key, val, form) {    
+  var setInputData = function (key, val, form) {
     //alert(key + " "+val)
     if ("string" === typeof key)
       key = key.replace(/(:|\.|\[|\]|,|\/)/g, "\\$1");
-    
+
     if (handler)
     {
       form.find("[id='" + key + "']").val(handler(key, val));
@@ -493,7 +493,7 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler) {
     if (val && typeof (val) === "object")
     {
       //$.each(val, function (key1, val1) {
-        setInputData(key, val, form);
+      setInputData(key, val, form);
       //});
     } else
       setInputData(key, val, form);
@@ -516,7 +516,7 @@ EverythingWidgets.prototype.createDropMenu = function (element, config) {
     parent: "body",
     eventParent: $(window)
   },
-    config);
+          config);
   var size = $("<div class='dropdown-menu'><div class='col-xs-12'></div></div>");
   size.css({
     width: settings.width,
@@ -550,7 +550,7 @@ EverythingWidgets.prototype.createDropMenu = function (element, config) {
     size.animate({
       height: "toggle"
     },
-      200, "Power3.easeOut");
+            200, "Power3.easeOut");
     isVisible = true;
   }
 
@@ -720,10 +720,10 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction) {
         modalPane.stop().animate({
           transform: "scale(.0)"
         },
-          400, "Power2.easeInOut", function () {
+                400, "Power2.easeInOut", function () {
 
-            closeAction();
-          });
+                  closeAction();
+                });
         return;
       } else {
         System.UI.body = $('#base-pane')[0];
@@ -813,14 +813,14 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction) {
         modalPane.animate({
           opacity: "1"
         },
-          520, "Power3.easeOut", function () {
-            //modalPane.css("left", "");
-            methods.setCloseButton();
-            modalPane.isOpen = true;
-            if (settings.class === "full")
-            {
-            }
-          });
+                520, "Power3.easeOut", function () {
+                  //modalPane.css("left", "");
+                  methods.setCloseButton();
+                  modalPane.isOpen = true;
+                  if (settings.class === "full")
+                  {
+                  }
+                });
       }
 
       if (settings.onOpen)
@@ -1279,9 +1279,9 @@ EverythingWidgets.prototype.unlock = function (obj, dur) {
   ll.addClass("unlock").css("transition", "none").animate({
     opacity: 0
   },
-    dur || 0, function () {
-      $(this).remove();
-    });
+          dur || 0, function () {
+            $(this).remove();
+          });
 };
 
 function EWTable(config) {
@@ -1290,7 +1290,7 @@ function EWTable(config) {
     pageSize: 10,
     urlData: {}
   },
-    config);
+          config);
   this.container = $("<div class='report row'></div>");
   this.tableHeaderDiv = $("<div class='table-header' ></div>");
   this.tableBodyDiv = $("<div class='table-body'></div>");
@@ -1312,11 +1312,11 @@ function EWTable(config) {
   this.container.append(this.controls);
   this.container.append(this.tableContainer);
   this.tableHeaderDiv.css(
-    {
-      position: "absolute",
-      display: "none",
-      zIndex: "2"
-    });
+          {
+            position: "absolute",
+            display: "none",
+            zIndex: "2"
+          });
   this.tableBodyDiv.scroll(function () {
     if ($(this).scrollTop() > 0 && !$base.tableHeaderDiv.is(":visible"))
     {
@@ -1446,11 +1446,11 @@ EWTable.prototype.createRow = function (val, rc) {
           messageRow.animate({
             transform: "scale(0,1)"
           },
-            400,
-            "Power3.easeInOut",
-            function () {
-              messageRow.remove();
-            });
+                  400,
+                  "Power3.easeInOut",
+                  function () {
+                    messageRow.remove();
+                  });
         });
 
         $(document).one("keydown", function (e) {
@@ -1462,8 +1462,8 @@ EWTable.prototype.createRow = function (val, rc) {
         messageRow.animate({
           transform: "scale(1,1)"
         },
-          400,
-          "Power2.easeInOut");
+                400,
+                "Power2.easeInOut");
       };
       if (ewTable.config.onDelete.apply(tableRow, new Array(fieldId)))
         tableRow.removeRow(fieldId);
@@ -1569,13 +1569,13 @@ EWTable.prototype.read = function (customURLData) {
     element: self.tableBodyDiv[0],
     akcent: "loader top"
   },
-    .3);
+          .3);
 
   var urlData = $.extend(self.urlData, {
     token: self.token,
     size: self.pageSize
   },
-    customURLData);
+          customURLData);
 
   setTimeout(function () {
     $.ajax({
@@ -1615,7 +1615,7 @@ EWTable.prototype.read = function (customURLData) {
           marginTop: "0px",
           opacity: 1
         },
-          400, "Power2.easeOut");
+                400, "Power2.easeOut");
       },
       error: function (o) {
         //console.log(o);
@@ -2004,10 +2004,10 @@ EWNotification.prototype.show = function () {
     marginLeft: "-=50",
     opacity: "1"
   },
-    300, function () {
-      if ($this.options.delay !== "stay")
-        $this.$note.delay($this.options.delay || 3000).fadeOut('slow', $.proxy($this.closeNotification, $this));
-    });
+          300, function () {
+            if ($this.options.delay !== "stay")
+              $this.$note.delay($this.options.delay || 3000).fadeOut('slow', $.proxy($this.closeNotification, $this));
+          });
 };
 EWNotification.prototype.hide = function () {
   //if (this.options.fadeOut.enabled)
@@ -2139,7 +2139,7 @@ function ExtendableList(element, cSettings) {
     value: [
     ]
   },
-    cSettings);
+          cSettings);
   //this.$element.find("li:first-child").prepend('<div class="handle"></div>');
 
   this.firstItemClone = this.$element.find("li:first-child").clone();
@@ -2152,7 +2152,7 @@ function ExtendableList(element, cSettings) {
     ni.animate({
       height: "toggle"
     },
-      200);
+            200);
   });
   this.lastRow.append(this.addNewRow);
   base.$element.empty();
@@ -2173,7 +2173,7 @@ function ExtendableList(element, cSettings) {
           oneValue = true;
           items.push(ci);
         }
-        
+
         el.val(v).change();
       }
 
@@ -2182,11 +2182,11 @@ function ExtendableList(element, cSettings) {
         if (!init) {
           // Create the list and set the value for the first key
           for (var i = 0; i < v.length; i++)
-          {            
+          {
             //alert(k+" "+v[i]);
             ci = base.createItem();
             ci.find(":input[name='" + k + "']").val(v[i]).change();
-            
+
             items.push(ci);
             init = true;
           }
@@ -2196,7 +2196,7 @@ function ExtendableList(element, cSettings) {
           // Set the value for the other keys
           for (var i = 0; i < v.length; i++) {
             items[i].find(":input[name='" + k + "']").val(v[i]).change();
-            
+
           }
         }
       }
@@ -2221,9 +2221,9 @@ ExtendableList.prototype.createItem = function () {
       height: "toggle",
       opacity: 0
     },
-      300, "Power2.easeOut", function () {
-        originalModelClone.remove();
-      });
+            300, "Power2.easeOut", function () {
+              originalModelClone.remove();
+            });
   });
   controlRow.append(removeBtn);
   originalModelClone.prepend(controlRow);
@@ -2555,7 +2555,7 @@ $(document).ready(function () {
           EW.setHashParameters({
             ew_activity: null
           },
-            "FORMLESS_ACTIVITY");
+                  "FORMLESS_ACTIVITY");
           return;
         }
 
@@ -2576,6 +2576,6 @@ $(document).ready(function () {
     EW.setHashParameters({
       ew_activity: null
     },
-      "FORMLESS_ACTIVITY");
+            "FORMLESS_ACTIVITY");
   }, "FORMLESS_ACTIVITY");
 });
