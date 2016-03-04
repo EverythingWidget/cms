@@ -37,14 +37,22 @@
   // ContentForm predefined functions
   var ContentForm = {
     formId: "#<?= $form_id ?>",
+    allLabels: <?= json_encode(array_keys(EWCore::read_registry(EWCore::$EW_CONTENT_COMPONENT))) ?>,
     initLabels: function (labels) {
       $(".content-label .label-control-button:checked").click();
       $(".content-label .label-control-button").prop("checked", false);
-      if (labels)
-        $.each(labels, function (i, el) {
-          $("#" + el.key + "_control_button:not(:checked)").click();
-          $("#" + el.key + "_control_button").prop("checked", true);
-        });
+
+      var allLabels = this.allLabels.slice(0);
+      $.each(labels, function (i, el) {
+        $("#" + el.key + "_control_button").click();
+        $("#" + el.key + "_control_button").prop("checked", true);
+        allLabels.splice(allLabels.indexOf(el.key), 1);
+      });
+
+      $.each(allLabels, function (i, el) {
+        $("#" + el + "_control_button:checked").click();
+        $("#" + el + "_control_button").prop("checked", false);
+      });
     },
     /**
      * Active specified label
@@ -56,9 +64,9 @@
       if (!flag) {
         $("#" + label + "_control_button:not(:checked)").click();
         $("#" + label + "_control_button").prop("checked", true);
+
         return;
       }
-
       if (!this.getFormData().id) {
         $("#" + label + "_control_button:not(:checked)").click();
         $("#" + label + "_control_button").prop("checked", true);
@@ -149,13 +157,14 @@
       lcb.on("change", function () {
         var label = lcb.next("span");
         var labelBox = lcb.parent();
-        if (lcb.is(":checked")) {
+        if (lcb[0].checked) {
           $e.attr("data-activated", true);
           label.text("Turned On");
           labelBox.addClass("btn-success").removeClass("btn-default");
           $e.stop().animate({
-            className: "box box-grey content-label"
-          }, 500, "Power3.easeInOut");
+            className: "-=disabled"
+          },
+            500, "Power3.easeInOut");
 
         } else {
           $e.attr("data-activated", false);
@@ -163,8 +172,9 @@
           label.text("Turned Off");
           labelBox.removeClass("btn-success").addClass("btn-default");
           $e.stop().animate({
-            className: "box box-grey content-label disabled"
-          }, 400, "Power3.easeInOut");
+            className: "+=disabled"
+          },
+            400, "Power3.easeInOut");
         }
       });
     });

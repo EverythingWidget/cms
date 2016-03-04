@@ -16,30 +16,30 @@ namespace ew;
 class HTMLResourceHandler extends ResourceHandler {
 
   private $mime_types = array(
-      "pdf"  => "application/pdf",
-      "exe"  => "application/octet-stream",
-      "zip"  => "application/zip",
+      "pdf" => "application/pdf",
+      "exe" => "application/octet-stream",
+      "zip" => "application/zip",
       "docx" => "application/msword",
-      "doc"  => "application/msword",
-      "xls"  => "application/vnd.ms-excel",
-      "ppt"  => "application/vnd.ms-powerpoint",
-      "gif"  => "image/gif",
-      "png"  => "image/png",
+      "doc" => "application/msword",
+      "xls" => "application/vnd.ms-excel",
+      "ppt" => "application/vnd.ms-powerpoint",
+      "gif" => "image/gif",
+      "png" => "image/png",
       "jpeg" => "image/jpg",
-      "jpg"  => "image/jpg",
-      "mp3"  => "audio/mpeg",
-      "wav"  => "audio/x-wav",
+      "jpg" => "image/jpg",
+      "mp3" => "audio/mpeg",
+      "wav" => "audio/x-wav",
       "mpeg" => "video/mpeg",
-      "mpg"  => "video/mpeg",
-      "mpe"  => "video/mpeg",
-      "mov"  => "video/quicktime",
-      "avi"  => "video/x-msvideo",
-      "3gp"  => "video/3gpp",
-      "css"  => "text/css",
-      "jsc"  => "application/javascript",
-      "js"   => "application/javascript",
-      "php"  => "text/html",
-      "htm"  => "text/html",
+      "mpg" => "video/mpeg",
+      "mpe" => "video/mpeg",
+      "mov" => "video/quicktime",
+      "avi" => "video/x-msvideo",
+      "3gp" => "video/3gpp",
+      "css" => "text/css",
+      "jsc" => "application/javascript",
+      "js" => "application/javascript",
+      "php" => "text/html",
+      "htm" => "text/html",
       "html" => "text/html");
   protected $directly_accessible = [
       "js",
@@ -57,6 +57,7 @@ class HTMLResourceHandler extends ResourceHandler {
   }
 
   protected function handle($app, $package, $resource_type, $module_name, $method_name, $parameters = null) {
+    $package = str_replace('-', '_', $package);
     $matches = array();
     preg_match('/(.*\.[^-]{2,4})/', $parameters["_file"], $matches);
     $file = isset($matches[1]) ? $matches[1] : $parameters["_file"];
@@ -176,8 +177,8 @@ class HTMLResourceHandler extends ResourceHandler {
       $row = $stm->fetch(\PDO::FETCH_ASSOC);
     }
     return [
-        "uis_id"                => $row["ui_structure_id"],
-        "uis_template"          => $row["template"],
+        "uis_id" => $row["ui_structure_id"],
+        "uis_template" => $row["template"],
         "uis_template_settings" => $row["template_settings"]
     ];
   }

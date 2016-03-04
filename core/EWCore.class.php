@@ -532,7 +532,6 @@ class EWCore {
         try {
           require_once EW_PACKAGES_DIR . "/" . $app_dir . "/App.app.php";
           $app_class_name = $package . "\\App";
-
           self::$APPS[$package] = new $app_class_name();
         }
         catch (Exception $ex) {
@@ -1476,16 +1475,16 @@ class EWCore {
     // '/(div)?(\.panel)+[\.\w-]+/'  for panels
     // '/(div)?(\.widget)[\.\w-]+/' for widgets
 //Run the first regex pattern on the input
-    $stripped = preg_replace($pattern_one, '', $file);
+    //$stripped = preg_replace($pattern_one, '', $file);
 
 //Variable to hold results
     $selectors = array();
 
 //Run the second regex pattern on $stripped input
-    $matches = preg_match_all($pattern_two, $stripped, $selectors);
+    $matches = preg_match_all($pattern_two, $file, $selectors);
 //Show the results
     //$selectors[0] = str_replace('.', ' ', $selectors[0]);
-
+    //print_r($selectors);
     return json_encode(array_unique($selectors[0]));
   }
 

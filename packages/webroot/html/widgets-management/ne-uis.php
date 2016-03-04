@@ -226,16 +226,16 @@ session_start();
     this.inspectorEditor[0].isValidParent = function (item, parent) {
       //UIUtil.hasCSSClass(item, "block")
       var $parent = $(parent);
-      if (UIUtil.hasCSSClass(item, "block") && !$parent.is(".items"))
+      if (UIUtility.hasClass(item, "block") && !$parent.is(".items"))
       {
         return false;
       }
-      if (UIUtil.hasCSSClass(item, "widget") && $parent.is(".items"))
+      if (UIUtility.hasClass(item, "widget") && $parent.is(".items"))
       {
 
         return false;
       }
-      if (UIUtil.hasCSSClass(item, "panel") && $parent.is(".items"))
+      if (UIUtility.hasClass(item, "panel") && $parent.is(".items"))
       {
         //console.log(item.index() + "  " + container.el.children().eq(item.index() - 1).hasClass("block"));
         return false;

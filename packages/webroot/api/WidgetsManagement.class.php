@@ -1106,7 +1106,7 @@ class WidgetsManagement extends \ew\Module {
     $feeders = [];
     //      print_r(EWCore::read_registry("ew-widget-feeder"));
     foreach (static::$widgets_feeders as $feeder_id => $feeder_config) {
-      if ($feeder_config->feeder_type === "page" || $type === "all") {
+      if ($feeder_config->feeder_type === $type || $type === "all") {
         $feeders[] = $feeder_config;
       }
     }

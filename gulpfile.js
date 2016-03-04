@@ -31,6 +31,16 @@ gulp.task('compile:scss', function (a) {
     .pipe(browserSync.stream({
       match: "**/*.css"
     }));
+
+//return gulp.src("packages/rm/public/templates/**/scss/*.scss")
+//    //.pipe(sourcemaps.init())
+//    .pipe(sass({
+//      outputStyle: 'compressed'
+//    }).on('error', sass.logError))
+//    .pipe(gulp.dest('.'))
+//    .pipe(browserSync.stream({
+//      match: "**/*.css"
+//    }));
 });
 
 gulp.task('watch-webroot-templates', [

@@ -28,7 +28,7 @@ $panelId = $_REQUEST['panelId'];
     </h1>
   </div>
   <div id="widgets-list" class="form-content row" >
-    <div class="col-xs-12 mar-bot">
+    <div class="col-xs-12 mar-bot mt">
       <div class="text-icon" onclick="uisWidget.showWidgetControlPanel('<?php echo$widget_type ?>')">                        
         <h4>
           tr{Custom Widget}
@@ -37,7 +37,6 @@ $panelId = $_REQUEST['panelId'];
           tr{Create a widget with custom configuration}
         </p>
       </div>
-      <h4>tr{App's Widgets}</h4>
       <?php
       //$wm = new admin\WidgetsManagement();
       //$widgets_types_list = json_decode($wm->get_widgets_types(), true);
@@ -50,7 +49,7 @@ $panelId = $_REQUEST['panelId'];
           $oldApp = $row->module->get_app()->get_name();
           echo "<h2>$oldApp</h2>";
         }
-        $prewidget_data = json_encode(["feeder" => '{type:"widget-feeder"", feederId: "' . $row->id . '"}']);
+        $prewidget_data = json_encode(["feeder" => '{ "type": "widget-feeder", "feederId": "' . $row->id . '" }']);
         ?> 
         <div class="text-icon" onclick="uisWidget.showWidgetControlPanel('<?php echo $widget_type ?>',<?php echo htmlentities($prewidget_data) ?>)">
           <?php
@@ -75,10 +74,16 @@ $panelId = $_REQUEST['panelId'];
     this.widgetType = "<?php echo $widget_type ?>";
     this.feederType = "<?php echo $feeder_type ?>";
     this.template = "<?php echo $_REQUEST["template"] ?>";
-    this.bAdd = EW.addAction("Add", $.proxy(this.addWidgetToPanel, this), {display: "none"}).addClass("btn-success");
-    this.bApply = EW.addAction("Apply", $.proxy(this.applyToWidget, this), {display: "none"}).addClass("btn-success");
+    this.bAdd = EW.addAction("Add", $.proxy(this.addWidgetToPanel, this), {
+      display: "none"
+    }).addClass("btn-success");
+    this.bApply = EW.addAction("Apply", $.proxy(this.applyToWidget, this), {
+      display: "none"
+    }).addClass("btn-success");
     //this.bCW = EW.addAction("Change Widget", this.showWidgetList, {display: "none"});
-    this.bCC = EW.addAction("Cancel Changing", this.cancel, {display: "none"});
+    this.bCC = EW.addAction("Cancel Changing", this.cancel, {
+      display: "none"
+    });
     this.setData = true;
     this.getWidgetData;
     this.widgetParameters = {};
@@ -116,27 +121,32 @@ $panelId = $_REQUEST['panelId'];
     var styleClass = $("#used-classes").text();
     var widgetStyleClass = $("#style_class").val();
 
-    $.post('<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/create-widget', {widget_type: uisWidget.widgetType, style_class: styleClass,
-      widget_style_class: widgetStyleClass, style_id: styleId, widget_parameters: wp},
-            function (data) {
-              EW.lock($.EW("getParentDialog", self.uisWidgetForm));
+    $.post('<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/create-widget', {
+      widget_type: uisWidget.widgetType,
+      style_class: styleClass,
+      widget_style_class: widgetStyleClass,
+      style_id: styleId,
+      widget_parameters: wp
+    },
+      function (data) {
+        EW.lock($.EW("getParentDialog", self.uisWidgetForm));
 
-              // Add widget data to the widget-data script tag
-              if (data["widget_data"])
-                uisForm.setWidgetData(data["widget_id"], data["widget_data"]);
+        // Add widget data to the widget-data script tag
+        if (data["widget_data"])
+          uisForm.setWidgetData(data["widget_id"], data["widget_data"]);
 
-              var containerElement = $("#fr").contents().find("body #base-content-pane div[data-panel-id='<?php echo $panelId ?>']");
-              if (containerElement.hasClass("block"))
-              {
-                uisForm.addWidget(data["widget_html"], containerElement[0]);
-              } else
-              {
-                uisForm.addWidget(data["widget_html"], containerElement.children(".row")[0]);
-              }
+        var containerElement = $("#fr").contents().find("body #base-content-pane div[data-panel-id='<?php echo $panelId ?>']");
+        if (containerElement.hasClass("block"))
+        {
+          uisForm.addWidget(data["widget_html"], containerElement[0]);
+        } else
+        {
+          uisForm.addWidget(data["widget_html"], containerElement.children(".row")[0]);
+        }
 
-              $("#inspector-editor").trigger("refresh");
-              $.EW("getParentDialog", self.uisWidgetForm).trigger("close");
-            }, "json");
+        $("#inspector-editor").trigger("refresh");
+        $.EW("getParentDialog", self.uisWidgetForm).trigger("close");
+      }, "json");
   };
 
   UISWidget.prototype.applyToWidget = function () {
@@ -160,7 +170,8 @@ $panelId = $_REQUEST['panelId'];
       widget_style_class: widgetStyleClass,
       style_id: styleId,
       widget_parameters: wp
-    }, function (data) {
+    },
+    function (data) {
       EW.lock($.EW("getParentDialog", self.uisWidgetForm));
       // Remove the old widget script
       uisForm.getEditor().find("head #" + self.widgetId).remove();
@@ -201,7 +212,8 @@ $panelId = $_REQUEST['panelId'];
       widgetType: widgetType,
       template: self.template,
       widgetParameters: JSON.stringify(self.widgetParameters)
-    }, function (data) {
+    },
+    function (data) {
       self.uisWidgetForm.stop().hide();
       self.uisWidgetForm.html(data);
       self.usedClassElement = $("#used-classes");
@@ -253,10 +265,10 @@ $panelId = $_REQUEST['panelId'];
     var widgetClasses = ($("#style_class").val()) ? $("#style_class").val() : "";
     widgetClasses = widgetClasses.replace('widget', '');
     widgetClasses = widgetClasses.split(" ");
-    
+
     var classes = $("#used-classes").text();
     classes = classes.split(" ");
-    
+
     $.each($("#available-classes").find("label"), function (k, classBtn) {
       var a = $("<input type='checkbox'>");
       classBtn = $(classBtn);
@@ -311,11 +323,11 @@ $panelId = $_REQUEST['panelId'];
         }
       });
     });
-    
+
     $("#size-layout input:radio,#size-layout input:checkbox,input[data-slider]").change(function (event) {
       uisWidget.setClasses();
     });
-    
+
     $("#style_class").val(widgetClasses.join(' ').trim()).change();
     uisWidget.setClasses();
   };
@@ -333,7 +345,7 @@ $panelId = $_REQUEST['panelId'];
     $.each($("#size-layout input[data-slider]:not(:disabled)"), function (k, v) {
       //if (parseInt(v.value)) {
 
-        $("#used-classes").append(v.name + v.value + " ");
+      $("#used-classes").append(v.name + v.value + " ");
       //}
     });
 

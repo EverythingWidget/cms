@@ -8,13 +8,39 @@
 <link rel="stylesheet" href="~admin/public/css/theme/ew/theme.css"  type="text/css">
 <link rel="stylesheet" href="~admin/public/js/ContentStrike/content-tools.min.css">
 
-<!--[if IE]>
-    <script type="text/javascript">
-         alert("Your browser (IE 8) is not supported");
-         window.location = "http://www.whatbrowser.org/";
-    </script>
-<![endif]-->
+<script>
 
+  (function () {
+    function getInternetExplorerVersion()
+    {
+      var rv = -1;
+      if (navigator.appName == 'Microsoft Internet Explorer')
+      {
+        var ua = navigator.userAgent;
+        var re = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
+        if (re.exec(ua) != null)
+          rv = parseFloat(RegExp.$1);
+      } else if (navigator.appName == 'Netscape')
+      {
+        var ua = navigator.userAgent;
+        var re = new RegExp("Trident/.*rv:([0-9]{1,}[\.0-9]{0,})");
+        if (re.exec(ua) != null)
+          rv = parseFloat(RegExp.$1);
+      }
+
+      return rv;
+    }
+    
+    var ieVersion = getInternetExplorerVersion();
+    if (ieVersion !== -1 && ieVersion < 11)
+    {
+      alert("Your browser (IE " + ieVersion + ") is not supported");
+      window.location = "http://www.whatbrowser.org/";
+    }
+  })();
+
+</script>
+<script src="~rm/public/js/ui-utility/ui-utility.js" ></script>   
 <script src="https://code.jquery.com/jquery-2.1.0.min.js"></script>       
 <script src="~rm/public/js/gsap/TweenLite.min.js"></script>
 <script src="~rm/public/js/gsap/TimelineLite.min.js"></script>

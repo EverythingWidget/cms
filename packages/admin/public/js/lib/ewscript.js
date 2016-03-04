@@ -455,7 +455,7 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler) {
          {
          val = val.replace(/\\/g, "")
          }*/
-        elm.text(val);
+        elm.text(val).change();
       }
     }
   };

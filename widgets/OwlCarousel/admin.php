@@ -90,3 +90,10 @@
   </h2>
   <input class="col-xs-12" type="text" name="slide-timeout" id="slide-timeout" value="1000" data-slider="true" data-slider-range="1000,10000" data-slider-snap="true" data-slider-highlight="true" data-slider-step="200" >
 </div>
+
+<div class="block-row">
+  <h2 class="ta-center">  
+    tr{Transition Speed}
+  </h2>
+  <input class="col-xs-12" type="text" name="smart-speed" id="smart-speed" value="200" data-slider="true" data-slider-range="200,10000" data-slider-snap="true" data-slider-highlight="true" data-slider-step="200" >
+</div>
