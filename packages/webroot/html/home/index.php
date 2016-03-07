@@ -37,7 +37,7 @@ if (file_exists($template_php)) {
   require_once $template_php;
   $template = new \template();
   //$uis_data = json_decode(admin\WidgetsManagement::get_uis($_REQUEST["_uis"]), true);
-  $template_settings = json_decode($_REQUEST["_uis_template_settings"], true);
+  $template_settings = $_REQUEST["_uis_template_settings"];
   if (json_last_error() != JSON_ERROR_NONE) {
     $template_settings = json_decode(stripslashes($_REQUEST["_uis_template_settings"]), true);
   }

@@ -173,7 +173,8 @@ session_start();
 
   function UISForm() {
     clearTimeout(repTimeout);
-    var self = this;
+    System.UI.forms.uis_form = this;
+    var _this = this;
     this.currentDialog;
     this.dpPreference = null;
     this.uisId;
@@ -211,7 +212,7 @@ session_start();
     $("#perview_url").EW().inputButton({
       title: "Apply",
       id: "set_url_btn",
-      onClick: self.reloadFrame
+      onClick: _this.reloadFrame
     });
 
     // Add close action to the items list
@@ -326,7 +327,7 @@ session_start();
     //Add refresh event to inspector editor
     this.inspectorEditor.off("refresh");
     this.inspectorEditor.on("refresh", function () {
-      self.loadInspectorEditor();
+      _this.loadInspectorEditor();
     });
 
     this.hEditor = {
@@ -335,20 +336,20 @@ session_start();
     // Load inspector editor when the content of frame has been loaded
     this.editorIFrame.load(function () {
       $(document.getElementById("fr").contentDocument.head).append("<style id='editor-style'>" + $("#editor-css").html() + "</style>");
-      self.oldStructure = self.createContentHeirarchy();
-      $("#template").off("change").change($.proxy(self.reloadFrame, self));
-      self.changeTemplate();
+      _this.oldStructure = _this.createContentHeirarchy();
+      $("#template").off("change").change($.proxy(_this.reloadFrame, _this));
+      _this.changeTemplate();
     });
 
     // Destroy preference modal on close
     $.EW("getParentDialog", $("#ew-uis-editor")).on("close", function () {
       clearTimeout(repTimeout);
-      if (self.dpPreference)
-        self.dpPreference.trigger("destroy");
+      if (_this.dpPreference)
+        _this.dpPreference.trigger("destroy");
     });
     $.EW("getParentDialog", $("#ew-uis-editor")).on("beforeClose", function () {
       //console.log(self.oldStructure, self.createContentHeirarchy(), self.createContentHeirarchy());
-      if (JSON.stringify(self.oldStructure) !== JSON.stringify(self.createContentHeirarchy())) {
+      if (JSON.stringify(_this.oldStructure) !== JSON.stringify(_this.createContentHeirarchy())) {
         return confirm("tr{You have unsaved changes. Are you sure you want to close?}");
       } else {
         return true;
@@ -358,20 +359,21 @@ session_start();
     $("#uis-preference").on("refresh", function (e, data) {
       if (data.id) {
         $('#form-title').html('<span>tr{Edit}</span>' + data.name);
-        self.uisId = data.id;
-        $("#uis-preference-actions .export-btn").attr("href", "~webroot/api/widgets-management/export-uis?uis_id=" + self.uisId);
-        self.uisTemplate = data.template;
+        _this.uisId = data.id;
+        $("#uis-preference-actions .export-btn").attr("href", "~webroot/api/widgets-management/export-uis?uis_id=" + _this.uisId);
+        _this.uisTemplate = data.template;
+
         if (data.template_settings) {
-          self.templateSettings = JSON.parse(data.template_settings);
+          _this.templateSettings = data.template_settings;
         } else
-          self.templateSettings = {};
-        EW.setFormData("#template_settings_form", self.templateSettings);
-        self.reloadFrame();
-        self.readTemplateClassAndId();
+          _this.templateSettings = {};
+        EW.setFormData("#template_settings_form", _this.templateSettings);
+        _this.reloadFrame();
+        _this.readTemplateClassAndId();
       }
-      self.init();
+      _this.init();
     });
-    self.relocateGlassPanes();
+    _this.relocateGlassPanes();
   }
 
   UISForm.prototype.setTemplateSettings = function (settings) {
@@ -613,7 +615,7 @@ session_start();
         }
       });
     }
-    
+
     var inspectorEditorList = this.inspectorEditor.children(".items");
     inspectorEditorList.empty();
 
@@ -859,7 +861,7 @@ session_start();
     $.post('<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/update-uis', {
       name: $('#name').val(),
       template: $('#template').val(),
-      template_settings: self.templateSettings,
+      template_settings: JSON.stringify(self.templateSettings),
       perview_url: $("#perview_url").val(),
       structure: structure,
       uisId: self.uisId,
@@ -1029,7 +1031,7 @@ session_start();
       element: $.EW("getParentDialog", $("#ew-uis-editor"))[0],
       akcent: "loader center"
     }, .5);
-    
+
     $("#inspector-editor > .items").empty();
     $('#fr').attr({
       src: '<?= EW_ROOT_URL ?>' + url + '?_uis=' + this.uisId + '&editMode=true'
@@ -1038,7 +1040,7 @@ session_start();
 
   UISForm.prototype.showWidgetsList = function (parentId) {
     var _this = this;
-    
+
     $("#items-list").stop().animate({
       left: "0px"
     },
@@ -1071,7 +1073,7 @@ session_start();
     var d = EW.createModal({
       class: "left"
     });
-    
+
     self.currentDialog = d;
     $.post('~webroot/widgets-management/block-form.php', {
       template: self.uisTemplate,
@@ -1302,17 +1304,13 @@ session_start();
 
     uisForm = new UISForm();
     EW.uisForm = uisForm;
+
 <?php
 $uis_info = \EWCore::call("webroot/api/widgets-management/get-uis", ["uisId" => $_REQUEST['uisId']]);
 echo 'EW.setFormData("#uis-preference",' . (($uis_info != null) ? ($uis_info) : "null") . ');';
 ?>
 
   });
-
-
-  //neuis.bSettings.comeIn(300);
-
-
 </script>
 
 

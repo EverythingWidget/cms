@@ -14,7 +14,8 @@
     ],
     activeRequests: {},
     onModuleLoaded: {},
-    UI: {},
+    UI: {
+    },
     controllers: {},
     controller: function (controllerId, controllerObject) {
       if (!controllerObject) {

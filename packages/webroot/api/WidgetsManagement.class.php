@@ -418,7 +418,10 @@ class WidgetsManagement extends \ew\Module {
     $default_uis = json_decode(WidgetsManagement::get_path_uis("@DEFAULT"), true);
     $home_uis = json_decode(WidgetsManagement::get_path_uis("@HOME_PAGE"), true);
 
+
     if ($row = $stm->fetch(\PDO::FETCH_ASSOC)) {
+      $row['template_settings'] = json_decode($row['template_settings'], true);
+      
       if ($default_uis["id"] == $uisId)
         $row["uis-default"] = "true";
       if ($home_uis["id"] == $uisId)

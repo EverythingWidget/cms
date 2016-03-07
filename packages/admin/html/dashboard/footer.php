@@ -40,14 +40,14 @@
 
       System.UI.components.appTitle.text(app.title);
       if (EW.selectedApp) {
-        UIUtility.removeCSSClass(EW.selectedApp, "selected");
+        UIUtility.removeClass(EW.selectedApp, "selected");
       }
 
       EW.selectedApp = $(".apps-menu-link[data-app='" + app.id + "']").addClass("selected")[0];
 
       System.UI.components.sectionsMenuTitle.addClass("inline-loader");
       if (EW.selectedSection)
-        UIUtility.addCSSClass(EW.selectedSection, "inline-loader");
+        UIUtility.addClass(EW.selectedSection, "inline-loader");
 
       $("#action-bar-items").empty();
       $("#main-content").remove();
@@ -546,22 +546,6 @@
         },
           true);
       });
-
-      /*System.UI.components.sectionsMenuList[0].onItemSelected = function (item, index, element) {
-       currentSectionIndex = index;
-       
-       if (EW.selectedSection) {
-       UIUtil.removeCSSClass(EW.selectedSection, "selected");
-       }
-       
-       EW.selectedSection = element;
-       UIUtil.addCSSClass(EW.selectedSection, "selected");
-       System.setHashParameters({
-       app: item.id
-       },
-       true);
-       
-       };*/
 
       System.UI.components.navigationMenu.on("mouseenter", function (e) {
         if (mouseInNavMenu)

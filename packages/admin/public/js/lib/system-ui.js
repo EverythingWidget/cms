@@ -22,6 +22,12 @@
       }
     };
     this.body = document.getElementsByTagName("body")[0];
+    this.components = {
+      body: this.body
+    };
+    this.forms = {};
+    this.elements = {};
+    this.containers = {};
   }
 
   SystemUI.prototype.util = {};

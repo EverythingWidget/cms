@@ -67,16 +67,8 @@
           element: element
         }
       });
-      this.dispatchEvent(event);
-      // this.onItemSelected(this.xtag.data[i], i, element);
-      //}
 
-      /*if (EW_List.selectedElement) {
-       UIUtil.removeCSSClass(EW_List.selectedElement, "selected");
-       }
-       
-       EW_List.selectedElement = element;
-       UIUtil.addCSSClass(EW_List.selectedElement, "selected");*/
+      this.dispatchEvent(event);
     }
   };
 
