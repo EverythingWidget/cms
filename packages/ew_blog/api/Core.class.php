@@ -105,7 +105,6 @@ class Core extends \ew\Module {
   }
 
   public function ew_list_feeder_events($id, $_language) {
-    $id = 86;
     if (!isset($id)) {
       return \ew\APIResourceHandler::to_api_response([]);
     }

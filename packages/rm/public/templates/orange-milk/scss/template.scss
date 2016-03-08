@@ -312,6 +312,15 @@ body {
       text-align: center;
       text-shadow: 0 0 7px rgba(0,0,0,.9)
     }
+    
+    .second-img {
+      position: relative;
+      z-index: 10;
+      display: block;
+      margin: 250px auto;
+      width: auto;
+      height: auto;
+    }
   }
 }
 
@@ -514,6 +523,7 @@ body {
   height: 475px;
   background-color: $item-background-color;
   box-shadow: 0 2px 6px rgba(0, 0, 0, .1), 0 5px 15px rgba(0, 0, 0, .2);
+  overflow: hidden;
 
   img {
     max-width: 100%;

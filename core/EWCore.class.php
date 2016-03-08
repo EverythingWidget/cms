@@ -317,8 +317,18 @@ class EWCore {
     $user = $database_config['username'];
     $password = $database_config['password'];
 
+
+
     try {
       $pdo = new \PDO($dsn, $user, $password);
+
+      $result = $pdo->prepare("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = ?");
+      $result->execute([$database_config['database']]);
+
+      if ($result->rowCount() !== 1) {
+        include "/install/index.php";
+        die();
+      }
     }
     catch (Exception $e) {
       print_r($e);
@@ -1476,7 +1486,6 @@ class EWCore {
     // '/(div)?(\.widget)[\.\w-]+/' for widgets
 //Run the first regex pattern on the input
     //$stripped = preg_replace($pattern_one, '', $file);
-
 //Variable to hold results
     $selectors = array();
 
