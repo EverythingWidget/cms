@@ -1562,8 +1562,10 @@ ul.list.arrangeable
 }
 
 ul.list.arrangeable li {
-  margin-bottom: 0px;
-  border-bottom: 1px solid rgba(0,0,0,.08);  
+  margin: 15px;
+  border-radius: 2px;
+  border-bottom: 0px solid rgba(0,0,0,.08);  
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,.1);
 }
 
 ul.list.arrangeable li:last-child {
@@ -1581,6 +1583,7 @@ ul.list.arrangeable li.dragged .handle {
 ul.list.arrangeable li.placeholder {
   min-height: 30px;
   background-color: #eee;
+  box-shadow: none;
 }
 
 ul.list.arrangeable li .handle {
@@ -1599,10 +1602,10 @@ ul.list.arrangeable li .handle:hover {
 }
 
 ul.list.arrangeable li .wrapper {
-  padding: 15px 20px;
-  padding-left: 40px;
+  padding: 15px 10px;
+  padding-left: 30px;
   border-radius: 0;
-  background-color: #fff;
+  background-color: #f9f9f9;
   overflow: hidden;
 }
 
@@ -3110,9 +3113,10 @@ body.dragging,body.dragging * {
 }
 
 .text-icon {
+  font-size: 1.12em;
   display: block;
-  margin: 1px;
-  padding: 10px 5px;
+  margin: 0 0 5px 0;
+  padding: 10px 15px;
   border: 0 solid #eee;
   background-color: #eee;
   cursor: default;
@@ -3127,7 +3131,6 @@ body.dragging,body.dragging * {
 .text-icon h1,.text-icon h2,.text-icon h3,.text-icon h4,.text-icon h5,.text-icon h6 {
   padding: 0;
   margin: 0;
-  margin-left: 50px;
   display: block;
   text-align: left;
 }
@@ -3135,7 +3138,6 @@ body.dragging,body.dragging * {
 .text-icon p {
   padding: 0;
   margin: 0;
-  margin-left: 50px;
   display: block;
   color: #333;
 }

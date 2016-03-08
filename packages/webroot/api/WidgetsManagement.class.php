@@ -38,20 +38,21 @@ class WidgetsManagement extends \ew\Module {
 
     EWCore::register_form("ew/ui/form/content/tab", "uis-tab", [
         "title" => "UI",
-        "form"  => $uis_content_tab
+        "form" => $uis_content_tab
     ]);
     $this->add_listener("admin/api/content-management/update-folder", "call_on_folder_update");
     $this->add_listener("admin/api/content-management/contents", "call_on_folder_get");
   }
 
   protected function install_permissions() {
-    EWCore::register_form("ew/ui/components/link-chooser", "uis-chooser", ["title"   => "UI Structures",
+    EWCore::register_form("ew/ui/components/link-chooser", "uis-chooser", ["title" => "UI Structures",
         "content" => $this->link_chooser_form]);
 
     $this->register_permission("view", "User can view the widgets section", array(
         "api/get_uis",
         "api/get_uis_list",
         "api/get_widgets_types",
+        "api/widgets_types",
         "api/get_all_pages_uis_list",
         "api/get_path_uis",
         "api/get_template_settings_form",
@@ -209,7 +210,7 @@ class WidgetsManagement extends \ew\Module {
     $db->close();
     $out = array(
         "totalRows" => $totalRows['COUNT(*)'],
-        "result"    => $rows);
+        "result" => $rows);
     return ($out);
   }
 
@@ -223,7 +224,7 @@ class WidgetsManagement extends \ew\Module {
     while ($r = $result->fetch_assoc()) {
       $rows[] = array(
           $r["path"] . "_uisId" => $r["id"],
-          $r["path"]            => $r["name"]);
+          $r["path"] => $r["name"]);
     }
     $db->close();
     //$out = array(;
@@ -241,7 +242,7 @@ class WidgetsManagement extends \ew\Module {
     //$out = array(;
     return json_encode(array(
         "totalRows" => $result->num_rows,
-        "result"    => $rows));
+        "result" => $rows));
   }
 
   public function add_uis($name = null, $template = null, $template_settings = null, $structure = null) {
@@ -261,8 +262,8 @@ class WidgetsManagement extends \ew\Module {
     }
     $res = array(
         "status" => "success",
-        "uisId"  => $stm->insert_id,
-        "name"   => $name);
+        "uisId" => $stm->insert_id,
+        "name" => $name);
     $stm->close();
     $db->close();
     return $res;
@@ -275,7 +276,7 @@ class WidgetsManagement extends \ew\Module {
 
     if (!$fileContent["name"]) {
       $res = array(
-          "status"  => "unsuccess",
+          "status" => "unsuccess",
           "message" => "The field name is mandatory");
       $db->close();
       return json_encode($res);
@@ -292,8 +293,8 @@ class WidgetsManagement extends \ew\Module {
       $this->set_uis("@DEFAULT", $stm->insert_id);
       } */
     $res = array(
-        "status"  => "success",
-        "uisId"   => $stm->insert_id,
+        "status" => "success",
+        "uisId" => $stm->insert_id,
         "message" => "tr{The UIS has been imported succesfully}");
     $stm->close();
     $db->close();
@@ -317,10 +318,10 @@ class WidgetsManagement extends \ew\Module {
     $structure = $original_record["structure"];
     $template_settings = $original_record["template_settings"];
     $user_interface_structure = array(
-        "name"              => $name,
-        "template"          => $template,
+        "name" => $name,
+        "template" => $template,
         "template_settings" => $template_settings,
-        "structure"         => $structure);
+        "structure" => $structure);
     $file = json_encode($user_interface_structure);
     //fwrite($file, $user_interface_structure);
     //fclose($file);
@@ -373,7 +374,7 @@ class WidgetsManagement extends \ew\Module {
 //echo json_encode($structure);
     if (!$name) {
       $res = [
-          "status"  => "unsuccess",
+          "status" => "unsuccess",
           "message" => "The field name is mandatory"
       ];
       $db->close();
@@ -395,13 +396,13 @@ class WidgetsManagement extends \ew\Module {
       $stm->close();
       $db->close();
       return json_encode(array(
-          status    => "success",
+          status => "success",
           "message" => "tr{The layout has been saved successfully}",
-          "data"    => [title => $name]));
+          "data" => [title => $name]));
     }
     else {
       return json_encode(array(
-          status  => "unsuccess",
+          status => "unsuccess",
           message => $error));
     }
   }
@@ -421,7 +422,7 @@ class WidgetsManagement extends \ew\Module {
 
     if ($row = $stm->fetch(\PDO::FETCH_ASSOC)) {
       $row['template_settings'] = json_decode($row['template_settings'], true);
-      
+
       if ($default_uis["id"] == $uisId)
         $row["uis-default"] = "true";
       if ($home_uis["id"] == $uisId)
@@ -553,26 +554,39 @@ class WidgetsManagement extends \ew\Module {
       $widget_parameters = json_decode($params, true);
     }
     //$widget_parameters = json_encode($params);
-    $widget_title = WidgetsManagement::get_widget_details($widget_type)["title"];
-    // Include widget content
-    if (file_exists(EW_WIDGETS_DIR . '/' . $widget_type . '/index.php')) {
-      ob_start();
-      include EW_WIDGETS_DIR . '/' . $widget_type . '/index.php';
-      $widget_content_raw = ob_get_clean();
+    $widge_class = EWCore::hyphenToCamel($widget_type);
+
+    if (file_exists(EW_WIDGETS_DIR . '/' . $widget_type . "/$widge_class.class.php")) {
+      require_once EW_WIDGETS_DIR . '/' . $widget_type . "/$widge_class.class.php";
+      $widget_class_name = "webroot\\$widge_class";
+      $widget_class_instance = (new $widget_class_name());
+      $widget_title = $widget_class_instance->get_title();
+      $widget_content_raw = $widget_class_instance->render($widget_parameters, $widget_id, $style_id, $style_class);
       $widget_content = preg_replace('/\{\$widget_id\}/', $widget_id, $widget_content_raw);
+    }
+    else {
+
+      $widget_title = WidgetsManagement::get_widget_details($widget_type)["title"];
+      // Include widget content
+      if (file_exists(EW_WIDGETS_DIR . '/' . $widget_type . '/index.php')) {
+        ob_start();
+        include EW_WIDGETS_DIR . '/' . $widget_type . '/index.php';
+        $widget_content_raw = ob_get_clean();
+        $widget_content = preg_replace('/\{\$widget_id\}/', $widget_id, $widget_content_raw);
+      }
     }
     // Add widget style class which specified with UIS editor to the widget
     self::set_widget_style_class($widget_style_class);
     $WIDGET_STYLE_CLASS = self::get_widget_style_class();
 
-    //if ($no_data)
-    //{
-    //$parameters_string = "data-widget-parameters='$widget_parameters'";
-    $widget_type_string = "data-widget-type='$widget_type'";
-    $widget_title_string = "data-widget-title='$widget_title'";
+    $widget_type_string = "data-widget-type='$widget_type' ";
+    $widget_title_string = "data-widget-title='$widget_title' ";
+    $widget_editor_title_string = "data-widget-editor-title='{$widget_parameters['editor_title']}' ";
     //}
     $__widget_html_output.= "<div class='widget-container $style_class' data-widget-container='true'>";
-    $__widget_html_output.= "<div class='widget $WIDGET_STYLE_CLASS' $WIDGET_STYLE_ID data-widget-id='$widget_id' $widget_type_string $widget_title_string data-widget='true'>";
+    $__widget_html_output.= "<div class='widget $WIDGET_STYLE_CLASS' $WIDGET_STYLE_ID data-widget-id='$widget_id'";
+    $__widget_html_output.= $widget_type_string . $widget_title_string . $widget_editor_title_string;
+    $__widget_html_output .="data-widget='true'>";
     $__widget_html_output.= $widget_content;
     self::$widget_style_class = "";
     self::add_widget_data($widget_id, $params);
@@ -602,11 +616,11 @@ class WidgetsManagement extends \ew\Module {
       $widget_data = reset(self::get_widget_data_object());
       } */
     $widget_script = self::get_html_scripts($widget_id);
-    return ["widget_html"   => $widget_html,
-        "widget_data"   => $widget_parameters,
-        "widget_id"     => $widget_id,
+    return ["widget_html" => $widget_html,
+        "widget_data" => $widget_parameters,
+        "widget_id" => $widget_id,
         "widget_script" => $widget_script,
-        "widget_style"  => ""];
+        "widget_style" => ""];
   }
 
   function get_template_settings_form($path) {
@@ -621,31 +635,6 @@ class WidgetsManagement extends \ew\Module {
       return "tr{Nothing to configure}";
     }
   }
-
-  /* public function get_blocks()
-    {
-    $path = EW_TEMPLATES_DIR . '/blocks/';
-
-    $apps_dirs = opendir($path);
-    $apps = array();
-    $count = 0;
-    while ($block_files = readdir($apps_dirs))
-    {
-    if (strpos($block_files, '.') === 0)
-    continue;
-
-    $title = null;
-    $description = "";
-
-    $title = EWCore::get_comment_parameter("title", $path . $block_files);
-    $description = EWCore::get_comment_parameter("description", $path . $block_files);
-
-    $count++;
-    $apps[] = array("name" => substr($block_files, 0, stripos($block_files, ".")), "path" => $block_files, "title" => ($title) ? $title : $block_files, "description" => $description);
-    }
-    $out = array("totalRows" => $count, "result" => $apps);
-    return json_encode($out);
-    } */
 
   public function get_widgets_types() {
     $path = EW_WIDGETS_DIR . '/';
@@ -666,10 +655,46 @@ class WidgetsManagement extends \ew\Module {
       $count++;
       $apps[] = WidgetsManagement::get_widget_details($widget_dir);
     }
-    $out = array(
+    $out = [
         "totalRows" => $count,
-        "result"    => $apps);
+        "result" => $apps
+    ];
+
     return json_encode($out);
+  }
+
+  public function widgets_types() {
+    $path = EW_WIDGETS_DIR . '/';
+
+    $apps_dirs = opendir($path);
+    $apps = array();
+    $count = 0;
+    while ($widget_dir = readdir($apps_dirs)) {
+      if (strpos($widget_dir, '.') === 0)
+        continue;
+
+      $count++;
+
+      $widge_class = EWCore::hyphenToCamel($widget_dir);
+      if (file_exists(EW_WIDGETS_DIR . '/' . $widget_dir . "/$widge_class.class.php")) {
+        require_once EW_WIDGETS_DIR . '/' . $widget_dir . "/$widge_class.class.php";
+        $widget_class_name = "webroot\\$widge_class";
+        $widget_class_instance = new $widget_class_name();
+        $widget_details = [
+            "name" => $widget_class_instance->get_title(),
+            "path" => $widget_dir,
+            "title" => $widget_class_instance->get_title(),
+            "description" => $widget_class_instance->get_description(),
+            "feeder_type" => $widget_class_instance->get_feeder_type()
+        ];
+        $apps[] = $widget_details;
+      }
+      else {
+        $apps[] = WidgetsManagement::get_widget_details($widget_dir);
+      }
+    }
+
+    return \ew\APIResourceHandler::to_api_response($apps, ["totalRows" => $count]);
   }
 
   public static function get_widget_details($widget_type) {
@@ -684,24 +709,34 @@ class WidgetsManagement extends \ew\Module {
     $feeder_type = \EWCore::get_comment_parameters("feeder_type", $source);
 
     return [
-        "name"        => $widget_type,
-        "path"        => $widget_type,
-        "title"       => $title,
+        "name" => $widget_type,
+        "path" => $widget_type,
+        "title" => $title,
         "description" => $description,
         "feeder_type" => $feeder_type
     ];
   }
 
-  public static function get_widget_cp($widgetName = null) {
-    ob_start();
-    echo '<form id="uis-widget" onsubmit="return false;">';
-    if ($widgetName) {
-      include EW_WIDGETS_DIR . '/' . $widgetName . '/admin.php';
+  public static function get_widget_cp($widget_path = null) {
+    $widget_configurator_form = '<form id="uis-widget" onsubmit="return false;">';
+
+    if ($widget_path) {
+      $widge_class = EWCore::hyphenToCamel($widget_path);
+      if (file_exists(EW_WIDGETS_DIR . '/' . $widget_path . "/$widge_class.class.php")) {
+        require_once EW_WIDGETS_DIR . '/' . $widget_path . "/$widge_class.class.php";
+        $widget_class_name = "webroot\\$widge_class";
+        $widget_class_instance = new $widget_class_name();
+        $widget_configurator_form .= $widget_class_instance->get_configuration_form();
+      }
+      else {
+        ob_start();
+        include EW_WIDGETS_DIR . '/' . $widget_path . '/admin.php';
+        $widget_configurator_form.= ob_get_clean();
+      }
     }
-    if (function_exists("get_content"))
-      echo get_content();
-    echo '</form>';
-    return ob_get_clean();
+
+    $widget_configurator_form.= '</form>';
+    return $widget_configurator_form;
   }
 
   function get_widget_cp_full() {
@@ -773,7 +808,7 @@ class WidgetsManagement extends \ew\Module {
     }
 
     return [
-        "body_html"   => $RESULT_HTML,
+        "body_html" => $RESULT_HTML,
         "widget_data" => self::get_widget_data()
     ];
   }
@@ -790,7 +825,7 @@ class WidgetsManagement extends \ew\Module {
     }
 
     self::$html_scripts[] = array(
-        "src"    => $src,
+        "src" => $src,
         "script" => $script);
   }
 
@@ -907,7 +942,7 @@ class WidgetsManagement extends \ew\Module {
     $db = \EWCore::get_db_connection();
     $res = array(
         "status" => "success",
-        message  => "UIS has been set successfully for $path");
+        message => "UIS has been set successfully for $path");
     if (!$uis_id) {
       $result = $db->query("DELETE FROM ew_pages_ui_structures WHERE path = '$path'");
       if ($result) {
@@ -923,12 +958,12 @@ class WidgetsManagement extends \ew\Module {
       if ($stm->execute())
         $res = array(
             "status" => "success",
-            message  => "UIS has been set successfully for $path ",
+            message => "UIS has been set successfully for $path ",
             "puisId" => $stm->insert_id);
       else
         $res = array(
             "status" => "error",
-            message  => "UIS has NOT been sat, Please try again");
+            message => "UIS has NOT been sat, Please try again");
     }
     else {
       $stm = $db->prepare("UPDATE ew_pages_ui_structures SET  ui_structure_id = ?  WHERE path = ?") or die($db->error);
@@ -936,7 +971,7 @@ class WidgetsManagement extends \ew\Module {
       if (!$stm->execute())
         $res = array(
             "status" => "error",
-            message  => "UIS has NOT been sat, Please try again");
+            message => "UIS has NOT been sat, Please try again");
     }
 
     $stm->close();
@@ -986,9 +1021,9 @@ class WidgetsManagement extends \ew\Module {
     }
 
     return [
-        "template_body"   => $template_body,
+        "template_body" => $template_body,
         "template_script" => $template_script,
-        "widget_data"     => $widget_data
+        "widget_data" => $widget_data
     ];
   }
 

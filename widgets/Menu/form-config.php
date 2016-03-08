@@ -1,10 +1,3 @@
-<?php
-/*
- * title: Menu
- * description: Create a menu or select a menu feeder
- * feeder_type: menu
- */
-?>
 <div class="block-row mt">
   <div class="col-xs-12 ">      
     <input class="text-field" name="feeder" id="feeder" data-label="Default Content" data-ew-plugin="link-chooser" >    
