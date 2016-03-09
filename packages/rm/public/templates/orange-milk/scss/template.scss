@@ -297,33 +297,107 @@ body {
   }
 }
 
-.widget{
+.widget {
   &.slider {
     margin: 0 -15px;
     height: 100%;
     position: relative;
 
     .item {
+      padding-top: 200px;
       overflow: hidden;
-      
+
       h2 {
         font-size: 3em;
-        color: #fff;
-        position: absolute;
-        top: 120px;
+        color: #fff;        
         width: 100%;
+        margin: 0 auto;
+        max-width: 1280px;
         text-align: center;
-        text-shadow: 0 0 7px rgba(0,0,0,.9)
+        text-shadow: 0 2px 7px rgba(0,0,0,.9), 0 -2px 1px rgba(0,0,0,.3);
+        position: relative;
+        z-index: 2;
       }
 
       .second-img {
         position: relative;
         z-index: 10;
         display: block;
-        margin: 250px auto;
+        margin: 50px auto;
         max-width: 100%;
         width: auto;
         height: auto;
+      }
+    }
+
+    .owl-dot {
+      &.active {
+        span {
+          background-color: $font-akcent-color;
+        }
+      }
+    }
+  }
+
+  &.important-event {
+    height: 475px;
+    background-color: $item-background-color;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .1), 0 5px 15px rgba(0, 0, 0, .2);
+    overflow: hidden;
+
+    img {
+      max-width: 100%;
+      margin: 0 auto;
+      height: auto;
+    }       
+  }
+
+  &.events-list { 
+    .owl-carousel {
+
+      .item {
+        color: $font-color;
+        height: 400px;
+        background-color: $akcent-background-color;
+        overflow: hidden;
+        margin: 0 15px 15px;    
+
+        h2, p {
+          padding: 5px 15px;
+          font-weight: 300;
+        }
+
+        img {
+          max-width: 100%;
+          margin: 0 auto;
+          height: auto;
+          max-height: 250px;
+        }
+      }
+
+      .owl-prev, .owl-next  {
+        font-size: 2em;
+        background-color: $font-akcent-color;
+        width: 50px;
+        height: 50px;
+        line-height: 50px;
+        padding: 0;
+        float: left;
+        margin: 0 15px;
+        border-radius: 25px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, .1), 0 4px 7px rgba(0, 0, 0, .1);
+      }
+
+      .owl-next {
+        float: right;
+      }      
+
+      .owl-prev:hover, .owl-next:hover {
+        background-color: $font-akcent-color-dark;
+      }
+
+      .owl-prev:active, .owl-next:active {
+        background-color: #111;
       }
     }
   }
@@ -521,66 +595,6 @@ body {
     width: 100%;
     height: 100%;
     display: block;
-  }
-}
-
-.widget.important-event {
-  height: 475px;
-  background-color: $item-background-color;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, .1), 0 5px 15px rgba(0, 0, 0, .2);
-  overflow: hidden;
-
-  img {
-    max-width: 100%;
-    margin: 0 auto;
-    height: auto;
-  }
-}
-
-.widget.events-list .owl-carousel {
-
-  .item {
-    color: $font-color;
-    height: 400px;
-    background-color: $akcent-background-color;
-    overflow: hidden;
-    margin: 0 15px 15px;    
-
-    p {
-      padding: 5px 15px;
-    }
-
-    img {
-      max-width: 100%;
-      margin: 0 auto;
-      height: auto;
-      max-height: 250px;
-    }
-  }
-
-  .owl-prev, .owl-next  {
-    font-size: 2em;
-    background-color: $font-akcent-color;
-    width: 50px;
-    height: 50px;
-    line-height: 50px;
-    padding: 0;
-    float: left;
-    margin: 0 15px;
-    border-radius: 25px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, .1), 0 4px 7px rgba(0, 0, 0, .1);
-  }
-
-  .owl-next {
-    float: right;
-  }
-
-  .owl-prev:hover, .owl-next:hover {
-    background-color: $font-akcent-color-dark;
-  }
-
-  .owl-prev:active, .owl-next:active {
-    background-color: #111;
   }
 }
 
