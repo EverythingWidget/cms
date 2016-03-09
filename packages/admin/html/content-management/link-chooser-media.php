@@ -54,6 +54,17 @@
       this.albumCardTitleActionRight = this.albumCard.find(".card-title-action-right");
       this.albumsList = $(templates["albums-list"]);
 
+      this.albumPropertiesBtn = EW.addActionButton({
+        text: "tr{Properties}",
+        handler: function () {
+          component.seeAlbumActivity({
+            albumId: Domain.getHashNav("album")[0]
+          });
+        },
+        class: "btn-default",
+        parent: this.albumCardTitleActionRight
+      }).hide();
+
       this.deleteAlbumActivity = EW.addActivity({
         activity: "admin/api/content-management/delete-album",
         text: "tr{}",
@@ -163,17 +174,6 @@
         parent: this.mediaChooserDialog
       }).hide();
 
-      this.albumPropertiesBtn = EW.addActionButton({
-        text: "tr{Properties}",
-        handler: function () {
-          _this.seeAlbumActivity({
-            albumId: Domain.getHashNav("album")[0]
-          });
-        },
-        class: "btn-default",
-        parent: Domain.UI.components.mainFloatMenu
-      }).hide();
-
       this.newAlbumActivity = EW.addActivity({
         title: "tr{New Album}",
         activity: "admin/html/content-management/album-form.php",
@@ -252,7 +252,8 @@
       }
       System.addActiveRequest($.get('<?php echo EW_ROOT_URL; ?>~admin/api/content-management/get-media-list', {
         parent_id: component.parentId
-      }, function (response) {
+      },
+      function (response) {
         //var listContainer = null;
         if (component.parentId === 0) {
           component.albumCard.hide();
@@ -323,14 +324,14 @@
 
     MediaComponent.prototype.createImageElement = function (image) {
       var _this = this,
-              column = $(document.createElement("div")),
-              div = $(document.createElement("div")),
-              img = $(document.createElement("img"));
+        column = $(document.createElement("div")),
+        div = $(document.createElement("div")),
+        img = $(document.createElement("img"));
 
       column.addClass("col-lg-3 col-md-4 col-xs-6");
       div.addClass("content-item z-index-0")
-              .addClass(image.type)
-              .addClass(image.ext);
+        .addClass(image.type)
+        .addClass(image.ext);
       div.attr("tabindex", "1");
       div.on("focus click", function () {
         _this.currentItem.removeClass("selected");
@@ -358,14 +359,14 @@
 
     MediaComponent.prototype.createAlbumElement = function (title, type, ext, size, ImageURL, id) {
       var _this = this,
-              //column = $(document.createElement("div")),
-              div = $(document.createElement("div")),
-              img = $(document.createElement("img"));
+        //column = $(document.createElement("div")),
+        div = $(document.createElement("div")),
+        img = $(document.createElement("img"));
 
       //column.addClass("col-lg-3 col-md-4 col-xs-6");
       div.addClass("content-item")
-              .addClass(type)
-              .addClass(ext);
+        .addClass(type)
+        .addClass(ext);
       div.attr("tabindex", "1");
       div.on("focus click", function () {
         _this.currentItem.removeClass("selected");

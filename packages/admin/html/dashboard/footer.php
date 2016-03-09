@@ -653,18 +653,12 @@
       };
 
       System.on('app', function (path, app) {
-        /*if (!app || app === "Home") {
-         System.goToHomeApp();
-         return;
-         }*/
+        if (!app || app === "Home") {
+          app = 'content-management';
+        }
 
-        //alert(app + " @ " + EW.oldApp)
-        if (/*EW.apps[app] && */app !== EW.oldApp) {
+        if (app !== EW.oldApp) {
           EW.oldApp = app;
-          //alert(app)
-          //System.UI.components.appTitle.text(EW.apps[app].title);
-          //System.openApp(EW.apps[app]);
-
           // before load
           EW.loadingApp = true;
           System.onLoadApp(EW.apps[app]);
@@ -681,9 +675,8 @@
         }
 
       });
-      //alert("system start");
+
       System.start();
-      //EW.readApps();
 
       $(document).ajaxStart(function (event, data) {
         if (event.target.activeElement) {

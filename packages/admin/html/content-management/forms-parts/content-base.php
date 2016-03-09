@@ -39,19 +39,20 @@
     formId: "#<?= $form_id ?>",
     allLabels: <?= json_encode(array_keys(EWCore::read_registry(EWCore::$EW_CONTENT_COMPONENT))) ?>,
     initLabels: function (labels) {
-      $(".content-label .label-control-button:checked").click();
-      $(".content-label .label-control-button").prop("checked", false);
+      //$(".content-label .label-control-button:checked").click();
+      //$(".content-label .label-control-button").prop("checked", false);
 
       var allLabels = this.allLabels.slice(0);
       $.each(labels, function (i, el) {
-        $("#" + el.key + "_control_button").click();
-        $("#" + el.key + "_control_button").prop("checked", true);
+        var t = $("#" + el.key + "_control_button");
+        t[0].setAttribute('active', true);
+
         allLabels.splice(allLabels.indexOf(el.key), 1);
       });
 
       $.each(allLabels, function (i, el) {
-        $("#" + el + "_control_button:checked").click();
-        $("#" + el + "_control_button").prop("checked", false);
+        var t = $("#" + el + "_control_button");
+        t[0].setAttribute('active', false);
       });
     },
     /**
@@ -64,9 +65,9 @@
       if (!flag) {
         $("#" + label + "_control_button:not(:checked)").click();
         $("#" + label + "_control_button").prop("checked", true);
-
         return;
       }
+
       if (!this.getFormData().id) {
         $("#" + label + "_control_button:not(:checked)").click();
         $("#" + label + "_control_button").prop("checked", true);
@@ -154,13 +155,13 @@
     $.each($(ContentForm.formId + " .content-label"), function (i, e) {
       var $e = $(e);
       var lcb = $e.find(".label-control-button");
-      lcb.on("change", function () {
-        var label = lcb.next("span");
-        var labelBox = lcb.parent();
-        if (lcb[0].checked) {
+      lcb.on("switched", function (e) {
+        //var label = lcb.next("span");
+        //var labelBox = lcb.parent();
+        if (e.originalEvent.detail.active) {
           $e.attr("data-activated", true);
-          label.text("Turned On");
-          labelBox.addClass("btn-success").removeClass("btn-default");
+          lcb.text("Turned On");
+          lcb.addClass("btn-success").removeClass("btn-default");
           $e.stop().animate({
             className: "-=disabled"
           },
@@ -169,8 +170,8 @@
         } else {
           $e.attr("data-activated", false);
           //alert("click: "+e.attr("data-activated"));
-          label.text("Turned Off");
-          labelBox.removeClass("btn-success").addClass("btn-default");
+          lcb.text("Turned Off");
+          lcb.removeClass("btn-success").addClass("btn-default");
           $e.stop().animate({
             className: "+=disabled"
           },

@@ -558,4 +558,49 @@
 
   xtag.register("system-input-number", inputNumber);
 
+
+  var SwitchButton = {
+    lifecycle: {
+      created: function () {
+      },
+      inserted: function () {
+
+      },
+      removed: function () {
+
+      }
+    },
+    accessors: {
+      name: {
+        attribute: {}
+      },
+      module: {
+        attribute: {}
+      },
+      active: {
+        attribute: {},
+        set: function (value) {
+          this.xtag.active = Boolean(value);
+          var event = new CustomEvent('switched', {
+            detail: {
+              active: this.xtag.active
+            }
+          });
+
+          this.dispatchEvent(event);
+        },
+        get: function (value) {
+          return this.xtag.active || false;
+        }
+      }
+    },
+    events: {
+      click: function (event) {
+        event.currentTarget.setAttribute('active', !event.currentTarget.xtag.active);
+      }
+    }
+  };
+
+  xtag.register("system-button-switch", SwitchButton);
+
 })(xtag, System, UIUtility);

@@ -4,6 +4,12 @@
   </div>
 </div>
 
+<div data-ui-template="audio-albums-list" class="block-row">  
+  <div class="block-column anim-fade-in">
+
+  </div>
+</div>
+
 <div data-ui-template="album-card" class="card z-index-1 center-block col-lg-9 col-md-10 col-xs-12">
   <div  class="card-header">
     <div class="card-title-action"></div>
@@ -14,7 +20,7 @@
   </div>
   <div class="card-content top-devider block-row">
     <!--<span class='card-content-title'></span>-->
-    <div class="album-images-list"></div>
+    <div class="album-images-list grid-list"></div>
   </div>
 </div>
 
@@ -48,7 +54,7 @@
       this.albumPropertiesBtn = EW.addActionButton({
         text: "tr{Properties}",
         handler: function () {
-          component.seeAlbumActivity({
+          _this.seeAlbumActivity({
             albumId: System.getHashNav("album")[0]
           });
         },
@@ -318,7 +324,7 @@
               div = $(document.createElement("div")),
               img = $(document.createElement("img"));
 
-      column.addClass("col-lg-3 col-md-4 col-xs-6");
+      //column.addClass("col-lg-3 col-md-4 col-xs-6 block-row");
       div.addClass("content-item z-index-0")
               .addClass(type)
               .addClass(ext);
@@ -351,9 +357,9 @@
         _this.deleteImageActivity();
       });
 
-      column.append(div);
+      //column.append(div);
       return {
-        container: column,
+        container: div,
         item: div
       };
     };

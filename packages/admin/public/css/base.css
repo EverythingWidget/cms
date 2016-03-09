@@ -2747,7 +2747,7 @@ table.contents td {
   padding: 0;
   width: 100%;
   max-width: 200px;
-  margin: 0 auto 30px;
+  margin: 0 15px 30px;
   /* margin-left: 2%; */
   /* margin-right: 2%; */
   text-align: left;
@@ -3406,4 +3406,18 @@ inline-dialog{
 
 .priority-2 {
   right: 230px;
+}
+
+.grid-list {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-flow: row wrap;
+  justify-content: space-between;
+  align-items: flex-start;
 }

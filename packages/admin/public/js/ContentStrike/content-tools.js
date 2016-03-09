@@ -8102,7 +8102,7 @@
         this._contentContainer = this.constructor.createDiv([
           'ct-content-container'
         ]);
-        this._contentContainer.dir = "auto";
+        this._contentContainer.setAttribute('dir', 'auto');
         this._contentContainer.innerHTML = html;
 
         this._editorContainer.appendChild(this._contentContainer);

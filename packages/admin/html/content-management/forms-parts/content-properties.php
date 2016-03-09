@@ -48,25 +48,23 @@
     ?>
     <div class=row>
       <div class='col-xs-12'>
-        <div class='box box-grey content-label' data-activated="active">
+        <div class='box box-grey content-label disabled' data-activated="false">
           <div class='row'>
             <div class='col-xs-12'>
               <h3 class="pull-left"><?php echo $label_object["title"] ?></h3>
-              <div class="btn-group pull-right" data-toggle="buttons">
-                <label class="btn btn-default btn-sm active">
-                  <input type="checkbox" id="<?php echo $comp_id ?>_control_button" class="label-control-button" checked="false">
-                  <span>Turned Off</span>
-                </label>
-              </div>
+              <system-button-switch id="<?php echo $comp_id ?>_control_button"
+                                    class="label-control-button btn btn-default btn-sm pull-right" >
+                Turned Off
+              </system-button-switch>
             </div>
           </div>
           <div class='row'>
-  <?= EWCore::populate_view($form, compact("comp_id", "value", "form_id")) ?>
+            <?= EWCore::populate_view($form, compact("comp_id", "value", "form_id")) ?>
           </div>
         </div>
       </div>
     </div>
-            <?php
-          }
-          ?>
+    <?php
+  }
+  ?>
 </div>

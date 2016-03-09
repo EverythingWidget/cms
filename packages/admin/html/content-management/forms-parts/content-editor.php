@@ -15,6 +15,7 @@
       if (firstRegion.children.length > 0) {
         var firstElement = firstRegion.children[0];
         firstElement.focus();
+        contentEditor._rootLastModified = ContentEdit.Root.get().lastModified();
       }
     });
 
@@ -24,7 +25,6 @@
 
     EW.getParentDialog($("#<?= $form_id ?>")).off("beforeClose.editor");
     EW.getParentDialog($("#<?= $form_id ?>")).on("beforeClose.editor", function (e) {
-      //console.log(ContentEdit.Root.get().lastModified(), contentEditor._rootLastModified)
       if (ContentEdit.Root.get().lastModified() !== contentEditor._rootLastModified)
       {
         var confirmMessage = ContentEdit._('Your changes have not been saved, do you really want to lose them?');
