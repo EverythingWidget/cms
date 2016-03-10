@@ -28,6 +28,7 @@
     this.forms = {};
     this.elements = {};
     this.containers = {};
+    this.templates = {};
   }
 
   SystemUI.prototype.util = {};

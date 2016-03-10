@@ -305,20 +305,30 @@
   var SystemUITemplate = {
     lifecycle: {
       created: function () {
+        console.log('asdasd');
         this.xtag.validate = false;
+
         if (!this.name) {
           throw "system-ui-view missing the `name` attribute";
         }
-      },
-      inserted: function () {
-        if (this.validate)
-          return;
 
-        if (!System.uiTemplates["system/" + this.module]) {
-          System.uiTemplates["system/" + this.module] = {};
+        if (!System.UI.templates["system/" + this.module]) {
+          System.UI.templates["system/" + this.module] = {};
         }
 
-        System.uiTemplates["system/" + this.module][this.name] = this.parentNode.removeChild(this);
+        System.UI.templates["system/" + this.module][this.name] = this;
+        this.xtag.validate = true;
+      },
+      inserted: function () {
+        if (this.validate) {
+          return;
+        }
+
+        if (!System.UI.templates["system/" + this.module]) {
+          System.UI.templates["system/" + this.module] = {};
+        }
+
+        System.UI.templates["system/" + this.module][this.name] = this.parentNode.removeChild(this);
         this.xtag.validate = true;
       },
       removed: function () {

@@ -18,6 +18,7 @@ class WidgetsManagement extends \ew\Module {
   private static $current_timestamp = 0;
   private static $title = "";
   private static $html_scripts = array();
+  private static $html_included_links = [];
   private static $html_links = array();
   private static $html_keywords;
   private static $widgets_feeders = array();
@@ -895,12 +896,50 @@ class WidgetsManagement extends \ew\Module {
     self::$html_links[] = $href;
   }
 
+  public static function include_html_link($href) {
+    self::$html_included_links = array_unique(array_merge(self::$html_included_links, $href));
+  }
+
   public static function get_html_links() {
     $link_tags = "";
     foreach (self::$html_links as $href) {
       $link_tags.="<link rel='stylesheet' type='text/css' href='$href' />";
     }
     return $link_tags;
+  }
+
+  public static function get_html_links_concatinated($element_id = '') {
+    $css_tag = "";
+
+    $file_times = '';
+    $minified_css = null;
+    foreach (self::$html_included_links as $source) {
+      $src = EW_PACKAGES_DIR . '/' . $source;
+      $file_times .= filemtime($src);
+    }
+
+    $cache_file_name = md5($file_times) . '.css';
+    $cache_path = EW_PACKAGES_DIR . '/rm/public/cache/' . $cache_file_name;
+    $cache_path_url = EW_ROOT_URL . "~rm/public/cache/$cache_file_name";
+
+    if (file_exists($cache_path)) {
+      $cache_path = EW_ROOT_URL . "~rm/public/cache/$cache_file_name";
+      $minified_css = true;
+    }
+    else {
+      foreach (self::$html_included_links as $source) {
+        $src = EW_PACKAGES_DIR . '/' . $source;
+        $minified_css .= "\n\r" . file_get_contents($src);
+      }
+
+      EWCore::file_force_contents($cache_path, $minified_css);
+    }
+
+    if ($minified_css) {
+      $css_tag.="<link rel='stylesheet' type='text/css' id='ew-auto-generate-css' href='$cache_path_url' />";
+    }
+
+    return $css_tag;
   }
 
   public static function set_html_title($title) {

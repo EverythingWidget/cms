@@ -1,4 +1,4 @@
-<div data-ui-template="folders-card" class="col-xs-12">
+<system-ui-view module="content-management/documents" name="folders-card" class="col-xs-12">
   <div id="folders-card" class="card z-index-1 center-block col-lg-9 col-md-10 col-xs-12">
     <div  class='card-header'>
       <div class="card-title-action"></div>
@@ -19,7 +19,7 @@
       </div>
     </div>
   </div>
-</div>
+</system-ui-view>
 
 <!--<ew-float-menu id='folders-card-action-bar' position="css" parent="app-content" class="ew-float-menu">
   
@@ -167,7 +167,8 @@
 
       this.foldersList.empty();
       this.articlesList.empty();
-      System.UI.components.mainContent.append(this.foldersCard);
+
+    System.UI.components.mainContent.append(this.foldersCard);
 
       this.bNewFolder = EW.addActivity({
         title: "tr{New Folder}",

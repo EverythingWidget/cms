@@ -97,9 +97,11 @@ $page = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 
 webroot\WidgetsManagement::add_html_script("~rm/public/js/owl-carousel/owl.carousel.js");
 
-webroot\WidgetsManagement::add_html_link("~rm/public/js/owl-carousel/animate.css");
-webroot\WidgetsManagement::add_html_link("~rm/public/js/owl-carousel/owl.carousel.css");
-webroot\WidgetsManagement::add_html_link("~rm/public/js/owl-carousel/owl.theme.default.css");
+webroot\WidgetsManagement::include_html_link([
+    'rm/public/js/owl-carousel/animate.css',
+    'rm/public/js/owl-carousel/owl.carousel.css',
+    'rm/public/js/owl-carousel/owl.theme.default.css'
+]);
 ?>
 
 <div class="owl-carousel">

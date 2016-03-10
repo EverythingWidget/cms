@@ -150,12 +150,14 @@ class Module {
     }
     $db = \EWCore::get_db_connection();
     $method_object = new \ReflectionMethod($this, $method_name);
-    $params = $method_object->getParameters();
+    $method_parameters = $method_object->getParameters();
+    
+    ksort($method_parameters);
 
     $functions_arguments = array();
     $this->current_method_args = array();
     $part_index = 0;
-    foreach ($params as $param) {
+    foreach ($method_parameters as $param) {
       $temp = NULL;
       $param_name = $param->getName();
 

@@ -17,6 +17,8 @@ $google_analytics_id = $currentAppConf["webroot/google-analytics-id"];
 $_SESSION['ROOT_DIR'] = EW_ROOT_DIR;
 $_REQUEST['cmdResult'] = '';
 
+webroot\WidgetsManagement::include_html_link(["rm/public/css/bootstrap.css"]);
+
 webroot\WidgetsManagement::add_html_script(["include" => "admin/public/js/lib/bootstrap.js"]);
 webroot\WidgetsManagement::add_html_script(["include" => "rm/public/js/gsap/TweenLite.min.js"]);
 webroot\WidgetsManagement::add_html_script(["include" => "rm/public/js/gsap/easing/EasePack.min.js"]);
@@ -67,6 +69,7 @@ $HTML_TITLE = (webroot\WidgetsManagement::get_html_title()) ? webroot\WidgetsMan
 $HTML_KEYWORDS = webroot\WidgetsManagement::get_html_keywords();
 $HTML_SCRIPTS = webroot\WidgetsManagement::get_html_scripts();
 $HTML_LINKS = webroot\WidgetsManagement::get_html_links();
+$HTML_CSS = webroot\WidgetsManagement::get_html_links_concatinated();
 ?>
 <!DOCTYPE html> 
 <html>
@@ -107,8 +110,8 @@ $HTML_LINKS = webroot\WidgetsManagement::get_html_links();
       <?php
     }
     ?>      
-
-    <link rel="stylesheet" href="~rm/public/css/bootstrap.css" >  
+    <!--<link rel="stylesheet" href="~rm/public/css/bootstrap.css" >--> 
+    <?= $HTML_CSS ?>
     <?= $HTML_LINKS; ?>
     <?= $TEMPLATE_LINK; ?>      
 

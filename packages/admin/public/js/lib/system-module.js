@@ -58,8 +58,8 @@
       //this.navigation = navigations;
       //this.params = params;
       //this.html = html;
-      //console.log(this.id,System.uiTemplates[this.id]);
-      this.trigger("onInit", [System.uiTemplates[this.id]]);
+//      console.log(this.id,System.UI.templates[this.id]);
+      this.trigger("onInit", [System.UI.templates[this.id]]);
 
       this.installModules.forEach(function (lib) {
         //alert("install: " + lib.id);
