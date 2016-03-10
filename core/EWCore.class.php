@@ -227,7 +227,7 @@ class EWCore {
           } */
       }
       else {
-        return \EWCore::log_error(404, "<h4>App not found</h4><p>Requested app `$package`, not found</p>");
+        return json_encode(\EWCore::log_error(404, "<h4>App not found</h4><p>Requested app `$package`, not found</p>"));
       }
     }
 

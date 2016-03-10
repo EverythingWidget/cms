@@ -305,7 +305,6 @@
   var SystemUITemplate = {
     lifecycle: {
       created: function () {
-        console.log('asdasd');
         this.xtag.validate = false;
 
         if (!this.name) {
@@ -317,15 +316,11 @@
         }
 
         System.UI.templates["system/" + this.module][this.name] = this;
-        this.xtag.validate = true;
+
       },
       inserted: function () {
-        if (this.validate) {
+        if (this.xtag.validate) {
           return;
-        }
-
-        if (!System.UI.templates["system/" + this.module]) {
-          System.UI.templates["system/" + this.module] = {};
         }
 
         System.UI.templates["system/" + this.module][this.name] = this.parentNode.removeChild(this);

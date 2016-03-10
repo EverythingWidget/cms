@@ -1,12 +1,12 @@
-<div class="tab-pane-xs tab-pane-sm header-pane tabs-bar row">
+<div class="tab-pane-xs tab-pane-sm header-pane tabs-bar block-row">
   <ul class="nav nav-pills nav-blue-grey">
-    <li class="active"><a href="#photos" data-toggle="tab">Photos</a></li>
-    <li><a href="#audios" data-toggle="tab">Audios</a></li>
+    <li class="active"><a href="#media-photos" data-toggle="tab">Photos</a></li>
+    <li><a href="#media-audios" data-toggle="tab">Audios</a></li>
   </ul>
 </div>
 
-<div class="tab-pane-xs tab-pane-sm form-content tabs-bar no-footer tab-content row">
-  <div id="media-photos" class="tab-pane active col-xs-12">
+<div class="tab-pane-xs tab-pane-sm form-content tabs-bar no-footer tab-content block-row">
+  <div id="media-photos" class="tab-pane active">
     <system-ui-view module="content-management/media" name="albums-list" class="block-row">  
       <div class="block-column anim-fade-in">
 
@@ -27,7 +27,7 @@
       </div>
     </system-ui-view>
   </div> 
-  <div id="media-audios" class="tab-pane col-xs-12" >
+  <div id="media-audios" class="tab-pane" >
 
 
   </div>
@@ -182,7 +182,6 @@
     };
 
     MediaComponent.prototype.start = function () {
-      console.log(this.albumCard);
       var component = this;
       this.albumId = null;
       this.itemsList = $();
@@ -226,9 +225,8 @@
         }
       });
 
-//      $('#media-photos').append(this.albumCard);
-//      $('#media-photos').append(this.albumsList);
-
+      $('#media-photos').append(this.albumCard).append(this.albumsList);
+      
       component.module.setParamIfNone("album", "0/images");
     };
 
@@ -267,81 +265,81 @@
       System.addActiveRequest($.get('<?php echo EW_ROOT_URL; ?>~admin/api/content-management/get-media-list', {
         parent_id: component.albumId
       },
-        function (response) {
-          if (component.albumId === 0) {
-            component.albumCard.hide();
-            albumsList.show();
-            component.itemsList = albumsList;
-            albumsList.empty();
-          } else {
-            component.albumCard.show();
-            albumsList.hide();
-            component.albumCard.find("h1").text(response.included.album.title);
+              function (response) {
+                if (component.albumId === 0) {
+                  component.albumCard.hide();
+                  albumsList.show();
+                  component.itemsList = albumsList;
+                  albumsList.empty();
+                } else {
+                  component.albumCard.show();
+                  albumsList.hide();
+                  component.albumCard.find("h1").text(response.included.album.title);
 
-          }
-
-          $.each(response.data, function (index, element) {
-            var temp;
-            if (component.albumId === 0) {
-              temp = component.createAlbumElement(element.title, element.type, element.ext, element.size, element.thumbURL, element.id);
-            } else {
-              temp = component.createImageElement(element.title, element.type, element.ext, element.size, element.thumbURL, element.id);
-            }
-            if (element.type === "album") {
-              temp.on('keydown', function (e) {
-                if (e.which === 13) {
-                  System.setHashParameters({
-                    album: element.id + "/images"
-                  });
                 }
-              });
 
-              temp.dblclick(function () {
-                System.setHashParameters({
-                  album: element.id + "/images"
+                $.each(response.data, function (index, element) {
+                  var temp;
+                  if (component.albumId === 0) {
+                    temp = component.createAlbumElement(element.title, element.type, element.ext, element.size, element.thumbURL, element.id);
+                  } else {
+                    temp = component.createImageElement(element.title, element.type, element.ext, element.size, element.thumbURL, element.id);
+                  }
+                  if (element.type === "album") {
+                    temp.on('keydown', function (e) {
+                      if (e.which === 13) {
+                        System.setHashParameters({
+                          album: element.id + "/images"
+                        });
+                      }
+                    });
+
+                    temp.dblclick(function () {
+                      System.setHashParameters({
+                        album: element.id + "/images"
+                      });
+                    });
+
+                    temp.on("focus", function (e) {
+                      component.module.setParam("select", element.id);
+                    });
+
+                    component.itemsList.append(temp);
+                  } else {
+                    temp.attr("data-url", element.url);
+                    temp.dblclick(function () {
+                      EW.setHashParameter("cmd", "preview", "media");
+                    });
+
+                    temp.on("focus", function () {
+                      component.module.setParam("select", element.id);
+                    });
+
+                    component.itemsList.append(temp);
+                  }
+
                 });
-              });
 
-              temp.on("focus", function (e) {
-                component.module.setParam("select", element.id);
-              });
+                component.itemsList.addClass("in");
+                component.listInited = true;
+                // Select current item            
+                if (component.selectedItemId) {
+                  $("div[data-item-id='" + component.selectedItemId + "']").focus();
+                }
 
-              component.itemsList.append(temp);
-            } else {
-              temp.attr("data-url", element.url);
-              temp.dblclick(function () {
-                EW.setHashParameter("cmd", "preview", "media");
-              });
-
-              temp.on("focus", function () {
-                component.module.setParam("select", element.id);
-              });
-
-              component.itemsList.append(temp);
-            }
-
-          });
-
-          component.itemsList.addClass("in");
-          component.listInited = true;
-          // Select current item            
-          if (component.selectedItemId) {
-            $("div[data-item-id='" + component.selectedItemId + "']").focus();
-          }
-
-        }, "json"));
+              }, "json"));
     };
 
     MediaComponent.prototype.createImageElement = function (title, type, ext, size, ImageURL, id) {
       var _this = this,
-        column = $(document.createElement("div")),
-        div = $(document.createElement("div")),
-        img = $(document.createElement("img"));
+              column = $(document.createElement("div")),
+              div = $(document.createElement("div")),
+              img = $(document.createElement("img"));
 
       //column.addClass("col-lg-3 col-md-4 col-xs-6 block-row");
       div.addClass("content-item z-index-0")
-        .addClass(type)
-        .addClass(ext);
+              .addClass(type)
+              .addClass(ext);
       div.attr("tabindex", "1");
       div.on("focus click", function () {
         _this.currentItem.removeClass("selected");
@@ -374,12 +372,12 @@
 
     MediaComponent.prototype.createAlbumElement = function (title, type, ext, size, ImageURL, id) {
       var _this = this,
-        div = $(document.createElement("div")),
-        img = $(document.createElement("img"));
+              div = $(document.createElement("div")),
+              img = $(document.createElement("img"));
 
       div.addClass("content-item")
-        .addClass(type)
-        .addClass(ext);
+              .addClass(type)
+              .addClass(ext);
       div.attr("tabindex", "1");
       div.on("focus click", function () {
         _this.currentItem.removeClass("selected");
