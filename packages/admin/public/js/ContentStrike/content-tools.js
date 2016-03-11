@@ -84,7 +84,7 @@
 }).call(this);
 
 (function() {
-  var ALPHA_CHARS, ALPHA_NUMERIC_CHARS, ATTR_DELIM, ATTR_ENTITY_DOUBLE_DELIM, ATTR_ENTITY_NO_DELIM, ATTR_ENTITY_SINGLE_DELIM, ATTR_NAME, ATTR_NAME_FIND_VALUE, ATTR_OR_TAG_END, ATTR_VALUE_DOUBLE_DELIM, ATTR_VALUE_NO_DELIM, ATTR_VALUE_SINGLE_DELIM, CHAR_OR_ENTITY_OR_TAG, CLOSING_TAG, ENTITY, ENTITY_CHARS, OPENING_TAG, OPENNING_OR_CLOSING_TAG, TAG_NAME_CHARS, TAG_NAME_CLOSING, TAG_NAME_MUST_CLOSE, TAG_NAME_OPENING, TAG_OPENING_SELF_CLOSING, _Parser,
+  var ALPHA_CHARS, ALPHA_NUMERIC_CHARS, ATTR_DELIM, ATTR_ENTITY_DOUBLE_DELIM, ATTR_ENTITY_NO_DELIM, ATTR_ENTITY_SINGLE_DELIM, ATTR_NAME, ATTR_NAME_CHARS, ATTR_NAME_FIND_VALUE, ATTR_OR_TAG_END, ATTR_VALUE_DOUBLE_DELIM, ATTR_VALUE_NO_DELIM, ATTR_VALUE_SINGLE_DELIM, CHAR_OR_ENTITY_OR_TAG, CLOSING_TAG, ENTITY, ENTITY_CHARS, OPENING_TAG, OPENNING_OR_CLOSING_TAG, TAG_NAME_CHARS, TAG_NAME_CLOSING, TAG_NAME_MUST_CLOSE, TAG_NAME_OPENING, TAG_OPENING_SELF_CLOSING, _Parser,
     __slice = [].slice,
     __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
@@ -789,6 +789,8 @@
 
   ALPHA_NUMERIC_CHARS = ALPHA_CHARS.concat('1234567890'.split(''));
 
+  ATTR_NAME_CHARS = ALPHA_NUMERIC_CHARS.concat([':']);
+
   ENTITY_CHARS = ALPHA_NUMERIC_CHARS.concat(['#']);
 
   TAG_NAME_CHARS = ALPHA_NUMERIC_CHARS.concat([':']);
@@ -895,7 +897,7 @@
       this.fsm.addTransition('>', TAG_NAME_MUST_CLOSE, CHAR_OR_ENTITY_OR_TAG, function() {
         return this._popTag();
       });
-      this.fsm.addTransitions(ALPHA_NUMERIC_CHARS, ATTR_NAME, null, function(c) {
+      this.fsm.addTransitions(ATTR_NAME_CHARS, ATTR_NAME, null, function(c) {
         return this.attributeName += c;
       });
       this.fsm.addTransitions([' ', '\n'], ATTR_NAME, ATTR_NAME_FIND_VALUE);
@@ -1003,7 +1005,7 @@
       }
       this.tagName = '';
       this.selfClosed = false;
-      return this.attributes = [];
+      return this.attributes = {};
     };
 
     _Parser.prototype._popTag = function() {
@@ -1308,7 +1310,6 @@
   })();
 
 }).call(this);
-
 (function() {
   var SELF_CLOSING_NODE_NAMES, _containedBy, _getChildNodeAndOffset, _getNodeRange, _getOffsetOfChildNode,
     __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
@@ -1674,6 +1675,8 @@
         if (value === '') {
           attributeStrings.push(name);
         } else {
+          value = HTMLString.String.encode(value);
+          value = value.replace(/"/g, '&quot;');
           attributeStrings.push("" + name + "=\"" + value + "\"");
         }
       }
@@ -2741,7 +2744,7 @@
 
     ResizableElement.prototype._onMouseDown = function(ev) {
       var corner;
-      ResizableElement.__super__._onMouseDown.call(this);
+      ResizableElement.__super__._onMouseDown.call(this, ev);
       corner = this._getResizeCorner(ev.clientX, ev.clientY);
       if (corner) {
         return this.resize(corner, ev.clientX, ev.clientY);
@@ -3135,7 +3138,7 @@
     Static.prototype.focus = void 0;
 
     Static.prototype._onMouseDown = function(ev) {
-      Static.__super__._onMouseDown.call(this);
+      Static.__super__._onMouseDown.call(this, ev);
       if (this.attr('data-ce-moveable') !== void 0) {
         clearTimeout(this._dragTimeout);
         return this._dragTimeout = setTimeout((function(_this) {
@@ -3152,7 +3155,7 @@
     };
 
     Static.prototype._onMouseUp = function(ev) {
-      Static.__super__._onMouseUp.call(this);
+      Static.__super__._onMouseUp.call(this, ev);
       if (this._dragTimeout) {
         return clearTimeout(this._dragTimeout);
       }
@@ -3254,7 +3257,7 @@
         indent = '';
       }
       if (!this._lastCached || this._lastCached < this._modified) {
-        content = this.content.copy();
+        content = this.content.copy().trim();
         content.optimize();
         this._lastCached = Date.now();
         this._cached = content.html();
@@ -3284,6 +3287,9 @@
       }
       this._domElement.setAttribute('contenteditable', '');
       this._addCSSClass('ce-element--focused');
+      if (document.activeElement !== this.domElement()) {
+        this.domElement().focus();
+      }
       this._savedSelection.select(this._domElement);
       return this._savedSelection = void 0;
     };
@@ -3334,38 +3340,46 @@
     };
 
     Text.prototype._onKeyUp = function(ev) {
+      Text.__super__._onKeyUp.call(this, ev);
       return this._syncContent();
     };
 
     Text.prototype._onMouseDown = function(ev) {
-      Text.__super__._onMouseDown.call(this);
+      Text.__super__._onMouseDown.call(this, ev);
       clearTimeout(this._dragTimeout);
-      return this._dragTimeout = setTimeout((function(_this) {
+      this._dragTimeout = setTimeout((function(_this) {
         return function() {
           return _this.drag(ev.pageX, ev.pageY);
         };
       })(this), ContentEdit.DRAG_HOLD_DURATION);
+      if (this.content.length() === 0 && ContentEdit.Root.get().focused() === this) {
+        ev.preventDefault();
+        if (document.activeElement !== this._domElement) {
+          this._domElement.focus();
+        }
+        return new ContentSelect.Range(0, 0).select(this._domElement);
+      }
     };
 
     Text.prototype._onMouseMove = function(ev) {
       if (this._dragTimeout) {
         clearTimeout(this._dragTimeout);
       }
-      return Text.__super__._onMouseMove.call(this);
+      return Text.__super__._onMouseMove.call(this, ev);
     };
 
     Text.prototype._onMouseOut = function(ev) {
       if (this._dragTimeout) {
         clearTimeout(this._dragTimeout);
       }
-      return Text.__super__._onMouseOut.call(this);
+      return Text.__super__._onMouseOut.call(this, ev);
     };
 
     Text.prototype._onMouseUp = function(ev) {
       if (this._dragTimeout) {
         clearTimeout(this._dragTimeout);
       }
-      return Text.__super__._onMouseUp.call(this);
+      return Text.__super__._onMouseUp.call(this, ev);
     };
 
     Text.prototype._keyBack = function(ev) {
@@ -3503,11 +3517,11 @@
     };
 
     Text.prototype._syncContent = function(ev) {
-      var newSnaphot, snapshot;
+      var newSnapshot, snapshot;
       snapshot = this.content.html();
       this.content = new HTMLString.String(this._domElement.innerHTML, this.content.preserveWhitespace());
-      newSnaphot = this.content.html();
-      if (snapshot !== newSnaphot) {
+      newSnapshot = this.content.html();
+      if (snapshot !== newSnapshot) {
         this.taint();
       }
       return this._flagIfEmpty();
@@ -4221,7 +4235,7 @@
         indent = '';
       }
       if (!this._lastCached || this._lastCached < this._modified) {
-        content = this.content.copy();
+        content = this.content.copy().trim();
         content.optimize();
         this._lastCached = Date.now();
         this._cached = content.html();
@@ -4602,6 +4616,19 @@
       return 'table-row';
     };
 
+    TableRow.prototype.isEmpty = function() {
+      var cell, text, _i, _len, _ref;
+      _ref = this.children;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        cell = _ref[_i];
+        text = cell.tableCellText();
+        if (text && text.content.length() > 0) {
+          return false;
+        }
+      }
+      return true;
+    };
+
     TableRow.prototype.type = function() {
       return 'TableRow';
     };
@@ -4770,7 +4797,7 @@
         indent = '';
       }
       if (!this._lastCached || this._lastCached < this._modified) {
-        content = this.content.copy();
+        content = this.content.copy().trim();
         content.optimize();
         this._lastCached = Date.now();
         this._cached = content.html();
@@ -4799,12 +4826,42 @@
       return this._dragTimeout = setTimeout(initDrag, ContentEdit.DRAG_HOLD_DURATION);
     };
 
-    TableCellText.prototype._keyReturn = function(ev) {
+    TableCellText.prototype._keyBack = function(ev) {
+      var cell, previous, row, selection;
+      selection = ContentSelect.Range.query(this._domElement);
+      if (!(selection.get()[0] === 0 && selection.isCollapsed())) {
+        return;
+      }
       ev.preventDefault();
-      return this._keyTab({
-        'shiftKey': false,
-        'preventDefault': function() {}
-      });
+      cell = this.parent();
+      row = cell.parent();
+      if (this.content.length() === 0 && row.children.indexOf(cell) === 0) {
+        if (row.isEmpty()) {
+          previous = this.previousContent();
+          if (previous) {
+            previous.focus();
+            selection = new ContentSelect.Range(previous.content.length(), previous.content.length());
+            selection.select(previous.domElement());
+          }
+          return row.parent().detach(row);
+        }
+      }
+    };
+
+    TableCellText.prototype._keyDelete = function(ev) {
+      var lastChild, nextElement, row, selection;
+      row = this.parent().parent();
+      if (row.isEmpty()) {
+        ev.preventDefault();
+        lastChild = row.children[row.children.length - 1];
+        nextElement = lastChild.tableCellText().nextContent();
+        if (nextElement) {
+          nextElement.focus();
+          selection = new ContentSelect.Range(0, 0);
+          selection.select(nextElement.domElement());
+        }
+        return row.parent().detach(row);
+      }
     };
 
     TableCellText.prototype._keyDown = function(ev) {
@@ -4830,6 +4887,14 @@
         cellIndex = Math.min(cellIndex, nextRow.children.length);
         return nextRow.children[cellIndex].tableCellText().focus();
       }
+    };
+
+    TableCellText.prototype._keyReturn = function(ev) {
+      ev.preventDefault();
+      return this._keyTab({
+        'shiftKey': false,
+        'preventDefault': function() {}
+      });
     };
 
     TableCellText.prototype._keyTab = function(ev) {
@@ -4902,21 +4967,39 @@
  */
 (function () {
   var __hasProp = {}.hasOwnProperty,
-          __extends = function (child, parent) {
-            for (var key in parent) {
-              if (__hasProp.call(parent, key))
-                child[key] = parent[key];
-            }
-            function ctor() {
-              this.constructor = child;
-            }
-            ctor.prototype = parent.prototype;
-            child.prototype = new ctor();
-            child.__super__ = parent.prototype;
-            return child;
-          };
+    __extends = function (child, parent) {
+      for (var key in parent) {
+        if (__hasProp.call(parent, key))
+          child[key] = parent[key];
+      }
+      function ctor() {
+        this.constructor = child;
+      }
+      ctor.prototype = parent.prototype;
+      child.prototype = new ctor();
+      child.__super__ = parent.prototype;
+      return child;
+    };
 
   ContentEdit.TagNames.get().register(ContentEdit.Text, 'address', 'blockquote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'a');
+
+  ContentEdit.Root = (function () {
+    var instance;
+
+    function Root() {}
+
+    instance = null;
+
+    Root.get = function () {
+      return instance != null ? instance : instance = new _Root();
+    };
+
+    Root.getNew = function () {
+      return new _Root();
+    };
+
+    return Root;
+  })();
 
   ContentEdit.Region = (function (_super) {
     __extends(Region, _super);
@@ -5082,7 +5165,11 @@
       'Text': ContentEdit.Element._dropBoth
     };
 
-    Image.placements = ['above', 'below', 'left', 'right', 'center'];
+    Image.placements = ['above',
+      'below',
+      'left',
+      'right',
+      'center'];
 
     Image.fromDOMElement = function (domElement) {
       var a, attributes, c, childNode, childNodes, _i, _len;
@@ -5133,6 +5220,397 @@
   })(ContentEdit.ResizableElement);
 
   ContentEdit.TagNames.get().register(ContentEdit.Image, 'img');
+
+
+
+  ContentEdit.Text = (function (_super) {
+    __extends(Text, _super);
+
+    function Text(tagName, attributes, content) {
+      Text.__super__.constructor.call(this, tagName, attributes);
+      if (content instanceof HTMLString.String) {
+        this.content = content;
+      } else {
+        this.content = new HTMLString.String(content).trim();
+      }
+    }
+
+    Text.prototype.cssTypeName = function () {
+      return 'text';
+    };
+
+    Text.prototype.type = function () {
+      return 'Text';
+    };
+
+    Text.prototype.typeName = function () {
+      return 'Text';
+    };
+
+    Text.prototype.blur = function () {
+      var error;
+      if (this.isMounted()) {
+        this._syncContent();
+      }
+      if (this.content.isWhitespace()) {
+        if (this.parent()) {
+          this.parent().detach(this);
+        }
+      } else if (this.isMounted()) {
+        try {
+          this._domElement.blur();
+        } catch (_error) {
+          error = _error;
+        }
+        this._domElement.removeAttribute('contenteditable');
+      }
+      return Text.__super__.blur.call(this);
+    };
+
+    Text.prototype.createDraggingDOMElement = function () {
+      var helper, text;
+      if (!this.isMounted()) {
+        return;
+      }
+      helper = Text.__super__.createDraggingDOMElement.call(this);
+      text = HTMLString.String.encode(this._domElement.textContent);
+      if (text.length > ContentEdit.HELPER_CHAR_LIMIT) {
+        text = text.substr(0, ContentEdit.HELPER_CHAR_LIMIT);
+      }
+      helper.innerHTML = text;
+      return helper;
+    };
+
+    Text.prototype.drag = function (x, y) {
+      this.storeState();
+      this._domElement.removeAttribute('contenteditable');
+      return Text.__super__.drag.call(this, x, y);
+    };
+
+    Text.prototype.drop = function (element, placement) {
+      Text.__super__.drop.call(this, element, placement);
+      return this.restoreState();
+    };
+
+    Text.prototype.focus = function (supressDOMFocus) {
+      if (this.isMounted()) {
+        this._domElement.setAttribute('contenteditable', '');
+      }
+      return Text.__super__.focus.call(this, supressDOMFocus);
+    };
+
+    Text.prototype.html = function (indent) {
+      var content;
+      if (indent == null) {
+        indent = '';
+      }
+      if (!this._lastCached || this._lastCached < this._modified) {
+        content = this.content.copy().trim();
+        content.optimize();
+        this._lastCached = Date.now();
+        this._cached = content.html();
+      }
+
+      if (!this._cached || this._cached.length === 0) {
+        return '';
+      }
+
+      return ("" + indent + "<" + this._tagName + (this._attributesToString()) + ">\n") + ("" + indent + ContentEdit.INDENT + this._cached + "\n") + ("" + indent + "</" + this._tagName + ">");
+    };
+
+    Text.prototype.mount = function () {
+      var name, value, _ref;
+      this._domElement = document.createElement(this._tagName);
+      _ref = this._attributes;
+      for (name in _ref) {
+        value = _ref[name];
+        this._domElement.setAttribute(name, value);
+      }
+      this.updateInnerHTML();
+      return Text.__super__.mount.call(this);
+    };
+
+    Text.prototype.restoreState = function () {
+      if (!this._savedSelection) {
+        return;
+      }
+      if (!(this.isMounted() && this.isFocused())) {
+        this._savedSelection = void 0;
+        return;
+      }
+      this._domElement.setAttribute('contenteditable', '');
+      this._addCSSClass('ce-element--focused');
+      if (document.activeElement !== this.domElement()) {
+        this.domElement().focus();
+      }
+      this._savedSelection.select(this._domElement);
+      return this._savedSelection = void 0;
+    };
+
+    Text.prototype.selection = function (selection) {
+      if (selection === void 0) {
+        if (this.isMounted()) {
+          return ContentSelect.Range.query(this._domElement);
+        } else {
+          return new ContentSelect.Range(0, 0);
+        }
+      }
+      return selection.select(this._domElement);
+    };
+
+    Text.prototype.storeState = function () {
+      if (!(this.isMounted() && this.isFocused())) {
+        return;
+      }
+      return this._savedSelection = ContentSelect.Range.query(this._domElement);
+    };
+
+    Text.prototype.updateInnerHTML = function () {
+      this._domElement.innerHTML = this.content.html();
+      ContentSelect.Range.prepareElement(this._domElement);
+      return this._flagIfEmpty();
+    };
+
+    Text.prototype._onKeyDown = function (ev) {
+      switch (ev.keyCode) {
+        case 40:
+          return this._keyDown(ev);
+        case 37:
+          return this._keyLeft(ev);
+        case 39:
+          return this._keyRight(ev);
+        case 38:
+          return this._keyUp(ev);
+        case 9:
+          return this._keyTab(ev);
+        case 8:
+          return this._keyBack(ev);
+        case 46:
+          return this._keyDelete(ev);
+        case 13:
+          return this._keyReturn(ev);
+      }
+    };
+
+    Text.prototype._onKeyUp = function (ev) {
+      Text.__super__._onKeyUp.call(this, ev);
+      return this._syncContent();
+    };
+
+    Text.prototype._onMouseDown = function (ev) {
+      Text.__super__._onMouseDown.call(this, ev);
+      clearTimeout(this._dragTimeout);
+      this._dragTimeout = setTimeout((function (_this) {
+        return function () {
+          return _this.drag(ev.pageX, ev.pageY);
+        };
+      })(this), ContentEdit.DRAG_HOLD_DURATION);
+      if (this.content.length() === 0 && ContentEdit.Root.get().focused() === this) {
+        ev.preventDefault();
+        if (document.activeElement !== this._domElement) {
+          this._domElement.focus();
+        }
+        return new ContentSelect.Range(0, 0).select(this._domElement);
+      }
+    };
+
+    Text.prototype._onMouseMove = function (ev) {
+      if (this._dragTimeout) {
+        clearTimeout(this._dragTimeout);
+      }
+      return Text.__super__._onMouseMove.call(this, ev);
+    };
+
+    Text.prototype._onMouseOut = function (ev) {
+      if (this._dragTimeout) {
+        clearTimeout(this._dragTimeout);
+      }
+      return Text.__super__._onMouseOut.call(this, ev);
+    };
+
+    Text.prototype._onMouseUp = function (ev) {
+      if (this._dragTimeout) {
+        clearTimeout(this._dragTimeout);
+      }
+      return Text.__super__._onMouseUp.call(this, ev);
+    };
+
+    Text.prototype._keyBack = function (ev) {
+      var previous, selection;
+      selection = ContentSelect.Range.query(this._domElement);
+      if (!(selection.get()[0] === 0 && selection.isCollapsed())) {
+        return;
+      }
+      ev.preventDefault();
+      previous = this.previousContent();
+      this._syncContent();
+      if (previous) {
+        return previous.merge(this);
+      }
+    };
+
+    Text.prototype._keyDelete = function (ev) {
+      var next, selection;
+      selection = ContentSelect.Range.query(this._domElement);
+      if (!(this._atEnd(selection) && selection.isCollapsed())) {
+        return;
+      }
+      ev.preventDefault();
+      next = this.nextContent();
+      if (next) {
+        return this.merge(next);
+      }
+    };
+
+    Text.prototype._keyDown = function (ev) {
+      return this._keyRight(ev);
+    };
+
+    Text.prototype._keyLeft = function (ev) {
+      var previous, selection;
+      selection = ContentSelect.Range.query(this._domElement);
+      if (!(selection.get()[0] === 0 && selection.isCollapsed())) {
+        return;
+      }
+      ev.preventDefault();
+      previous = this.previousContent();
+      if (previous) {
+        previous.focus();
+        selection = new ContentSelect.Range(previous.content.length(), previous.content.length());
+        return selection.select(previous.domElement());
+      } else {
+        return ContentEdit.Root.get().trigger('previous-region', this.closest(function (node) {
+          return node.type() === 'Region';
+        }));
+      }
+    };
+
+    Text.prototype._keyReturn = function (ev) {
+      var element, insertAt, lineBreakStr, selection, tail, tip;
+      ev.preventDefault();
+      if (this.content.isWhitespace()) {
+        return;
+      }
+      ContentSelect.Range.query(this._domElement);
+      selection = ContentSelect.Range.query(this._domElement);
+      tip = this.content.substring(0, selection.get()[0]);
+      tail = this.content.substring(selection.get()[1]);
+      if (ev.shiftKey) {
+        insertAt = selection.get()[0];
+        lineBreakStr = '<br>';
+        if (this.content.length() === insertAt) {
+          if (!this.content.characters[insertAt - 1].isTag('br')) {
+            lineBreakStr = '<br><br>';
+          }
+        }
+        this.content = this.content.insert(insertAt, new HTMLString.String(lineBreakStr, true), true);
+        this.updateInnerHTML();
+        insertAt += 1;
+        selection = new ContentSelect.Range(insertAt, insertAt);
+        selection.select(this.domElement());
+        return;
+      }
+      this.content = tip.trim();
+      this.updateInnerHTML();
+      element = new this.constructor('p', {}, tail.trim());
+      this.parent().attach(element, this.parent().children.indexOf(this) + 1);
+      if (tip.length()) {
+        element.focus();
+        selection = new ContentSelect.Range(0, 0);
+        selection.select(element.domElement());
+      } else {
+        selection = new ContentSelect.Range(0, tip.length());
+        selection.select(this._domElement);
+      }
+      return this.taint();
+    };
+
+    Text.prototype._keyRight = function (ev) {
+      var next, selection;
+      selection = ContentSelect.Range.query(this._domElement);
+      if (!(this._atEnd(selection) && selection.isCollapsed())) {
+        return;
+      }
+      ev.preventDefault();
+      next = this.nextContent();
+      if (next) {
+        next.focus();
+        selection = new ContentSelect.Range(0, 0);
+        return selection.select(next.domElement());
+      } else {
+        return ContentEdit.Root.get().trigger('next-region', this.closest(function (node) {
+          return node.type() === 'Region';
+        }));
+      }
+    };
+
+    Text.prototype._keyTab = function (ev) {
+      return ev.preventDefault();
+    };
+
+    Text.prototype._keyUp = function (ev) {
+      return this._keyLeft(ev);
+    };
+
+    Text.prototype._atEnd = function (selection) {
+      var atEnd;
+      atEnd = selection.get()[0] === this.content.length();
+      if (selection.get()[0] === this.content.length() - 1 && this.content.characters[this.content.characters.length - 1].isTag('br')) {
+        atEnd = true;
+      }
+      return atEnd;
+    };
+
+    Text.prototype._flagIfEmpty = function () {
+      if (this.content.length() === 0) {
+        return this._addCSSClass('ce-element--empty');
+      } else {
+        return this._removeCSSClass('ce-element--empty');
+      }
+    };
+
+    Text.prototype._syncContent = function (ev) {
+      var newSnapshot, snapshot;
+      snapshot = this.content.html();
+      this.content = new HTMLString.String(this._domElement.innerHTML, this.content.preserveWhitespace());
+      newSnapshot = this.content.html();
+      if (snapshot !== newSnapshot) {
+        this.taint();
+      }
+      return this._flagIfEmpty();
+    };
+
+    Text.droppers = {
+      'Static': ContentEdit.Element._dropVert,
+      'Text': ContentEdit.Element._dropVert
+    };
+
+    Text.mergers = {
+      'Text': function (element, target) {
+        var offset;
+        offset = target.content.length();
+        if (element.content.length()) {
+          target.content = target.content.concat(element.content);
+        }
+        if (target.isMounted()) {
+          target.updateInnerHTML();
+        }
+        target.focus();
+        new ContentSelect.Range(offset, offset).select(target._domElement);
+        if (element.parent()) {
+          element.parent().detach(element);
+        }
+        return target.taint();
+      }
+    };
+
+    Text.fromDOMElement = function (domElement) {
+      return new this(domElement.tagName, this.getDOMElementAttributes(domElement), domElement.innerHTML.replace(/^\s+|\s+$/g, ''));
+    };
+
+    return Text;
+
+  })(ContentEdit.Element);
 
 })(this);
 /* 
@@ -7933,6 +8411,7 @@
       this._editorContainer = null;
       this._contentContainer = null;
       this.oldRect = {};
+      this._root = null;
     }
 
     _EditorApp.prototype.ctrlDown = function () {
@@ -8102,7 +8581,7 @@
         this._contentContainer = this.constructor.createDiv([
           'ct-content-container'
         ]);
-        this._contentContainer.dir = "auto";
+        this._contentContainer.setAttribute('dir', 'auto');
         this._contentContainer.innerHTML = html;
 
         this._editorContainer.appendChild(this._contentContainer);
@@ -8127,7 +8606,6 @@
       }
 
       var rect = this._editorContainer.getBoundingClientRect();
-      //console.log(this._domElement, this._contentContainer);
       if (rect.width <= 0 || rect.height <= 0) {
         this._domElement.style.display = "none";
         return;
@@ -8145,6 +8623,7 @@
       /*this._domElement.style.top = rect.top + 'px';*/
       this.oldRect = toolBarRect;
       ContentEdit.Root.get().trigger('update-position', this);
+      console.log('update-position', this);
     };
 
     _EditorApp.prototype.paste = function (element, clipboardData) {
@@ -8293,6 +8772,30 @@
       return this._orderedRegions = regionNames.slice();
     };
 
+    _EditorApp.prototype.addStandByParagraph = function () {
+      var firstRegion = this.orderedRegions()[0];
+      var lastChild = firstRegion.children[firstRegion.children.length - 1];
+      if (lastChild && lastChild._tagName === 'p' && !lastChild.content.html()) {
+        lastChild.focus();
+      } else {
+        var p = new ContentEdit.Text('p', {});
+        firstRegion.attach(p);
+        p.focus();
+      }
+    };
+
+    _EditorApp.prototype.focusLastElement = function (e) {
+      if (e.target !== this._contentContainer)
+        return;
+
+      var lastChild = this.regions()[0].children[this.regions()[0].children.length - 1];
+      if (lastChild) {
+        var range = new ContentSelect.Range(lastChild._domElement.innerHTML.length, lastChild._domElement.innerHTML.length);
+        lastChild.selection(range);
+        lastChild.focus();
+      }
+    };
+
     _EditorApp.prototype.start = function () {
       var domRegion, i, j, len, name, ref;
       this.busy(true);
@@ -8310,13 +8813,15 @@
         this._orderedRegions.push(name);
         this._regionsLastModified[name] = this._regions[name].lastModified();
       }
-      this._preventEmptyRegions();
+      //this._preventEmptyRegions();
+      this.addStandByParagraph();
       this._rootLastModified = ContentEdit.Root.get().lastModified();
       this.history = new ContentTools.History(this._regions);
       this.history.watch();
       this._state = ContentTools.EditorApp.EDITING;
       this._toolbox.show();
       this._inspector.show();
+
       return this.busy(false);
     };
 
@@ -8336,6 +8841,7 @@
     };
 
     _EditorApp.prototype._addDOMEventListeners = function () {
+      var _this = this;
       this._handleHighlightOn = (function (_this) {
         return function (ev) {
           var ref;
@@ -8371,6 +8877,11 @@
           }
         };
       })(this);
+
+      this._editorContainer.addEventListener('click', function (e) {
+        _this.focusLastElement(e);
+      });
+
       document.addEventListener('keydown', this._handleHighlightOn);
       document.addEventListener('keyup', this._handleHighlightOff);
       window.onbeforeunload = (function (_this) {

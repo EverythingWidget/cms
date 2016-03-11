@@ -95,7 +95,9 @@ $items_count = $items_list["totalRows"];
 $items = $items_list["data"];
 $page = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 
-webroot\WidgetsManagement::add_html_script("~rm/public/js/owl-carousel/owl.carousel.js");
+webroot\WidgetsManagement::add_html_script([
+    'include' => "rm/public/js/owl-carousel/owl.carousel.js"
+    ]);
 
 webroot\WidgetsManagement::include_html_link([
     'rm/public/js/owl-carousel/animate.css',
@@ -117,7 +119,7 @@ webroot\WidgetsManagement::include_html_link([
 </div>
 
 <script>
-  $(document).ready(function () {
+  window.addEventListener('load', function () {
     $("div[data-widget-id='{$widget_id}'] > .owl-carousel").owlCarousel({
       responsiveClass: true,
       autoHeight:<?php echo $auto_height ?>,
@@ -149,4 +151,7 @@ webroot\WidgetsManagement::include_html_link([
       }
     });
   });
+  /*$(document).ready(function () {
+   
+   });*/
 </script>

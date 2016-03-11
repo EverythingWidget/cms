@@ -31,7 +31,7 @@ $HTML_BODY = $VIEW["body_html"];
 $WIDGET_DATA = $VIEW["widget_data"];
 
 $TEMPLATE_LINK = ($_REQUEST["_uis_template"]) ?
-        '<link id="template-css" href="~rm/public/' . $_REQUEST["_uis_template"] . '/template.css" rel="stylesheet" type="text/css"/>' : "";
+        '<link rel="stylesheet" type="text/css" id="template-css" href="~rm/public/' . $_REQUEST["_uis_template"] . '/template.css" />' : "";
 
 // If template has a 'template.php' then include it
 $template_php = EW_PACKAGES_DIR . '/rm/public/' . $_REQUEST["_uis_template"] . '/template.php';
@@ -110,12 +110,12 @@ $HTML_CSS = webroot\WidgetsManagement::get_html_links_concatinated();
       <?php
     }
     ?>      
-    <!--<link rel="stylesheet" href="~rm/public/css/bootstrap.css" >--> 
+
     <?= $HTML_CSS ?>
     <?= $HTML_LINKS; ?>
     <?= $TEMPLATE_LINK; ?>      
 
-    <script src="https://code.jquery.com/jquery-2.1.4.min.js" ></script>    
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js" defer></script>    
 
     <script id="widget-data">
         (function () {

@@ -3151,7 +3151,7 @@ body.dragging,body.dragging * {
 
 label.small .tag {
   float: left;
-  margin: 2px 2px 0 0;
+  margin: 2px;
   font-size: 13px;
   font-weight: 400;
 }
@@ -3248,14 +3248,12 @@ a.link.active,.active > a.link {
   min-height: 28px;
 }
 
-.options-panel .btn {
-  margin: 1px 2px 1px 0;
+.options-panel > .btn {
+  margin: 5px;
+  padding: 0 10px;
   float: left;
   letter-spacing: 1px;
-}
-
-.options-panel .btn:last-child {
-  margin-right: 0;
+  border-radius: 12px;
 }
 
 li h3.icon-header {

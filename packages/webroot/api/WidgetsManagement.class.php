@@ -833,24 +833,31 @@ class WidgetsManagement extends \ew\Module {
   public static function get_html_scripts($element_id = '') {
     $script_tags = "";
     $includes = [];
+    $duplicates = [];
+
     foreach (self::$html_scripts as $script) {
       //if ($script["src"]) {
       if ($script["id"]) {
         $element_id = "id='{$script["id"]}'";
       }
 
-      if ($script["src"]) {
+      if (isset($script["src"])) {
+        if (in_array($script["src"], $duplicates))
+          continue;
 
+        $duplicates[] = $script["src"];
         $element_src = "src='{$script["src"]}'";
-        //$sources[] = $script["src"];
-        //$script["script"] .= $minifiedCode;
       }
 
       if ($script["include"]) {
+        if (in_array($script["include"], $includes))
+          continue;
 
         $includes[] = $script["include"];
       }
       else {
+
+
         $script_tags.="<script $element_id $element_src defer>{$script["script"]}</script>\n";
       }
 
@@ -862,6 +869,10 @@ class WidgetsManagement extends \ew\Module {
     $minified_code = null;
     foreach ($includes as $source) {
       $src = EW_PACKAGES_DIR . '/' . $source;
+      if (!file_exists($src)) {
+        continue;
+      }
+      
       $file_times .= filemtime($src);
     }
 
@@ -877,16 +888,26 @@ class WidgetsManagement extends \ew\Module {
     else {
       //echo "$cache_file_name";
       //array_map('unlink', glob(EW_PACKAGES_DIR . '/rm/public/cache/' . "*"));
+
       foreach ($includes as $source) {
         $src = EW_PACKAGES_DIR . '/' . $source;
-        $minified_code .= \JShrink\Minifier::minify(file_get_contents($src));
-      }
 
+        if (!file_exists($src)) {
+          $minified_code .= "\n\n\n // NOT FOUND: $src \n\n\n";
+          //die('//NOT FOUND: ' . $src);
+        }
+        else {
+          $file_content = file_get_contents($src);
+
+          $minified_code .= \JShrink\Minifier::minify($file_content);
+        }
+      }
+      
       EWCore::file_force_contents($cache_path, $minified_code);
     }
 
     if ($minified_code) {
-      $script_tags.="<script id='auto-generate' src='$cache_path_url' defer></script>";
+      $script_tags.="<script id='ew-compiled-scripts' src='$cache_path_url' defer></script>";
     }
 
     return $script_tags;
@@ -936,7 +957,7 @@ class WidgetsManagement extends \ew\Module {
     }
 
     if ($minified_css) {
-      $css_tag.="<link rel='stylesheet' type='text/css' id='ew-auto-generate-css' href='$cache_path_url' />";
+      $css_tag.="<link rel='stylesheet' type='text/css' id='ew-compiled-css' href='$cache_path_url' />";
     }
 
     return $css_tag;

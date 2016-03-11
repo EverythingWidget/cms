@@ -10,13 +10,6 @@
         $("#content-editor .ct-content-container").html(content.content);
       }
       contentEditor.start();
-
-      var firstRegion = contentEditor.orderedRegions()[0];
-      if (firstRegion.children.length > 0) {
-        var firstElement = firstRegion.children[0];
-        firstElement.focus();
-        contentEditor._rootLastModified = ContentEdit.Root.get().lastModified();
-      }
     });
 
     $("#<?= $form_id ?>").on("error", function (e, formData) {
