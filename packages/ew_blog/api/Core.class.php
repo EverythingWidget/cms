@@ -20,18 +20,18 @@ class Core extends \ew\Module {
 
   protected function install_assets() {
 
-    $table_install = EWCore::create_table('ew_blog_subscribers', [
-                'id' => 'BIGINT(20) AUTO_INCREMENT PRIMARY KEY',
-                'email' => 'VARCHAR(200) NOT NULL',
-                'options' => 'TEXT NOT NULL',
-                'date_created' => 'DATETIME NOT NULL'
-    ]);
-
-    $pdo = EWCore::get_db_PDO();
-    $stm = $pdo->prepare($table_install);
-    if (!$stm->execute()) {
-      echo json_encode(EWCore::log_error(500, '', $stm->errorInfo()));
-    }
+//    $table_install = EWCore::create_table('ew_blog_subscribers', [
+//                'id' => 'BIGINT(20) AUTO_INCREMENT PRIMARY KEY',
+//                'email' => 'VARCHAR(200) NOT NULL',
+//                'options' => 'TEXT NOT NULL',
+//                'date_created' => 'DATETIME NOT NULL'
+//    ]);
+//
+//    $pdo = EWCore::get_db_PDO();
+//    $stm = $pdo->prepare($table_install);
+//    if (!$stm->execute()) {
+//      echo json_encode(EWCore::log_error(500, '', $stm->errorInfo()));
+//    }
 
     $this->register_content_component("event", [
         "title" => "Event",

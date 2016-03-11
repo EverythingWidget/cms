@@ -4983,23 +4983,23 @@
 
   ContentEdit.TagNames.get().register(ContentEdit.Text, 'address', 'blockquote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'a');
 
-  ContentEdit.Root = (function () {
-    var instance;
-
-    function Root() {}
-
-    instance = null;
-
-    Root.get = function () {
-      return instance != null ? instance : instance = new _Root();
-    };
-
-    Root.getNew = function () {
-      return new _Root();
-    };
-
-    return Root;
-  })();
+//  ContentEdit.Root = (function () {
+//    var instance;
+//
+//    function Root() {}
+//
+//    instance = null;
+//
+//    Root.get = function () {
+//      return instance != null ? instance : instance = new _Root();
+//    };
+//
+//    Root.getNew = function () {
+//      return new _Root();
+//    };
+//
+//    return Root;
+//  })();
 
   ContentEdit.Region = (function (_super) {
     __extends(Region, _super);

@@ -28,6 +28,35 @@ class ContentManagement extends \ew\Module {
       "/is/htdocs/wp1067381_3GN1OJU4CE/www/culturenights/app/webroot/img/logos/");
 
   protected function install_assets() {
+    $ew_tags_table_install = EWCore::create_table('ew_tags', [
+                'id' => 'BIGINT(20) AUTO_INCREMENT PRIMARY KEY',
+                'name' => 'VARCHAR(256) NOT NULL',
+                'date_created' => 'DATETIME NOT NULL',
+                'date_modified' => 'DATETIME NOT NULL',
+                'date_deleted' => 'DATETIME NOT NULL'
+    ]);
+
+    $pdo = EWCore::get_db_PDO();
+    $stm = $pdo->prepare($ew_tags_table_install);
+    if (!$stm->execute()) {
+      echo json_encode(EWCore::log_error(500, '', $stm->errorInfo()));
+    }
+
+    $ew_contents_tags_table_install = EWCore::create_table('ew_contents_tags', [
+                'id' => 'BIGINT(20) AUTO_INCREMENT PRIMARY KEY',
+                'content_id' => 'BIGINT(20) NOT NULL',
+                'tag_id' => 'BIGINT(20) NOT NULL',
+                'date_created' => 'DATETIME NOT NULL',
+                'date_modified' => 'DATETIME NOT NULL',
+                'date_deleted' => 'DATETIME NOT NULL'
+    ]);
+
+    $pdo = EWCore::get_db_PDO();
+    $stm = $pdo->prepare($ew_contents_tags_table_install);
+    if (!$stm->execute()) {
+      echo json_encode(EWCore::log_error(500, '', $stm->errorInfo()));
+    }
+
     EWCore::register_app("content-management", $this);
     require_once('models/ew_contents.php');
     require_once('models/ew_contents_labels.php');
@@ -67,6 +96,7 @@ class ContentManagement extends \ew\Module {
         "api/contents_folders",
         "api/contents_articles",
         "api/get_media_list",
+        "api/media_audios",
         "api/ew_list_feeder_folder",
         "api/ew_page_feeder_article",
         "html/article-form.php",
@@ -978,6 +1008,22 @@ class ContentManagement extends \ew\Module {
     closedir($dir);
   }
 
+  public function media_audios($parent_id) {
+    $db = \EWCore::get_db_connection();
+
+    $path = "/";
+
+    $root = EW_MEDIA_DIR;
+    $new_width = 140;
+
+    $include = ["included" => []];
+    // Folder
+    $audios = ew_contents::where('type', 'audio')->where('parent_id', $parent_id)->orderBy('title')->get(['*',
+                \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")])->toArray();
+
+    return \ew\APIResourceHandler::to_api_response($audios);
+  }
+
   public function get_media_list($parent_id, $token = null, $size = null) {
     $db = \EWCore::get_db_connection();
 
@@ -1311,11 +1357,10 @@ class ContentManagement extends \ew\Module {
           mkdir($root, 0777, true);
         }
 
-
-
         $actual_name = pathinfo($file['name'], PATHINFO_FILENAME);
         $original_name = $actual_name;
         $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+        $name = $actual_name . "." . $extension;
 
         $i = 1;
         while (file_exists($root . '/' . $actual_name . "." . $extension)) {
@@ -1328,6 +1373,7 @@ class ContentManagement extends \ew\Module {
 
         if (move_uploaded_file($file['tmp_name'], $uploadFile)) {
           $location = $uploadFile;
+          $this->add_content("audio", $actual_name, $parent_id, "", "", $location, "", "");
           $succeed++;
         }
         else {
