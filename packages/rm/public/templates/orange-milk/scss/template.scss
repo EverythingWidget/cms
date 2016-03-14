@@ -34,9 +34,62 @@ $font-akcent-color: #69C923;
 $font-akcent-color-dark: #59B913;
 $nav-bar-bg: rgba(255,255,255,.82);
 
+@media (min-width: 320px) {
+  .block.nav-bar {
+    background-color: $nav-bar-bg;
+    height: 50px;
+    margin: 0px 0;
+    display: block;
+    position: absolute;
+    top: 0;
+    z-index: 10;
+  }
+
+  .widget {
+    &.nav-menu {
+      white-space: nowrap;
+      font-size: .9em;
+      overflow: scroll;
+      
+
+      li {
+        display: inline-block;
+      }
+
+      a {
+        color: $font-color;
+        font-weight: normal;
+        padding: 0 15px;
+        line-height: 40px;
+        display: block;
+      } 
+    }
+  }
+}
+
 @media (min-width: 768px) {
+  .block.nav-bar {
+    height: 80px;
+  }
+
   .panel.section {
     width: 720px;  
+  }
+
+  .widget {
+    &.nav-menu {
+      font-size: 1.2em;
+      overflow: hidden;
+
+      li {
+        float: left;
+      }
+      
+      a {
+        line-height: 50px;
+        padding: 15px;
+      } 
+    }
   }
 }
 
@@ -66,7 +119,7 @@ body {
 }
 
 .container {
-
+  overflow: hidden;
   width: 100%;
 }
 
@@ -74,15 +127,7 @@ body {
 
 }
 
-.block.nav-bar {
-  background-color: $nav-bar-bg;
-  height: 80px;
-  margin: 0px 0;
-  display: block;
-  position: absolute;
-  top: 0;
-  z-index: 10;
-}
+
 
 .block.float.nav-bar {
   position: fixed;
@@ -210,27 +255,12 @@ body {
 }
 
 .widget.nav-menu {
-  font-size: 1.2em;
-  overflow: hidden;
 
   ul {
     @extend .content-box;
     list-style: none;    
-    text-transform: uppercase;
-
-    li {
-      float: left;
-
-    }
+    text-transform: uppercase;    
   }   
-
-  a {
-    color: $font-color;
-    font-weight: normal;
-    padding: 15px;
-    line-height: 50px;
-    display: block;
-  } 
 
   .active > a, a.selected {
     background-color: $font-akcent-color;

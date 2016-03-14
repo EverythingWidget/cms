@@ -872,7 +872,7 @@ class WidgetsManagement extends \ew\Module {
       if (!file_exists($src)) {
         continue;
       }
-      
+
       $file_times .= filemtime($src);
     }
 
@@ -902,7 +902,7 @@ class WidgetsManagement extends \ew\Module {
           $minified_code .= \JShrink\Minifier::minify($file_content);
         }
       }
-      
+
       EWCore::file_force_contents($cache_path, $minified_code);
     }
 
@@ -950,7 +950,15 @@ class WidgetsManagement extends \ew\Module {
     else {
       foreach (self::$html_included_links as $source) {
         $src = EW_PACKAGES_DIR . '/' . $source;
-        $minified_css .= "\n\r" . file_get_contents($src);
+        $buffer = file_get_contents($src);
+        // Remove comments
+        $buffer = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $buffer);
+        // Remove space after colons
+        $buffer = str_replace(': ', ':', $buffer);
+        // Remove whitespace
+        $buffer = str_replace(array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '', $buffer);
+
+        $minified_css .= $buffer;
       }
 
       EWCore::file_force_contents($cache_path, $minified_css);
