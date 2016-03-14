@@ -127,7 +127,7 @@
    * 
    * @param {object} conf
    * @param {number} t
-   * @returns {object}
+   * @returns {HTMLElement}
    */
   SystemUI.prototype.lock = function (conf, t) {
     var _this = this;
@@ -163,16 +163,16 @@
     });
 
 
-    lockPane.dispose = function () {
+    lockPane.dispose = function (fast) {
       if (conf.akcent) {
-        tween.to(akcent, t, {
+        tween.to(akcent, fast ? 0 : t, {
           transform: "scale(.5)",
           opacity: 0,
           ease: "Power2.easeInOut"
         });
       }
 
-      tween.to(lockPane, t, {
+      tween.to(lockPane, fast ? 0 : t, {
         opacity: "0",
         onComplete: function () {
           lockPane.parentNode.removeChild(lockPane);

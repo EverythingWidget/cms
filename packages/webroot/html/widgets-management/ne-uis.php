@@ -937,7 +937,7 @@ session_start();
                 var script = myIframe.contentWindow.document.createElement("script");
                 //script.type = "text/javascript";
                 script.id = "template-script";
-                var templateScript = $(data["template_script"]).attr("id", "template-script");
+                var templateScript = $('<script>' + data["template_script"] + '</script').attr("id", "template-script");
                 script.innerHTML = templateScript.html();
 
                 myIframe.contentWindow.document.head.appendChild(script);

@@ -290,7 +290,7 @@ $panelId = $_REQUEST['panelId'];
       });
 
       classBtn.prepend(a);
-      classBtn.addClass("btn btn-default btn-xs");
+      classBtn.addClass("btn btn-default");
       $.each(widgetClasses, function (i, c) {
         if (a.val() === (c))
         {

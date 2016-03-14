@@ -148,7 +148,7 @@ $container_id = $_REQUEST["containerId"];
         self.setClasses();
       });
 
-      classBtn.addClass("btn btn-default btn-xs");
+      classBtn.addClass("btn btn-default");
       classBtn.prepend(flag);
 
       var value = flag.val();

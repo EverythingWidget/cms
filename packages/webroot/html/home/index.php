@@ -40,30 +40,38 @@ if (file_exists($template_php)) {
   $template = new \template();
   //$uis_data = json_decode(admin\WidgetsManagement::get_uis($_REQUEST["_uis"]), true);
   $template_settings = $_REQUEST["_uis_template_settings"];
+
+
   if (json_last_error() != JSON_ERROR_NONE) {
     $template_settings = json_decode(stripslashes($_REQUEST["_uis_template_settings"]), true);
   }
 
+  if (!isset($template_settings)) {
+    $template_settings = '{}';
+  }
 
 
   $TEMPLATE_SCRIPT = "";
-  $template_script_dom = $template->get_template_script($template_settings);
+  $template_script_dom = $template->get_template_script(json_decode($_REQUEST["_uis_template_settings"], true));
   if ($template_script_dom) {
-    $DOM = new DOMDocument;
-    $DOM->loadHTML($template->get_template_script($template_settings));
-    $script_tasg = $DOM->getElementsByTagName("script");
+    //$DOM = new DOMDocument;
+    //$DOM->loadHTML($template->get_template_script($template_settings));
+    //$script_tasg = $DOM->getElementsByTagName("script");
     // Retrive template main js script and create a script tag that are to be added to DOM
-    $TEMPLATE_SCRIPT = '<script id="template-script">' . $script_tasg->item(0)->nodeValue . '</script>';
+    //$TEMPLATE_SCRIPT = '<script id="template-script">' . $script_tasg->item(0)->nodeValue . '</script>';
+    //$template_settings_json = json_encode($template_settings);    
+    $template_script_dom = preg_replace('/\{\$template_settings\}/', $template_settings, $template_script_dom);
+    $TEMPLATE_SCRIPT = '<script id="template-script">' . $template_script_dom . '</script>';
   }
 }
 
 // if template.js exist, then include it in HTML_SCRIPTS
-$template_js = EW_PACKAGES_DIR . '/rm/public/' . $_REQUEST["_uis_template"] . '/template.js';
-if (file_exists($template_js)) {
+/* $template_js = EW_PACKAGES_DIR . '/rm/public/' . $_REQUEST["_uis_template"] . '/template.js';
+  if (file_exists($template_js)) {
   \webroot\WidgetsManagement::add_html_script([
-      'src' => '~rm/public/' . $_REQUEST["_uis_template"] . '/template.js'
+  'src' => '~rm/public/' . $_REQUEST["_uis_template"] . '/template.js'
   ]);
-}
+  } */
 
 $HTML_TITLE = (webroot\WidgetsManagement::get_html_title()) ? webroot\WidgetsManagement::get_html_title() . " - " . $website_title : $website_title;
 $HTML_KEYWORDS = webroot\WidgetsManagement::get_html_keywords();
@@ -97,7 +105,7 @@ $HTML_CSS = webroot\WidgetsManagement::get_html_links_concatinated();
             ]).push(arguments)
           }, i[r].l = 1 * new Date();
           a = s.createElement(o),
-            m = s.getElementsByTagName(o)[0];
+                  m = s.getElementsByTagName(o)[0];
           a.async = 1;
           a.src = g;
           m.parentNode.insertBefore(a, m)
@@ -118,10 +126,10 @@ $HTML_CSS = webroot\WidgetsManagement::get_html_links_concatinated();
     <script src="https://code.jquery.com/jquery-2.1.4.min.js" defer></script>    
 
     <script id="widget-data">
-        (function () {
-          window.ew_widget_data = {};
+      (function () {
+        window.ew_widget_data = {};
 <?= $WIDGET_DATA; ?>
-        })();
+      })();
     </script>
     <?= $HTML_SCRIPTS; ?>
     <?= $TEMPLATE_SCRIPT; ?>      
