@@ -168,7 +168,7 @@
       this.foldersList.empty();
       this.articlesList.empty();
 
-    System.UI.components.mainContent.append(this.foldersCard);
+    //System.UI.components.mainContent.append(this.foldersCard);
 
       this.bNewFolder = EW.addActivity({
         title: "tr{New Folder}",

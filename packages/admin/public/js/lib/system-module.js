@@ -1,44 +1,4 @@
 (function (System) {
-  /*function Module() {
-   
-   }
-   
-   Module.prototype.init = function () {
-   
-   };
-   
-   Module.prototype.start = function () {
-   
-   };
-   
-   Module.prototype.dispose = function () {
-   
-   };
-   
-   Module.prototype.module = function () {
-   
-   };
-   
-   Module.prototype.on = function () {
-   
-   };
-   
-   Module.prototype.setParam = function () {
-   
-   };
-   
-   Module.prototype.setParamIfNone = function () {
-   
-   };
-   
-   Module.prototype.trigger = function () {
-   
-   };
-   
-   Module.prototype.hashChanged = function () {
-   
-   };*/
-
   System.MODULE_ABSTRACT = {
     domain: null,
     inited: false,
@@ -48,35 +8,21 @@
     navigation: {},
     params: {},
     html: "",
-    //modules: {},
     installModules: [
     ],
-    //activeModule: null,
     init: function (navigations, params, html) {
       var _this = this;
       this.inited = true;
-      //this.navigation = navigations;
-      //this.params = params;
-      //this.html = html;
-//      console.log(this.id,System.UI.templates[this.id]);
       this.trigger("onInit", [System.UI.templates[this.id]]);
 
       this.installModules.forEach(function (lib) {
-        //alert("install: " + lib.id);
-        _this.domain.loadModule(lib/*, function () {
-         alert("install completed: " + lib.id);
-         }*/);
+        _this.domain.loadModule(lib);
       });
     },
     start: function () {
       this.started = true;
       this.active = true;
-      //System.app.activeModule = this;
       this.trigger("onStart");
-      /*var modNav = this.navigation[this.moduleIdentifier] ? this.navigation[this.moduleIdentifier].slice(1) : [];
-       var newNav = $.extend(true, {}, this.navigation);
-       newNav[this.moduleIdentifier] = modNav;*/
-      //var modNav = System.app.navigation[this.moduleIdentifier] ? System.app.navigation[this.moduleIdentifier].slice(1) : [];
       var newNav = $.extend(true, {}, this.domain.app.navigation);
       var st = "system/" + this.domain.app.params[this.moduleIdentifier];
       var napPath = st.indexOf(this.id) === 0 ? st.substr(this.id.length).split("/").filter(Boolean) : [
@@ -112,7 +58,7 @@
      * @returns {System.MODULE_ABSTRACT}
      */
     module: function (id, object, forceReload) {
-      var module;
+      var module, modulePath, moduleNavigation;
       var domain = this.domain;
       if (!domain) {
         throw "Domain can NOT be null";
@@ -140,13 +86,9 @@
       module.domain = domain;
       module.id = id;
 
-      /*var modulePath = this.navigation[module.moduleIdentifier] ? this.navigation[module.moduleIdentifier].slice(1) : [
-       ];*/
-
-      var modulePath = this.navigation[module.moduleIdentifier] ? this.navigation[module.moduleIdentifier] : [
+      modulePath = this.navigation[module.moduleIdentifier] ? this.navigation[module.moduleIdentifier] : [
       ];
-      //console.log(id, id.split("/").length, modulePath.slice(id.split("/").length-1));
-      var moduleNavigation = $.extend(true, {}, this.navigation);
+      moduleNavigation = $.extend(true, {}, this.navigation);
       moduleNavigation[module.moduleIdentifier] = modulePath.slice(id.split("/").length - 1);
 
       domain.modules[id] /*= this.modules[id]*/ = module;
@@ -239,27 +181,24 @@
         });
       } else if (!this.active) {
         var navHandler = _this.hashListeners["app"];
-//console.log("navHandler", navHandler)
+
         //if navHandler is null call sub module navHandler
         if (navHandler && navigation["app"]) {
-          if (navigation["app"]) {
 
-            var currentKeyValue = _this.navigation["app"] ? _this.navigation["app"].join("/") : [
-            ];
+          var currentKeyValue = _this.navigation["app"] ? _this.navigation["app"].join("/") : [
+          ];
 
-            if (navigation["app"] && currentKeyValue !== navigation["app"].join("/")) {
-              var args = [
-              ];
-              args.push(navigation["app"]);
-              for (var i = 0, len = navigation["app"].length; i < len; ++i) {
-                //i is always valid index in the arguments object
-                args.push(navigation["app"][i]);
-              }
-
-              navHandler.apply(_this, args);
+          if (currentKeyValue !== navigation["app"].join("/")) {
+            var args = [];
+            args.push(navigation["app"]);
+            
+            for (var i = 0, len = navigation["app"].length; i < len; ++i) {
+              //i is always valid index in the arguments object
+              args.push(navigation["app"][i]);
             }
-          }
 
+            navHandler.apply(_this, args);
+          }
         }
       }
 
@@ -271,7 +210,7 @@
       {
         // Set the app.activeModule according to the current navigation path
         if (this.domain.modules[this.id + "/" + navigation[this.moduleIdentifier][0]]) {
-          /*System.app.activeModule = */this.activeModule = this.domain.modules[this.id + "/" + navigation[this.moduleIdentifier][0]];
+          this.activeModule = this.domain.modules[this.id + "/" + navigation[this.moduleIdentifier][0]];
         }
       } else {
         this.activeModule = null;
@@ -283,9 +222,8 @@
         var modNav = navigation[this.moduleIdentifier].slice(1);
         moduleNavigation = $.extend(true, {}, navigation);
         moduleNavigation[this.moduleIdentifier] = navigation[this.moduleIdentifier].slice(this.activeModule.id.split("/").length - 1);
-        ;
+        
         if (!this.activeModule.started) {
-          //alert("system." + navigation[this.moduleIdentifier][0])
           return;
         }
 
@@ -294,8 +232,6 @@
       }
     },
     hashHandler: function (nav, params) {
-      /*if (this.activeModule && !e.isDefaultPrevented())
-       this.activeModule.hashHandler(e, data);*/
     }
   }
 })(System);

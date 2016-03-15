@@ -23,6 +23,7 @@
       }
       return this.controllers[controllerId] = controllerObject;
     },
+    services: {},
     // Apps Management
     /* registerApp: function (id, object)
      {
@@ -233,12 +234,19 @@
 
       }));
     },
+    /**
+     * 
+     * @param {json} mod  id: the id of module, url: path to the module
+     * @param {callback} onDone
+     * @returns {void}
+     */
     loadModule: function (mod, onDone) {
       System.onModuleLoaded["system/" + mod.id] = onDone;
 
       if (System.modules["system/" + mod.id]) {
         //alert("loaded so call onDone " + mod.id + " " + System.onModuleLoaded["system/" + mod.id]);
         if ("function" === typeof (System.onModuleLoaded["system/" + mod.id])) {
+          console.log(System.modules["system/" + mod.id].html);
           //onDone.call(this, System.modules["system/" + mod.id], System.modules["system/" + mod.id].html);
           System.onModuleLoaded["system/" + mod.id].call(this, System.modules["system/" + mod.id],
                   System.modules["system/" + mod.id].html);
@@ -248,7 +256,6 @@
 
         return;
       }
-
       if (System.onLoadQueue["system/" + mod.id]) {
         return;
       }
@@ -278,7 +285,7 @@
 
           if (e.dataset && e.dataset.uiTemplate) {
             //console.log(e.tagName);
-            templates[e.dataset.uiTemplate] = e;
+            //templates[e.dataset.uiTemplate] = e;
             return false;
           }
           return true;
@@ -306,13 +313,12 @@
 
         if ("function" === typeof (System.onModuleLoaded["system/" + mod.id])) {
           //onDone.call(this, System.modules["system/" + mod.id], response);
-          System.onModuleLoaded["system/" + mod.id].call(this, System.modules["system/" + mod.id], html);
+          console.log(html)
+          System.modules["system/" + mod.id].html = System.onModuleLoaded["system/" + mod.id].call(this, System.modules["system/" + mod.id], html);
           System.onModuleLoaded["system/" + mod.id] = null;
         }
 
-        /*if (System.startAfterLoad === System.modules["system/" + mod.id].id) {
-         System.modules["system/" + mod.id].start();
-         }*/
+        delete System.onLoadQueue["system/" + mod.id];
       });
     },
     addActiveRequest: function (request) {
@@ -348,8 +354,8 @@
         //console.log("aborted: "+ this.activeRequests[request].creationId);
         delete this.activeRequests[request];
       }
-      this.onLoadQueue = [
-      ];
+//      this.onLoadQueue = [
+//      ];
       this.currentOnLoad = null;
     },
     startModule: function (moduleId) {
