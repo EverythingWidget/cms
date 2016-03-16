@@ -8620,10 +8620,8 @@
 
       this._contentContainer.style.marginTop = toolBarRect.height + 'px';
       this._domElement.style.width = rect.width + 'px';
-      /*this._domElement.style.top = rect.top + 'px';*/
       this.oldRect = toolBarRect;
       ContentEdit.Root.get().trigger('update-position', this);
-      console.log('update-position', this);
     };
 
     _EditorApp.prototype.paste = function (element, clipboardData) {

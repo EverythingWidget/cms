@@ -1,16 +1,19 @@
 <div class="tab-pane-xs tab-pane-sm header-pane tabs-bar block-row">
-  <ul class="nav nav-pills nav-blue-grey">
-    <li class="active"><a href="#media-photos" data-toggle="tab">Photos</a></li>
-    <li><a href="#media-audios" data-toggle="tab">Audios</a></li>
+  <ul class="nav nav-pills nav-black-text">
+    <li class="active">
+      <a href="#media-photos" data-toggle="tab">Photos</a>
+    </li>
+    
+    <li>
+      <a href="#media-audios" data-toggle="tab">Audios</a>
+    </li>
   </ul>
 </div>
 
 <div class="tab-pane-xs tab-pane-sm form-content tabs-bar no-footer tab-content block-row">
   <div id="media-photos" class="tab-pane active">
     <system-ui-view module="content-management/media" name="albums-list" class="block-row">  
-      <div class="block-column anim-fade-in">
-
-      </div>
+      <div class="block-column anim-fade-in"></div>
     </system-ui-view >
 
     <system-ui-view module="content-management/media" name="album-card" class="card z-index-1 center-block col-lg-9 col-md-10 col-xs-12">
@@ -21,21 +24,15 @@
           tr{Media}
         </h1>
       </div>
+
       <div class="card-content top-devider block-row">
-        <!--<span class='card-content-title'></span>-->
         <div class="album-images-list grid-list"></div>
       </div>
     </system-ui-view>
   </div> 
-  <div id="media-audios" class="tab-pane" >
-
-
-  </div>
+  
+  <div id="media-audios" class="tab-pane" ></div>
 </div>
-
-
-
-
 
 <script>
 
@@ -225,8 +222,9 @@
         }
       });
 
-      $('#media-photos').append(this.albumCard).append(this.albumsList);
-      
+      this.albumCard[0].show();
+      this.albumsList[0].show();
+
       component.module.setParamIfNone("album", "0/images");
     };
 

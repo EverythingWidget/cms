@@ -74,7 +74,7 @@ function script()
                }
 
                this.data.tab = section;
-               EW.loadSection(section);
+               System.services.app_service.load_section(section);
             });
          };
 

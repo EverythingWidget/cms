@@ -34,10 +34,10 @@
           System.UI.components.sectionsMenuList[0].setAttribute("data", EW.currentAppSections);
           app.start();
         }
-        
+
         states.loading_app = false;
 
-        return html;
+        //return html;
       },
       load: function (path, app) {
         if (!app || app === "Home") {
@@ -53,70 +53,69 @@
           });
           return;
         }
+      },
+      load_section: function (sectionId) {
+        var element = System.UI.components.sectionsMenuList[0].links[EW.oldApp + "/" + sectionId];
+
+        System.UI.components.sectionsMenuList[0].value = element.dataset.index;
+
+        if (element) {
+          var sectionData = System.UI.components.sectionsMenuList[0].data[element.dataset.index];
+          if (!sectionData/* || sectionData.id === EW.oldSectionId*/)
+            return;
+          EW.oldSectionId = sectionData.id;
+          System.UI.components.sectionsMenuTitle.text(sectionData.title);
+          System.UI.components.sectionsMenuTitle.addClass("inline-loader");
+          UIUtility.addClass(element, "inline-loader");
+
+          $("#action-bar-items").find("button,div").remove();
+          System.UI.components.appMainActions.empty();
+          System.UI.components.mainFloatMenu[0].clean();
+          //System.UI.components.mainFloatMenu[0].contract();
+
+          System.UI.components.mainContent.empty();
+          System.abortAllRequests();
+
+          System.loadModule(sectionData, function (mod, data) {
+            $("#action-bar-items").find("button,div").remove();
+
+            if (!System.getHashNav("app")[0]) {
+              return;
+            }
+
+            System.UI.components.mainContent.css("opacity", 0);
+            System.UI.components.mainContent.html(data);
+            mod.start();
+            if (anim) {
+              anim.pause();
+            }
+
+            if (System.UI.components.mainFloatMenu.children().length > 0) {
+              System.UI.components.mainFloatMenu[0].on();
+            } else {
+              System.UI.components.mainFloatMenu[0].off();
+            }
+
+            System.UI.components.sectionsMenuTitle.removeClass("inline-loader");
+            UIUtility.removeClass(element, "inline-loader");
+
+            anim = TweenLite.fromTo(System.UI.components.mainContent[0], .5, {
+              opacity: 0,
+              ease: "Power2.easeInOut",
+              top: "0"
+            },
+                    {
+                      top: "+=94px",
+                      opacity: 1,
+                      onComplete: function () {
+                      }
+                    });
+          });
+        }
       }
     };
 
     var anim = false;
-    System.services.app_service.load_section = EverythingWidgets.prototype.loadSection = function (sectionId) {
-      //console.log(System.UI.components.sectionsMenuList[0].xtag);
-      var element = System.UI.components.sectionsMenuList[0].links[EW.oldApp + "/" + sectionId];
-
-      System.UI.components.sectionsMenuList[0].value = element.dataset.index;
-
-      if (element) {
-        var sectionData = System.UI.components.sectionsMenuList[0].data[element.dataset.index];
-        if (!sectionData/* || sectionData.id === EW.oldSectionId*/)
-          return;
-        EW.oldSectionId = sectionData.id;
-        System.UI.components.sectionsMenuTitle.text(sectionData.title);
-        System.UI.components.sectionsMenuTitle.addClass("inline-loader");
-        UIUtility.addClass(element, "inline-loader");
-
-        $("#action-bar-items").find("button,div").remove();
-        System.UI.components.appMainActions.empty();
-        System.UI.components.mainFloatMenu[0].clean();
-        //System.UI.components.mainFloatMenu[0].contract();
-
-        System.UI.components.mainContent.empty();
-        System.abortAllRequests();
-
-        System.loadModule(sectionData, function (mod, data) {
-          $("#action-bar-items").find("button,div").remove();
-
-          if (!System.getHashNav("app")[0]) {
-            return;
-          }
-
-          System.UI.components.mainContent.css("opacity", 0);
-          System.UI.components.mainContent.html(data);
-          mod.start();
-          if (anim) {
-            anim.pause();
-          }
-
-          if (System.UI.components.mainFloatMenu.children().length > 0) {
-            System.UI.components.mainFloatMenu[0].on();
-          } else {
-            System.UI.components.mainFloatMenu[0].off();
-          }
-
-          System.UI.components.sectionsMenuTitle.removeClass("inline-loader");
-          UIUtility.removeClass(element, "inline-loader");
-
-          anim = TweenLite.fromTo(System.UI.components.mainContent[0], .5, {
-            opacity: 0,
-            ease: "Power2.easeInOut",
-            top: "0"
-          },
-                  {
-                    top: "+=94px",
-                    opacity: 1,
-                    onComplete: function () {
-                    }
-                  });
-        });
-      }
-    };
 
     EverythingWidgets.prototype.readApps = function () {
       var _this = this;

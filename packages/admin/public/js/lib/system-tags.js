@@ -306,10 +306,13 @@
     lifecycle: {
       created: function () {
         this.xtag.validate = false;
+        this.xtag.show = true;
 
         if (!this.name) {
           throw "system-ui-view missing the `name` attribute";
         }
+
+        this.xtag.placeholder = document.createComment(' ' + this.module + '/' + this.name + ' ');
 
         if (!System.UI.templates["system/" + this.module]) {
           System.UI.templates["system/" + this.module] = {};
@@ -323,11 +326,32 @@
           return;
         }
 
-        System.UI.templates["system/" + this.module][this.name] = this.parentNode.removeChild(this);
-        this.xtag.validate = true;
+
+        this.xtag.originalParent = this.parentNode;
+        System.UI.templates["system/" + this.module][this.name] = this;
+        if (this.xtag.showWhenAdded) {
+          this.xtag.showWhenAdded = null;
+          this.show();
+          return;
+        }
+        this.hide();
+
       },
       removed: function () {
-
+        this.xtag.validate = false;
+      }
+    },
+    methods: {
+      show: function () {
+        this.xtag.validate = true;
+        if (!this.xtag.originalParent) {
+          this.xtag.showAsSoonAsAdded = true;
+          return;
+        }
+        this.xtag.originalParent.replaceChild(this, this.xtag.placeholder);
+      },
+      hide: function () {
+        this.xtag.originalParent.replaceChild(this.xtag.placeholder, this);
       }
     },
     accessors: {

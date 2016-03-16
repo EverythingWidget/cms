@@ -2,32 +2,24 @@
   <div id="folders-card" class="card z-index-1 center-block col-lg-9 col-md-10 col-xs-12">
     <div  class='card-header'>
       <div class="card-title-action"></div>
+      
       <div class="card-title-action-right"></div>
+      
       <h1>
         tr{Contents}
       </h1>
     </div>
 
     <div class='card-content top-devider'>
+      <div id="categories-list"  ></div>
 
-      <div id="categories-list"  >
-
-      </div>
-
-      <div id="articles-list" class="mar-top">
-
-      </div>
+      <div id="articles-list" class="mar-top"></div>
     </div>
   </div>
 </system-ui-view>
 
-<!--<ew-float-menu id='folders-card-action-bar' position="css" parent="app-content" class="ew-float-menu">
-  
-</ew-float-menu>-->
-
 <script>
   (function (System) {
-    //var foldersCardTemplate = $("#folders-card-template")[0].outerHTML;
 
     function Documents(module) {
       var component = this;
@@ -168,7 +160,8 @@
       this.foldersList.empty();
       this.articlesList.empty();
 
-    //System.UI.components.mainContent.append(this.foldersCard);
+      this.foldersCard[0].show();
+      //System.UI.components.mainContent.append(this.foldersCard);
 
       this.bNewFolder = EW.addActivity({
         title: "tr{New Folder}",

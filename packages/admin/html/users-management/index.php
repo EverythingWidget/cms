@@ -69,7 +69,7 @@ function script()
                }
 
                component.data.tab = section;
-               EW.loadSection(section);
+               System.services.app_service.load_section(section);
             });
          };
 

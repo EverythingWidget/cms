@@ -242,15 +242,12 @@
      */
     loadModule: function (mod, onDone) {
       System.onModuleLoaded["system/" + mod.id] = onDone;
+      var module = System.modules["system/" + mod.id];
 
-      if (System.modules["system/" + mod.id]) {
-        //alert("loaded so call onDone " + mod.id + " " + System.onModuleLoaded["system/" + mod.id]);
+      if (module) {
+
         if ("function" === typeof (System.onModuleLoaded["system/" + mod.id])) {
-          console.log(System.modules["system/" + mod.id].html);
-          //onDone.call(this, System.modules["system/" + mod.id], System.modules["system/" + mod.id].html);
-          System.onModuleLoaded["system/" + mod.id].call(this, System.modules["system/" + mod.id],
-                  System.modules["system/" + mod.id].html);
-
+          System.onModuleLoaded["system/" + mod.id].call(this, module, module.html);
           System.onModuleLoaded["system/" + mod.id] = null;
         }
 
@@ -313,8 +310,9 @@
 
         if ("function" === typeof (System.onModuleLoaded["system/" + mod.id])) {
           //onDone.call(this, System.modules["system/" + mod.id], response);
-          console.log(html)
-          System.modules["system/" + mod.id].html = System.onModuleLoaded["system/" + mod.id].call(this, System.modules["system/" + mod.id], html);
+          //console.log(System.modules["system/" + mod.id].html.html());
+          System.onModuleLoaded["system/" + mod.id].call(this, System.modules["system/" + mod.id], html);
+          //console.log(System.modules["system/" + mod.id].html.html());
           System.onModuleLoaded["system/" + mod.id] = null;
         }
 

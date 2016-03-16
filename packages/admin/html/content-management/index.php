@@ -16,13 +16,8 @@ function sidebar() {
   return $html;
 }
 
-//EWCore::register_form("ew-section-main-form", "sidebar", ["content" => sidebar()]);
-//EWCore::register_form("ew-section-main-form", "content", ["content" => content()]);
 echo admin\AppsManagement::create_section_main_form();
-
-//$content_labels = EWCore::read_registry(EWCore::$EW_CONTENT_COMPONENT);
 ?>
-
 <script>
   (function (System) {
 
@@ -58,9 +53,6 @@ echo admin\AppsManagement::create_section_main_form();
       };
 
       this.onStart = function () {
-
-
-        //System.UI.components.sectionsMenuList[0].setAttribute("data", this.data.sections);
       };
 
       this.on("app", function (p, section) {
@@ -70,11 +62,10 @@ echo admin\AppsManagement::create_section_main_form();
         }
 
         this.data.tab = section;
-        EW.loadSection(section);
+        System.services.app_service.load_section(section);
       });
 
       return this;
     });
   })(System);
-
 </script>

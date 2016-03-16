@@ -7,8 +7,8 @@ $default_page = json_decode(webroot\WidgetsManagement::get_path_uis("@DEFAULT"),
 //header('Content-Type: text/html');
 //print_r($path_uis_list);
 ?>
-<div class="tab-pane-xs tab-pane-sm header-pane tabs-bar row">
-  <ul class="nav nav-pills nav-blue-grey">
+<div class="tab-pane-xs tab-pane-sm header-pane tabs-bar">
+  <ul class="nav nav-pills nav-black-text">
     <li class="active"><a href="#uis_list" data-toggle="tab">All Layouts</a></li>
     <li><a href="#pages-uis" data-toggle="tab">Contents Layouts</a></li>
   </ul>
@@ -17,7 +17,7 @@ $default_page = json_decode(webroot\WidgetsManagement::get_path_uis("@DEFAULT"),
   <div id="uis_list" class="tab-pane active col-lg-5 col-md-6 col-sm-12 col-xs-12 static-block">
 
   </div> 
-  <div class="tab-pane col-lg-7 col-md-6 col-sm-12 col-xs-12 pull-right" id="pages-uis">
+  <div class="tab-pane col-lg-7 col-md-6 col-sm-12 col-xs-12" id="pages-uis">
     <form id="apps-page-uis" onsubmit="return false;">         
       <div class="box box-white z-index-1">
         <div class="col-xs-12">

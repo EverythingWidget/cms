@@ -3254,6 +3254,7 @@ a.link.active,.active > a.link {
   float: left;
   letter-spacing: 1px;
   border-radius: 12px;
+  font-weight: 500;
 }
 
 li h3.icon-header {
@@ -3267,6 +3268,30 @@ li h3.icon-header {
 
 .nav-blue-grey {
   background-color: #78909C;
+}
+
+.nav-black-text {
+  background-color: #fff;
+  font-size: 1.2em;
+  padding-left: 25px;
+  font-weight: 400;
+  /* border-bottom: 3px solid rgba(0,0,0,.1); */
+}
+
+.nav-black-text > li > a{
+  color: #777;
+  font-weight: 400;
+}
+
+.nav-black-text > li.active > a {
+  color: #1B2433;
+  border-color: #1B2433;
+}
+
+.nav-black-text > li > a:hover, .nav-black-text > li.active > a:hover , .nav-black-text > li.active > a:focus {
+  background-color: rgba(0,0,0,.06);
+  border-color: #1B2433;
+  color: inherit;
 }
 
 .nav-pills > li {
