@@ -1,5 +1,7 @@
 (function () {
   window.addEventListener('load', function () {
+    var template_config = {$template_settings};
+    
     var slider = $('.widget.slider');
     $(window).on('resize', function () {
       slider.css('height', window.innerHeight);
@@ -15,6 +17,8 @@
       e.dataset.scrollIndex = i;
     });
 
-    $('.widget.nav-menu:not(.no-scroll-it)').first().scrollIt();
+    if (template_config['menu-id']) {
+      $('#' + template_config['menu-id'] + ':not(.no-scroll-it)').first().scrollIt();
+    }
   });
 })();

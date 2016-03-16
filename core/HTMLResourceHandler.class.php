@@ -16,30 +16,30 @@ namespace ew;
 class HTMLResourceHandler extends ResourceHandler {
 
   private $mime_types = array(
-      "pdf" => "application/pdf",
-      "exe" => "application/octet-stream",
-      "zip" => "application/zip",
+      "pdf"  => "application/pdf",
+      "exe"  => "application/octet-stream",
+      "zip"  => "application/zip",
       "docx" => "application/msword",
-      "doc" => "application/msword",
-      "xls" => "application/vnd.ms-excel",
-      "ppt" => "application/vnd.ms-powerpoint",
-      "gif" => "image/gif",
-      "png" => "image/png",
+      "doc"  => "application/msword",
+      "xls"  => "application/vnd.ms-excel",
+      "ppt"  => "application/vnd.ms-powerpoint",
+      "gif"  => "image/gif",
+      "png"  => "image/png",
       "jpeg" => "image/jpg",
-      "jpg" => "image/jpg",
-      "mp3" => "audio/mpeg",
-      "wav" => "audio/x-wav",
+      "jpg"  => "image/jpg",
+      "mp3"  => "audio/mpeg",
+      "wav"  => "audio/x-wav",
       "mpeg" => "video/mpeg",
-      "mpg" => "video/mpeg",
-      "mpe" => "video/mpeg",
-      "mov" => "video/quicktime",
-      "avi" => "video/x-msvideo",
-      "3gp" => "video/3gpp",
-      "css" => "text/css",
-      "jsc" => "application/javascript",
-      "js" => "application/javascript",
-      "php" => "text/html",
-      "htm" => "text/html",
+      "mpg"  => "video/mpeg",
+      "mpe"  => "video/mpeg",
+      "mov"  => "video/quicktime",
+      "avi"  => "video/x-msvideo",
+      "3gp"  => "video/3gpp",
+      "css"  => "text/css",
+      "jsc"  => "application/javascript",
+      "js"   => "application/javascript",
+      "php"  => "text/html",
+      "htm"  => "text/html",
       "html" => "text/html");
   protected $directly_accessible = [
       "js",
@@ -141,8 +141,9 @@ class HTMLResourceHandler extends ResourceHandler {
     else {
       $uis_data = \webroot\WidgetsManagement::get_uis($_REQUEST["_uis"]);
       $_REQUEST["_uis_template"] = $uis_data["template"];
-      if (!$_REQUEST["_uis_template_settings"])
-        $_REQUEST["_uis_template_settings"] = $uis_data["template_settings"];
+      if (!$_REQUEST["_uis_template_settings"]) {
+        $_REQUEST["_uis_template_settings"] = json_encode($uis_data["template_settings"]);
+      }
     }
 
     //var_dump($uis_data);
@@ -177,8 +178,8 @@ class HTMLResourceHandler extends ResourceHandler {
       $row = $stm->fetch(\PDO::FETCH_ASSOC);
     }
     return [
-        "uis_id" => $row["ui_structure_id"],
-        "uis_template" => $row["template"],
+        "uis_id"                => $row["ui_structure_id"],
+        "uis_template"          => $row["template"],
         "uis_template_settings" => $row["template_settings"]
     ];
   }

@@ -1,23 +1,23 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,500,300,700,900);
 
-root {
-  display: block;
-}
-
 @font-face {
   font-family:'Homa';
-  src:url(Far_Homa.eot);
-  src:url(Far_Homa.eot?#iefix) format("embedded-opentype"),url(Far_Homa.woff) format("woff"),url(Far_Homa.ttf) format("truetype"),url(Far_Homa.svg#Far.Homa) format("svg");
+  src:url(fonts/Far_Homa.eot);
+  src:url(fonts/Far_Homa.eot?#iefix) format("embedded-opentype"),url(fonts/Far_Homa.woff) format("woff"),url(fonts/Far_Homa.ttf) format("truetype"),url(fonts/Far_Homa.svg#Far.Homa) format("svg");
   font-weight:400;
   font-style:normal;
 }
 
 @font-face {
   font-family:'Homa';
-  src:url(Far_TitrBd.eot);
-  src:url(Far_TitrBd.eot?#iefix) format("embedded-opentype"),url(Far_TitrBd.woff) format("woff"),url(Far_TitrBd.ttf) format("truetype"),url(Far_TitrBd.svg#Far.TitrBd) format("svg");
+  src:url(fonts/Far_TitrBd.eot);
+  src:url(fonts/Far_TitrBd.eot?#iefix) format("embedded-opentype"),url(fonts/Far_TitrBd.woff) format("woff"),url(fonts/Far_TitrBd.ttf) format("truetype"),url(fonts/Far_TitrBd.svg#Far.TitrBd) format("svg");
   font-weight:700;
   font-style:normal;
+}
+
+root {
+  display: block;
 }
 
 ::-webkit-scrollbar {
@@ -3250,7 +3250,7 @@ a.link.active,.active > a.link {
 
 .options-panel > .btn {
   margin: 5px;
-  padding: 0 10px;
+  padding: 0 8px;
   float: left;
   letter-spacing: 1px;
   border-radius: 12px;

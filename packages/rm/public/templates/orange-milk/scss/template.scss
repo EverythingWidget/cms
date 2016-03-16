@@ -50,7 +50,14 @@ $nav-bar-bg: rgba(255,255,255,.82);
       white-space: nowrap;
       font-size: .9em;
       overflow: scroll;
-      
+
+      &.right {
+        text-align: right;
+
+        li {
+
+        }
+      }
 
       li {
         display: inline-block;
@@ -81,10 +88,19 @@ $nav-bar-bg: rgba(255,255,255,.82);
       font-size: 1.2em;
       overflow: hidden;
 
+      &.right {
+        float: right;
+
+        li {
+          float: right;
+        }
+
+      }
+
       li {
         float: left;
       }
-      
+
       a {
         line-height: 50px;
         padding: 15px;
@@ -127,8 +143,6 @@ body {
 
 }
 
-
-
 .block.float.nav-bar {
   position: fixed;
   top: 0;
@@ -144,7 +158,6 @@ body {
 .block.content {
   margin-top: 120px;
   padding-bottom: 120px;
-  direction: rtl;
   font-size: 1.3em;
 
   h2 {
@@ -268,20 +281,13 @@ body {
   } 
 }
 
-.rtl .widget.nav-menu {
-  ul {
-    li {
-      float: right;
-    }
-  }   
-}
-
-.widget.right.nav-menu {
-  float: right;
-  ul {
-    li {
-      float: right;
-    }
+.rtl {
+  .widget.nav-menu {
+    ul {
+      li {
+        float: right;
+      }
+    }   
   }
 }
 
