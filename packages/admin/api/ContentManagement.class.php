@@ -62,6 +62,30 @@ class ContentManagement extends \ew\Module {
     require_once('models/ew_contents_labels.php');
     require_once 'asset/DocumentComponent.class.php';
     require_once 'asset/LanguageComponent.class.php';
+
+    $this->register_content_component("document", [
+        "title"       => "Document",
+        "description" => "Main document",
+        "explorer"    => "admin/html/content-management/explorer-document.php",
+        "explorerUrl" => "~admin/content-management/explorer-document.php",
+        "form"        => "admin/html/content-management/label-document.php"
+    ]);
+
+    $this->register_content_component("language", [
+        "title"       => "Language",
+        "description" => "Language of the content",
+        "explorer"    => "admin/html/content-management/explorer-language.php",
+        "explorerUrl" => "~admin/content-management/explorer-language.php",
+        "form"        => "admin/html/content-management/label-language.php"
+    ]);
+
+    $article_feeder = new \ew\WidgetFeeder("article", $this, "page", "ew_page_feeder_article");
+    $article_feeder->title = "article";
+    \webroot\WidgetsManagement::register_widget_feeder($article_feeder);
+
+    $folder_feeder = new \ew\WidgetFeeder("folder", $this, "list", "ew_list_feeder_folder");
+    $folder_feeder->title = "folder";
+    \webroot\WidgetsManagement::register_widget_feeder($folder_feeder);
   }
 
   protected function install_permissions() {
@@ -70,9 +94,9 @@ class ContentManagement extends \ew\Module {
     include EW_PACKAGES_DIR . '/admin/html/content-management/link-chooser-document.php';
     $lcd = ob_get_clean();
 
-    ob_start();
+    /*ob_start();
     include EW_PACKAGES_DIR . '/admin/html/content-management/link-chooser-document.php';
-    $link_chooser_media = ob_get_clean();
+    $link_chooser_media = ob_get_clean();*/
 
     EWCore::register_form("ew/ui/components/link-chooser", "content-chooser", ["title"   => "Contents",
         "content" => $lcd]);
@@ -84,7 +108,7 @@ class ContentManagement extends \ew\Module {
         $this,
         "image_loader"));
 
-    $this->register_permission("see-content", "User can see the contents", array(
+    $this->register_permission("see-content", "User can see the contents", [
         'html/index.php',
         'api/index',
         "api/contents",
@@ -101,9 +125,9 @@ class ContentManagement extends \ew\Module {
         "api/ew_page_feeder_article",
         "html/article-form.php",
         "html/folder-form.php",
-        "html/album-form.php"));
+        "html/album-form.php"]);
 
-    $this->register_permission("manipulate-content", "User can add new, edit, delete contents", array(
+    $this->register_permission("manipulate-content", "User can add new, edit, delete contents", [
         'html/index.php',
         'api/index',
         "api/add_content",
@@ -127,38 +151,7 @@ class ContentManagement extends \ew\Module {
         "api/media_audios",
         "html/article-form.php:tr{New Article}",
         "html/folder-form.php:tr{New Folder}",
-        "html/album-form.php:tr{New Album}"));
-
-    //$this->register_content_label("document", ["title" => "Document", "description" => "Attach this content to other content", "type" => "data_url", "value" => "app-admin/ContentManagement/get_articles_llist"]);
-    //$this->register_content_label("language", ["title" => "Language", "description" => "Language of the content"]);
-    //$this->register_widget_feeder("page", "ssss");
-    $this->register_content_component("document", [
-        "title"       => "Document",
-        "description" => "Main document",
-        "explorer"    => "admin/html/content-management/explorer-document.php",
-        "explorerUrl" => "~admin/content-management/explorer-document.php",
-        "form"        => "admin/html/content-management/label-document.php"
-    ]);
-
-    $this->register_content_component("language", [
-        "title"       => "Language",
-        "description" => "Language of the content",
-        "explorer"    => "admin/html/content-management/explorer-language.php",
-        "explorerUrl" => "~admin/content-management/explorer-language.php",
-        "form"        => "admin/html/content-management/label-language.php"
-    ]);
-
-    //$this->register_widget_feeder("page", "article");
-    $article_feeder = new \ew\WidgetFeeder("article", $this, "page", "ew_page_feeder_article");
-    $article_feeder->title = "article";
-    \webroot\WidgetsManagement::register_widget_feeder($article_feeder);
-
-    $folder_feeder = new \ew\WidgetFeeder("folder", $this, "list", "ew_list_feeder_folder");
-    $folder_feeder->title = "folder";
-    \webroot\WidgetsManagement::register_widget_feeder($folder_feeder);
-
-    //\webroot\WidgetsManagement::register_widget_feeder(new \ew\WidgetFeeder($this, "text", "content_fields"));
-    //$this->register_widget_feeder("menu", "languages");
+        "html/album-form.php:tr{New Album}"]);
   }
 
   private function get_node_link($node) {
@@ -1019,7 +1012,7 @@ class ContentManagement extends \ew\Module {
 
     $include = ["included" => []];
     // Folder
-    $audios = ew_contents::where('type', 'audio')/*->where('parent_id', $parent_id)*/->orderBy('title')->get(['*',
+    $audios = ew_contents::where('type', 'audio')/* ->where('parent_id', $parent_id) */->orderBy('title')->get(['*',
                 \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")])->toArray();
 
     return \ew\APIResourceHandler::to_api_response($audios);
