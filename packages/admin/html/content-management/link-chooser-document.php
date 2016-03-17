@@ -2,7 +2,7 @@
 
 </div>
 
-<div class="elements-list" id="folders-list"  >
+<div class="elements-list" id="content-chooser-folders-list"  >
   <h2></h2>
   <div class="box-content"></div>
 </div>
@@ -12,8 +12,10 @@
   <div class="box-content"></div>
 </div>
 
+
 <script  type="text/javascript">
   var LinkChooserDocuments = (function () {
+    var parentDialog = EW.getParentDialog($("#content-chooser-folders-list"));
     function LinkChooserDocuments() {
       var _this = this;
       this.contentType = "<?php echo $_REQUEST["contentType"] ?>" || null;
@@ -27,15 +29,15 @@
         "content-chooser-actions-bar").hide();
 
       this.bSelect = EW.addActionButton({
-        text: "tr{Select}",
-        class: "btn-success",
-        parent: "content-chooser-actions-bar",
+        text: "",
+        class: "btn-float btn-success icon-ok pos-se",
+        parent: parentDialog,
         handler: function () {
           _this.selectContent(null);
         }
       }).hide();
 
-      this.folderList = $("#content-chooser #folders-list");
+      this.folderList = $("#content-chooser #content-chooser-folders-list");
       this.folderListHeader = this.folderList.children().eq(0);
       this.folderListContent = this.folderList.children().eq(1);
 

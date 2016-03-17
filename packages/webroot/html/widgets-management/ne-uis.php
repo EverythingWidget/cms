@@ -889,7 +889,7 @@ session_start();
 
   UISForm.prototype.updateTemplateBody = function () {
     // Update template body with current template settings
-    var self = this;
+    var _this = this;
     var lock = System.UI.lock({
       element: this.editorWindow[0]
       ,
@@ -899,62 +899,60 @@ session_start();
 
     //var originalTemplateSettings = self.templateSettings;
     // Read template settings from template settings form
-    self.templateSettingsForm.trigger("getData");
+    _this.templateSettingsForm.trigger("getData");
 
     $.post('~webroot/api/widgets-management/get-layout', {
-      uisId: self.uisId,
-      template: self.uisTemplate,
-      template_settings: JSON.stringify(self.templateSettings)
-    },
-            function (data) {
-              var myIframe = self.editorIFrame[0],
-                      myIframeContent = $(myIframe).contents(),
-                      head = myIframeContent.find("head"),
-                      body = myIframeContent.find("body");
-              body.off();
-              head.find("#template-script").remove();
-              head.find("#widget-data").remove();
+      uisId: _this.uisId,
+      template: _this.uisTemplate,
+      template_settings: JSON.stringify(_this.templateSettings)
+    }, function (data) {
+      var myIframe = _this.editorIFrame[0],
+              myIframeContent = $(myIframe).contents(),
+              head = myIframeContent.find("head"),
+              body = myIframeContent.find("body");
+      body.off();
+      head.find("#template-script").remove();
+      head.find("#widget-data").remove();
 
-              if ($('#template').val()) {
-                head.find("#template-css").attr("href", "~rm/public/" + $('#template').val() + "/template.css");
-              }
+      if ($('#template').val()) {
+        head.find("#template-css").attr("href", "~rm/public/" + $('#template').val() + "/template.css");
+      }
 
-              body.find("#base-content-pane").remove();
+      body.find("#base-content-pane").remove();
 
-              var widgetData = myIframe.contentWindow.document.createElement("script");
-              widgetData.id = "widget-data";
-              widgetData.innerHTML = data["widget_data"];
-              myIframe.contentWindow.document.head.appendChild(widgetData);
+      var widgetData = myIframe.contentWindow.document.createElement("script");
+      widgetData.id = "widget-data";
+      widgetData.innerHTML = data["widget_data"];
+      myIframe.contentWindow.document.head.appendChild(widgetData);
 
-              var templateBody = myIframe.contentWindow.document.createElement("div");
-              templateBody.id = "base-content-pane";
-              templateBody.className = "container";
-              templateBody.innerHTML = data["template_body"];
-              myIframe.contentWindow.document.body.appendChild(templateBody);
+      var templateBody = myIframe.contentWindow.document.createElement("div");
+      templateBody.id = "base-content-pane";
+      templateBody.className = "container";
+      templateBody.innerHTML = data["template_body"];
+      myIframe.contentWindow.document.body.appendChild(templateBody);
 
-              // Adding template script after adding template body
-              if (data["template_script"]) {
-                var script = myIframe.contentWindow.document.createElement("script");
-                //script.type = "text/javascript";
-                script.id = "template-script";
-                var templateScript = $('<script>' + data["template_script"] + '</script').attr("id", "template-script");
-                script.innerHTML = templateScript.html();
+      // Adding template script after adding template body
+      if (data["template_script"]) {
+        var script = myIframe.contentWindow.document.createElement("script");
+        //script.type = "text/javascript";
+        script.id = "template-script";
+        var templateScript = $('<script>' + data["template_script"] + '</script').attr("id", "template-script");
+        script.innerHTML = templateScript.html();
 
-                myIframe.contentWindow.document.head.appendChild(script);
-              }
+        myIframe.contentWindow.document.head.appendChild(script);
+      }
 
-              // Find scripts inside the template body and run them
-              var scripts = [
-              ];
-              var ret = myIframe.contentWindow.document.body;
-              findScriptTags(ret, scripts);
-              for (script in scripts) {
-                evalScript(scripts[script]);
-              }
+      // Find scripts inside the template body and run them
+      var scripts = [];
+      var bodyContent = myIframe.contentWindow.document.body;
+      findScriptTags(bodyContent, scripts);
+      for (script in scripts) {
+        evalScript(scripts[script]);
+      }
 
-              $("#inspector-editor").trigger("refresh");
-              lock.dispose();
-            }, "json");
+      _this.inspectorEditor.trigger("refresh");
+      lock.dispose();
+    }, "json");
   };
 
   function findScriptTags(element, scripts) {

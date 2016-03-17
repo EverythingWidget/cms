@@ -1,4 +1,4 @@
-<div class="tab-pane-xs tab-pane-sm header-pane tabs-bar block-row">
+<div class="tabs-bar block-row">
   <ul class="nav nav-pills nav-black-text">
     <li class="active">
       <a href="#media-photos" data-toggle="tab">Photos</a>
@@ -10,7 +10,7 @@
   </ul>
 </div>
 
-<div class="tab-pane-xs tab-pane-sm form-content tabs-bar no-footer tab-content block-row">
+<div class="no-footer tab-content">
   <div id="media-photos" class="tab-pane active">
     <system-ui-view module="content-management/media" name="albums-list" class="block-row">  
       <div class="block-column anim-fade-in"></div>

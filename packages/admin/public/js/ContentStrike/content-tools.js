@@ -8773,7 +8773,8 @@
     _EditorApp.prototype.addStandByParagraph = function () {
       var firstRegion = this.orderedRegions()[0];
       var lastChild = firstRegion.children[firstRegion.children.length - 1];
-      if (lastChild && lastChild._tagName === 'p' && !lastChild.content.html()) {
+
+      if (lastChild && lastChild._tagName === 'p') {
         lastChild.focus();
       } else {
         var p = new ContentEdit.Text('p', {});

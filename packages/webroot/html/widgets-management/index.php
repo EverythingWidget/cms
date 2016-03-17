@@ -80,9 +80,6 @@ function script()
 
          WidgetsManagementComponent.prototype.start = function () {
             this.data.tab = null;
-
-
-   //            System.UI.components.sectionsMenuList[0].setAttribute("data", this.module.data.sections);
          };
 
          System.module("widgets-management", function () {

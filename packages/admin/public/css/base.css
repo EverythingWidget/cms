@@ -60,7 +60,7 @@ root {
     /* right: 5%; */
     right: 50px;
     top:69px;
-    z-index: 5;
+    z-index: 8;
     /* width: 50px; */
     /* height: 50px; */
     padding: 6px;
@@ -104,7 +104,7 @@ root {
     position: absolute;
     opacity: 1;
     display: block;
-    z-index: 6;
+    z-index: 8;
     box-shadow: 0 2px 5px 0 rgba(0,0,0,0.2),0 2px 10px 0 rgba(0,0,0,0.16);
     /*transition: all 1s;*/
   }
@@ -541,15 +541,7 @@ root {
   background-color: #fff;
 }
 
-#main-content .form-content {
-  background-color: transparent;
-  left: 0;
-  margin-left: 0;
-  width: 100%;
-}
-
 .top-pane .footer-pane {
-  /*border-top: 1px solid rgba(0,0,0,.06);*/
   background-clip: padding-box;
   background-color: #fff;
   z-index: 5;
@@ -924,10 +916,6 @@ body.Admin {
 #main-content > .header-pane.tabs-bar {
   height: auto;
   /* padding-top: 13px; */;
-}
-
-#main-content > .form-content.tabs-bar {
-  /* top:55px */;
 }
 
 .top-pane.full {
@@ -3275,7 +3263,6 @@ li h3.icon-header {
   font-size: 1.2em;
   padding-left: 25px;
   font-weight: 400;
-  /* border-bottom: 3px solid rgba(0,0,0,.1); */
 }
 
 .nav-black-text > li > a{
@@ -3443,4 +3430,22 @@ inline-dialog{
   -webkit-flex-flow: row wrap;
   justify-content: space-between;
   align-items: flex-start;
+}
+
+#main-content > .tabs-bar {
+  z-index: 5;
+  position: relative;
+  box-shadow: 0 1px 3px 0px rgba(0,0,0,0.06),0 0px 5px rgba(0,0,0,0.1); 
+}
+
+#main-content > .tab-content {
+  background-color: transparent;
+  margin-left: 0;
+  position: absolute;
+  width: 100%;
+  top: 50px;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: inherit;
 }

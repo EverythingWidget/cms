@@ -39,13 +39,7 @@ class template extends TemplateControl {
         <select class="text-field" id="menu-id" name="menu-id" data-label="Main Menu ID">
           <option value=''></option>
         </select>
-      </div>
-
-      <div class="block-row">
-        <select class="text-field" id="page-slider" name="page-slider" data-label="Page Slider ID">
-          <option value=''></option>
-        </select>      
-      </div>      
+      </div>   
     </div>
     <script>
       (function () {
@@ -86,24 +80,26 @@ class template extends TemplateControl {
           initSelect("#menu-id", data["menu-id"]);
           initSelect("#page-slider", data["page-slider"]);
 
-
-          $("#spw").off("change");
-          $("#spw").on("change", function () {
+          $("#spw").off("change").on("change", function () {
             if ($("#spw input").is(":checked"))
             {
               $("#spw-cp :input").attr('disabled', false);
               $("#spw-cp").stop().animate({
                 height: "toggle"
-              },
-                      400, "Power2.easeOut");
-            } else
-            {
+              }, 400, "Power2.easeOut");
 
+              //System.UI.forms.uis_form.updateTemplateBody();
+              widgets = System.UI.forms.uis_form.getLayoutWidgets();
+              initSelect("#menu-id", data["menu-id"]);
+              initSelect("#page-slider", data["page-slider"]);
+            } else {
               $("#spw-cp").stop().fadeOut(200, function () {
                 $("#spw-cp :input").attr('disabled', true);
               });
+
+
             }
-            System.UI.forms.uis_form.updateTemplateBody();
+
           });
         });
 

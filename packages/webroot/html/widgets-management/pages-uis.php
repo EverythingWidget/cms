@@ -13,7 +13,7 @@ $default_page = json_decode(webroot\WidgetsManagement::get_path_uis("@DEFAULT"),
     <li><a href="#pages-uis" data-toggle="tab">Contents Layouts</a></li>
   </ul>
 </div>
-<div class="tab-pane-xs tab-pane-sm form-content tabs-bar no-footer tab-content row">
+<div class="no-footer tab-content">
   <div id="uis_list" class="tab-pane active col-lg-5 col-md-6 col-sm-12 col-xs-12 static-block">
 
   </div> 
