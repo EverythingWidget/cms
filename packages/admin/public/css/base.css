@@ -2772,7 +2772,7 @@ table.contents td {
   /* box-shadow: 0 1px 4px -1px rgba(0,0,0,.1); */
 }
 
-.content-item.selected/*,.content-item:focus*/ {
+.content-item.selected, .content-item:focus {
   background-color: #fff;
   border-color: transparent;
   box-shadow: 0 5px 11px 0 rgba(0,0,0,0.1),0 9px 16px 0 rgba(0,0,0,0.2);

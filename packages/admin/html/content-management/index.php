@@ -34,22 +34,11 @@ echo admin\AppsManagement::create_section_main_form();
           {
             title: "tr{Media}",
             id: "content-management/media",
-            url: "~admin/html/content-management/media.php"
+            url: "~admin/html/content-management/media/index.php"
           }
         ];
 
-        this.installModules = [
-          {
-            title: "tr{Documents}",
-            id: "content-management/documents",
-            url: "~admin/html/content-management/documents.php"
-          },
-          {
-            title: "tr{Media}",
-            id: "content-management/media",
-            url: "~admin/html/content-management/media.php"
-          }
-        ];
+        this.installModulesOnInit(this.data.sections);
       };
 
       this.onStart = function () {

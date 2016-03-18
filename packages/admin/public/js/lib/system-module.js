@@ -8,12 +8,16 @@
     navigation: {},
     params: {},
     html: "",
-    installModules: [
-    ],
+    installModules: [],
+    onEvents: {},
+    installModulesOnInit: function (modules) {
+      this.installModules = modules;
+    },
     init: function (navigations, params, html) {
       var _this = this;
       this.inited = true;
       this.trigger("onInit", [System.UI.templates[this.id]]);
+      this.triggerEvent('init', [System.UI.templates[this.id]]);
 
       this.installModules.forEach(function (lib) {
         _this.domain.loadModule(lib);
@@ -23,6 +27,7 @@
       this.started = true;
       this.active = true;
       this.trigger("onStart");
+      this.triggerEvent('start');
       var newNav = $.extend(true, {}, this.domain.app.navigation);
       var st = "system/" + this.domain.app.params[this.moduleIdentifier];
       var napPath = st.indexOf(this.id) === 0 ? st.substr(this.id.length).split("/").filter(Boolean) : [
@@ -127,6 +132,17 @@
       }
     },
     /**
+     * 
+     * @param {string} event name of module internal event
+     * @param {function} action the action that bind one to one to the specified event
+     * @returns {void}
+     */
+    bind: function (event, action) {
+      if ('string' === typeof (event) && 'function' === typeof (action)) {
+        this.onEvents[event] = action;
+      }
+    },
+    /**
      * Call the event function if exist and pass the args to it
      * 
      * @param {String} event
@@ -136,6 +152,11 @@
     trigger: function (event, args) {
       if (typeof (this[event]) === "function") {
         this[event].apply(this, args);
+      }
+    },
+    triggerEvent: function (event, args) {
+      if (typeof (this.onEvents[event]) === "function") {
+        this.onEvents[event].apply(this, args);
       }
     },
     hashChanged: function (navigation, params, hashValue) {
@@ -191,7 +212,7 @@
           if (currentKeyValue !== navigation["app"].join("/")) {
             var args = [];
             args.push(navigation["app"]);
-            
+
             for (var i = 0, len = navigation["app"].length; i < len; ++i) {
               //i is always valid index in the arguments object
               args.push(navigation["app"][i]);
@@ -222,7 +243,7 @@
         var modNav = navigation[this.moduleIdentifier].slice(1);
         moduleNavigation = $.extend(true, {}, navigation);
         moduleNavigation[this.moduleIdentifier] = navigation[this.moduleIdentifier].slice(this.activeModule.id.split("/").length - 1);
-        
+
         if (!this.activeModule.started) {
           return;
         }

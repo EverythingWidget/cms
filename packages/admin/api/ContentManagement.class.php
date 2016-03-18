@@ -94,9 +94,9 @@ class ContentManagement extends \ew\Module {
     include EW_PACKAGES_DIR . '/admin/html/content-management/link-chooser-document.php';
     $lcd = ob_get_clean();
 
-    /*ob_start();
-    include EW_PACKAGES_DIR . '/admin/html/content-management/link-chooser-document.php';
-    $link_chooser_media = ob_get_clean();*/
+    /* ob_start();
+      include EW_PACKAGES_DIR . '/admin/html/content-management/link-chooser-document.php';
+      $link_chooser_media = ob_get_clean(); */
 
     EWCore::register_form("ew/ui/components/link-chooser", "content-chooser", ["title"   => "Contents",
         "content" => $lcd]);
@@ -125,7 +125,7 @@ class ContentManagement extends \ew\Module {
         "api/ew_page_feeder_article",
         "html/article-form.php",
         "html/folder-form.php",
-        "html/album-form.php"]);
+        "html/media/album-form.php"]);
 
     $this->register_permission("manipulate-content", "User can add new, edit, delete contents", [
         'html/index.php',
@@ -134,8 +134,6 @@ class ContentManagement extends \ew\Module {
         "api/add_folder",
         "api/add_article",
         "api/add_album",
-        "html/upload-form.php",
-        "html/upload-audio-form.php",
         "api/update_content",
         "api/update_folder",
         "api/update_article",
@@ -151,7 +149,10 @@ class ContentManagement extends \ew\Module {
         "api/media_audios",
         "html/article-form.php:tr{New Article}",
         "html/folder-form.php:tr{New Folder}",
-        "html/album-form.php:tr{New Album}"]);
+        "html/media/album-form.php:tr{New Album}",
+        "html/media/upload-form.php",
+        "html/media/upload-audio-form.php",
+    ]);
   }
 
   private function get_node_link($node) {

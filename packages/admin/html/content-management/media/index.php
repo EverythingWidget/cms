@@ -3,7 +3,7 @@
     <li class="active">
       <a href="#media-photos" data-toggle="tab">Photos</a>
     </li>
-    
+
     <li>
       <a href="#media-audios" data-toggle="tab">Audios</a>
     </li>
@@ -30,7 +30,7 @@
       </div>
     </system-ui-view>
   </div> 
-  
+
   <div id="media-audios" class="tab-pane" ></div>
 </div>
 
@@ -41,6 +41,7 @@
 
     function MediaComponent(module) {
       var _this = this;
+      _this.states = {};
       _this.module = module;
       _this.module.type = "app-section";
 
@@ -52,6 +53,50 @@
         _this.start();
       };
     }
+
+    MediaComponent.prototype.defineStateHandlers = function (states) {
+      var _this = this;
+      states.album = function (e, id, images) {
+        if (id > 0) {
+          _this.newAlbumActivity.hide();
+          _this.uploadFileActivity.show();
+          _this.uploadAudioActivity.show();
+          _this.bBack.comeIn();
+        } else {
+          _this.newAlbumActivity.show();
+          _this.uploadFileActivity.hide();
+          _this.uploadAudioActivity.hide();
+          _this.bBack.comeOut();
+        }
+
+        if (!id) {
+          id = 0;
+        }
+
+        if (images) {
+          if (id !== null && _this.albumId !== id) {
+            _this.albumId = parseInt(id);
+            if (_this.listInited) {
+              _this.module.setParam("select", null, true);
+            }
+
+            _this.listMedia();
+          }
+        }
+      };
+
+      states.select = function (nav, itemId) {
+        if (itemId > 0) {
+          _this.selectedItemId = itemId;
+          //_this.seeAction.comeIn();
+
+          _this.currentItem.removeClass("selected");
+          $("div[data-item-id='" + _this.selectedItemId + "']:not(:focus)").focus();
+        } else {
+          //_this.seeAction.comeOut();
+        }
+      };
+    };
 
     MediaComponent.prototype.init = function (templates) {
       var _this = this;
@@ -121,54 +166,11 @@
         parent: this.albumCardTitleAction
       });
 
-
-
       this.seeAlbumActivity = EW.getActivity({
-        activity: "admin/html/content-management/album-form.php",
+        activity: "admin/html/content-management/media/album-form.php",
         parent: "action-bar-items",
         modal: {
           class: "center properties"
-        }
-      });
-
-      this.module.on("album", function (e, id, images) {
-        if (id > 0) {
-          _this.newAlbumActivity.hide();
-          _this.uploadFileActivity.show();
-          _this.uploadAudioActivity.show();
-          _this.bBack.comeIn();
-        } else {
-          _this.newAlbumActivity.show();
-          _this.uploadFileActivity.hide();
-          _this.uploadAudioActivity.hide();
-          _this.bBack.comeOut();
-        }
-
-        if (!id) {
-          id = 0;
-        }
-
-        if (images) {
-          if (id !== null && _this.albumId !== id) {
-            _this.albumId = parseInt(id);
-            if (_this.listInited) {
-              _this.module.setParam("select", null, true);
-            }
-
-            _this.listMedia();
-          }
-        }
-      });
-
-      this.module.on("select", function (nav, itemId) {
-        if (itemId > 0) {
-          _this.selectedItemId = itemId;
-          //_this.seeAction.comeIn();
-
-          _this.currentItem.removeClass("selected");
-          $("div[data-item-id='" + _this.selectedItemId + "']").focus();
-        } else {
-          //_this.seeAction.comeOut();
         }
       });
 
@@ -176,6 +178,9 @@
       System.UI.components.document.on("media-list.refresh", function (e, eventData) {
         _this.listMedia();
       });
+
+      this.defineStateHandlers(this.states);
+      System.Util.installModuleStateHandlers(this.module, this.states);
     };
 
     MediaComponent.prototype.start = function () {
@@ -188,13 +193,17 @@
 
       this.newAlbumActivity = EW.addActivity({
         title: "tr{New Album}",
-        activity: "admin/html/content-management/album-form.php",
-        parent: System.UI.components.mainFloatMenu
+        activity: "admin/html/content-management/media/album-form.php",
+        parent: System.UI.components.mainFloatMenu,
+        hash: function (params) {
+          params.albumId = null;
+          return params;
+        }
       });
 
       this.uploadFileActivity = EW.addActivity({
         title: "tr{Upload Photo}",
-        activity: "admin/html/content-management/upload-form.php",
+        activity: "admin/html/content-management/media/upload-form.php",
         parent: System.UI.components.mainFloatMenu,
         hash: function () {
           return {
@@ -208,7 +217,7 @@
 
       this.uploadAudioActivity = EW.addActivity({
         title: "tr{Upload Audio}",
-        activity: "admin/html/content-management/upload-audio-form.php",
+        activity: "admin/html/content-management/media/upload-audio-form.php",
         parent: System.UI.components.mainFloatMenu,
         hash: function () {
           return {

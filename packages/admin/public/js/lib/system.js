@@ -379,9 +379,13 @@
       this.app.id = "system";
       this.app.installModules = mods;
       this.app.init({}, {}, "");
-    }/*,
-     getDomain: function () {
-     return new System.Domain();
-     }*/
+    },
+    Util: {
+      installModuleStateHandlers: function (module, states) {
+        for (var state in states) {
+          module.on(state, states[state]);
+        }
+      }
+    }
   };
 }());
