@@ -1564,54 +1564,57 @@ EWTable.prototype.listRows = function () {
 };
 // read the table data from given url
 EWTable.prototype.read = function (customURLData) {
-  var self = this;
+  var _this = this;
   var lock = System.UI.lock({
-    element: self.tableBodyDiv[0],
+    element: _this.tableBodyDiv[0],
     akcent: "loader top"
   },
           .3);
 
-  var urlData = $.extend(self.urlData, {
-    token: self.token,
-    size: self.pageSize
+  var urlData = $.extend(_this.urlData, {
+    token: _this.token,
+    size: _this.pageSize
   },
           customURLData);
 
   setTimeout(function () {
     $.ajax({
-      type: self.method || "GET",
-      url: self.url,
+      type: _this.method || "GET",
+      url: _this.url,
       data: urlData,
       dataType: "json",
       success: function (data) {
-        var tillRow = (self.token + self.pageSize);
-        if (self.token + self.pageSize > data.totalRows) {
-          self.next.css('visibility', 'hidden');
+        var tillRow = (_this.token + _this.pageSize);
+        if (_this.token + _this.pageSize > data.totalRows) {
+          _this.next.css('visibility', 'hidden');
           tillRow = data.totalRows;
         } else {
-          self.next.css('visibility', 'visible');
+          _this.next.css('visibility', 'visible');
         }
-        if (self.token <= 0) {
-          self.previous.css('visibility', 'hidden');
+        if (_this.token <= 0) {
+          _this.previous.css('visibility', 'hidden');
         } else {
-          self.previous.css('visibility', 'visible');
+          _this.previous.css('visibility', 'visible');
         }
-        self.data = data;
-        self.table.css({
+        _this.data = data;
+        if(data.data) {
+          _this.data.result = data.data;
+        }
+        _this.table.css({
           marginTop: "-5%",
           opacity: 0,
           transformOrigin: "center top"
         });
 
-        self.listRows();
-        self.dynamicHeader = self.headers.clone();
-        self.dynamicHeader.addClass("dynamic-header");
+        _this.listRows();
+        _this.dynamicHeader = _this.headers.clone();
+        _this.dynamicHeader.addClass("dynamic-header");
         var th = $("<thead>");
-        th.append(self.dynamicHeader);
-        self.table.prepend(th);
-        self.pageInfo.text(self.token + "-" + tillRow + " of " + data.totalRows);
+        th.append(_this.dynamicHeader);
+        _this.table.prepend(th);
+        _this.pageInfo.text(_this.token + "-" + tillRow + " of " + data.totalRows);
         lock.dispose();
-        self.table.animate({
+        _this.table.animate({
           marginTop: "0px",
           opacity: 1
         },
@@ -1619,14 +1622,14 @@ EWTable.prototype.read = function (customURLData) {
       },
       error: function (o) {
         //console.log(o);
-        self.data = {
+        _this.data = {
           result: [
           ]
         };
-        self.table.empty();
-        self.next.css('visibility', 'hidden');
-        self.previous.css('visibility', 'hidden');
-        self.container.replaceWith("<div class='box box-error'><h2>" + o.responseJSON.statusCode + "</h2>" + o.responseJSON.message + "</div>");
+        _this.table.empty();
+        _this.next.css('visibility', 'hidden');
+        _this.previous.css('visibility', 'hidden');
+        _this.container.replaceWith("<div class='box box-error'><h2>" + o.responseJSON.statusCode + "</h2>" + o.responseJSON.message + "</div>");
         EW.customAjaxErrorHandler = true;
       }
     });

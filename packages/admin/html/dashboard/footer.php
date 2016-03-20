@@ -32,6 +32,7 @@
           EW.hoverApp = app.id;
 
           System.UI.components.sectionsMenuList[0].setAttribute("data", EW.currentAppSections);
+
           app.start();
         }
 
@@ -56,8 +57,8 @@
       },
       load_section: function (sectionId) {
         var element = System.UI.components.sectionsMenuList[0].links[EW.oldApp + "/" + sectionId];
-
-        System.UI.components.sectionsMenuList[0].value = element.dataset.index;
+        System.ui.behaviors.highlightAppSection(element.dataset.index, element);
+        //System.UI.components.sectionsMenuList[0].value = element.dataset.index;
 
         if (element) {
           var sectionData = System.UI.components.sectionsMenuList[0].data[element.dataset.index];
@@ -181,8 +182,7 @@
 
         this.animate({
           className: orgClass
-        },
-                dur || 300, "Power2.easeInOut");
+        }, dur || 300, "Power2.easeInOut");
       }
 
       return this;
@@ -378,8 +378,12 @@
     // Plugins which initilize when document is ready
     //var EW = null;
     $(document).ready(function () {
-      System.UI.body = $("body")[0];
-      System.UI.components = {
+      var mouseInNavMenu = false,
+              enterOnLink = false,
+              currentSectionIndex = null;
+
+      System.ui.body = $("body")[0];
+      System.ui.components = {
         homeButton: $("#apps"),
         appTitle: $("#app-title"),
         appBar: $("#app-bar"),
@@ -396,12 +400,16 @@
         mainFloatMenu: $("#main-float-menu")
       };
 
+      System.ui.behaviors.highlightAppSection = function (index, section) {
+        currentSectionIndex = index;
 
+        if (EW.selectedSection) {
+          UIUtility.removeClass(EW.selectedSection, "selected");
+        }
 
-      var mouseInNavMenu = false,
-              enterOnLink = false,
-              currentSectionIndex = null;
-
+        EW.selectedSection = section;
+        UIUtility.addClass(EW.selectedSection, "selected");
+      };
 
       System.UI.components.sectionsMenuList[0].onSetData = function (data) {
         if (data.length) {
@@ -426,18 +434,12 @@
       };
 
       System.UI.components.sectionsMenuList[0].addEventListener('item-selected', function (e) {
-        currentSectionIndex = e.detail.index;
-
-        if (EW.selectedSection) {
-          UIUtility.removeClass(EW.selectedSection, "selected");
-        }
-
-        EW.selectedSection = e.detail.element;
-        UIUtility.addClass(EW.selectedSection, "selected");
+        console.log(e.detail)
+        System.ui.behaviors.highlightAppSection(e.detail.index, e.detail.element);
+        alert(e.detail.data.id + ' sss')
         System.setHashParameters({
           app: e.detail.data.id
-        },
-                true);
+        }, true);
       });
 
       System.UI.components.navigationMenu.on("mouseenter", function (e) {
@@ -463,12 +465,12 @@
       System.UI.components.appsMenu.on("mouseenter", "a", function (e) {
         EW.hoverApp = "system/" + e.target.dataset.app;
 
-        var sections = System.modules["system/" + e.target.dataset.app] ? System.modules["system/" + e.target.dataset.app].data.sections : [
-        ];
+        var sections = System.modules["system/" + e.target.dataset.app] ? System.modules["system/" + e.target.dataset.app].data.sections : [];
         System.UI.components.sectionsMenuList[0].setAttribute("data", sections);
 
         if (EW.oldApp === e.target.dataset.app) {
-          System.UI.components.sectionsMenuList[0].value = currentSectionIndex;
+          //System.UI.components.sectionsMenuList[0].value = currentSectionIndex;
+          System.ui.behaviors.highlightAppSection(currentSectionIndex, System.UI.components.sectionsMenuList[0].links[currentSectionIndex]);
         }
 
         if (!mouseInNavMenu) {
@@ -495,7 +497,8 @@
           onComplete: function () {
             if (!states.loading_app && currentSectionIndex !== System.UI.components.sectionsMenuList[0].value) {
               System.UI.components.sectionsMenuList[0].setAttribute("data", EW.currentAppSections);
-              System.UI.components.sectionsMenuList[0].value = currentSectionIndex;
+              //System.UI.components.sectionsMenuList[0].value = currentSectionIndex;
+              System.ui.behaviors.highlightAppSection(currentSectionIndex, EW.selectedSection);
             }
           }
         });

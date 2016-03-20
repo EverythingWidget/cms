@@ -119,6 +119,12 @@
     on: function (id, handler) {
       this.hashListeners[id] = handler;
     },
+    getParam: function (key) {
+      return this.domain.getHashParam(key);
+    },
+    getNav: function (key) {
+      return this.domain.getHashNav(key);
+    },
     setParam: function (param, value, replace) {
       var paramObject = {};
       paramObject[param] = value;
@@ -201,13 +207,13 @@
           }
         });
       } else if (!this.active) {
+        
         var navHandler = _this.hashListeners["app"];
 
         //if navHandler is null call sub module navHandler
         if (navHandler && navigation["app"]) {
-
-          var currentKeyValue = _this.navigation["app"] ? _this.navigation["app"].join("/") : [
-          ];
+console.log(this.id, navHandler,_this.navigation["app"],navigation["app"]);
+          var currentKeyValue = _this.navigation["app"] ? _this.navigation["app"].join("/") : [];
 
           if (currentKeyValue !== navigation["app"].join("/")) {
             var args = [];

@@ -120,7 +120,7 @@ class ContentManagement extends \ew\Module {
         "api/contents_folders",
         "api/contents_articles",
         "api/get_media_list",
-        "api/media_audios",
+        "api/media-audios",
         "api/ew_list_feeder_folder",
         "api/ew_page_feeder_article",
         "html/article-form.php",
@@ -146,7 +146,7 @@ class ContentManagement extends \ew\Module {
         "api/delete_image",
         "api/upload_file",
         "api/upload_audio",
-        "api/media_audios",
+        "api/media-audios",
         "html/article-form.php:tr{New Article}",
         "html/folder-form.php:tr{New Folder}",
         "html/media/album-form.php:tr{New Album}",
@@ -1011,12 +1011,16 @@ class ContentManagement extends \ew\Module {
     $root = EW_MEDIA_DIR;
     $new_width = 140;
 
-    $include = ["included" => []];
+    $include = [
+        "included" => []
+    ];
     // Folder
     $audios = ew_contents::where('type', 'audio')/* ->where('parent_id', $parent_id) */->orderBy('title')->get(['*',
-                \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")])->toArray();
-
-    return \ew\APIResourceHandler::to_api_response($audios);
+                \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);    
+    
+    return \ew\APIResourceHandler::to_api_response($audios->toArray(), [
+                'totalRows' => $audios->count()
+    ]);
   }
 
   public function get_media_list($parent_id, $token = null, $size = null) {

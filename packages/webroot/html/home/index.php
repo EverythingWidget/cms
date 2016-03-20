@@ -42,11 +42,8 @@ if (file_exists($template_php)) {
   $template_settings = $_REQUEST["_uis_template_settings"];
 
 
-  if (json_last_error() != JSON_ERROR_NONE) {
-    $template_settings = json_decode(stripslashes($_REQUEST["_uis_template_settings"]), true);
-  }
 
-  if (!isset($template_settings)) {
+  if (!isset($template_settings) || $template_settings === 'null') {
     $template_settings = '{}';
   }
 
@@ -54,13 +51,7 @@ if (file_exists($template_php)) {
   $TEMPLATE_SCRIPT = "";
   $template_script_dom = $template->get_template_script(json_decode($_REQUEST["_uis_template_settings"], true));
   if ($template_script_dom) {
-    //$DOM = new DOMDocument;
-    //$DOM->loadHTML($template->get_template_script($template_settings));
-    //$script_tasg = $DOM->getElementsByTagName("script");
-    // Retrive template main js script and create a script tag that are to be added to DOM
-    //$TEMPLATE_SCRIPT = '<script id="template-script">' . $script_tasg->item(0)->nodeValue . '</script>';
-    //$template_settings_json = json_encode($template_settings);    
-    $template_script_dom = preg_replace('/\{\$template_settings\}/', $template_settings, $template_script_dom);
+    $template_script_dom = preg_replace('/\'json\|\$template_settings\'/', $template_settings, $template_script_dom);
     $TEMPLATE_SCRIPT = '<script id="template-script">' . $template_script_dom . '</script>';
   }
 }
@@ -126,10 +117,10 @@ $HTML_CSS = webroot\WidgetsManagement::get_html_links_concatinated();
     <script src="https://code.jquery.com/jquery-2.1.4.min.js" defer></script>    
 
     <script id="widget-data">
-      (function () {
-        window.ew_widget_data = {};
+         (function () {
+           window.ew_widget_data = {};
 <?= $WIDGET_DATA; ?>
-      })();
+         })();
     </script>
     <?= $HTML_SCRIPTS; ?>
     <?= $TEMPLATE_SCRIPT; ?>      

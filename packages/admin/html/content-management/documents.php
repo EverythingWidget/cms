@@ -18,9 +18,8 @@
   </div>
 </system-ui-view>
 
-<script>
+<script data-name="documents">
   (function (System) {
-
     function DocumentsComponent(module) {
       var component = this;
       this.module = module;
@@ -39,7 +38,7 @@
 
     DocumentsComponent.prototype.defineStateHandlers = function (states) {
       var component = this;
-      
+
       // you can use either states.<state> or states['<state>']
       states.article = function (full, id) {
         if (!id) {
@@ -84,6 +83,7 @@
     };
 
     DocumentsComponent.prototype.init = function (templates) {
+      var _this = this;
       this.foldersCard = $(templates["folders-card"]);
       this.foldersCardTitle = this.foldersCard.find(".card-header h1");
       this.foldersCardTitleActionRight = this.foldersCard.find(".card-title-action-right");
@@ -103,7 +103,7 @@
           class: "center properties"
         },
         onDone: function () {
-          EW.setHashParameters({
+          System.setHashParameters({
             folderId: null,
             articleId: null
           });
@@ -113,7 +113,7 @@
       this.seeArticleActivity = EW.getActivity({
         activity: "admin/html/content-management/article-form.php_see",
         onDone: function () {
-          EW.setHashParameters({
+          System.setHashParameters({
             folderId: null,
             articleId: null
           });
@@ -203,16 +203,14 @@
             EW.setHashParameters({
               folderId: null,
               articleId: eventData.data.id
-            },
-                    "document");
+            }, "document");
           }
 
           if (eventData.data.type === "folder") {
             EW.setHashParameters({
               folderId: eventData.data.id,
               articleId: null
-            },
-                    "document");
+            }, "document");
           }
         }
       });
@@ -249,15 +247,63 @@
       var _this = this,
               pId = 0,
               hasNode = false,
+              articlesLoaded = false,
+              foldersLoaded = false,
               article = System.getHashParam("article"),
               folder = System.getHashParam("folder");
       var loader = $("<div class='loader top'></div>");
       this.foldersCard.find(".card-content").append(loader);
 
+      var foldersElements = [];
       System.addActiveRequest($.get('~admin/api/content-management/contents-folders', {
         parent_id: _this.parentId
-      }, function (data) {
-        _this.foldersCardTitle.text(data.parent.title || "tr{Contents}");
+      }, function (response) {
+        _this.foldersCardTitle.text(response.parent.title || "tr{Contents}");
+        var temp = null;
+        $.each(response.data, function (index, element) {
+          pId = element.up_parent_id;
+          hasNode = true;
+          temp = _this.createFolderElement(element.title, element.round_date_created, element.id, element);
+          if (element.id == folder) {
+            temp.addClass("selected");
+            _this.currentItem = temp;
+          }
+          foldersElements.push(temp);
+        });
+
+        if (hasNode) {
+          _this.upParentId = pId;
+        }
+
+        foldersLoaded = true;
+        done();
+      }, "json"));
+
+
+      var articlesElements = [];
+      System.addActiveRequest($.get('~admin/api/content-management/contents-articles', {
+        parent_id: _this.parentId
+      }, function (response) {
+        var temp = null;
+        $.each(response.data, function (index, element) {
+          _this.upParentId = element.up_parent_id;
+          temp = _this.createArticleElement(element.title, element.round_date_created, element.id, element);
+          if (element.id == article) {
+            temp.addClass("selected");
+            _this.currentItem = temp;
+          }
+          articlesElements.push(temp);
+        });
+
+        articlesLoaded = true;
+        done();
+      }, "json"));
+
+      var done = function () {
+        if (!articlesLoaded || !foldersLoaded) {
+          return;
+        }
+
         var startPoint = (_this.currentItem && _this.currentItem[0]) ?
                 _this.currentItem[0].getBoundingClientRect() : _this.upAction[0].getBoundingClientRect();
 
@@ -270,76 +316,32 @@
           color: "#eee",
           onComplete: function () {
             _this.foldersList.empty();
-            $.each(data.data, function (index, element) {
-              pId = element.up_parent_id;
-              hasNode = true;
-              var temp = _this.createFolderElement(element.title, element.round_date_created, element.id, element);
-              //temp.addClass("anim-scale-in");
-              if (element.id == folder) {
-                temp.addClass("selected");
-                _this.currentItem = temp;
-              }
-              _this.foldersList.append(temp);
-              //temp.addClass("in");
-            });
-
-            if (hasNode) {
-              _this.upParentId = pId;
-            }
-            loader.remove();
             _this.articlesList.empty();
-            //var articleLoader = $("<div class='loader center'></div>");
-            //$("#articles-list").append(articleLoader);
-            //$("#articles-list").html("<div class='box-content anim-fade-in'></div>");
-            System.addActiveRequest($.get('~admin/api/content-management/contents-articles', {
-              parent_id: _this.parentId
-            }, function (response) {
-
-              //var articlesPane = $("#articles-list");
-              $.each(response.data, function (index, element) {
-                pId = element.up_parent_id;
-                hasNode = true;
-                var temp = _this.createArticleElement(element.title, element.round_date_created, element.id, element);
-                //temp.addClass("anim-scale-in");
-                if (element.id == article) {
-                  temp.addClass("selected");
-                  _this.currentItem = temp;
-                }
-                _this.articlesList.append(temp);
-                // setTimeout(function ()            {
-                //temp.addClass("in");
-                //}, 1);
-
-              });
-
-              if (hasNode) {
-                _this.upParentId = pId;
-              }
-              //$("#articles-list").find(".box-content").addClass("in");
-
-
-              //lockArticles.dispose();
-            }, "json"));
+            _this.foldersList.append(foldersElements);
+            _this.articlesList.append(articlesElements);
+            loader.remove();
           }
         });
-        //$("#categories-list").find(".box-content").addClass("in");
-        //lockFolders.dispose();
-      }, "json"));
+      };
     };
 
     DocumentsComponent.prototype.focusOn = function (item) {
       if (this.currentItem) {
         this.currentItem.removeClass("selected");
       }
+
       item.addClass("selected");
       this.currentItem = item;
     };
 
     DocumentsComponent.prototype.createFolderElement = function (title, dateCreated, id, model) {
-      var self = this;
-      var div = $("<div tabindex='1' class='content-item folder' data-category-id='{id}'><span></span><p>{title}</p><p class='date'>{round_date_created}</p></div>").EW().createView(model);
+      var _this = this;
+      var divTemplate = System.ui.utility.populate("<div tabindex='1' class='content-item folder' data-category-id='{{id}}'>" +
+              "<span></span><p>{{title}}</p><p class='date'>{{round_date_created}}</p></div>", model);
+
+      var div = $(divTemplate);
       div[0].addEventListener("dblclick", function () {
-        self.module.setParam("dir", id + "/list");
+        _this.module.setParam("dir", id + "/list");
       });
 
       div[0].addEventListener('focus', function () {
@@ -347,16 +349,21 @@
           article: null,
           folder: id
         });
-        self.focusOn(div);
+        _this.focusOn(div);
       });
 
-      div.data("label", title);
+      div.attr('data-label', title);
+
       return div;
     };
 
     DocumentsComponent.prototype.createArticleElement = function (title, dateCreated, id, model) {
       var self = this;
-      var div = $("<div tabindex='1' class='content-item article' data-article-id='{id}'><span></span><p>{title}</p><p class='date'>{round_date_created}</p></div>").EW().createView(model);
+      var divTemplate = System.ui.utility.populate("<div tabindex='1' class='content-item article' data-article-id='{{id}}'>" +
+              "<span></span><p>{{title}}</p><p class='date'>{{round_date_created}}</p></div>", model);
+
+      var div = $(divTemplate);
+
       div[0].addEventListener("dblclick", function () {
         self.seeArticleActivity({
           articleId: id
@@ -370,7 +377,9 @@
         });
         self.focusOn(div);
       });
-      div.data("label", title);
+
+      div.attr('data-label', title);
+
       return div;
     };
 

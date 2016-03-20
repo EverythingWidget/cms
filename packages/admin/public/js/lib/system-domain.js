@@ -1,6 +1,6 @@
 (function (System) {
   function Domain() {
-    this.UI ={};
+    this.UI = {};
     this.app = null;
     this.domainHashString = "";
     this.moduleIdentifier = "app";
@@ -149,13 +149,12 @@
   };
 
   Domain.prototype.getHashNav = function (key, hashName) {
-    return this.app.navigation[key] || [
-    ];
+    return this.app.navigation[key] || [];
   };
 
   Domain.prototype.module = function (id, object) {
     return this.app.module(id, object, false, this);
   };
-    
+
   System.Domain = Domain;
 })(System);

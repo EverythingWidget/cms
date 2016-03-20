@@ -1,5 +1,5 @@
 (function (system, tween) {
-  system.UI = new SystemUI();
+  system.UI = system.ui = new SystemUI();
 
 
 
@@ -29,9 +29,21 @@
     this.elements = {};
     this.containers = {};
     this.templates = {};
+    this.behaviors = {};
   }
 
-  SystemUI.prototype.util = {};
+  SystemUI.prototype.util = SystemUI.prototype.utility = {
+    viewRegex: /\{\{([^\{\}]*)\}\}/g,
+    // Simply replace {{key}} with its value in the template string and returns it
+    populate: function (template, data) {
+      template = template.replace(this.viewRegex, function (match, key) {
+        //eval make it possible to reach nested objects
+        return eval("data." + key) || "";
+      });
+      return template;
+    }
+  };
+
   SystemUI.prototype.util.addClass = function (el, className) {
     if (el.classList)
       el.classList.add(className);

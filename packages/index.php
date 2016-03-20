@@ -91,11 +91,6 @@ $resource_type = "html";
 $app_name = "webroot";
 
 if (strpos($elements[$parameter_index], '~') === 0) {
-  /* $app_resource_path = str_replace('~', '', $elements[$parameter_index]);
-    if (count($app_resource_path) === 1)
-    {
-    $app_resource_path[] = $default_recourse;
-    } */
   $app_name = str_replace('~', '', $elements[$parameter_index]);
   $parameter_index++;
 
@@ -104,18 +99,6 @@ if (strpos($elements[$parameter_index], '~') === 0) {
     $parameter_index++;
   }
 }
-
-
-
-//$resource_path = "$app_name-$default_recourse";
-//$_REQUEST["_app_name"] = $app_name;
-// Check the asset parameter
-/* if ($elements[$parameter_index] == 'asset')
-  {
-  $app_name = 'asset';
-  $_REQUEST["_app_name"] = $app_name;
-  $parameter_index++;
-  } */
 
 // Read the section name parameter
 $section_name = null;

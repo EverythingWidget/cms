@@ -20,11 +20,10 @@ echo admin\AppsManagement::create_section_main_form();
 ?>
 <script>
   (function (System) {
-
     System.module("content-management", function () {
       this.type = "app";
 
-      this.onInit = function (nav) {
+      this.bind('init', function (nav) {
         this.data.sections = [
           {
             title: "tr{Documents}",
@@ -39,19 +38,26 @@ echo admin\AppsManagement::create_section_main_form();
         ];
 
         this.installModulesOnInit(this.data.sections);
-      };
+      });
 
-      this.onStart = function () {
-      };
+      this.bind('start', function () {
+        alert('asa')
+        this.data.tab = null;
+      });
 
       this.on("app", function (p, section) {
         if (!section) {
-          System.UI.components.sectionsMenuList[0].value = '0';
+          alert('inja',+ section+p);
+          console.log(section,p)
+          //System.UI.components.sectionsMenuList[0].value = '0';
           return;
-        }
+        }               
+
+        if (this.data.tab === section)
+          return;
 
         this.data.tab = section;
-        System.services.app_service.load_section(section);
+        //System.services.app_service.load_section(section);
       });
 
       return this;

@@ -1,6 +1,6 @@
 (function () {
   window.addEventListener('load', function () {
-    var template_config = {$template_settings};
+    var template_config = 'json|$template_settings';
     
     var slider = $('.widget.slider');
     $(window).on('resize', function () {

@@ -1065,19 +1065,23 @@ class WidgetsManagement extends \ew\Module {
     $template_body = $layout["body_html"];
     $widget_data = $layout["widget_data"];
     $settings = json_decode($template_settings, true);
-    
+
     if (!$template) {
       $uis_info = WidgetsManagement::get_uis($uisId);
       $template = $uis_info["template"];
-      $template_settings = $uis_info["template_settings"];      
+      $template_settings = $uis_info["template_settings"];
+    }
+
+    if (!isset($template_settings)) {
+      $template_settings = '{}';
     }
 
     if (file_exists(EW_TEMPLATES_DIR . $template . '/template.php')) {
       require_once EW_TEMPLATES_DIR . $template . '/template.php';
-      $template = new \template();  
+      $template = new \template();
       $template_body = $template->get_template_body($template_body, $settings);
       $template_script = $template->get_template_script($settings);
-      $template_script = preg_replace('/\{\$template_settings\}/', $template_settings, $template_script);
+      $template_script = preg_replace('/\'json\|\$template_settings\'/', $template_settings, $template_script);
     }
 
     return [
