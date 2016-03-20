@@ -42,7 +42,7 @@
 
     function MediaComponent(module) {
       var _this = this;
-      _this.states = {};
+      this.states = {};
       _this.module = module;
       _this.module.type = "app-section";
 
@@ -57,34 +57,35 @@
 
     MediaComponent.prototype.defineStateHandlers = function (states) {
       var _this = this;
-      states.album = function (e, id, images) {
-        if (id > 0) {
-          _this.newAlbumActivity.hide();
-          _this.uploadFileActivity.show();
-          _this.uploadAudioActivity.show();
-          _this.bBack.comeIn();
-        } else {
-          _this.newAlbumActivity.show();
-          _this.uploadFileActivity.hide();
-          _this.uploadAudioActivity.hide();
-          _this.bBack.comeOut();
-        }
-
-        if (!id) {
-          id = 0;
-        }
-
-        if (images) {
-          if (id !== null && _this.albumId !== id) {
-            _this.albumId = parseInt(id);
-            if (_this.listInited) {
-              _this.module.setParam("select", null, true);
-            }
-
-            _this.listMedia();
-          }
-        }
-      };
+      /*states.album = function (e, id, images) {
+       console.log(e);
+       if (id > 0) {
+       _this.newAlbumActivity.hide();
+       _this.uploadFileActivity.show();
+       _this.uploadAudioActivity.show();
+       _this.bBack.comeIn();
+       } else {
+       _this.newAlbumActivity.show();
+       _this.uploadFileActivity.hide();
+       _this.uploadAudioActivity.hide();
+       _this.bBack.comeOut();
+       }
+       
+       if (!id) {
+       id = 0;
+       }
+       
+       if (images) {
+       if (id !== null && _this.albumId !== id) {
+       _this.albumId = parseInt(id);
+       if (_this.listInited) {
+       _this.module.setParam("select", null, true);
+       }
+       
+       _this.listMedia();
+       }
+       }
+       };*/
 
       states.select = function (nav, itemId) {
         if (itemId > 0) {
@@ -99,7 +100,10 @@
       };
 
       states.app = function (full, tab) {
-
+        _this.module.data.tab = tab;
+        if (tab === 'photos') {
+          _this.module.setParamIfNone("album", "0/images");
+        }
       };
     };
 
@@ -266,11 +270,18 @@
       this.albumCard[0].show();
       this.albumsList[0].show();
 
-      if (!System.getHashNav('app')[3])
-        component.module.setParamIfNone("album", "0/images");
+      component.module.data.tab = component.module.getNav('app')[2];
+      if (!component.module.data.tab) {
+        component.module.setParam('app', 'content-management/media/photos');
+        component.module.data.tab = 'photos';
+      }
 
       $('a[href="#media-audios"]').off('click').on('click', function () {
-        component.module.setParam('app', component.module.getParam('app') + '/audios');
+        component.module.setParam('app', 'content-management/media/audios');
+      });
+
+      $('a[href="#media-photos"]').off('click').on('click', function () {
+        component.module.setParam('app', 'content-management/media/photos');
       });
     };
 
@@ -444,8 +455,45 @@
       return div;
     };
 
+    var mediaComponent;
     System.module("content-management/media", function () {
-      new MediaComponent(this);
+      mediaComponent = new MediaComponent(this);
+    });
+
+    System.module("content-management/media/photos", function () {
+      var _this = this;
+      _this.started = true;
+
+      this.on('album', function (e, id, images) {
+        if (id > 0) {
+          mediaComponent.newAlbumActivity.hide();
+          mediaComponent.uploadFileActivity.show();
+          mediaComponent.uploadAudioActivity.show();
+          mediaComponent.bBack.comeIn();
+        } else {
+          mediaComponent.newAlbumActivity.show();
+          mediaComponent.uploadFileActivity.hide();
+          mediaComponent.uploadAudioActivity.hide();
+          mediaComponent.bBack.comeOut();
+        }
+
+        if (!id) {
+          id = 0;
+        }
+
+        if (images) {
+          if (id !== null && mediaComponent.albumId !== id) {
+            mediaComponent.albumId = parseInt(id);
+            if (mediaComponent.listInited) {
+              mediaComponent.module.setParam("select", null, true);
+            }
+
+            mediaComponent.listMedia();
+          }
+        }
+      });
+
+      this.on('select', mediaComponent.states.select);
     });
   }(System));
 </script>

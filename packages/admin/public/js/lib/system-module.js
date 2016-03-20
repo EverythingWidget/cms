@@ -30,18 +30,22 @@
       this.triggerEvent('start');
       var newNav = $.extend(true, {}, this.domain.app.navigation);
       var st = "system/" + this.domain.app.params[this.moduleIdentifier];
-      var napPath = st.indexOf(this.id) === 0 ? st.substr(this.id.length).split("/").filter(Boolean) : [
-      ];
+      var napPath = st.indexOf(this.id) === 0 ? st.substr(this.id.length).split("/").filter(Boolean) : [];
 
       newNav[this.moduleIdentifier] = napPath;
-      var n = newNav;
-      var p = this.domain.app.params;
+      var nav = newNav;
+      var params = this.domain.app.params;
       this.navigation = {};
       this.params = {};
       // Empty navigation and params before call the hashChanged method at the starting phase.
       // This will force the module to call all its event handlers
       //console.log("Module started: " + this.id, n, p);
-      this.hashChanged(n, p, this.hash, this.domain.getHashParam(this.moduleIdentifier));
+
+      // This code is commented because its bug prone
+      // hashChanged should be called only when the module params are inited with valid data
+      // in other word start should be called after hashChanged
+      this.hashChanged(nav, params, this.hash, this.domain.getHashNav(this.moduleIdentifier));
+      //console.log(this.id , )
 
       var index = this.domain.notYetStarted.indexOf(this.id);
       if (index > -1) {
@@ -91,8 +95,7 @@
       module.domain = domain;
       module.id = id;
 
-      modulePath = this.navigation[module.moduleIdentifier] ? this.navigation[module.moduleIdentifier] : [
-      ];
+      modulePath = this.navigation[module.moduleIdentifier] ? this.navigation[module.moduleIdentifier] : [];
       moduleNavigation = $.extend(true, {}, this.navigation);
       moduleNavigation[module.moduleIdentifier] = modulePath.slice(id.split("/").length - 1);
 
@@ -165,7 +168,7 @@
         this.onEvents[event].apply(this, args);
       }
     },
-    hashChanged: function (navigation, params, hashValue) {
+    hashChanged: function (navigation, params, hashValue, fullNav) {
       var _this = this;
       var moduleNavigation = navigation;
 
@@ -174,7 +177,7 @@
       //console.log(this.id, "system/" + fullNavPath, params, this.domain);
       if (this.id === "system/" + fullNavPath/* && System.app.activeModule !== this*/) {
         this.domain.app.activeModule = this;
-
+        this.domain.app.activeModule.active = true;
       } else {
         this.domain.app.activeModule = null;
         this.active = false;
@@ -183,12 +186,16 @@
       this.hashHandler.call(this, navigation, params);
       var allNavigations = $.extend({}, this.navigation, navigation);
 
+      var tempNav = _this.navigation;
+
+      _this.navigation = navigation;
+      _this.params = params;
       if (this.domain.app.activeModule && this.active && this.domain.app.activeModule.id === _this.id) {
         $.each(allNavigations, function (key, value) {
           var navHandler = _this.hashListeners[key];
           if (navHandler) {
-            if (_this.navigation[key]) {
-              var currentKeyValue = _this.navigation[key].join("/");
+            if (tempNav[key]) {
+              var currentKeyValue = tempNav[key].join("/");
 
               if (navigation[key] && currentKeyValue === navigation[key].join("/")) {
                 //console.log("Same, ignore: " + key/*, navigation[key], value.join("/")*/);
@@ -196,8 +203,7 @@
               }
             }
 
-            var args = [
-            ];
+            var args = [];
             args.push(navigation[key]);
             for (var i = 0; i < value.length; ++i) {
               //i is always valid index in the arguments object
@@ -207,13 +213,12 @@
           }
         });
       } else if (!this.active) {
-        
+
         var navHandler = _this.hashListeners["app"];
 
         //if navHandler is null call sub module navHandler
         if (navHandler && navigation["app"]) {
-console.log(this.id, navHandler,_this.navigation["app"],navigation["app"]);
-          var currentKeyValue = _this.navigation["app"] ? _this.navigation["app"].join("/") : [];
+          var currentKeyValue = tempNav["app"] ? tempNav["app"].join("/") : [];
 
           if (currentKeyValue !== navigation["app"].join("/")) {
             var args = [];
@@ -229,8 +234,7 @@ console.log(this.id, navHandler,_this.navigation["app"],navigation["app"]);
         }
       }
 
-      this.navigation = navigation;
-      this.params = params;
+
       //this.hash = hashValue;
 
       if (this.moduleIdentifier && navigation[this.moduleIdentifier] && navigation[this.moduleIdentifier][0])
@@ -246,16 +250,17 @@ console.log(this.id, navHandler,_this.navigation["app"],navigation["app"]);
       if (this.activeModule)
       {
         // Remove first part of navigation in order to force activeModule to only react to events at its level and higher 
-        var modNav = navigation[this.moduleIdentifier].slice(1);
+        //var modNav = navigation[this.moduleIdentifier].slice(1);
         moduleNavigation = $.extend(true, {}, navigation);
-        moduleNavigation[this.moduleIdentifier] = navigation[this.moduleIdentifier].slice(this.activeModule.id.split("/").length - 1);
+        moduleNavigation[this.moduleIdentifier] = fullNav.slice(this.activeModule.id.split("/").length - 1);
 
-        if (!this.activeModule.started) {
-          return;
-        }
+        /* Removed - cause a bug
+         * if (!this.activeModule.started) {
+         return;
+         }*/
 
         // Call module level events handlers
-        this.activeModule.hashChanged(moduleNavigation, this.params, hashValue, fullNavPath || navigation[this.moduleIdentifier].join("/"));
+        this.activeModule.hashChanged(moduleNavigation, this.params, hashValue, fullNav);
       }
     },
     hashHandler: function (nav, params) {

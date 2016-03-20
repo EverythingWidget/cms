@@ -41,15 +41,13 @@ echo admin\AppsManagement::create_section_main_form();
       });
 
       this.bind('start', function () {
-        alert('asa')
+        //alert('inja');
         this.data.tab = null;
       });
 
       this.on("app", function (p, section) {
-        if (!section) {
-          alert('inja',+ section+p);
-          console.log(section,p)
-          //System.UI.components.sectionsMenuList[0].value = '0';
+        if (!section) {                    
+          System.UI.components.sectionsMenuList[0].value = '0';
           return;
         }               
 
@@ -57,7 +55,7 @@ echo admin\AppsManagement::create_section_main_form();
           return;
 
         this.data.tab = section;
-        //System.services.app_service.load_section(section);
+        System.services.app_service.load_section(section);
       });
 
       return this;

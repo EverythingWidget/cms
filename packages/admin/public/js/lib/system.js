@@ -90,10 +90,10 @@
     navigation: {},
     params: {},
     start: function () {
-      var self = this;
+      var _this = this;
       var detect = function () {
         //console.log(self.app.oldHash, window.location.hash)
-        if (self.app.oldHash !== window.location.hash/* || self.app.newHandler*/) {
+        if (_this.app.oldHash !== window.location.hash/* || self.app.newHandler*/) {
           var hashValue = window.location.hash,
                   navigation = {},
                   params = {};
@@ -105,10 +105,10 @@
             params[k] = v;
           });
 
-          self.setModuleHashValue(navigation, params, hashValue);
-          self.app.hashChanged(navigation, params, hashValue); // System
+          _this.setModuleHashValue(navigation, params, hashValue);
+          _this.app.hashChanged(navigation, params, hashValue, navigation[_this.app.moduleIdentifier]); // System
 
-          self.app.oldHash = '#' + hashValue;
+          _this.app.oldHash = '#' + hashValue;
         }
       };
 

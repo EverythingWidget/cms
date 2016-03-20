@@ -104,13 +104,12 @@
               opacity: 0,
               ease: "Power2.easeInOut",
               top: "0"
-            },
-                    {
-                      top: "+=94px",
-                      opacity: 1,
-                      onComplete: function () {
-                      }
-                    });
+            }, {
+              top: "+=94px",
+              opacity: 1,
+              onComplete: function () {
+              }
+            });
           });
         }
       }
@@ -125,36 +124,35 @@
 
       $.get('~admin/api/EWCore/read_apps_sections', {
         appDir: "admin"
-      },
-              function (data) {
+      }, function (data) {
 
-                var items = [
-                  '<ul class="apps-menu-list">'
-                ];
-                $.each(data, function (key, val) {
+        var items = [
+          '<ul class="apps-menu-list">'
+        ];
+        $.each(data, function (key, val) {
 
-                  items.push('<li class=""><a class="apps-menu-link" data-app="'
-                          + val['id'] + '"><span class="">'
-                          + val['title'] + '</span></a></li>');
-                  val.file = "index.php";
-                  val.id = val['id'];
-                  _this.apps[val['id']] = val;
+          items.push('<li class=""><a class="apps-menu-link" data-app="'
+                  + val['id'] + '"><span class="">'
+                  + val['title'] + '</span></a></li>');
+          val.file = "index.php";
+          val.id = val['id'];
+          _this.apps[val['id']] = val;
 
-                });
+        });
 
-                items.push('</ul>');
+        items.push('</ul>');
 
-                $(items.join('')).appendTo("#apps-menu");
+        $(items.join('')).appendTo("#apps-menu");
 
-                System.start();
+        System.start();
 
-                $.each(_this.apps, function (e, v) {
-                  if (v.id !== EW.oldApp) {
-                    System.loadModule(v, function () {
-                    });
-                  }
-                });
-              }, "json");
+        $.each(_this.apps, function (e, v) {
+          if (v.id !== EW.oldApp) {
+            System.loadModule(v, function () {
+            });
+          }
+        });
+      }, "json");
     };
 
     $.fn.textWidth = function () {
@@ -237,14 +235,13 @@
               callback: settings.callbackName,
               data: $element.val(),
               contentType: $element.data("content-type") || "all"
-            },
-                    function (data) {
-                      var functionRefrence = $("<div style='display:none;' id='function-reference'></div>");
-                      functionRefrence.data("callback", settings.callback);
-                      e = $(data);
-                      e.append(functionRefrence);
-                      linkChooserDialog.html(e);
-                    });
+            }, function (data) {
+              var functionRefrence = $("<div style='display:none;' id='function-reference'></div>");
+              functionRefrence.data("callback", settings.callback);
+              e = $(data);
+              e.append(functionRefrence);
+              linkChooserDialog.html(e);
+            });
           }
         });
       }
@@ -327,16 +324,15 @@
           imageChooserDialog.append("<div class='form-content grid no-footer'></div>");
           $.post("~admin/html/content-management/link-chooser-media.php", {
             callback: settings.callbackName
-          },
-                  function (data) {
-                    imageChooserDialog.find(".form-content:first").append(data);
-                    imageChooserDialog.prepend("<div class='header-pane row'><h1 class='form-title'>Media</h1></div>");
+          }, function (data) {
+            imageChooserDialog.find(".form-content:first").append(data);
+            imageChooserDialog.prepend("<div class='header-pane row'><h1 class='form-title'>Media</h1></div>");
 
-                    imageChooserDialog[0].selectMedia = function (image) {
-                      $element.val(image.src).change();
-                      imageChooserDialog.dispose();
-                    };
-                  });
+            imageChooserDialog[0].selectMedia = function (image) {
+              $element.val(image.src).change();
+              imageChooserDialog.dispose();
+            };
+          });
 
           imageChooserDialog.open();
         });
@@ -434,9 +430,9 @@
       };
 
       System.UI.components.sectionsMenuList[0].addEventListener('item-selected', function (e) {
-        console.log(e.detail)
+        //console.log(e.detail)
         System.ui.behaviors.highlightAppSection(e.detail.index, e.detail.element);
-        alert(e.detail.data.id + ' sss')
+        //alert(e.detail.data.id + ' sss')
         System.setHashParameters({
           app: e.detail.data.id
         }, true);
