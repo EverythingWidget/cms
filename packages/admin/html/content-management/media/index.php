@@ -126,7 +126,7 @@
         }
       });
 
-      this.audiosList[0].show();
+
       this.audiosList.html(this.audiosListTable.container);
       this.audiosListTable.read();
     };
@@ -269,12 +269,16 @@
 
       this.albumCard[0].show();
       this.albumsList[0].show();
+      this.audiosList[0].show();
 
-      component.module.data.tab = component.module.getNav('app')[2];
+      component.module.data.tab = component.module.data.tab || component.module.getNav('app')[2];
       if (!component.module.data.tab) {
         component.module.setParam('app', 'content-management/media/photos');
         component.module.data.tab = 'photos';
+      } else {
+        component.module.setParam('app', 'content-management/media/' + component.module.data.tab);
       }
+
 
       $('a[href="#media-audios"]').off('click').on('click', function () {
         component.module.setParam('app', 'content-management/media/audios');
