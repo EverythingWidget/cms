@@ -407,6 +407,10 @@
         UIUtility.addClass(EW.selectedSection, "selected");
       };
 
+      System.ui.behaviors.selectTab = function (tabHref, tabsContainer) {
+        tabsContainer.find('a[href="' + tabHref + '"]').tab('show');
+      };
+
       System.UI.components.sectionsMenuList[0].onSetData = function (data) {
         if (data.length) {
           if (mouseInNavMenu) {
