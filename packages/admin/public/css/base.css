@@ -342,6 +342,10 @@ root {
     height: 100%;
     border-radius: 0;
   }
+
+  .card {
+    border-radius: 0;
+  }
 }
 
 @media (min-width: 992px) {
@@ -421,6 +425,10 @@ root {
   .apps-menu {
     /*width: 94px;*/
   }
+
+  .card {
+    border-radius: 6px;
+  }
 }
 
 @media (min-width: 1360px) {
@@ -499,6 +507,13 @@ root {
 
 .icon-back ,.icon-back:active{
   background-image: url('images/back-arrow-black.png');
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 24px;
+}
+
+.icon-edit ,.icon-edit:active{
+  background-image: url('images/edit-icon.png');
   background-repeat: no-repeat;
   background-position: center center;
   background-size: 24px;
@@ -1342,7 +1357,6 @@ h2.actions-bar span {
   background-color: #fefefe;
   margin: 15px auto;
   padding: 0;
-  border-radius: 6px;
   overflow: hidden;
   position: relative;
   z-index: 1;
@@ -1378,8 +1392,13 @@ h2.actions-bar span {
   float: right;
 }
 
+.card-title-action-right > .btn {
+  margin-left: 5px;
+}
+
 .card-header .btn {
   float: left;
+  /* margin-left: 10px; */
 }
 
 .card-action-bar {
@@ -2744,6 +2763,14 @@ table.contents td {
   display: block;
 }
 
+.content-item.image .btn-circle {
+  opacity: .3;
+}
+
+.content-item.image:hover .btn-circle {
+  opacity: 1;
+}
+
 .content-item:last-child {
   /* margin-right: 0; */
 }
@@ -3237,12 +3264,13 @@ a.link.active,.active > a.link {
 }
 
 .options-panel > .btn {
-  margin: 5px;
-  padding: 0 8px;
+  margin: 2px;
+  padding: 10px 8px;
   float: left;
   letter-spacing: 1px;
-  border-radius: 12px;
+  border-radius: 0px;
   font-weight: 500;
+  /* box-shadow: none; */
 }
 
 li h3.icon-header {
@@ -3268,6 +3296,7 @@ li h3.icon-header {
 .nav-black-text > li > a{
   color: #777;
   font-weight: 400;
+  line-height: 24px;
 }
 
 .nav-black-text > li.active > a {
@@ -3275,9 +3304,15 @@ li h3.icon-header {
   border-color: #1B2433;
 }
 
-.nav-black-text > li > a:hover, .nav-black-text > li.active > a:hover , .nav-black-text > li.active > a:focus {
+.nav-black-text > li > a:hover,.nav-black-text > li > a:focus {
   background-color: rgba(0,0,0,.06);
-  border-color: #1B2433;
+  color: inherit;
+  outline: none;
+}
+
+.nav-black-text > li.active > a:hover , .nav-black-text > li.active > a:focus {
+  background-color: rgba(0,0,0,.06);
+  border-color: #1B2433; 
   color: inherit;
 }
 

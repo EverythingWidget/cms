@@ -7,17 +7,22 @@ $default_page = json_decode(webroot\WidgetsManagement::get_path_uis("@DEFAULT"),
 //header('Content-Type: text/html');
 //print_r($path_uis_list);
 ?>
-<div class="tab-pane-xs tab-pane-sm header-pane tabs-bar">
+<div class="tabs-bar block-row">
   <ul class="nav nav-pills nav-black-text">
-    <li class="active"><a href="#uis_list" data-toggle="tab">All Layouts</a></li>
-    <li><a href="#pages-uis" data-toggle="tab">Contents Layouts</a></li>
+    <li class="active">
+      <a href="#uis_list" data-toggle="tab">All Layouts</a>
+    </li>
+
+    <li>
+      <a href="#pages-uis" data-toggle="tab">Contents Layouts</a>
+    </li>
   </ul>
 </div>
 <div class="no-footer tab-content">
-  <div id="uis_list" class="tab-pane active col-lg-5 col-md-6 col-sm-12 col-xs-12 static-block">
+  <div id="uis_list" class="tab-pane active static-block col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 col-sm-12 col-sm-offset-0 col-xs-12">
 
   </div> 
-  <div class="tab-pane col-lg-7 col-md-6 col-sm-12 col-xs-12" id="pages-uis">
+  <div class="tab-pane col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 col-sm-12 col-sm-offset-0 col-xs-12" id="pages-uis">
     <form id="apps-page-uis" onsubmit="return false;">         
       <div class="box box-white z-index-1">
         <div class="col-xs-12">
@@ -46,10 +51,8 @@ $default_page = json_decode(webroot\WidgetsManagement::get_path_uis("@DEFAULT"),
           $widgets_types_list = webroot\WidgetsManagement::get_widget_feeders("page");
           $pages = $widgets_types_list["data"];
           //Show list of pages and their layouts
-          if (isset($pages))
-          {
-            foreach ($pages as $page)
-            {
+          if (isset($pages)) {
+            foreach ($pages as $page) {
               $uis = json_decode(webroot\WidgetsManagement::get_path_uis("{$page->url}"), true);
               echo '<div class="row"><div class="col-xs-12 mar-bot">';
               echo "<input type='hidden'  name='{$page->url}_uisId' id='{$page->url}_uisId' value='{$uis["id"]}'>";
@@ -64,8 +67,7 @@ $default_page = json_decode(webroot\WidgetsManagement::get_path_uis("@DEFAULT"),
   </div>
 </div>
 <script  type="text/javascript">
-  function PageUIS()
-  {
+  function PageUIS() {
     var self = this;
     //this.bSelect = EW.addAction("Save Changes", $.proxy(this.save, this));
     $(".app-page-uis:not(.inited)").EW().inputButton({
@@ -98,13 +100,13 @@ $default_page = json_decode(webroot\WidgetsManagement::get_path_uis("@DEFAULT"),
           $.post("<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/set-uis", {
             path: row.data("field-path")
           },
-            function (data) {
-              $("input[name='" + row.data("field-path") + "']").val("").change();
-              $("body").EW().notify(data).show();
-              self.allUISList.removeRow(id);
-              row._messageRow.remove();
-              //$(document).trigger("all-uis-list.refresh");
-            }, "json");
+                  function (data) {
+                    $("input[name='" + row.data("field-path") + "']").val("").change();
+                    $("body").EW().notify(data).show();
+                    self.allUISList.removeRow(id);
+                    row._messageRow.remove();
+                    //$(document).trigger("all-uis-list.refresh");
+                  }, "json");
         });
         //uisList.deleteUIS(id);
       }
@@ -119,8 +121,7 @@ $default_page = json_decode(webroot\WidgetsManagement::get_path_uis("@DEFAULT"),
       pageUIS.allUISList.refresh();
     });
 <?php
-if ($path_uis_list)
-{
+if ($path_uis_list) {
   echo "EW.setFormData('#apps-page-uis', " . stripslashes($path_uis_list) . ");";
 }
 ?>
@@ -171,8 +172,7 @@ if ($path_uis_list)
     this.table.read();
   };
 
-  PageUIS.prototype.setHomePageUIS = function (uisId)
-  {
+  PageUIS.prototype.setHomePageUIS = function (uisId) {
     $("#homePageUisId").val(uisId.data("field-id"));
     $("#home-page-uis").text("Loading...");
     $("#home-page-uis").text(uisId.data("field-name"));
@@ -180,13 +180,12 @@ if ($path_uis_list)
       path: "@HOME_PAGE",
       uisId: uisId.data("field-id")
     },
-      function (data) {
-        $("body").EW().notify(data).show();
-      }, "json");
+            function (data) {
+              $("body").EW().notify(data).show();
+            }, "json");
   };
 
-  PageUIS.prototype.setUserHomePageUIS = function (uisId)
-  {
+  PageUIS.prototype.setUserHomePageUIS = function (uisId) {
     $("#homeUserPageUisId").val(uisId.data("field-id"));
     $("#user-home-page-uis").text("Loading...");
     $("#user-home-page-uis").text(uisId.data("field-name"));
@@ -194,13 +193,12 @@ if ($path_uis_list)
       path: "@USER_HOME_PAGE",
       uisId: uisId.data("field-id")
     },
-      function (data) {
-        $("body").EW().notify(data).show();
-      }, "json");
+            function (data) {
+              $("body").EW().notify(data).show();
+            }, "json");
   };
 
-  PageUIS.prototype.setDefaultUIS = function (uisId)
-  {
+  PageUIS.prototype.setDefaultUIS = function (uisId) {
     $("#defaultUisId").val(uisId.data("field-id"));
     $("#default-uis").text("Loading...");
     $("#default-uis").text(uisId.data("field-name"));
@@ -208,13 +206,12 @@ if ($path_uis_list)
       path: "@DEFAULT",
       uisId: uisId.data("field-id")
     },
-      function (data) {
-        $("body").EW().notify(data).show();
-      }, "json");
+            function (data) {
+              $("body").EW().notify(data).show();
+            }, "json");
   };
 
-  PageUIS.prototype.setPageUIS = function (uisId)
-  {
+  PageUIS.prototype.setPageUIS = function (uisId) {
     if (pageUIS.currentElement)
     {
       $("#apps-page-uis [name='" + pageUIS.currentElement.prop("name") + "_uisId']").val(uisId.data("field-id"));
@@ -224,11 +221,11 @@ if ($path_uis_list)
         path: pageUIS.currentElement.prop("name"),
         uisId: uisId.data("field-id")
       },
-        function (data) {
-          pageUIS.currentElement.val(uisName).change();
-          $(document).trigger("all-uis-list.refresh");
-          $("body").EW().notify(data).show();
-        }, "json");
+              function (data) {
+                pageUIS.currentElement.val(uisName).change();
+                $(document).trigger("all-uis-list.refresh");
+                $("body").EW().notify(data).show();
+              }, "json");
     }
   };
 

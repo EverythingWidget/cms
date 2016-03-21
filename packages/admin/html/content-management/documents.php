@@ -1,4 +1,4 @@
-<system-ui-view module="content-management/documents" name="folders-card" class="col-xs-12">
+<system-ui-view module="content-management/documents" name="folders-card" class="block-row">
   <div id="folders-card" class="card z-index-1 center-block col-lg-9 col-md-10 col-xs-12">
     <div  class='card-header'>
       <div class="card-title-action"></div>
@@ -23,6 +23,12 @@
     function DocumentsComponent(module) {
       var component = this;
       this.module = module;
+      this.states = {};
+      this.ui = {
+        components: {},
+        behaviors: {}
+      };
+      
       this.module.type = "app-section";
 
       this.module.bind('init', function (templates) {
@@ -32,8 +38,15 @@
       this.module.bind('start', function () {
         component.start();
       });
+      
+      this.ui.behaviors.selectItem = function (item) {
+        if (component.currentItem) {
+          component.currentItem.removeClass("selected");
+        }
 
-      this.states = {};
+        item.addClass("selected");
+        component.currentItem = item;
+      };
     }
 
     DocumentsComponent.prototype.defineStateHandlers = function (states) {
@@ -84,17 +97,17 @@
 
     DocumentsComponent.prototype.init = function (templates) {
       var _this = this;
-      this.foldersCard = $(templates["folders-card"]);
-      this.foldersCardTitle = this.foldersCard.find(".card-header h1");
-      this.foldersCardTitleActionRight = this.foldersCard.find(".card-title-action-right");
-      this.foldersList = this.foldersCard.find("#categories-list");
-      this.articlesList = this.foldersCard.find("#articles-list");
+      this.ui.components.folders_card = $(templates["folders-card"]);
+      this.ui.components.folders_card_title = this.ui.components.folders_card.find(".card-header h1");
+      this.ui.components.folders_card_title_action_right = this.ui.components.folders_card.find(".card-title-action-right");
+      this.ui.components.folders_list = this.ui.components.folders_card.find("#categories-list");
+      this.ui.components.articles_list = this.ui.components.folders_card.find("#articles-list");
 
       this.upAction = EW.addActionButton({
         text: "",
         class: "btn-text icon-back btn-circle",
         handler: $.proxy(this.preCategory, this),
-        parent: this.foldersCard.find(".card-title-action")
+        parent: this.ui.components.folders_card.find(".card-title-action")
       });
 
       this.seeFolderActivity = EW.getActivity({
@@ -125,7 +138,7 @@
           text: "tr{Properties}",
           class: "btn-text btn-default",
           handler: $.proxy(this.seeDetails, this),
-          parent: this.foldersCardTitleActionRight
+          parent: this.ui.components.folders_card_title_action_right
         }).hide();
       else
         this.bSee = $();
@@ -134,7 +147,7 @@
         title: "",
         defaultClass: "btn-text btn-circle icon-delete btn-danger",
         activity: "admin/api/content-management/delete-folder",
-        parent: this.foldersCardTitleActionRight,
+        parent: this.ui.components.folders_card_title_action_right,
         parameters: function () {
           if (!confirm("tr{Are you sure of deleting this folder?}")) {
             return false;
@@ -162,10 +175,10 @@
       this.upParentId = 0;
       this.currentItem = $();
 
-      this.foldersList.empty();
-      this.articlesList.empty();
+      this.ui.components.folders_list.empty();
+      this.ui.components.articles_list.empty();
 
-      this.foldersCard[0].show();
+      this.ui.components.folders_card[0].show();
 
       this.bNewFolder = EW.addActivity({
         title: "tr{New Folder}",
@@ -218,7 +231,7 @@
       this.bNewFile.comeIn();
       this.bNewFolder.comeIn();
 
-      this.module.setParamIfNone("dir", "0/list");
+      this.module.setParamIfNull("dir", "0/list");
     };
 
     DocumentsComponent.prototype.preCategory = function () {
@@ -229,7 +242,7 @@
     DocumentsComponent.prototype.seeDetails = function () {
       var tFolderId = System.getHashParam("folder");
       var tArticleId = System.getHashParam("article");
-      EW.activeElement = this.foldersCard.find(".card-header");
+      EW.activeElement = this.ui.components.folders_card.find(".card-header");
       if (this.parentId) {
         this.folderId = tFolderId;
         this.seeFolderActivity({
@@ -252,13 +265,13 @@
               article = System.getHashParam("article"),
               folder = System.getHashParam("folder");
       var loader = $("<div class='loader top'></div>");
-      this.foldersCard.find(".card-content").append(loader);
+      this.ui.components.folders_card.find(".card-content").append(loader);
 
       var foldersElements = [];
       System.addActiveRequest($.get('~admin/api/content-management/contents-folders', {
         parent_id: _this.parentId
       }, function (response) {
-        _this.foldersCardTitle.text(response.parent.title || "tr{Contents}");
+        _this.ui.components.folders_card_title.text(response.parent.title || "tr{Contents}");
         var temp = null;
         $.each(response.data, function (index, element) {
           pId = element.up_parent_id;
@@ -309,30 +322,22 @@
 
         System.UI.Animation.blastTo({
           fromPoint: startPoint,
-          to: _this.foldersCard[0],
-          area: _this.foldersCard.find(".card-content")[0],
+          to: _this.ui.components.folders_card[0],
+          area: _this.ui.components.folders_card.find(".card-content")[0],
           time: .5,
-          fade: .3,
+          fade: .4,
           color: "#eee",
           onComplete: function () {
-            _this.foldersList.empty();
-            _this.articlesList.empty();
-            _this.foldersList.append(foldersElements);
-            _this.articlesList.append(articlesElements);
+            _this.ui.components.folders_list.empty();
+            _this.ui.components.articles_list.empty();
+            _this.ui.components.folders_list.append(foldersElements);
+            _this.ui.components.articles_list.append(articlesElements);
             loader.remove();
           }
         });
       };
     };
 
-    DocumentsComponent.prototype.focusOn = function (item) {
-      if (this.currentItem) {
-        this.currentItem.removeClass("selected");
-      }
-
-      item.addClass("selected");
-      this.currentItem = item;
-    };
 
     DocumentsComponent.prototype.createFolderElement = function (title, dateCreated, id, model) {
       var _this = this;
@@ -349,7 +354,7 @@
           article: null,
           folder: id
         });
-        _this.focusOn(div);
+        _this.ui.behaviors.selectItem(div);
       });
 
       div.attr('data-label', title);
@@ -375,7 +380,7 @@
           folder: null,
           article: id
         });
-        self.focusOn(div);
+        self.ui.behaviors.selectItem(div);
       });
 
       div.attr('data-label', title);

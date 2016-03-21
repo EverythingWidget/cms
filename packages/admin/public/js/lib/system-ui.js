@@ -33,29 +33,56 @@
   }
 
   SystemUI.prototype.util = SystemUI.prototype.utility = {
-    viewRegex: /\{\{([^\{\}]*)\}\}/g,
-    // Simply replace {{key}} with its value in the template string and returns it
-    populate: function (template, data) {
-      template = template.replace(this.viewRegex, function (match, key) {
-        //eval make it possible to reach nested objects
-        return eval("data." + key) || "";
-      });
-      return template;
-    }
+    viewRegex: /\{\{([^\{\}]*)\}\}/g
   };
 
-  SystemUI.prototype.util.addClass = function (el, className) {
+  // Simply replace {{key}} with its value in the template string and returns it
+  SystemUI.prototype.utility.populate = function (template, data) {
+    template = template.replace(this.viewRegex, function (match, key) {
+      //eval make it possible to reach nested objects
+      return eval("data." + key) || "";
+    });
+    return template;
+  };
+
+  SystemUI.prototype.utility.addClass = function (el, className) {
     if (el.classList)
       el.classList.add(className);
     else
       el.className += ' ' + className;
   };
 
-  SystemUI.prototype.util.removeClass = function (el, className) {
+  SystemUI.prototype.utility.removeClass = function (el, className) {
     if (el.classList)
       el.classList.remove(className);
     else
       el.className = el.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
+  };
+
+  SystemUI.prototype.utility.toTreeObject = function (element) {
+    var jsTree = {
+      _: element,
+      _children: []
+    };
+    var indexIndicator = {};
+    for (var index in element.childNodes) {
+      var node = element.childNodes[index];
+
+      if (node.nodeType === Node.ELEMENT_NODE) {
+        var key = node.nodeName.toLowerCase();
+        if (indexIndicator[key]) {
+          indexIndicator[key]++;
+          jsTree[key + '_' + indexIndicator[key]] = UIUtility.toTreeObject(node);
+        } else {
+          indexIndicator[key] = 1;
+          jsTree[node.nodeName.toLowerCase()] = UIUtility.toTreeObject(node);
+        }
+
+        jsTree._children.push(node);
+      }
+    }
+
+    return jsTree;
   };
 
   SystemUI.prototype.clone = function (obj) {

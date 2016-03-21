@@ -143,7 +143,7 @@ class ContentManagement extends \ew\Module {
         "api/delete_folder",
         "api/delete_article",
         "api/delete_album",
-        "api/delete_image",
+        "api/delete-image",
         "api/upload_file",
         "api/upload_audio",
         "api/media-audios",
@@ -857,20 +857,28 @@ class ContentManagement extends \ew\Module {
     }
   }
 
+  private function delete_files($files = []) {
+    foreach ($files as $file) {
+      if (file_exists($file)) {
+        unlink($file);
+      }
+    }
+  }
+
   public function delete_image($id) {
     $pdo = \EWCore::get_db_PDO();
 
     $result = $pdo->prepare("SELECT * FROM ew_contents, ew_images WHERE ew_contents.id = ew_images.content_id AND ew_contents.id = ? LIMIT 1");
     $result->execute([$id]);
-    if ($file = $result->fetchAll(\PDO::FETCH_ASSOC)) {
-      $path_parts = pathinfo(EW_MEDIA_DIR . '/' . $file["source"]);
-      if (file_exists(EW_MEDIA_DIR . '/' . $path_parts["basename"])) {
-        unlink(EW_MEDIA_DIR . '/' . $path_parts["basename"]);
-        unlink(EW_MEDIA_DIR . '/' . $path_parts["filename"] . '.thumb.' . $path_parts["extension"]);
-      }
+    $file = $result->fetchAll(\PDO::FETCH_ASSOC);
+    if (isset($file[0])) {
+      $path_parts = pathinfo(EW_MEDIA_DIR . '/' . $file[0]["source"]);
+
+      $this->delete_files([
+          $path_parts['dirname'] . '/' . $path_parts["basename"],
+          $path_parts['dirname'] . '/' . $path_parts["filename"] . '.thumb.' . $path_parts["extension"]
+      ]);
     }
-
-
 
     $result = $pdo->prepare("DELETE FROM ew_contents WHERE type = 'image' AND id = ?");
     $result->execute([$id]);
@@ -1016,8 +1024,8 @@ class ContentManagement extends \ew\Module {
     ];
     // Folder
     $audios = ew_contents::where('type', 'audio')/* ->where('parent_id', $parent_id) */->orderBy('title')->get(['*',
-                \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);    
-    
+        \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
+
     return \ew\APIResourceHandler::to_api_response($audios->toArray(), [
                 'totalRows' => $audios->count()
     ]);

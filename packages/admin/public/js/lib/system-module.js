@@ -122,19 +122,26 @@
     on: function (id, handler) {
       this.hashListeners[id] = handler;
     },
-    getParam: function (key) {
-      return this.domain.getHashParam(key);
-    },
     getNav: function (key) {
       return this.domain.getHashNav(key);
+    },
+    getParam: function (key) {
+      return this.domain.getHashParam(key);
     },
     setParam: function (param, value, replace) {
       var paramObject = {};
       paramObject[param] = value;
       this.domain.setHashParameters(paramObject, replace);
     },
-    setParamIfNone: function (param, value) {
+    setParamIfNull: function (param, value) {
       if (!this.domain.getHashParam(param)) {
+        var paramObject = {};
+        paramObject[param] = value;
+        this.domain.setHashParameters(paramObject, true);
+      }
+    },
+    setParamIfNot: function (param, value) {
+      if (this.domain.getHashParam(param) !== value) {
         var paramObject = {};
         paramObject[param] = value;
         this.domain.setHashParameters(paramObject, true);

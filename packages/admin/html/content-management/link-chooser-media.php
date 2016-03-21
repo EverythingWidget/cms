@@ -195,7 +195,7 @@
       this.albumCard[0].show();
       this.albumsList[0].show();
 
-      _this.module.setParamIfNone("album", "0/images");
+      _this.module.setParamIfNull("album", "0/images");
     };
 
     MediaComponent.prototype.selectMedia = function (image) {
