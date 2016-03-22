@@ -38,10 +38,10 @@
 </div>
 
 <script>
-  (function component(System) {
+  (function (System) {
 
     function MediaComponent(module) {
-      var _this = this;
+      var component = this;
       this.states = {};
       this.tabs = {};
       this.ui = {
@@ -49,27 +49,27 @@
         behaviors: {}
       };
       this.ui.components.tabs_pills = $();
-      _this.module = module;
-      _this.module.type = "app-section";
+      component.module = module;
+      component.module.type = "app-section";
 
-      _this.module.onInit = function (templates) {
-        _this.init(templates);
+      component.module.onInit = function (templates) {
+        component.init(templates);
       };
 
-      _this.module.onStart = function () {
-        _this.start();
+      component.module.onStart = function () {
+        component.start();
       };
 
       this.ui.behaviors.highlightCurrentItem = function (element) {
-        if (_this.currentItem === element)
+        if (component.currentItem === element)
           return;
 
-        if (_this.currentItem) {
-          System.ui.utility.removeClass(_this.currentItem, "selected");
+        if (component.currentItem) {
+          System.ui.utility.removeClass(component.currentItem, "selected");
         }
 
-        _this.currentItem = element;
-        System.ui.utility.addClass(_this.currentItem, "selected");
+        component.currentItem = element;
+        System.ui.utility.addClass(component.currentItem, "selected");
       };
 
       this.defineTabs(this.tabs);
@@ -78,40 +78,40 @@
     }
 
     MediaComponent.prototype.defineTabs = function (tabs) {
-      var _this = this;
+      var component = this;
       tabs.photos = function () {
-        _this.module.setParamIfNot('app', 'content-management/media/photos');
-        System.ui.behaviors.selectTab('#media-photos', _this.ui.components.tabs_pills);
-        _this.module.setParamIfNull("album", "0/images");
+        component.module.setParamIfNot('app', 'content-management/media/photos');
+        System.ui.behaviors.selectTab('#media-photos', component.ui.components.tabs_pills);
+        component.module.setParamIfNull("album", "0/images");
       };
 
       tabs.audios = function () {
-        System.ui.behaviors.selectTab('#media-audios', _this.ui.components.tabs_pills);
+        System.ui.behaviors.selectTab('#media-audios', component.ui.components.tabs_pills);
       };
     };
 
     MediaComponent.prototype.defineStateHandlers = function (states) {
-      var _this = this;
+      var component = this;
 
       states.select = function (nav, itemId) {
         if (itemId > 0) {
-          _this.selectedItemId = itemId;
-          $("div[data-item-id='" + _this.selectedItemId + "']:not(:focus)").focus();
+          component.selectedItemId = itemId;
+          $("div[data-item-id='" + component.selectedItemId + "']:not(:focus)").focus();
         } else {
         }
       };
 
       states.app = function (full, tab) {
-        _this.module.data.tab = tab || _this.module.data.tab || 'photos';
+        component.module.data.tab = tab || component.module.data.tab || 'photos';
 
-        if (_this.module.data.oldTab === _this.module.data.tab) {
-          _this.module.setParamIfNot('app', 'content-management/media/' + _this.module.data.tab);
+        if (component.module.data.oldTab === component.module.data.tab) {
+          component.module.setParamIfNot('app', 'content-management/media/' + component.module.data.tab);
           return;
         }
 
-        if ('function' === typeof _this.tabs[_this.module.data.tab]) {
-          _this.tabs[_this.module.data.tab].call(_this);
-          _this.module.data.oldTab = _this.module.data.tab;
+        if ('function' === typeof component.tabs[component.module.data.tab]) {
+          component.tabs[component.module.data.tab].call(component);
+          component.module.data.oldTab = component.module.data.tab;
         }
       };
     };
@@ -139,7 +139,7 @@
     };
 
     MediaComponent.prototype.init = function (templates) {
-      var _this = this;
+      var component = this;
       this.albumId = null;
       this.albumCard = $(templates["album-card"]).hide();
       this.albumCardTitleAction = this.albumCard.find(".card-title-action");
@@ -151,7 +151,7 @@
       this.albumPropertiesBtn = EW.addActionButton({
         text: '',
         handler: function () {
-          _this.seeAlbumActivity({
+          component.seeAlbumActivity({
             albumId: System.getHashNav("album")[0]
           });
         },
@@ -170,7 +170,7 @@
           }
 
           return {
-            id: _this.albumId
+            id: component.albumId
           };
         },
         onDone: function (response) {
@@ -189,12 +189,12 @@
           }
 
           return {
-            'id': _this.selectedItemId
+            'id': component.selectedItemId
           };
         },
         onDone: function (response) {
           $("body").EW().notify(response).show();
-          _this.listMedia();
+          component.listMedia();
         }
       });
 
@@ -221,7 +221,7 @@
 
       System.UI.components.document.off("media-list");
       System.UI.components.document.on("media-list.refresh", function (e, eventData) {
-        _this.listMedia();
+        component.listMedia();
       });
     };
 
@@ -391,7 +391,7 @@
     };
 
     MediaComponent.prototype.createImageElement = function (title, type, ext, size, ImageURL, id) {
-      var _this = this,
+      var component = this,
               column = $(document.createElement("div")),
               div = $(document.createElement("div")),
               img = $(document.createElement("img"));
@@ -402,7 +402,7 @@
               .addClass(ext);
       div.attr("tabindex", "1");
       div.on("focus click", function () {
-        _this.ui.behaviors.highlightCurrentItem(div[0]);
+        component.ui.behaviors.highlightCurrentItem(div[0]);
       });
 
       if (ImageURL) {
@@ -421,15 +421,15 @@
 
       var divTree = UIUtility.toTreeObject(div[0]);
       divTree.button._.addEventListener('click', function () {
-        _this.selectedItemId = id;
-        _this.deleteImageActivity();
+        component.selectedItemId = id;
+        component.deleteImageActivity();
       });
 
       return div;
     };
 
     MediaComponent.prototype.createAlbumElement = function (title, type, ext, size, ImageURL, id) {
-      var _this = this,
+      var component = this,
               div = $(document.createElement("div")),
               img = $(document.createElement("img"));
 
@@ -438,11 +438,11 @@
               .addClass(ext);
       div.attr("tabindex", "1");
       div[0].addEventListener("focus", function (e) {
-        _this.ui.behaviors.highlightCurrentItem(div[0]);
+        component.ui.behaviors.highlightCurrentItem(div[0]);
       });
 
       div[0].addEventListener("click", function () {
-        _this.ui.behaviors.highlightCurrentItem(div[0]);
+        component.ui.behaviors.highlightCurrentItem(div[0]);
       });
 
       if (ImageURL) {
@@ -468,8 +468,8 @@
     });
 
     System.module("content-management/media/photos", function () {
-      var _this = this;
-      _this.started = true;
+      var module = this;
+      module.started = true;
 
       this.on('album', function (e, id, images) {
         if (id > 0) {
@@ -504,8 +504,8 @@
     });
 
     System.module("content-management/media/audios", function () {
-      var _this = this;
-      _this.started = true;
+      var module = this;
+      module.started = true;
     });
   }(System));
 </script>

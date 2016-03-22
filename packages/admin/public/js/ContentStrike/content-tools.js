@@ -10711,16 +10711,22 @@
         autoOpen: false,
         class: "center"
       });
-      imageChooserDialog.append("<div class='form-content grid tabs-bar no-footer'></div>");
+      //imageChooserDialog.append("<div class='form-content grid tabs-bar no-footer'></div>");
       $.post("~admin/html/content-management/link-chooser-media.php", {
         callback: ""
       }, function (data) {
-        imageChooserDialog.find(".form-content:first").append(data);
-        imageChooserDialog.prepend("<div class='header-pane tabs-bar row'><h1 class='form-title'>Media</h1></div>");
+        //imageChooserDialog.find(".form-content:first").append(data);
+        //imageChooserDialog.prepend("<div class='header-pane tabs-bar row'><h1 class='form-title'>Media</h1></div>");
+        imageChooserDialog.html(data);
         var ref = _this._insertAt(element), node = ref[0], index = ref[1];
         imageChooserDialog[0].selectMedia = function (image) {
           var image = new ContentEdit.Image(image);
-          node.parent().attach(image, index);
+          if (node.parent()) {
+            node.parent().attach(image, index);
+          } else {
+            var firstRegion = app.orderedRegions()[0];
+            firstRegion.attach(image, index);
+          }
           image.focus();
           imageChooserDialog.dispose();
         };
