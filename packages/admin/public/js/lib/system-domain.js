@@ -66,7 +66,7 @@
         });
 
         _this.setModuleHashValue(navigation, params, hashValue);
-        _this.app.hashChanged(navigation, params, hashValue); // System
+        _this.app.hashChanged(navigation, params, hashValue, navigation[_this.app.moduleIdentifier]); // System
 
         _this.app.oldHash = '#' + hashValue;
       }

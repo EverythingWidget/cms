@@ -22,7 +22,7 @@ class UsersManagement extends \ew\Module {
   }
 
   protected function install_permissions() {
-    $this->register_permission("see-users", "User can see users list", array(
+    $this->register_permission("see-users", "User can see users list", [
         "api/get",
         "api/users",
         "api/groups",
@@ -30,29 +30,29 @@ class UsersManagement extends \ew\Module {
         "api/get_user_by_email",
         "html/user-form.php-see",
         "api/logout",
-        'html/' . $this->get_index()));
+        'html/' . $this->get_index()]);
 
-    $this->register_permission("manipulate-users", "User can add, edit delete users", array(
+    $this->register_permission("manipulate-users", "User can add, edit delete users", [
         "api/add_user",
         "api/update_user",
         "api/delete_user",
         "html/user-form.php",
         "api/logout",
-        'html/' . $this->get_index()));
+        'html/' . $this->get_index()]);
 
-    $this->register_permission("see-groups", "User can see user groups list", array(
+    $this->register_permission("see-groups", "User can see user groups list", [
         "api/get_users_groups_list",
         "api/get_user_group_by_id",
         "api/get_users_group_by_type",
         "html/users-group-form.php",
-        'html/' . $this->get_index()));
+        'html/' . $this->get_index()]);
 
-    $this->register_permission("manipulate-groups", "User can add, edit delete user group", array(
+    $this->register_permission("manipulate-groups", "User can add, edit delete user group", [
         "api/add_group",
         "api/update_group",
         "api/delete_group",
         "html/users-group-form.php:tr{New Group}",
-        'html/' . $this->get_index()));
+        'html/' . $this->get_index()]);
     
     $this->register_public_access([
         "api/am-i-in"
@@ -150,17 +150,17 @@ class UsersManagement extends \ew\Module {
       try {
         foreach ($modules as $id => $data) {
           if (method_exists($data["class"], $data["function"])) {
-            $function_result = call_user_func(array(
+            $function_result = call_user_func([
                 $data["class"],
-                $data["function"]), $user_id);
+                $data["function"]], $user_id);
             if ($function_result != true) {
               $message.=$function_result . "<br/>";
             }
           }
         }
-        $resullt = array(
+        $resullt = [
             "status" => "success",
-            "error_message" => $message);
+            "error_message" => $message];
       }
       catch (Exception $e) {
         
@@ -258,14 +258,14 @@ class UsersManagement extends \ew\Module {
 //echo $size;
     $result = $db->query("SELECT ew_users.id,email, first_name, last_name,ew_users_groups.title, DATE_FORMAT(ew_users.date_created,'%Y-%m-%d') AS round_date_created FROM ew_users, ew_users_groups WHERE ew_users.group_id = ew_users_groups.id ORDER BY ew_users.id LIMIT $token $size") or die($db->error);
 
-    $rows = array();
+    $rows = [];
     while ($r = $result->fetch_assoc()) {
       $rows[] = $r;
     }
     $db->close();
-    $out = array(
+    $out = [
         "totalRows" => $totalRows['COUNT(*)'],
-        "result" => $rows);
+        "result" => $rows];
     return json_encode($out);
   }
 
@@ -285,14 +285,14 @@ class UsersManagement extends \ew\Module {
 
     $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_users_groups ORDER BY id LIMIT $token, $size") or die($db->error);
 
-    $rows = array();
+    $rows = [];
     while ($r = $result->fetch_assoc()) {
       $rows[] = $r;
     }
     
-    $out = array(
+    $out = [
         "totalRows" => $totalRows['COUNT(*)'],
-        "result" => $rows);
+        "result" => $rows];
     $db->close();
     
     return json_encode($out);
@@ -361,16 +361,16 @@ class UsersManagement extends \ew\Module {
 
         } */
 
-      return json_encode(array(
+      return json_encode([
           status => "success",
           title => $title,
           message => "Users group '$title' has been added successfully",
-          "id" => $db->insert_id));
+          "id" => $db->insert_id]);
     }
-    return json_encode(array(
+    return json_encode([
         status => "unsuccess",
         title => "Update Group Unsuccessfull",
-        message => "Users group has been NOT added"));
+        message => "Users group has been NOT added"]);
   }
 
   public function update_group($id = null, $title = null, $description = null, $permission = null) {
@@ -402,10 +402,10 @@ class UsersManagement extends \ew\Module {
 
         } */
 
-      return json_encode(array(
+      return json_encode([
           status => "success",
           title => $title,
-          message => "tr{Users group} '$title' tr{has been updated successfully}"));
+          message => "tr{Users group} '$title' tr{has been updated successfully}"]);
     }
     return EWCore::log_error("400", "Users group has been NOT updated", $db->error_list);
 //return json_encode(array(status => "unsuccess", title => "Update Group Unsuccessfull", message => "Users group has been NOT updated"));
@@ -440,10 +440,10 @@ class UsersManagement extends \ew\Module {
 
         } */
 
-      return json_encode(array(
+      return json_encode([
           status => "success",
           title => $group_info["title"],
-          message => "tr{Users group} '{$group_info["title"]}' tr{has been deleted successfully}"));
+          message => "tr{Users group} '{$group_info["title"]}' tr{has been deleted successfully}"]);
     }
     return EWCore::log_error("400", "tr{Users group has been NOT deleted}", $db->error_list);
   }
@@ -492,7 +492,7 @@ class UsersManagement extends \ew\Module {
 
   public static function random_password() {
     $alphabet = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789";
-    $pass = array(); //remember to declare $pass as an array
+    $pass = []; //remember to declare $pass as an array
     $alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
     for ($i = 0; $i < 18; $i++) {
       $n = rand(0, $alphaLength);
@@ -517,9 +517,9 @@ class UsersManagement extends \ew\Module {
       $group_id = 0; */
 
     if (self::get_user_by_email($email) != NULL) {
-      return json_encode(array(
+      return json_encode([
           status => "duplicate",
-          error_message => "An  account with this email address is already exist"));
+          error_message => "An  account with this email address is already exist"]);
     }
     $stm = $db->prepare("INSERT INTO ew_users (email, first_name, last_name, password, group_id, date_created)
             VALUES (?, ?, ?, ?, ? ,?)") or die($db->error);
@@ -535,9 +535,9 @@ class UsersManagement extends \ew\Module {
       ];
       $db->close();
     }
-    return json_encode(array(
+    return json_encode([
         status => "unsuccess",
-        message => "New User has been NOT added"));
+        message => "New User has been NOT added"]);
   }
 
   public static function add_user_skip($email, $first_name, $last_name, $password) {
@@ -597,15 +597,15 @@ class UsersManagement extends \ew\Module {
 
     if ($stm->execute()) {
       $db->close();
-      return json_encode(array(
+      return json_encode([
           status => "success",
           email => $email,
           message => "User '$email' has been updated successfully",
-          "id" => $id));
+          "id" => $id]);
     }
-    return json_encode(array(
+    return json_encode([
         status => "unsuccess",
-        message => "User has been NOT updated"));
+        message => "User has been NOT updated"]);
   }
 
   public static function delete_user($userId = null) {
@@ -620,15 +620,15 @@ class UsersManagement extends \ew\Module {
     if ($stm->execute()) {
       $db->close();
 
-      return json_encode(array(
+      return json_encode([
           status => "success",
           title => $user_info["email"],
-          message => "User  '{$user_info["email"]}' has been deleted successfully"));
+          message => "User  '{$user_info["email"]}' has been deleted successfully"]);
     }
-    return json_encode(array(
+    return json_encode([
         status => "unsuccess",
         title => "Update user Unsuccessfull",
-        message => "User has been NOT deleted"));
+        message => "User has been NOT deleted"]);
   }
 
   public function get($_verb) {

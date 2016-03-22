@@ -13,8 +13,8 @@
  */
 class ew_contents_labels extends \Illuminate\Database\Eloquent\Model
 {
-   protected $fillable = array('content_id', 'key', 'value');
-   public function __construct(array $attributes = array())
+   protected $fillable = ['content_id', 'key', 'value'];
+   public function __construct(array $attributes = [])
    {
       parent::__construct($attributes);
       $this->timestamps = false;

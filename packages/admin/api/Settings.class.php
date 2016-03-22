@@ -87,7 +87,7 @@ class Settings extends \ew\Module {
 
     $app_name .= "%";
     $settings = ew_settings::where('key', "LIKE", $app_name)->get();
-    $rows = array();
+    $rows = [];
     foreach ($settings as $set) {
       $rows[$set["key"]] = $set["value"];
     }
@@ -116,15 +116,15 @@ class Settings extends \ew\Module {
     if (!file_exists($path))
       return;
     $locale_dir = opendir($path);
-    $languages = array();
+    $languages = [];
 
     if (strpos($language, ".json")) {
       $lang_file = json_decode(file_get_contents(EW_PACKAGES_DIR . '/' . $app . '/locale/' . $language), true);
     }
 
-    return json_encode(array(
+    return json_encode([
         "id"   => array_keys($lang_file["strings"]),
-        "text" => array_values($lang_file["strings"])));
+        "text" => array_values($lang_file["strings"])]);
   }
 
   public function update_language($app, $language, $id, $text) {
@@ -135,9 +135,9 @@ class Settings extends \ew\Module {
       $lang_file["strings"] = array_combine($id, $text);
       $fp = file_put_contents($path, json_encode($lang_file, JSON_UNESCAPED_UNICODE));
 
-      return json_encode(array(
+      return json_encode([
           status  => "success",
-          message => "tr{The language file has been updated successfully}"));
+          message => "tr{The language file has been updated successfully}"]);
     }
     return \EWCore::log_error(400, "Can't find the language file");
   }

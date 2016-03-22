@@ -95,7 +95,7 @@
       });
 
       this.seeAlbumActivity = EW.getActivity({
-        activity: "admin/html/content-management/album-form.php",
+        activity: "admin/html/content-management/media/album-form.php",
         parent: "action-bar-items",
         modal: {
           class: "center properties"
@@ -174,13 +174,13 @@
 
       this.newAlbumActivity = EW.addActivity({
         title: "tr{New Album}",
-        activity: "admin/html/content-management/album-form.php",
+        activity: "admin/html/content-management/media/album-form.php",
         parent: Domain.UI.components.mainFloatMenu
       });
 
       this.uploadFileActivity = EW.addActivity({
         title: "tr{Upload Photo}",
-        activity: "admin/html/content-management/upload-form.php",
+        activity: "admin/html/content-management/media/upload-form.php",
         parent: Domain.UI.components.mainFloatMenu,
         hash: function () {
           return {

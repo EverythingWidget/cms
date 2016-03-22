@@ -16,16 +16,16 @@ use EWCore;
 class ContentManagement extends \ew\Module {
 
   protected $resource = "api";
-  private $file_types = array(
+  private $file_types = [
       "jpeg" => "image",
       "jpg"  => "image",
       "png"  => "image",
       "gif"  => "image",
       "txt"  => "text",
       "mp3"  => "sound",
-      "mp4"  => "video");
-  private $images_resources = array(
-      "/is/htdocs/wp1067381_3GN1OJU4CE/www/culturenights/app/webroot/img/logos/");
+      "mp4"  => "video"];
+  private $images_resources = [
+      "/is/htdocs/wp1067381_3GN1OJU4CE/www/culturenights/app/webroot/img/logos/"];
 
   protected function install_assets() {
     $ew_tags_table_install = EWCore::create_table('ew_tags', [
@@ -104,9 +104,9 @@ class ContentManagement extends \ew\Module {
     /* EWCore::register_form("ew/ui/components/link-chooser", "media-chooser", ["title"   => "Media",
       "content" => $link_chooser_media]); */
 
-    EWCore::register_resource("images", array(
+    EWCore::register_resource("images", [
         $this,
-        "image_loader"));
+        "image_loader"]);
 
     $this->register_permission("see-content", "User can see the contents", [
         'html/index.php',
@@ -615,10 +615,10 @@ class ContentManagement extends \ew\Module {
     $v->rule('required', ["title",
         "parent_id"])->message(' {field} is required');
     $v->rule('integer', "parent_id")->message(' {field} should be integer');
-    $v->labels(array(
+    $v->labels([
         "title"     => 'tr{Title}',
         "parent_id" => 'Folder ID'
-    ));
+    ]);
     if (!$v->validate())
       return EWCore::log_error("400", "tr{New article has not been added}", $v->errors());
 
@@ -640,7 +640,7 @@ class ContentManagement extends \ew\Module {
     $folders = ew_contents::where('parent_id', '=', $parent_id)->where('type', 'folder')->get(['*',
         \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
 
-    $rows = array();
+    $rows = [];
     $folders_ar = $folders->toArray();
 
     foreach ($folders_ar as $i) {
@@ -824,10 +824,10 @@ class ContentManagement extends \ew\Module {
     $v->rule('required', ["title",
         "parent_id"])->message(' {field} is required');
     $v->rule('integer', "parent_id")->message(' {field} should be integer');
-    $v->labels(array(
+    $v->labels([
         "title"     => 'tr{Title}',
         "parent_id" => 'Folder ID'
-    ));
+    ]);
     /* $id = $db->real_escape_string($_REQUEST['id']);
       $title = $db->real_escape_string($_REQUEST['title']);
       $parent_id = $db->real_escape_string($_REQUEST['parent_id']);
@@ -948,23 +948,23 @@ class ContentManagement extends \ew\Module {
     }
 
     $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM content_categories WHERE parent_id = '$parentId' ORDER BY title") or die("safasfasf");
-    $categories = array();
+    $categories = [];
     while ($r = $result->fetch_assoc()) {
       $r["document_type"] = "folder";
       $categories[] = $r;
     }
 
     $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents WHERE category_id = '$parentId' ORDER BY title") or die("safasfasf");
-    $articles = array();
+    $articles = [];
     while ($r = $result->fetch_assoc()) {
       $r["document_type"] = "article";
       $articles[] = $r;
     }
     $documents = array_merge($categories, $articles);
     $db->close();
-    $out = array(
+    $out = [
         "totalRows" => count($documents),
-        "result"    => $documents);
+        "result"    => $documents];
     return json_encode($out);
   }
 
@@ -1039,7 +1039,7 @@ class ContentManagement extends \ew\Module {
     $root = EW_MEDIA_DIR;
     $new_width = 140;
     try {
-      $files = array();
+      $files = [];
       $include = ["included" => []];
       // Folder
       $files = ew_contents::where('type', 'album')->where('type', 'album')->where('parent_id', $parent_id)->orderBy('title')->get(['*',
@@ -1066,7 +1066,7 @@ class ContentManagement extends \ew\Module {
         $tumbnailURL = 'album-' . $parent_id . $path . $file_info["filename"] . ".thumb." . $file_info["extension"];
 
         if (!file_exists($file_path)) {
-          $files[] = array(
+          $files[] = [
               "id"          => $r["content_id"],
               title         => $r["title"],
               //"parentId" => $container_id,
@@ -1079,7 +1079,7 @@ class ContentManagement extends \ew\Module {
               filename      => $file_info["filename"],
               fileExtension => $file_info["extension"],
               thumbURL      => "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAOdElEQVR4Xu2dddR1RRWHHywURQxMltiCgd2Jgd3d3ZiI3aAuA7u7W+zCRMVu7EZZFiJid6yHby5cX77vPXvmnLn31F7r/evdZ2LP787s2TXbMdOkJbDdpGc/T54ZABMHwQyAGQATl8DEpz/vADMAJi6BiU9/3gFmAExcAhOf/rwDzACYjAROBZweOC2wE7A9cJI0+38Afwd+DxwJ/AY4egqSGeMOcAbgUsCFgAsC5wHOBpwyc0EFw2HA94FvAF8HPgcckdlOr9nHAIBTA1cHrglcEThHZYn/EPgk8EHgw0PfKYYKALfxmwI3B64EnLDyom+r+X8BBwNvAQ4EjlrTOIq7HRoArgrcHbjh0vldPPmOP1SHeAfwEuDjHbddrbkhAEBF7TbAPsAFqkmi24YPBZ4BvAH4Z7dNd9tanwFwIuBOwKOAXbud9spaU4ncH3gN4HHRO+orAK4PHACcu3cSKxvQ99IO9v6yz+t91TcAnBN4QdLq6816fS0LgL3T9XJ9o1jquS8AOEH6hewHnKwXkqk3iD+nY+3ZwH/rdRNruQ8AOCvwWuAKsSGPhutjwO2Bn69zRusGwA2AVyfTbC05eD37Qfo7HPgl8DvgT0lDVwbeNHYAdk7mYkGpQWm3ytdN7Qa3BT5Qa/JN7a4LAG75ascPh87jEn8NfCRZ6z4PfLvFVezEwO7ApYHLA3sBZ2oSaub//wN49Pm38iNhHQDwjH89cKNMQW3G/lPgTcDbgC9XFuSFgZsAtwTO1eEc3gzcITmlOmx286ZWDYDTAGrCOmvakvdqLW8vTObYlf96kt6iZfIWgLtFWzoEuN4q/QurBIBeOp0ne7SU0t+SufXpwM9attXV57sA909XPHWJNvS1dA3WJV2dVgUAF1+niedpKXlWvhx4/Lo1500mYLyBlst7AVoyS0m9Zc8Ul1DaRui7VQDAbd/Fb/PL/wxw7+STD01szUznBZ4PXLnFOL4KXKX2cVAbACp8esZKz3yNJg9N1sF1nPEt1u+YT++SnEK5wSiLftUJrlZTMawJAK96bwVuXCjFryRN2zv8kMloJG89ly2chLebW9e62dQEwBOBRxROWg3/oikUq7CJXn2mPqBzS0WxhB6T7CYl3276TS0AaOHzitam/V+kM9SYvLHQnYEXFyiIKsDXSWFoncqizQJtayCaUQ2gNPK2LY0RBMYvvh04eaZwNBsb5Nqp76BrAHjuq/F36dgZIwgulwxiucrhR5M5ujOFuGsA7As8LRPZEfaxguCggp3gfsBzI0KL8HQJAIM5jJ+v5c8fIwg8Dt6XqRPoxTwfoGezNXUJANHshGrSGEGgreBlmUJ7N6Ci3Zq6AoAxfO/KHI1XvRJz6RhB4JZ+n0z5+WPTt9KKugCAi6jtOieAUyPPHdO15swFMxgbCPQkmm1k3EGUvpVuBV4Ri6kLANwteeeig9C8e5EUoWPenqbiGQRbIpD0BO4YFSRwO+B1GfzHY20LAEOpNNXmxO271ekoWdAMguNkYWyBhqIomaeo46k456AtAEzceEV0tIBePUOrNt5jZxBsEaLr4Y5ovmOU9BO8Mcq8ka8tALz2RdO1PKu072sl3BrNINgiFeXpURBNeFWfutg6AGCipsGXUfKqo76wGc0g2CIdk2MMKomSafGfijIv87XZAQxiND07QoZxGUAZsWPPIIAzAj/OMKqZV2GOQTaVAsD8fK9iixIrTR0/J9MVOoNgS3bxA5sEm/7/1xSublWTLCoFwD2AFwV7UkPVTJwbwDl1EJwl7QJRY5l2FZNssqgUAHqljFeLkLH6N4swboVn6iAwGsiQ8wiZXXTtCGNbHcCaPIYsR7VUgdKmYsaUQaDs/LFFyEIUHs1/jDAveEp2ABEpMiNkxs7ZO4hnmyoIXB+VQeMKI2S21TsjjG0A8Mpkx4/08xTgYRHGAM9UQfBU4MEB+ciiFfGeQd5j2Ep2gB9llGK7BPClnAE18E4RBIbUW58wQt9JsQIR3iIAmOHzq2DrZumaSdtZ+FLqd2ogMMxOWZq63kTKWr5wubrcHSDH728svLnvNWhqIMi5DXgTCNcbyAXAo1Mee2RRtRVYM68WTQkEelCjcYDqXOpeIcoFgJk+VuiMkHn023L8RL6P8EwFBDp7orpU1s6bCwAX1Nj0JrIsyyna+KmbOlj6/xRAcNJU0iZie/kicMmo/HIBoK05Esv+zZbZwNHxL/imAILvpppFTbLRSGeaeohyAGC9fYsrRci0sNKk0Ej7W+MZOwhU7KyIHiGzjv4SYcwBgAK24mWEcr1/kTYjPGMGgaVwokYeLYdaYRspBwCXSSFdjY2m6l9PjjBW4BkrCKyMYpZwhC6eimU18uYAwO0ner8UqTnBjY0DzWQYIwjuC7izRshoLQtRNlIOAMxEiToaNAB5HVknjQ0EppZbIylCYWNQDgD06fsyRoT0GEZ5I+2V8owJBL6ZEM0BCHsFawHAIorGDPaBxgKCtQMg5wgwQNFAxb7QGECQk4NR5QgYkhK4NeANHQTWBbDEfISqKIE510CLJVokqm80ZBA8FnhcUKD6DkwYaaQcHcDs32jBpnUZghonnB6SHGJCqtdqcwcjVMUQlGMKtlaAT7v1lYa4E1hk+1pBgVYxBdt31BlkzmDEaxicTxW2oYHATGDzK5qomjPIjk1a9E3eJvIxZlFYnLbc1EFH/x8KCKy7ZLh3xB38hZzSvDk6gDLXuBNN8nAHcCfoOw0BBPr3ff0kQlUDQnJCwlRYXhoZcQ94+g4CS8w+Kygni2sbSh6i3B0gJyjU1zJ9AmUo1GcQmF7nMzURUlH0ZfMQ5QLASBNDlCPk61wltX8ibdfi6SMIPPdV7EzJayLDwk0PiwbuFCWGWBMo+liSxaBUHIdEfQOBJXWixR+s1nb+HGHn7gC2rUtS12SEngCoNwyN+gSCZwIPCArQqCFfVglTCQBy3MLeXXPqB4YHvgLGPoDA7d+6CtGjVIedVUTDVAIALYKeSdHCBcX1a8KzqMe4bhDo1bOWcIS0vXj+W0s4TCUAsHFLlPqWTYQMYrCg4VBpnSB4b3ooIiI7gXLdCOMyTykAcqqDWrhA54Q1hYZK6wCBR6e5ACaHRqgoBqMUAD4F54JuHxlZekPgIUHevrKtGgQa0e4aFIY5AGZi/yHIfyxbKQBswOqUhn5FyPrA1sI9IsLcY55VgcCqKuZgRJ+jtTiURaKyqQ0AfBQxFHqcRmV2q1EtQ6dVgEC9yRjAKGkr+HSUeZmvDQBsJ5osKq+eQR1EVrEYOtUEgRVBPptRvcWsYSuxFFFbAGjrf1VGz+4YxquNgWqAwHu/2b1aUKPUKgK7LQA8owwTi1axclI+kZJTYTwqiHXwdQ0CFeVwcYcke98P+nfp5NsCwH5zMlbkV1M1qOSw0kH37LuuQGCVcLfz6M1KMbQqFW8DXQBAi6D1AHbLWBjfDbAmft8jhqJTagsCXwVV8ctx5Byajoq1PxmjkHJMlguhGuMedXJEF2KdfG1A4BYeCfdanl/bCqzHtNXFDrAYlKbI3Fq1Hh8WnhwLtQFBjgx8ejYaILJpu10CQEXQoyDnTVzNxNqvP5Qz+57z1gaBOpSKX+TthUZRdQkAO3NL13+dQ1oJr1FqyMjpaIW8NUGgv1+/fyfUNQBsz2dkoqXkF5MQ1R4fRdasTiTRfSM1QGCsn3LqrPpq1wBQjLsAaqg6jHLIncC89tavYeZ0Wpm3SxAYg6ElNVqqNzS1GgCwY1GqLzu3fXUCy8uMxVCkLLoAgbcEj8no2wGhxZcpd4HCDQM52awb230esA8gIMZAVk3VyJN71VvMPav8a47AagLAtnUZR5882ThuS6TrEfPBhCGTFj6LPecYeZbnWzW/oiYAnIRmTZVC3ZUlZD7cvinDqDPFp2QgBd/4a39QKq6dY95d7urgtPUb71eFagPAQRtEaj6+22ApfQLYG/DF7CGQLl2vajlevY3z8sjQc5od5ZMjoFUAwPGcDhDNGjBKSUXI8vP7da0Jlw5oK98ZybN/ctK0ka1JtXvmPPxQOoc2g8ztUxAc1PJXYZ8+kuibhRqcDs8dRCV+Azh15RofEQ3j2tZQ/OVbj+m3lcb6f82uEgCL4+A9LXSC5cHrSTww7QoeMavWETzjvZppmTMhMxq9u9m6ukua3FF1218ewKoBYN8qREYRRQNKIz8EYwt8zEJAGFHTykW6SYcuusWydMT4bnI0YycyB7V9o4BXevVdBwAUhv1aScyqV138cpYFfGQymBySYutUHH28uoR8qEHrm4t+hWTijmTp5vSlbvPIzEignPY35V0XABaDcus0ECLXbJwjAAVsjuJPUhSSoemCRNOzL5tIPoK9Y0rB9lftu71a8PRwlhpvImPUvHurGha+SOeLX2KUtxafvgPj2scSLBqVk44dY/mj9Rai7WbxrXsHWAzWcfgy1pPSW0NZkxgYswqepl1vMqtWXI8nqr4AYDGwXdPzaJaiGSMZyWNyTCfBHF0IqG8AWMxpr3TPL7WfdyGbLtvQPW6wTJtX1Lscz7Ft9RUADtDbgc4gvYqRAolVBNSyUXMmvOlYOr/W1bTVEPsMgMXEDDu3KokvaLexrbcSVObHWvMOAKzuVZy0kdlnEfsQALA8Me/i1ibw9VKrZ/aJTNHWGGVa92BC24YGgMWC75SKURtrYKWStvb3UiDppjWEzS3eAtkrM+GWDnjjd0MFwPI8NOBoQ9CBYj2i3StGOnltM7tZ97T3eJNds2rydLVwXbUzBgBslIWFkqytqwl3jyWLnt7IHNJKp/XQuohq8f5ZiPmonEb6zjtGAGxL5jukuISdAY8QnVKLSB1Nwv4dndywLn7o6dW+L3DT+KYEgCZZTPL/MwAmuezHTXoGwAyAiUtg4tOfd4AZABOXwMSnP+8AMwAmLoGJT3/eAWYATFwCE5/+/wD+P8afztOu5gAAAABJRU5ErkJggg==",
-              path          => "data:image/png;base64,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");
+              path          => "data:image/png;base64,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"];
           continue;
         }
 
@@ -1168,13 +1168,13 @@ class ContentManagement extends \ew\Module {
       $stm->close();
       $db->close();
 
-      echo json_encode(array(
+      echo json_encode([
           status => "success",
-          title  => $title));
+          title  => $title]);
     }
     else {
-      echo json_encode(array(
-          status => "unsuccess"));
+      echo json_encode([
+          status => "unsuccess"]);
     }
   }
 
@@ -1184,25 +1184,25 @@ class ContentManagement extends \ew\Module {
     if (!$id)
       $id = $db->real_escape_string($_REQUEST["id"]);
     $result = $db->query("SELECT * FROM ew_contents WHERE parent_id = '$id' LIMIT 1");
-    $output = array();
+    $output = [];
     if ($result->fetch_assoc()) {
-      return json_encode(array(
+      return json_encode([
           status      => "unable",
-          status_code => 2));
+          status_code => 2]);
     }
     $result = $db->query("DELETE FROM ew_contents WHERE id = '$id'");
     $db->close();
     if ($result) {
-      return json_encode(array(
+      return json_encode([
           "status"      => "success",
           "status_code" => 1,
-          "message"     => ""));
+          "message"     => ""]);
     }
     else {
-      return json_encode(array(
+      return json_encode([
           "status"      => "unsuccess",
           "status_code" => 0,
-          "message"     => ""));
+          "message"     => ""]);
     }
     //return json_encode(array("status" => "success", "status_code" => 1, "message" => ""));
   }
@@ -1291,11 +1291,11 @@ class ContentManagement extends \ew\Module {
     $error = 0;
     $thegoodstuf = '';
     $alt_text = "";
-    $files = array();
+    $files = [];
     foreach ($_FILES['img'] as $k => $l) {
       foreach ($l as $i => $v) {
         if (!array_key_exists($i, $files))
-          $files[$i] = array();
+          $files[$i] = [];
         $files[$i][$k] = $v;
       }
     }
@@ -1317,9 +1317,9 @@ class ContentManagement extends \ew\Module {
             $image_path = 'album-' . $parent_id . '/' . $foo->file_dst_name;
             $stm->bind_param("sss", $content_id, $image_path, $alt_text) or die($db->error);
             if ($stm->execute()) {
-              $res = array(
+              $res = [
                   "status" => "success",
-                  "id"     => $stm->insert_id);
+                  "id"     => $stm->insert_id];
             }
           }
 
@@ -1335,9 +1335,9 @@ class ContentManagement extends \ew\Module {
       }
     }
 
-    return json_encode(array(
+    return json_encode([
         status  => "success",
-        message => "Uploaded: " . $succeed . " Error: " . $error . ' ' . $foo->error));
+        message => "Uploaded: " . $succeed . " Error: " . $error . ' ' . $foo->error]);
   }
 
   public function upload_audio($path, $parent_id) {
@@ -1355,7 +1355,7 @@ class ContentManagement extends \ew\Module {
 
     $succeed = 0;
     $error = 0;
-    $mimes = array('audio/x-mp3', 'audio/mp3', 'audio/x-mpeg-3', 'audio/mpeg3');
+    $mimes = ['audio/x-mp3', 'audio/mp3', 'audio/x-mpeg-3', 'audio/mpeg3'];
     foreach ($files as $file) {
       if (is_uploaded_file($file['tmp_name']) && in_array($file['type'], $mimes)) {
         $root = EW_MEDIA_DIR . '/audio-' . $parent_id;

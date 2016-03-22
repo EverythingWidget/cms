@@ -236,7 +236,7 @@ class PhpGithubUpdater {
       $files = scandir($source);
       foreach ($files as $file) {
         $ignore_dir = false;
-        if (in_array($file, array(".", "..")))
+        if (in_array($file, [".", ".."]))
           continue;
 
         if (is_dir($source . '/' . $file)) {
@@ -290,12 +290,12 @@ class PhpGithubUpdater {
     if ($this->releases === false) {
 
       $url = $this->server . 'repos/' . $this->user . '/' . $this->repository . '/releases';
-      $options = array('http' => array('user_agent' => $_SERVER['HTTP_USER_AGENT']));
+      $options = ['http' => ['user_agent' => $_SERVER['HTTP_USER_AGENT']]];
       $context = stream_context_create($options);
       $content = file_get_contents($url, false, $context);
       $releases = json_decode($content, true);
 
-      $this->releases = array();
+      $this->releases = [];
       foreach ($releases as $key => $release) {
         //var_dump($release);
         //keep pre-releases only if asked to
@@ -462,7 +462,7 @@ class PhpGithubUpdater {
 
       //fallback - might raise a warning with proxies
       } else { */
-    $options = array('http' => array('user_agent' => $_SERVER['HTTP_USER_AGENT']));
+    $options = ['http' => ['user_agent' => $_SERVER['HTTP_USER_AGENT']]];
     $context = stream_context_create($options);
     $content = file_get_contents($url, false, $context);
     if ($path !== false) {

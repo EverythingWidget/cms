@@ -19,10 +19,10 @@ class AppsManagement extends \ew\Module {
   }
 
   protected function install_permissions() {
-    $this->register_permission("see-apps", "User can see the apps settings", array(
+    $this->register_permission("see-apps", "User can see the apps settings", [
         "api/get_app_sections",
         "api/get_apps"
-    ));
+    ]);
   }
 
   public function get_app_sections($appDir) {
@@ -38,7 +38,7 @@ class AppsManagement extends \ew\Module {
     $path = EW_PACKAGES_DIR . '/';
 
     $apps_dirs = opendir($path);
-    $apps = array();
+    $apps = [];
     if (!isset($type))
       $type = "all";
 

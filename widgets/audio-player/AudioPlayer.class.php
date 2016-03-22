@@ -30,6 +30,9 @@ class AudioPlayer implements Widget {
   }
 
   public function render($widget_parameters, $widget_id, $style_id, $style_class) {
+    WidgetsManagement::add_html_script([
+        'include' => 'rm/public/js/audiojs/audio.min.js'
+    ]);
     ob_start();
     include 'render.php';
     return ob_get_clean();

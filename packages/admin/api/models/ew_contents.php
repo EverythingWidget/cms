@@ -16,7 +16,7 @@ namespace admin;
 class ew_contents extends \Illuminate\Database\Eloquent\Model
 {
 
-   protected $fillable = array(
+   protected $fillable = [
        'id',
        'author_id',
        'type',
@@ -27,19 +27,19 @@ class ew_contents extends \Illuminate\Database\Eloquent\Model
        'parent_id',
        'featured_image',
        'content',
-       'date_modified');
+       'date_modified'];
    public static $rules = [
-       'title' => array(
+       'title' => [
            'required'
-       ),
-       'type' => array(
+       ],
+       'type' => [
            'required'
-       ),
-       'parent_id' => array(
+       ],
+       'parent_id' => [
            'integer'
-   )];
+   ]];
 
-   public function __construct(array $attributes = array())
+   public function __construct(array $attributes = [])
    {
       parent::__construct($attributes);
       $this->timestamps = false;

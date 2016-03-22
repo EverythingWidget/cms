@@ -437,6 +437,67 @@ body {
       }
     }
   }
+  
+  &.audio-player {
+    .audiojs {
+      background: none;
+      background-color: transparent;
+      overflow: visible;
+      height: 80px;
+      width: 100%;
+      max-width: 800px;
+      margin: 15px auto;
+      box-shadow: none;
+      color: $font-color;
+      position: relative;
+      
+      div {
+        height: 80px;
+        line-height: 60px;
+        padding: 10px;
+        color: $font-color;
+        border: none;
+        text-shadow: none;
+      }
+      
+      .play-pause {
+        background-color: $font-akcent-color;
+        border-radius: 100%;
+        width: 80px;
+        height: 80px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1),0 4px 7px rgba(0,0,0,0.1);
+      }
+      
+      .scrubber {
+        background: none transparent;
+        height: 20px;
+        margin-top: 30px;
+        border-radius: 10px;
+        position: absolute;
+        left: 80px;
+        right: 120px;
+        width: auto;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1),0 4px 7px rgba(0,0,0,0.1);
+        
+        .progress {
+          height: inherit;
+          background: none $font-akcent-color;
+          border-radius: 10px;
+        }
+        
+        .loaded {
+          height: inherit;
+          background: none #eee;
+        }
+      }
+      
+      .time {
+        float: right;
+        font-size: 1.3em;
+        color: $font-color;
+      }
+    }
+  }
 }
 
 .slider .owl-controls {

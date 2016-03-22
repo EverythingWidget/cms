@@ -19,6 +19,7 @@
     "php": ">=5.5.0"
   },
   "require-dev": {
+    "phpmd/phpmd" : "@stable",
     "illuminate/database": "5.2.19",
     "simple-validator/simple-validator": "dev-master",
     "vlucas/valitron": "1.2.3",
