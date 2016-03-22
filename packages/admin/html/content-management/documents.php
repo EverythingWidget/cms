@@ -135,8 +135,8 @@
 
       if (this.seeArticleActivity || this.seeFolderActivity)
         this.bSee = EW.addActionButton({
-          text: "tr{Properties}",
-          class: "btn-text btn-default",
+          text: "",
+          class: "btn-text btn-circle btn-default icon-edit",
           handler: $.proxy(this.seeDetails, this),
           parent: this.ui.components.folders_card_title_action_right
         }).hide();

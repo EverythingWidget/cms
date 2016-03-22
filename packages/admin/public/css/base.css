@@ -1381,6 +1381,7 @@ h2.actions-bar span {
 .card-content {
   padding: 30px 25px 25px;
   position: relative;
+  min-height: 98px;
   z-index: 1;
 }
 
