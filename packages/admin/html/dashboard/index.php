@@ -1,8 +1,7 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['login']))
-{
+if (!isset($_SESSION['login'])) {
   include "Login.php";
   return;
 }
@@ -13,12 +12,12 @@ if (!isset($_SESSION['login']))
     <title>
       EW Admin
     </title>
-<?php include 'header.php'; ?>
+    <?php include 'header.php'; ?>
   </head>
   <body class="Admin <?php echo EWCore::get_language_dir($_REQUEST["_language"]); ?>" >
     <div id="base-pane" class="container">      
       <div id="app-content" >
-        
+
         <div id="navigation-menu" class="navigation-menu">
           <div id="apps-menu" class="apps-menu" >
              <!--<span type="button" id="apps" class="apps-menu-icon" ></span>-->
@@ -27,7 +26,7 @@ if (!isset($_SESSION['login']))
           <div id="sections-menu" class="sections-menu">
             <!--<span class="sections-menu-title" id="sections-menu-title" >  
             </span>-->
-            <system-list id="sections-menu-list" class="sections-menu-list">
+            <system-list id="sections-menu-list" class="sections-menu-list" action="a">
               <div class="sections-menu-item">
                 <a class="sections-menu-item-link" href="{{id}}" >{{title}}</a>
               </div>
@@ -42,8 +41,7 @@ if (!isset($_SESSION['login']))
           </div>
           <div class="action-center">
             <?php
-            if ($_SESSION['login'])
-            {
+            if ($_SESSION['login']) {
               echo '<a class="ExitBtn" href="~admin/api/users-management/logout?url=' . EW_DIR_URL . '~admin/" ></a>';
             }
             ?>
@@ -54,18 +52,17 @@ if (!isset($_SESSION['login']))
             </div>
           </div>
         </div>
-         
-         <div id="app-main-actions"></div>
-        
+
+        <div id="app-main-actions"></div>
+
         <system-float-menu id="main-float-menu" class="ew-float-menu">          
         </system-float-menu>
-        
-        
-        
+
+
+
         <div id="home-pane" class="home-pane" >
         </div>
-        <?php
-        ?>
+<?php ?>
       </div>
     </div>
 

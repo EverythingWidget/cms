@@ -21,17 +21,16 @@
 })();
 
 (function (xtag, System, UIUtilty) {
-  var ewList = {
+  var SystemList = {
   };
 
-  ewList.lifecycle = {
+  SystemList.lifecycle = {
     created: function () {
       this.template = this.innerHTML;
       this.innerHTML = "";
       this.links = {};
-      this.data = [
-      ];
-      this.value = null;
+      this.data = [];
+      this.value = -1;
     },
     inserted: function () {
     },
@@ -39,21 +38,23 @@
     }
   };
 
-  ewList.methods = {
-    render: function (data) {
+  SystemList.methods = {
+    render: function (data, action) {
       //var data = this.data;
       this.innerHTML = "";
       var a = null;
       for (var i = 0, len = data.length; i < len; i++) {
         data[i]._itemIndex = i;
         var item = xtag.createFragment(UIUtilty.populate(this.template, data[i]));
-        a = xtag.query(item, "a")[0];
+        if (action) {
+          a = xtag.query(item, action)[0];
 
-        if (data[i].id)
-          this.links[data[i].id] = a;
+          if (data[i].id)
+            this.links[data[i].id] = a;
 
-        this.links[i] = a;
-        a.dataset.index = i;
+          this.links[i] = a;
+          a.dataset.index = i;
+        }
 
         this.appendChild(item);
       }
@@ -72,37 +73,42 @@
     }
   };
 
-  ewList.accessors = {
+  SystemList.accessors = {
     data: {
       attribute: {
+        validate: function (value) {
+          this.xtag.value = null;
+          if ("object" !== typeof value) {
+            this.xtag.data = [];
+            value = [];
+          }
+
+          this.xtag.data = value;
+
+          if (this.onSetData) {
+            this.onSetData(value);
+          }
+
+          this.render(value, this.xtag.action);
+
+          return  '[ object data ]';
+        }
       },
       set: function (value) {
 
-        this.xtag.value = null;
-        if ("object" !== typeof value) {
-          this.xtag.data = [
-          ];
-          value = [
-          ];
-          //return;
-        }
-
-        this.xtag.data = value;
-
-        if (this.onSetData) {
-          this.onSetData(value);
-        }
-
-        this.render(value);
       },
       get: function () {
         return this.xtag.data;
       }
     },
     onSetData: {
-      attribute: {},
+      attribute: {
+        validate: function (value) {
+          this.xtag.onSetData = value;
+          return '[ function ]';
+        }
+      },
       set: function (value) {
-        this.xtag.onSetData = value;
       },
       get: function (value) {
         return this.xtag.onSetData;
@@ -122,10 +128,19 @@
       get: function () {
         return this.xtag.value;
       }
+    },
+    action: {
+      attribute: {},
+      set: function (value) {
+        this.xtag.action = value;
+      },
+      get: function () {
+        return this.xtag.action;
+      }
     }
   };
 
-  ewList.events = {
+  SystemList.events = {
     "click:delegate(a)": function (e) {
       e.preventDefault();
     },
@@ -136,7 +151,7 @@
     }
   };
 
-  xtag.register("system-list", ewList);
+  xtag.register("system-list", SystemList);
 
   // EW Actions Container
 

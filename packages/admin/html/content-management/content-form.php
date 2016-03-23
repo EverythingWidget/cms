@@ -28,6 +28,6 @@ function get_properties($form_config, $form_id)
    return ob_get_clean();
 }
 
-$tabs = EWCore::read_registry("ew/ui/form/content/tab");
+$tabs = EWCore::read_registry("ew/ui/forms/content/tabs");
 
 include 'forms-parts/content-base.php';

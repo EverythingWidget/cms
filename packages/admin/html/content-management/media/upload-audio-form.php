@@ -5,7 +5,7 @@
 </div>
 <div  class="form-content " >
   <form enctype="multipart/form-data" id="upload-form">   
-    <div class="col-xs-12 mar-top" id="choose-files">
+    <div class="col-xs-12 mt" id="choose-files">
       <label>Choose your files:</label>
       <input class="text-field" type="file" accept="audio/*" multiple name="audio[]" id="audio" />
     </div>

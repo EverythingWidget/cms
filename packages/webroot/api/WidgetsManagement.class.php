@@ -37,7 +37,7 @@ class WidgetsManagement extends \ew\Module {
     include EW_PACKAGES_DIR . '/webroot/html/widgets-management/uis-tab.php';
     $uis_content_tab = ob_get_clean();
 
-    EWCore::register_form("ew/ui/form/content/tab", "uis-tab", [
+    EWCore::register_form("ew/ui/forms/content/tabs", "uis-tab", [
         "title" => "UI",
         "form"  => $uis_content_tab
     ]);

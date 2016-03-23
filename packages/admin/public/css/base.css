@@ -2941,10 +2941,6 @@ div.notification p,div.notification h4 {
   bottom: 0;
 }
 
-.mar-top {
-  margin-top: 15px;
-}
-
 .mar-right {
   margin-right: 15px;
 }
@@ -3374,4 +3370,8 @@ inline-dialog{
   bottom: 0;
   left: 0;
   display: inherit;
+}
+
+system-list, dis-block {
+  display: block;
 }

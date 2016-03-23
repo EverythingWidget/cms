@@ -32,7 +32,7 @@
     this.behaviors = {};
   }
 
-  SystemUI.prototype.util = SystemUI.prototype.utility = {
+  SystemUI.prototype.utility = {
     viewRegex: /\{\{([^\{\}]*)\}\}/g
   };
 
@@ -43,6 +43,13 @@
       return eval("data." + key) || "";
     });
     return template;
+  };
+
+  SystemUI.prototype.utility.hasClass = function (element, className) {
+    if (element.classList)
+      return  element.classList.contains(className);
+    else
+      return new RegExp('(^| )' + className + '( |$)', 'gi').test(element.className);
   };
 
   SystemUI.prototype.utility.addClass = function (el, className) {

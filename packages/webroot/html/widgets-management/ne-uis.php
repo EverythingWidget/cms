@@ -38,7 +38,7 @@ session_start();
       </div>
       <div class="tab-pane col-xs-12" id="pref">
         <form id="uis-preference" onsubmit="return false;">
-          <div class="row mar-top">
+          <div class="row mt">
             <div class="col-xs-12" >
               <input class="text-field" data-label="UIS Name" name="name" id="name">
             </div>
@@ -56,7 +56,7 @@ session_start();
               </div>
             </div>
           </div>
-          <div class="row mar-top">
+          <div class="row mt">
             <div class="col-xs-12" >
 
               <select data-label="UIS Template" id="template" name="template">

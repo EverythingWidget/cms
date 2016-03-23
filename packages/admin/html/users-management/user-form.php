@@ -7,7 +7,7 @@ function get_ew_user_form($user_id) {
   ?>
   <input type="hidden" id="id" name="id" value="">
   <div class="row">
-    <div class="col-xs-12 col-md-12 col-lg-12 mar-top">
+    <div class="col-xs-12 col-md-12 col-lg-12 mt">
       <input class="text-field" data-label="tr{Username}" value="" id="email" name="email"/>
     </div>    
   </div>
@@ -21,13 +21,13 @@ function get_ew_user_form($user_id) {
   </div>
   <?php if (!isset($user_id)) { ?>
     <div class="row">
-      <div class="col-xs-12 col-md-12 col-lg-12 mar-top">
+      <div class="col-xs-12 col-md-12 col-lg-12 mt">
         <input class="text-field" data-label="tr{Password}" value="" id="password" name="password"/>
       </div>    
     </div>
   <?php } ?>
   <div class="row">    
-    <div class="col-xs-12 mar-top">
+    <div class="col-xs-12 mt">
       <?php
       $users_groups = json_decode(admin\UsersManagement::get_users_groups_list(), true);
       //print_r($users_groups["result"]);

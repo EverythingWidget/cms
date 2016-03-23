@@ -86,6 +86,18 @@ class ContentManagement extends \ew\Module {
     $folder_feeder = new \ew\WidgetFeeder("folder", $this, "list", "ew_list_feeder_folder");
     $folder_feeder->title = "folder";
     \webroot\WidgetsManagement::register_widget_feeder($folder_feeder);
+
+    EWCore::register_form("ew/ui/apps/contents/navs", "documents", [
+        'id'    => 'content-management/documents',
+        'title' => 'Documents',
+        'url'   => '~admin/html/content-management/documents.php'
+    ]);
+    
+    EWCore::register_form("ew/ui/apps/contents/navs", "media", [
+        'id'    => 'content-management/media',
+        'title' => 'Media',
+        'url'   => '~admin/html/content-management/media/index.php'
+    ]);
   }
 
   protected function install_permissions() {

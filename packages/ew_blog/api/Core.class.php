@@ -34,16 +34,31 @@ class Core extends \ew\Module {
 //    }
 
     $this->register_content_component("event", [
-        "title" => "Event",
+        "title"       => "Event",
         "description" => "Event information",
-        "explorer" => "ew-blog/html/core/explorer-event.php",
+        "explorer"    => "ew-blog/html/core/explorer-event.php",
         "explorerUrl" => "~ew-blog/html/core/explorer-event.php",
-        "form" => "ew-blog/html/core/label-event.php"
+        "form"        => "ew-blog/html/core/label-event.php"
     ]);
 
     $events_feeder = new \ew\WidgetFeeder("events", $this, "list", "ew_list_feeder_events");
     $events_feeder->title = "events";
     \webroot\WidgetsManagement::register_widget_feeder($events_feeder);
+
+    EWCore::register_form("ew/ui/apps/contents/navs", "posts", [
+        'id'    => 'content-management/posts',
+        'title' => 'Posts',
+        'url'   => '~ew-blog/html/core/explorer-posts.php'
+    ]);
+
+    ob_start();
+    include EW_PACKAGES_DIR . '/ew_blog/html/core/tab-post-publish.php';
+    $tab_post_publish = ob_get_clean();
+
+    EWCore::register_form("ew/ui/forms/content/tabs", "post-publish", [
+        'title' => 'Publish',
+        "form"  => $tab_post_publish
+    ]);
   }
 
   protected function install_permissions() {
@@ -126,13 +141,13 @@ class Core extends \ew\Module {
     if (isset($articles)) {
       foreach ($articles as $article) {
         $result[] = [
-            "id" => $article["id"],
-            "html" => $article["content"],
+            "id"             => $article["id"],
+            "html"           => $article["content"],
             "content_fields" => $article["content_fields"]
         ];
       }
     }
-    
+
     return \ew\APIResourceHandler::to_api_response($result, [
                 "totalRows" => $articles["totalRows"]
     ]);

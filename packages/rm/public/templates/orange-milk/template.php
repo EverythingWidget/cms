@@ -29,13 +29,13 @@ class template extends TemplateControl {
     ob_start();
     ?>
     <div class="block-row">
-      <div class="col-xs-12 mar-top" data-toggle="buttons">
+      <div class="col-xs-12 mt" data-toggle="buttons">
         <label id="spw" type="button" class="btn btn-primary col-xs-12" >
           <input type="checkbox" name="spw" value="true">Single Page Website</label>
       </div>
     </div>
     <div id="spw-cp">         
-      <div class="block-row mar-top">
+      <div class="block-row mt">
         <select class="text-field" id="menu-id" name="menu-id" data-label="Main Menu ID">
           <option value=''></option>
         </select>

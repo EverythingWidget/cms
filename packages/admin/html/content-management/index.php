@@ -24,7 +24,8 @@ echo admin\AppsManagement::create_section_main_form();
       this.type = "app";
 
       this.bind('init', function (nav) {
-        this.data.sections = [
+        //console.log(<?= json_encode(EWCore::read_registry_as_array('ew/ui/apps/contents/navs')) ?>);
+        /*this.data.sections = [
           {
             title: "tr{Documents}",
             id: "content-management/documents",
@@ -35,7 +36,9 @@ echo admin\AppsManagement::create_section_main_form();
             id: "content-management/media",
             url: "~admin/html/content-management/media/index.php"
           }
-        ];
+        ];*/
+        
+        this.data.sections = <?= json_encode(EWCore::read_registry_as_array('ew/ui/apps/contents/navs')) ?>;
 
         this.installModulesOnInit(this.data.sections);
       });
@@ -46,10 +49,10 @@ echo admin\AppsManagement::create_section_main_form();
       });
 
       this.on("app", function (p, section) {
-        if (!section) {                    
+        if (!section) {
           System.UI.components.sectionsMenuList[0].value = '0';
           return;
-        }               
+        }
 
         if (this.data.tab === section)
           return;

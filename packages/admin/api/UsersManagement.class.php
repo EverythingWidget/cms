@@ -19,6 +19,18 @@ class UsersManagement extends \ew\Module {
 
   protected function install_assets() {
     EWCore::register_app("users-management", $this);
+    
+    EWCore::register_form("ew/ui/apps/users/navs", "users", [
+        'id'    => 'users-management/users',
+        'title' => 'Users',
+        'url'   => '~admin/html/users-management/users.php'
+    ]);
+    
+    EWCore::register_form("ew/ui/apps/users/navs", "groups", [
+        'id'    => 'users-management/users-groups',
+        'title' => 'Groups',
+        'url'   => '~admin/html/users-management/users-groups.php'
+    ]);
   }
 
   protected function install_permissions() {

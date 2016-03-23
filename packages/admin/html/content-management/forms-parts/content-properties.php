@@ -1,5 +1,5 @@
 <div id="properties-form" class="col-lg-8 col-md-8 col-sm-12 col-xs-12" >        
-  <div class="row mar-top">
+  <div class="row mt">
     <input type="hidden" id="id" name="id" value="">
     <input type="hidden" id="type" name="type" value="<?php echo $form_config["contentType"] ?>">
 
@@ -18,7 +18,7 @@
   </div>
   <?php
   // App custom inputs
-  $input_groups = EWCore::read_registry("ew/ui/form/content/properties");
+  $input_groups = EWCore::read_registry("ew/ui/forms/content/properties");
   foreach ($input_groups as $id => $inputs) {
     echo "<div class=row><div class='col-xs-12'><h3>{$inputs["title"]}</h3></div></div>";
     echo $inputs["content"];
