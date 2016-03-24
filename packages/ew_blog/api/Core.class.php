@@ -33,6 +33,21 @@ class Core extends \ew\Module {
 //      echo json_encode(EWCore::log_error(500, '', $stm->errorInfo()));
 //    }
 
+    $table_install = EWCore::create_table('ew_blog_posts', [
+                'id'           => 'BIGINT AUTO_INCREMENT PRIMARY KEY',
+                'content_id'   => 'VARCHAR(200) NOT NULL',
+                'visibility'   => 'VARCHAR(300) NOT NULL',
+                'publish_date' => 'DATETIME NOT NULL',
+                'order'        => 'SMALLINT DEFAULT 0',
+                'user_id'      => 'BIGINT(20) NOT NULL'
+    ]);
+
+    $pdo = EWCore::get_db_PDO();
+    $stm = $pdo->prepare($table_install);
+    if (!$stm->execute()) {
+      echo json_encode(EWCore::log_error(500, '', $stm->errorInfo()));
+    }
+
     $this->register_content_component("event", [
         "title"       => "Event",
         "description" => "Event information",
@@ -45,11 +60,11 @@ class Core extends \ew\Module {
     $events_feeder->title = "events";
     \webroot\WidgetsManagement::register_widget_feeder($events_feeder);
 
-    EWCore::register_form("ew/ui/apps/contents/navs", "posts", [
-        'id'    => 'content-management/posts',
-        'title' => 'Posts',
-        'url'   => '~ew-blog/html/core/explorer-posts.php'
-    ]);
+//    EWCore::register_form("ew/ui/apps/contents/navs", "posts", [
+//        'id'    => 'content-management/posts',
+//        'title' => 'Posts',
+//        'url'   => '~ew-blog/html/core/explorer-posts.php'
+//    ]);
 
     ob_start();
     include EW_PACKAGES_DIR . '/ew_blog/html/core/tab-post-publish.php';
@@ -151,6 +166,14 @@ class Core extends \ew\Module {
     return \ew\APIResourceHandler::to_api_response($result, [
                 "totalRows" => $articles["totalRows"]
     ]);
+  }
+
+  public function call_on_article_add($id, $ew_blog_publish_date) {
+    
+  }
+
+  public function call_on_article_update($id, $WidgetManagement_pageUisId) {
+    
   }
 
 }

@@ -33,11 +33,14 @@
       rowCount: true,
       url: "<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/get-uis-list",
       pageSize: 30
-      , buttons: {"Select": function (row) {
+      , buttons: {
+        "Select": function (row) {
           if (onSelect)
             onSelect.apply(null, new Array(row));
           dp.dispose();
-        }}});
+        }
+      }
+    });
     dp.append("<div class='header-pane row'><h1 id='' class='col-xs-12'> UIS List: Select UIS</h1></div>");
     dp.append($("<div id='' class='form-content no-footer' ></div>").append(this.table.container));
     this.table.read();

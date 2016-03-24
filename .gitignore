@@ -1,1 +1,5 @@
 /packages/rm/public/cache/
+/packages/rm/public/media/
+/nbproject/private/
+/vendor/
+/node_modules/
