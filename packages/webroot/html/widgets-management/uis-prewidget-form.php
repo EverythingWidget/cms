@@ -141,7 +141,7 @@ $panelId = $_REQUEST['panelId'];
           uisForm.addWidget(data["widget_html"], containerElement[0]);
         } else
         {
-          uisForm.addWidget(data["widget_html"], containerElement.children(".row")[0]);
+          uisForm.addWidget(data["widget_html"], containerElement[0]);
         }
 
         $("#inspector-editor").trigger("refresh");

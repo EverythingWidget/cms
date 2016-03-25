@@ -482,7 +482,7 @@ class WidgetsManagement extends \ew\Module {
       $style_id_text = "id='$style_id'";
     }
 
-    $result_html.= "<div class='panel $style_class'  $style_id_text  data-panel-id=\"$panel_id\"  data-container-id=\"$container_id\"  data-panel='true'><div class='row'>";
+    $result_html.= "<div class='panel $style_class'  $style_id_text  data-panel-id=\"$panel_id\"  data-container-id=\"$container_id\"  data-panel='true'>";
 
     /* if ($parameters_array["title"] && $parameters_array["title"] != "none")
       {
@@ -493,7 +493,7 @@ class WidgetsManagement extends \ew\Module {
   }
 
   public static function close_panel() {
-    return '</div></div>';
+    return '</div>';
   }
 
   public static function open_block($panel_id, $container_id, $style_class, $style_id, $parameters, $row = TRUE, $block_name) {

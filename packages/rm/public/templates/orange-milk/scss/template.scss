@@ -140,6 +140,21 @@ body {
   width: 100%;
 }
 
+.panel {
+  display: block;
+  
+  &:before, &:after{
+    content: " ";
+    display: table;
+  }
+
+  &:after {
+    clear: both;
+  }
+}
+
+
+
 .panel.clearfix {
   margin: 0 auto;
 }

@@ -261,7 +261,7 @@ session_start();
 
       if (!$parent.attr("data-block"))
       {
-        $parent = $parent.children().eq(0);
+        //$parent = $parent.children().eq(0);
       }
 
       if ($parent.length <= 0)
@@ -413,50 +413,50 @@ session_start();
     //var liUl = null;
     var itemLabel;
 
-    $.each(children, function (k, inspectorItem) {
-      inspectorItem = $(inspectorItem);
+    $.each(children, function (k, uisItem) {
+      uisItem = $(uisItem);
       var liUl = null;
       //var div = $("<div></div>");
-      if (inspectorItem.hasClass("panel") || inspectorItem.hasClass("block")) {
+      if (uisItem.hasClass("panel") || uisItem.hasClass("block")) {
         liUl = $("<li><div href='#' class='item-label'>\n\
       <span class='handle panel'></span></div><a href='#' class='btn btn-primary btn-text add-item'>+</a><a href='#' class='close-icon' ></a></li>");
         itemLabel = liUl.find(".item-label");
-        liUl.attr("data-linked-panel-id", inspectorItem.attr("data-panel-id"));
+        liUl.attr("data-linked-panel-id", uisItem.attr("data-panel-id"));
         skipBoxBlock = false;
 
-        if (inspectorItem.hasClass("row")) {
+        if (uisItem.hasClass("row")) {
           itemLabel.append("Block");
           liUl.find(".handle").attr("class", "handle block");
           liUl.addClass("block");
           itemLabel.click(function (e) {
-            self.blockForm(inspectorItem.attr('data-panel-id'));
+            self.blockForm(uisItem.attr('data-panel-id'));
             e.preventDefault();
           });
-        } else if (inspectorItem.children(".row").length > 0) {
+        } else if (uisItem.children(".row").length > 0) {
           itemLabel.append("Panel");
           liUl.addClass("panel");
           // Set data link panel id for the panel
-          liUl.attr("data-linked-panel-id", inspectorItem.attr('data-panel-id'));
+          liUl.attr("data-linked-panel-id", uisItem.attr('data-panel-id'));
           self.lastItem = liUl;
 
           itemLabel.click(function (e) {
-            self.editPanel(inspectorItem.attr('data-panel-id'), inspectorItem.attr('data-container-id'));
+            self.editPanel(uisItem.attr('data-panel-id'), uisItem.attr('data-container-id'));
             e.preventDefault();
           });
           //skipBoxBlock = true;
           skipChildren = true;
         } else {
-          itemLabel.append("Panel");
+          itemLabel.append("Panel: " + (uisItem.attr('id') || ''));
           liUl.addClass("panel");
           itemLabel.click(function (e) {
-            self.editPanel(inspectorItem.attr('data-panel-id'), inspectorItem.attr('data-container-id'));
+            self.editPanel(uisItem.attr('data-panel-id'), uisItem.attr('data-container-id'));
             e.preventDefault();
           });
         }
 
         // Add widget button for panels
         var addItem = liUl.find(".add-item");
-        addItem.click($.proxy(self.showWidgetsList, self, inspectorItem.attr('data-panel-id')));
+        addItem.click($.proxy(self.showWidgetsList, self, uisItem.attr('data-panel-id')));
         addItem.hover(function () {
           liUl.addClass("highlight");
         }, function () {
@@ -466,11 +466,11 @@ session_start();
         // Remove button
         liUl.find(".close-icon").click(function (e) {
           e.preventDefault();
-          self.removePanel(inspectorItem.attr('data-panel-id'));
+          self.removePanel(uisItem.attr('data-panel-id'));
         });
 
         itemLabel.hover(function () {
-          var panel = frameBody.find("[data-panel-id='" + inspectorItem.attr('data-panel-id') + "']");
+          var panel = frameBody.find("[data-panel-id='" + uisItem.attr('data-panel-id') + "']");
           // Scroll to the panel if the panel is not in view port
           var offset = panel.offset();
           var scrollTop = frameBody.scrollTop();
@@ -497,13 +497,13 @@ session_start();
         });
 
         var ul = $("<ul></ul>");
-        ul.append(self.createInspector(inspectorItem));
+        ul.append(self.createInspector(uisItem));
         // Skip adding panel block to the editor
         if (skipBoxBlock) {
           if (self.lastItem) {
             self.lastItem.find(".add-item").unbind("click").click(function (e) {
               e.preventDefault();
-              self.showWidgetsList(inspectorItem.attr('data-panel-id'));
+              self.showWidgetsList(uisItem.attr('data-panel-id'));
             });
 
             self.lastItem.append(ul);
@@ -512,7 +512,7 @@ session_start();
         } else {
           if (skipChildren) {
             skipChildren = false;
-            ul.html(self.createInspector(inspectorItem.children().eq(0)));
+            ul.html(self.createInspector(uisItem.children().eq(0)));
             liUl.append(ul);
           } else {
             liUl.append(ul);
@@ -521,37 +521,40 @@ session_start();
         }
       }
 
-      if (inspectorItem.hasClass("widget-container")) {
+      if (uisItem.hasClass("widget-container")) {
         var widgetGlassPane = $(document.createElement("div"));
         widgetGlassPane.addClass("widget-glass-pane");
-        widgetGlassPane.data("widget-element", inspectorItem);
+        widgetGlassPane.data("widget-element", uisItem);
         frameBody.append(widgetGlassPane);
 
+        var widget = uisItem.children().eq(0);
+
         var editWidget = function (e) {
-          self.editWidget(inspectorItem.children().attr('data-widget-id'));
+          self.editWidget(widget.attr('data-widget-id'));
           e.preventDefault();
         };
 
         var li = $("<li class='widget'><div href='#' class='item-label'><span class='handle widget'></span></div><a href='#' class='close-icon' ></a></li>");
-        li.attr("data-linked-widget-id", inspectorItem.children().attr("data-widget-id"));
+        li.attr("data-linked-widget-id", widget.attr("data-widget-id"));
         var widgetTitle = li.find(".item-label");
-        widgetTitle.append(/*v.children().data("widget-id") +*/ inspectorItem.children().attr("data-widget-title"));
+
+        widgetTitle.append(widget.attr("data-widget-title") + ': ' + (widget.attr('id') || ''));
         widgetTitle.click(editWidget);
 
         li.find(".close-icon").click(function (e) {
           e.preventDefault();
-          self.removeWidget(inspectorItem.children().attr('data-widget-id'));
+          self.removeWidget(widget.attr('data-widget-id'));
         });
 
-        var inlineEditor = self.inlineEditor[inspectorItem.children().attr('data-widget-id')];
+        var inlineEditor = self.inlineEditor[widget.attr('data-widget-id')];
 
         if (inlineEditor)
         {
           inlineEditor.css({
             fontSize: "24px",
             position: "absolute",
-            top: inspectorItem.children().offset().top,
-            left: inspectorItem.children().offset().left,
+            top: widget.offset().top,
+            left: widget.offset().left,
             backgroundColor: "rgba(255,255,255,.8)"
           });
           frameBody.find("#editor-glass-pane").append(inlineEditor);
@@ -560,7 +563,8 @@ session_start();
 
         //var widgetClone = widget.clone();
         li.hover(function () {
-          var widget = frameBody.find("[data-widget-id='" + inspectorItem.children().attr('data-widget-id') + "']");
+          //console.log(widget);
+          //var widget = frameBody.find("[data-widget-id='" + widget.attr('data-widget-id') + "']");
           // Scroll to the widget if the panel is not in view port
           var offset = widget.offset();
           var scrollTop = frameBody.scrollTop();
@@ -569,8 +573,7 @@ session_start();
 
             frameBody.stop().animate({
               scrollTop: widget.offset().top
-            },
-                    500);
+            }, 500);
           }
 
           self.currentElementHighlight.css({
@@ -714,7 +717,8 @@ session_start();
           id: v.attr("id"),
           /*"panelParameters": JSON.parse(v.attr("data-panel-parameters") || '{}'),*/
           // Read the childeren of the panel
-          children: self.readPanels(v.children().eq(0))
+          //children: self.readPanels(v.children().eq(0))
+          children: self.readPanels(v)
         };
       } else if (v.attr("data-widget-container")) {
         v.removeClass("widget-container");

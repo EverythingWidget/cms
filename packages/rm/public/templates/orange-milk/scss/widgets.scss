@@ -4,6 +4,10 @@
 */
 
 .widget {
+  &.logo {
+    float: left;
+  }
+  
   &.slider {
     margin: 0 -15px;
     height: 100%;

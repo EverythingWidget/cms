@@ -321,13 +321,13 @@
             autoOpen: false,
             class: "center"
           });
-          imageChooserDialog.append("<div class='form-content grid no-footer'></div>");
+          //imageChooserDialog.append("<div class='form-content grid no-footer'></div>");
           $.post("~admin/html/content-management/link-chooser-media.php", {
             callback: settings.callbackName
           }, function (data) {
-            imageChooserDialog.find(".form-content:first").append(data);
-            imageChooserDialog.prepend("<div class='header-pane row'><h1 class='form-title'>Media</h1></div>");
-
+            //imageChooserDialog.find(".form-content:first").append(data);
+            //imageChooserDialog.prepend("<div class='header-pane row'><h1 class='form-title'>Media</h1></div>");
+            imageChooserDialog.html(data);
             imageChooserDialog[0].selectMedia = function (image) {
               $element.val(image.src).change();
               imageChooserDialog.dispose();
