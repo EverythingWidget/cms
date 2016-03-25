@@ -32,7 +32,10 @@ function script() {
         var _this = this;
         var dialog = $.EW("getParentDialog", $("#article-form"));
         var loader;
-        this.bAdd = EW.addActivity({title: "tr{Save}", defaultClass: "btn-success", activity: "admin/api/content-management/add-article",
+        this.bAdd = EW.addActivity({
+          activity: "admin/api/content-management/add-article",
+          title: "tr{Save}",
+          defaultClass: "btn-success",
           parameters: function () {
             if (!$("#article-form").EW().validate()) {
               return false;
@@ -48,10 +51,12 @@ function script() {
           },
           onDone: function (response) {
             System.UI.components.body.EW().notify(response).show();
-            System.setHashParameters({articleId: response.id});
             ContentForm.setData(response.data);
             $(document).trigger("article-list.refresh");
             loader.dispose();
+            System.setHashParameters({
+              article: response.data.id
+            });
           }}).hide();
 
         this.bEditAndClose = EW.addActivity({title: "tr{Save and Close}",
@@ -77,7 +82,10 @@ function script() {
             loader.dispose(true);
           }}).hide();
 
-        this.bUpdate = EW.addActivity({title: "tr{Update}", defaultClass: "btn-success", activity: "admin/api/content-management/update-article",
+        this.bUpdate = EW.addActivity({
+          activity: "admin/api/content-management/update-article",
+          title: "tr{Update}",
+          defaultClass: "btn-success",
           parameters: function () {
             if (!$("#article-form").EW().validate()) {
               return false;

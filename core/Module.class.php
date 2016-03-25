@@ -269,7 +269,6 @@ class Module {
    * @param Module $object [optional] <p><b>Section</b> object that contains the function</p>
    */
   public function add_listener($command, $function, $object = null) {
-    //self::$action_registry[$name][$command] = array("function" => $function, "class" => $object);
     if (!$object) {
       $object = $this;
     }

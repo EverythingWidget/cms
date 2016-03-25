@@ -95,9 +95,10 @@ class WidgetsManagement extends \ew\Module {
     //$this->register_content_label("uis", "");
   }
 
-  public function call_on_folder_update($id, $WidgetManagement_pageUisId) {
-    if (isset($id) && $WidgetManagement_pageUisId) {
-      $this->set_uis("/folder/" . $id, $WidgetManagement_pageUisId);
+  public function call_on_folder_update($id, $webroot) {
+    $page_uis_id = $webroot['page_uis_id'];
+    if (isset($id) && $page_uis_id) {
+      $this->set_uis("/folder/" . $id, $page_uis_id);
     }
     else {
       $this->set_uis("/folder/" . $id, null);
@@ -105,13 +106,16 @@ class WidgetsManagement extends \ew\Module {
   }
 
   public function call_on_folder_get($__response_data) {
+    $result = [];
     if (isset($__response_data["data"]) && $__response_data["data"]["id"]) {
       $uis_id = $__response_data["data"]["id"];
       $page_uis = json_decode($this->get_path_uis("/folder/$uis_id"), true);
-      $__response_data["data"]["WidgetManagement_pageUisId"] = ($page_uis["id"]) ? $page_uis["id"] : "";
-      $__response_data["data"]["WidgetManagement_name"] = ($page_uis["name"]) ? $page_uis["name"] : "Inherit/Default";
+      $result["data"] = [
+          "webroot/page_uis_id" => ($page_uis["id"]) ? $page_uis["id"] : "",
+          "webroot/name"        => ($page_uis["name"]) ? $page_uis["name"] : "Inherit/Default"
+      ];
     }
-    return $__response_data;
+    return $result;
   }
 
   public function get_templates() {

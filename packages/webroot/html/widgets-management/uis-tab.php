@@ -8,13 +8,13 @@
   <h2>
     Page UIS
   </h2>
-  <h3 id='WidgetManagement_name' class="mar-bot">
+  <h3 id='webroot/name' class="mar-bot">
     Inherit/Default
   </h3>
   <button type="button" class="btn btn-default" onclick="uisTab.uisListDialog(uisTab.setPageUIS)">
     Change
   </button>
-  <input type="hidden" class="text-field" name="WidgetManagement_pageUisId" id="WidgetManagement_pageUisId" value="">
+  <input type="hidden" class="text-field" name="webroot/page_uis_id" id="webroot/page_uis_id" value="">
 
   <button type="button" id="remove-uis-btn" class="btn btn-danger" onclick="uisTab.removeUIS()">
     tr{Remove}
@@ -48,9 +48,9 @@
   };
 
   UisTab.prototype.setPageUIS = function (uisId) {
-    $("#WidgetManagement_pageUisId").val(uisId.data("field-id"));
-    $("#WidgetManagement_name").text(uisId.data("field-name"));
-    if ($("#WidgetManagement_pageUisId").val())
+    $("#webroot\\/page_uis_id").val(uisId.data("field-id"));
+    $("#webroot\\/name").text(uisId.data("field-name"));
+    if ($("#webroot\\/page_uis_id").val())
     {
       $("#remove-uis-btn").show();
     } else
@@ -60,15 +60,15 @@
   };
 
   UisTab.prototype.removeUIS = function () {
-    $("#WidgetManagement_pageUisId").val("");
-    $("#WidgetManagement_name").text("Inherit/Default");
+    $("#webroot\\/page_uis_id").val("");
+    $("#webroot\\/name").text("Inherit/Default");
     $("#remove-uis-btn").hide();
   };
 
   var uisTab = new UisTab();
 
   $("#{{formId}}").on("refresh", function (e, formData) {
-    if ($("#WidgetManagement_pageUisId").val()) {
+    if ($("#webroot\\/page_uis_id").val()) {
       $("#remove-uis-btn").show();
     } else {
       $("#remove-uis-btn").hide();

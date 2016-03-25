@@ -37,7 +37,7 @@ class Core extends \ew\Module {
                 'id'           => 'BIGINT AUTO_INCREMENT PRIMARY KEY',
                 'content_id'   => 'VARCHAR(200) NOT NULL',
                 'visibility'   => 'VARCHAR(300) NOT NULL',
-                'publish_date' => 'DATETIME NOT NULL',
+                'publish_date' => 'DATETIME NULL',
                 'order'        => 'SMALLINT DEFAULT 0',
                 'user_id'      => 'BIGINT(20) NOT NULL'
     ]);
@@ -74,6 +74,10 @@ class Core extends \ew\Module {
         'title' => 'Publish',
         "form"  => $tab_post_publish
     ]);
+
+    $this->add_listener('admin/api/content-management/add-article', 'call_on_article_update');
+    $this->add_listener('admin/api/content-management/update-article', 'call_on_article_update');
+    $this->add_listener('admin/api/content-management/get-article', 'call_on_article_get');
   }
 
   protected function install_permissions() {
@@ -168,12 +172,74 @@ class Core extends \ew\Module {
     ]);
   }
 
-  public function call_on_article_add($id, $ew_blog_publish_date) {
-    
+  public function call_on_article_update($id, $__response_data, $ew_blog) {
+    $pdo = EWCore::get_db_PDO();
+    $publish_date = $ew_blog['publish_date'];
+    $table_name = 'ew_contents';
+    $post_id = \ew\DBUtility::row_exist($pdo, 'ew_blog_posts', $id, 'content_id');
+    if ($post_id) {
+      $this->update_post($post_id['id'], $publish_date);
+    }
+    else {
+      $this->add_post($__response_data['data']['id'], $publish_date);
+    }
+
+    return [
+        'data'     => [
+            'publish_date' => $publish_date,
+        ],
+        'included' => [
+            [
+                'type' => 'ew_blog_post',
+                'id'   => $post_id['id']
+            ]
+        ]
+    ];
   }
 
-  public function call_on_article_update($id, $WidgetManagement_pageUisId) {
-    
+  public function call_on_article_get($articleId) {
+    $post = $this->get_post($articleId);
+    $date = $post['publish_date'];
+
+    if (!$date || $date === '0000-00-00 00:00:00') {
+      $date = '';
+    }
+    else {
+      $date = \DateTime::createFromFormat('Y-m-d H:i:s', $post['publish_date'])->format('Y-m-d');
+    }
+
+    $result = [];
+
+    if ($post) {
+      $result['data'] = [
+          'ew_blog/publish_date' => $date
+      ];
+    }
+
+    return $result;
+  }
+
+  public function get_post($content_id) {
+    $pdo = EWCore::get_db_PDO();
+    $stmt = $pdo->prepare("SELECT * FROM ew_blog_posts WHERE content_id = ?");
+
+    $stmt->execute([$content_id]);
+
+    return $stmt->fetch(\PDO::FETCH_ASSOC);
+  }
+
+  public function add_post($content_id, $publish_date) {
+    $pdo = EWCore::get_db_PDO();
+    $stmt = $pdo->prepare("INSERT INTO ew_blog_posts(content_id, publish_date, user_id) VALUES (?, ?, ?)");
+    return $stmt->execute([$content_id, $publish_date, $_SESSION['EW.USER_ID']]);
+  }
+
+  public function update_post($id, $publish_date) {
+    $pdo = EWCore::get_db_PDO();
+    $stmt = $pdo->prepare("UPDATE ew_blog_posts SET publish_date = ? WHERE id = ?");
+
+    return $stmt->execute([$publish_date, $id]);
+    //return $stmt->queryString;
   }
 
 }

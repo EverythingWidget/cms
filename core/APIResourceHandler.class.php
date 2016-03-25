@@ -116,7 +116,7 @@ class APIResourceHandler extends ResourceHandler {
               $listener_result = $listener_method_object->invokeArgs($listener["object"], $arguments);
 
               if (isset($listener_result)) {
-                $result = array_merge($result, $listener_result);
+                $result = array_merge_recursive($result, $listener_result);
               }
             }
           }

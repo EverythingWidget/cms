@@ -238,6 +238,15 @@ class EWCore {
   public static function create_arguments($method, $parameters, $response_data) {
     $arguments = $method->getParameters();
     $method_arguments = array();
+    $namespaces = [];
+    foreach ($parameters as $par => $value) {
+      if (preg_match('/(.*)\/(.*)/', $par, $m)) {
+        if (!$parameters[$m[1]])
+          $parameters[$m[1]] = [];
+        $parameters[$m[1]][$m[2]] = $value;
+      }
+    }
+    //print_r($parameters);
     foreach ($arguments as $arg) {
       $temp = null;
       if (/* $arg->getName() === "_data" || */$arg->getName() === "__parameters") {
@@ -253,6 +262,7 @@ class EWCore {
       if (isset($parameters[$arg->getName()])) {
         $temp = $parameters[$arg->getName()];
       }
+
       $method_arguments[] = $temp;
     }
     return $method_arguments;
