@@ -1,5 +1,5 @@
 <script>
-  (function (UIUtility) {
+  window.addEventListener('load', function () {
 
     var states = {};
     System.services.app_service = {
@@ -8,14 +8,14 @@
           return;
 
         states.loading_app = true;
-        System.UI.components.appTitle.text(app.title);
+        System.ui.components.appTitle.text(app.title);
         if (EW.selectedApp) {
           UIUtility.removeClass(EW.selectedApp, "selected");
         }
 
         EW.selectedApp = $(".apps-menu-link[data-app='" + app.id + "']").addClass("selected")[0];
 
-        System.UI.components.sectionsMenuTitle.addClass("inline-loader");
+        System.ui.components.sectionsMenuTitle.addClass("inline-loader");
         if (EW.selectedSection)
           UIUtility.addClass(EW.selectedSection, "inline-loader");
 
@@ -24,14 +24,14 @@
       },
       on_loaded: function (app, html) {
         $("#app-content").append(html);
-        System.UI.components.mainContent = $("#main-content");
+        System.ui.components.mainContent = $("#main-content");
 
 
         if (app.type === "app"/* && app.id === "system/" + System.getHashParam("app")*/) {
           EW.currentAppSections = System.modules[app.id].data.sections;
           EW.hoverApp = app.id;
 
-          System.UI.components.sectionsMenuList[0].setAttribute("data", EW.currentAppSections);
+          System.ui.components.sectionsMenuList[0].data = EW.currentAppSections;
 
           app.start();
         }
@@ -56,25 +56,25 @@
         }
       },
       load_section: function (sectionId) {
-        var element = System.UI.components.sectionsMenuList[0].links[EW.oldApp + "/" + sectionId];
+        var element = System.ui.components.sectionsMenuList[0].links[EW.oldApp + "/" + sectionId];
         System.ui.behaviors.highlightAppSection(element.dataset.index, element);
         //System.UI.components.sectionsMenuList[0].value = element.dataset.index;
 
         if (element) {
-          var sectionData = System.UI.components.sectionsMenuList[0].data[element.dataset.index];
+          var sectionData = System.ui.components.sectionsMenuList[0].data[element.dataset.index];
           if (!sectionData/* || sectionData.id === EW.oldSectionId*/)
             return;
           EW.oldSectionId = sectionData.id;
-          System.UI.components.sectionsMenuTitle.text(sectionData.title);
-          System.UI.components.sectionsMenuTitle.addClass("inline-loader");
+          System.ui.components.sectionsMenuTitle.text(sectionData.title);
+          System.ui.components.sectionsMenuTitle.addClass("inline-loader");
           UIUtility.addClass(element, "inline-loader");
 
           $("#action-bar-items").find("button,div").remove();
-          System.UI.components.appMainActions.empty();
-          System.UI.components.mainFloatMenu[0].clean();
+          System.ui.components.appMainActions.empty();
+          System.ui.components.mainFloatMenu[0].clean();
           //System.UI.components.mainFloatMenu[0].contract();
 
-          System.UI.components.mainContent.empty();
+          System.ui.components.mainContent.empty();
           System.abortAllRequests();
 
           System.loadModule(sectionData, function (mod, data) {
@@ -84,23 +84,23 @@
               return;
             }
 
-            System.UI.components.mainContent.css("opacity", 0);
-            System.UI.components.mainContent.html(data);
+            System.ui.components.mainContent.css("opacity", 0);
+            System.ui.components.mainContent.html(data);
             mod.start();
             if (anim) {
               anim.pause();
             }
 
-            if (System.UI.components.mainFloatMenu.children().length > 0) {
-              System.UI.components.mainFloatMenu[0].on();
+            if (System.ui.components.mainFloatMenu.children().length > 0) {
+              System.ui.components.mainFloatMenu[0].on();
             } else {
-              System.UI.components.mainFloatMenu[0].off();
+              System.ui.components.mainFloatMenu[0].off();
             }
 
-            System.UI.components.sectionsMenuTitle.removeClass("inline-loader");
+            System.ui.components.sectionsMenuTitle.removeClass("inline-loader");
             UIUtility.removeClass(element, "inline-loader");
 
-            anim = TweenLite.fromTo(System.UI.components.mainContent[0], .5, {
+            anim = TweenLite.fromTo(System.ui.components.mainContent[0], .5, {
               opacity: 0,
               ease: "Power2.easeInOut",
               top: "0"
@@ -115,12 +115,24 @@
       }
     };
 
+    System.ui.behaviors.selectElementOnly = function (element, oldElement, styleClass) {
+      if ('string' !== typeof styleClass) {
+        styleClass = 'selected';
+      }
+
+      if (oldElement) {
+        System.ui.utility.removeClass(oldElement, "selected");
+      }
+
+      System.ui.utility.addClass(element, "selected");
+      return element;
+    };
+
     var anim = false;
 
     EverythingWidgets.prototype.readApps = function () {
       var _this = this;
-      this.apps = {/*Home: {id: "Home"}*/
-      };
+      this.apps = {};
 
       $.get('~admin/api/EWCore/read_apps_sections', {
         appDir: "admin"
@@ -373,295 +385,295 @@
 
     // Plugins which initilize when document is ready
     //var EW = null;
-    $(document).ready(function () {
-      var mouseInNavMenu = false,
-              enterOnLink = false,
-              currentSectionIndex = null;
+    //$(document).ready(function () {
+    var mouseInNavMenu = false,
+            enterOnLink = false,
+            currentSectionIndex = null;
 
-      System.ui.body = $("body")[0];
-      System.ui.components = {
-        homeButton: $("#apps"),
-        appTitle: $("#app-title"),
-        appBar: $("#app-bar"),
-        homePane: $("#home-pane"),
-        appMainActions: $("#app-main-actions"),
-        mainContent: $("#main-content"),
-        body: $("body"),
-        document: $(document),
-        navigationMenu: $("#navigation-menu"),
-        appsMenu: $("#apps-menu"),
-        sectionsMenu: $("#sections-menu"),
-        sectionsMenuList: $("#sections-menu-list"),
-        sectionsMenuTitle: $("#sections-menu-title"),
-        mainFloatMenu: $("#main-float-menu")
-      };
+    System.ui.body = $("body")[0];
+    System.ui.components = {
+      homeButton: $("#apps"),
+      appTitle: $("#app-title"),
+      appBar: $("#app-bar"),
+      homePane: $("#home-pane"),
+      appMainActions: $("#app-main-actions"),
+      mainContent: $("#main-content"),
+      body: $("body"),
+      document: $(document),
+      navigationMenu: $("#navigation-menu"),
+      appsMenu: $("#apps-menu"),
+      sectionsMenu: $("#sections-menu"),
+      sectionsMenuList: $("#sections-menu-list"),
+      sectionsMenuTitle: $("#sections-menu-title"),
+      mainFloatMenu: $("#main-float-menu")
+    };
 
-      System.ui.behaviors.highlightAppSection = function (index, section) {
-        currentSectionIndex = index;
+    System.ui.behaviors.highlightAppSection = function (index, section) {
+      currentSectionIndex = index;
 
-        if (EW.selectedSection) {
-          UIUtility.removeClass(EW.selectedSection, "selected");
-        }
+      if (EW.selectedSection) {
+        UIUtility.removeClass(EW.selectedSection, "selected");
+      }
 
-        EW.selectedSection = section;
-        UIUtility.addClass(EW.selectedSection, "selected");
-      };
+      EW.selectedSection = section;
+      UIUtility.addClass(EW.selectedSection, "selected");
+    };
 
-      System.ui.behaviors.selectTab = function (tabHref, tabsContainer) {
-        tabsContainer.find('a[href="' + tabHref + '"]').tab('show');
-      };
+    System.ui.behaviors.selectTab = function (tabHref, tabsContainer) {
+      tabsContainer.find('a[href="' + tabHref + '"]').tab('show');
+    };
 
-      System.UI.components.sectionsMenuList[0].onSetData = function (data) {
-        if (data.length) {
-          if (mouseInNavMenu) {
-            TweenLite.to(System.UI.components.sectionsMenu[0], .3, {
-              className: "sections-menu in",
-              ease: "Power2.easeInOut"
-            });
-          }
-        } else {
-          //alert(System.UI.components.sectionsMenu.height());
-          System.UI.components.sectionsMenu.css("height", System.UI.components.sectionsMenu.height());
-          TweenLite.to(System.UI.components.sectionsMenu[0], .2, {
-            className: "sections-menu out",
-            height: "94px",
-            ease: "Power2.easeInOut",
-            onComplete: function () {
-              System.UI.components.sectionsMenu.css("height", "");
-            }
-          });
-        }
-      };
-
-      System.UI.components.sectionsMenuList[0].addEventListener('item-selected', function (e) {
-        //console.log(e.detail)
-        System.ui.behaviors.highlightAppSection(e.detail.index, e.detail.element);
-        //alert(e.detail.data.id + ' sss')
-        System.setHashParameters({
-          app: e.detail.data.id
-        }, true);
-      });
-
-      System.UI.components.navigationMenu.on("mouseenter", function (e) {
-        if (mouseInNavMenu)
-          return;
-
-        mouseInNavMenu = true;
-        System.UI.components.navigationMenu.addClass("expand");
-
-        if (System.UI.components.sectionsMenuList[0].data.length) {
-          if (!enterOnLink)
-            System.UI.components.sectionsMenu[0].style.top = System.UI.components.appsMenu.find(".apps-menu-link.selected")[0].getBoundingClientRect().top + "px";
-
-          TweenLite.to(System.UI.components.sectionsMenu[0], .3, {
+    System.ui.components.sectionsMenuList[0].onSetData = function (data) {
+      if (data.length) {
+        if (mouseInNavMenu) {
+          TweenLite.to(System.ui.components.sectionsMenu[0], .3, {
             className: "sections-menu in",
             ease: "Power2.easeInOut"
           });
         }
-      });
-
-      var moveAnim = null;
-
-      System.UI.components.appsMenu.on("mouseenter", "a", function (e) {
-        EW.hoverApp = "system/" + e.target.dataset.app;
-
-        var sections = System.modules["system/" + e.target.dataset.app] ? System.modules["system/" + e.target.dataset.app].data.sections : [];
-        System.UI.components.sectionsMenuList[0].setAttribute("data", sections);
-
-        if (EW.oldApp === e.target.dataset.app) {
-          //System.UI.components.sectionsMenuList[0].value = currentSectionIndex;
-          System.ui.behaviors.highlightAppSection(currentSectionIndex, System.UI.components.sectionsMenuList[0].links[currentSectionIndex]);
-        }
-
-        if (!mouseInNavMenu) {
-          System.UI.components.sectionsMenu[0].style.top = e.target.getBoundingClientRect().top + "px";
-          enterOnLink = true;
-          return;
-        }
-
-        moveAnim = TweenLite.to(System.UI.components.sectionsMenu[0], .2, {
-          top: e.target.getBoundingClientRect().top
-        });
-      });
-
-      System.UI.components.navigationMenu.on("mouseleave", function () {
-        mouseInNavMenu = false;
-        enterOnLink = false;
-
-        System.UI.components.navigationMenu.removeClass("expand");
-
-        TweenLite.to(System.UI.components.sectionsMenu[0], .2, {
-          className: "sections-menu",
-          marginTop: 0,
+      } else {
+        //alert(System.UI.components.sectionsMenu.height());
+        System.ui.components.sectionsMenu.css("height", System.ui.components.sectionsMenu.height());
+        TweenLite.to(System.ui.components.sectionsMenu[0], .2, {
+          className: "sections-menu out",
+          height: "94px",
           ease: "Power2.easeInOut",
           onComplete: function () {
-            if (!states.loading_app && currentSectionIndex !== System.UI.components.sectionsMenuList[0].value) {
-              System.UI.components.sectionsMenuList[0].setAttribute("data", EW.currentAppSections);
-              //System.UI.components.sectionsMenuList[0].value = currentSectionIndex;
-              System.ui.behaviors.highlightAppSection(currentSectionIndex, EW.selectedSection);
-            }
+            System.ui.components.sectionsMenu.css("height", "");
           }
         });
-      });
+      }
+    };
 
+    System.ui.components.sectionsMenuList[0].addEventListener('item-selected', function (e) {
+      //console.log(e.detail)
+      System.ui.behaviors.highlightAppSection(e.detail.index, e.detail.element);
+      //alert(e.detail.data.id + ' sss')
+      System.setHashParameters({
+        app: e.detail.data.id
+      }, true);
+    });
 
+    System.ui.components.navigationMenu.on("mouseenter", function (e) {
+      if (mouseInNavMenu)
+        return;
 
-      var hashDetection = new hashHandler();
-      EW.activities = <?php echo EWCore::read_activities(); ?>;
-      EW.oldApp = null;
-      EW.apps = {};
+      mouseInNavMenu = true;
+      System.ui.components.navigationMenu.addClass("expand");
 
-      // Init EW plugins
-      initPlugins(document);
+      if (System.ui.components.sectionsMenuList[0].data.length) {
+        if (!enterOnLink)
+          System.ui.components.sectionsMenu[0].style.top = System.ui.components.appsMenu.find(".apps-menu-link.selected")[0].getBoundingClientRect().top + "px";
 
-      var installModules = <?= EWCore::read_apps_sections(); ?>;
-      installModules.forEach(function (e) {
-        EW.apps[e.id] = e;
-      });
+        TweenLite.to(System.ui.components.sectionsMenu[0], .3, {
+          className: "sections-menu in",
+          ease: "Power2.easeInOut"
+        });
+      }
+    });
 
-      var items = [
-        '<ul class="apps-menu-list">'
-      ];
-      $.each(installModules, function (key, val) {
+    var moveAnim = null;
 
-        items.push('<li class=""><a class="apps-menu-link" data-app="'
-                + val['id'] + '"><span class="">'
-                + val['title'] + '</span></a></li>');
+    System.ui.components.appsMenu.on("mouseenter", "a", function (e) {
+      EW.hoverApp = "system/" + e.target.dataset.app;
 
-        val.file = "index.php";
-        val.id = val['id'];
-        EW.apps[val['id']] = val;
+      var sections = System.modules["system/" + e.target.dataset.app] ? System.modules["system/" + e.target.dataset.app].data.sections : [];
+      System.ui.components.sectionsMenuList[0].data = sections;
 
-      });
-      items.push('</ul>');
-      $(items.join('')).appendTo("#apps-menu");
-
-      System.init(installModules);
-      System.app.on('app', System.services.app_service.load);
-      System.start();
-
-      if (!System.getHashParam('app')) {
-        System.setHashParameters({
-          app: "content-management"
-        },
-                true);
+      if (EW.oldApp === e.target.dataset.app) {
+        //System.UI.components.sectionsMenuList[0].value = currentSectionIndex;
+        System.ui.behaviors.highlightAppSection(currentSectionIndex, System.ui.components.sectionsMenuList[0].links[currentSectionIndex]);
       }
 
-      $(document).ajaxStart(function (event, data) {
-        if (event.target.activeElement) {
-        }
+      if (!mouseInNavMenu) {
+        System.ui.components.sectionsMenu[0].style.top = e.target.getBoundingClientRect().top + "px";
+        enterOnLink = true;
+        return;
+      }
+
+      moveAnim = TweenLite.to(System.ui.components.sectionsMenu[0], .2, {
+        top: e.target.getBoundingClientRect().top
       });
+    });
 
-      $(document).ajaxComplete(function (event, data) {
-      });
-      // Notify error if an ajax request fail
-      $(document).ajaxError(function (event, data, status) {
-        // Added to ignore aborted request and don't show them as a error
-        if (data && data.statusText === "abort")
-          return;
-        if (EW.customAjaxErrorHandler) {
-          EW.customAjaxErrorHandler = false;
-          return;
-        }
+    System.ui.components.navigationMenu.on("mouseleave", function () {
+      mouseInNavMenu = false;
+      enterOnLink = false;
 
-        try
-        {
-          var errorsList = '<ul>';
-          $.each(data.responseJSON.reason, function (current, i) {
-            errorsList += '<li><h4>' + current + '</h4><p>' + i.join() + '</p></li>';
-          });
-          errorsList += '</ul>';
-        } catch (e) {
-          console.log("ajaxError:");
-          console.log(e, status);
-          console.log(data);
-        }
+      System.ui.components.navigationMenu.removeClass("expand");
 
-        $("body").EW().notify({
-          "message": {
-            html: (!data.responseJSON) ? "---ERROR---" : data.responseJSON.message + errorsList
-          },
-          status: "error",
-          position: "n",
-          delay: "stay"
-        }).show();
-      });
-
-      $('select').selectpicker({
-        container: "body"
-      });
-
-      document.addEventListener("DOMNodeInserted", function (event) {
-        if (event.target) {
-          initPlugins(event.target);
-        }
-
-        $(".nav.xs-nav-tabs").data("xs-nav-bar-active", function (e) {
-          if ($(e).hasClass("xs-nav-tabs-active") || $(e).data("nav-xs-btn")) {
-            return;
+      TweenLite.to(System.ui.components.sectionsMenu[0], .2, {
+        className: "sections-menu",
+        marginTop: 0,
+        ease: "Power2.easeInOut",
+        onComplete: function () {
+          if (!states.loading_app && currentSectionIndex !== System.ui.components.sectionsMenuList[0].value) {
+            System.ui.components.sectionsMenuList[0].data = EW.currentAppSections;
+            //System.UI.components.sectionsMenuList[0].value = currentSectionIndex;
+            System.ui.behaviors.highlightAppSection(currentSectionIndex, EW.selectedSection);
           }
-
-          var nav = $(e);
-          // Show default nav style when the window is wide enough
-          $(window).one("ew.screen.sm ew.screen.md ew.screen.lg", function () {
-            if (nav && nav.hasClass("xs-nav-tabs-active")) {
-              nav.unbind('mouseenter mouseleave');
-              nav.data("button").after(nav.data("menu"));
-              nav.data("menu").show();
-              nav.data("button").remove();
-              nav.attr("class", nav.data("oldClass"));
-              nav.find(".dropdown").remove();
-              nav.css({
-                top: ""
-              });
-              nav.data("nav-xs-btn", null);
-            }
-          });
-
-          nav.data("oldClass", nav.attr("class"));
-          nav.data("nav-xs-btn", true);
-          nav.data("menu", nav);
-          nav.prop("class", "nav nav-pills xs-nav-tabs-active nav-stacked dropdown col-xs-10");
-          nav.data("element-id", nav.attr("id"));
-          var xsNavbar = $("<ul class='nav nav-pills'><li class='dropdown'><a id='tabs-btn' data-toggle='tab' href='#'></a></li></ul>");
-          xsNavbar.data("nav-xs-btn", true);
-          nav.before(xsNavbar);
-          nav.data("button", xsNavbar);
-          var dropdownNavBtn = $("<li class='dropdown'><a id='tabs-btn' data-toggle='tab' href='#'></a></li>");
-          nav.prepend(dropdownNavBtn);
-          var xsNavBarBtn = xsNavbar.find("li");
-          nav.css({
-            top: xsNavBarBtn.offset().top
-          });
-
-          nav.hide();
-          xsNavBarBtn.hover(function () {
-            nav.show();
-            nav = nav.detach();
-            $("body").append(nav);
-          });
-
-          nav.hover(function (e) {
-            nav.stop().animate({
-              className: "nav nav-pills xs-nav-tabs-active nav-stacked dropdown in"
-            },
-                    300, "Power3.easeOut");
-            e.preventDefault();
-          }, function () {
-            nav.stop().animate({
-              className: "nav nav-pills xs-nav-tabs-active nav-stacked dropdown"
-            },
-                    300, "Power3.easeOut", function () {
-                      nav = nav.detach();
-                    });
-          });
-        });
-
-        if ($(window).width() < 768) {
-          $(window).trigger("ew.screen.xs");
         }
       });
     });
+
+
+
+    var hashDetection = new hashHandler();
+    EW.activities = <?php echo EWCore::read_activities(); ?>;
+    EW.oldApp = null;
+    EW.apps = {};
+
+    // Init EW plugins
+    initPlugins(document);
+
+    var installModules = <?= EWCore::read_apps_sections(); ?>;
+    installModules.forEach(function (e) {
+      EW.apps[e.id] = e;
+    });
+
+    var items = [
+      '<ul class="apps-menu-list">'
+    ];
+    $.each(installModules, function (key, val) {
+
+      items.push('<li class=""><a class="apps-menu-link" data-app="'
+              + val['id'] + '"><span class="">'
+              + val['title'] + '</span></a></li>');
+
+      val.file = "index.php";
+      val.id = val['id'];
+      EW.apps[val['id']] = val;
+
+    });
+    items.push('</ul>');
+    $(items.join('')).appendTo("#apps-menu");
+
+    System.init(installModules);
+    System.app.on('app', System.services.app_service.load);
+    System.start();
+
+    if (!System.getHashParam('app')) {
+      System.setHashParameters({
+        app: "content-management"
+      },
+              true);
+    }
+
+    $(document).ajaxStart(function (event, data) {
+      if (event.target.activeElement) {
+      }
+    });
+
+    $(document).ajaxComplete(function (event, data) {
+    });
+    // Notify error if an ajax request fail
+    $(document).ajaxError(function (event, data, status) {
+      // Added to ignore aborted request and don't show them as a error
+      if (data && data.statusText === "abort")
+        return;
+      if (EW.customAjaxErrorHandler) {
+        EW.customAjaxErrorHandler = false;
+        return;
+      }
+
+      try
+      {
+        var errorsList = '<ul>';
+        $.each(data.responseJSON.reason, function (current, i) {
+          errorsList += '<li><h4>' + current + '</h4><p>' + i.join() + '</p></li>';
+        });
+        errorsList += '</ul>';
+      } catch (e) {
+        console.log("ajaxError:");
+        console.log(e, status);
+        console.log(data);
+      }
+
+      $("body").EW().notify({
+        "message": {
+          html: (!data.responseJSON) ? "---ERROR---" : data.responseJSON.message + errorsList
+        },
+        status: "error",
+        position: "n",
+        delay: "stay"
+      }).show();
+    });
+
+    $('select').selectpicker({
+      container: "body"
+    });
+
+    document.addEventListener("DOMNodeInserted", function (event) {
+      if (event.target) {
+        initPlugins(event.target);
+      }
+
+      $(".nav.xs-nav-tabs").data("xs-nav-bar-active", function (e) {
+        if ($(e).hasClass("xs-nav-tabs-active") || $(e).data("nav-xs-btn")) {
+          return;
+        }
+
+        var nav = $(e);
+        // Show default nav style when the window is wide enough
+        $(window).one("ew.screen.sm ew.screen.md ew.screen.lg", function () {
+          if (nav && nav.hasClass("xs-nav-tabs-active")) {
+            nav.unbind('mouseenter mouseleave');
+            nav.data("button").after(nav.data("menu"));
+            nav.data("menu").show();
+            nav.data("button").remove();
+            nav.attr("class", nav.data("oldClass"));
+            nav.find(".dropdown").remove();
+            nav.css({
+              top: ""
+            });
+            nav.data("nav-xs-btn", null);
+          }
+        });
+
+        nav.data("oldClass", nav.attr("class"));
+        nav.data("nav-xs-btn", true);
+        nav.data("menu", nav);
+        nav.prop("class", "nav nav-pills xs-nav-tabs-active nav-stacked dropdown col-xs-10");
+        nav.data("element-id", nav.attr("id"));
+        var xsNavbar = $("<ul class='nav nav-pills'><li class='dropdown'><a id='tabs-btn' data-toggle='tab' href='#'></a></li></ul>");
+        xsNavbar.data("nav-xs-btn", true);
+        nav.before(xsNavbar);
+        nav.data("button", xsNavbar);
+        var dropdownNavBtn = $("<li class='dropdown'><a id='tabs-btn' data-toggle='tab' href='#'></a></li>");
+        nav.prepend(dropdownNavBtn);
+        var xsNavBarBtn = xsNavbar.find("li");
+        nav.css({
+          top: xsNavBarBtn.offset().top
+        });
+
+        nav.hide();
+        xsNavBarBtn.hover(function () {
+          nav.show();
+          nav = nav.detach();
+          $("body").append(nav);
+        });
+
+        nav.hover(function (e) {
+          nav.stop().animate({
+            className: "nav nav-pills xs-nav-tabs-active nav-stacked dropdown in"
+          },
+                  300, "Power3.easeOut");
+          e.preventDefault();
+        }, function () {
+          nav.stop().animate({
+            className: "nav nav-pills xs-nav-tabs-active nav-stacked dropdown"
+          },
+                  300, "Power3.easeOut", function () {
+                    nav = nav.detach();
+                  });
+        });
+      });
+
+      if ($(window).width() < 768) {
+        $(window).trigger("ew.screen.xs");
+      }
+    });
+    //});
 
     $(window).on("ew.screen.xs", function () {
       $(".nav.xs-nav-tabs:not(.xs-nav-tabs-active)").each(function (i) {
@@ -669,5 +681,5 @@
       });
     });
 
-  })(UIUtility);
+  });
 </script>

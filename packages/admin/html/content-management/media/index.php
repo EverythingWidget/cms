@@ -40,6 +40,19 @@
 <script>
   (function (System) {
 
+    System.entity('media_chooser_service', function (item) {
+      if (item.type === 'image')
+        return item;
+
+      if (item.type === 'audio')
+        return {
+          type: 'text',
+          text: item.path
+        };
+
+      return null;
+    });
+
     function MediaComponent(module) {
       var component = this;
       this.states = {};
@@ -60,18 +73,6 @@
         component.start();
       };
 
-      this.ui.behaviors.highlightCurrentItem = function (element) {
-        if (component.currentItem === element)
-          return;
-
-        if (component.currentItem) {
-          System.ui.utility.removeClass(component.currentItem, "selected");
-        }
-
-        component.currentItem = element;
-        System.ui.utility.addClass(component.currentItem, "selected");
-      };
-
       this.defineTabs(this.tabs);
       this.defineStateHandlers(this.states);
       System.Util.installModuleStateHandlers(this.module, this.states);
@@ -83,10 +84,15 @@
         component.module.setParamIfNot('app', 'content-management/media/photos');
         System.ui.behaviors.selectTab('#media-photos', component.ui.components.tabs_pills);
         component.module.setParamIfNull("album", "0/images");
+        component.uploadAudioActivity.hide();
+        component.newAlbumActivity.show();
       };
 
       tabs.audios = function () {
         System.ui.behaviors.selectTab('#media-audios', component.ui.components.tabs_pills);
+        component.uploadAudioActivity.show();
+        component.newAlbumActivity.hide();
+        component.uploadImageActivity.hide();
       };
     };
 
@@ -104,7 +110,12 @@
       states.app = function (full, tab) {
         component.module.data.tab = tab || component.module.data.tab || 'photos';
 
-        if (component.module.data.oldTab === component.module.data.tab) {
+//        if (component.module.data.oldTab === component.module.data.tab) {
+//          component.module.setParamIfNot('app', 'content-management/media/' + component.module.data.tab);
+//          return;
+//        }
+
+        if (component.module.getParam('app') !== 'content-management/media/' + component.module.data.tab) {
           component.module.setParamIfNot('app', 'content-management/media/' + component.module.data.tab);
           return;
         }
@@ -223,6 +234,10 @@
       System.UI.components.document.on("media-list.refresh", function (e, eventData) {
         component.listMedia();
       });
+
+      System.UI.components.document.off('media.audios.list.refresh').on('media.audios.list.refresh', function (e, eventData) {
+        component.audiosListTable.refresh();
+      });
     };
 
     MediaComponent.prototype.start = function () {
@@ -241,7 +256,7 @@
         }
       });
 
-      this.uploadFileActivity = EW.addActivity({
+      this.uploadImageActivity = EW.addActivity({
         title: "tr{Upload Photo}",
         activity: "admin/html/content-management/media/upload-form.php",
         parent: System.UI.components.mainFloatMenu,
@@ -402,7 +417,7 @@
               .addClass(ext);
       div.attr("tabindex", "1");
       div.on("focus click", function () {
-        component.ui.behaviors.highlightCurrentItem(div[0]);
+        component.currentItem = System.ui.behaviors.selectElementOnly(div[0], component.currentItem);
       });
 
       if (ImageURL) {
@@ -438,11 +453,11 @@
               .addClass(ext);
       div.attr("tabindex", "1");
       div[0].addEventListener("focus", function (e) {
-        component.ui.behaviors.highlightCurrentItem(div[0]);
+        component.currentItem = System.ui.behaviors.selectElementOnly(div[0], component.currentItem);
       });
 
       div[0].addEventListener("click", function () {
-        component.ui.behaviors.highlightCurrentItem(div[0]);
+        component.currentItem = System.ui.behaviors.selectElementOnly(div[0], component.currentItem);
       });
 
       if (ImageURL) {
@@ -474,13 +489,11 @@
       this.on('album', function (e, id, images) {
         if (id > 0) {
           mediaComponent.newAlbumActivity.hide();
-          mediaComponent.uploadFileActivity.show();
-          mediaComponent.uploadAudioActivity.show();
+          mediaComponent.uploadImageActivity.show();
           mediaComponent.bBack.comeIn();
         } else {
           mediaComponent.newAlbumActivity.show();
-          mediaComponent.uploadFileActivity.hide();
-          mediaComponent.uploadAudioActivity.hide();
+          mediaComponent.uploadImageActivity.hide();
           mediaComponent.bBack.comeOut();
         }
 

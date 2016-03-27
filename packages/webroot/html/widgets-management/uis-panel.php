@@ -226,7 +226,7 @@ $container_id = $_REQUEST["containerId"];
     var self = this;
     //EW.lock(neuis.currentDialog, "...");
     var params = $("#appearance-conf").serializeJSON();
-    var div = $("<div data-panel='true'><div class='row'></div></div>");
+    var div = $("<div data-panel='true'></div>");
     div.prop("id", $("#style_id").val());
     div.attr("data-panel-parameters", params);
     div.prop("class", "panel " + $("#used-classes").text());

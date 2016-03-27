@@ -13,7 +13,7 @@
 
   &.section {
     position: relative;
-    padding-bottom: 60px;
+    padding: 30px 0;
   }
 
   &.content {
@@ -32,9 +32,12 @@
   }
 
   &.daily-quote {
-    background-image: url('images/daily-feed.jpg');
+    background-color: #fff;
+    border: 0px solid #999;
+    border-width: 3px 0;
     background-position: center center;
     background-size: cover;
+    margin: 30px -15px;
   }
 
   &.text {
@@ -63,7 +66,7 @@
     position: relative;
 
     margin-top: 0;
-    padding: 60px 0;
+    padding: 30px 0;
     color: #fff;
     font-weight: 300;
 

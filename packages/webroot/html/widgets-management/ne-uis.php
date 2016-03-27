@@ -20,7 +20,7 @@ session_start();
     <h1 class="pull-left">Select an item</h1><a href='javascript:void(0)' class='close-icon pull-right' style="margin:5px;"></a>      
     <div  id="items-list-content" ></div>
   </div>
-  <div class="uis-editor-tool-pane">
+  <div class="uis-editor-tool-pane" id="uis-editor-tool-pane">
 
     <div class="tab-content">
       <div class="tab-pane active" id="inspector">
@@ -183,6 +183,7 @@ session_start();
     this.inlineEditor = {};
     this.editorWindow = $("#editor-container");
     this.editorWindow.width($(window).width() - 400);
+    this.uis_editor_tool_pane = $("#uis-editor-tool-pane");
     this.inspectorEditor = $("#inspector-editor");
     this.editorIFrame = $(document.getElementById("fr"));
     this.editorFrame = this.editorIFrame.contents().find("body");
@@ -325,13 +326,13 @@ session_start();
     this.inspectorEditor.append(addBlockBtn);
 
     //Add refresh event to inspector editor
-    this.inspectorEditor.off("refresh");
-    this.inspectorEditor.on("refresh", function () {
+    this.inspectorEditor.off("refresh").on("refresh", function () {
+      var st = _this.uis_editor_tool_pane[0].scrollTop;
       _this.loadInspectorEditor();
+      _this.uis_editor_tool_pane[0].scrollTop = st;
     });
 
-    this.hEditor = {
-    };
+    this.hEditor = {};
 
     // Load inspector editor when the content of frame has been loaded
     this.editorIFrame.load(function () {
@@ -342,12 +343,14 @@ session_start();
     });
 
     // Destroy preference modal on close
-    $.EW("getParentDialog", $("#ew-uis-editor")).on("close", function () {
+    var parentDialog = $.EW("getParentDialog", $("#ew-uis-editor"));
+    parentDialog.on("close", function () {
       clearTimeout(repTimeout);
       if (_this.dpPreference)
         _this.dpPreference.trigger("destroy");
     });
-    $.EW("getParentDialog", $("#ew-uis-editor")).on("beforeClose", function () {
+    
+    parentDialog.on("beforeClose", function () {
       //console.log(self.oldStructure, self.createContentHeirarchy(), self.createContentHeirarchy());
       if (JSON.stringify(_this.oldStructure) !== JSON.stringify(_this.createContentHeirarchy())) {
         return confirm("tr{You have unsaved changes. Are you sure you want to close?}");
@@ -898,8 +901,7 @@ session_start();
       element: this.editorWindow[0]
       ,
       akcent: "loader center"
-    },
-            .5);
+    }, .5);
 
     //var originalTemplateSettings = self.templateSettings;
     // Read template settings from template settings form
@@ -917,7 +919,6 @@ session_start();
       body.off();
       head.find("#template-script").remove();
       head.find("#widget-data").remove();
-
       if ($('#template').val()) {
         head.find("#template-css").attr("href", "~rm/public/" + $('#template').val() + "/template.css");
       }
@@ -928,7 +929,6 @@ session_start();
       widgetData.id = "widget-data";
       widgetData.innerHTML = data["widget_data"];
       myIframe.contentWindow.document.head.appendChild(widgetData);
-
       var templateBody = myIframe.contentWindow.document.createElement("div");
       templateBody.id = "base-content-pane";
       templateBody.className = "container";
@@ -945,52 +945,57 @@ session_start();
 
         myIframe.contentWindow.document.head.appendChild(script);
       }
-
       // Find scripts inside the template body and run them
       var scripts = [];
       var bodyContent = myIframe.contentWindow.document.body;
-      findScriptTags(bodyContent, scripts);
+      scripts = findScriptTags(bodyContent);
       for (script in scripts) {
-        evalScript(scripts[script]);
+        evalScript(scripts[script], myIframe);
       }
+
+      var evt = document.createEvent('Event');
+      evt.initEvent('load', false, false);
+      myIframe.contentWindow.dispatchEvent(evt);
 
       _this.inspectorEditor.trigger("refresh");
       lock.dispose();
     }, "json");
   };
 
-  function findScriptTags(element, scripts) {
+  function findScriptTags(element) {
+    var scripts = [];
     var ret = element.childNodes;
     if (ret) {
       for (var i = 0; ret[i]; i++) {
         if (ret[i].childNodes.length > 0)
-          findScriptTags(ret[i], scripts);
+          scripts = scripts.concat(findScriptTags(ret[i], scripts));
         if (scripts && nodeName(ret[i], "script") && (!ret[i].type || ret[i].type.toLowerCase() === "text/javascript")) {
           scripts.push(ret[i].parentNode ? ret[i].parentNode.removeChild(ret[i]) : ret[i]);
         }
       }
     }
+    return scripts;
   }
 
   function nodeName(elem, name) {
     return elem.nodeName && elem.nodeName.toUpperCase() === name.toUpperCase();
   }
 
-  function evalScript(elem) {
+  function evalScript(elem, frame) {
     var data = (elem.text || elem.textContent || elem.innerHTML || "");
-    var frame = document.getElementById("fr");
-    var head = frame.contentWindow.document.getElementsByTagName("head")[0] || frame.contentWindow.document.documentElement,
-            script = frame.contentWindow.document.createElement("script");
+    //var frame = document.getElementById("fr");
+    var head = frame.contentWindow.document.getElementsByTagName("head")[0] || frame.contentWindow.document.documentElement;
+    var script = frame.contentWindow.document.createElement("script");
     script.appendChild(frame.contentWindow.document.createTextNode(data));
     if (elem.src)
       script.src = elem.src;
-    //myIframe.contentWindow.document.body.appendChild(templateBody);    
-    head.insertBefore(script, head.firstChild);
-    head.removeChild(script);
 
     if (elem.parentNode) {
       elem.parentNode.removeChild(elem);
     }
+
+    head.insertBefore(script, head.firstChild);
+    head.removeChild(script);
   }
 
   UISForm.prototype.addWidget = function (html, parentId) {
@@ -1127,10 +1132,9 @@ session_start();
       template: self.uisTemplate,
       uisId: self.uisId,
       containerId: containerId
-    },
-            function (data) {
-              d.html(data);
-            });
+    }, function (data) {
+      d.html(data);
+    });
     return false;
   };
 

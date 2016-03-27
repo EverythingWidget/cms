@@ -1482,13 +1482,13 @@ EWTable.prototype.createRow = function (val, rc) {
       action.text(v.title || k);
 
       action.click(function () {
-        btnAction.apply(ewTable, new Array(tableRow));
+        btnAction.apply(ewTable, [tableRow]);
       });
       actionsCellBtns.push(action);
       //actionsCell.append(action);
     });
   }
-  delete val.id;
+  //delete val.id;
   var index = rc;
   // Set the row label 
   if (ewTable.config.rowLabel)
@@ -1546,6 +1546,7 @@ EWTable.prototype.listRows = function () {
   if (self.config.rowCount) {
     for (var i = 0, len = self.data.result.length; i < len; i++) {
       row = self.createRow(self.data.result[i], 1);
+      row[0].index = i;
       var rn = document.createElement("td");
       rn.innerTEXT = rc;
       row[0].insertBefore(rn, row[0].firstChild);
@@ -1597,7 +1598,7 @@ EWTable.prototype.read = function (customURLData) {
           _this.previous.css('visibility', 'visible');
         }
         _this.data = data;
-        if(data.data) {
+        if (data.data) {
           _this.data.result = data.data;
         }
         _this.table.css({

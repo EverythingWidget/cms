@@ -75,27 +75,27 @@
 
   SystemList.accessors = {
     data: {
-      attribute: {
-        validate: function (value) {
-          this.xtag.value = null;
-          if ("object" !== typeof value) {
-            this.xtag.data = [];
-            value = [];
-          }
-
-          this.xtag.data = value;
-
-          if (this.onSetData) {
-            this.onSetData(value);
-          }
-
-          this.render(value, this.xtag.action);
-
-          return  '[ object data ]';
-        }
-      },
+      /*attribute: {
+       validate: function (value) {
+       
+       
+       return  '[ object data ]';
+       }
+       },*/
       set: function (value) {
+        this.xtag.value = null;
+        if ("object" !== typeof value) {
+          this.xtag.data = [];
+          value = [];
+        }
 
+        this.xtag.data = value;
+
+        if (this.onSetData) {
+          this.onSetData(value);
+        }
+
+        this.render(value, this.xtag.action);
       },
       get: function () {
         return this.xtag.data;

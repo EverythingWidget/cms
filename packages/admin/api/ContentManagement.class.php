@@ -92,7 +92,7 @@ class ContentManagement extends \ew\Module {
         'title' => 'Documents',
         'url'   => '~admin/html/content-management/documents.php'
     ]);
-    
+
     EWCore::register_form("ew/ui/apps/contents/navs", "media", [
         'id'    => 'content-management/media',
         'title' => 'Media',
@@ -158,6 +158,7 @@ class ContentManagement extends \ew\Module {
         "api/delete-image",
         "api/upload_file",
         "api/upload_audio",
+        "api/register-audio",
         "api/media-audios",
         "html/article-form.php:tr{New Article}",
         "html/folder-form.php:tr{New Folder}",
@@ -1352,14 +1353,37 @@ class ContentManagement extends \ew\Module {
         message => "Uploaded: " . $succeed . " Error: " . $error . ' ' . $foo->error]);
   }
 
+  public function register_audio($path) {
+    $root = EW_MEDIA_DIR . '/audios';
+
+    if (file_exists($root . '/' . $path)) {
+
+      $upload_file = $root . '/' . $path;
+
+      $actual_name = pathinfo($upload_file, PATHINFO_FILENAME);
+
+      $this->add_content("audio", $actual_name, null, "", "", 'audios/' . $path, "", "");
+      
+      return \ew\APIResourceHandler::to_api_response([
+                'status'  => "success",
+                'message' => "file registered: $path"
+    ]);
+    }
+
+    return EWCore::log_error(400,'File does not exsit');
+  }
+
   public function upload_audio($path, $parent_id) {
+    ini_set("memory_limit", "100M");
 
     $files = [];
     if (isset($_FILES['audio'])) {
       foreach ($_FILES['audio'] as $k => $l) {
+
         foreach ($l as $i => $v) {
           if (!array_key_exists($i, $files))
             $files[$i] = [];
+
           $files[$i][$k] = $v;
         }
       }
@@ -1369,8 +1393,15 @@ class ContentManagement extends \ew\Module {
     $error = 0;
     $mimes = ['audio/x-mp3', 'audio/mp3', 'audio/x-mpeg-3', 'audio/mpeg3'];
     foreach ($files as $file) {
+      if ($file['error'] !== 0) {
+        return \ew\APIResourceHandler::to_api_response([
+                    'status'  => "error",
+                    'message' => 'error number: ' . $file['error']
+        ]);
+      }
+
       if (is_uploaded_file($file['tmp_name']) && in_array($file['type'], $mimes)) {
-        $root = EW_MEDIA_DIR . '/audio-' . $parent_id;
+        $root = EW_MEDIA_DIR . '/audios';
 
         if (!file_exists($root)) {
           mkdir($root, 0777, true);
@@ -1388,11 +1419,11 @@ class ContentManagement extends \ew\Module {
           $i++;
         }
 
-        $uploadFile = $root . '/' . $name;
+        $upload_file = $root . '/' . $name;
 
-        if (move_uploaded_file($file['tmp_name'], $uploadFile)) {
-          $location = $uploadFile;
-          $this->add_content("audio", $actual_name, $parent_id, "", "", $location, "", "");
+        if (move_uploaded_file($file['tmp_name'], $upload_file)) {
+          $location = $upload_file;
+          $this->add_content("audio", $actual_name, $parent_id, "", "", 'audios/' . $name, "", "");
           $succeed++;
         }
         else {

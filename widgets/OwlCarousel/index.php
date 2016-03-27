@@ -11,10 +11,10 @@ if ($feeder["type"] === "widget-feeder") {
   }
 
   $items_list = EWCore::call_api($feeder_obj->api_url, [
-              "id" => $id,
-              "token" => $token * $num_of_items_per_page,
-              "size" => $num_of_items_per_page,
-              "order_by" => $order,
+              "id"        => $id,
+              "token"     => $token * $num_of_items_per_page,
+              "size"      => $num_of_items_per_page,
+              "order_by"  => $order,
               '_language' => $_REQUEST['_language']
   ]);
 }
@@ -97,7 +97,7 @@ $page = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 
 webroot\WidgetsManagement::add_html_script([
     'include' => "rm/public/js/owl-carousel/owl.carousel.js"
-    ]);
+]);
 
 webroot\WidgetsManagement::include_html_link([
     'rm/public/js/owl-carousel/animate.css',
@@ -106,7 +106,7 @@ webroot\WidgetsManagement::include_html_link([
 ]);
 ?>
 
-<div class="owl-carousel">
+<div class="owl-carousel" style="width: 1px;min-width: 100%;">
   <?php
   $index = 1;
   if (isset($items)) {
@@ -132,8 +132,8 @@ webroot\WidgetsManagement::include_html_link([
       autoplayHoverPause:<?php echo $autoPlayPause ?>,
       smartSpeed: <?= $smart_speed ?>,
       navText: [
-        '<',
-        '>'
+        '',
+        ''
       ],
       responsive: {
         0: {

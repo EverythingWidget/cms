@@ -95,15 +95,20 @@
     }
 
     MediaComponent.prototype.defineTabs = function (tabs) {
-      var _this = this;
+      var component = this;
       tabs.photos = function () {
-        _this.module.setParamIfNot('app', 'media-chooser/photos');
-        System.ui.behaviors.selectTab('#media-photos', _this.ui.components.tabs_pills);
-        _this.module.setParamIfNull("album", "0/images");
+        component.module.setParamIfNot('app', 'media-chooser/photos');
+        System.ui.behaviors.selectTab('#media-photos', component.ui.components.tabs_pills);
+        component.module.setParamIfNull("album", "0/images");
+        component.uploadAudioActivity.hide();
+        component.newAlbumActivity.show();
       };
 
       tabs.audios = function () {
-        System.ui.behaviors.selectTab('#media-audios', _this.ui.components.tabs_pills);
+        System.ui.behaviors.selectTab('#media-audios', component.ui.components.tabs_pills);
+        component.uploadAudioActivity.show();
+        component.newAlbumActivity.hide();
+        component.uploadImageActivity.hide();
       };
     };
 
@@ -135,6 +140,8 @@
     };
 
     MediaComponent.prototype.initAudiosTab = function () {
+      var component = this;
+
       this.audiosListTable = EW.createTable({
         name: "audio-list",
         rowLabel: "{name}",
@@ -148,7 +155,17 @@
         },
         rowCount: true,
         url: "~admin/api/content-management/media-audios",
-        pageSize: 30
+        pageSize: 30,
+        buttons: {
+          select: function (e) {
+            var audio = {
+              type: 'audio',
+              path: this.data.result[e[0].index].content
+            };
+
+            component.mediaChooserDialog[0].selectMedia(audio);
+          }
+        }
       });
 
 
@@ -266,7 +283,7 @@
         }
       });
 
-      this.uploadFileActivity = EW.addActivity({
+      this.uploadImageActivity = EW.addActivity({
         title: "tr{Upload Photo}",
         activity: "admin/html/content-management/media/upload-form.php",
         parent: Domain.ui.components.mainFloatMenu,
@@ -387,6 +404,7 @@
           } else {
             temp[0].addEventListener("click", function (e) {
               component.selectedImage = {
+                type: 'image',
                 src: element.absURL
               };
 
@@ -497,6 +515,11 @@
       img.src = image.src;
     };
 
+    /*MediaComponent.prototype.selectAudio = function (image) {
+     var component = this;
+     component.mediaChooserDialog[0].selectMedia(component.selectedImage);
+     };*/
+
     var mediaComponent;
     Domain.module("media-chooser", function () {
       mediaComponent = new MediaComponent(this);
@@ -509,12 +532,12 @@
       this.on('album', function (e, id, images) {
         if (id > 0) {
           mediaComponent.newAlbumActivity.hide();
-          mediaComponent.uploadFileActivity.show();
+          mediaComponent.uploadImageActivity.show();
           mediaComponent.uploadAudioActivity.show();
           mediaComponent.bBack.comeIn();
         } else {
           mediaComponent.newAlbumActivity.show();
-          mediaComponent.uploadFileActivity.hide();
+          mediaComponent.uploadImageActivity.hide();
           mediaComponent.uploadAudioActivity.hide();
           mediaComponent.bBack.comeOut();
         }

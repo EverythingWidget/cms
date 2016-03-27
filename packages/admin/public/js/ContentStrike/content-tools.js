@@ -10511,21 +10511,57 @@
         autoOpen: false,
         class: "center"
       });
-      imageChooserDialog.append("<div class='form-content grid tabs-bar no-footer'></div>");
+      //imageChooserDialog.append("<div class='form-content grid tabs-bar no-footer'></div>");
       $.post("~admin/html/content-management/link-chooser-media.php", {
         callback: ""
       }, function (data) {
-        imageChooserDialog.find(".form-content:first").append(data);
-        imageChooserDialog.prepend("<div class='header-pane tabs-bar row'><h1 class='form-title'>Media</h1></div>");
+        imageChooserDialog.html(data);
+        //imageChooserDialog.prepend("<div class='header-pane tabs-bar row'><h1 class='form-title'>Media</h1></div>");
         var ref = ContentField._insertAt(element), node = ref[0], index = ref[1];
-        imageChooserDialog[0].selectMedia = function (image) {
-          var image = new ContentEdit.Image(image);
-          node.parent().attach(image, index);
-          node.parent().detach(element);
-          toContentField(image, element.attr('content-field'));
+//        imageChooserDialog[0].selectMedia = function (image) {
+//          var image = new ContentEdit.Image(image);
+//          node.parent().attach(image, index);
+//          node.parent().detach(element);
+//          toContentField(image, element.attr('content-field'));
+//          imageChooserDialog.dispose();
+//        };
+        imageChooserDialog[0].selectMedia = function (item) {
+          var selectedItem = System.entity('media_chooser_service').call(null, item);
+
+          switch (selectedItem.type) {
+            case 'text':
+              var text = new ContentEdit.Text('p', {}, selectedItem.text);
+              if (node.parent()) {
+                node.parent().attach(text, index);
+              } else {
+                var firstRegion = app.orderedRegions()[0];
+                firstRegion.attach(text, index);
+              }
+              toContentField(text, element.attr('content-field'));
+              text.focus();
+
+              break;
+
+            case 'image':
+              var image = new ContentEdit.Image({
+                src: selectedItem,
+                width: selectedItem.width,
+                hight: selectedItem.height
+              });
+              if (node.parent()) {
+                node.parent().attach(image, index);
+              } else {
+                var firstRegion = app.orderedRegions()[0];
+                firstRegion.attach(image, index);
+              }
+              toContentField(image, element.attr('content-field'));
+              image.focus();
+
+              break;
+          }
+
           imageChooserDialog.dispose();
         };
-
       });
 
       imageChooserDialog.open();
@@ -10720,18 +10756,41 @@
         //imageChooserDialog.prepend("<div class='header-pane tabs-bar row'><h1 class='form-title'>Media</h1></div>");
         imageChooserDialog.html(data);
         var ref = _this._insertAt(element), node = ref[0], index = ref[1];
-        imageChooserDialog[0].selectMedia = function (image) {
-          var image = new ContentEdit.Image(image);
-          if (node.parent()) {
-            node.parent().attach(image, index);
-          } else {
-            var firstRegion = app.orderedRegions()[0];
-            firstRegion.attach(image, index);
+        imageChooserDialog[0].selectMedia = function (item) {
+          var element = System.entity('media_chooser_service').call(null, item);
+
+          switch (element.type) {
+            case 'text':
+              var text = new ContentEdit.Text('p', {}, element.text);
+              if (node.parent()) {
+                node.parent().attach(text, index);
+              } else {
+                var firstRegion = app.orderedRegions()[0];
+                firstRegion.attach(text, index);
+              }
+              text.focus();
+
+              break;
+
+            case 'image':
+              var image = new ContentEdit.Image({
+                src: element,
+                width: element.width,
+                hight: element.height
+              });
+              if (node.parent()) {
+                node.parent().attach(image, index);
+              } else {
+                var firstRegion = app.orderedRegions()[0];
+                firstRegion.attach(image, index);
+              }
+              image.focus();
+
+              break;
           }
-          image.focus();
+
           imageChooserDialog.dispose();
         };
-
       });
 
       imageChooserDialog.open();

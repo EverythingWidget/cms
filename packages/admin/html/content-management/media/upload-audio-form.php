@@ -4,7 +4,7 @@
   </h1>
 </div>
 <div  class="form-content " >
-  <form enctype="multipart/form-data" id="upload-form">   
+  <form enctype="multipart/form-data" id="upload-audio-form">   
     <div class="col-xs-12 mt" id="choose-files">
       <label>Choose your files:</label>
       <input class="text-field" type="file" accept="audio/*" multiple name="audio[]" id="audio" />
@@ -12,6 +12,13 @@
     <input type="hidden"   name="parent_id" id="parent_id" value="<?php echo $_REQUEST["parentId"] ?>" />
     <div id="progress-bar">
       <progress value="0" max="100"></progress>
+    </div>
+  </form>
+
+  <form id="register-audio-form">   
+    <div class="col-xs-12 mt" id="choose-files">
+
+      <input class="text-field" data-label="Audio file path"  name="path" id="path" />
     </div>
   </form>
 </div>
@@ -62,25 +69,45 @@
   }
 </style>
 <script>
-  function Upload()
-  {
+  function Upload() {
     this.bUpload = EW.addAction("Upload", function () {
-      uploadForm.doUpload();
+      if ($('#register-audio-form #path').val()) {
+
+        this.seeFolderActivity = EW.getActivity({
+          activity: "admin/api/content-management/register-audio",
+          parameters: function () {
+
+            return {
+              path: $('#register-audio-form #path').val()
+            };
+          },
+          onDone: function (res) {
+            $("body").EW().notify(res.data).show();
+            if (res.statusCode === 200) {
+              $.EW("getParentDialog", $("#upload-audio-form")).trigger("close");
+              $(document).trigger("media.audios.refresh");
+            }
+          }
+        });
+        this.seeFolderActivity();
+      } else {
+        uploadForm.doUpload();
+      }
     });
   }
 
   Upload.prototype.doUpload = function () {
     // Get the form data. This serializes the entire form. pritty easy huh!
-    var form = new FormData($('#upload-form')[0]);
+    var form = new FormData($('#upload-audio-form')[0]);
     uploadForm.bUpload.comeOut(200);
     $('#choose-files').animate({
       opacity: 0
     },
-    200);
+            200);
 
     // Make the ajax call
     $.ajax({
-      url: '<?php echo EW_ROOT_URL ?>~admin/api/content-management/upload-audio',
+      url: '~admin/api/content-management/upload-audio',
       type: 'POST',
       dataType: "json",
       xhr: function () {
@@ -94,10 +121,9 @@
       //beforeSend: functionname,
       success: function (res) {
         $("body").EW().notify(res.data).show();
-        if (res.status == "success")
-        {
-          $.EW("getParentDialog", $("#upload-form")).trigger("close");
-          $(document).trigger("media-list.refresh");
+        if (res.statusCode === 200) {
+          $.EW("getParentDialog", $("#upload-audio-form")).trigger("close");
+          $(document).trigger("media.audios.refresh");
         }
         //$('#content_here_please').html(res);
       },
@@ -123,8 +149,7 @@
     }
   };
 
-  Upload.prototype.dispose = function ()
-  {
+  Upload.prototype.dispose = function () {
     uploadForm.bUpload.remove();
   };
   var uploadForm = new Upload();

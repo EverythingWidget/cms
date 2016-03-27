@@ -6,8 +6,14 @@
 .widget {
   &.logo {
     float: left;
+
+    img {
+      width: auto;
+      height: 70px;
+      margin: 5px 0;
+    }
   }
-  
+
   &.slider {
     margin: 0 -15px;
     height: 100%;
@@ -16,6 +22,7 @@
     .item {
       padding-top: 200px;
       overflow: hidden;
+      direction: rtl;
 
       h2 {
         font-size: 3em;
@@ -51,30 +58,37 @@
 
   &.important-event {
     height: 475px;
-    background-color: $item-background-color;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, .1), 0 5px 15px rgba(0, 0, 0, .2);
+    background-color: #fff;
+    box-shadow: 0 3px 7px rgba(0,0,0,0.1),0 9px 15px rgba(0,0,0,0.1);
     overflow: hidden;
+    border-radius: 5px;
 
     img {
       max-width: 100%;
       margin: 0 auto;
       height: auto;
+      display: block;
     }       
   }
 
   &.events-list { 
     .owl-carousel {
-
+      .owl-stage-outer{
+        padding: 15px 0;
+      }
       .item {
         color: $font-color;
-        height: 400px;
-        background-color: $akcent-background-color;
+        height: 355px;
+        background-color: #fff;
         overflow: hidden;
-        margin: 0 15px 15px;    
+        margin: 0 15px 15px;
+        border-radius: 4px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1),0 6px 9px rgba(0,0,0,0.1);
 
         h2, p {
-          padding: 5px 15px;
+          padding: 0px 15px;
           font-weight: 300;
+          margin: 10px 0;
         }
 
         img {
@@ -86,6 +100,8 @@
       }
 
       .owl-prev, .owl-next  {
+        background-repeat: no-repeat !important;
+        background-position: center center !important;
         font-size: 2em;
         background-color: $font-akcent-color;
         width: 50px;
@@ -98,7 +114,12 @@
         box-shadow: 0 1px 3px rgba(0, 0, 0, .1), 0 4px 7px rgba(0, 0, 0, .1);
       }
 
+      .owl-prev {
+        background-image: url(images/icon-arrow-left.png) !important;
+      } 
+
       .owl-next {
+        background-image: url(images/icon-arrow-right.png) !important;
         float: right;
       }      
 
@@ -169,6 +190,10 @@
         float: right;
         font-size: 1.3em;
         color: $font-color;
+
+        .played {
+          color: $font-akcent-color;
+        }
       }
     }
   }
@@ -232,12 +257,20 @@
 
   &.daily-quote {  
     margin: 0;
-    padding-top: 60px;
-    color: #fff;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    color: #666;
     z-index: 1;
     text-align: center;
     font-size: 1.2em;
     font-weight: 300;
+    
+    .list-item {
+      
+      h1 {
+        margin-top: 0;
+      }
+    }
   }
 
   &.list-col-3 {
@@ -245,7 +278,7 @@
 
     .list-item-cell {
       background-color: $akcent-background-color;
-      min-height: 400px;
+      min-height: 430px;
       overflow: hidden;
       padding: 15px;
       border-bottom: 3px solid $font-akcent-color;
@@ -254,18 +287,23 @@
       text-align: center;
 
       .front-image {
-        width: 100%;
+        max-width: 100%;
         max-height: 220px;
         display: block;
         margin: 0 auto 20px;
       }
 
-      .title {
-        font-size: 1.5em;
-        margin: 0;
+      .person {
+        max-height: 24px;
       }
 
-      h2 {
+      .title {
+        font-weight: 500;
+        font-size: 1.2em;
+        max-height: 58px;
+      }
+
+      h2, {
         font-weight: 500;
       }
 
@@ -315,6 +353,7 @@
       overflow: hidden;
       border: 10px solid #fff; 
       transition: all .3s;
+      box-shadow: 0 3px 5px rgba(0,0,0,.1), 0 5px 9px rgba(0,0,0,.1); 
     }
   }
 
@@ -362,10 +401,35 @@
       display: block;
     }
   }
+
+  &.text-right {
+    text-align: right;
+  }
+
+  & .people-sermon {
+    height: auto;
+    margin: 15px 0;
+    max-width: 256px;
+  }
+
+  & img {
+
+    &.align-left {
+      float: left;
+    }
+
+    &.align-right {
+      float: right
+    }
+  }
+
+  &.rtl {
+    direction: rtl;
+  }
 }
 
 .title h1 {
-  margin: 90px auto 0;
+  margin: 0px auto 0;
 }
 
 .rtl {

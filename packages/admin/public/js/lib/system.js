@@ -1,5 +1,6 @@
 (function () {
 
+  var entities = {};
   System = {
     moduleIdentifier: "app",
     modules: {},
@@ -24,6 +25,23 @@
       return this.controllers[controllerId] = controllerObject;
     },
     services: {},
+    service: function (service_id, serviceObject) {
+      if (!serviceObject) {
+        return this.services[service_id];
+      }
+      return this.services[service_id] = serviceObject;
+    },
+    entity: function (entity_id, entityObject) {
+      if (!entityObject) {
+        return entities[entity_id];
+      }
+      
+      if(entities[entity_id]) {
+       throw new Error("An entity with this id already exist. Entities can't be overwriten");
+      }
+      
+      this.entity[entity_id] = entityObject;
+    },
     // Apps Management
     /* registerApp: function (id, object)
      {

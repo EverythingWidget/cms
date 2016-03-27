@@ -30,9 +30,9 @@ $font-color: #444;
 //$font-akcent-color: #f50808;
 //$font-akcent-color: #0BB4D1;
 //$font-akcent-color: #FE9322;
-$font-akcent-color: #69C923;
-$font-akcent-color-dark: #59B913;
-$nav-bar-bg: rgba(255,255,255,.82);
+$font-akcent-color: #00a651;
+$font-akcent-color-dark: #04C160;
+$nav-bar-bg: rgba(255,255,255,.9);
 
 @import 'blocks.scss';
 @import 'widgets.scss';
@@ -192,7 +192,7 @@ body {
   }
 }
 
-.people:before {
+/*.people:before {
 
   content: '';
   position: absolute;
@@ -205,17 +205,18 @@ body {
   margin-left: -100px;
   left: 50%;
   top: 35px;
-  box-shadow: 0 3px 5px rgba(0,0,0,.1), 0 5px 9px rgba(0,0,0,.1);    
+  box-shadow: 0 3px 5px rgba(0,0,0,.1), 0 5px 9px rgba(0,0,0,.1); 
+  display:none;
 }
 
 .people:hover:before {
-  width: 100%;
-  height: 100%;
-  border-radius: 16px;
-  margin-left: 0;
-  left: 0;
+  width: 280px;
+  height: 280px;
+  border-radius: 100%;
+  margin-left: -140px;
+  left: 50%;
   top: 0;
-}
+}*/
 
 .people:hover img {
   transform: scale(1.2);
@@ -232,4 +233,8 @@ body {
 
 .block-row:after {
   clear: both;
+}
+
+.ew-hidden {
+  display: none;
 }
