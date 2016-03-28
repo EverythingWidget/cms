@@ -111,6 +111,62 @@
 
       return module;
     },
+    /** Creates a system state if does not exist and returns it.
+     * A state is more like a url state handler. It handles event that are originated from url or state source.
+     * It's recommended that developer use state only for listening to url events 
+     * and implement the business logic in a different class/object (e.g. Component or Service)
+     * This way, developer wont mix the business logic whit the System library logic.
+     * 
+     * @param {String} id
+     * @param {Object} object
+     * @param {Boolean} set true to force the system to re init the module
+     * @returns {System.MODULE_ABSTRACT}
+     */
+    state: function (id, object, forceReload) {
+      var module, modulePath, moduleNavigation;
+      var domain = this.domain;
+      if (!domain) {
+        throw "Domain can NOT be null";
+      }
+      id = this.id + '/' + id;
+
+      //if forceReload is true, then init the module again
+      if (!object && !forceReload/* && this.modules[id]*/) {
+        // Add the module to notYetStarted list so it can be started by startLastLoadedModule method
+        domain.notYetStarted.push(id);
+        return domain.modules[id];
+      }
+
+      if (domain.modules[id]) {
+        return domain.modules[id];
+      }
+
+      if (typeof (object) === "function") {
+        module = $.extend(true, {}, System.MODULE_ABSTRACT);
+        object.call(module);
+      } else {
+        module = $.extend(true, {}, System.MODULE_ABSTRACT, object || {});
+      }
+
+      module.domain = domain;
+      module.id = id;
+
+      modulePath = this.navigation[module.moduleIdentifier] ? this.navigation[module.moduleIdentifier] : [];
+      moduleNavigation = $.extend(true, {}, this.navigation);
+      moduleNavigation[module.moduleIdentifier] = modulePath.slice(id.split("/").length - 1);
+
+      domain.modules[id] /*= this.modules[id]*/ = module;
+      domain.notYetStarted.push(id);
+
+      // Set module hash for this module when its inited
+      // module hash will be set in the hashChanged method as well
+      // if current navigation path is equal to this module id
+      //module.hash = System.modulesHashes[id.replace("system/", "")] = module.moduleIdentifier + "=" + id.replace("system/", "");
+
+      module.init(moduleNavigation, this.params);
+
+      return module;
+    },
     hashListeners: {},
     data: {},
     /**

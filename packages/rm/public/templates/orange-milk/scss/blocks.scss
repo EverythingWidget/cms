@@ -4,6 +4,12 @@
 */
 
 .block {
+  &.main-slider {
+    padding: 0;
+    margin-bottom: 30px;
+    position: relative;
+  }
+
   &.float.nav-bar {
     position: fixed;
     top: 0;

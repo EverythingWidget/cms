@@ -40,7 +40,10 @@
 <script>
   (function (System) {
 
-    System.entity('media_chooser_service', function (item) {
+    var mediaComponent;
+
+    System.entity('services/media_chooser', function (item) {
+      console.log(item);
       if (item.type === 'image')
         return item;
 
@@ -51,6 +54,40 @@
         };
 
       return null;
+    });
+
+    System.entity('modules/media/photos', function () {
+      var module = this;
+      module.started = true;
+
+      this.on('album', function (e, id, images) {
+        if (id > 0) {
+          mediaComponent.newAlbumActivity.hide();
+          mediaComponent.uploadImageActivity.show();
+          mediaComponent.bBack.comeIn();
+        } else {
+          mediaComponent.newAlbumActivity.show();
+          mediaComponent.uploadImageActivity.hide();
+          mediaComponent.bBack.comeOut();
+        }
+
+        if (!id) {
+          id = 0;
+        }
+
+        if (images) {
+          if (id !== null && mediaComponent.albumId !== id) {
+            mediaComponent.albumId = parseInt(id);
+            if (mediaComponent.listInited) {
+              mediaComponent.module.setParam("select", null, true);
+            }
+
+            mediaComponent.listMedia();
+          }
+        }
+      });
+
+      this.on('select', mediaComponent.states.select);
     });
 
     function MediaComponent(module) {
@@ -477,44 +514,13 @@
       return div;
     };
 
-    var mediaComponent;
+
     System.module("content-management/media", function () {
       mediaComponent = new MediaComponent(this);
     });
 
-    System.module("content-management/media/photos", function () {
-      var module = this;
-      module.started = true;
+    System.module("content-management/media/photos", System.entity('modules/media/photos'));
 
-      this.on('album', function (e, id, images) {
-        if (id > 0) {
-          mediaComponent.newAlbumActivity.hide();
-          mediaComponent.uploadImageActivity.show();
-          mediaComponent.bBack.comeIn();
-        } else {
-          mediaComponent.newAlbumActivity.show();
-          mediaComponent.uploadImageActivity.hide();
-          mediaComponent.bBack.comeOut();
-        }
-
-        if (!id) {
-          id = 0;
-        }
-
-        if (images) {
-          if (id !== null && mediaComponent.albumId !== id) {
-            mediaComponent.albumId = parseInt(id);
-            if (mediaComponent.listInited) {
-              mediaComponent.module.setParam("select", null, true);
-            }
-
-            mediaComponent.listMedia();
-          }
-        }
-      });
-
-      this.on('select', mediaComponent.states.select);
-    });
 
     System.module("content-management/media/audios", function () {
       var module = this;

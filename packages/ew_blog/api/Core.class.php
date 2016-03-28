@@ -150,6 +150,7 @@ class Core extends \ew\Module {
             ->where('langs.key', 'admin_ContentManagement_language')
             ->where('langs.value', $_language)
             ->where('events.key', 'ew_blog_Core_event')
+            ->where('events.value', '>=', date("d-m-Y"))
             ->orderBy("events.value", 'ASC')
             ->get([
         '*',

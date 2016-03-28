@@ -142,7 +142,7 @@ body {
 
 .panel {
   display: block;
-  
+
   &:before, &:after{
     content: " ";
     display: table;
@@ -237,4 +237,16 @@ body {
 
 .ew-hidden {
   display: none;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right{
+  text-align: right;
+}
+
+.text-center {
+  text-align: center;
 }

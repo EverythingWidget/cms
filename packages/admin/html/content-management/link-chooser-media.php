@@ -44,8 +44,7 @@
 
 <script>
   var LinkChooserDomain = new System.Domain();
-  LinkChooserDomain.init([
-  ]);
+  LinkChooserDomain.init([]);
 
   LinkChooserDomain.domainHashString = "#app=media-chooser";
   LinkChooserDomain.ui.components = {
@@ -75,18 +74,6 @@
 
       component.module.onStart = function () {
         component.start();
-      };
-
-      this.ui.behaviors.highlightCurrentItem = function (element) {
-        if (component.currentItem === element)
-          return;
-
-        if (component.currentItem) {
-          System.ui.utility.removeClass(component.currentItem, "selected");
-        }
-
-        component.currentItem = element;
-        System.ui.utility.addClass(component.currentItem, "selected");
       };
 
       this.defineTabs(this.tabs);
@@ -430,7 +417,7 @@
     };
 
     MediaComponent.prototype.createImageElement = function (title, type, ext, size, ImageURL, id) {
-      var _this = this,
+      var component = this,
               column = $(document.createElement("div")),
               div = $(document.createElement("div")),
               img = $(document.createElement("img"));
@@ -441,7 +428,7 @@
               .addClass(ext);
       div.attr("tabindex", "1");
       div.on("focus click", function () {
-        _this.ui.behaviors.highlightCurrentItem(div[0]);
+        component.currentItem = System.ui.behaviors.selectElementOnly(div[0],component.currentItem);
       });
 
       if (ImageURL) {
@@ -460,15 +447,15 @@
 
       var divTree = UIUtility.toTreeObject(div[0]);
       divTree.button._.addEventListener('click', function () {
-        _this.selectedItemId = id;
-        _this.deleteImageActivity();
+        component.selectedItemId = id;
+        component.deleteImageActivity();
       });
 
       return div;
     };
 
     MediaComponent.prototype.createAlbumElement = function (title, type, ext, size, ImageURL, id) {
-      var _this = this,
+      var component = this,
               div = $(document.createElement("div")),
               img = $(document.createElement("img"));
 
@@ -477,11 +464,11 @@
               .addClass(ext);
       div.attr("tabindex", "1");
       div[0].addEventListener("focus", function (e) {
-        _this.ui.behaviors.highlightCurrentItem(div[0]);
+        component.currentItem = System.ui.behaviors.selectElementOnly(div[0],component.currentItem);
       });
 
       div[0].addEventListener("click", function () {
-        _this.ui.behaviors.highlightCurrentItem(div[0]);
+        component.currentItem = System.ui.behaviors.selectElementOnly(div[0],component.currentItem);
       });
 
       if (ImageURL) {
@@ -570,6 +557,7 @@
       var _this = this;
       _this.started = true;
     });
+
   }(LinkChooserDomain));
 
   LinkChooserDomain.module("media-chooser").start();

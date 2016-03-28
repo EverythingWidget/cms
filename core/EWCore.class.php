@@ -57,12 +57,11 @@ class EWCore {
   }
 
   public function load_vendors() {
-    //require 'modules/autoload.php';
     require '../vendor/autoload.php';
   }
 
   public function process($parameters = null) {
-    $db = \EWCore::get_db_connection();
+    //$db = \EWCore::get_db_connection();
     // If parameters is null set the request as parameters
     if (!$parameters) {
       $parameters = $_REQUEST;
@@ -75,27 +74,29 @@ class EWCore {
       $functions_arguments = array();
       $this->current_method_args = array();
       foreach ($params as $param) {
-        $temp = null;
-        if (is_array($parameters[$param->getName()])) {
+        //$temp = null;
+        /* if (is_array($parameters[$param->getName()])) {
           //var_dump($parameters[$param->getName()]);
           $temp = array_map(function($val) use ($db) {
 
-            return is_string($val) ? $db->real_escape_string($val) : $val;
+          return is_string($val) ? $db->real_escape_string($val) : $val;
           }, $parameters[$param->getName()]);
 
           //$temp = $parameters[$param->getName()];
-        }
-        else {
+          }
+          else {
           $temp = $db->real_escape_string($parameters[$param->getName()]);
-        }
-        $functions_arguments[] = $temp;
-        $this->current_method_args[$param->getName()] = $temp;
+          } */
+        $functions_arguments[] = $parameters[$param->getName()];
+        $this->current_method_args[$param->getName()] = $parameters[$param->getName()];
       }
       //$method_object->
       ob_start();
       echo $method_object->invokeArgs($this, $functions_arguments);
-      return ob_get_clean();
+      $result = ob_get_clean();
       $this->current_method_args = array();
+
+      return $result;
     }
     else {
       echo "No such command existed: " . $parameters['_method_name'];
@@ -162,13 +163,7 @@ class EWCore {
     $parameters["_method_name"] = $method_name;
     $parameters["_parts"] = array_slice(explode('/', $parameters["_file"]), 1);
 
-    //print_r($parameters);
-    // show index.php of app
-    /* if (!$function_name)
-      {
-      $function_name = "index";
-      $parameters['_function_name'] = $function_name;
-      } */
+
     if ($module_name == "EWCore") {
       $EW = new \EWCore();
       $response_data = $EW->process($parameters);
@@ -181,51 +176,6 @@ class EWCore {
         $app_object = new $real_class_name;
         $class_exist = true;
         $response_data = $app_object->process_command($package, $resource_type, $module_name, $method_name, $parameters);
-
-        /* $listeners = \EWCore::read_registry("$package/$resource_type/$module_name/$method_name");
-
-          if (isset($listeners) && !is_array($response_data)) {
-          $converted_result = json_decode($response_data, true);
-          if (json_last_error() === JSON_ERROR_NONE) {
-          $converted = true;
-          $response_data = $converted_result;
-          }
-          }
-
-          try {
-          // Call the listeners with the same data as the command data
-          if (isset($listeners)) {
-          if (!is_array($response_data)) {
-          $converted_result = json_decode($response_data, true);
-          if (json_last_error() === JSON_ERROR_NONE) {
-          $response_data = $converted_result;
-          }
-          }
-
-          foreach ($listeners as $id => $listener) {
-          if (method_exists($listener["object"], $listener["method"])) {
-          $listener_method_object = new \ReflectionMethod($listener["object"], $listener["method"]);
-          $arguments = \EWCore::create_arguments($listener_method_object, $parameters, $response_data);
-
-          $listener_result = $listener_method_object->invokeArgs($listener["object"], $arguments);
-
-          if (isset($listener_result)) {
-          $response_data = array_merge($response_data, $listener_result);
-          }
-          }
-          }
-          }
-          }
-          catch (Exception $e) {
-          echo $e->getTraceAsString();
-          }
-
-          if ($converted) {
-
-          if (is_array($response_data)) {
-          return json_encode($response_data);
-          }
-          } */
       }
       else {
         return json_encode(\EWCore::log_error(404, "<h4>App not found</h4><p>Requested app `$package`, not found</p>"));
@@ -1348,6 +1298,12 @@ class EWCore {
     }
 
     return $result;
+  }
+
+  public static function read_registry_as_json($name, $option = 0) {
+    EWCore::init_packages();
+
+    return json_encode(static::read_registry_as_array($name, $option));
   }
 
   public static function get_registry($_parts) {

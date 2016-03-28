@@ -10526,7 +10526,7 @@
 //          imageChooserDialog.dispose();
 //        };
         imageChooserDialog[0].selectMedia = function (item) {
-          var selectedItem = System.entity('media_chooser_service').call(null, item);
+          var selectedItem = System.entity('services/media_chooser').call(null, item);
 
           switch (selectedItem.type) {
             case 'text':
@@ -10588,7 +10588,7 @@
     var toContentField = function (element, initValue) {
       var container = document.createElement("span"),
               input = document.createElement("input"),
-              removeButton = document.createElement("div"),
+              removeButton = document.createElement("button"),
               img = document.createElement("button"),
               title = document.createElement("p");
 
@@ -10603,8 +10603,8 @@
       title.className = "ew-content-field__title";
       input.className = "ew-content-field__input";
       input.value = element.attr("content-field");
-      removeButton.className = "ew-content-field__remove btn-danger";
-      img.className = 'ew-content-field__img-btn btn-default';
+      removeButton.className = "ew-content-field__remove btn btn-danger";
+      img.className = 'ew-content-field__img-btn btn btn-default';
       img.innerHTML = 'M';
       img.type = 'button';
 
@@ -10635,7 +10635,8 @@
 
       input.addEventListener("blur", function (e) {
         if (!input.value) {
-          var id = "content-field-" + new Date().getTime();
+          var d = new Date();
+          var id = "cf-" + d.getMinutes() + d.getSeconds() + d.getMilliseconds();
           input.value = id;
         }
         element.attr("content-field", input.value);
@@ -10757,7 +10758,7 @@
         imageChooserDialog.html(data);
         var ref = _this._insertAt(element), node = ref[0], index = ref[1];
         imageChooserDialog[0].selectMedia = function (item) {
-          var element = System.entity('media_chooser_service').call(null, item);
+          var element = System.entity('services/media_chooser').call(null, item);
 
           switch (element.type) {
             case 'text':
@@ -10774,7 +10775,7 @@
 
             case 'image':
               var image = new ContentEdit.Image({
-                src: element,
+                src: element.src,
                 width: element.width,
                 hight: element.height
               });

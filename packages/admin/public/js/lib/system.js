@@ -35,12 +35,12 @@
       if (!entityObject) {
         return entities[entity_id];
       }
-      
-      if(entities[entity_id]) {
-       throw new Error("An entity with this id already exist. Entities can't be overwriten");
+
+      if (entities[entity_id]) {
+        throw new Error("An entity with this id already exist. Entities can't be overwriten");
       }
-      
-      this.entity[entity_id] = entityObject;
+
+      entities[entity_id] = entityObject;
     },
     // Apps Management
     /* registerApp: function (id, object)
@@ -397,13 +397,15 @@
       this.app.id = "system";
       this.app.installModules = mods;
       this.app.init({}, {}, "");
-    },
-    Util: {
-      installModuleStateHandlers: function (module, states) {
-        for (var state in states) {
-          module.on(state, states[state]);
-        }
+    }
+  };
+
+  System.utility = System.Util = {
+    installModuleStateHandlers: function (module, states) {
+      for (var state in states) {
+        module.on(state, states[state]);
       }
     }
   };
+
 }());

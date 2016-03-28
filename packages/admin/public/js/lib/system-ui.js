@@ -92,6 +92,20 @@
     return jsTree;
   };
 
+  SystemUI.prototype.behaviorProxy = function (component, behaviorId) {
+    var ui = this;
+    var proxied = function () {
+      Array.prototype.unshift.call(arguments, component);
+      if (!ui.behaviors[behaviorId]) {
+        throw 'Behavior does not exist: ' + behaviorId;
+      }
+
+      ui.behaviors[behaviorId].apply(null, arguments);
+    };
+
+    return proxied;
+  };
+
   SystemUI.prototype.clone = function (obj) {
     var target = {};
     for (var i in obj) {

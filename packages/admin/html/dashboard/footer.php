@@ -128,6 +128,19 @@
       return element;
     };
 
+    System.ui.behaviors.selectAppSection = function (component, full, section) {
+      if (!section) {
+        System.UI.components.sectionsMenuList[0].value = '0';
+        return;
+      }
+
+      if (component.data.tab === section)
+        return;
+
+      component.data.tab = section;
+      System.services.app_service.load_section(section);
+    };
+
     var anim = false;
 
     EverythingWidgets.prototype.readApps = function () {
