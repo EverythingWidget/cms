@@ -31,7 +31,7 @@
 </system-ui-view>
 
 <script data-name="documents">
-  (function (System) {
+  (function () {
     function DocumentsComponent(module) {
       var component = this;
       this.module = module;
@@ -374,6 +374,6 @@
       new DocumentsComponent(this);
     };
 
-    System.module("content-management/documents", DocumentStatesManager);
-  }(System));
+    System.state("content-management/documents", DocumentStatesManager);
+  }());
 </script>

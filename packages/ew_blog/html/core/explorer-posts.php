@@ -1,6 +1,6 @@
 <script>
   (function () {
-    System.module('content-management/posts', function () {
+    System.state('content-management/posts', function () {
       
     });
   })();

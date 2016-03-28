@@ -1,6 +1,6 @@
 <?php ?>
 <script >
-  (function (System) {
+  (function () {
     
     function UsersGroups() {
       var _this = this;
@@ -95,11 +95,11 @@
     };
 
 
-    System.module("users-management/users-groups", function () {
+    System.state("users-management/users-groups", function () {
       this.onStart = function () {
         new UsersGroups();
       };
     });
-  })(System);
+  })();
 
 </script>

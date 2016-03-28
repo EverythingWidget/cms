@@ -30,9 +30,9 @@
    </div>
 </form>-->
 <script  type="text/javascript">
-  (function (Domain) {
-    Domain.module("settings/preference", function () {
+  (function () {
+    System.state("settings/preference", function () {
 
-    })
-  })(System);
+    });
+  })();
 </script>

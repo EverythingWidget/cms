@@ -4,7 +4,7 @@ session_start();
 echo admin\AppsManagement::create_section_main_form();
 ?>
 <script>
-  (function (System) {
+  (function () {
 
     /**
      * Users management component
@@ -39,9 +39,9 @@ echo admin\AppsManagement::create_section_main_form();
       this.data.tab = null;
     };
 
-    System.module("users-management", function () {
+    System.state("users-management", function () {
       new UsersManagementComponent(this);
     });
 
-  }(System));
+  })();
 </script>

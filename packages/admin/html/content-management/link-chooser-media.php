@@ -395,7 +395,7 @@
                 src: element.absURL
               };
 
-              Domain.module('media-chooser/photos').setParam("image", element.id);
+              Domain.state('media-chooser/photos').setParam("image", element.id);
             });
 
             temp[0].addEventListener("dblclick", function (e) {
@@ -508,11 +508,11 @@
      };*/
 
     var mediaComponent;
-    Domain.module("media-chooser", function () {
+    Domain.state("media-chooser", function () {
       mediaComponent = new MediaComponent(this);
     });
 
-    Domain.module("media-chooser/photos", function () {
+    Domain.state("media-chooser/photos", function () {
       var _this = this;
       _this.started = true;
 
@@ -553,13 +553,13 @@
       });
     });
 
-    Domain.module("media-chooser/audios", function () {
+    Domain.state("media-chooser/audios", function () {
       var _this = this;
       _this.started = true;
     });
 
   }(LinkChooserDomain));
 
-  LinkChooserDomain.module("media-chooser").start();
+  LinkChooserDomain.state("media-chooser").start();
 
 </script>

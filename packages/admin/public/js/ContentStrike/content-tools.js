@@ -10526,7 +10526,7 @@
 //          imageChooserDialog.dispose();
 //        };
         imageChooserDialog[0].selectMedia = function (item) {
-          var selectedItem = System.entity('services/media_chooser').call(null, item);
+          var selectedItem = System.entity('services/media_chooser').selectItem(item);
 
           switch (selectedItem.type) {
             case 'text':
@@ -10758,7 +10758,7 @@
         imageChooserDialog.html(data);
         var ref = _this._insertAt(element), node = ref[0], index = ref[1];
         imageChooserDialog[0].selectMedia = function (item) {
-          var element = System.entity('services/media_chooser').call(null, item);
+          var element = System.entity('services/media_chooser').selectItem(item);
 
           switch (element.type) {
             case 'text':

@@ -38,67 +38,83 @@
 </div>
 
 <script>
-  (function (System) {
+  (function () {
+    System.entity('services/media_chooser', {
+      selectItem: function (item) {
+        if (item.type === 'image')
+          return item;
 
-    var mediaComponent;
+        if (item.type === 'audio')
+          return {
+            type: 'text',
+            text: item.path
+          };
 
-    System.entity('services/media_chooser', function (item) {
-      console.log(item);
-      if (item.type === 'image')
-        return item;
-
-      if (item.type === 'audio')
-        return {
-          type: 'text',
-          text: item.path
-        };
-
-      return null;
+        return null;
+      }
     });
 
-    System.entity('modules/media/photos', function () {
-      var module = this;
-      module.started = true;
+    System.entity('components/media/photos', {
+      create: function (module) {
+        var mediaComponent = System.entity('components/media').$service;
 
-      this.on('album', function (e, id, images) {
-        if (id > 0) {
-          mediaComponent.newAlbumActivity.hide();
-          mediaComponent.uploadImageActivity.show();
-          mediaComponent.bBack.comeIn();
-        } else {
-          mediaComponent.newAlbumActivity.show();
-          mediaComponent.uploadImageActivity.hide();
-          mediaComponent.bBack.comeOut();
-        }
+        module.bind('start', function () {
+          mediaComponent.uploadAudioActivity.hide();
+        });
 
-        if (!id) {
-          id = 0;
-        }
-
-        if (images) {
-          if (id !== null && mediaComponent.albumId !== id) {
-            mediaComponent.albumId = parseInt(id);
-            if (mediaComponent.listInited) {
-              mediaComponent.module.setParam("select", null, true);
-            }
-
-            mediaComponent.listMedia();
+        module.on('album', function (e, id, images) {
+          if (id > 0) {
+            mediaComponent.newAlbumActivity.hide();
+            mediaComponent.uploadImageActivity.comeIn();
+            mediaComponent.bBack.comeIn();
+          } else {
+            mediaComponent.newAlbumActivity.comeIn();
+            mediaComponent.uploadImageActivity.hide();
+            mediaComponent.bBack.hide();
           }
-        }
-      });
 
-      this.on('select', mediaComponent.states.select);
+          if (!id) {
+            id = 0;
+          }
+
+          if (images) {
+            if (id !== null && mediaComponent.albumId !== id) {
+              mediaComponent.albumId = parseInt(id);
+              if (mediaComponent.listInited) {
+                mediaComponent.module.setParam("select", null, true);
+              }
+
+              mediaComponent.listMedia();
+            }
+          }
+        });
+
+        module.on('select', mediaComponent.states.select);
+
+      }
+    });
+
+    System.entity('components/media/audios', {
+      create: function (module) {
+        var mediaComponent = System.entity('components/media').$service;
+
+        module.bind('start', function () {
+          mediaComponent.uploadAudioActivity.comeIn();
+          mediaComponent.newAlbumActivity.hide();
+          mediaComponent.uploadImageActivity.hide();
+        });
+      }
     });
 
     function MediaComponent(module) {
       var component = this;
-      this.states = {};
-      this.tabs = {};
-      this.ui = {
+      component.states = {};
+      component.tabs = {};
+      component.ui = {
         components: {},
         behaviors: {}
       };
-      this.ui.components.tabs_pills = $();
+      component.ui.components.tabs_pills = $();
       component.module = module;
       component.module.type = "app-section";
 
@@ -110,9 +126,9 @@
         component.start();
       };
 
-      this.defineTabs(this.tabs);
-      this.defineStateHandlers(this.states);
-      System.Util.installModuleStateHandlers(this.module, this.states);
+      component.defineTabs(component.tabs);
+      component.defineStateHandlers(component.states);
+      System.Util.installModuleStateHandlers(component.module, component.states);
     }
 
     MediaComponent.prototype.defineTabs = function (tabs) {
@@ -121,15 +137,13 @@
         component.module.setParamIfNot('app', 'content-management/media/photos');
         System.ui.behaviors.selectTab('#media-photos', component.ui.components.tabs_pills);
         component.module.setParamIfNull("album", "0/images");
-        component.uploadAudioActivity.hide();
-        component.newAlbumActivity.show();
+        System.state('content-management/media/photos').start();
       };
 
       tabs.audios = function () {
         System.ui.behaviors.selectTab('#media-audios', component.ui.components.tabs_pills);
-        component.uploadAudioActivity.show();
-        component.newAlbumActivity.hide();
-        component.uploadImageActivity.hide();
+        System.state('content-management/media/audios').start();
+
       };
     };
 
@@ -514,17 +528,29 @@
       return div;
     };
 
-
-    System.module("content-management/media", function () {
-      mediaComponent = new MediaComponent(this);
+    System.entity('components/media', {
+      $service: null,
+      create: function (module) {
+        return new MediaComponent(module);
+      },
+      service: function (module) {
+        return this.$service !== null ? this.$service : this.$service = this.create(module);
+      }
     });
 
-    System.module("content-management/media/photos", System.entity('modules/media/photos'));
-
-
-    System.module("content-management/media/audios", function () {
-      var module = this;
-      module.started = true;
+    System.state("content-management/media", function () {
+      System.entity('components/media').service(this);
     });
-  }(System));
+
+    System.state("content-management/media/photos", function () {
+      System.entity('components/media/photos').create(this);
+    });
+
+    System.state("content-management/media/audios", function () {
+      System.entity('components/media/audios').create(this);
+    });
+
+
+
+  })();
 </script>

@@ -4,7 +4,7 @@ session_start();
 echo admin\AppsManagement::create_section_main_form();
 ?>
 <script>
-  (function (System) {
+  (function () {
 
     function ContentManagementComponent(module) {
       var component = this;
@@ -40,8 +40,8 @@ echo admin\AppsManagement::create_section_main_form();
       this.data.tab = null;
     };
 
-    System.module("content-management", function () {
+    System.state("content-management", function () {
       new ContentManagementComponent(this);
     });
-  })(System);
+  })();
 </script>

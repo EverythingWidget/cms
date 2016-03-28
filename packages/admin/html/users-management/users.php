@@ -1,6 +1,5 @@
 <script >
-   (function (System) {
-
+   (function () {
       function UsersComponent(module) {
          var component = this;
          this.module = module;
@@ -92,9 +91,9 @@
          });
       };
 
-      System.module("users-management/users", function () {
+      System.state("users-management/users", function () {
          new UsersComponent(this);
       });
 
-   })(System);
+   })();
 </script>

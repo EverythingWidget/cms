@@ -26,10 +26,10 @@ function script() {
   ob_start();
   ?>
   <script  >
-    (function (System) {
+    (function () {
 
 
-      System.module("settings", function () {
+      System.state("settings", function () {
         this.type = "app";
         this.onInit = function (nav) {
 
@@ -63,7 +63,7 @@ function script() {
 
         return this;
       });
-    }(System));
+    })();
   </script>
   <?php
   return ob_get_clean();

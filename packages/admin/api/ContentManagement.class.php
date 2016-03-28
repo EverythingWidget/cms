@@ -206,6 +206,11 @@ class ContentManagement extends \ew\Module {
 
       $current_field_value = $content_fields->{$field->getAttribute("content-field")};
 
+      if ($field->getAttribute("content-field-hidden")) {
+
+        $field->parentNode->removeChild($field);
+      }
+
       if ($current_field_value) {
         if (is_array($current_field_value["content"])) {
           $link = $this->get_node_link($field);
@@ -249,6 +254,24 @@ class ContentManagement extends \ew\Module {
         ];
       }
     }
+
+    $innerHTML = "";
+    $elements = $dom->documentElement->getElementsByTagName('body');
+
+    foreach ($elements as $element) {
+      if ($element->nodeType !== XML_ELEMENT_NODE) {
+        continue;
+      }
+
+      $children = $element->childNodes;
+
+      foreach ($children as $child) {
+        $innerHTML .= $dom->saveHTML($child);
+      }
+    }
+
+    $content_fields->html = $innerHTML;
+    $content_fields->content_fields= $content_fields;
 
     return $content_fields;
   }
@@ -461,7 +484,9 @@ class ContentManagement extends \ew\Module {
     $content->parent_id = $parent_id;
     $content->content = $html_content;
     if (isset($html_content)) {
-      $content->content_fields = json_encode($this->get_content_fields($html_content));
+      $content_fields = $this->get_content_fields($html_content);
+      $content->content_fields = json_encode($content_fields->content_fields);
+      $content->parsed_content = $content_fields->html;
     }
     $content->featured_image = $featured_image;
     $content->date_created = date('Y-m-d H:i:s');
@@ -506,7 +531,9 @@ class ContentManagement extends \ew\Module {
     $content->parent_id = $parent_id;
     $content->content = $html_content;
     if (isset($html_content)) {
-      $content->content_fields = json_encode($this->get_content_fields($html_content));
+      $content_fields = $this->get_content_fields($html_content);
+      $content->content_fields = json_encode($content_fields->content_fields);
+      $content->parsed_content = $content_fields->html;
     }
 
     $content->featured_image = $featured_image;
@@ -753,7 +780,9 @@ class ContentManagement extends \ew\Module {
                 \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
 
     if (isset($content)) {
+      //$cf = $this->get_content_fields($content->content);
       $content->content_fields = json_decode($content->content_fields, true);
+      //$content->parsed_content = $cf['html'];
 
       $labels = $this->get_content_labels($id);
       $content->labels = $labels;
@@ -1363,14 +1392,14 @@ class ContentManagement extends \ew\Module {
       $actual_name = pathinfo($upload_file, PATHINFO_FILENAME);
 
       $this->add_content("audio", $actual_name, null, "", "", 'audios/' . $path, "", "");
-      
+
       return \ew\APIResourceHandler::to_api_response([
-                'status'  => "success",
-                'message' => "file registered: $path"
-    ]);
+                  'status'  => "success",
+                  'message' => "file registered: $path"
+      ]);
     }
 
-    return EWCore::log_error(400,'File does not exsit');
+    return EWCore::log_error(400, 'File does not exsit');
   }
 
   public function upload_audio($path, $parent_id) {

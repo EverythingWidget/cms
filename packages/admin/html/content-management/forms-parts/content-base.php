@@ -164,8 +164,7 @@
           lcb.addClass("btn-success").removeClass("btn-default");
           $e.stop().animate({
             className: "-=disabled"
-          },
-            500, "Power3.easeInOut");
+          }, 500, "Power3.easeInOut");
 
         } else {
           $e.attr("data-activated", false);
@@ -174,8 +173,7 @@
           lcb.removeClass("btn-success").addClass("btn-default");
           $e.stop().animate({
             className: "+=disabled"
-          },
-            400, "Power3.easeInOut");
+          }, 400, "Power3.easeInOut");
         }
       });
     });

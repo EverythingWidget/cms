@@ -4,7 +4,7 @@
 
 <script  type="text/javascript">
 
-  (function (Domain) {
+  (function () {
     function SettingsComponent(module) {
       var component = this;
       this.module = module;
@@ -68,8 +68,8 @@
     };
 
 
-    Domain.module("settings/general", function () {
+    System.state("settings/general", function () {
       new SettingsComponent(this);
     });
-  })(System);
+  })();
 </script>

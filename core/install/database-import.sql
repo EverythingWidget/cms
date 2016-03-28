@@ -33,7 +33,7 @@ CREATE TABLE `ew_contents` (
   `parent_id` bigint(20) DEFAULT NULL,
   `content_fields` text CHARACTER SET utf8 COLLATE utf8_bin,
   `content` text CHARACTER SET utf8,
-  `order` int(11) DEFAULT '0',
+  `parsed_content` text CHARACTER SET utf8,
   `featured_image` text CHARACTER SET utf8,
   `date_created` datetime DEFAULT NULL,
   `date_modified` datetime DEFAULT NULL

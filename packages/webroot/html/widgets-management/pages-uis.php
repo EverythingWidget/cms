@@ -231,7 +231,7 @@ if ($path_uis_list) {
 
   var pageUIS;
 
-  (function (System) {
+  (function () {
     var Section = function () {
       this.type = "appSection";
       this.onInit = function () {
@@ -244,6 +244,6 @@ if ($path_uis_list) {
       };
     };
 
-    System.module("widgets-management").module("pages-uis", Section);
-  }(System));
+    System.state("widgets-management/pages-uis", Section);
+  })();
 </script>

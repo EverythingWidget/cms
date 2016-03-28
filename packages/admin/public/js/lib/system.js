@@ -53,8 +53,51 @@
      * @param {Object} object
      * @returns {sys.ABSTRACT_MODULE}
      */
-    module: function (id, object) {
-      return this.app.module(id, object, false);
+    state: function (id, decorator) {
+      //return this.app.module(id, object, false);
+      var module, modulePath, moduleNavigation;
+      var domain = this;
+      if (!domain) {
+        throw "Domain can NOT be null";
+      }
+      id = this.app.id + '/' + id;
+
+      //if forceReload is true, then init the module again
+      if (!decorator/* && this.modules[id]*/) {
+        // Add the module to notYetStarted list so it can be started by startLastLoadedModule method
+        domain.notYetStarted.push(id);
+        return domain.modules[id];
+      }
+
+      if (domain.modules[id]) {
+        return domain.modules[id];
+      }
+
+      if (typeof (decorator) === "function") {
+        module = $.extend(true, {}, System.MODULE_ABSTRACT);
+        decorator.call(module);
+      } else {
+        module = $.extend(true, {}, System.MODULE_ABSTRACT, decorator || {});
+      }
+
+      module.domain = domain;
+      module.id = id;
+
+      modulePath = domain.app.navigation[module.moduleIdentifier] ? domain.app.navigation[module.moduleIdentifier] : [];
+      moduleNavigation = $.extend(true, {}, domain.app.navigation);
+      moduleNavigation[module.moduleIdentifier] = modulePath.slice(id.split("/").length - 1);
+
+      domain.modules[id] = module;
+      domain.notYetStarted.push(id);
+
+      // Set module hash for this module when its inited
+      // module hash will be set in the hashChanged method as well
+      // if current navigation path is equal to this module id
+      //module.hash = System.modulesHashes[id.replace("system/", "")] = module.moduleIdentifier + "=" + id.replace("system/", "");
+
+      module.init(moduleNavigation, domain.app.params);
+
+      return module;
     },
     /** This method will be called whenever System attempts to load an app
      * 
@@ -312,10 +355,10 @@
         if (scripts)
           $("head").append(scripts);
         //var html = res;
-        //System.apps[id] = $.extend({}, System.module, self.apps[id]);
+        //System.apps[id] = $.extend({}, System.state, self.apps[id]);
         //System.activityTree.unshift(System.apps[id]);
         //console.log(System.app.modules);
-        //var module = System.module(mod.id);
+        //var module = System.state(mod.id);
         if (!System.modules["system/" + mod.id]) {
           alert("Invalid module: " + mod.id);
           return;
