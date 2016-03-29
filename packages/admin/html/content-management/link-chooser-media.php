@@ -68,8 +68,8 @@
       component.module = module;
       component.module.type = "app-section";
 
-      component.module.onInit = function (templates) {
-        component.init(templates);
+      component.module.onInit = function () {
+        component.init();
       };
 
       component.module.onStart = function () {
@@ -160,8 +160,9 @@
       this.audiosListTable.read();
     };
 
-    MediaComponent.prototype.init = function (templates) {
+    MediaComponent.prototype.init = function () {
       var component = this;
+      var templates = System.ui.templates['system/media-chooser'];
       this.albumId = null;
       this.albumCard = $(templates["album-card"]).hide();
       this.albumCardTitleAction = this.albumCard.find(".card-title-action");
