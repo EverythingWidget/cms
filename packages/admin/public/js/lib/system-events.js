@@ -15,7 +15,7 @@
   
   SystemEvents.porototype.registerHost = function (host) {
     if(!host || !host.event){
-      return throw 'host object should contain event';
+      throw 'host object should contain event';
     }
     
     this.hosts.push(host);

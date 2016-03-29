@@ -322,7 +322,7 @@
       created: function () {
         this.xtag.validate = false;
         this.xtag.show = true;
-
+console.debug("system/" + this.module, this.name);
         if (!this.name) {
           throw "system-ui-view missing the `name` attribute";
         }
@@ -332,7 +332,8 @@
         if (!System.UI.templates["system/" + this.module]) {
           System.UI.templates["system/" + this.module] = {};
         }
-
+        
+        //alert('system-ui: '+this.name)
         System.UI.templates["system/" + this.module][this.name] = this;
 
       },
@@ -341,7 +342,12 @@
           return;
         }
 
+//        if (!this.parentNode) {
+//          this.xtag.validate = false;
+//          return;
+//        }
 
+        console.debug('insert:', this.parentNode)
         this.xtag.originalParent = this.parentNode;
         System.UI.templates["system/" + this.module][this.name] = this;
         if (this.xtag.showWhenAdded) {
@@ -366,7 +372,8 @@
         this.xtag.originalParent.replaceChild(this, this.xtag.placeholder);
       },
       hide: function () {
-        this.xtag.originalParent.replaceChild(this.xtag.placeholder, this);
+        if (this.xtag.originalParent)
+          this.xtag.originalParent.replaceChild(this.xtag.placeholder, this);
       }
     },
     accessors: {

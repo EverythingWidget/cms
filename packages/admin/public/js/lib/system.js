@@ -349,11 +349,22 @@
           return true;
 
         });
+        
+        //var docFragment = document.createDocumentFragment()
+        //docFragment.innerHTML = html.html();
+        //console.log(docFragment);
+        $('body').append(html);
+       
+        console.debug('html ',mod.id,html);
 
         System.uiTemplates["system/" + mod.id] = templates;
 
+          
+      setTimeout(function () { 
         if (scripts)
           $("head").append(scripts);
+         
+        //$(html).remove();
         //var html = res;
         //System.apps[id] = $.extend({}, System.state, self.apps[id]);
         //System.activityTree.unshift(System.apps[id]);
@@ -372,12 +383,15 @@
         if ("function" === typeof (System.onModuleLoaded["system/" + mod.id])) {
           //onDone.call(this, System.modules["system/" + mod.id], response);
           //console.log(System.modules["system/" + mod.id].html.html());
+          
           System.onModuleLoaded["system/" + mod.id].call(this, System.modules["system/" + mod.id], html);
           //console.log(System.modules["system/" + mod.id].html.html());
-          System.onModuleLoaded["system/" + mod.id] = null;
+          System.onModuleLoaded["system/" + mod.id] = null;;
         }
 
         delete System.onLoadQueue["system/" + mod.id];
+        },1000)
+        
       });
     },
     addActiveRequest: function (request) {

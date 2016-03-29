@@ -14,7 +14,7 @@
   <div id="media-photos" class="tab-pane active">
     <system-ui-view module="content-management/media" name="albums-list" class="block-row">  
       <div class="block-column anim-fade-in"></div>
-    </system-ui-view >
+    </system-ui-view>
 
     <system-ui-view module="content-management/media" name="album-card" class="card z-index-1 center-block col-lg-9 col-md-10 col-xs-12">
       <div  class="card-header">
@@ -201,6 +201,7 @@
     };
 
     MediaComponent.prototype.init = function (templates) {
+      console.debug(templates);
       var component = this;
       this.albumId = null;
       this.albumCard = $(templates["album-card"]).hide();
