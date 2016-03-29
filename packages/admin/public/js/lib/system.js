@@ -339,59 +339,72 @@
 
         });
         var templates = {};
-        html = html.filter(function (i, e) {
+        /*html = html.filter(function (i, e) {
+         
+         if (e.dataset && e.dataset.uiTemplate) {
+         //console.log(e.tagName);
+         //templates[e.dataset.uiTemplate] = e;
+         return false;
+         }
+         return true;
+         
+         });*/
+        //console.debug('html ', mod.id);
 
-          if (e.dataset && e.dataset.uiTemplate) {
-            //console.log(e.tagName);
-            //templates[e.dataset.uiTemplate] = e;
-            return false;
-          }
-          return true;
-
-        });
-        
         //var docFragment = document.createDocumentFragment()
         //docFragment.innerHTML = html.html();
         //console.log(docFragment);
-        $('body').append(html);
-       
-        console.debug('html ',mod.id,html);
+        var temp = document.createElement('div');
+        for (var i = 0, len = html.length; i < len; i++) {
+          temp.appendChild(html[i]);
+        }
+        document.getElementsByTagName('body')[0].appendChild(temp);
+        temp.parentNode.removeChild(temp);
+        //
+
+        /*if(mod.id === 'content-management/media'){
+         console.debug('html ', mod.id,html);
+         console.debug('html ', System.ui.templates);
+         alert();
+         
+         }*/
 
         System.uiTemplates["system/" + mod.id] = templates;
 
-          
-      setTimeout(function () { 
-        if (scripts)
-          $("head").append(scripts);
-         
-        //$(html).remove();
-        //var html = res;
-        //System.apps[id] = $.extend({}, System.state, self.apps[id]);
-        //System.activityTree.unshift(System.apps[id]);
-        //console.log(System.app.modules);
-        //var module = System.state(mod.id);
-        if (!System.modules["system/" + mod.id]) {
-          alert("Invalid module: " + mod.id);
-          return;
-        }
 
-        System.modules["system/" + mod.id].html = html;
+        setTimeout(function () {
+          if (scripts)
+            $("head").append(scripts);
 
-        if (scripts)
-          scripts.attr("id", System.modules["system/" + mod.id].id.replace(/[\/-]/g, "_"));
+          //$(html).remove();
+          //var html = res;
+          //System.apps[id] = $.extend({}, System.state, self.apps[id]);
+          //System.activityTree.unshift(System.apps[id]);
+          //console.log(System.app.modules);
+          //var module = System.state(mod.id);
+          if (!System.modules["system/" + mod.id]) {
+            alert("Invalid module: " + mod.id);
+            return;
+          }
 
-        if ("function" === typeof (System.onModuleLoaded["system/" + mod.id])) {
-          //onDone.call(this, System.modules["system/" + mod.id], response);
-          //console.log(System.modules["system/" + mod.id].html.html());
-          
-          System.onModuleLoaded["system/" + mod.id].call(this, System.modules["system/" + mod.id], html);
-          //console.log(System.modules["system/" + mod.id].html.html());
-          System.onModuleLoaded["system/" + mod.id] = null;;
-        }
+          System.modules["system/" + mod.id].html = html;
 
-        delete System.onLoadQueue["system/" + mod.id];
-        },1000)
-        
+          if (scripts)
+            scripts.attr("id", System.modules["system/" + mod.id].id.replace(/[\/-]/g, "_"));
+
+          if ("function" === typeof (System.onModuleLoaded["system/" + mod.id])) {
+            //onDone.call(this, System.modules["system/" + mod.id], response);
+            //console.log(System.modules["system/" + mod.id].html.html());
+
+            System.onModuleLoaded["system/" + mod.id].call(this, System.modules["system/" + mod.id], html);
+            //console.log(System.modules["system/" + mod.id].html.html());
+            System.onModuleLoaded["system/" + mod.id] = null;
+            ;
+          }
+
+          delete System.onLoadQueue["system/" + mod.id];
+        }, 5);
+
       });
     },
     addActiveRequest: function (request) {

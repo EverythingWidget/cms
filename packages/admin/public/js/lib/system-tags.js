@@ -20,7 +20,7 @@
   window.CustomEvent = CustomEvent;
 })();
 
-(function (xtag, System, UIUtilty) {
+(function (xtag, UIUtilty) {
   var SystemList = {
   };
 
@@ -322,41 +322,32 @@
       created: function () {
         this.xtag.validate = false;
         this.xtag.show = true;
-console.debug("system/" + this.module, this.name);
+
         if (!this.name) {
           throw "system-ui-view missing the `name` attribute";
         }
 
         this.xtag.placeholder = document.createComment(' ' + this.module + '/' + this.name + ' ');
 
-        if (!System.UI.templates["system/" + this.module]) {
-          System.UI.templates["system/" + this.module] = {};
+        if (!System.ui.templates["system/" + this.module]) {
+          System.ui.templates["system/" + this.module] = {};
         }
-        
-        //alert('system-ui: '+this.name)
-        System.UI.templates["system/" + this.module][this.name] = this;
 
+        System.ui.templates["system/" + this.module][this.name] = this;
       },
       inserted: function () {
         if (this.xtag.validate) {
+          this.xtag.originalParent = this.parentNode;
           return;
         }
 
-//        if (!this.parentNode) {
-//          this.xtag.validate = false;
-//          return;
-//        }
-
-        console.debug('insert:', this.parentNode)
         this.xtag.originalParent = this.parentNode;
-        System.UI.templates["system/" + this.module][this.name] = this;
+        System.ui.templates["system/" + this.module][this.name] = this;
         if (this.xtag.showWhenAdded) {
           this.xtag.showWhenAdded = null;
           this.show();
           return;
         }
-        this.hide();
-
       },
       removed: function () {
         this.xtag.validate = false;
@@ -365,15 +356,17 @@ console.debug("system/" + this.module, this.name);
     methods: {
       show: function () {
         this.xtag.validate = true;
+        this.xtag.shouldBeShown = true;
         if (!this.xtag.originalParent) {
           this.xtag.showAsSoonAsAdded = true;
           return;
         }
-        this.xtag.originalParent.replaceChild(this, this.xtag.placeholder);
+        if (this.xtag.placeholder.parentNode)
+          this.xtag.originalParent.replaceChild(this, this.xtag.placeholder);
       },
       hide: function () {
-        if (this.xtag.originalParent)
-          this.xtag.originalParent.replaceChild(this.xtag.placeholder, this);
+        this.xtag.originalParent = this.parentNode;
+        this.xtag.originalParent.replaceChild(this.xtag.placeholder, this);
       }
     },
     accessors: {
@@ -654,4 +647,4 @@ console.debug("system/" + this.module, this.name);
 
   xtag.register("system-button-switch", SwitchButton);
 
-})(xtag, System, UIUtility);
+})(xtag, UIUtility);

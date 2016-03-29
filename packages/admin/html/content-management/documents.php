@@ -43,8 +43,8 @@
 
       this.module.type = "app-section";
 
-      this.module.bind('init', function (templates) {
-        component.init(templates);
+      this.module.bind('init', function () {
+        component.init();
       });
 
       this.module.bind('start', function () {
@@ -98,8 +98,10 @@
       };
     };
 
-    DocumentsComponent.prototype.init = function (templates) {
+    DocumentsComponent.prototype.init = function () {
       var component = this;
+ 
+      var templates =  System.ui.templates['system/content-management/documents'];
       this.ui.components.folders_card = $(templates["folders-card"]);
       this.ui.components.folders_card_title = this.ui.components.folders_card.find(".card-header h1");
       this.ui.components.folders_card_title_action_right = this.ui.components.folders_card.find(".card-title-action-right");
@@ -181,7 +183,7 @@
       this.ui.components.folders_list.empty();
       this.ui.components.articles_list.empty();
 
-      this.ui.components.folders_card[0].show();
+      //this.ui.components.folders_card[0].hide();
 
       this.bNewFolder = EW.addActivity({
         title: "tr{New Folder}",

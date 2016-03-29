@@ -200,8 +200,8 @@
       this.audiosListTable.read();
     };
 
-    MediaComponent.prototype.init = function (templates) {
-      console.debug(templates);
+    MediaComponent.prototype.init = function () {
+      var templates = System.ui.templates['system/content-management/media'];
       var component = this;
       this.albumId = null;
       this.albumCard = $(templates["album-card"]).hide();

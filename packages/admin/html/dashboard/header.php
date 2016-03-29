@@ -45,6 +45,7 @@
 <script src="~rm/public/js/gsap/TweenLite.min.js"></script>
 <script src="~rm/public/js/gsap/TimelineLite.min.js"></script>
 <script src="~admin/public/js/lib/system.js"></script>  
+<script src="~admin/public/js/lib/system-ui.js" ></script>   
 <script src="~admin/public/js/lib/system-module.js"></script>  
 <script src="~admin/public/js/lib/system-domain.js"></script>  
 
@@ -52,7 +53,7 @@
 <script src="~rm/public/js/gsap/easing/EasePack.min.js" defer></script>
 <script src="~rm/public/js/gsap/jquery.gsap.min.js" defer></script>
 
-<script src="~rm/public/js/x-tag/x-tag-core.min.js" defer></script>
+<script src="~rm/public/js/x-tag/x-tag-core.min.js"></script>
 <script src="~admin/public/js/lib/system-tags.js" defer></script>
 
 <script src="~admin/public/js/lib/sortable.js" defer></script>      
@@ -62,7 +63,7 @@
 <script src="~admin/public/js/lib/ewscript.js"></script>      
 <script src="~admin/public/js/lib/simple-slider.js"></script>
 
-<script src="~admin/public/js/lib/system-ui.js" defer></script>   
+
 <script src="~admin/public/js/lib/bootstrap.js" defer></script>
 <script src="~admin/public/js/ContentStrike/content-tools.js" defer></script>
 
