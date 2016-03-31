@@ -11,7 +11,7 @@
   (function () {
     var value = $("#{{comp_id}}_value");
     value.datepicker({
-      format: 'dd-mm-yyyy'
+      format: 'yyyy-mm-dd'
     });
 
     $("#{{form_id}}").on("refresh", function (e, formData) {

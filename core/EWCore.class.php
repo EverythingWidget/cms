@@ -150,7 +150,7 @@ class EWCore {
   public static function process_request_command($package, $resource_type, $module_name, $method_name, $parameters) {
     if (!$package /* || !$section_name || !$function_name */) {
       $response_data = EWCore::log_error(400, "Wrong command");
-      return $response_data;
+      return json_encode($response_data);
     }
 
     //echo " $app_name  $section_name  $function_name";
@@ -178,7 +178,7 @@ class EWCore {
         $response_data = $app_object->process_command($package, $resource_type, $module_name, $method_name, $parameters);
       }
       else {
-        return json_encode(\EWCore::log_error(404, "<h4>App not found</h4><p>Requested app `$package`, not found</p>"));
+        return \EWCore::log_error(404, "<h4>App not found</h4><p>Requested app `$package`, not found</p>");
       }
     }
 
@@ -1686,17 +1686,18 @@ class EWCore {
       http_response_code($header_code);
       header('Content-Type: application/json');
     }
-    $error_content = array(
+    $error_content = [
         "statusCode" => $header_code,
         "code"       => $header_code,
         //"url" => $_REQUEST["_app_name"] . "/" . $_REQUEST["_section_name"] . "/" . $_REQUEST["_function_name"],
         "url"        => $_SERVER["REQUEST_URI"],
         "message"    => $message,
-        "reason"     => $reason);
+        "reason"     => $reason
+    ];
     /* if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
       { */
 
-    return $error_content;
+    return json_encode($error_content);
     /* }
       else
       {

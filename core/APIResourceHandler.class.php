@@ -84,8 +84,8 @@ class APIResourceHandler extends ResourceHandler {
       }
 
       if (!isset($result) && $call === false) {
-        return json_encode(\EWCore::log_error(403, "You do not have corresponding permission to invoke this api request", array(
-                    "Access Denied" => "$app_name/$module_class_name/$method_name")));
+        return \EWCore::log_error(403, "You do not have corresponding permission to invoke this api request", array(
+                    "Access Denied" => "$app_name/$module_class_name/$method_name"));
       }
 
       $api_listeners = \EWCore::read_registry("$app_name/$resource_name/$module_name/$command_name");

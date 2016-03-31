@@ -4,9 +4,9 @@
       <a href="#media-photos" data-toggle="tab">Photos</a>
     </li>
 
-    <li>
+    <!--<li>
       <a href="#media-audios" data-toggle="tab">Audios</a>
-    </li>
+    </li>-->
   </ul>
 </div>
 

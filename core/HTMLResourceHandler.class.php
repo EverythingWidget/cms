@@ -101,17 +101,17 @@ class HTMLResourceHandler extends ResourceHandler {
         return $res;
       }
       else {
-        return json_encode(\EWCore::log_error(403, "You do not have corresponding permission to access this file", array(
-                    "Access Denied" => "$app_name/$module_name/$method_name")));
+        return \EWCore::log_error(403, "You do not have corresponding permission to access this file", array(
+                    "Access Denied" => "$app_name/$module_name/$method_name"));
       }
     }
     else {
       //echo $app_resource_path[1];
-      return json_encode(\EWCore::log_error(404, "File not found: `$path`", [
+      return \EWCore::log_error(404, "File not found: `$path`", [
                   "app/resource: " . $package . '/' . $resource_type,
                   "module: $module_name",
                   "file: $file"
-      ]));
+      ]);
     }
   }
 

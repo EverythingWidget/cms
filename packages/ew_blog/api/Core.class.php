@@ -32,7 +32,6 @@ class Core extends \ew\Module {
 //    if (!$stm->execute()) {
 //      echo json_encode(EWCore::log_error(500, '', $stm->errorInfo()));
 //    }
-
     $table_install = EWCore::create_table('ew_blog_posts', [
                 'id'           => 'BIGINT AUTO_INCREMENT PRIMARY KEY',
                 'content_id'   => 'VARCHAR(200) NOT NULL',
@@ -45,7 +44,7 @@ class Core extends \ew\Module {
     $pdo = EWCore::get_db_PDO();
     $stm = $pdo->prepare($table_install);
     if (!$stm->execute()) {
-      echo json_encode(EWCore::log_error(500, '', $stm->errorInfo()));
+      echo EWCore::log_error(500, '', $stm->errorInfo());
     }
 
     $this->register_content_component("event", [
@@ -150,7 +149,7 @@ class Core extends \ew\Module {
             ->where('langs.key', 'admin_ContentManagement_language')
             ->where('langs.value', $_language)
             ->where('events.key', 'ew_blog_Core_event')
-            ->where('events.value', '>=', date("d-m-Y"))
+            ->whereDate('events.value', '>=', date("Y-m-d"))
             ->orderBy("events.value", 'ASC')
             ->get([
         '*',

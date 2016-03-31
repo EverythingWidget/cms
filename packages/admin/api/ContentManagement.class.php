@@ -39,7 +39,7 @@ class ContentManagement extends \ew\Module {
     $pdo = EWCore::get_db_PDO();
     $stm = $pdo->prepare($ew_tags_table_install);
     if (!$stm->execute()) {
-      echo json_encode(EWCore::log_error(500, '', $stm->errorInfo()));
+      echo EWCore::log_error(500, '', $stm->errorInfo());
     }
 
     $ew_contents_tags_table_install = EWCore::create_table('ew_contents_tags', [
@@ -54,7 +54,7 @@ class ContentManagement extends \ew\Module {
     $pdo = EWCore::get_db_PDO();
     $stm = $pdo->prepare($ew_contents_tags_table_install);
     if (!$stm->execute()) {
-      echo json_encode(EWCore::log_error(500, '', $stm->errorInfo()));
+      echo EWCore::log_error(500, '', $stm->errorInfo());
     }
 
     EWCore::register_app("content-management", $this);
@@ -156,7 +156,7 @@ class ContentManagement extends \ew\Module {
         "api/delete_article",
         "api/delete_album",
         "api/delete-image",
-        "api/upload_file",
+        "api/upload-file",
         "api/upload_audio",
         "api/register-audio",
         "api/media-audios",

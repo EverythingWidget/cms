@@ -3350,7 +3350,7 @@ inline-dialog{
   display: -webkit-flex;
   display: flex;
   -webkit-flex-flow: row wrap;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: flex-start;
 }
 
