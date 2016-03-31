@@ -85,11 +85,24 @@
         margin: 0 15px 15px;
         border-radius: 4px;
         box-shadow: 0 2px 6px rgba(0,0,0,0.1),0 6px 9px rgba(0,0,0,0.1);
+        position: relative;
 
         h2, p {
           padding: 0px 15px;
           font-weight: 300;
           margin: 10px 0;
+
+          &.date {
+            position: absolute;
+            bottom: 0px;
+            left: 0px;
+            right: 0px;
+            margin: 0;
+            padding: 15px;
+            text-align: left;
+            font-size: 32px;
+            color: #ACBDB4;
+          }
         }
 
         img {

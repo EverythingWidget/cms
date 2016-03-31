@@ -269,11 +269,13 @@ class ContentManagement extends \ew\Module {
         $innerHTML .= $dom->saveHTML($child);
       }
     }
+    
+    $result = new \stdClass();
 
-    $content_fields->html = $innerHTML;
-    $content_fields->content_fields= $content_fields;
+    $result->html = $innerHTML;
+    $result->content_fields = (array) $content_fields;
 
-    return $content_fields;
+    return $result;
   }
 
   public function ew_page_feeder_ssss($id, $language) {
@@ -484,7 +486,6 @@ class ContentManagement extends \ew\Module {
     $content->parent_id = $parent_id;
     $content->content = $html_content;
     if (isset($html_content)) {
-      $content_fields = $this->get_content_fields($html_content);
       $content->content_fields = json_encode($content_fields->content_fields);
       $content->parsed_content = $content_fields->html;
     }
