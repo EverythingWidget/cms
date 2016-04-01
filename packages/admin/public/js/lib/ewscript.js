@@ -341,9 +341,12 @@ EverythingWidgets.prototype.addActivity = function (conf) {
   action.attr("data-label", settings.title).addClass("btn " + settings.defaultClass + " " + ((settings.class) ? settings.class : ""));
 
   action.attr("type", "button");
-  action.click(function () {
+  var handler = function () {
     activityCaller(settings.hash);
-  });
+  };
+
+  action[0].removeEventListener('click', handler);
+  action[0].addEventListener('click', handler);
 
   action.data("activity", activityCaller);
   var parentE = settings.parent;
