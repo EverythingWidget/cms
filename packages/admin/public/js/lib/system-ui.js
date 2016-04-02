@@ -106,6 +106,26 @@
     return proxied;
   };
 
+  /**
+   * 
+   * @param {type} behavior The behavior method that should apply on `hostObject`
+   * @param {type} hostObject The object that will be passed to the behavior method as the host
+   * @returns {mixed} Returned value from behavior method
+   */
+  SystemUI.prototype.behave = function (behavior, hostObject) {
+    if ('function' !== typeof (behavior)) {
+      var error = new Error('Behavior should be a function ');
+      throw error;
+    }
+
+    var proxiedBehavior = function () {
+      Array.prototype.unshift.call(arguments, hostObject);
+      return behavior.apply(null, arguments);
+    };
+
+    return proxiedBehavior;
+  };
+
   SystemUI.prototype.clone = function (obj) {
     var target = {};
     for (var i in obj) {
