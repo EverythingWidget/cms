@@ -1688,6 +1688,7 @@ class EWCore {
     }
     $error_content = [
         "statusCode" => $header_code,
+        "status_code" => $header_code,
         "code"       => $header_code,
         //"url" => $_REQUEST["_app_name"] . "/" . $_REQUEST["_section_name"] . "/" . $_REQUEST["_function_name"],
         "url"        => $_SERVER["REQUEST_URI"],

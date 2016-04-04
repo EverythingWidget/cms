@@ -154,7 +154,7 @@ class ContentManagement extends \ew\Module {
         "api/delete_content_by_id",
         "api/delete_folder",
         "api/delete_article",
-        "api/delete_album",
+        "api/delete-album",
         "api/delete-image",
         "api/upload-file",
         "api/upload_audio",
@@ -269,7 +269,7 @@ class ContentManagement extends \ew\Module {
         $innerHTML .= $dom->saveHTML($child);
       }
     }
-    
+
     $result = new \stdClass();
 
     $result->html = $innerHTML;
@@ -949,9 +949,11 @@ class ContentManagement extends \ew\Module {
     }
 
     if (ew_contents::destroy($id)) {
-      return \ew\APIResourceHandler::to_api_response(["status"      => "success",
+      return \ew\APIResourceHandler::to_api_response([
+                  "status"      => "success",
                   "status_code" => 1,
-                  "message"     => "Content has been deleted successfully"]);
+                  "message"     => "Content has been deleted successfully"
+      ]);
     }
     else {
       return \EWCore::log_error(400, "tr{Something went wrong, please try again}");
