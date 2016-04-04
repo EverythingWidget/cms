@@ -79,12 +79,12 @@ class ContentManagement extends \ew\Module {
         "form"        => "admin/html/content-management/label-language.php"
     ]);
 
-    $article_feeder = new \ew\WidgetFeeder("article", $this, "page", "ew_page_feeder_article");
-    $article_feeder->title = "article";
+    $article_feeder = new \ew\WidgetFeeder("articles", $this, "page", "ew_page_feeder_articles");
+    $article_feeder->title = "articles";
     \webroot\WidgetsManagement::register_widget_feeder($article_feeder);
 
-    $folder_feeder = new \ew\WidgetFeeder("folder", $this, "list", "ew_list_feeder_folder");
-    $folder_feeder->title = "folder";
+    $folder_feeder = new \ew\WidgetFeeder("folders", $this, "list", "ew_list_feeder_folders");
+    $folder_feeder->title = "folders";
     \webroot\WidgetsManagement::register_widget_feeder($folder_feeder);
 
     EWCore::register_form("ew/ui/apps/contents/navs", "documents", [
@@ -97,6 +97,11 @@ class ContentManagement extends \ew\Module {
         'id'    => 'content-management/media',
         'title' => 'Media',
         'url'   => '~admin/html/content-management/media/index.php'
+    ]);
+
+    EWCore::register_handler('ew/html-resource-handler/page-uis', [
+        'object' => $this,
+        'method' => 'page_uis_handler_documents'
     ]);
   }
 
@@ -133,8 +138,8 @@ class ContentManagement extends \ew\Module {
         "api/contents_articles",
         "api/get_media_list",
         "api/media-audios",
-        "api/ew_list_feeder_folder",
-        "api/ew_page_feeder_article",
+        "api/ew_list_feeder_folders",
+        "api/ew_page_feeder_articles",
         "html/article-form.php",
         "html/folder-form.php",
         "html/media/album-form.php"]);
@@ -269,7 +274,7 @@ class ContentManagement extends \ew\Module {
         $innerHTML .= $dom->saveHTML($child);
       }
     }
-    
+
     $result = new \stdClass();
 
     $result->html = $innerHTML;
@@ -579,7 +584,7 @@ class ContentManagement extends \ew\Module {
 //      return \EWCore::log_error(400, "tr{Something went wrong, content has not been added}");
   }
 
-  public function ew_page_feeder_article($id, $language = "en") {
+  public function ew_page_feeder_articles($id, $language = "en") {
 
     $articles = $this->contents_labels($id, "admin_ContentManagement_language", $language);
     $article = [];
@@ -596,7 +601,7 @@ class ContentManagement extends \ew\Module {
     return \ew\APIResourceHandler::to_api_response([]);
   }
 
-  public function ew_list_feeder_folder($id, $token = 0, $size, $order_by = null, $_language = 'en') {
+  public function ew_list_feeder_folders($id, $token = 0, $size, $order_by = null, $_language = 'en') {
     if (!$token)
       $token = 0;
     if (!$size)
@@ -631,9 +636,19 @@ class ContentManagement extends \ew\Module {
     //$this->v
   }
 
-  public function get_article($articleId) {
-    //echo "$articleId";
+  public function page_uis_handler_documents($url, $url_parts = []) {
+    if ($url_parts[0] === 'articles') {
+      //echo $url;
+      $article = $this->contents($url_parts[1]);
+      $uis = \webroot\WidgetsManagement::get_path_uis('/folders/'.$article['data']['parent_id']);
+      return $uis;
+    }
 
+
+    return null;
+  }
+
+  public function get_article($articleId) {
     if (!$articleId) {
       return EWCore::log_error(400, 'tr{Article Id is requierd}');
     }
@@ -643,10 +658,11 @@ class ContentManagement extends \ew\Module {
     if (!isset($article)) {
       return \EWCore::log_error(404, "Requested article not found", "article is not exist: $articleId");
     }
-    $article = $article->toArray();
-    $article["labels"] = $this->get_content_labels($articleId);
 
-    return \ew\APIResourceHandler::to_api_response($article);
+    $article_info = $article->toArray();
+    $article_info["labels"] = $this->get_content_labels($articleId);
+
+    return \ew\APIResourceHandler::to_api_response($article_info);
   }
 
   public function update_article($id, $title, $parent_id, $keywords = null, $description = null, $content = null, $labels = null) {
@@ -691,7 +707,7 @@ class ContentManagement extends \ew\Module {
 
     return \ew\APIResourceHandler::to_api_response($rows, [
                 "totalRows" => $folders->count(),
-                "parent"    => isset($container_id) ? $container_id : []
+                "parent"    => isset($container_id) ? $container_id->toArray() : []
     ]);
   }
 
@@ -759,7 +775,7 @@ class ContentManagement extends \ew\Module {
     return \EWCore::log_error(400, 'tr{Something went wrong}');
   }
 
-  public function contents($_parts__id, $title_filter, $type, $token, $size) {
+  public function contents($_parts__id, $title_filter = null, $type = null, $token = 0, $size = null) {
     if (isset($_parts__id)) {
       return $this->get_content_by_id($_parts__id);
     }

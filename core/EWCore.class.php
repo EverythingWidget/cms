@@ -1274,6 +1274,21 @@ class EWCore {
     self::$registry[$registry_id][$id] = $object;
   }
 
+  /**
+   * 
+   * @param type $registry_id registery id
+   * @param type $id id of current item
+   * @param type $handler
+   */
+  public static function register_handler($action_name, $handler = []) {
+    $registry_id = $action_name . '-handler';
+    if (!array_key_exists($registry_id, self::$registry)) {
+      self::$registry[$registry_id] = array();
+    }
+
+    self::$registry[$registry_id][] = $handler;
+  }
+
   public static function deregister($name, $id = null) {
     if (!$id) {
       unset(self::$registry[$name]);

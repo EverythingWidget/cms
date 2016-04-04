@@ -42,6 +42,8 @@ class WidgetsManagement extends \ew\Module {
         "form"  => $uis_content_tab
     ]);
     $this->add_listener("admin/api/content-management/update-folder", "call_on_folder_update");
+    $this->add_listener("admin/api/content-management/update-article", "call_on_article_update");
+    $this->add_listener("admin/api/content-management/get-article", "call_on_folder_get");
     $this->add_listener("admin/api/content-management/contents", "call_on_folder_get");
   }
 
@@ -60,7 +62,7 @@ class WidgetsManagement extends \ew\Module {
         "api/get_layout",
         "api/get_templates",
         "api/create_widget",
-        "api/update_uis",
+        "api/update-uis",
         "api/ew_form_uis_tab",
         "html/ne-uis.php_see",
         'html/' . $this->get_index()));
@@ -77,7 +79,7 @@ class WidgetsManagement extends \ew\Module {
         "api/get_layout",
         "api/get_templates",
         "api/create_widget",
-        "api/update_uis",
+        "api/update-uis",
         "api/ew_form_uis_tab",
         "api/delete_uis",
         "api/clone_uis",
@@ -98,18 +100,36 @@ class WidgetsManagement extends \ew\Module {
   public function call_on_folder_update($id, $webroot) {
     $page_uis_id = $webroot['page_uis_id'];
     if (isset($id) && $page_uis_id) {
-      $this->set_uis("/folder/" . $id, $page_uis_id);
+      $this->set_uis("/folders/" . $id, $page_uis_id);
     }
     else {
-      $this->set_uis("/folder/" . $id, null);
+      $this->set_uis("/folders/" . $id, null);
+    }
+  }
+
+  public function call_on_article_update($id, $webroot) {
+    $page_uis_id = $webroot['page_uis_id'];
+    if (isset($id) && $page_uis_id) {
+      $this->set_uis("/articles/" . $id, $page_uis_id);
+    }
+    else {
+      $this->set_uis("/articles/" . $id, null);
     }
   }
 
   public function call_on_folder_get($__response_data) {
     $result = [];
+
     if (isset($__response_data["data"]) && $__response_data["data"]["id"]) {
       $uis_id = $__response_data["data"]["id"];
-      $page_uis = json_decode($this->get_path_uis("/folder/$uis_id"), true);
+
+      if ($__response_data["data"]['type'] === 'article') {
+        $page_uis = $this->get_path_uis("/articles/$uis_id");
+      }
+      else if ($__response_data["data"]['type'] === 'folder') {
+        $page_uis = $this->get_path_uis("/folders/$uis_id");
+      }
+
       $result["data"] = [
           "webroot/page_uis_id" => ($page_uis["id"]) ? $page_uis["id"] : "",
           "webroot/name"        => ($page_uis["name"]) ? $page_uis["name"] : "Inherit/Default"
@@ -151,7 +171,7 @@ class WidgetsManagement extends \ew\Module {
 
   public function category_action_get($_data) {
     if ($_data["id"]) {
-      $page_uis = json_decode($this->get_path_uis("/folder/" . $_data["id"]), true);
+      $page_uis = $this->get_path_uis("/folder/" . $_data["id"]);
       $_data["WidgetManagement_pageUisId"] = ($page_uis["id"]) ? $page_uis["id"] : "";
       $_data["WidgetManagement_name"] = ($page_uis["name"]) ? $page_uis["name"] : "Inherit/Default";
     }
@@ -170,7 +190,7 @@ class WidgetsManagement extends \ew\Module {
   public function article_action_get($_input, $_language) {
     if ($_input["id"]) {
       //echo $_data;
-      $page_uis = json_decode(($this->get_path_uis("/article/" . $_input["id"])), true);
+      $page_uis = $this->get_path_uis("/article/" . $_input["id"]);
       $_input["WidgetManagement_pageUisId"] = ($page_uis["id"]) ? $page_uis["id"] : "";
       $_input["WidgetManagement_name"] = ($page_uis["name"]) ? $page_uis["name"] : "Inherit/Default";
       //return $_input;
@@ -421,8 +441,8 @@ class WidgetsManagement extends \ew\Module {
     $stm = $db->prepare("SELECT id, name, template, template_settings, perview_url, structure FROM ew_ui_structures WHERE id = ?");
     $stm->execute([$uisId]);
 
-    $default_uis = json_decode(WidgetsManagement::get_path_uis("@DEFAULT"), true);
-    $home_uis = json_decode(WidgetsManagement::get_path_uis("@HOME_PAGE"), true);
+    $default_uis = WidgetsManagement::get_path_uis("@DEFAULT");
+    $home_uis = WidgetsManagement::get_path_uis("@HOME_PAGE");
 
 
     if ($row = $stm->fetch(\PDO::FETCH_ASSOC)) {
@@ -1053,11 +1073,18 @@ class WidgetsManagement extends \ew\Module {
 
   public static function get_path_uis($path = null) {
     $path = ($path) ? $path : $_REQUEST["path"];
-    $db = \EWCore::get_db_connection();
-    $result = $db->query("SELECT ew_ui_structures.id AS id,name,template,path FROM ew_pages_ui_structures,ew_ui_structures WHERE ew_pages_ui_structures.ui_structure_id = ew_ui_structures.id AND path = '$path'") or die($db->error);
-    if ($rows = $result->fetch_assoc()) {
-      //$db->close();
-      return json_encode($rows);
+    $db = \EWCore::get_db_PDO();
+    $result = $db->prepare("SELECT ew_ui_structures.id AS id,name,template, template_settings,path FROM ew_pages_ui_structures,ew_ui_structures"
+            . " WHERE ew_pages_ui_structures.ui_structure_id = ew_ui_structures.id"
+            . " AND path = ?") or die($db->error);
+    $result->execute([$path]);
+
+    if ($row = $result->fetch(\PDO::FETCH_ASSOC)) {
+      return [
+          "uis_id"                => $row["id"],
+          "uis_template"          => $row["template"],
+          "uis_template_settings" => $row["template_settings"]
+      ];
     }
     else {
       return null;

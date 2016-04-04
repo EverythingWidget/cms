@@ -116,23 +116,24 @@ class HTMLResourceHandler extends ResourceHandler {
   }
 
   private function find_uis($module_name, $file) {
-    $r_uri = strtok($_SERVER["REQUEST_URI"], "?");
+    $request_url = strtok($_SERVER["REQUEST_URI"], "?");
 
     // If root dir is same with the uri then refer to the base url
-    if ($root_dir == str_replace("/", "", $r_uri))
-      $r_uri = "/";
+    if ($root_dir == str_replace("/", "", $request_url))
+      $request_url = "/";
 
     // Check if UI structure is specified
     if (!isset($_REQUEST["_uis"])) {
       if ($module_name) {
-        $r_uri = "/$module_name/";
+        $request_url = "/$module_name/";
       }
       if ($file) {
-        $r_uri.= $file;
+        $request_url.= $file;
       }
+
       //$r_uri = str_replace('/' . $root_dir, "", $r_uri);
 
-      $uis_data = static::get_url_uis($r_uri);
+      $uis_data = static::get_url_uis($request_url);
       $_REQUEST["_uis"] = $uis_data["uis_id"];
       $_REQUEST["_uis_template"] = $uis_data["uis_template"];
       if (!isset($_REQUEST["_uis_template_settings"]))
@@ -146,8 +147,6 @@ class HTMLResourceHandler extends ResourceHandler {
       }
     }
 
-    //var_dump($uis_data);
-
     if (isset($_REQUEST["_parameters"])) {
       $GLOBALS["page_parameters"] = explode("/", $_REQUEST["_parameters"]);
     }
@@ -159,16 +158,42 @@ class HTMLResourceHandler extends ResourceHandler {
     if ($url == "/" || $url === EW_DIR || $url === EW_DIR . $_REQUEST["_language"] . "/") {
       $url = "@HOME_PAGE";
     }
-    $url.='%';
-    //echo EW_DIR.$_REQUEST["_language"]."ssss";
+
+    /*
+     * The search priority is as follow:
+     * 
+     * #1 Search in static links
+     * #2 Search in page uis
+     * #3 Search in defaults
+     */
+
     $stm = $dbc->prepare("SELECT * FROM ew_pages_ui_structures,ew_ui_structures "
             . "WHERE ew_ui_structures.id = ew_pages_ui_structures.ui_structure_id AND path LIKE ?") or die($dbc->error);
-    $stm->execute([$url]);
+    $stm->execute([$url . '%']);
 
     if ($row = $stm->fetch(\PDO::FETCH_ASSOC)) {
       
     }
     else {
+      //echo $url;
+      $page_uis_handlers = \EWCore::read_registry_as_array('ew/html-resource-handler/page-uis-handler');
+
+      foreach ($page_uis_handlers as $handler) {
+        if (method_exists($handler["object"], $handler["method"])) {
+          $listener_method_object = new \ReflectionMethod($handler["object"], $handler["method"]);
+          $arguments = [
+              $url,
+              array_values(array_filter(explode('/', $url)))
+          ];
+
+          $handler_result = $listener_method_object->invokeArgs($handler["object"], $arguments);
+
+          if (isset($handler_result)) {
+            return $handler_result;
+          }
+        }
+      }
+
       $dbc = \EWCore::get_db_PDO();
       $stm = $dbc->query("SELECT ui_structure_id, template, template_settings "
               . "FROM ew_pages_ui_structures,ew_ui_structures "
@@ -177,6 +202,7 @@ class HTMLResourceHandler extends ResourceHandler {
       $stm->execute();
       $row = $stm->fetch(\PDO::FETCH_ASSOC);
     }
+
     return [
         "uis_id"                => $row["ui_structure_id"],
         "uis_template"          => $row["template"],

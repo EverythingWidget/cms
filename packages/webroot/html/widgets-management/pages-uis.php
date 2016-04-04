@@ -53,10 +53,10 @@ $default_page = json_decode(webroot\WidgetsManagement::get_path_uis("@DEFAULT"),
           //Show list of pages and their layouts
           if (isset($pages)) {
             foreach ($pages as $page) {
-              $uis = json_decode(webroot\WidgetsManagement::get_path_uis("{$page->url}"), true);
+              $uis = json_decode(webroot\WidgetsManagement::get_path_uis("/{$page->url}"), true);
               echo '<div class="row"><div class="col-xs-12 mar-bot">';
               echo "<input type='hidden'  name='{$page->url}_uisId' id='{$page->url}_uisId' value='{$uis["id"]}'>";
-              echo "<input class='text-field app-page-uis' data-label='{$page->title}' name='{$page->url}' id='{$page->url}' value='{$uis["name"]}'>";
+              echo "<input class='text-field app-page-uis' data-label='{$page->title}' name='/{$page->url}' id='{/$page->url}' value='{$uis["name"]}'>";
               echo "</div></div>";
             }
           }
@@ -99,14 +99,13 @@ $default_page = json_decode(webroot\WidgetsManagement::get_path_uis("@DEFAULT"),
           var row = this;
           $.post("<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/set-uis", {
             path: row.data("field-path")
-          },
-                  function (data) {
-                    $("input[name='" + row.data("field-path") + "']").val("").change();
-                    $("body").EW().notify(data).show();
-                    self.allUISList.removeRow(id);
-                    row._messageRow.remove();
-                    //$(document).trigger("all-uis-list.refresh");
-                  }, "json");
+          }, function (data) {
+            $("input[name='" + row.data("field-path") + "']").val("").change();
+            $("body").EW().notify(data).show();
+            self.allUISList.removeRow(id);
+            row._messageRow.remove();
+            //$(document).trigger("all-uis-list.refresh");
+          }, "json");
         });
         //uisList.deleteUIS(id);
       }
@@ -220,12 +219,11 @@ if ($path_uis_list) {
       $.post("<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/set-uis", {
         path: pageUIS.currentElement.prop("name"),
         uisId: uisId.data("field-id")
-      },
-              function (data) {
-                pageUIS.currentElement.val(uisName).change();
-                $(document).trigger("all-uis-list.refresh");
-                $("body").EW().notify(data).show();
-              }, "json");
+      }, function (data) {
+        pageUIS.currentElement.val(uisName).change();
+        $(document).trigger("all-uis-list.refresh");
+        $("body").EW().notify(data).show();
+      }, "json");
     }
   };
 
