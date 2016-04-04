@@ -33,7 +33,7 @@ echo admin\AppsManagement::create_section_main_form();
        });*/
 
       // Simplified version of above snippet
-      this.module.on('app', System.ui.behaviorProxy(component, 'selectAppSection'));
+      this.module.on('app', System.ui.behave(System.ui.behaviors.selectAppSection, component));
     };
 
     ContentManagementComponent.prototype.start = function () {
