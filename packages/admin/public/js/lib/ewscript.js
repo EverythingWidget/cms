@@ -2381,7 +2381,7 @@ ew_plugins = {
         $element.attr("data-active-plugin-input-button", true);
         $element.css("padding-right", buttonsPanel.outerWidth() + (parseInt($element.css("padding-right")) * 2));
       }
-      inputBtn.click(function () {
+      inputBtn[0].addEventListener('click', function () {
         EW.activeElement = inputBtn;
         settings.onClick($element);
       });

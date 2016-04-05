@@ -1,11 +1,7 @@
 <?php
-$home_page = json_decode(webroot\WidgetsManagement::get_path_uis("@HOME_PAGE"), true);
-$user_home_page = json_decode(webroot\WidgetsManagement::get_path_uis("@USER_HOME_PAGE"), true);
-$default_page = json_decode(webroot\WidgetsManagement::get_path_uis("@DEFAULT"), true);
-//$path_uis_list = EWCore::process_command("admin", "WidgetsManagement", "get_all_pages_uis_list", null, false);
-//http_response_code(200);
-//header('Content-Type: text/html');
-//print_r($path_uis_list);
+$home_page = webroot\WidgetsManagement::get_path_uis("@HOME_PAGE");
+$user_home_page = webroot\WidgetsManagement::get_path_uis("@USER_HOME_PAGE");
+$default_page = webroot\WidgetsManagement::get_path_uis("@DEFAULT");
 ?>
 <div class="tabs-bar block-row">
   <ul class="nav nav-pills nav-black-text">
@@ -31,20 +27,20 @@ $default_page = json_decode(webroot\WidgetsManagement::get_path_uis("@DEFAULT"),
         <div class="col-xs-12">
           <div class="row">
             <div class="col-xs-12 mar-bot">
-              <input type="hidden" class=""  name="@DEFAULTuisId" id="DEFAULT" value="<?php echo $default_page["id"] ?>">
-              <input class="text-field app-page-uis" data-label="Default Layout" name="@DEFAULT" id="DEFAULT" value="<?php echo $default_page["name"] ?>">
+              <input type="hidden" class=""  name="@DEFAULTuisId" id="DEFAULT" value="<?= $default_page["uis_id"] ?>">
+              <input class="text-field app-page-uis" data-label="Default Layout" name="@DEFAULT" id="DEFAULT" value="<?= $default_page["uis_name"] ?>">
             </div>
           </div>
           <div class="row">
             <div class="col-xs-12 mar-bot">
-              <input type="hidden" class=""  name="@HOME_PAGEuisId" id="HOME_PAGE" value="<?php echo $home_page["id"] ?>">
-              <input class="text-field app-page-uis" data-label="Homepage Layout" name="@HOME_PAGE" id="HOME_PAGE" value="<?php echo $home_page["name"] ?>">
+              <input type="hidden" class=""  name="@HOME_PAGEuisId" id="HOME_PAGE" value="<?= $home_page["uis_id"] ?>">
+              <input class="text-field app-page-uis" data-label="Homepage Layout" name="@HOME_PAGE" id="HOME_PAGE" value="<?= $home_page["uis_name"] ?>">
             </div>
           </div>
           <div class="row">
             <div class="col-xs-12 mar-bot">
-              <input type="hidden" class=""  name="@USER_HOME_PAGEuisId" id="USER_HOME_PAGE" value="<?php echo $user_home_page["id"] ?>">
-              <input class="text-field app-page-uis" data-label="User's Homepage Layout" name="@USER_HOME_PAGE" id="USER_HOME_PAGE" value="<?php echo $user_home_page["name"] ?>">
+              <input type="hidden" class=""  name="@USER_HOME_PAGEuisId" id="USER_HOME_PAGE" value="<?= $user_home_page["uis_id"] ?>">
+              <input class="text-field app-page-uis" data-label="User's Homepage Layout" name="@USER_HOME_PAGE" id="USER_HOME_PAGE" value="<?= $user_home_page["uis_name"] ?>">
             </div>
           </div>
           <?php
@@ -53,10 +49,10 @@ $default_page = json_decode(webroot\WidgetsManagement::get_path_uis("@DEFAULT"),
           //Show list of pages and their layouts
           if (isset($pages)) {
             foreach ($pages as $page) {
-              $uis = json_decode(webroot\WidgetsManagement::get_path_uis("/{$page->url}"), true);
+              $uis = webroot\WidgetsManagement::get_path_uis("/{$page->url}");
               echo '<div class="row"><div class="col-xs-12 mar-bot">';
-              echo "<input type='hidden'  name='{$page->url}_uisId' id='{$page->url}_uisId' value='{$uis["id"]}'>";
-              echo "<input class='text-field app-page-uis' data-label='{$page->title}' name='/{$page->url}' id='{/$page->url}' value='{$uis["name"]}'>";
+              echo "<input type='hidden'  name='{$page->url}_uisId' id='{$page->url}_uisId' value='{$uis["uis_id"]}'>";
+              echo "<input class='text-field app-page-uis' data-label='{$page->title}' name='/{$page->url}' id='{/$page->url}' value='{$uis["uis_name"]}'>";
               echo "</div></div>";
             }
           }

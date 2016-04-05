@@ -119,11 +119,12 @@ class WidgetsManagement extends \ew\Module {
 
   public function call_on_folder_get($__response_data) {
     $result = [];
+    $content_data = $__response_data["data"];
 
-    if (isset($__response_data["data"]) && $__response_data["data"]["id"]) {
-      $uis_id = $__response_data["data"]["id"];
+    if (isset($content_data) && $content_data["id"]) {
+      $uis_id = $content_data["id"];
 
-      if ($__response_data["data"]['type'] === 'article') {
+      if ($content_data['type'] === 'article') {
         $page_uis = $this->get_path_uis("/articles/$uis_id");
       }
       else if ($__response_data["data"]['type'] === 'folder') {
@@ -131,8 +132,8 @@ class WidgetsManagement extends \ew\Module {
       }
 
       $result["data"] = [
-          "webroot/page_uis_id" => ($page_uis["id"]) ? $page_uis["id"] : "",
-          "webroot/name"        => ($page_uis["name"]) ? $page_uis["name"] : "Inherit/Default"
+          "webroot/page_uis_id" => ($page_uis["uis_id"]) ? $page_uis["uis_id"] : "",
+          "webroot/name"        => ($page_uis["uis_name"]) ? $page_uis["uis_name"] : "Inherit/Default"
       ];
     }
     return $result;
@@ -1082,6 +1083,7 @@ class WidgetsManagement extends \ew\Module {
     if ($row = $result->fetch(\PDO::FETCH_ASSOC)) {
       return [
           "uis_id"                => $row["id"],
+          "uis_name"              => $row["name"],
           "uis_template"          => $row["template"],
           "uis_template_settings" => $row["template_settings"]
       ];

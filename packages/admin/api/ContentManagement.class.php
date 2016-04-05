@@ -51,7 +51,6 @@ class ContentManagement extends \ew\Module {
                 'date_deleted'  => 'DATETIME NOT NULL'
     ]);
 
-    $pdo = EWCore::get_db_PDO();
     $stm = $pdo->prepare($ew_contents_tags_table_install);
     if (!$stm->execute()) {
       echo EWCore::log_error(500, '', $stm->errorInfo());
