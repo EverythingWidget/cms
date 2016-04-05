@@ -88,7 +88,7 @@
         System.ui.behaviors.selectTab('#media-photos', component.ui.components.tabs_pills);
         component.module.setParamIfNull("album", "0/images");
         component.uploadAudioActivity.hide();
-        component.newAlbumActivity.show();
+        //component.newAlbumActivity.show();
       };
 
       tabs.audios = function () {
@@ -261,7 +261,7 @@
         parent: this.mediaChooserDialog
       }).hide();
 
-      this.newAlbumActivity = EW.addActivity({
+      /*this.newAlbumActivity = EW.addActivity({
         title: "tr{New Album}",
         activity: "admin/html/content-management/media/album-form.php",
         parent: Domain.ui.components.mainFloatMenu,
@@ -269,7 +269,7 @@
           params.albumId = null;
           return params;
         }
-      });
+      });*/
 
       this.uploadImageActivity = EW.addActivity({
         title: "tr{Upload Photo}",
@@ -346,9 +346,9 @@
       component.itemsList = component.albumCard.find(".card-content .album-images-list").empty();
       var albumsList = this.albumsList.children().eq(0);
       if (component.albumId === 0) {
-        this.albumPropertiesBtn.comeOut();
+        //this.albumPropertiesBtn.comeOut();
       } else {
-        this.albumPropertiesBtn.comeIn();
+        //this.albumPropertiesBtn.comeIn();
       }
 
       System.addActiveRequest($.get('<?php echo EW_ROOT_URL; ?>~admin/api/content-management/get-media-list', {
@@ -519,12 +519,12 @@
 
       this.on('album', function (e, id, images) {
         if (id > 0) {
-          mediaComponent.newAlbumActivity.hide();
+          //mediaComponent.newAlbumActivity.hide();
           mediaComponent.uploadImageActivity.show();
           mediaComponent.uploadAudioActivity.show();
           mediaComponent.bBack.comeIn();
         } else {
-          mediaComponent.newAlbumActivity.show();
+          //mediaComponent.newAlbumActivity.show();
           mediaComponent.uploadImageActivity.hide();
           mediaComponent.uploadAudioActivity.hide();
           mediaComponent.bBack.comeOut();

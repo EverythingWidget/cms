@@ -2,33 +2,39 @@
   <div class="header-pane tabs-bar row">
     <h1 id="form-title" class="col-xs-12">
       <span>tr{New}</span>tr{<?= $form_config["formTitle"] ?>}
-    </h1>  
+    </h1>
+
     <ul class="nav nav-pills xs-nav-tabs">
       <li class="active"><a href="#content-properties" data-toggle='tab'>tr{Properties}</a></li>
+
       <li class=""><a href="#content-html" data-toggle='tab'>tr{Content}</a></li>
+
       <?php
       foreach ($tabs as $id => $tab) {
-        echo "<li class='' ><a href='#{$id}' data-toggle='tab'>tr{" . $tab["title"] . "}</a></li>";
+        echo "<li class=''><a href='#{$id}' data-toggle='tab'>tr{{$tab["title"]}}</a></li>";
       }
       ?>
     </ul>
   </div>
+
   <div class="form-content  tabs-bar">
     <div class="tab-content">
       <div class="tab-pane active" id="content-properties">
         <?= get_properties($form_config, $form_id); ?>
       </div>
+
       <div class="tab-pane" id="content-html">
         <?= get_editor($form_config, $form_id); ?>
       </div>
+
       <?php
       foreach ($tabs as $id => $tab) {
-        //$tab_object = EWCore::process_request_command($tab["app"], $tab["resource"], $tab["module"], $tab["method"], ["form_config" => $form_config]);
         echo "<div class='tab-pane' id='{$id}'>" . preg_replace('/\{\{formId\}\}/', $form_id, $tab["form"]) . "</div>";
       }
       ?>
     </div>
   </div>
+
   <div class="footer-pane row actions-bar action-bar-items">
   </div>
 </form>
@@ -146,12 +152,11 @@
   ContentForm.uiTitle = ContentForm.uiForm.find("#form-title");
 
 
-</script>
-<?= $form_config["script"] ?>
-<script>
-  // Set form data when the form is completely loaded
-  $(document).ready(function () {
 
+<?= $form_config["include_script"] ?>
+
+// Set form data when the form is completely loaded
+  $(document).ready(function () {
     $.each($(ContentForm.formId + " .content-label"), function (i, e) {
       var $e = $(e);
       var lcb = $e.find(".label-control-button");
@@ -177,7 +182,9 @@
         }
       });
     });
-    ContentForm.setData(<?php echo $content_data; ?>);
+    ContentForm.setData(<?= $content_data; ?>);
     $(ContentForm.formId).find("#title").focus();
   });
-</script> 
+
+</script>
+<?= $form_config["script"] ?>

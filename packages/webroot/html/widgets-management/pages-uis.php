@@ -133,7 +133,7 @@ if ($path_uis_list) {
         Template: {}
       },
       rowCount: true,
-      url: "<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/get-uis-list",
+      url: "~webroot/api/widgets-management/get-uis-list",
       pageSize: 30,
       columns: [
         "name",

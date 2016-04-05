@@ -1228,7 +1228,6 @@ class WidgetsManagement extends \ew\Module {
    * @param \ew\WidgetFeeder $feeder
    */
   public static function register_widget_feeder($feeder) {
-
     static::$widgets_feeders[$feeder->id] = $feeder;
   }
 
@@ -1239,12 +1238,12 @@ class WidgetsManagement extends \ew\Module {
    */
   public static function get_widget_feeders($type = "all") {
     $feeders = [];
-    //      print_r(EWCore::read_registry("ew-widget-feeder"));
     foreach (static::$widgets_feeders as $feeder_id => $feeder_config) {
       if ($feeder_config->feeder_type === $type || $type === "all") {
         $feeders[] = $feeder_config;
       }
     }
+    
     return \ew\APIResourceHandler::to_api_response($feeders, ["totalRows" => count($feeders)]);
   }
 

@@ -1,21 +1,24 @@
-<div id="properties-form" class="col-lg-8 col-md-8 col-sm-12 col-xs-12" >        
-  <div class="row mt">
+<div id="properties-form" class="col-lg-8 col-md-8 col-sm-12 col-xs-12" >
+  <div class="block-row mt">
     <input type="hidden" id="id" name="id" value="">
     <input type="hidden" id="type" name="type" value="<?php echo $form_config["contentType"] ?>">
-
-    <div class="col-xs-12 col-md-12 col-lg-12">
-
-      <input class="text-field" data-label="tr{Title}" value="" id="title" name="title" data-validate="r"/>
-    </div>
+    <input class="text-field" data-label="tr{Title}" value="" id="title" name="title" data-validate="r"/>
   </div>
+
+  <div class="block-row">
+    <label id="slug"></label>
+  </div>
+
   <div class="row">
     <div class="col-xs-12 col-md-6 col-lg-6">
-      <textarea class="text-field" id="keywords" data-label="tr{Keywords}" name="keywords"  ></textarea>
+      <textarea class="text-field" id="keywords" data-label="tr{Keywords}" name="keywords"></textarea>
     </div>
+
     <div class="col-xs-12 col-md-6 col-lg-6">
-      <textarea class="text-field" id="description" data-label="tr{Description}" name="description"  ></textarea>
+      <textarea class="text-field" id="description" data-label="tr{Description}" name="description"></textarea>
     </div>
   </div>
+
   <?php
   // App custom inputs
   $input_groups = EWCore::read_registry("ew/ui/forms/content/properties");
@@ -46,22 +49,21 @@
 
     $form = EWCore::call($label_object['form'], compact("comp_id", "value", "form_id"));
     ?>
-    <div class=row>
-      <div class='col-xs-12'>
-        <div class='box box-grey content-label disabled' data-activated="false">
-          <div class='row'>
-            <div class='col-xs-12'>
-              <h3 class="pull-left"><?php echo $label_object["title"] ?></h3>
-              <system-button-switch id="<?php echo $comp_id ?>_control_button"
-                                    class="label-control-button btn btn-default btn-sm pull-right" >
-                Turned Off
-              </system-button-switch>
-            </div>
-          </div>
-          <div class='row'>
-            <?= EWCore::populate_view($form, compact("comp_id", "value", "form_id")) ?>
-          </div>
+    <div class="block-row">
+      <div class='box box-grey content-label disabled' data-activated="false">
+        <div class='block-row'>
+          <h3 class="pull-left"><?= $label_object["title"] ?></h3>
+
+          <system-button-switch id="<?= $comp_id ?>_control_button"
+                                class="label-control-button btn btn-default btn-sm pull-right" >
+            Turned Off
+          </system-button-switch>
         </div>
+
+        <div class='row'>
+          <?= EWCore::populate_view($form, compact("comp_id", "value", "form_id")) ?>
+        </div>
+
       </div>
     </div>
     <?php

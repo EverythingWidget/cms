@@ -25,9 +25,19 @@ class ContentManagement extends \ew\Module {
       "mp3"  => "sound",
       "mp4"  => "video"];
   private $images_resources = [
-      "/is/htdocs/wp1067381_3GN1OJU4CE/www/culturenights/app/webroot/img/logos/"];
+      "/is/htdocs/wp1067381_3GN1OJU4CE/www/culturenights/app/webroot/img/logos/"
+  ];
 
   protected function install_assets() {
+    require_once 'models/ew_contents.php';
+    require_once 'models/ew_contents_labels.php';
+    require_once 'asset/DocumentComponent.class.php';
+    require_once 'asset/LanguageComponent.class.php';
+
+    ob_start();
+    include EW_PACKAGES_DIR . '/admin/html/content-management/link-chooser-document.php';
+    $link_chooser_document = ob_get_clean();
+
     $ew_tags_table_install = EWCore::create_table('ew_tags', [
                 'id'            => 'BIGINT(20) AUTO_INCREMENT PRIMARY KEY',
                 'name'          => 'VARCHAR(256) NOT NULL',
@@ -57,10 +67,25 @@ class ContentManagement extends \ew\Module {
     }
 
     EWCore::register_app("content-management", $this);
-    require_once('models/ew_contents.php');
-    require_once('models/ew_contents_labels.php');
-    require_once 'asset/DocumentComponent.class.php';
-    require_once 'asset/LanguageComponent.class.php';
+
+
+
+    /* ob_start();
+      include EW_PACKAGES_DIR . '/admin/html/content-management/link-chooser-document.php';
+      $link_chooser_media = ob_get_clean(); */
+
+    EWCore::register_form("ew/ui/components/link-chooser", "content-chooser", [
+        "title"   => "Contents",
+        "content" => $link_chooser_document
+    ]);
+
+    /* EWCore::register_form("ew/ui/components/link-chooser", "media-chooser", ["title"   => "Media",
+      "content" => $link_chooser_media]); */
+
+    EWCore::register_resource("images", [
+        $this,
+        "image_loader"
+    ]);
 
     $this->register_content_component("document", [
         "title"       => "Document",
@@ -78,14 +103,6 @@ class ContentManagement extends \ew\Module {
         "form"        => "admin/html/content-management/label-language.php"
     ]);
 
-    $article_feeder = new \ew\WidgetFeeder("articles", $this, "page", "ew_page_feeder_articles");
-    $article_feeder->title = "articles";
-    \webroot\WidgetsManagement::register_widget_feeder($article_feeder);
-
-    $folder_feeder = new \ew\WidgetFeeder("folders", $this, "list", "ew_list_feeder_folders");
-    $folder_feeder->title = "folders";
-    \webroot\WidgetsManagement::register_widget_feeder($folder_feeder);
-
     EWCore::register_form("ew/ui/apps/contents/navs", "documents", [
         'id'    => 'content-management/documents',
         'title' => 'Documents',
@@ -97,33 +114,26 @@ class ContentManagement extends \ew\Module {
         'title' => 'Media',
         'url'   => '~admin/html/content-management/media/index.php'
     ]);
+  }
 
+  protected function install_handlers() {
     EWCore::register_handler(\ew\HTMLResourceHandler::PAGE_UIS_HANDLER, [
         'object' => $this,
         'method' => 'page_uis_handler_documents'
     ]);
   }
 
+  protected function install_feeders() {
+    $article_feeder = new \ew\WidgetFeeder("articles", $this, "page", "ew-page-feeder-articles");
+    $article_feeder->set_title('articles');
+    \webroot\WidgetsManagement::register_widget_feeder($article_feeder);
+
+    $folder_feeder = new \ew\WidgetFeeder("folders", $this, "list", "ew-list-feeder-folders");
+    $folder_feeder->set_title('folders');
+    \webroot\WidgetsManagement::register_widget_feeder($folder_feeder);
+  }
+
   protected function install_permissions() {
-
-    ob_start();
-    include EW_PACKAGES_DIR . '/admin/html/content-management/link-chooser-document.php';
-    $lcd = ob_get_clean();
-
-    /* ob_start();
-      include EW_PACKAGES_DIR . '/admin/html/content-management/link-chooser-document.php';
-      $link_chooser_media = ob_get_clean(); */
-
-    EWCore::register_form("ew/ui/components/link-chooser", "content-chooser", ["title"   => "Contents",
-        "content" => $lcd]);
-
-    /* EWCore::register_form("ew/ui/components/link-chooser", "media-chooser", ["title"   => "Media",
-      "content" => $link_chooser_media]); */
-
-    EWCore::register_resource("images", [
-        $this,
-        "image_loader"]);
-
     $this->register_permission("see-content", "User can see the contents", [
         'html/index.php',
         'api/index',
@@ -137,11 +147,12 @@ class ContentManagement extends \ew\Module {
         "api/contents_articles",
         "api/get_media_list",
         "api/media-audios",
-        "api/ew_list_feeder_folders",
-        "api/ew_page_feeder_articles",
+        "api/ew-list-feeder-folders",
+        "api/ew-page-feeder-articles",
         "html/article-form.php",
         "html/folder-form.php",
-        "html/media/album-form.php"]);
+        "html/media/album-form.php"
+    ]);
 
     $this->register_permission("manipulate-content", "User can add new, edit, delete contents", [
         'html/index.php',
@@ -443,6 +454,61 @@ class ContentManagement extends \ew\Module {
     return \ew\APIResourceHandler::to_api_response($data, ["totalRows" => $rows->count()]);
   }
 
+  private function content_relationships($id_slug, $key, $value = '%') {
+    if (preg_match('/\$content\.(\w*)/', $id_slug))
+      return [];
+
+    if (!$id_slug)
+      return [];
+
+    if (!$value)
+      $value = '%';
+
+    if (is_numeric($id_slug)) {
+      $rows = \ew_contents_labels::join('ew_contents', 'ew_contents_labels.content_id', '=', 'ew_contents.id')
+                      ->where(function($query) use ($id_slug) {
+                        $query->whereIn('content_id', function($query) use ($id_slug) {
+                          $query->select('content_id')
+                          ->from('ew_contents_labels')
+                          ->where('content_id', '=', $content_id);
+                        })->orWhereIn('content_id', function($query) use ($content_id) {
+                          $query->select('content_id')
+                          ->from('ew_contents_labels')
+                          ->where('key', '=', 'admin_ContentManagement_document')
+                          ->where('value', '=', $content_id);
+                        });
+                      })
+                      ->where('key', 'LIKE', $key)
+                      ->where('value', 'LIKE', $value)->orderBy('value');
+
+      $result = $rows->get([
+          '*',
+          \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")
+      ]);
+    }
+    else if (is_string($id_slug)) {
+      $rows = \ew_contents::where('slug', $id_slug)
+                      ->join('ew_contents_labels as docs', 'ew_contents.id', '=', 'docs.content_id')
+                      ->join('ew_contents_labels as langs', 'docs.value', '=', 'langs.content_id')
+                      ->where('docs.key', '=', 'admin_ContentManagement_document')
+                      ->where('docs.value', '=', 'admin_ContentManagement_document')
+                      ->where('langs.key', 'LIKE', $key)
+                      ->where('langs.value', 'LIKE', $value)->orderBy('value');
+
+      $result = $rows->get([
+          '*',
+          \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")
+      ]);
+    }
+
+    $data = array_map(function($e) {
+      $e["content_fields"] = json_decode($e["content_fields"], true);
+      return $e;
+    }, $result->toArray());
+
+    return \ew\APIResourceHandler::to_api_response($data, ["totalRows" => $rows->count()]);
+  }
+
   /**
    * 
    * @param type $type
@@ -463,7 +529,8 @@ class ContentManagement extends \ew\Module {
       if (!$validator->isSuccess())
       return EWCore::log_error("400", "tr{Content has not been added}", $validator->getErrors()); */
 
-    $v = new \Valitron\Validator(compact(['title',
+    $v = new \Valitron\Validator(compact([
+                'title',
                 'type',
                 'parent_id'
     ]));
@@ -579,8 +646,8 @@ class ContentManagement extends \ew\Module {
       ]);
       // End of plugins actions call
     }
+    
     return $result;
-//      return \EWCore::log_error(400, "tr{Something went wrong, content has not been added}");
   }
 
   public function ew_page_feeder_articles($id, $language = "en") {
@@ -590,7 +657,6 @@ class ContentManagement extends \ew\Module {
 
     if ($articles) {
       $article = $articles["data"][0];
-      //$result["html"] = "WIDGET_DATA_MODEL";
       $result["title"] = $article["title"];
       $result["content"] = $article["content"];
       $result["content_fields"] = $article["content_fields"];
@@ -637,10 +703,24 @@ class ContentManagement extends \ew\Module {
 
   public function page_uis_handler_documents($url, $url_parts = []) {
     if ($url_parts[0] === 'articles') {
-      //echo $url;
-      $article = $this->contents($url_parts[1]);
-      $uis = \webroot\WidgetsManagement::get_path_uis('/folders/' . $article['data']['parent_id']);
-      return $uis;
+      if (is_numeric($url_parts[1])) {
+        $article = $this->contents($url_parts[1]);
+
+        if (isset($article['data'])) {
+          return \webroot\WidgetsManagement::get_path_uis('/folders/' . $article['data']['parent_id']);
+        }
+      }
+      else if (is_string($url_parts[1])) {
+        $article = $this->get_content_by_slug($url_parts[1]);
+        if (isset($article['data'])) {
+          return \webroot\WidgetsManagement::get_path_uis('/articles/' . $article['data']['id']);
+        }
+      }
+
+
+      /* if (isset($article['data'])) {
+        $uis = \webroot\WidgetsManagement::get_path_uis('/articles/' . $article['data']['parent_id']);
+        } */
     }
 
 
@@ -789,7 +869,7 @@ class ContentManagement extends \ew\Module {
     return \ew\APIResourceHandler::to_api_response($content["data"]["content_fields"]);
   }
 
-  private function get_content_by_id($id, $language = ën) {
+  private function get_content_by_id($id, $language = 'en') {
     if (!isset($id))
       return \EWCore::log_error(400, 'tr{Content Id is requird}');
     $content = ew_contents::find($id, ['*',
@@ -802,7 +882,26 @@ class ContentManagement extends \ew\Module {
 
       $labels = $this->get_content_labels($id);
       $content->labels = $labels;
-      return \ew\APIResourceHandler::to_api_response($content->toArray());
+      return \ew\APIResourceHandler::to_api_response($content->toArray()[0]);
+    }
+
+    return EWCore::log_error(404, "content not found");
+  }
+
+  private function get_content_by_slug($slug, $language = 'en') {
+    if (!isset($slug))
+      return \EWCore::log_error(400, 'tr{Content Id is requird}');
+    $content = ew_contents::where('slug', $slug)->get(['*',
+        \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
+
+    if (isset($content)) {
+      //$cf = $this->get_content_fields($content->content);
+      $content->content_fields = json_decode($content->content_fields, true);
+      //$content->parsed_content = $cf['html'];
+
+      $labels = $this->get_content_labels($slug);
+      $content->labels = $labels;
+      return \ew\APIResourceHandler::to_api_response($content->toArray()[0]);
     }
 
     return EWCore::log_error(404, "content not found");

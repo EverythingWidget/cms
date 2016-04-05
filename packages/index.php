@@ -84,7 +84,10 @@ if ($_SERVER['SERVER_PORT'] !== "80" && $_SERVER['SERVER_PORT'] !== "443") {
 else {
   $u = $protocol . $_SERVER['SERVER_NAME'] . EW_DIR_URL . $url_language;
 }
+
 define('EW_ROOT_URL', $u);
+
+$EW = new \EWCore();
 
 // Check the app parameter
 $resource_type = "html";
@@ -129,8 +132,6 @@ if (isset($elements[$parameter_index])) {
 
 if (!ob_start("ob_gzhandler"))
   ob_start();
-
-$EW = new \EWCore();
 
 // set default user group if no user group has been spacified
 if (!isset($_SESSION["EW.USER_GROUP_ID"])) {

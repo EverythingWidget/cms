@@ -31,7 +31,7 @@
       headers: {Name: {}, Template: {}},
       columns: ["name", "template"],
       rowCount: true,
-      url: "<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/get-uis-list",
+      url: "~webroot/api/widgets-management/get-uis-list",
       pageSize: 30
       , buttons: {
         "Select": function (row) {

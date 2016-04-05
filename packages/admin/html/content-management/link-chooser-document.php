@@ -71,7 +71,7 @@
       if (_this.contentType === "all" || _this.contentType === "list" || _this.contentType === "contentField") {
         _this.folderListHeader.html("tr{Loading folders}");
 
-        $.post('<?php echo EW_ROOT_URL; ?>~admin/api/content-management/contents-folders', {
+        $.post('~admin/api/content-management/contents-folders', {
           parent_id: parentId
         },
           function (data) {
@@ -93,7 +93,7 @@
       if (_this.contentType === "all" || _this.contentType === "content" || _this.contentType === "contentField") {
         _this.articlesListHeader.html("tr{Loading articles}");
 
-        $.post('<?php echo EW_ROOT_URL; ?>~admin/api/content-management/contents-articles', {
+        $.post('~admin/api/content-management/contents-articles', {
           parent_id: parentId
         },
           function (data) {

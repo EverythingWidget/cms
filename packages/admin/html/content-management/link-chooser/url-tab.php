@@ -1,4 +1,3 @@
-
 <div class="col-xs-12">
    <input class="text-field" data-label="URL link" name="url_link" id="url_link"/>
 </div>

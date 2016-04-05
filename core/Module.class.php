@@ -36,6 +36,10 @@ class Module {
 
     $this->pre_processors = $this->get_pre_processors();
 
+    $this->install_handlers();
+
+    $this->install_feeders();
+
     $this->install_permissions();
   }
 
@@ -58,9 +62,23 @@ class Module {
   }
 
   /**
-   * Override this method to include all the external resource that you are going to use in this module
+   * Override this method to include all the external/internal resource that you are going to be used in this module
    */
   protected function install_assets() {
+    
+  }
+
+  /**
+   * Override this method to register all the feeders that this module is going to provide
+   */
+  protected function install_feeders() {
+    
+  }
+
+  /**
+   * Override this method to register all the action handlers that this module is going to provide
+   */
+  protected function install_handlers() {
     
   }
 
@@ -151,7 +169,7 @@ class Module {
     $db = \EWCore::get_db_connection();
     $method_object = new \ReflectionMethod($this, $method_name);
     $method_parameters = $method_object->getParameters();
-    
+
     ksort($method_parameters);
 
     $functions_arguments = array();
@@ -176,10 +194,6 @@ class Module {
     $method_object->setAccessible(true);
     $command_result = $method_object->invokeArgs($this, $functions_arguments);
 
-    /* if (is_array($command_result))
-      {
-      $command_result = json_encode($command_result);
-      } */
     return $command_result;
   }
 

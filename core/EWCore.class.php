@@ -1166,6 +1166,12 @@ class EWCore {
     return ($numHits > 0) ? ($slug . '-' . $numHits) : $slug;
   }
 
+  /** Add a ui component to the specified place holder
+   * 
+   * @param String $name place holder id 
+   * @param String $id  
+   * @param Array $conf can vary depends on the place holder
+   */
   public static function register_form($name, $id, $conf) {
     EWCore::register_object($name, $id, $conf);
   }
@@ -1702,13 +1708,13 @@ class EWCore {
       header('Content-Type: application/json');
     }
     $error_content = [
-        "statusCode" => $header_code,
+        "statusCode"  => $header_code,
         "status_code" => $header_code,
-        "code"       => $header_code,
+        "code"        => $header_code,
         //"url" => $_REQUEST["_app_name"] . "/" . $_REQUEST["_section_name"] . "/" . $_REQUEST["_function_name"],
-        "url"        => $_SERVER["REQUEST_URI"],
-        "message"    => $message,
-        "reason"     => $reason
+        "url"         => $_SERVER["REQUEST_URI"],
+        "message"     => $message,
+        "reason"      => $reason
     ];
     /* if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
       { */

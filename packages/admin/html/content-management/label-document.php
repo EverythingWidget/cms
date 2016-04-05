@@ -3,11 +3,11 @@
   <input class="text-field" type="hidden" id="{{comp_id}}_value" name="value" value=""/>
   <input class="text-field" data-label="Select a content" id="{{comp_id}}_text" name="text" value="" />
 </div>
-<div class="col-xs-12">
-  <ul id="{{comp_id}}_attached" class="list">
 
-  </ul>
+<div class="col-xs-12">
+  <ul id="{{comp_id}}_attached" class="list"></ul>
 </div>
+
 <script>
   (function () {
     var text = $("#{{comp_id}}_text");
@@ -15,16 +15,15 @@
     var attached = $("#{{comp_id}}_attached");
     text.autocomplete({
       source: function (input) {
-        $.post("<?php echo EW_ROOT_URL; ?>~admin/api/content-management/contents", {
+        $.post("~admin/api/content-management/contents", {
           title_filter: text.val(),
           type: "article",
           size: 30
-        },
-          function (response) {
-            input.trigger("updateList", [
-              response.data
-            ]);
-          }, "json");
+        }, function (response) {
+          input.trigger("updateList", [
+            response.data
+          ]);
+        }, "json");
       },
       templateText: "<li class='text-item'><a href='#'><%= title %><span><%= date_created %></span></a><li>",
       insertText: function (item) {
@@ -44,8 +43,7 @@
       $.post("~admin/api/content-management/contents-labels", {
         content_id: ContentForm.getLabel("{{comp_id}}"),
         key: "{{comp_id}}"
-      },
-      function (response) {
+      }, function (response) {
         attached.empty();
 
         if (response['data']) {
@@ -53,7 +51,6 @@
             var langItem = $("<li class=''><a rel='ajax' href='#' class='link'>" + content.title + "</a></li>");
 
             if (content.id == "{{value}}") {
-
               value.val(content.id);
               text.val(content.title).change();
             }
@@ -64,10 +61,9 @@
               langItem.find("a").on("click", function () {
                 $.post("~admin/api/content-management/get-article", {
                   articleId: content.id
-                },
-                  function (response) {
-                    ContentForm.setData(response.data[0]);
-                  }, "json");
+                }, function (response) {
+                  ContentForm.setData(response.data[0]);
+                }, "json");
               });
             }
 

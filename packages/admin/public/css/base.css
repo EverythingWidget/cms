@@ -1523,7 +1523,7 @@ ul.list.arrangeable li:last-child {
 }
 
 .list.arrangeable.row-buttons {
-  padding: 5px 0;
+  padding: 5px 15px;
 }
 
 ul.list.arrangeable li.dragged .handle {

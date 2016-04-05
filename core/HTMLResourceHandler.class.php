@@ -58,22 +58,19 @@ class HTMLResourceHandler extends ResourceHandler {
     return strtolower(end(explode('.', $path)));
   }
 
-  protected function handle($app, $package, $resource_type, $module_name, $method_name, $parameters = null) {
-    $package = str_replace('-', '_', $package);
-    $matches = array();
+  protected function handle($app, $package_original, $resource_type, $module_name, $method_name, $parameters = null) {
+    $package = str_replace('-', '_', $package_original);
+    $matches = [];
     preg_match('/(.*\.[^-]{2,4})/', $parameters["_file"], $matches);
     $file = isset($matches[1]) ? $matches[1] : $parameters["_file"];
     $path = null;
 
-    $this->find_uis($module_name, $file);
+    $this->set_uis($module_name, $file);
     //return $_REQUEST["_uis"];
     if (\webroot\WidgetsManagement::get_widget_feeder_by_url($module_name)) {
       // Show index if the URL contains a page feeder
       $app_index = $app->index();
-      //$module_name = $app_index['module'];
-      //$method_name = $app_index['file'];
       $path = $package . '/' . $resource_type . '/' . $app_index['module'] . '/' . $app_index['file'];
-      //return $_REQUEST["_uis"];
     }
     else if ($module_name && $file) {
       $path = $package . '/' . $resource_type . '/' . $module_name . '/' . $file;
@@ -108,7 +105,6 @@ class HTMLResourceHandler extends ResourceHandler {
       }
     }
     else {
-      //echo $app_resource_path[1];
       return \EWCore::log_error(404, "File not found: `$path`", [
                   "app/resource: " . $package . '/' . $resource_type,
                   "module: $module_name",
@@ -117,7 +113,7 @@ class HTMLResourceHandler extends ResourceHandler {
     }
   }
 
-  private function find_uis($module_name, $file) {
+  private function set_uis($module_name, $file) {
     $request_url = strtok($_SERVER["REQUEST_URI"], "?");
 
     // If root dir is same with the uri then refer to the base url
@@ -129,13 +125,12 @@ class HTMLResourceHandler extends ResourceHandler {
       if ($module_name) {
         $request_url = "/$module_name/";
       }
+
       if ($file) {
         $request_url.= $file;
       }
 
-      //$r_uri = str_replace('/' . $root_dir, "", $r_uri);
-
-      $uis_data = static::get_url_uis($request_url);
+      $uis_data = static::find_url_uis($request_url);
       $_REQUEST["_uis"] = $uis_data["uis_id"];
       $_REQUEST["_uis_template"] = $uis_data["uis_template"];
       if (!isset($_REQUEST["_uis_template_settings"]))
@@ -154,7 +149,7 @@ class HTMLResourceHandler extends ResourceHandler {
     }
   }
 
-  public static function get_url_uis($url) {
+  public static function find_url_uis($url) {
     $pdo = \EWCore::get_db_PDO();
     // if the url is the root, the home layout will be set
     if ($url == "/" || $url === EW_DIR || $url === EW_DIR . $_REQUEST["_language"] . "/") {
@@ -170,7 +165,8 @@ class HTMLResourceHandler extends ResourceHandler {
      */
 
     $statement = $pdo->prepare("SELECT * FROM ew_pages_ui_structures,ew_ui_structures "
-            . "WHERE ew_ui_structures.id = ew_pages_ui_structures.ui_structure_id AND path LIKE ?") or die($pdo->error);
+            . "WHERE ew_ui_structures.id = ew_pages_ui_structures.ui_structure_id "
+            . "AND path LIKE ?") or die($pdo->error);
     $statement->execute([$url . '%']);
 
     if ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {

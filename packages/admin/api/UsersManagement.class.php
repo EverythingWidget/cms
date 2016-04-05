@@ -2,10 +2,7 @@
 
 namespace admin;
 
-use Module;
 use EWCore;
-
-//session_start();
 
 class UsersManagement extends \ew\Module {
 
@@ -19,13 +16,13 @@ class UsersManagement extends \ew\Module {
 
   protected function install_assets() {
     EWCore::register_app("users-management", $this);
-    
+
     EWCore::register_form("ew/ui/apps/users/navs", "users", [
         'id'    => 'users-management/users',
         'title' => 'Users',
         'url'   => '~admin/html/users-management/users.php'
     ]);
-    
+
     EWCore::register_form("ew/ui/apps/users/navs", "groups", [
         'id'    => 'users-management/users-groups',
         'title' => 'Groups',
@@ -65,7 +62,7 @@ class UsersManagement extends \ew\Module {
         "api/delete_group",
         "html/users-group-form.php:tr{New Group}",
         'html/' . $this->get_index()]);
-    
+
     $this->register_public_access([
         "api/am-i-in"
     ]);
@@ -149,8 +146,8 @@ class UsersManagement extends \ew\Module {
       $url = '/';
     header("Location: $url");
   }
-  
-  public function am_i_in(){
+
+  public function am_i_in() {
     
   }
 
@@ -171,7 +168,7 @@ class UsersManagement extends \ew\Module {
           }
         }
         $resullt = [
-            "status" => "success",
+            "status"        => "success",
             "error_message" => $message];
       }
       catch (Exception $e) {
@@ -277,7 +274,7 @@ class UsersManagement extends \ew\Module {
     $db->close();
     $out = [
         "totalRows" => $totalRows['COUNT(*)'],
-        "result" => $rows];
+        "result"    => $rows];
     return json_encode($out);
   }
 
@@ -301,12 +298,12 @@ class UsersManagement extends \ew\Module {
     while ($r = $result->fetch_assoc()) {
       $rows[] = $r;
     }
-    
+
     $out = [
         "totalRows" => $totalRows['COUNT(*)'],
-        "result" => $rows];
+        "result"    => $rows];
     $db->close();
-    
+
     return json_encode($out);
   }
 
@@ -374,14 +371,14 @@ class UsersManagement extends \ew\Module {
         } */
 
       return json_encode([
-          status => "success",
-          title => $title,
+          status  => "success",
+          title   => $title,
           message => "Users group '$title' has been added successfully",
-          "id" => $db->insert_id]);
+          "id"    => $db->insert_id]);
     }
     return json_encode([
-        status => "unsuccess",
-        title => "Update Group Unsuccessfull",
+        status  => "unsuccess",
+        title   => "Update Group Unsuccessfull",
         message => "Users group has been NOT added"]);
   }
 
@@ -415,8 +412,8 @@ class UsersManagement extends \ew\Module {
         } */
 
       return json_encode([
-          status => "success",
-          title => $title,
+          status  => "success",
+          title   => $title,
           message => "tr{Users group} '$title' tr{has been updated successfully}"]);
     }
     return EWCore::log_error("400", "Users group has been NOT updated", $db->error_list);
@@ -453,8 +450,8 @@ class UsersManagement extends \ew\Module {
         } */
 
       return json_encode([
-          status => "success",
-          title => $group_info["title"],
+          status  => "success",
+          title   => $group_info["title"],
           message => "tr{Users group} '{$group_info["title"]}' tr{has been deleted successfully}"]);
     }
     return EWCore::log_error("400", "tr{Users group has been NOT deleted}", $db->error_list);
@@ -530,7 +527,7 @@ class UsersManagement extends \ew\Module {
 
     if (self::get_user_by_email($email) != NULL) {
       return json_encode([
-          status => "duplicate",
+          status        => "duplicate",
           error_message => "An  account with this email address is already exist"]);
     }
     $stm = $db->prepare("INSERT INTO ew_users (email, first_name, last_name, password, group_id, date_created)
@@ -540,15 +537,15 @@ class UsersManagement extends \ew\Module {
     if ($stm->execute()) {
 
       return [
-          status => "success",
-          email => $email,
+          status  => "success",
+          email   => $email,
           message => "New user '$email' has been added successfully",
-          "id" => $stm->insert_id
+          "id"    => $stm->insert_id
       ];
       $db->close();
     }
     return json_encode([
-        status => "unsuccess",
+        status  => "unsuccess",
         message => "New User has been NOT added"]);
   }
 
@@ -575,11 +572,11 @@ class UsersManagement extends \ew\Module {
 
       if ($stm->execute()) {
         $user_info = [
-            "id" => $stm->insert_id,
-            "email" => $email,
+            "id"         => $stm->insert_id,
+            "email"      => $email,
             "first_name" => $first_name,
-            "last_name" => $last_name,
-            "password" => $password
+            "last_name"  => $last_name,
+            "password"   => $password
         ];
         $db->close();
       }
@@ -610,13 +607,13 @@ class UsersManagement extends \ew\Module {
     if ($stm->execute()) {
       $db->close();
       return json_encode([
-          status => "success",
-          email => $email,
+          status  => "success",
+          email   => $email,
           message => "User '$email' has been updated successfully",
-          "id" => $id]);
+          "id"    => $id]);
     }
     return json_encode([
-        status => "unsuccess",
+        status  => "unsuccess",
         message => "User has been NOT updated"]);
   }
 
@@ -633,13 +630,13 @@ class UsersManagement extends \ew\Module {
       $db->close();
 
       return json_encode([
-          status => "success",
-          title => $user_info["email"],
+          status  => "success",
+          title   => $user_info["email"],
           message => "User  '{$user_info["email"]}' has been deleted successfully"]);
     }
     return json_encode([
-        status => "unsuccess",
-        title => "Update user Unsuccessfull",
+        status  => "unsuccess",
+        title   => "Update user Unsuccessfull",
         message => "User has been NOT deleted"]);
   }
 
