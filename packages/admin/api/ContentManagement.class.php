@@ -98,7 +98,7 @@ class ContentManagement extends \ew\Module {
         'url'   => '~admin/html/content-management/media/index.php'
     ]);
 
-    EWCore::register_handler('ew/html-resource-handler/page-uis', [
+    EWCore::register_handler(\ew\HTMLResourceHandler::PAGE_UIS_HANDLER, [
         'object' => $this,
         'method' => 'page_uis_handler_documents'
     ]);
@@ -639,7 +639,7 @@ class ContentManagement extends \ew\Module {
     if ($url_parts[0] === 'articles') {
       //echo $url;
       $article = $this->contents($url_parts[1]);
-      $uis = \webroot\WidgetsManagement::get_path_uis('/folders/'.$article['data']['parent_id']);
+      $uis = \webroot\WidgetsManagement::get_path_uis('/folders/' . $article['data']['parent_id']);
       return $uis;
     }
 

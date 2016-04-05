@@ -47,6 +47,8 @@ class HTMLResourceHandler extends ResourceHandler {
       "html"
   ];
 
+  const PAGE_UIS_HANDLER = 'ew/html-resource-handler/page-uis-handler';
+
   public function get_mime_type($path) {
     $extension = strtolower(end(explode('.', $path)));
     return $this->mime_types[$extension];
@@ -153,7 +155,7 @@ class HTMLResourceHandler extends ResourceHandler {
   }
 
   public static function get_url_uis($url) {
-    $dbc = \EWCore::get_db_PDO();
+    $pdo = \EWCore::get_db_PDO();
     // if the url is the root, the home layout will be set
     if ($url == "/" || $url === EW_DIR || $url === EW_DIR . $_REQUEST["_language"] . "/") {
       $url = "@HOME_PAGE";
@@ -167,16 +169,15 @@ class HTMLResourceHandler extends ResourceHandler {
      * #3 Search in defaults
      */
 
-    $stm = $dbc->prepare("SELECT * FROM ew_pages_ui_structures,ew_ui_structures "
-            . "WHERE ew_ui_structures.id = ew_pages_ui_structures.ui_structure_id AND path LIKE ?") or die($dbc->error);
-    $stm->execute([$url . '%']);
+    $statement = $pdo->prepare("SELECT * FROM ew_pages_ui_structures,ew_ui_structures "
+            . "WHERE ew_ui_structures.id = ew_pages_ui_structures.ui_structure_id AND path LIKE ?") or die($pdo->error);
+    $statement->execute([$url . '%']);
 
-    if ($row = $stm->fetch(\PDO::FETCH_ASSOC)) {
+    if ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
       
     }
     else {
-      //echo $url;
-      $page_uis_handlers = \EWCore::read_registry_as_array('ew/html-resource-handler/page-uis-handler');
+      $page_uis_handlers = \EWCore::read_registry_as_array(self::PAGE_UIS_HANDLER);
 
       foreach ($page_uis_handlers as $handler) {
         if (method_exists($handler["object"], $handler["method"])) {
@@ -188,19 +189,20 @@ class HTMLResourceHandler extends ResourceHandler {
 
           $handler_result = $listener_method_object->invokeArgs($handler["object"], $arguments);
 
+          // If a page uis handler return a result
           if (isset($handler_result)) {
             return $handler_result;
           }
         }
       }
 
-      $dbc = \EWCore::get_db_PDO();
-      $stm = $dbc->query("SELECT ui_structure_id, template, template_settings "
+      // This is the default case where no page uis handler could return a result
+      $statement = $pdo->query("SELECT ui_structure_id, template, template_settings "
               . "FROM ew_pages_ui_structures,ew_ui_structures "
               . "WHERE ew_ui_structures.id = ew_pages_ui_structures.ui_structure_id "
               . "AND path = '@DEFAULT' ");
-      $stm->execute();
-      $row = $stm->fetch(\PDO::FETCH_ASSOC);
+      $statement->execute();
+      $row = $statement->fetch(\PDO::FETCH_ASSOC);
     }
 
     return [

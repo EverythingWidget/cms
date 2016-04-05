@@ -22,7 +22,7 @@ else {
   $id = $feeder["id"];
   if (!$feeder_id)
     return;
-  $items_list = json_decode(EWCore::call($feeder_id, ["id" => $id]), TRUE);
+  $items_list = EWCore::call_api($feeder_id, ["id" => $id]);
 }
 
 

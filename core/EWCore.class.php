@@ -1281,7 +1281,7 @@ class EWCore {
    * @param type $handler
    */
   public static function register_handler($action_name, $handler = []) {
-    $registry_id = $action_name . '-handler';
+    $registry_id = $action_name;
     if (!array_key_exists($registry_id, self::$registry)) {
       self::$registry[$registry_id] = array();
     }

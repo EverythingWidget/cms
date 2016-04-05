@@ -124,7 +124,7 @@
         }
 
         _this.document = {
-          feederId: "admin/api/content-management/ew-list-feeder-folder",
+          feederId: "admin/api/content-management/ew-list-feeder-folders",
           id: model.id
         };
 
@@ -148,7 +148,7 @@
         }
 
         _this.document = {
-          feederId: "admin/api/content-management/ew-page-feeder-article",
+          feederId: "admin/api/content-management/ew-page-feeder-articles",
           id: model.id
         };
 
