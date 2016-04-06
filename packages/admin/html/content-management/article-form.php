@@ -23,15 +23,9 @@ function inputs() {
   return ob_get_clean();
 }
 
-function script() {
-  ob_start();
-  include "article-form.js";
-  return ob_get_clean();
-}
-
 EWCore::register_form("ew/ui/forms/content/properties", "article-properties", ["content" => inputs()]);
 echo admin\ContentManagement::create_content_form(["formId"         => "article-form",
     "contentType"    => "article",
-    "include_script" => script(),
+    "include_script" => EWCore::get_view('admin/html/content-management/article-form.js'),
     "data"           => get_article_data($_REQUEST["articleId"])]);
 

@@ -882,7 +882,7 @@ class ContentManagement extends \ew\Module {
 
       $labels = $this->get_content_labels($id);
       $content->labels = $labels;
-      return \ew\APIResourceHandler::to_api_response($content->toArray()[0]);
+      return \ew\APIResourceHandler::to_api_response($content->toArray());
     }
 
     return EWCore::log_error(404, "content not found");

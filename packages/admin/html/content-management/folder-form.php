@@ -1,19 +1,16 @@
 <?php
 
-function get_folder_data($id)
-{
-  $categoryInfo = [];
-  $categoryInfo["parent_id"] = $_REQUEST["parent"];
-  if ($id)
-  {
-    $categoryInfo = EWCore::call_api("admin/api/content-management/contents", ["id" => $id])["data"];
+function get_folder_data($id) {
+  $folder_info = [];
+  $folder_info["parent_id"] = $_REQUEST["parent"];
+  if ($id) {
+    $folder_info = EWCore::call_api("admin/api/content-management/contents", ["id" => $id])['data'];
   }
 
-  return json_encode($categoryInfo);
+  return json_encode($folder_info);
 }
 
-function inputs()
-{
+function inputs() {
   ob_start();
   ?>
   <input type="hidden" id="parent_id" name="parent_id" value="">
@@ -22,8 +19,7 @@ function inputs()
   return ob_get_clean();
 }
 
-function script()
-{
+function script() {
   ob_start();
   ?>
   <script >
@@ -51,8 +47,7 @@ function script()
         title: "tr{Save Changes}",
         defaultClass: "btn-success",
         activity: "admin/api/content-management/update-folder",
-        parameters: function ()
-        {
+        parameters: function () {
           if (!$("#category-form").EW().validate())
           {
             return false;
@@ -60,19 +55,17 @@ function script()
           var data = ContentForm.getFormData();
           return data;
         },
-        onDone: function (data)
-        {
+        onDone: function (data) {
           $("body").EW().notify(data).show();
           $(document).trigger("article-list.refresh");
         }
       }).hide();
-      
+
       var bDelete = EW.addActivity({
         title: "tr{Delete}",
         defaultClass: "btn-danger",
         activity: "admin/api/content-management/delete-folder",
-        parameters: function ()
-        {
+        parameters: function () {
           if (!confirm("tr{Are you sure of deleting this folder?}")) {
             return false;
           }
@@ -81,8 +74,7 @@ function script()
             id: data.id
           };
         },
-        onDone: function (response)
-        {
+        onDone: function (response) {
           $("body").EW().notify(response).show();
           //$(document).trigger("article-list.refresh");
           System.setHashParameters({
@@ -115,9 +107,9 @@ function script()
 }
 
 EWCore::register_form("ew/ui/forms/content/properties", "category-properties", ["content" => inputs()]);
-echo admin\ContentManagement::create_content_form(["formTitle" => "Folder",
-    "formId" => "category-form",
+echo admin\ContentManagement::create_content_form(["formTitle"   => "Folder",
+    "formId"      => "category-form",
     "contentType" => "folder",
-    "script" => script(),
-    "data" => get_folder_data($_REQUEST["folderId"])]);
+    "script"      => script(),
+    "data"        => get_folder_data($_REQUEST["folderId"])]);
 

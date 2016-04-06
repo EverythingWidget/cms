@@ -402,68 +402,58 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler) {
     form.trigger("error", [
       jsonData
     ]);
-    $(formId).EW().notify(jsonData).show();
-    return;
+    form.EW().notify(jsonData).show();
+
+    return null;
   }
 
-  var setInputData = function (key, val, form) {
+  var setInputData = function (key, value, form) {
     //alert(key + " "+val)
     if ("string" === typeof key)
       key = key.replace(/(:|\.|\[|\]|,|\/)/g, "\\$1");
 
     if (handler)
     {
-      form.find("[id='" + key + "']").val(handler(key, val));
+      form.find("[id='" + key + "']").val(handler(key, value));
     } else
     {
-      var elm = $();
+      var element = $();
       try
       {
-        elm = form.find(" :input[name='" + key + "'][value='" + val + "']");
+        element = form.find(" :input[name='" + key + "'][value='" + value + "']");
       } catch (e)
       {
 
       }
-      if (elm.length === 0)
-      {
-        elm = form.find(":input[name='" + key + "']");
+
+      if (element.length === 0) {
+        element = form.find(":input[name='" + key + "']");
       }
-      if (elm.length === 0)
-      {
-        elm = form.find("#" + key);
-      } else
-      {
-        if (elm.is(":radio") || elm.is(":checkbox"))
-          if (!elm.is(":checked"))
-          {
-            elm.click();
-            elm.prop("checked", true);
+
+      if (element.length === 0) {
+        element = form.find("#" + key);
+      } else {
+        if (element.is(":radio") || element.is(":checkbox"))
+          if (!element.is(":checked")) {
+            element.click();
+            element.prop("checked", true);
           }
       }
-      if (elm.is("img"))
-      {
-        elm.prop("src", val);
-        elm.attr("data-file-extension", /[^.]+$/.exec(val));
-        elm.attr("data-filename", /^[^.]+/.exec(val));
-      } else if (elm.is(":input"))
-      {
-        /*if (val && typeof (val) == 'string')
-         {               
-         val = val.replace(/\\/g, "");
-         }*/
-        elm.val(val).change();
-      } else
-      {
-        /*if (val && typeof (val) == 'string')
-         {
-         val = val.replace(/\\/g, "")
-         }*/
-        elm.text(val).change();
+      if (element.is("img")) {
+        element.prop("src", value);
+        element.attr("data-file-extension", /[^.]+$/.exec(value));
+        element.attr("data-filename", /^[^.]+/.exec(value));
+      } else if (element.is(":input")) {
+        element.val(value).change();
+      } else if (element.is('a')) {
+        element.attr('href', value).text(value).change();
+      } else {
+        element.text(value).change();
       }
     }
   };
-  if (!jsonData)
-  {
+
+  if (!jsonData) {
     $.each($(formId + " input[id]," + formId + " label[id]," + formId + " select[id]," + formId + " textarea[id]"), function (elm) {
       var field = $(elm);
       if (field.is(":radio") || field.is(":checkbox"))
@@ -484,6 +474,7 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler) {
       } else
         field.text("");
     });
+
     form.data("form-data", {});
     form.trigger("refresh", [
       {}
@@ -492,16 +483,13 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler) {
   }
 
   $.each(jsonData, function (key, val) {
-    //alert(typeof(val) + " " + key);
-    if (val && typeof (val) === "object")
-    {
-      //$.each(val, function (key1, val1) {
+    if (val && typeof (val) === "object") {
       setInputData(key, val, form);
-      //});
-    } else
+    } else {
       setInputData(key, val, form);
+    }
   });
-  //alert(formId);
+
   form.data("form-data", jsonData);
   form.trigger("refresh", [
     jsonData
@@ -2108,19 +2096,18 @@ function EWFormValidator(element, options) {
     if ($currentElement.data("validate"))
     {
       var rules = $currentElement.data("validate").split(",");
-      if (!$currentElement.parent().attr("data-element-wrapper"))
-      {
+      if (!$currentElement.parent().attr("data-element-wrapper")) {
         $currentElement.EW().putInWrapper();
       }
+
       var wrapper = $currentElement.parent();
-      if (wrapper.find(".errors-panel").length == 0)
+      if (wrapper.find(".errors-panel").length == 0) {
         wrapper.append("<ul class='errors-list'>");
+      }
+
       errorPanel = $currentElement.parent().find(".errors-list");
-      var notifyErrors = $();
       $.each(rules, function (i, val) {
-        if (!validateField($currentElement, val, errorPanel))
-        {
-          //notifyErrors.append($currentElement.attr("data-label")+": ")
+        if (!validateField($currentElement, val, errorPanel)) {
           errors++;
         }
       });
@@ -2131,8 +2118,9 @@ function EWFormValidator(element, options) {
   {
     $("body").EW().notify({
       status: "error",
-      message: "You have errors in your from, Please check your data"
-    });
+      message: "You have errors in your from, Please check your inputs"
+    }).show();
+
     return false;
   }
   errorPanel.remove();
@@ -2150,6 +2138,7 @@ function ExtendableList(element, cSettings) {
   //this.$element.find("li:first-child").prepend('<div class="handle"></div>');
 
   this.firstItemClone = this.$element.find("li:first-child").clone();
+
   this.lastRow = $("<div data-add-item-row='true' class='block-row row-buttons'></div>").addClass(this.$element.attr("class"));
   this.addNewRow = $("<button type='button' class='btn btn-text btn-primary pull-right'>Add</button>");
   this.addNewRow.on("click", function () {
@@ -2221,6 +2210,7 @@ function ExtendableList(element, cSettings) {
 
 ExtendableList.prototype.createItem = function () {
   var originalModelClone = this.firstItemClone.clone();
+  originalModelClone.find('input').val('');
   var controlRow = $("<div class='row control'></div>");
   var removeBtn = $("<button type='button' class='close-icon' ></button>");
   removeBtn.click(function () {

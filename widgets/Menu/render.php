@@ -15,17 +15,23 @@ if ($feeder) {
   $feeder_obj = webroot\WidgetsManagement::get_widget_feeder($feeder["feederId"]);
 
 
-  $page = EWCore::call_api($feeder_obj->api_url, ["id"       => $feeder["id"],
-              "language" => $language]);
-  $content_fields = $page["data"]["content_fields"];
-  if ($content_fields) {
-    /* $titles = $content_fields["menu-title"]["content"];
-      $links = $content_fields["menu-link"]["content"];
-      $icons = $content_fields["menu-icon"]["content"]; */
+  $page = EWCore::call_api($feeder_obj->api_url, [
+              "id"       => $feeder["id"],
+              "language" => $language
+  ]);
 
-    $titles = $content_fields["@menu-item"]["content"];
-    $links = $content_fields["@menu-item"]["link"];
-    $icons = $content_fields["@menu-icon"]["src"];
+  $content_fields = $page["data"]["content_fields"];
+
+  if ($content_fields) {
+    $menu_item = $content_fields["@menu-item"];
+
+    if ($content_fields["@widget-feeder/menu"]) {
+      $menu_item = $content_fields["@widget-feeder/menu"];
+    }
+
+    $titles = $menu_item["content"];
+    $links = $menu_item["link"];
+    $icons = $menu_item["src"];
   }
 }
 $result_html = "";
@@ -116,7 +122,7 @@ $result_html = "";
     }
     echo '</li>';
   }
-  
+
   echo $result_html;
   ?>
 </ul>
