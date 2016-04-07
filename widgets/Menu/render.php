@@ -25,8 +25,8 @@ if ($feeder) {
   if ($content_fields) {
     $menu_item = $content_fields["@menu-item"];
 
-    if ($content_fields["@widget-feeder/menu"]) {
-      $menu_item = $content_fields["@widget-feeder/menu"];
+    if ($content_fields["@widget/menu/item"]) {
+      $menu_item = $content_fields["@widget/menu/item"];
     }
 
     $titles = $menu_item["content"];

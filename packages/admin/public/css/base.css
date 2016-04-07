@@ -256,6 +256,8 @@ root {
     float: left;
     border-radius: 0;
     font-weight: 500;
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   .content-item.album p {
@@ -1569,13 +1571,13 @@ ul.list.arrangeable li .wrapper {
 }
 
 .list.arrangeable.fields > li > .wrapper .text-field{
-  font-weight: 300;
-  line-height: 30px;
-  font-size: 22px;
+  /* font-weight: 300; */
+  /* line-height: 30px; */
+  font-size: 21px;
   border-color: transparent;
   margin-bottom: 0;
   padding-bottom: 0;
-  padding-top: 26px;
+  /* padding-top: 26px; */
 }
 
 .list.arrangeable.fields > li > .wrapper .text-field:hover {
@@ -2162,12 +2164,13 @@ ul.errors-list li {
 }
 
 label {
-  line-height: 34px;
+  line-height: 28px;
   padding: 0;
-  font-size: 14px;
-  font-weight: 700;
+  font-size: 21px;
+  font-weight: 300;
   cursor: default;
   overflow: hidden;
+  color: #777;
   /* float: left; */
 }
 
@@ -2218,6 +2221,7 @@ label.label-float.focused {
   -ms-transition: padding .3s ease;
   -o-transition: padding .3s ease;
   transition: padding .3s ease;
+  padding-top: 20px;
 }
 
 .label-float-input.valued,.label-float-input:focus {
@@ -2243,7 +2247,7 @@ textarea.text-field {
   min-height: 28px;
   line-height: 26px;
   padding: 5px 0px;
-  padding-top: 20px;
+  /* padding-top: 20px; */
   border: 0 solid rgba(0,0,0,.2);
   border-bottom-width: 2px;
   margin: 0;

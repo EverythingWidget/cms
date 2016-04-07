@@ -2133,8 +2133,7 @@ function ExtendableList(element, cSettings) {
   this.settings = $.extend({
     value: [
     ]
-  },
-          cSettings);
+  }, cSettings);
   //this.$element.find("li:first-child").prepend('<div class="handle"></div>');
 
   this.firstItemClone = this.$element.find("li:first-child").clone();
@@ -2155,53 +2154,45 @@ function ExtendableList(element, cSettings) {
   var init = false;
   var oneValue = false;
   var items = new Array();
-  var ci = null;
-  ci = base.createItem();
-  //alert(v[i]);
-  //alert(JSON.stringify(this.settings.value));
-  $.each(this.settings.value, function (k, v) {
-    var el = ci.find("input[name='" + k + "']");
-    if (el.length > 0)
+  var item = null;
+  item = base.createItem();
+
+  $.each(this.settings.value, function (key, value) {
+    var input = item.find("input[name='" + key + "']");
+    if (input.length > 0)
     {
-      if (typeof (v) !== "object") {
+      if ('object' !== typeof value) {
         if (!oneValue) {
-          ci = base.createItem();
+          item = base.createItem();
           oneValue = true;
-          items.push(ci);
+          items.push(item);
+          input = item.find(":input[name='" + key + "']");
         }
 
-        el.val(v).change();
+        input.val(value).change();
       }
 
       if (!oneValue) {
-        //alert(k+" "+v);
         if (!init) {
           // Create the list and set the value for the first key
-          for (var i = 0; i < v.length; i++)
-          {
-            //alert(k+" "+v[i]);
-            ci = base.createItem();
-            ci.find(":input[name='" + k + "']").val(v[i]).change();
+          for (var i = 0; i < value.length; i++)          {
+            item = base.createItem();
+            item.find(":input[name='" + key + "']").val(value[i]).change();
 
-            items.push(ci);
+            items.push(item);
             init = true;
           }
-          //console.log(items);
         } else {
-          //alert(k+" "+v);
           // Set the value for the other keys
-          for (var i = 0; i < v.length; i++) {
-            items[i].find(":input[name='" + k + "']").val(v[i]).change();
-
+          for (var i = 0; i < value.length; i++) {
+            items[i].find(":input[name='" + key + "']").val(value[i]).change();
           }
         }
       }
     }
   });
-  //items.hide();
+
   base.$element.append(items);
-  //if (!init)
-  //base.createItem();
   base.$element.after(this.lastRow);
   base.$element.sortable({
     handle: ".handle"

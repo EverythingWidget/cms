@@ -6,7 +6,7 @@
   </div>
 
   <div class="block-row">
-    <a id="slug" class="btn btn-xs btn-info" href="" target="_blank"></a>
+    <a id="slug" class="btn btn-xs btn-info mb" href="" target="_blank"></a>
   </div>
 
   <div class="row">

@@ -448,6 +448,14 @@
   &.rtl {
     direction: rtl;
   }
+
+  &.archive {
+    .title {
+      font-weight: 400;
+      font-size: 21px;
+      margin: 15px 0;
+    }
+  }
 }
 
 .title h1 {

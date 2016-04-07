@@ -1,0 +1,119 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Apr 7, 2016, 7:02:33 PM
+    Author     : Eeliya
+*/
+.widget{
+  &.list{
+    font-size: 1em;
+    overflow: hidden;
+
+    h1 {
+      font-size: 1em;
+      margin: 0;
+      font-weight: normal;
+    }
+
+    p {
+      margin: 0;
+      margin-bottom: 10px;
+    }
+
+    ul {
+      list-style:none;
+      padding:0px;
+      margin:0px;
+    }
+
+    li {
+      display:block;
+
+      &:last-child {
+        a{
+          margin-bottom:0px;
+        }
+      }
+    }
+
+    .list-item {
+      border-bottom: 1px solid #eee;
+    }
+
+    .list-item:last-child {
+      border-bottom: none;
+    }
+
+    .list-item-cell {
+      display: block;
+      overflow: hidden;
+      padding: 15px 20px 5px;
+    }
+
+    .list-item-cell:last-child {
+
+    }
+
+    a {
+      float: right;
+      line-height:30px;
+      padding:3px 15px;
+      margin-bottom:5px;
+      color:#33ccff;
+      font-weight: 500;
+      border-radius: 18px;
+      text-align: center;
+      text-transform: uppercase;
+
+      &:hover {
+        background-color:#dff8ff;
+        color:#22afef;
+      }
+    } 
+
+    .active {
+      a {
+        font-weight:bold;
+      }
+    }
+  }
+
+  &.ta-center {
+    text-align: center;
+  }
+
+  &.image img {
+    display:block;
+    width:100%;
+    margin:15px 0px;
+    box-shadow:0px 2px 3px rgba(0,0,0,.2);
+  }
+
+  &.timer {
+    text-align: center;
+    margin: 30px 0 60px;
+  }
+
+  &.mt-30px {
+    margin-top: 30px;
+  }
+
+  &.github-buttons iframe {
+    display: inline-block;
+    border: none;
+    color: rgba(0,0,0,.9);
+  }
+
+  &.slogan h2{
+    margin: 0;
+    margin-bottom: 30px;
+    font-weight: 300;
+  }
+
+  &.welcome h1{
+    margin-bottom: 0;
+  }
+}

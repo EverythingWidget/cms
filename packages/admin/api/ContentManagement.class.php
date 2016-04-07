@@ -159,7 +159,7 @@ class ContentManagement extends \ew\Module {
         'api/index',
         "api/add_content",
         "api/add_folder",
-        "api/add_article",
+        "api/add-article",
         "api/add_album",
         "api/update_content",
         "api/update_folder",
@@ -438,7 +438,7 @@ class ContentManagement extends \ew\Module {
                     })
                     ->where('key', 'LIKE', $key)
                     ->where('value', 'LIKE', $value)->orderBy('value');
-    /* return ["totalRows" => $rows->count(),
+    /* return ["collection_size" => $rows->count(),
       "result" => $rows->get(['*',
       \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")])]; */
     $result = $rows->get([
@@ -451,7 +451,7 @@ class ContentManagement extends \ew\Module {
       return $e;
     }, $result->toArray());
 
-    return \ew\APIResourceHandler::to_api_response($data, ["totalRows" => $rows->count()]);
+    return \ew\APIResourceHandler::to_api_response($data, ["collection_size" => $rows->count()]);
   }
 
   private function content_relationships($id_slug, $key, $value = '%') {
@@ -506,7 +506,7 @@ class ContentManagement extends \ew\Module {
       return $e;
     }, $result->toArray());
 
-    return \ew\APIResourceHandler::to_api_response($data, ["totalRows" => $rows->count()]);
+    return \ew\APIResourceHandler::to_api_response($data, ["collection_size" => $rows->count()]);
   }
 
   /**
@@ -557,6 +557,7 @@ class ContentManagement extends \ew\Module {
     $content->parent_id = $parent_id;
     $content->content = $html_content;
     if (isset($html_content)) {
+      $content_fields = $this->get_content_fields($html_content);
       $content->content_fields = json_encode($content_fields->content_fields);
       $content->parsed_content = $content_fields->html;
     }
@@ -626,17 +627,17 @@ class ContentManagement extends \ew\Module {
     return EWCore::log_error("400", "Something went wrong, content has not been updated");
   }
 
-  public function add_article($title, $parent_id, $keywords, $description, $labels) {
+  public function add_article($title, $parent_id, $keywords, $description, $labels, $content) {
     if (!$parent_id)
       $parent_id = 0;
 
-    $htmlContent = $_REQUEST['content'];
+    //$htmlContent = $_REQUEST['content'];
 
     if (!$title) {
       \EWCore::log_error(400, "tr{Title is requierd}");
     }
 
-    $result = $this->add_content("article", $title, $parent_id, $keywords, $description, $htmlContent, "", $labels);
+    $result = $this->add_content("article", $title, $parent_id, $keywords, $description, $content, "", $labels);
 
     if ($result["data"]["id"]) {
 
@@ -646,7 +647,7 @@ class ContentManagement extends \ew\Module {
       ]);
       // End of plugins actions call
     }
-    
+
     return $result;
   }
 
@@ -672,6 +673,7 @@ class ContentManagement extends \ew\Module {
     if (!$size)
       $size = 30;
 
+    $articles_size = $this->contents_articles($id, null, null, null, $_language);
     $articles = $this->contents_articles($id, $token, $size, $order_by, $_language);
 
     $result = [];
@@ -684,7 +686,10 @@ class ContentManagement extends \ew\Module {
         ];
       }
     }
-    return \ew\APIResourceHandler::to_api_response($result, ["totalRows" => $articles["totalRows"]]);
+    return \ew\APIResourceHandler::to_api_response($result, [
+                'page_size'       => $articles['collection_size'],
+                "collection_size" => count($articles_size['data'])
+    ]);
   }
 
   public function ew_menu_feeder_languages($id, $token = 0, $size) {
@@ -785,7 +790,7 @@ class ContentManagement extends \ew\Module {
     }
 
     return \ew\APIResourceHandler::to_api_response($rows, [
-                "totalRows" => $folders->count(),
+                "collection_size" => $folders->count(),
                 "parent"    => isset($container_id) ? $container_id->toArray() : []
     ]);
   }
@@ -809,7 +814,7 @@ class ContentManagement extends \ew\Module {
         return $e;
       }, $articles->toArray());
 
-      return \ew\APIResourceHandler::to_api_response($data, ["totalRows" => $articles->count()]);
+      return \ew\APIResourceHandler::to_api_response($data, ["collection_size" => $articles->count()]);
     }
     else {
       $container_id = ew_contents::find($parent_id);
@@ -848,7 +853,7 @@ class ContentManagement extends \ew\Module {
         return $e;
       }, $articles->toArray());
 
-      return \ew\APIResourceHandler::to_api_response($data, ["totalRows" => $articles->count()]);
+      return \ew\APIResourceHandler::to_api_response($data, ["collection_size" => $articles->count()]);
     }
 
     return \EWCore::log_error(400, 'tr{Something went wrong}');
@@ -926,7 +931,7 @@ class ContentManagement extends \ew\Module {
       return $e;
     }, $contents->toArray());
 
-    return \ew\APIResourceHandler::to_api_response($data, ["totalRows" => $contents->count()]);
+    return \ew\APIResourceHandler::to_api_response($data, ["collection_size" => $contents->count()]);
   }
 
   public function add_folder($title, $parent_id, $keywords, $description, $labels) {
@@ -1122,7 +1127,7 @@ class ContentManagement extends \ew\Module {
     $documents = array_merge($categories, $articles);
     $db->close();
     $out = [
-        "totalRows" => count($documents),
+        "collection_size" => count($documents),
         "result"    => $documents];
     return json_encode($out);
   }
@@ -1186,7 +1191,7 @@ class ContentManagement extends \ew\Module {
         \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
 
     return \ew\APIResourceHandler::to_api_response($audios->toArray(), [
-                'totalRows' => $audios->count()
+                'collection_size' => $audios->count()
     ]);
   }
 
