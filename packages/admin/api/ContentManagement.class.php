@@ -707,7 +707,25 @@ class ContentManagement extends \ew\Module {
   }
 
   public function page_uis_handler_documents($url, $url_parts = []) {
+
     if ($url_parts[0] === 'articles') {
+      if (is_string($url_parts[1])) {
+        $article = $this->get_content_by_slug($url_parts[1]);
+        if (isset($article['data'])) {
+          return \webroot\WidgetsManagement::get_path_uis('/articles/' . $article['data']['id']);
+        }
+      }
+
+      $uis = \webroot\WidgetsManagement::get_path_uis("/folders/{$article['data']['parent_id']}/articles");
+      if (isset($uis)) {
+        return $uis;
+      }
+
+      $uis = \webroot\WidgetsManagement::get_path_uis('/articles/');
+      if (isset($uis)) {
+        return $uis;
+      }
+
       if (is_numeric($url_parts[1])) {
         $article = $this->contents($url_parts[1]);
 
@@ -715,19 +733,12 @@ class ContentManagement extends \ew\Module {
           return \webroot\WidgetsManagement::get_path_uis('/folders/' . $article['data']['parent_id']);
         }
       }
-      else if (is_string($url_parts[1])) {
-        $article = $this->get_content_by_slug($url_parts[1]);
-        if (isset($article['data'])) {
-          return \webroot\WidgetsManagement::get_path_uis('/articles/' . $article['data']['id']);
-        }
+
+      $uis = \webroot\WidgetsManagement::get_path_uis('/articles/');
+      if (isset($uis)) {
+        return $uis;
       }
-
-
-      /* if (isset($article['data'])) {
-        $uis = \webroot\WidgetsManagement::get_path_uis('/articles/' . $article['data']['parent_id']);
-        } */
     }
-
 
     return null;
   }
@@ -791,7 +802,7 @@ class ContentManagement extends \ew\Module {
 
     return \ew\APIResourceHandler::to_api_response($rows, [
                 "collection_size" => $folders->count(),
-                "parent"    => isset($container_id) ? $container_id->toArray() : []
+                "parent"          => isset($container_id) ? $container_id->toArray() : []
     ]);
   }
 
@@ -1128,7 +1139,7 @@ class ContentManagement extends \ew\Module {
     $db->close();
     $out = [
         "collection_size" => count($documents),
-        "result"    => $documents];
+        "result"          => $documents];
     return json_encode($out);
   }
 
