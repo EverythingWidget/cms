@@ -21,10 +21,12 @@ if ($feeder) {
   ]);
 
   $content_fields = $page["data"]["content_fields"];
-
+  $menu_item = [];
+  
   if ($content_fields) {
-    $menu_item = $content_fields["@menu-item"];
-
+    if ($content_fields["@menu-item"]) {
+      $menu_item = $content_fields["@menu-item"];
+    }
     if ($content_fields["@widget/menu/item"]) {
       $menu_item = $content_fields["@widget/menu/item"];
     }
@@ -39,6 +41,7 @@ $result_html = "";
 <ul>
   <?php
   if (gettype($titles) == "array") {
+    
     for ($i = 0, $len = count($titles); $i < $len; $i++) {
       $sub_menus = null;
       $link = json_decode($links[$i], true);
@@ -46,10 +49,11 @@ $result_html = "";
       if (json_last_error() !== JSON_ERROR_NONE) {
         $link = [];
         $link_url = EW_DIR_URL . $links[$i];
+      } else {
+        $link_url = EW_DIR_URL . $links[$i];
       }
 
       if ($link["type"] == "admin/content-management/link") {
-        //echo EWCore::$languages['en'];
         if (!EWCore::$languages[str_replace('/', '', $link["url"])]) {
           $link_url = EW_DIR_URL . $url_language . $link["url"];
         }
@@ -91,6 +95,7 @@ $result_html = "";
   }
   else {
     $link = json_decode($links, true);
+    var_dump($link);
     if ($link["type"] == "admin/content-management/link") {
       $link_url = EW_DIR_URL . $link["url"];
     }

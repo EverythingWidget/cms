@@ -23,7 +23,22 @@ function AlbumForm() {
     }
   }).hide();
 
-  this.bEdit = EW.addAction("tr{Save Changes}", this.editAlbum).addClass("btn-success").hide();
+  this.bEdit = EW.addActivity({title: "tr{Save Changes}", 
+    defaultClass: "btn-success",
+    activity: "admin/api/content-management/update-album",
+    parameters: function () {
+      if (!$("#album-form").EW().validate()) {
+        return false;
+      }
+      var data = ContentForm.getFormData();
+      //data.content = tinymce.activeEditor.getContent();
+      return data;
+    },
+    onDone: function (data) {
+      $("body").EW().notify(data).show();
+      $(document).trigger("media-list.refresh", [data]);
+    }
+  }).hide();
 
   $("#album-form").on('refresh', function (e, album) {
     if (album && album.id) {

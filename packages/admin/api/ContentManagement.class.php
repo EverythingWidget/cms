@@ -1092,14 +1092,16 @@ class ContentManagement extends \ew\Module {
 
   public function delete_album($id) {
     $result = $this->delete_content($id);
-    if ($result["status_code"] == 1) {
-      $result["message"] = "The album has been deleted successfuly";
-    }
-    else if ($result["status_code"] == 2) {
-      $result["message"] = "Unable to delete the album";
-    }
-    else {
-      $result["message"] = "Album has NOT been deleted";
+    if (isset($result["status_code"])) {
+      if ($result["status_code"] == 1) {
+        $result["message"] = "The album has been deleted successfuly";
+      }
+      else if ($result["status_code"] == 2) {
+        $result["message"] = "Unable to delete the album";
+      }
+      else {
+        $result["message"] = "Album has NOT been deleted";
+      }
     }
     return $result;
   }
