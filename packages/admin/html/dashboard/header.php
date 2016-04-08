@@ -60,10 +60,10 @@
 <script src="~admin/public/js/lib/bootstrap-datepicker.js" defer></script>
 <script src="~admin/public/js/lib/autocomplete.js" defer></script>
 <script src="~admin/public/js/lib/floatlabels.min.js" defer></script>
-<script src="~admin/public/js/lib/ewscript.js"></script>      
-<script src="~admin/public/js/lib/simple-slider.js"></script>
-
 
 <script src="~admin/public/js/lib/bootstrap.js" defer></script>
 <script src="~admin/public/js/ContentStrike/content-tools.js" defer></script>
+
+<script src="~admin/public/js/lib/ewscript.js"></script>      
+<script src="~admin/public/js/lib/simple-slider.js"></script>
 
