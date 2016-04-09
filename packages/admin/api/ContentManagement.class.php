@@ -679,6 +679,11 @@ class ContentManagement extends \ew\Module {
     $result = [];
     if (isset($articles["data"])) {
       foreach ($articles["data"] as $article) {
+        $article["content_fields"]['@content/date-created'] = [
+            'tag'     => 'p',
+            'content' => \DateTime::createFromFormat('Y-m-d H:i:s', $article['date_created'])->format('Y-m-d')
+        ];
+
         $result[] = [
             "id"             => $article["id"],
             "html"           => $article["content"],

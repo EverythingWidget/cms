@@ -17,7 +17,7 @@
   &.slider {
     margin: 0px -15px 0;
     padding-top: 80px;
-    height: 100%;
+    height: 100vh;
     position: relative;
 
     .item {
@@ -69,13 +69,34 @@
       margin: 0 auto;
       height: 100%;
       display: block;
-    }       
+    }   
+
+    @media (min-width: 768px) {
+      margin-bottom: 45px
+    }    
+
+    @media (min-width: 992px) {
+      height: 360px;
+      margin-bottom: 15px;
+      margin-bottom: 0;
+    }
+
+    @media (min-width: 1360px) {
+      height: 475px;
+    }
   }
 
   &.events-list { 
     .owl-carousel {
       .owl-stage-outer{
-        padding: 15px 0;
+
+        @media (min-width: 992px) {
+          padding: 0;
+        }
+
+        @media (min-width: 1360px) {
+          padding: 15px 0;
+        }
       }
       .item {
         color: $font-color;
@@ -86,6 +107,17 @@
         border-radius: 4px;
         box-shadow: 0 2px 6px rgba(0,0,0,0.1),0 6px 9px rgba(0,0,0,0.1);
         position: relative;
+
+        @media (min-width: 992px) {
+          height: 270px;
+          font-size: .73em;
+        }
+
+
+        @media (min-width: 1360px) {
+          height: 355px;
+          font-size: 1em;
+        }
 
         h2, p {
           padding: 0px 15px;
@@ -102,6 +134,15 @@
             text-align: left;
             font-size: 32px;
             color: #ACBDB4;
+
+            @media (min-width: 992px) {
+              font-size: 22px;
+            }
+
+
+            @media (min-width: 1360px) {
+              font-size: 32px;
+            }
           }
         }
 
@@ -143,6 +184,127 @@
 
       .owl-prev:active, .owl-next:active {
         background-color: #111;
+      }
+    }
+  }
+
+  &.list {
+    font-size: 19px;
+
+    .list-item {
+      padding: 15px 0px;
+      border-radius: 3px;
+      overflow: hidden;
+
+      & + .list-item {
+        margin-top: 30px;
+      }
+
+      .front-image {
+        float: left;
+        max-height: 160px;
+        max-width: 200px;
+        margin-right: 20px;
+      }
+
+      .title {
+        font-size: 1.33em;
+        margin: 0;        
+        font-weight: 500;
+      }
+
+      .\@content\/date-created {
+        font-size: .9em;
+        font-weight: 500;
+        color:#aaa;
+        margin: 0;
+        margin-top: 5px;
+      }
+
+      .short-text {
+        margin: 15px 0;
+        font-size: 1em;
+        font-weight: 300;
+        margin-left: 220px;
+      }
+
+      .item-link {
+        color: $font-akcent-color;
+        border: 2px solid $font-akcent-color;
+        border-radius: 4px;
+        padding: 10px 30px;
+        float: right;
+        margin-top: 15px;
+
+        &:hover {
+          background-color: $font-akcent-color;
+          color: #fff;
+        }
+
+        &:active {
+          background-color: $font-akcent-color-dark;
+          color: #fff;
+        }
+      }
+    }
+
+    .list-footer {
+      margin-top: 15px;
+      background-color: #eee;
+      padding: 15px 0;
+      border-radius: 4px;
+      height: 80px;
+
+      .btn {
+        background-repeat: no-repeat !important;
+        background-position: center center !important;
+        font-size: 1em;
+        background-color: $font-akcent-color;
+        width: 50px;
+        height: 50px;
+        line-height: 50px;
+        padding: 0;
+        float: left;
+        margin: 0;
+        border-radius: 25px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, .1), 0 4px 7px rgba(0, 0, 0, .1);
+        overflow: hidden;
+        color: transparent;
+      }
+
+      .btn-prev {
+        background-image: url(images/icon-arrow-left.png) !important;
+      } 
+
+      .btn-next {
+        background-image: url(images/icon-arrow-right.png) !important;
+        float: right;
+      }
+    }
+
+    &.rtl {
+      .list-item {
+
+        .short-text {
+          margin-left: 0;
+          margin-right: 220px;
+        }
+
+        .item-link {
+          float: left;
+        }        
+      }
+
+      .list-footer {
+        .btn-prev {      
+          background-image: url(images/icon-arrow-right.png) !important;
+          float: right;
+        } 
+
+        .btn-next {
+          background-image: url(images/icon-arrow-left.png) !important;
+          float: left;
+        }
       }
     }
   }
@@ -308,6 +470,14 @@
       color: $font-color;
       text-align: center;
 
+      @media (min-width: 992px) {
+        font-size: .73em;
+      }
+
+      @media (min-width: 1360px) {
+        font-size: 17px;
+      }
+
       .front-image {
         max-width: 100%;
         max-height: 220px;
@@ -326,7 +496,7 @@
       }
 
       h2, {
-        font-weight: 500;
+        font-weight: 500;             
       }
 
       a {

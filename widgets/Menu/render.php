@@ -22,7 +22,7 @@ if ($feeder) {
 
   $content_fields = $page["data"]["content_fields"];
   $menu_item = [];
-  
+
   if ($content_fields) {
     if ($content_fields["@menu-item"]) {
       $menu_item = $content_fields["@menu-item"];
@@ -41,24 +41,29 @@ $result_html = "";
 <ul>
   <?php
   if (gettype($titles) == "array") {
-    
+
     for ($i = 0, $len = count($titles); $i < $len; $i++) {
       $sub_menus = null;
       $link = json_decode($links[$i], true);
       $link_url = ".";
+
+      if (!isset($links[$i])) {
+        $links[$i] = '.';
+      }
+
       if (json_last_error() !== JSON_ERROR_NONE) {
         $link = [];
         $link_url = EW_DIR_URL . $links[$i];
-      } else {
+      }
+      else {
         $link_url = EW_DIR_URL . $links[$i];
       }
-
       if ($link["type"] == "admin/content-management/link") {
-        if (!EWCore::$languages[str_replace('/', '', $link["url"])]) {
-          $link_url = EW_DIR_URL . $url_language . $link["url"];
+        if (!EWCore::$languages[str_replace('/', '', $links[$i])]) {
+          $link_url = EW_DIR_URL . $url_language . $links[$i];
         }
         else {
-          $link_url = EW_DIR_URL . $link["url"];
+          $link_url = EW_DIR_URL . $links[$i];
         }
       }
       else if ($link["type"] == "widget-feeder") {
@@ -69,6 +74,7 @@ $result_html = "";
       else if ($link["type"]) {
         $link_url = EW_DIR_URL . $url_language . $link["type"] . '/' . $link["id"];
       }
+
       /* else
         {
         $linkURL = EW_DIR_URL . $url_language;
@@ -76,7 +82,7 @@ $result_html = "";
       $link_requlare_expression_ready = preg_quote($link_url, '/');
       $pattern = "/$link_requlare_expression_ready(.*)/";
 
-      preg_match($pattern, $_SERVER['REQUEST_URI'] . '.', $match);
+      preg_match($pattern, $_SERVER['REQUEST_URI'] . '\.', $match);
       $active = ($match) ? "active" : "";
 
       // Menu
@@ -95,7 +101,6 @@ $result_html = "";
   }
   else {
     $link = json_decode($links, true);
-    var_dump($link);
     if ($link["type"] == "admin/content-management/link") {
       $link_url = EW_DIR_URL . $link["url"];
     }
