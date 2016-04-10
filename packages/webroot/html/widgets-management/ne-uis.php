@@ -349,7 +349,7 @@ session_start();
       if (_this.dpPreference)
         _this.dpPreference.trigger("destroy");
     });
-    
+
     parentDialog.on("beforeClose", function () {
       //console.log(self.oldStructure, self.createContentHeirarchy(), self.createContentHeirarchy());
       if (JSON.stringify(_this.oldStructure) !== JSON.stringify(_this.createContentHeirarchy())) {
@@ -666,12 +666,13 @@ session_start();
         glass[0].dataset.position = pos;
       });
     }
-    if (!repTimeout) {
-      repTimeout = setTimeout(function () {
-        repTimeout = null;
-        self.relocateGlassPanes();
-      }, 100);
-    }
+    //if (!repTimeout) {
+    clearTimeout(repTimeout);
+    repTimeout = setTimeout(function () {
+      repTimeout = null;
+      self.relocateGlassPanes();
+    }, 200);
+    //}
   };
 
   /** Create a json string from current layout structure heirarchy 

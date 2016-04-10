@@ -306,7 +306,6 @@
       var module = System.modules["system/" + mod.id];
 
       if (module) {
-
         if ("function" === typeof (System.onModuleLoaded["system/" + mod.id])) {
           System.onModuleLoaded["system/" + mod.id].call(this, module, module.html);
           System.onModuleLoaded["system/" + mod.id] = null;
@@ -339,42 +338,19 @@
 
         });
         var templates = {};
-        /*html = html.filter(function (i, e) {
-         
-         if (e.dataset && e.dataset.uiTemplate) {
-         //console.log(e.tagName);
-         //templates[e.dataset.uiTemplate] = e;
-         return false;
-         }
-         return true;
-         
-         });*/
-        //console.debug('html ', mod.id);
-
-        //var docFragment = document.createDocumentFragment()
-        //docFragment.innerHTML = html.html();
-        //console.log(docFragment);
         var temp = document.createElement('div');
         for (var i = 0, len = html.length; i < len; i++) {
           temp.appendChild(html[i]);
         }
         document.getElementsByTagName('body')[0].appendChild(temp);
         temp.parentNode.removeChild(temp);
-        //
-
-        /*if(mod.id === 'content-management/media'){
-         console.debug('html ', mod.id,html);
-         console.debug('html ', System.ui.templates);
-         alert();
-         
-         }*/
 
         System.uiTemplates["system/" + mod.id] = templates;
 
-
         setTimeout(function () {
-          if (scripts)
+          if (scripts) {
             $("head").append(scripts);
+          }
 
           //$(html).remove();
           //var html = res;
@@ -393,13 +369,8 @@
             scripts.attr("id", System.modules["system/" + mod.id].id.replace(/[\/-]/g, "_"));
 
           if ("function" === typeof (System.onModuleLoaded["system/" + mod.id])) {
-            //onDone.call(this, System.modules["system/" + mod.id], response);
-            //console.log(System.modules["system/" + mod.id].html.html());
-
             System.onModuleLoaded["system/" + mod.id].call(this, System.modules["system/" + mod.id], html);
-            //console.log(System.modules["system/" + mod.id].html.html());
             System.onModuleLoaded["system/" + mod.id] = null;
-            ;
           }
 
           delete System.onLoadQueue["system/" + mod.id];

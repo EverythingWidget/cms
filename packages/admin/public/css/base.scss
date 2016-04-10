@@ -877,6 +877,28 @@ body.Admin {
   top: 94px;
   left: 94px;
   bottom: 0;
+
+  & > .tabs-bar {
+    z-index: 5;
+    position: relative;
+    box-shadow: 0 1px 3px 0px rgba(0,0,0,0.06),0 0px 5px rgba(0,0,0,0.1); 
+  }
+
+  & > .tab-content {
+    background-color: transparent;
+    margin-left: 0;
+    position: absolute;
+    width: 100%;
+    top: 50px;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: inherit;
+  }
+
+  & > .header-pane.tabs-bar {
+    height: auto;
+  }
 }
 
 .header-pane .nav-tabs > li > a {
@@ -902,10 +924,6 @@ body.Admin {
 }
 
 .form-content > .tab-content {
-}
-
-#main-content > .header-pane.tabs-bar {
-  height: auto;
 }
 
 .top-pane.full {
@@ -3380,31 +3398,13 @@ inline-dialog{
   -webkit-flex-flow: row wrap;
   justify-content: space-around;
   align-items: flex-start;
-}
-
-#main-content > .tabs-bar {
-  z-index: 5;
-  position: relative;
-  box-shadow: 0 1px 3px 0px rgba(0,0,0,0.06),0 0px 5px rgba(0,0,0,0.1); 
-}
-
-#main-content > .tab-content {
-  background-color: transparent;
-  margin-left: 0;
-  position: absolute;
-  width: 100%;
-  top: 50px;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  display: inherit;
-}
+} 
 
 system-list, dis-block {
   display: block;
 }
 
-system-json-input {
+system-input-json {
   //box-shadow: 0 2px 3px rgba(0,0,0,.1), 0 5px 9px rgba(0,0,0,.1);
   display: block;
   margin: 0;
@@ -3420,7 +3420,7 @@ system-json-input {
     overflow: hidden;
     border-bottom: 1px solid #ddd;
 
-    system-json-input {
+    system-input-json {
       &.value {
         width: auto;
         border-left-color: #aaa;

@@ -26,7 +26,7 @@
       this.bUp = EW.addAction("tr{Up}", $.proxy(this.preCategory, this), {
         float: "right"
       },
-        "content-chooser-actions-bar").hide();
+              "content-chooser-actions-bar").hide();
 
       this.bSelect = EW.addActionButton({
         text: "",
@@ -74,20 +74,20 @@
         $.post('~admin/api/content-management/contents-folders', {
           parent_id: parentId
         },
-          function (data) {
-            _this.folderListHeader.html("tr{Folders}");
-            var cId = EW.getHashParameter("categoryId");
-            $.each(data.data, function (index, element) {
-              var temp = _this.createFolder(element);
+                function (data) {
+                  _this.folderListHeader.html("tr{Folders}");
+                  var cId = EW.getHashParameter("categoryId");
+                  $.each(data.data, function (index, element) {
+                    var temp = _this.createFolder(element);
 
-              if (element.id == cId) {
-                temp.addClass("selected");
-                _this.oldItem = temp;
-              }
+                    if (element.id == cId) {
+                      temp.addClass("selected");
+                      _this.oldItem = temp;
+                    }
 
-              _this.folderListContent.append(temp);
-            });
-          }, "json");
+                    _this.folderListContent.append(temp);
+                  });
+                }, "json");
       }
 
       if (_this.contentType === "all" || _this.contentType === "content" || _this.contentType === "contentField") {
@@ -95,22 +95,21 @@
 
         $.post('~admin/api/content-management/contents-articles', {
           parent_id: parentId
-        },
-          function (data) {
-            _this.articlesListHeader.html("tr{Articles}");
+        }, function (data) {
+          _this.articlesListHeader.html("tr{Articles}");
 
-            var aId = EW.getHashParameter("articleId");
-            $.each(data.data, function (index, element) {
-              var temp = _this.createFile(element);
+          var aId = EW.getHashParameter("articleId");
+          $.each(data.data, function (index, element) {
+            var temp = _this.createFile(element);
 
-              if (element.id == aId) {
-                temp.addClass("selected");
-                _this.oldItem = temp;
-              }
+            if (element.id == aId) {
+              temp.addClass("selected");
+              _this.oldItem = temp;
+            }
 
-              _this.articlesListContent.append(temp);
-            });
-          }, "json");
+            _this.articlesListContent.append(temp);
+          });
+        }, "json");
       }
     };
 
@@ -125,7 +124,8 @@
 
         _this.document = {
           feederId: "admin/api/content-management/ew-list-feeder-folders",
-          id: model.id
+          id: model.id,
+          params: {}
         };
 
         _this.highlightContent(div);
@@ -149,7 +149,8 @@
 
         _this.document = {
           feederId: "admin/api/content-management/ew-page-feeder-articles",
-          id: model.id
+          id: model.id,
+          params: {}
         };
 
         _this.highlightContent(div);
@@ -169,8 +170,7 @@
         _this.bSelect.comeIn(300);
         _this.document = {
           feederId: "admin/api/content-management/content-fields",
-          id: model.contentId,
-          fieldId: model.fieldId
+          id: model.contentId
         };
         _this.highlightContent(div);
       });
@@ -182,8 +182,7 @@
       return div;
     };
 
-    LinkChooserDocuments.prototype.highlightContent = function (element)
-    {
+    LinkChooserDocuments.prototype.highlightContent = function (element) {
       if (this.oldElement) {
         this.oldElement.removeClass("selected");
       }
@@ -198,7 +197,7 @@
       _this.folderList.hide();
       //_this.folderListContent.empty();
       _this.articlesListContent.empty();
-      _this.articlesListHeader.html("<span class='header-label'>"+content.title + "</span> Fields");
+      _this.articlesListHeader.html("<span class='header-label'>" + content.title + "</span> Fields");
 
       if (content) {
         $.each(content.content_fields || {}, function (key, element) {
@@ -222,8 +221,7 @@
 
 <?php
 //Call the function which has been attached to the function reference element
-if ($_REQUEST["callback"] == "function-reference")
-{
+if ($_REQUEST["callback"] == "function-reference") {
   echo 'var func = $("#link-chooser #function-reference").data("callback")(JSON.stringify(this.document));';
 }
 else

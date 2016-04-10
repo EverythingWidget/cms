@@ -16,7 +16,7 @@ $.fn.serializeJSON = function (flag) {
     }
   });
 
-  $.each(this.find('system-json-input'), function () {
+  $.each(this[0].querySelectorAll('[element-type="input"]'), function () {
     pureObject[this.getAttribute('name') || this.getAttribute('id')] = this.value;
   });
 
@@ -453,7 +453,7 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler) {
       } else if (element.is('a')) {
         element.attr('href', value).text(value).change();
       } else {
-        if (element[0] && element[0].systemNodeType === 'input') {
+        if (element[0] && element[0].elementType === 'input') {
           element[0].value = value;
         } else
           element.text(value).change();
@@ -811,15 +811,14 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction) {
       } else {
         modalPane.animate({
           opacity: "1"
-        },
-                520, "Power3.easeOut", function () {
-                  //modalPane.css("left", "");
-                  methods.setCloseButton();
-                  modalPane.isOpen = true;
-                  if (settings.class === "full")
-                  {
-                  }
-                });
+        }, 520, "Power3.easeOut", function () {
+          //modalPane.css("left", "");
+          methods.setCloseButton();
+          modalPane.isOpen = true;
+          if (settings.class === "full")
+          {
+          }
+        });
       }
 
       if (settings.onOpen)
@@ -858,10 +857,8 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction) {
     // Set default jquery html() function
     modalPane.html = modalPane.__proto__.html;
     var withTillModalOpen = function () {
-
-      if (!modalPane.isOpen)
-      {
-        setTimeout(withTillModalOpen, 10);
+      if (!modalPane.isOpen) {
+        setTimeout(withTillModalOpen);
         return;
       }
       modalPane.html(data);
@@ -2571,7 +2568,6 @@ $(document).ready(function () {
     }
     EW.setHashParameters({
       ew_activity: null
-    },
-            "FORMLESS_ACTIVITY");
+    }, "FORMLESS_ACTIVITY");
   }, "FORMLESS_ACTIVITY");
 });

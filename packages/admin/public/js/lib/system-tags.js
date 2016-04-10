@@ -647,11 +647,10 @@
 
   xtag.register("system-button-switch", SwitchButton);
 
-  xtag.register('system-json-input', {
+  var SystemInputJson = {
     lifecycle: {
       created: function () {
-        //this.value = null;
-        this.systemNodeType = 'input';
+        this.xtag.elementType = 'input';
         this.xtag.allFields = [];
         this.xtag.fields = [];
         this.xtag.lastField = this.createField('', '');
@@ -669,7 +668,7 @@
 
         var value = document.createElement('input');
         if ('object' === typeof valueValue) {
-          value = document.createElement('system-json-input');
+          value = document.createElement('system-input-json');
         }
         value.value = valueValue;
         value.className = 'value';
@@ -722,7 +721,7 @@
           }
 
           if (item.value.nodeName === 'INPUT' && item.value.value === '{}') {
-            var json = document.createElement('system-json-input');
+            var json = document.createElement('system-input-json');
             json.className = 'value';
             item.field.replaceChild(json, item.value);
             item.value = json;
@@ -755,17 +754,17 @@
     accessors: {
       value: {
         set: function (data) {
-          //if (this.xtag.lastField && this.xtag.lastField.field.parentNode)
-          //  this.xtag.lastField.field.parentNode.removeChild(this.xtag.lastField.field);
+          var jsonInput = this;
 
-          if (this.xtag.allFields)
-            this.xtag.allFields.forEach(function (item) {
+          if (jsonInput.xtag.allFields)
+            jsonInput.xtag.allFields.forEach(function (item) {
               if (item.field.parentNode)
                 item.field.parentNode.removeChild(item.field);
             });
 
-          this.xtag.allFields = [];
-          this.xtag.fields = [];
+          jsonInput.xtag.allFields = [];
+          jsonInput.xtag.fields = [];
+
           if ('string' === typeof data)
             data = JSON.parse(data);
 
@@ -775,13 +774,13 @@
 
           for (var key in data) {
             if (data.hasOwnProperty(key)) {
-              this.xtag.lastField = this.createField(key, data[key]);
-              this.xtag.allFields.push(this.xtag.lastField);
+              jsonInput.xtag.lastField = jsonInput.createField(key, data[key]);
+              jsonInput.xtag.allFields.push(jsonInput.xtag.lastField);
             }
           }
 
-          this.xtag.lastField = {};
-          this.updateFieldsCount();
+          jsonInput.xtag.lastField = {};
+          jsonInput.updateFieldsCount();
         },
         get: function () {
           var value = {};
@@ -791,8 +790,18 @@
 
           return value;
         }
+      },
+      elementType: {
+        attribute: {},
+        set: function (value) {
+        },
+        get: function () {
+          return this.xtag.elementType;
+        }
       }
     }
-  });
+  }
+
+  xtag.register('system-input-json', SystemInputJson);
 
 })(xtag, UIUtility);
