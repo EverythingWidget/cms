@@ -410,7 +410,7 @@ class ContentManagement extends \ew\Module {
     if (!$key)
       $key = '%';
     $labels = \ew_contents_labels::where('content_id', '=', $content_id)->where('key', 'LIKE', $key)->get();
-    return $labels;
+    return $labels->toArray();
   }
 
   public static function contents_labels($content_id, $key, $value = '%') {
@@ -903,10 +903,24 @@ class ContentManagement extends \ew\Module {
 
       $labels = $this->get_content_labels($id);
       $content->labels = $labels;
+      $content->labels = $this->parse_labels($labels, $content);
+
       return \ew\APIResourceHandler::to_api_response($content->toArray());
     }
 
     return EWCore::log_error(404, "content not found");
+  }
+
+  private function parse_labels($labels, $data) {
+    return array_map(function ($label) use ($data) {
+      if (preg_match('/{@fields\/(.*)}/', $label['value'], $match) === 1) {
+        if (isset($data['content_fields'][$match[1]])) {
+          $label['value'] = $data['content_fields'][$match[1]]['content'];
+        }
+      }
+
+      return $label;
+    }, $labels);
   }
 
   private function get_content_by_slug($slug, $language = 'en') {
@@ -921,7 +935,8 @@ class ContentManagement extends \ew\Module {
       //$content->parsed_content = $cf['html'];
 
       $labels = $this->get_content_labels($slug);
-      $content->labels = $labels;
+      $content->labels = $this->parse_labels($labels, $content);
+
       return \ew\APIResourceHandler::to_api_response($content->toArray()[0]);
     }
 

@@ -647,4 +647,152 @@
 
   xtag.register("system-button-switch", SwitchButton);
 
+  xtag.register('system-json-input', {
+    lifecycle: {
+      created: function () {
+        //this.value = null;
+        this.systemNodeType = 'input';
+        this.xtag.allFields = [];
+        this.xtag.fields = [];
+        this.xtag.lastField = this.createField('', '');
+        this.xtag.active = this.xtag.lastField;
+        this.updateFieldsCount();
+      }
+    },
+    methods: {
+      createField: function (nameValue, valueValue) {
+        var jsonInput = this;
+        var name = document.createElement('input');
+        name.value = nameValue;
+        name.className = 'name';
+        name.placeholder = 'name';
+
+        var value = document.createElement('input');
+        if ('object' === typeof valueValue) {
+          value = document.createElement('system-json-input');
+        }
+        value.value = valueValue;
+        value.className = 'value';
+        value.placeholder = 'value';
+
+        var field = document.createElement('p');
+
+        name.addEventListener('keyup', function (e) {
+          jsonInput.updateFieldsCount();
+        });
+
+        name.addEventListener('focus', function (e) {
+          jsonInput.xtag.active = field;
+        });
+
+        value.addEventListener('keyup', function (e) {
+          jsonInput.updateFieldsCount();
+        });
+
+        value.addEventListener('focus', function (e) {
+          jsonInput.xtag.active = field;
+        });
+
+        field._name = name;
+        field.appendChild(name);
+        field.appendChild(value);
+
+        this.xtag.allFields.push({
+          name: name,
+          value: value,
+          field: field
+        });
+
+        this.appendChild(field);
+
+        return {
+          name: name,
+          value: value,
+          field: field
+        };
+      },
+      updateFieldsCount: function () {
+        var jsonInput = this;
+        var newFields = [];
+        this.xtag.fields = [];
+        this.xtag.allFields.forEach(function (item) {
+          if (!item.name.value && !item.value.value && item.field.parentNode && item.field !== jsonInput.xtag.lastField.field) {
+            item.field.parentNode.removeChild(item.field);
+            return;
+          }
+
+          if (item.value.nodeName === 'INPUT' && item.value.value === '{}') {
+            var json = document.createElement('system-json-input');
+            json.className = 'value';
+            item.field.replaceChild(json, item.value);
+            item.value = json;
+            json.focus();
+          }
+
+          if (item.field !== jsonInput.xtag.lastField.field) {
+            jsonInput.xtag.fields.push(item);
+          }
+
+          newFields.push(item);
+        });
+
+        this.xtag.allFields = newFields;
+
+        if (!jsonInput.xtag.lastField.name || jsonInput.xtag.lastField.name.value) {
+          jsonInput.xtag.lastField = this.createField('', '');
+        }
+
+        if (jsonInput.xtag.active && jsonInput.xtag.active.parentNode) {
+          jsonInput.xtag.active.focus();
+        } else {
+          jsonInput.xtag.lastField.name.focus();
+        }
+      },
+      focus: function () {
+        this.xtag.allFields[this.xtag.allFields.length - 1].name.focus();
+      }
+    },
+    accessors: {
+      value: {
+        set: function (data) {
+          //if (this.xtag.lastField && this.xtag.lastField.field.parentNode)
+          //  this.xtag.lastField.field.parentNode.removeChild(this.xtag.lastField.field);
+
+          if (this.xtag.allFields)
+            this.xtag.allFields.forEach(function (item) {
+              if (item.field.parentNode)
+                item.field.parentNode.removeChild(item.field);
+            });
+
+          this.xtag.allFields = [];
+          this.xtag.fields = [];
+          if ('string' === typeof data)
+            data = JSON.parse(data);
+
+          if ('object' !== typeof data) {
+            return;
+          }
+
+          for (var key in data) {
+            if (data.hasOwnProperty(key)) {
+              this.xtag.lastField = this.createField(key, data[key]);
+              this.xtag.allFields.push(this.xtag.lastField);
+            }
+          }
+
+          this.xtag.lastField = {};
+          this.updateFieldsCount();
+        },
+        get: function () {
+          var value = {};
+          this.xtag.fields.forEach(function (item) {
+            value[item.name.value] = item.value.value;
+          });
+
+          return value;
+        }
+      }
+    }
+  });
+
 })(xtag, UIUtility);

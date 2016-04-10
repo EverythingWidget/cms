@@ -15,7 +15,11 @@ $.fn.serializeJSON = function (flag) {
       pureObject[this.name] = this.value || '';
     }
   });
-  //console.log(this);
+
+  $.each(this.find('system-json-input'), function () {
+    pureObject[this.getAttribute('name') || this.getAttribute('id')] = this.value;
+  });
+
   if ($.isEmptyObject(pureObject))
   {
     return null;
@@ -444,11 +448,15 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler) {
         element.attr("data-file-extension", /[^.]+$/.exec(value));
         element.attr("data-filename", /^[^.]+/.exec(value));
       } else if (element.is(":input")) {
+        //console.log(element);
         element.val(value).change();
       } else if (element.is('a')) {
         element.attr('href', value).text(value).change();
       } else {
-        element.text(value).change();
+        if (element[0] && element[0].systemNodeType === 'input') {
+          element[0].value = value;
+        } else
+          element.text(value).change();
       }
     }
   };
@@ -2175,7 +2183,7 @@ function ExtendableList(element, cSettings) {
       if (!oneValue) {
         if (!init) {
           // Create the list and set the value for the first key
-          for (var i = 0; i < value.length; i++)          {
+          for (var i = 0; i < value.length; i++) {
             item = base.createItem();
             item.find(":input[name='" + key + "']").val(value[i]).change();
 
@@ -2302,7 +2310,7 @@ ew_plugins = {
       var $element = $(element);
       if ($element.prop('tagName').toUpperCase() !== 'INPUT' && $element.prop('tagName').toUpperCase() !== 'TEXTAREA')
       {
-        return;
+        //return;
       }
       var settings = $.extend({
       }, defaults, options);

@@ -127,26 +127,25 @@ $panelId = $_REQUEST['panelId'];
       widget_style_class: widgetStyleClass,
       style_id: styleId,
       widget_parameters: wp
-    },
-            function (data) {
-              EW.lock($.EW("getParentDialog", self.uisWidgetForm));
+    }, function (data) {
+      EW.lock($.EW("getParentDialog", self.uisWidgetForm));
 
-              // Add widget data to the widget-data script tag
-              if (data["widget_data"])
-                uisForm.setWidgetData(data["widget_id"], data["widget_data"]);
+      // Add widget data to the widget-data script tag
+      if (data["widget_data"])
+        uisForm.setWidgetData(data["widget_id"], data["widget_data"]);
 
-              var containerElement = $("#fr").contents().find("body #base-content-pane div[data-panel-id='<?php echo $panelId ?>']");
-              if (containerElement.hasClass("block"))
-              {
-                uisForm.addWidget(data["widget_html"], containerElement[0]);
-              } else
-              {
-                uisForm.addWidget(data["widget_html"], containerElement[0]);
-              }
+      var containerElement = $("#fr").contents().find("body #base-content-pane div[data-panel-id='<?php echo $panelId ?>']");
+      if (containerElement.hasClass("block"))
+      {
+        uisForm.addWidget(data["widget_html"], containerElement[0]);
+      } else
+      {
+        uisForm.addWidget(data["widget_html"], containerElement[0]);
+      }
 
-              $("#inspector-editor").trigger("refresh");
-              $.EW("getParentDialog", self.uisWidgetForm).trigger("close");
-            }, "json");
+      $("#inspector-editor").trigger("refresh");
+      $.EW("getParentDialog", self.uisWidgetForm).trigger("close");
+    }, "json");
   };
 
   UISWidget.prototype.applyToWidget = function () {

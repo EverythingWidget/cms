@@ -45,9 +45,6 @@
     formId: "#<?= $form_id ?>",
     allLabels: <?= json_encode(array_keys(EWCore::read_registry(EWCore::$EW_CONTENT_COMPONENT))) ?>,
     initLabels: function (labels) {
-      //$(".content-label .label-control-button:checked").click();
-      //$(".content-label .label-control-button").prop("checked", false);
-
       var allLabels = this.allLabels.slice(0);
       $.each(labels, function (i, el) {
         var t = $("#" + el.key + "_control_button");

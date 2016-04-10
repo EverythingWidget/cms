@@ -1767,7 +1767,8 @@ class EWCore {
 
   public static function populate_view($view_html, $view_data) {
     return preg_replace_callback("/\{\{([\w]*)\}\}/", function($match) use ($view_data) {
-      return $view_data[$match[1]];
+      $data = $view_data[$match[1]];
+      return isset($data) ? $data : $match[0];
     }, $view_html);
   }
 

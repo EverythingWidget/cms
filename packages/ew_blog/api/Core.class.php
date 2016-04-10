@@ -162,13 +162,14 @@ class Core extends \ew\Module {
         $result[] = [
             "id"             => $article["id"],
             "html"           => $article["content"],
-            "content_fields" => $article["content_fields"]
+            "content_fields" =>  json_decode($article["content_fields"], true)
         ];
       }
     }
 
-    return \ew\APIResourceHandler::to_api_response($result, [
-                "totalRows" => $articles["totalRows"]
+    return \ew\APIResourceHandler::to_api_response($result,  [
+                'page_size'       => $articles['collection_size'],
+                "collection_size" => count($articles['data'])
     ]);
   }
 

@@ -190,6 +190,11 @@
 
   &.list {
     font-size: 19px;
+    margin: 0 -15px;
+
+    .list-content {
+      margin: 0;
+    }
 
     .list-item {
       padding: 15px 0px;
@@ -249,6 +254,7 @@
     }
 
     .list-footer {
+      margin: 0;
       margin-top: 15px;
       background-color: #eee;
       padding: 15px 0;
@@ -284,6 +290,12 @@
 
     &.rtl {
       .list-item {
+
+        .front-image {
+          float: right;
+          margin-right: 0;
+          margin-left: 20px;
+        }
 
         .short-text {
           margin-left: 0;
