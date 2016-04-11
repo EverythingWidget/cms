@@ -593,7 +593,6 @@ EverythingWidgets.prototype.createList = function (config) {
 EverythingWidgets.prototype.createModal = function (onClose, closeAction) {
   var self = this;
   var originElement;
-  var animationDiv = $("<div class='s-to-d-scale-anim'>");
   var xButton;
   var methods = {
     // Set X button at the top tight corner
@@ -2547,8 +2546,7 @@ $(document).ready(function () {
           // set hash ew_activity to null
           EW.setHashParameters({
             ew_activity: null
-          },
-                  "FORMLESS_ACTIVITY");
+          }, "FORMLESS_ACTIVITY");
           return;
         }
 

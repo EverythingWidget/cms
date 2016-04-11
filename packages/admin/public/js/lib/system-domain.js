@@ -3,7 +3,7 @@
     this.ui = {};
     this.app = null;
     this.domainHashString = "";
-    this.moduleIdentifier = "app";
+    this.stateKey = "app";
     this.modules = {};
     this.modulesHashes = {};
     this.appPathfiledName = null;
@@ -20,8 +20,10 @@
   Domain.prototype.setModuleHashValue = function (navigation, parameters, hashValue, init) {
     var nav = parameters["app"];
 
-    if (nav && this.modulesHashes[nav] && this.app.activeModule !== this.modules["system/" + nav]) {
-      //window.location.hash = System.modulesHashes[nav];
+    if (nav
+            && this.modulesHashes[nav]
+            && this.app.activeModule !== this.modules["system/" + nav]) {
+      // window.location.hash = System.modulesHashes[nav];
       // When the navigation path is changed
       //alert(System.modulesHashes[nav] + " YES " + nav);
     } else if (nav && !this.firstTime) {
@@ -44,7 +46,7 @@
   Domain.prototype.init = function (mods) {
     this.app = $.extend(true, {}, System.MODULE_ABSTRACT);
     this.app.domain = this;
-    this.app.moduleIdentifier = this.moduleIdentifier;
+    this.app.stateKey = this.stateKey;
     this.app.id = "system";
     this.app.installModules = mods;
     this.app.init({}, {}, "");
@@ -66,7 +68,7 @@
         });
 
         _this.setModuleHashValue(navigation, params, hashValue);
-        _this.app.hashChanged(navigation, params, hashValue, navigation[_this.app.moduleIdentifier]); // System
+        _this.app.hashChanged(navigation, params, hashValue, navigation[_this.app.stateKey]); // System
 
         _this.app.oldHash = '#' + hashValue;
       }
@@ -182,9 +184,9 @@
     module.domain = domain;
     module.id = id;
 
-    modulePath = domain.app.navigation[module.moduleIdentifier] ? domain.app.navigation[module.moduleIdentifier] : [];
+    modulePath = domain.app.navigation[module.stateKey] ? domain.app.navigation[module.stateKey] : [];
     moduleNavigation = $.extend(true, {}, domain.app.navigation);
-    moduleNavigation[module.moduleIdentifier] = modulePath.slice(id.split("/").length - 1);
+    moduleNavigation[module.stateKey] = modulePath.slice(id.split("/").length - 1);
 
     domain.modules[id] = module;
     domain.notYetStarted.push(id);
@@ -192,7 +194,7 @@
     // Set module hash for this module when its inited
     // module hash will be set in the hashChanged method as well
     // if current navigation path is equal to this module id
-    //module.hash = System.modulesHashes[id.replace("system/", "")] = module.moduleIdentifier + "=" + id.replace("system/", "");
+    //module.hash = System.modulesHashes[id.replace("system/", "")] = module.stateKey + "=" + id.replace("system/", "");
 
     module.init(moduleNavigation, domain.app.params);
 
