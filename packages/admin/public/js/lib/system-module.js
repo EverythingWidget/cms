@@ -9,7 +9,7 @@
     params: {},
     html: "",
     installModules: [],
-    onEvents: {},
+    binds: {},
     installModulesOnInit: function (modules) {
       this.installModules = modules;
     },
@@ -110,7 +110,7 @@
      */
     bind: function (event, action) {
       if ('string' === typeof (event) && 'function' === typeof (action)) {
-        this.onEvents[event] = action;
+        this.binds[event] = action;
       }
     },
     /**
@@ -126,8 +126,8 @@
       }
     },
     triggerEvent: function (event, args) {
-      if (typeof (this.onEvents[event]) === "function") {
-        this.onEvents[event].apply(this, args);
+      if (typeof (this.binds[event]) === "function") {
+        this.binds[event].apply(this, args);
       }
     },
     hashChanged: function (navigation, params, hashValue, fullNav) {
@@ -140,6 +140,9 @@
         this.domain.app.activeModule = this;
         this.domain.app.activeModule.active = true;
       } else if (!this.solo) {
+        if (this.domain.app.activeModule && this.domain.app.activeModule.active) {
+          this.domain.app.activeModule.triggerEvent('stop');
+        }
         this.domain.app.activeModule = null;
         this.active = false;
       }
@@ -198,31 +201,21 @@
         }
       }
 
-
-      //this.hash = hashValue;
-
-      if (this.stateKey && navigation[this.stateKey] && navigation[this.stateKey][0])
-      {
-        // Set the app.activeModule according to the current navigation path
-        if (this.domain.modules[this.id + "/" + navigation[this.stateKey][0]]) {
-          this.activeModule = this.domain.modules[this.id + "/" + navigation[this.stateKey][0]];
-        }
-      } else if (!this.solo) {
-        this.activeModule = null;
+      //if (this.stateKey && navigation[this.stateKey] && navigation[this.stateKey][0])
+      //{
+      // Set the app.activeModule according to the current navigation path
+      if (this.domain.modules[this.id + "/" + navigation[this.stateKey][0]]) {
+        this.activeModule = this.domain.modules[this.id + "/" + navigation[this.stateKey][0]];
       }
+      //} else if (!this.solo) {
+      //this.activeModule = null;
+      //}
 
-      if (this.activeModule)
+      if (this.activeModule && this.activeModule.id === this.id + "/" + navigation[this.stateKey][0])
       {
         // Remove first part of navigation in order to force activeModule to only react to events at its level and higher 
-        //var modNav = navigation[this.stateKey].slice(1);
         moduleNavigation = $.extend(true, {}, navigation);
         moduleNavigation[this.stateKey] = fullNav.slice(this.activeModule.id.split("/").length - 1);
-
-        /* Removed - cause a bug
-         * if (!this.activeModule.started) {
-         return;
-         }*/
-
         // Call module level events handlers
         this.activeModule.hashChanged(moduleNavigation, this.params, hashValue, fullNav);
       }

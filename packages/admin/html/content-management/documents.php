@@ -58,13 +58,13 @@
       // you can use either states.<state> or states['<state>']
       states.article = function (full, id) {
         if (!id) {
-          component.currentItem.removeClass("selected");
+          System.ui.utility.removeClass(component.currentItem, 'selected');
         }
       };
 
       states.folder = function (full, id, command) {
         if (!id) {
-          component.currentItem.removeClass("selected");
+          System.ui.utility.removeClass(component.currentItem, 'selected');
         }
       };
 
