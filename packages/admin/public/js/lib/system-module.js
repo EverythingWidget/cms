@@ -204,7 +204,7 @@
       //if (this.stateKey && navigation[this.stateKey] && navigation[this.stateKey][0])
       //{
       // Set the app.activeModule according to the current navigation path
-      if (this.domain.modules[this.id + "/" + navigation[this.stateKey][0]]) {
+      if (navigation[this.stateKey] && this.domain.modules[this.id + "/" + navigation[this.stateKey][0]]) {
         this.activeModule = this.domain.modules[this.id + "/" + navigation[this.stateKey][0]];
       }
       //} else if (!this.solo) {
