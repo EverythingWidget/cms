@@ -1,7 +1,7 @@
-(function() {
+(function () {
   window.FSM = {};
 
-  FSM.Machine = (function() {
+  FSM.Machine = (function () {
     function Machine(context) {
       this.context = context;
       this._stateTransitions = {};
@@ -11,14 +11,14 @@
       this._currentState = null;
     }
 
-    Machine.prototype.addTransition = function(action, state, nextState, callback) {
+    Machine.prototype.addTransition = function (action, state, nextState, callback) {
       if (!nextState) {
         nextState = state;
       }
       return this._stateTransitions[[action, state]] = [nextState, callback];
     };
 
-    Machine.prototype.addTransitions = function(actions, state, nextState, callback) {
+    Machine.prototype.addTransitions = function (actions, state, nextState, callback) {
       var action, _i, _len, _results;
       if (!nextState) {
         nextState = state;
@@ -31,18 +31,18 @@
       return _results;
     };
 
-    Machine.prototype.addTransitionAny = function(state, nextState, callback) {
+    Machine.prototype.addTransitionAny = function (state, nextState, callback) {
       if (!nextState) {
         nextState = state;
       }
       return this._stateTransitionsAny[state] = [nextState, callback];
     };
 
-    Machine.prototype.setDefaultTransition = function(state, callback) {
+    Machine.prototype.setDefaultTransition = function (state, callback) {
       return this._defaultTransition = [state, callback];
     };
 
-    Machine.prototype.getTransition = function(action, state) {
+    Machine.prototype.getTransition = function (action, state) {
       if (this._stateTransitions[[action, state]]) {
         return this._stateTransitions[[action, state]];
       } else if (this._stateTransitionsAny[state]) {
@@ -53,22 +53,22 @@
       throw new Error("Transition is undefined: (" + action + ", " + state + ")");
     };
 
-    Machine.prototype.getCurrentState = function() {
+    Machine.prototype.getCurrentState = function () {
       return this._currentState;
     };
 
-    Machine.prototype.setInitialState = function(state) {
+    Machine.prototype.setInitialState = function (state) {
       this._initialState = state;
       if (!this._currentState) {
         return this.reset();
       }
     };
 
-    Machine.prototype.reset = function() {
+    Machine.prototype.reset = function () {
       return this._currentState = this._initialState;
     };
 
-    Machine.prototype.process = function(action) {
+    Machine.prototype.process = function (action) {
       var result;
       result = this.getTransition(action, this._currentState);
       if (result[1]) {
@@ -83,14 +83,20 @@
 
 }).call(this);
 
-(function() {
+(function () {
   var ALPHA_CHARS, ALPHA_NUMERIC_CHARS, ATTR_DELIM, ATTR_ENTITY_DOUBLE_DELIM, ATTR_ENTITY_NO_DELIM, ATTR_ENTITY_SINGLE_DELIM, ATTR_NAME, ATTR_NAME_CHARS, ATTR_NAME_FIND_VALUE, ATTR_OR_TAG_END, ATTR_VALUE_DOUBLE_DELIM, ATTR_VALUE_NO_DELIM, ATTR_VALUE_SINGLE_DELIM, CHAR_OR_ENTITY_OR_TAG, CLOSING_TAG, ENTITY, ENTITY_CHARS, OPENING_TAG, OPENNING_OR_CLOSING_TAG, TAG_NAME_CHARS, TAG_NAME_CLOSING, TAG_NAME_MUST_CLOSE, TAG_NAME_OPENING, TAG_OPENING_SELF_CLOSING, _Parser,
-    __slice = [].slice,
-    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+          __slice = [].slice,
+          __indexOf = [].indexOf || function (item) {
+    for (var i = 0, l = this.length; i < l; i++) {
+      if (i in this && this[i] === item)
+        return i;
+    }
+    return -1;
+  };
 
   window.HTMLString = {};
 
-  HTMLString.String = (function() {
+  HTMLString.String = (function () {
     String._parser = null;
 
     function String(html, preserveWhitespace) {
@@ -108,7 +114,7 @@
       }
     }
 
-    String.prototype.isWhitespace = function() {
+    String.prototype.isWhitespace = function () {
       var c, _i, _len, _ref;
       _ref = this.characters;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -120,15 +126,15 @@
       return true;
     };
 
-    String.prototype.length = function() {
+    String.prototype.length = function () {
       return this.characters.length;
     };
 
-    String.prototype.preserveWhitespace = function() {
+    String.prototype.preserveWhitespace = function () {
       return this._preserveWhitespace;
     };
 
-    String.prototype.capitalize = function() {
+    String.prototype.capitalize = function () {
       var c, newString;
       newString = this.copy();
       if (newString.length()) {
@@ -138,11 +144,11 @@
       return newString;
     };
 
-    String.prototype.charAt = function(index) {
+    String.prototype.charAt = function (index) {
       return this.characters[index].copy();
     };
 
-    String.prototype.concat = function() {
+    String.prototype.concat = function () {
       var c, indexChar, inheritFormat, inheritedTags, newString, string, strings, tail, _i, _j, _k, _l, _len, _len1, _len2, _ref, _ref1;
       strings = 2 <= arguments.length ? __slice.call(arguments, 0, _i = arguments.length - 1) : (_i = 0, []), inheritFormat = arguments[_i++];
       if (!(typeof inheritFormat === 'undefined' || typeof inheritFormat === 'boolean')) {
@@ -183,7 +189,7 @@
       return newString;
     };
 
-    String.prototype.contains = function(substring) {
+    String.prototype.contains = function (substring) {
       var c, found, from, i, _i, _len, _ref;
       if (typeof substring === 'string') {
         return this.text().indexOf(substring) > -1;
@@ -207,7 +213,7 @@
       return false;
     };
 
-    String.prototype.endsWith = function(substring) {
+    String.prototype.endsWith = function (substring) {
       var c, characters, i, _i, _len, _ref;
       if (typeof substring === 'string') {
         return substring === '' || this.text().slice(-substring.length) === substring;
@@ -223,7 +229,7 @@
       return true;
     };
 
-    String.prototype.format = function() {
+    String.prototype.format = function () {
       var c, from, i, newString, tags, to, _i;
       from = arguments[0], to = arguments[1], tags = 3 <= arguments.length ? __slice.call(arguments, 2) : [];
       if (to < 0) {
@@ -240,7 +246,7 @@
       return newString;
     };
 
-    String.prototype.hasTags = function() {
+    String.prototype.hasTags = function () {
       var c, found, strict, tags, _i, _j, _len, _ref;
       tags = 2 <= arguments.length ? __slice.call(arguments, 0, _i = arguments.length - 1) : (_i = 0, []), strict = arguments[_i++];
       if (!(typeof strict === 'undefined' || typeof strict === 'boolean')) {
@@ -262,7 +268,7 @@
       return found;
     };
 
-    String.prototype.html = function() {
+    String.prototype.html = function () {
       var c, closingTag, closingTags, head, html, openHeads, openTag, openTags, tag, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _ref, _ref1, _ref2, _ref3;
       html = '';
       openTags = [];
@@ -311,7 +317,7 @@
       return html;
     };
 
-    String.prototype.indexOf = function(substring, from) {
+    String.prototype.indexOf = function (substring, from) {
       var c, found, i, _i, _len, _ref;
       if (from == null) {
         from = 0;
@@ -340,7 +346,7 @@
       return -1;
     };
 
-    String.prototype.insert = function(index, substring, inheritFormat) {
+    String.prototype.insert = function (index, substring, inheritFormat) {
       var c, head, indexChar, inheritedTags, middle, newString, tail, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
       if (inheritFormat == null) {
         inheritFormat = true;
@@ -383,7 +389,7 @@
       return newString;
     };
 
-    String.prototype.lastIndexOf = function(substring, from) {
+    String.prototype.lastIndexOf = function (substring, from) {
       var c, characters, found, i, skip, _i, _j, _len, _len1;
       if (from == null) {
         from = 0;
@@ -436,7 +442,7 @@
       return -1;
     };
 
-    String.prototype.optimize = function() {
+    String.prototype.optimize = function () {
       var c, closingTag, closingTags, head, lastC, len, openHeads, openTag, openTags, runLength, runLengthSort, runLengths, run_length, t, tag, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _len5, _len6, _m, _n, _o, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _results;
       openTags = [];
       openHeads = [];
@@ -488,7 +494,7 @@
         }
         lastC = c;
       }
-      runLengthSort = function(a, b) {
+      runLengthSort = function (a, b) {
         return b[1] - a[1];
       };
       _ref3 = this.characters;
@@ -513,7 +519,7 @@
             c.removeTags(tag);
           }
         }
-        _results.push(c.addTags.apply(c, (function() {
+        _results.push(c.addTags.apply(c, (function () {
           var _len7, _p, _results1;
           _results1 = [];
           for (_p = 0, _len7 = runLengths.length; _p < _len7; _p++) {
@@ -526,10 +532,10 @@
       return _results;
     };
 
-    String.prototype.slice = function(from, to) {
+    String.prototype.slice = function (from, to) {
       var c, newString;
       newString = new HTMLString.String('', this._preserveWhitespace);
-      newString.characters = (function() {
+      newString.characters = (function () {
         var _i, _len, _ref, _results;
         _ref = this.characters.slice(from, to);
         _results = [];
@@ -542,7 +548,7 @@
       return newString;
     };
 
-    String.prototype.split = function(separator, limit) {
+    String.prototype.split = function (separator, limit) {
       var count, i, index, indexes, lastIndex, substrings, _i, _ref;
       if (separator == null) {
         separator = '';
@@ -572,7 +578,7 @@
       return substrings;
     };
 
-    String.prototype.startsWith = function(substring) {
+    String.prototype.startsWith = function (substring) {
       var c, i, _i, _len, _ref;
       if (typeof substring === 'string') {
         return this.text().slice(0, substring.length) === substring;
@@ -587,7 +593,7 @@
       return true;
     };
 
-    String.prototype.substr = function(from, length) {
+    String.prototype.substr = function (from, length) {
       if (length <= 0) {
         return new HTMLString.String('', this._preserveWhitespace);
       }
@@ -600,14 +606,14 @@
       return this.slice(from, from + length);
     };
 
-    String.prototype.substring = function(from, to) {
+    String.prototype.substring = function (from, to) {
       if (to === void 0) {
         to = this.length();
       }
       return this.slice(from, to);
     };
 
-    String.prototype.text = function() {
+    String.prototype.text = function () {
       var c, text, _i, _len, _ref;
       text = '';
       _ref = this.characters;
@@ -628,7 +634,7 @@
       return this.constructor.decode(text);
     };
 
-    String.prototype.toLowerCase = function() {
+    String.prototype.toLowerCase = function () {
       var c, newString, _i, _len, _ref;
       newString = this.copy();
       _ref = newString.characters;
@@ -641,7 +647,7 @@
       return newString;
     };
 
-    String.prototype.toUpperCase = function() {
+    String.prototype.toUpperCase = function () {
       var c, newString, _i, _len, _ref;
       newString = this.copy();
       _ref = newString.characters;
@@ -654,7 +660,7 @@
       return newString;
     };
 
-    String.prototype.trim = function() {
+    String.prototype.trim = function () {
       var c, from, newString, to, _i, _j, _len, _len1, _ref, _ref1;
       _ref = this.characters;
       for (from = _i = 0, _len = _ref.length; _i < _len; from = ++_i) {
@@ -672,7 +678,7 @@
       }
       to = this.length() - to - 1;
       newString = new HTMLString.String('', this._preserveWhitespace);
-      newString.characters = (function() {
+      newString.characters = (function () {
         var _k, _len2, _ref2, _results;
         _ref2 = this.characters.slice(from, +to + 1 || 9e9);
         _results = [];
@@ -685,7 +691,7 @@
       return newString;
     };
 
-    String.prototype.trimLeft = function() {
+    String.prototype.trimLeft = function () {
       var c, from, newString, to, _i, _len, _ref;
       to = this.length() - 1;
       _ref = this.characters;
@@ -696,7 +702,7 @@
         }
       }
       newString = new HTMLString.String('', this._preserveWhitespace);
-      newString.characters = (function() {
+      newString.characters = (function () {
         var _j, _len1, _ref1, _results;
         _ref1 = this.characters.slice(from, +to + 1 || 9e9);
         _results = [];
@@ -709,7 +715,7 @@
       return newString;
     };
 
-    String.prototype.trimRight = function() {
+    String.prototype.trimRight = function () {
       var c, from, newString, to, _i, _len, _ref;
       from = 0;
       _ref = this.characters.slice().reverse();
@@ -721,7 +727,7 @@
       }
       to = this.length() - to - 1;
       newString = new HTMLString.String('', this._preserveWhitespace);
-      newString.characters = (function() {
+      newString.characters = (function () {
         var _j, _len1, _ref1, _results;
         _ref1 = this.characters.slice(from, +to + 1 || 9e9);
         _results = [];
@@ -734,7 +740,7 @@
       return newString;
     };
 
-    String.prototype.unformat = function() {
+    String.prototype.unformat = function () {
       var c, from, i, newString, tags, to, _i;
       from = arguments[0], to = arguments[1], tags = 3 <= arguments.length ? __slice.call(arguments, 2) : [];
       if (to < 0) {
@@ -751,10 +757,10 @@
       return newString;
     };
 
-    String.prototype.copy = function() {
+    String.prototype.copy = function () {
       var c, stringCopy;
       stringCopy = new HTMLString.String('', this._preserveWhitespace);
-      stringCopy.characters = (function() {
+      stringCopy.characters = (function () {
         var _i, _len, _ref, _results;
         _ref = this.characters;
         _results = [];
@@ -767,14 +773,14 @@
       return stringCopy;
     };
 
-    String.encode = function(string) {
+    String.encode = function (string) {
       var textarea;
       textarea = document.createElement('textarea');
       textarea.textContent = string;
       return textarea.innerHTML;
     };
 
-    String.decode = function(string) {
+    String.decode = function (string) {
       var textarea;
       textarea = document.createElement('textarea');
       textarea.innerHTML = string;
@@ -833,150 +839,150 @@
 
   ATTR_ENTITY_DOUBLE_DELIM = 19;
 
-  _Parser = (function() {
+  _Parser = (function () {
     function _Parser() {
       this.fsm = new FSM.Machine(this);
       this.fsm.setInitialState(CHAR_OR_ENTITY_OR_TAG);
-      this.fsm.addTransitionAny(CHAR_OR_ENTITY_OR_TAG, null, function(c) {
+      this.fsm.addTransitionAny(CHAR_OR_ENTITY_OR_TAG, null, function (c) {
         return this._pushChar(c);
       });
       this.fsm.addTransition('<', CHAR_OR_ENTITY_OR_TAG, OPENNING_OR_CLOSING_TAG);
       this.fsm.addTransition('&', CHAR_OR_ENTITY_OR_TAG, ENTITY);
-      this.fsm.addTransitions(ENTITY_CHARS, ENTITY, null, function(c) {
+      this.fsm.addTransitions(ENTITY_CHARS, ENTITY, null, function (c) {
         return this.entity += c;
       });
-      this.fsm.addTransition(';', ENTITY, CHAR_OR_ENTITY_OR_TAG, function() {
+      this.fsm.addTransition(';', ENTITY, CHAR_OR_ENTITY_OR_TAG, function () {
         this._pushChar("&" + this.entity + ";");
         return this.entity = '';
       });
       this.fsm.addTransitions([' ', '\n'], OPENNING_OR_CLOSING_TAG);
-      this.fsm.addTransitions(ALPHA_CHARS, OPENNING_OR_CLOSING_TAG, OPENING_TAG, function() {
+      this.fsm.addTransitions(ALPHA_CHARS, OPENNING_OR_CLOSING_TAG, OPENING_TAG, function () {
         return this._back();
       });
       this.fsm.addTransition('/', OPENNING_OR_CLOSING_TAG, CLOSING_TAG);
       this.fsm.addTransitions([' ', '\n'], OPENING_TAG);
-      this.fsm.addTransitions(ALPHA_CHARS, OPENING_TAG, TAG_NAME_OPENING, function() {
+      this.fsm.addTransitions(ALPHA_CHARS, OPENING_TAG, TAG_NAME_OPENING, function () {
         return this._back();
       });
       this.fsm.addTransitions([' ', '\n'], CLOSING_TAG);
-      this.fsm.addTransitions(ALPHA_CHARS, CLOSING_TAG, TAG_NAME_CLOSING, function() {
+      this.fsm.addTransitions(ALPHA_CHARS, CLOSING_TAG, TAG_NAME_CLOSING, function () {
         return this._back();
       });
-      this.fsm.addTransitions(TAG_NAME_CHARS, TAG_NAME_OPENING, null, function(c) {
+      this.fsm.addTransitions(TAG_NAME_CHARS, TAG_NAME_OPENING, null, function (c) {
         return this.tagName += c;
       });
       this.fsm.addTransitions([' ', '\n'], TAG_NAME_OPENING, ATTR_OR_TAG_END);
-      this.fsm.addTransition('/', TAG_NAME_OPENING, TAG_OPENING_SELF_CLOSING, function() {
+      this.fsm.addTransition('/', TAG_NAME_OPENING, TAG_OPENING_SELF_CLOSING, function () {
         return this.selfClosing = true;
       });
-      this.fsm.addTransition('>', TAG_NAME_OPENING, CHAR_OR_ENTITY_OR_TAG, function() {
+      this.fsm.addTransition('>', TAG_NAME_OPENING, CHAR_OR_ENTITY_OR_TAG, function () {
         return this._pushTag();
       });
       this.fsm.addTransitions([' ', '\n'], TAG_OPENING_SELF_CLOSING);
-      this.fsm.addTransition('>', TAG_OPENING_SELF_CLOSING, CHAR_OR_ENTITY_OR_TAG, function() {
+      this.fsm.addTransition('>', TAG_OPENING_SELF_CLOSING, CHAR_OR_ENTITY_OR_TAG, function () {
         return this._pushTag();
       });
       this.fsm.addTransitions([' ', '\n'], ATTR_OR_TAG_END);
-      this.fsm.addTransition('/', ATTR_OR_TAG_END, TAG_OPENING_SELF_CLOSING, function() {
+      this.fsm.addTransition('/', ATTR_OR_TAG_END, TAG_OPENING_SELF_CLOSING, function () {
         return this.selfClosing = true;
       });
-      this.fsm.addTransition('>', ATTR_OR_TAG_END, CHAR_OR_ENTITY_OR_TAG, function() {
+      this.fsm.addTransition('>', ATTR_OR_TAG_END, CHAR_OR_ENTITY_OR_TAG, function () {
         return this._pushTag();
       });
-      this.fsm.addTransitions(ALPHA_CHARS, ATTR_OR_TAG_END, ATTR_NAME, function() {
+      this.fsm.addTransitions(ALPHA_CHARS, ATTR_OR_TAG_END, ATTR_NAME, function () {
         return this._back();
       });
-      this.fsm.addTransitions(TAG_NAME_CHARS, TAG_NAME_CLOSING, null, function(c) {
+      this.fsm.addTransitions(TAG_NAME_CHARS, TAG_NAME_CLOSING, null, function (c) {
         return this.tagName += c;
       });
       this.fsm.addTransitions([' ', '\n'], TAG_NAME_CLOSING, TAG_NAME_MUST_CLOSE);
-      this.fsm.addTransition('>', TAG_NAME_CLOSING, CHAR_OR_ENTITY_OR_TAG, function() {
+      this.fsm.addTransition('>', TAG_NAME_CLOSING, CHAR_OR_ENTITY_OR_TAG, function () {
         return this._popTag();
       });
       this.fsm.addTransitions([' ', '\n'], TAG_NAME_MUST_CLOSE);
-      this.fsm.addTransition('>', TAG_NAME_MUST_CLOSE, CHAR_OR_ENTITY_OR_TAG, function() {
+      this.fsm.addTransition('>', TAG_NAME_MUST_CLOSE, CHAR_OR_ENTITY_OR_TAG, function () {
         return this._popTag();
       });
-      this.fsm.addTransitions(ATTR_NAME_CHARS, ATTR_NAME, null, function(c) {
+      this.fsm.addTransitions(ATTR_NAME_CHARS, ATTR_NAME, null, function (c) {
         return this.attributeName += c;
       });
       this.fsm.addTransitions([' ', '\n'], ATTR_NAME, ATTR_NAME_FIND_VALUE);
       this.fsm.addTransition('=', ATTR_NAME, ATTR_DELIM);
       this.fsm.addTransitions([' ', '\n'], ATTR_NAME_FIND_VALUE);
       this.fsm.addTransition('=', ATTR_NAME_FIND_VALUE, ATTR_DELIM);
-      this.fsm.addTransitions('>', ATTR_NAME, ATTR_OR_TAG_END, function() {
+      this.fsm.addTransitions('>', ATTR_NAME, ATTR_OR_TAG_END, function () {
         this._pushAttribute();
         return this._back();
       });
-      this.fsm.addTransitionAny(ATTR_NAME_FIND_VALUE, ATTR_OR_TAG_END, function() {
+      this.fsm.addTransitionAny(ATTR_NAME_FIND_VALUE, ATTR_OR_TAG_END, function () {
         this._pushAttribute();
         return this._back();
       });
       this.fsm.addTransitions([' ', '\n'], ATTR_DELIM);
       this.fsm.addTransition('\'', ATTR_DELIM, ATTR_VALUE_SINGLE_DELIM);
       this.fsm.addTransition('"', ATTR_DELIM, ATTR_VALUE_DOUBLE_DELIM);
-      this.fsm.addTransitions(ALPHA_NUMERIC_CHARS.concat(['&'], ATTR_DELIM, ATTR_VALUE_NO_DELIM, function() {
+      this.fsm.addTransitions(ALPHA_NUMERIC_CHARS.concat(['&'], ATTR_DELIM, ATTR_VALUE_NO_DELIM, function () {
         return this._back();
       }));
-      this.fsm.addTransition(' ', ATTR_VALUE_NO_DELIM, ATTR_OR_TAG_END, function() {
+      this.fsm.addTransition(' ', ATTR_VALUE_NO_DELIM, ATTR_OR_TAG_END, function () {
         return this._pushAttribute();
       });
-      this.fsm.addTransitions(['/', '>'], ATTR_VALUE_NO_DELIM, ATTR_OR_TAG_END, function() {
+      this.fsm.addTransitions(['/', '>'], ATTR_VALUE_NO_DELIM, ATTR_OR_TAG_END, function () {
         this._back();
         return this._pushAttribute();
       });
       this.fsm.addTransition('&', ATTR_VALUE_NO_DELIM, ATTR_ENTITY_NO_DELIM);
-      this.fsm.addTransitionAny(ATTR_VALUE_NO_DELIM, null, function(c) {
+      this.fsm.addTransitionAny(ATTR_VALUE_NO_DELIM, null, function (c) {
         return this.attributeValue += c;
       });
-      this.fsm.addTransition('\'', ATTR_VALUE_SINGLE_DELIM, ATTR_OR_TAG_END, function() {
+      this.fsm.addTransition('\'', ATTR_VALUE_SINGLE_DELIM, ATTR_OR_TAG_END, function () {
         return this._pushAttribute();
       });
       this.fsm.addTransition('&', ATTR_VALUE_SINGLE_DELIM, ATTR_ENTITY_SINGLE_DELIM);
-      this.fsm.addTransitionAny(ATTR_VALUE_SINGLE_DELIM, null, function(c) {
+      this.fsm.addTransitionAny(ATTR_VALUE_SINGLE_DELIM, null, function (c) {
         return this.attributeValue += c;
       });
-      this.fsm.addTransition('"', ATTR_VALUE_DOUBLE_DELIM, ATTR_OR_TAG_END, function() {
+      this.fsm.addTransition('"', ATTR_VALUE_DOUBLE_DELIM, ATTR_OR_TAG_END, function () {
         return this._pushAttribute();
       });
       this.fsm.addTransition('&', ATTR_VALUE_DOUBLE_DELIM, ATTR_ENTITY_DOUBLE_DELIM);
-      this.fsm.addTransitionAny(ATTR_VALUE_DOUBLE_DELIM, null, function(c) {
+      this.fsm.addTransitionAny(ATTR_VALUE_DOUBLE_DELIM, null, function (c) {
         return this.attributeValue += c;
       });
-      this.fsm.addTransitions(ENTITY_CHARS, ATTR_ENTITY_NO_DELIM, null, function(c) {
+      this.fsm.addTransitions(ENTITY_CHARS, ATTR_ENTITY_NO_DELIM, null, function (c) {
         return this.entity += c;
       });
-      this.fsm.addTransitions(ENTITY_CHARS, ATTR_ENTITY_SINGLE_DELIM, function(c) {
+      this.fsm.addTransitions(ENTITY_CHARS, ATTR_ENTITY_SINGLE_DELIM, function (c) {
         return this.entity += c;
       });
-      this.fsm.addTransitions(ENTITY_CHARS, ATTR_ENTITY_DOUBLE_DELIM, null, function(c) {
+      this.fsm.addTransitions(ENTITY_CHARS, ATTR_ENTITY_DOUBLE_DELIM, null, function (c) {
         return this.entity += c;
       });
-      this.fsm.addTransition(';', ATTR_ENTITY_NO_DELIM, ATTR_VALUE_NO_DELIM, function() {
+      this.fsm.addTransition(';', ATTR_ENTITY_NO_DELIM, ATTR_VALUE_NO_DELIM, function () {
         this.attributeValue += "&" + this.entity + ";";
         return this.entity = '';
       });
-      this.fsm.addTransition(';', ATTR_ENTITY_SINGLE_DELIM, ATTR_VALUE_SINGLE_DELIM, function() {
+      this.fsm.addTransition(';', ATTR_ENTITY_SINGLE_DELIM, ATTR_VALUE_SINGLE_DELIM, function () {
         this.attributeValue += "&" + this.entity + ";";
         return this.entity = '';
       });
-      this.fsm.addTransition(';', ATTR_ENTITY_DOUBLE_DELIM, ATTR_VALUE_DOUBLE_DELIM, function() {
+      this.fsm.addTransition(';', ATTR_ENTITY_DOUBLE_DELIM, ATTR_VALUE_DOUBLE_DELIM, function () {
         this.attributeValue += "&" + this.entity + ";";
         return this.entity = '';
       });
     }
 
-    _Parser.prototype._back = function() {
+    _Parser.prototype._back = function () {
       return this.head--;
     };
 
-    _Parser.prototype._pushAttribute = function() {
+    _Parser.prototype._pushAttribute = function () {
       this.attributes[this.attributeName] = this.attributeValue;
       this.attributeName = '';
       return this.attributeValue = '';
     };
 
-    _Parser.prototype._pushChar = function(c) {
+    _Parser.prototype._pushChar = function (c) {
       var character, lastCharacter;
       character = new HTMLString.Character(c, this.tags);
       if (this._preserveWhitespace) {
@@ -992,7 +998,7 @@
       return this.string.characters.push(character);
     };
 
-    _Parser.prototype._pushTag = function() {
+    _Parser.prototype._pushTag = function () {
       var tag, _ref;
       tag = new HTMLString.Tag(this.tagName, this.attributes);
       this.tags.push(tag);
@@ -1008,7 +1014,7 @@
       return this.attributes = {};
     };
 
-    _Parser.prototype._popTag = function() {
+    _Parser.prototype._popTag = function () {
       var character, tag;
       while (true) {
         tag = this.tags.pop();
@@ -1025,7 +1031,7 @@
       return this.tagName = '';
     };
 
-    _Parser.prototype.parse = function(html, preserveWhitespace) {
+    _Parser.prototype.parse = function (html, preserveWhitespace) {
       var character, error;
       this._preserveWhitespace = preserveWhitespace;
       this.reset();
@@ -1044,7 +1050,7 @@
       return this.string;
     };
 
-    _Parser.prototype.preprocess = function(html) {
+    _Parser.prototype.preprocess = function (html) {
       html = html.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
       html = html.replace(/<!--[\s\S]*?-->/g, '');
       if (!this._preserveWhitespace) {
@@ -1053,7 +1059,7 @@
       return html;
     };
 
-    _Parser.prototype.reset = function() {
+    _Parser.prototype.reset = function () {
       this.fsm.reset();
       this.head = 0;
       this.string = new HTMLString.String();
@@ -1070,7 +1076,7 @@
 
   })();
 
-  HTMLString.Tag = (function() {
+  HTMLString.Tag = (function () {
     function Tag(name, attributes) {
       var k, v;
       this._name = name.toLowerCase();
@@ -1094,7 +1100,7 @@
       'wbr': true
     };
 
-    Tag.prototype.head = function() {
+    Tag.prototype.head = function () {
       var components, k, v, _ref;
       if (!this._head) {
         components = [];
@@ -1114,22 +1120,22 @@
       return this._head;
     };
 
-    Tag.prototype.name = function() {
+    Tag.prototype.name = function () {
       return this._name;
     };
 
-    Tag.prototype.selfClosing = function() {
+    Tag.prototype.selfClosing = function () {
       return this._selfClosing;
     };
 
-    Tag.prototype.tail = function() {
+    Tag.prototype.tail = function () {
       if (this._selfClosing) {
         return '';
       }
       return "</" + this._name + ">";
     };
 
-    Tag.prototype.attr = function(name, value) {
+    Tag.prototype.attr = function (name, value) {
       if (value === void 0) {
         return this._attributes[name];
       }
@@ -1137,14 +1143,14 @@
       return this._head = null;
     };
 
-    Tag.prototype.removeAttr = function(name) {
+    Tag.prototype.removeAttr = function (name) {
       if (this._attributes[name] === void 0) {
         return;
       }
       return delete this._attributes[name];
     };
 
-    Tag.prototype.copy = function() {
+    Tag.prototype.copy = function () {
       return new HTMLString.Tag(this._name, this._attributes);
     };
 
@@ -1152,7 +1158,7 @@
 
   })();
 
-  HTMLString.Character = (function() {
+  HTMLString.Character = (function () {
     function Character(c, tags) {
       this._c = c;
       if (c.length > 1) {
@@ -1162,15 +1168,15 @@
       this.addTags.apply(this, tags);
     }
 
-    Character.prototype.c = function() {
+    Character.prototype.c = function () {
       return this._c;
     };
 
-    Character.prototype.isEntity = function() {
+    Character.prototype.isEntity = function () {
       return this._c.length > 1;
     };
 
-    Character.prototype.isTag = function(tagName) {
+    Character.prototype.isTag = function (tagName) {
       if (this._tags.length === 0 || !this._tags[0].selfClosing()) {
         return false;
       }
@@ -1180,14 +1186,14 @@
       return true;
     };
 
-    Character.prototype.isWhitespace = function() {
+    Character.prototype.isWhitespace = function () {
       var _ref;
       return ((_ref = this._c) === ' ' || _ref === '\n' || _ref === '&nbsp;') || this.isTag('br');
     };
 
-    Character.prototype.tags = function() {
+    Character.prototype.tags = function () {
       var t;
-      return (function() {
+      return (function () {
         var _i, _len, _ref, _results;
         _ref = this._tags;
         _results = [];
@@ -1199,7 +1205,7 @@
       }).call(this);
     };
 
-    Character.prototype.addTags = function() {
+    Character.prototype.addTags = function () {
       var tag, tags, _i, _len, _results;
       tags = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
       _results = [];
@@ -1216,7 +1222,7 @@
       return _results;
     };
 
-    Character.prototype.eq = function(c) {
+    Character.prototype.eq = function (c) {
       var tag, tags, _i, _j, _len, _len1, _ref, _ref1;
       if (this.c() !== c.c()) {
         return false;
@@ -1240,7 +1246,7 @@
       return true;
     };
 
-    Character.prototype.hasTags = function() {
+    Character.prototype.hasTags = function () {
       var tag, tagHeads, tagNames, tags, _i, _j, _len, _len1, _ref;
       tags = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
       tagNames = {};
@@ -1266,7 +1272,7 @@
       return true;
     };
 
-    Character.prototype.removeTags = function() {
+    Character.prototype.removeTags = function () {
       var heads, names, newTags, tag, tags, _i, _len;
       tags = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
       if (tags.length === 0) {
@@ -1284,16 +1290,16 @@
         }
       }
       newTags = [];
-      return this._tags = this._tags.filter(function(tag) {
+      return this._tags = this._tags.filter(function (tag) {
         if (!heads[tag.head()] && !names[tag.name()]) {
           return tag;
         }
       });
     };
 
-    Character.prototype.copy = function() {
+    Character.prototype.copy = function () {
       var t;
-      return new HTMLString.Character(this._c, (function() {
+      return new HTMLString.Character(this._c, (function () {
         var _i, _len, _ref, _results;
         _ref = this._tags;
         _results = [];
@@ -1310,38 +1316,44 @@
   })();
 
 }).call(this);
-(function() {
+(function () {
   var SELF_CLOSING_NODE_NAMES, _containedBy, _getChildNodeAndOffset, _getNodeRange, _getOffsetOfChildNode,
-    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+          __indexOf = [].indexOf || function (item) {
+    for (var i = 0, l = this.length; i < l; i++) {
+      if (i in this && this[i] === item)
+        return i;
+    }
+    return -1;
+  };
 
   window.ContentSelect = {};
 
-  ContentSelect.Range = (function() {
+  ContentSelect.Range = (function () {
     function Range(from, to) {
       this.set(from, to);
     }
 
-    Range.prototype.isCollapsed = function() {
+    Range.prototype.isCollapsed = function () {
       return this._from === this._to;
     };
 
-    Range.prototype.span = function() {
+    Range.prototype.span = function () {
       return this._to - this._from;
     };
 
-    Range.prototype.collapse = function() {
+    Range.prototype.collapse = function () {
       return this._to = this._from;
     };
 
-    Range.prototype.eq = function(range) {
+    Range.prototype.eq = function (range) {
       return this.get()[0] === range.get()[0] && this.get()[1] === range.get()[1];
     };
 
-    Range.prototype.get = function() {
+    Range.prototype.get = function () {
       return [this._from, this._to];
     };
 
-    Range.prototype.select = function(element) {
+    Range.prototype.select = function (element) {
       var docRange, endNode, endNodeLen, endOffset, startNode, startNodeLen, startOffset, _ref, _ref1;
       ContentSelect.Range.unselectAll();
       docRange = document.createRange();
@@ -1354,14 +1366,14 @@
       return window.getSelection().addRange(docRange);
     };
 
-    Range.prototype.set = function(from, to) {
+    Range.prototype.set = function (from, to) {
       from = Math.max(0, from);
       to = Math.max(0, to);
       this._from = Math.min(from, to);
       return this._to = Math.max(from, to);
     };
 
-    Range.prepareElement = function(element) {
+    Range.prepareElement = function (element) {
       var i, node, selfClosingNodes, _i, _len, _results;
       selfClosingNodes = element.querySelectorAll(SELF_CLOSING_NODE_NAMES.join(', '));
       _results = [];
@@ -1377,7 +1389,7 @@
       return _results;
     };
 
-    Range.query = function(element) {
+    Range.query = function (element) {
       var docRange, endNode, endOffset, range, startNode, startOffset, _ref;
       range = new ContentSelect.Range(0, 0);
       try {
@@ -1399,7 +1411,7 @@
       return range;
     };
 
-    Range.rect = function() {
+    Range.rect = function () {
       var docRange, marker, rect;
       try {
         docRange = window.getSelection().getRangeAt(0);
@@ -1417,7 +1429,7 @@
       }
     };
 
-    Range.unselectAll = function() {
+    Range.unselectAll = function () {
       if (window.getSelection()) {
         return window.getSelection().removeAllRanges();
       }
@@ -1429,7 +1441,7 @@
 
   SELF_CLOSING_NODE_NAMES = ['br', 'img', 'input'];
 
-  _containedBy = function(nodeA, nodeB) {
+  _containedBy = function (nodeA, nodeB) {
     while (nodeA) {
       if (nodeA === nodeB) {
         return true;
@@ -1439,14 +1451,14 @@
     return false;
   };
 
-  _getChildNodeAndOffset = function(parentNode, parentOffset) {
+  _getChildNodeAndOffset = function (parentNode, parentOffset) {
     var childNode, childOffset, childStack, n, _ref;
     if (parentNode.childNodes.length === 0) {
       return [parentNode, parentOffset];
     }
     childNode = null;
     childOffset = parentOffset;
-    childStack = (function() {
+    childStack = (function () {
       var _i, _len, _ref, _results;
       _ref = parentNode.childNodes;
       _results = [];
@@ -1474,7 +1486,7 @@
             }
           } else {
             if (childNode.childNodes) {
-              Array.prototype.unshift.apply(childStack, (function() {
+              Array.prototype.unshift.apply(childStack, (function () {
                 var _i, _len, _ref1, _results;
                 _ref1 = childNode.childNodes;
                 _results = [];
@@ -1491,13 +1503,13 @@
     return [childNode, childOffset];
   };
 
-  _getOffsetOfChildNode = function(parentNode, childNode) {
+  _getOffsetOfChildNode = function (parentNode, childNode) {
     var childStack, n, offset, otherChildNode, _ref, _ref1;
     if (parentNode.childNodes.length === 0) {
       return 0;
     }
     offset = 0;
-    childStack = (function() {
+    childStack = (function () {
       var _i, _len, _ref, _results;
       _ref = parentNode.childNodes;
       _results = [];
@@ -1524,7 +1536,7 @@
             offset += 1;
           } else {
             if (otherChildNode.childNodes) {
-              Array.prototype.unshift.apply(childStack, (function() {
+              Array.prototype.unshift.apply(childStack, (function () {
                 var _i, _len, _ref2, _results;
                 _ref2 = otherChildNode.childNodes;
                 _results = [];
@@ -1541,7 +1553,7 @@
     return offset;
   };
 
-  _getNodeRange = function(element, docRange) {
+  _getNodeRange = function (element, docRange) {
     var childNode, childNodes, endNode, endOffset, endRange, i, startNode, startOffset, startRange, _i, _j, _len, _len1, _ref;
     childNodes = element.childNodes;
     startRange = docRange.cloneRange();
@@ -1600,13 +1612,35 @@
 
 }).call(this);
 
-(function() {
+(function () {
   var _Root, _TagNames, _mergers,
-    __slice = [].slice,
-    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+          __slice = [].slice,
+          __indexOf = [].indexOf || function (item) {
+    for (var i = 0, l = this.length; i < l; i++) {
+      if (i in this && this[i] === item)
+        return i;
+    }
+    return -1;
+  },
+          __hasProp = {}.hasOwnProperty,
+          __extends = function (child, parent) {
+            for (var key in parent) {
+              if (__hasProp.call(parent, key))
+                child[key] = parent[key];
+            }
+            function ctor() {
+              this.constructor = child;
+            }
+            ctor.prototype = parent.prototype;
+            child.prototype = new ctor();
+            child.__super__ = parent.prototype;
+            return child;
+          },
+          __bind = function (fn, me) {
+            return function () {
+              return fn.apply(me, arguments);
+            };
+          };
 
   window.ContentEdit = {
     DEFAULT_MAX_ELEMENT_WIDTH: 800,
@@ -1618,7 +1652,7 @@
     LANGUAGE: 'en',
     RESIZE_CORNER_SIZE: 15,
     _translations: {},
-    _: function(s) {
+    _: function (s) {
       var lang;
       lang = ContentEdit.LANGUAGE;
       if (ContentEdit._translations[lang] && ContentEdit._translations[lang][s]) {
@@ -1626,10 +1660,10 @@
       }
       return s;
     },
-    addTranslations: function(language, translations) {
+    addTranslations: function (language, translations) {
       return ContentEdit._translations[language] = translations;
     },
-    addCSSClass: function(domElement, className) {
+    addCSSClass: function (domElement, className) {
       var c, classAttr, classNames;
       if (domElement.classList) {
         domElement.classList.add(className);
@@ -1637,7 +1671,7 @@
       }
       classAttr = domElement.getAttribute('class');
       if (classAttr) {
-        classNames = (function() {
+        classNames = (function () {
           var _i, _len, _ref, _results;
           _ref = classAttr.split(' ');
           _results = [];
@@ -1654,12 +1688,12 @@
         return domElement.setAttribute('class', className);
       }
     },
-    attributesToString: function(attributes) {
+    attributesToString: function (attributes) {
       var attributeStrings, name, names, value, _i, _len;
       if (!attributes) {
         return '';
       }
-      names = (function() {
+      names = (function () {
         var _results;
         _results = [];
         for (name in attributes) {
@@ -1682,7 +1716,7 @@
       }
       return attributeStrings.join(' ');
     },
-    removeCSSClass: function(domElement, className) {
+    removeCSSClass: function (domElement, className) {
       var c, classAttr, classNameIndex, classNames;
       if (domElement.classList) {
         domElement.classList.remove(className);
@@ -1693,7 +1727,7 @@
       }
       classAttr = domElement.getAttribute('class');
       if (classAttr) {
-        classNames = (function() {
+        classNames = (function () {
           var _i, _len, _ref, _results;
           _ref = classAttr.split(' ');
           _results = [];
@@ -1716,12 +1750,12 @@
     }
   };
 
-  _TagNames = (function() {
+  _TagNames = (function () {
     function _TagNames() {
       this._tagNames = {};
     }
 
-    _TagNames.prototype.register = function() {
+    _TagNames.prototype.register = function () {
       var cls, tagName, tagNames, _i, _len, _results;
       cls = arguments[0], tagNames = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
       _results = [];
@@ -1732,7 +1766,7 @@
       return _results;
     };
 
-    _TagNames.prototype.match = function(tagName) {
+    _TagNames.prototype.match = function (tagName) {
       if (this._tagNames[tagName.toLowerCase()]) {
         return this._tagNames[tagName.toLowerCase()];
       }
@@ -1743,14 +1777,14 @@
 
   })();
 
-  ContentEdit.TagNames = (function() {
+  ContentEdit.TagNames = (function () {
     var instance;
 
     function TagNames() {}
 
     instance = null;
 
-    TagNames.get = function() {
+    TagNames.get = function () {
       return instance != null ? instance : instance = new _TagNames();
     };
 
@@ -1758,22 +1792,22 @@
 
   })();
 
-  ContentEdit.Node = (function() {
+  ContentEdit.Node = (function () {
     function Node() {
       this._bindings = {};
       this._parent = null;
       this._modified = null;
     }
 
-    Node.prototype.lastModified = function() {
+    Node.prototype.lastModified = function () {
       return this._modified;
     };
 
-    Node.prototype.parent = function() {
+    Node.prototype.parent = function () {
       return this._parent;
     };
 
-    Node.prototype.parents = function() {
+    Node.prototype.parents = function () {
       var parent, parents;
       parents = [];
       parent = this._parent;
@@ -1784,18 +1818,18 @@
       return parents;
     };
 
-    Node.prototype.type = function() {
+    Node.prototype.type = function () {
       return 'Node';
     };
 
-    Node.prototype.html = function(indent) {
+    Node.prototype.html = function (indent) {
       if (indent == null) {
         indent = '';
       }
       throw new Error('`html` not implemented');
     };
 
-    Node.prototype.bind = function(eventName, callback) {
+    Node.prototype.bind = function (eventName, callback) {
       if (this._bindings[eventName] === void 0) {
         this._bindings[eventName] = [];
       }
@@ -1803,7 +1837,7 @@
       return callback;
     };
 
-    Node.prototype.trigger = function() {
+    Node.prototype.trigger = function () {
       var args, callback, eventName, _i, _len, _ref, _results;
       eventName = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
       if (!this._bindings[eventName]) {
@@ -1821,7 +1855,7 @@
       return _results;
     };
 
-    Node.prototype.unbind = function(eventName, callback) {
+    Node.prototype.unbind = function (eventName, callback) {
       var i, suspect, _i, _len, _ref, _results;
       if (!eventName) {
         this._bindings = {};
@@ -1847,12 +1881,12 @@
       return _results;
     };
 
-    Node.prototype.commit = function() {
+    Node.prototype.commit = function () {
       this._modified = null;
       return ContentEdit.Root.get().trigger('commit', this);
     };
 
-    Node.prototype.taint = function() {
+    Node.prototype.taint = function () {
       var now, parent, root, _i, _len, _ref;
       now = Date.now();
       this._modified = now;
@@ -1866,7 +1900,7 @@
       return root.trigger('taint', this);
     };
 
-    Node.prototype.closest = function(testFunc) {
+    Node.prototype.closest = function (testFunc) {
       var parent;
       parent = this.parent();
       while (parent && !testFunc(parent)) {
@@ -1879,7 +1913,7 @@
       return parent;
     };
 
-    Node.prototype.next = function() {
+    Node.prototype.next = function () {
       var children, index, node, _i, _len, _ref;
       if (this.children && this.children.length > 0) {
         return this.children[0];
@@ -1898,13 +1932,13 @@
       }
     };
 
-    Node.prototype.nextContent = function() {
-      return this.nextWithTest(function(node) {
+    Node.prototype.nextContent = function () {
+      return this.nextWithTest(function (node) {
         return node.content !== void 0;
       });
     };
 
-    Node.prototype.nextSibling = function() {
+    Node.prototype.nextSibling = function () {
       var index;
       index = this.parent().children.indexOf(this);
       if (index === this.parent().children.length - 1) {
@@ -1913,7 +1947,7 @@
       return this.parent().children[index + 1];
     };
 
-    Node.prototype.nextWithTest = function(testFunc) {
+    Node.prototype.nextWithTest = function (testFunc) {
       var node;
       node = this;
       while (node) {
@@ -1924,7 +1958,7 @@
       }
     };
 
-    Node.prototype.previous = function() {
+    Node.prototype.previous = function () {
       var children, node;
       if (!this.parent()) {
         return null;
@@ -1940,14 +1974,14 @@
       return node;
     };
 
-    Node.prototype.previousContent = function() {
+    Node.prototype.previousContent = function () {
       var node;
-      return node = this.previousWithTest(function(node) {
+      return node = this.previousWithTest(function (node) {
         return node.content !== void 0;
       });
     };
 
-    Node.prototype.previousSibling = function() {
+    Node.prototype.previousSibling = function () {
       var index;
       index = this.parent().children.indexOf(this);
       if (index === 0) {
@@ -1956,7 +1990,7 @@
       return this.parent().children[index - 1];
     };
 
-    Node.prototype.previousWithTest = function(testFunc) {
+    Node.prototype.previousWithTest = function (testFunc) {
       var node;
       node = this;
       while (node) {
@@ -1967,7 +2001,7 @@
       }
     };
 
-    Node.extend = function(cls) {
+    Node.extend = function (cls) {
       var key, value, _ref;
       _ref = cls.prototype;
       for (key in _ref) {
@@ -1987,7 +2021,7 @@
       return this;
     };
 
-    Node.fromDOMElement = function(domElement) {
+    Node.fromDOMElement = function (domElement) {
       throw new Error('`fromDOMElement` not implemented');
     };
 
@@ -1995,7 +2029,7 @@
 
   })();
 
-  ContentEdit.NodeCollection = (function(_super) {
+  ContentEdit.NodeCollection = (function (_super) {
     __extends(NodeCollection, _super);
 
     function NodeCollection() {
@@ -2003,7 +2037,7 @@
       this.children = [];
     }
 
-    NodeCollection.prototype.descendants = function() {
+    NodeCollection.prototype.descendants = function () {
       var descendants, node, nodeStack;
       descendants = [];
       nodeStack = this.children.slice();
@@ -2017,15 +2051,15 @@
       return descendants;
     };
 
-    NodeCollection.prototype.isMounted = function() {
+    NodeCollection.prototype.isMounted = function () {
       return false;
     };
 
-    NodeCollection.prototype.type = function() {
+    NodeCollection.prototype.type = function () {
       return 'NodeCollection';
     };
 
-    NodeCollection.prototype.attach = function(node, index) {
+    NodeCollection.prototype.attach = function (node, index) {
       if (node.parent()) {
         node.parent().detach(node);
       }
@@ -2042,7 +2076,7 @@
       return ContentEdit.Root.get().trigger('attach', this, node);
     };
 
-    NodeCollection.prototype.commit = function() {
+    NodeCollection.prototype.commit = function () {
       var descendant, _i, _len, _ref;
       _ref = this.descendants();
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -2053,7 +2087,7 @@
       return ContentEdit.Root.get().trigger('commit', this);
     };
 
-    NodeCollection.prototype.detach = function(node) {
+    NodeCollection.prototype.detach = function (node) {
       var nodeIndex;
       nodeIndex = this.children.indexOf(node);
       if (nodeIndex === -1) {
@@ -2072,7 +2106,7 @@
 
   })(ContentEdit.Node);
 
-  ContentEdit.Element = (function(_super) {
+  ContentEdit.Element = (function (_super) {
     __extends(Element, _super);
 
     function Element(tagName, attributes) {
@@ -2082,7 +2116,7 @@
       this._domElement = null;
     }
 
-    Element.prototype.attributes = function() {
+    Element.prototype.attributes = function () {
       var attributes, name, value, _ref;
       attributes = {};
       _ref = this._attributes;
@@ -2093,31 +2127,31 @@
       return attributes;
     };
 
-    Element.prototype.cssTypeName = function() {
+    Element.prototype.cssTypeName = function () {
       return 'element';
     };
 
-    Element.prototype.domElement = function() {
+    Element.prototype.domElement = function () {
       return this._domElement;
     };
 
-    Element.prototype.isFocused = function() {
+    Element.prototype.isFocused = function () {
       return ContentEdit.Root.get().focused() === this;
     };
 
-    Element.prototype.isMounted = function() {
+    Element.prototype.isMounted = function () {
       return this._domElement !== null;
     };
 
-    Element.prototype.type = function() {
+    Element.prototype.type = function () {
       return 'Element';
     };
 
-    Element.prototype.typeName = function() {
+    Element.prototype.typeName = function () {
       return 'Element';
     };
 
-    Element.prototype.addCSSClass = function(className) {
+    Element.prototype.addCSSClass = function (className) {
       var modified;
       modified = false;
       if (!this.hasCSSClass(className)) {
@@ -2134,7 +2168,7 @@
       }
     };
 
-    Element.prototype.attr = function(name, value) {
+    Element.prototype.attr = function (name, value) {
       name = name.toLowerCase();
       if (value === void 0) {
         return this._attributes[name];
@@ -2146,7 +2180,7 @@
       return this.taint();
     };
 
-    Element.prototype.blur = function() {
+    Element.prototype.blur = function () {
       var root;
       root = ContentEdit.Root.get();
       if (this.isFocused()) {
@@ -2156,7 +2190,7 @@
       }
     };
 
-    Element.prototype.createDraggingDOMElement = function() {
+    Element.prototype.createDraggingDOMElement = function () {
       var helper;
       if (!this.isMounted()) {
         return;
@@ -2167,7 +2201,7 @@
       return helper;
     };
 
-    Element.prototype.drag = function(x, y) {
+    Element.prototype.drag = function (x, y) {
       var root;
       if (!this.isMounted()) {
         return;
@@ -2177,7 +2211,7 @@
       return root.trigger('drag', this);
     };
 
-    Element.prototype.drop = function(element, placement) {
+    Element.prototype.drop = function (element, placement) {
       var root;
       root = ContentEdit.Root.get();
       if (element) {
@@ -2197,7 +2231,7 @@
       return root.trigger('drop', this, null, null);
     };
 
-    Element.prototype.focus = function(supressDOMFocus) {
+    Element.prototype.focus = function (supressDOMFocus) {
       var root;
       root = ContentEdit.Root.get();
       if (this.isFocused()) {
@@ -2214,10 +2248,10 @@
       return root.trigger('focus', this);
     };
 
-    Element.prototype.hasCSSClass = function(className) {
+    Element.prototype.hasCSSClass = function (className) {
       var c, classNames;
       if (this.attr('class')) {
-        classNames = (function() {
+        classNames = (function () {
           var _i, _len, _ref, _results;
           _ref = this.attr('class').split(' ');
           _results = [];
@@ -2234,7 +2268,7 @@
       return false;
     };
 
-    Element.prototype.merge = function(element) {
+    Element.prototype.merge = function (element) {
       if (this.constructor.mergers[element.type()]) {
         return this.constructor.mergers[element.type()](element, this);
       } else if (element.constructor.mergers[this.type()]) {
@@ -2242,7 +2276,7 @@
       }
     };
 
-    Element.prototype.mount = function() {
+    Element.prototype.mount = function () {
       var sibling;
       if (!this._domElement) {
         this._domElement = document.createElement(this.tagName());
@@ -2262,7 +2296,7 @@
       return ContentEdit.Root.get().trigger('mount', this);
     };
 
-    Element.prototype.removeAttr = function(name) {
+    Element.prototype.removeAttr = function (name) {
       name = name.toLowerCase();
       if (!this._attributes[name]) {
         return;
@@ -2274,12 +2308,12 @@
       return this.taint();
     };
 
-    Element.prototype.removeCSSClass = function(className) {
+    Element.prototype.removeCSSClass = function (className) {
       var c, classNameIndex, classNames;
       if (!this.hasCSSClass(className)) {
         return;
       }
-      classNames = (function() {
+      classNames = (function () {
         var _i, _len, _ref, _results;
         _ref = this.attr('class').split(' ');
         _results = [];
@@ -2302,7 +2336,7 @@
       return this.taint();
     };
 
-    Element.prototype.tagName = function(name) {
+    Element.prototype.tagName = function (name) {
       if (name === void 0) {
         return this._tagName;
       }
@@ -2314,7 +2348,7 @@
       return this.taint();
     };
 
-    Element.prototype.unmount = function() {
+    Element.prototype.unmount = function () {
       this._removeDOMEventListeners();
       if (this._domElement.parentNode) {
         this._domElement.parentNode.removeChild(this._domElement);
@@ -2323,92 +2357,92 @@
       return ContentEdit.Root.get().trigger('unmount', this);
     };
 
-    Element.prototype._addDOMEventListeners = function() {
-      this._domElement.addEventListener('focus', (function(_this) {
-        return function(ev) {
+    Element.prototype._addDOMEventListeners = function () {
+      this._domElement.addEventListener('focus', (function (_this) {
+        return function (ev) {
           return ev.preventDefault();
         };
       })(this));
-      this._domElement.addEventListener('dragstart', (function(_this) {
-        return function(ev) {
+      this._domElement.addEventListener('dragstart', (function (_this) {
+        return function (ev) {
           return ev.preventDefault();
         };
       })(this));
-      this._domElement.addEventListener('keydown', (function(_this) {
-        return function(ev) {
+      this._domElement.addEventListener('keydown', (function (_this) {
+        return function (ev) {
           return _this._onKeyDown(ev);
         };
       })(this));
-      this._domElement.addEventListener('keyup', (function(_this) {
-        return function(ev) {
+      this._domElement.addEventListener('keyup', (function (_this) {
+        return function (ev) {
           return _this._onKeyUp(ev);
         };
       })(this));
-      this._domElement.addEventListener('mousedown', (function(_this) {
-        return function(ev) {
+      this._domElement.addEventListener('mousedown', (function (_this) {
+        return function (ev) {
           if (ev.button === 0) {
             return _this._onMouseDown(ev);
           }
         };
       })(this));
-      this._domElement.addEventListener('mousemove', (function(_this) {
-        return function(ev) {
+      this._domElement.addEventListener('mousemove', (function (_this) {
+        return function (ev) {
           return _this._onMouseMove(ev);
         };
       })(this));
-      this._domElement.addEventListener('mouseover', (function(_this) {
-        return function(ev) {
+      this._domElement.addEventListener('mouseover', (function (_this) {
+        return function (ev) {
           return _this._onMouseOver(ev);
         };
       })(this));
-      this._domElement.addEventListener('mouseout', (function(_this) {
-        return function(ev) {
+      this._domElement.addEventListener('mouseout', (function (_this) {
+        return function (ev) {
           return _this._onMouseOut(ev);
         };
       })(this));
-      this._domElement.addEventListener('mouseup', (function(_this) {
-        return function(ev) {
+      this._domElement.addEventListener('mouseup', (function (_this) {
+        return function (ev) {
           if (ev.button === 0) {
             return _this._onMouseUp(ev);
           }
         };
       })(this));
-      this._domElement.addEventListener('paste', (function(_this) {
-        return function(ev) {
+      this._domElement.addEventListener('paste', (function (_this) {
+        return function (ev) {
           return _this._onPaste(ev);
         };
       })(this));
-      this._domElement.addEventListener('dragover', (function(_this) {
-        return function(ev) {
+      this._domElement.addEventListener('dragover', (function (_this) {
+        return function (ev) {
           return ev.preventDefault();
         };
       })(this));
-      return this._domElement.addEventListener('drop', (function(_this) {
-        return function(ev) {
+      return this._domElement.addEventListener('drop', (function (_this) {
+        return function (ev) {
           return _this._onNativeDrop(ev);
         };
       })(this));
     };
 
-    Element.prototype._onKeyDown = function(ev) {};
+    Element.prototype._onKeyDown = function (ev) {};
 
-    Element.prototype._onKeyUp = function(ev) {};
+    Element.prototype._onKeyUp = function (ev) {};
 
-    Element.prototype._onMouseDown = function(ev) {
+    Element.prototype._onMouseDown = function (ev) {
       if (this.focus) {
         return this.focus(true);
       }
     };
 
-    Element.prototype._onMouseMove = function(ev) {
+    Element.prototype._onMouseMove = function (ev) {
       return this._onOver(ev);
     };
 
-    Element.prototype._onMouseOver = function(ev) {
+    Element.prototype._onMouseOver = function (ev) {
       return this._onOver(ev);
     };
 
-    Element.prototype._onMouseOut = function(ev) {
+    Element.prototype._onMouseOut = function (ev) {
       var dragging, root;
       this._removeCSSClass('ce-element--over');
       root = ContentEdit.Root.get();
@@ -2424,21 +2458,21 @@
       }
     };
 
-    Element.prototype._onMouseUp = function(ev) {};
+    Element.prototype._onMouseUp = function (ev) {};
 
-    Element.prototype._onNativeDrop = function(ev) {
+    Element.prototype._onNativeDrop = function (ev) {
       ev.preventDefault();
       ev.stopPropagation();
       return ContentEdit.Root.get().trigger('native-drop', this, ev);
     };
 
-    Element.prototype._onPaste = function(ev) {
+    Element.prototype._onPaste = function (ev) {
       ev.preventDefault();
       ev.stopPropagation();
       return ContentEdit.Root.get().trigger('paste', this, ev);
     };
 
-    Element.prototype._onOver = function(ev) {
+    Element.prototype._onOver = function (ev) {
       var dragging, root;
       this._addCSSClass('ce-element--over');
       root = ContentEdit.Root.get();
@@ -2458,23 +2492,23 @@
       }
     };
 
-    Element.prototype._removeDOMEventListeners = function() {};
+    Element.prototype._removeDOMEventListeners = function () {};
 
-    Element.prototype._addCSSClass = function(className) {
+    Element.prototype._addCSSClass = function (className) {
       if (!this.isMounted()) {
         return;
       }
       return ContentEdit.addCSSClass(this._domElement, className);
     };
 
-    Element.prototype._attributesToString = function() {
+    Element.prototype._attributesToString = function () {
       if (!(Object.getOwnPropertyNames(this._attributes).length > 0)) {
         return '';
       }
       return ' ' + ContentEdit.attributesToString(this._attributes);
     };
 
-    Element.prototype._removeCSSClass = function(className) {
+    Element.prototype._removeCSSClass = function (className) {
       if (!this.isMounted()) {
         return;
       }
@@ -2487,7 +2521,7 @@
 
     Element.placements = ['above', 'below'];
 
-    Element.getDOMElementAttributes = function(domElement) {
+    Element.getDOMElementAttributes = function (domElement) {
       var attribute, attributes, _i, _len, _ref;
       if (!domElement.hasAttributes()) {
         return {};
@@ -2501,7 +2535,7 @@
       return attributes;
     };
 
-    Element._dropVert = function(element, target, placement) {
+    Element._dropVert = function (element, target, placement) {
       var insertIndex;
       element.parent().detach(element);
       insertIndex = target.parent().children.indexOf(target);
@@ -2511,7 +2545,7 @@
       return target.parent().attach(element, insertIndex);
     };
 
-    Element._dropBoth = function(element, target, placement) {
+    Element._dropBoth = function (element, target, placement) {
       var aClassNames, className, insertIndex, _i, _len, _ref;
       element.parent().detach(element);
       insertIndex = target.parent().children.indexOf(target);
@@ -2572,7 +2606,7 @@
 
   })(ContentEdit.Node);
 
-  ContentEdit.ElementCollection = (function(_super) {
+  ContentEdit.ElementCollection = (function (_super) {
     __extends(ElementCollection, _super);
 
     ElementCollection.extend(ContentEdit.NodeCollection);
@@ -2582,19 +2616,19 @@
       ContentEdit.NodeCollection.prototype.constructor.call(this);
     }
 
-    ElementCollection.prototype.cssTypeName = function() {
+    ElementCollection.prototype.cssTypeName = function () {
       return 'element-collection';
     };
 
-    ElementCollection.prototype.isMounted = function() {
+    ElementCollection.prototype.isMounted = function () {
       return this._domElement !== null;
     };
 
-    ElementCollection.prototype.type = function() {
+    ElementCollection.prototype.type = function () {
       return 'ElementCollection';
     };
 
-    ElementCollection.prototype.createDraggingDOMElement = function() {
+    ElementCollection.prototype.createDraggingDOMElement = function () {
       var helper, text;
       if (!this.isMounted()) {
         return;
@@ -2608,19 +2642,19 @@
       return helper;
     };
 
-    ElementCollection.prototype.detach = function(element) {
+    ElementCollection.prototype.detach = function (element) {
       ContentEdit.NodeCollection.prototype.detach.call(this, element);
       if (this.children.length === 0 && this.parent()) {
         return this.parent().detach(this);
       }
     };
 
-    ElementCollection.prototype.html = function(indent) {
+    ElementCollection.prototype.html = function (indent) {
       var c, children;
       if (indent == null) {
         indent = '';
       }
-      children = (function() {
+      children = (function () {
         var _i, _len, _ref, _results;
         _ref = this.children;
         _results = [];
@@ -2633,7 +2667,7 @@
       return ("" + indent + "<" + (this.tagName()) + (this._attributesToString()) + ">\n") + ("" + (children.join('\n')) + "\n") + ("" + indent + "</" + (this.tagName()) + ">");
     };
 
-    ElementCollection.prototype.mount = function() {
+    ElementCollection.prototype.mount = function () {
       var child, name, value, _i, _len, _ref, _ref1, _results;
       this._domElement = document.createElement(this._tagName);
       _ref = this._attributes;
@@ -2651,7 +2685,7 @@
       return _results;
     };
 
-    ElementCollection.prototype.unmount = function() {
+    ElementCollection.prototype.unmount = function () {
       var child, _i, _len, _ref;
       _ref = this.children;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -2669,7 +2703,7 @@
 
   })(ContentEdit.Element);
 
-  ContentEdit.ResizableElement = (function(_super) {
+  ContentEdit.ResizableElement = (function (_super) {
     __extends(ResizableElement, _super);
 
     function ResizableElement(tagName, attributes) {
@@ -2678,11 +2712,11 @@
       this._aspectRatio = 1;
     }
 
-    ResizableElement.prototype.aspectRatio = function() {
+    ResizableElement.prototype.aspectRatio = function () {
       return this._aspectRatio;
     };
 
-    ResizableElement.prototype.maxSize = function() {
+    ResizableElement.prototype.maxSize = function () {
       var maxWidth;
       maxWidth = parseInt(this.attr('data-ce-max-width') || 0);
       if (!maxWidth) {
@@ -2692,7 +2726,7 @@
       return [maxWidth, maxWidth * this.aspectRatio()];
     };
 
-    ResizableElement.prototype.minSize = function() {
+    ResizableElement.prototype.minSize = function () {
       var minWidth;
       minWidth = parseInt(this.attr('data-ce-min-width') || 0);
       if (!minWidth) {
@@ -2702,23 +2736,23 @@
       return [minWidth, minWidth * this.aspectRatio()];
     };
 
-    ResizableElement.prototype.type = function() {
+    ResizableElement.prototype.type = function () {
       return 'ResizableElement';
     };
 
-    ResizableElement.prototype.mount = function() {
+    ResizableElement.prototype.mount = function () {
       ResizableElement.__super__.mount.call(this);
       return this._domElement.setAttribute('data-ce-size', this._getSizeInfo());
     };
 
-    ResizableElement.prototype.resize = function(corner, x, y) {
+    ResizableElement.prototype.resize = function (corner, x, y) {
       if (!this.isMounted()) {
         return;
       }
       return ContentEdit.Root.get().startResizing(this, corner, x, y, true);
     };
 
-    ResizableElement.prototype.size = function(newSize) {
+    ResizableElement.prototype.size = function (newSize) {
       var height, maxSize, minSize, width;
       if (!newSize) {
         width = parseInt(this.attr('width') || 1);
@@ -2742,7 +2776,7 @@
       }
     };
 
-    ResizableElement.prototype._onMouseDown = function(ev) {
+    ResizableElement.prototype._onMouseDown = function (ev) {
       var corner;
       ResizableElement.__super__._onMouseDown.call(this, ev);
       corner = this._getResizeCorner(ev.clientX, ev.clientY);
@@ -2750,15 +2784,15 @@
         return this.resize(corner, ev.clientX, ev.clientY);
       } else {
         clearTimeout(this._dragTimeout);
-        return this._dragTimeout = setTimeout((function(_this) {
-          return function() {
+        return this._dragTimeout = setTimeout((function (_this) {
+          return function () {
             return _this.drag(ev.pageX, ev.pageY);
           };
         })(this), 150);
       }
     };
 
-    ResizableElement.prototype._onMouseMove = function(ev) {
+    ResizableElement.prototype._onMouseMove = function (ev) {
       var corner;
       ResizableElement.__super__._onMouseMove.call(this);
       this._removeCSSClass('ce-element--resize-top-left');
@@ -2771,7 +2805,7 @@
       }
     };
 
-    ResizableElement.prototype._onMouseOut = function(ev) {
+    ResizableElement.prototype._onMouseOut = function (ev) {
       ResizableElement.__super__._onMouseOut.call(this);
       this._removeCSSClass('ce-element--resize-top-left');
       this._removeCSSClass('ce-element--resize-top-right');
@@ -2779,14 +2813,14 @@
       return this._removeCSSClass('ce-element--resize-bottom-right');
     };
 
-    ResizableElement.prototype._onMouseUp = function(ev) {
+    ResizableElement.prototype._onMouseUp = function (ev) {
       ResizableElement.__super__._onMouseUp.call(this);
       if (this._dragTimeout) {
         return clearTimeout(this._dragTimeout);
       }
     };
 
-    ResizableElement.prototype._getResizeCorner = function(x, y) {
+    ResizableElement.prototype._getResizeCorner = function (x, y) {
       var corner, cornerSize, rect, size, _ref;
       rect = this._domElement.getBoundingClientRect();
       _ref = [x - rect.left, y - rect.top], x = _ref[0], y = _ref[1];
@@ -2811,7 +2845,7 @@
       return corner;
     };
 
-    ResizableElement.prototype._getSizeInfo = function() {
+    ResizableElement.prototype._getSizeInfo = function () {
       var size;
       size = this.size();
       return "w " + size[0] + " × h " + size[1];
@@ -2821,7 +2855,7 @@
 
   })(ContentEdit.Element);
 
-  ContentEdit.Region = (function(_super) {
+  ContentEdit.Region = (function (_super) {
     __extends(Region, _super);
 
     function Region(domElement) {
@@ -2829,7 +2863,7 @@
       Region.__super__.constructor.call(this);
       this._domElement = domElement;
       tagNames = ContentEdit.TagNames.get();
-      childNodes = (function() {
+      childNodes = (function () {
         var _i, _len, _ref, _results;
         _ref = this._domElement.childNodes;
         _results = [];
@@ -2857,24 +2891,24 @@
       }
     }
 
-    Region.prototype.domElement = function() {
+    Region.prototype.domElement = function () {
       return this._domElement;
     };
 
-    Region.prototype.isMounted = function() {
+    Region.prototype.isMounted = function () {
       return true;
     };
 
-    Region.prototype.type = function() {
+    Region.prototype.type = function () {
       return 'Region';
     };
 
-    Region.prototype.html = function(indent) {
+    Region.prototype.html = function (indent) {
       var c;
       if (indent == null) {
         indent = '';
       }
-      return ((function() {
+      return ((function () {
         var _i, _len, _ref, _results;
         _ref = this.children;
         _results = [];
@@ -2890,7 +2924,7 @@
 
   })(ContentEdit.NodeCollection);
 
-  _Root = (function(_super) {
+  _Root = (function (_super) {
     __extends(_Root, _super);
 
     function _Root() {
@@ -2907,27 +2941,27 @@
       this._resizingInit = null;
     }
 
-    _Root.prototype.dragging = function() {
+    _Root.prototype.dragging = function () {
       return this._dragging;
     };
 
-    _Root.prototype.dropTarget = function() {
+    _Root.prototype.dropTarget = function () {
       return this._dropTarget;
     };
 
-    _Root.prototype.focused = function() {
+    _Root.prototype.focused = function () {
       return this._focused;
     };
 
-    _Root.prototype.resizing = function() {
+    _Root.prototype.resizing = function () {
       return this._resizing;
     };
 
-    _Root.prototype.type = function() {
+    _Root.prototype.type = function () {
       return 'Root';
     };
 
-    _Root.prototype.cancelDragging = function() {
+    _Root.prototype.cancelDragging = function () {
       if (!this._dragging) {
         return;
       }
@@ -2940,7 +2974,7 @@
       return ContentEdit.removeCSSClass(document.body, 'ce--dragging');
     };
 
-    _Root.prototype.startDragging = function(element, x, y) {
+    _Root.prototype.startDragging = function (element, x, y) {
       if (this._dragging) {
         return;
       }
@@ -2955,7 +2989,7 @@
       return ContentEdit.addCSSClass(document.body, 'ce--dragging');
     };
 
-    _Root.prototype._getDropPlacement = function(x, y) {
+    _Root.prototype._getDropPlacement = function (x, y) {
       var horz, rect, vert, _ref;
       if (!this._dropTarget) {
         return null;
@@ -2975,7 +3009,7 @@
       return [vert, horz];
     };
 
-    _Root.prototype._onDrag = function(ev) {
+    _Root.prototype._onDrag = function (ev) {
       var placement, _ref, _ref1;
       ContentSelect.Range.unselectAll();
       this._draggingDOMElement.style.left = "" + ev.pageX + "px";
@@ -2996,14 +3030,14 @@
       }
     };
 
-    _Root.prototype._onStopDragging = function(ev) {
+    _Root.prototype._onStopDragging = function (ev) {
       var placement;
       placement = this._getDropPlacement(ev.clientX, ev.clientY);
       this._dragging.drop(this._dropTarget, placement);
       return this.cancelDragging();
     };
 
-    _Root.prototype.startResizing = function(element, corner, x, y, fixed) {
+    _Root.prototype.startResizing = function (element, corner, x, y, fixed) {
       var measureDom, parentDom;
       if (this._resizing) {
         return;
@@ -3027,7 +3061,7 @@
       return ContentEdit.addCSSClass(document.body, 'ce--resizing');
     };
 
-    _Root.prototype._onResize = function(ev) {
+    _Root.prototype._onResize = function (ev) {
       var height, width, x, y;
       ContentSelect.Range.unselectAll();
       x = this._resizingInit.origin[0] - ev.clientX;
@@ -3048,7 +3082,7 @@
       return this._resizing.size([width, height]);
     };
 
-    _Root.prototype._onStopResizing = function(ev) {
+    _Root.prototype._onStopResizing = function (ev) {
       document.removeEventListener('mousemove', this._onResize);
       document.removeEventListener('mouseup', this._onStopResizing);
       this._resizing._removeCSSClass('ce-element--resizing');
@@ -3062,14 +3096,14 @@
 
   })(ContentEdit.Node);
 
-  ContentEdit.Root = (function() {
+  ContentEdit.Root = (function () {
     var instance;
 
     function Root() {}
 
     instance = null;
 
-    Root.get = function() {
+    Root.get = function () {
       return instance != null ? instance : instance = new _Root();
     };
 
@@ -3077,7 +3111,7 @@
 
   })();
 
-  ContentEdit.Static = (function(_super) {
+  ContentEdit.Static = (function (_super) {
     __extends(Static, _super);
 
     function Static(tagName, attributes, content) {
@@ -3085,19 +3119,19 @@
       this._content = content;
     }
 
-    Static.prototype.cssTypeName = function() {
+    Static.prototype.cssTypeName = function () {
       return 'static';
     };
 
-    Static.prototype.type = function() {
+    Static.prototype.type = function () {
       return 'Static';
     };
 
-    Static.prototype.typeName = function() {
+    Static.prototype.typeName = function () {
       return 'Static';
     };
 
-    Static.prototype.createDraggingDOMElement = function() {
+    Static.prototype.createDraggingDOMElement = function () {
       var helper, text;
       if (!this.isMounted()) {
         return;
@@ -3111,7 +3145,7 @@
       return helper;
     };
 
-    Static.prototype.html = function(indent) {
+    Static.prototype.html = function (indent) {
       if (indent == null) {
         indent = '';
       }
@@ -3121,7 +3155,7 @@
       return ("" + indent + "<" + this._tagName + (this._attributesToString()) + ">") + ("" + this._content) + ("" + indent + "</" + this._tagName + ">");
     };
 
-    Static.prototype.mount = function() {
+    Static.prototype.mount = function () {
       var name, value, _ref;
       this._domElement = document.createElement(this._tagName);
       _ref = this._attributes;
@@ -3137,24 +3171,24 @@
 
     Static.prototype.focus = void 0;
 
-    Static.prototype._onMouseDown = function(ev) {
+    Static.prototype._onMouseDown = function (ev) {
       Static.__super__._onMouseDown.call(this, ev);
       if (this.attr('data-ce-moveable') !== void 0) {
         clearTimeout(this._dragTimeout);
-        return this._dragTimeout = setTimeout((function(_this) {
-          return function() {
+        return this._dragTimeout = setTimeout((function (_this) {
+          return function () {
             return _this.drag(ev.pageX, ev.pageY);
           };
         })(this), 150);
       }
     };
 
-    Static.prototype._onMouseOver = function(ev) {
+    Static.prototype._onMouseOver = function (ev) {
       Static.__super__._onMouseOver.call(this, ev);
       return this._removeCSSClass('ce-element--over');
     };
 
-    Static.prototype._onMouseUp = function(ev) {
+    Static.prototype._onMouseUp = function (ev) {
       Static.__super__._onMouseUp.call(this, ev);
       if (this._dragTimeout) {
         return clearTimeout(this._dragTimeout);
@@ -3165,7 +3199,7 @@
       'Static': ContentEdit.Element._dropVert
     };
 
-    Static.fromDOMElement = function(domElement) {
+    Static.fromDOMElement = function (domElement) {
       return new this(domElement.tagName, this.getDOMElementAttributes(domElement), domElement.innerHTML);
     };
 
@@ -3175,7 +3209,7 @@
 
   ContentEdit.TagNames.get().register(ContentEdit.Static, 'static');
 
-  ContentEdit.Text = (function(_super) {
+  ContentEdit.Text = (function (_super) {
     __extends(Text, _super);
 
     function Text(tagName, attributes, content) {
@@ -3187,19 +3221,19 @@
       }
     }
 
-    Text.prototype.cssTypeName = function() {
+    Text.prototype.cssTypeName = function () {
       return 'text';
     };
 
-    Text.prototype.type = function() {
+    Text.prototype.type = function () {
       return 'Text';
     };
 
-    Text.prototype.typeName = function() {
+    Text.prototype.typeName = function () {
       return 'Text';
     };
 
-    Text.prototype.blur = function() {
+    Text.prototype.blur = function () {
       var error;
       if (this.isMounted()) {
         this._syncContent();
@@ -3219,7 +3253,7 @@
       return Text.__super__.blur.call(this);
     };
 
-    Text.prototype.createDraggingDOMElement = function() {
+    Text.prototype.createDraggingDOMElement = function () {
       var helper, text;
       if (!this.isMounted()) {
         return;
@@ -3233,25 +3267,25 @@
       return helper;
     };
 
-    Text.prototype.drag = function(x, y) {
+    Text.prototype.drag = function (x, y) {
       this.storeState();
       this._domElement.removeAttribute('contenteditable');
       return Text.__super__.drag.call(this, x, y);
     };
 
-    Text.prototype.drop = function(element, placement) {
+    Text.prototype.drop = function (element, placement) {
       Text.__super__.drop.call(this, element, placement);
       return this.restoreState();
     };
 
-    Text.prototype.focus = function(supressDOMFocus) {
+    Text.prototype.focus = function (supressDOMFocus) {
       if (this.isMounted()) {
         this._domElement.setAttribute('contenteditable', '');
       }
       return Text.__super__.focus.call(this, supressDOMFocus);
     };
 
-    Text.prototype.html = function(indent) {
+    Text.prototype.html = function (indent) {
       var content;
       if (indent == null) {
         indent = '';
@@ -3265,7 +3299,7 @@
       return ("" + indent + "<" + this._tagName + (this._attributesToString()) + ">\n") + ("" + indent + ContentEdit.INDENT + this._cached + "\n") + ("" + indent + "</" + this._tagName + ">");
     };
 
-    Text.prototype.mount = function() {
+    Text.prototype.mount = function () {
       var name, value, _ref;
       this._domElement = document.createElement(this._tagName);
       _ref = this._attributes;
@@ -3277,7 +3311,7 @@
       return Text.__super__.mount.call(this);
     };
 
-    Text.prototype.restoreState = function() {
+    Text.prototype.restoreState = function () {
       if (!this._savedSelection) {
         return;
       }
@@ -3294,7 +3328,7 @@
       return this._savedSelection = void 0;
     };
 
-    Text.prototype.selection = function(selection) {
+    Text.prototype.selection = function (selection) {
       if (selection === void 0) {
         if (this.isMounted()) {
           return ContentSelect.Range.query(this._domElement);
@@ -3305,20 +3339,20 @@
       return selection.select(this._domElement);
     };
 
-    Text.prototype.storeState = function() {
+    Text.prototype.storeState = function () {
       if (!(this.isMounted() && this.isFocused())) {
         return;
       }
       return this._savedSelection = ContentSelect.Range.query(this._domElement);
     };
 
-    Text.prototype.updateInnerHTML = function() {
+    Text.prototype.updateInnerHTML = function () {
       this._domElement.innerHTML = this.content.html();
       ContentSelect.Range.prepareElement(this._domElement);
       return this._flagIfEmpty();
     };
 
-    Text.prototype._onKeyDown = function(ev) {
+    Text.prototype._onKeyDown = function (ev) {
       switch (ev.keyCode) {
         case 40:
           return this._keyDown(ev);
@@ -3339,16 +3373,16 @@
       }
     };
 
-    Text.prototype._onKeyUp = function(ev) {
+    Text.prototype._onKeyUp = function (ev) {
       Text.__super__._onKeyUp.call(this, ev);
       return this._syncContent();
     };
 
-    Text.prototype._onMouseDown = function(ev) {
+    Text.prototype._onMouseDown = function (ev) {
       Text.__super__._onMouseDown.call(this, ev);
       clearTimeout(this._dragTimeout);
-      this._dragTimeout = setTimeout((function(_this) {
-        return function() {
+      this._dragTimeout = setTimeout((function (_this) {
+        return function () {
           return _this.drag(ev.pageX, ev.pageY);
         };
       })(this), ContentEdit.DRAG_HOLD_DURATION);
@@ -3361,28 +3395,28 @@
       }
     };
 
-    Text.prototype._onMouseMove = function(ev) {
+    Text.prototype._onMouseMove = function (ev) {
       if (this._dragTimeout) {
         clearTimeout(this._dragTimeout);
       }
       return Text.__super__._onMouseMove.call(this, ev);
     };
 
-    Text.prototype._onMouseOut = function(ev) {
+    Text.prototype._onMouseOut = function (ev) {
       if (this._dragTimeout) {
         clearTimeout(this._dragTimeout);
       }
       return Text.__super__._onMouseOut.call(this, ev);
     };
 
-    Text.prototype._onMouseUp = function(ev) {
+    Text.prototype._onMouseUp = function (ev) {
       if (this._dragTimeout) {
         clearTimeout(this._dragTimeout);
       }
       return Text.__super__._onMouseUp.call(this, ev);
     };
 
-    Text.prototype._keyBack = function(ev) {
+    Text.prototype._keyBack = function (ev) {
       var previous, selection;
       selection = ContentSelect.Range.query(this._domElement);
       if (!(selection.get()[0] === 0 && selection.isCollapsed())) {
@@ -3396,7 +3430,7 @@
       }
     };
 
-    Text.prototype._keyDelete = function(ev) {
+    Text.prototype._keyDelete = function (ev) {
       var next, selection;
       selection = ContentSelect.Range.query(this._domElement);
       if (!(this._atEnd(selection) && selection.isCollapsed())) {
@@ -3409,11 +3443,11 @@
       }
     };
 
-    Text.prototype._keyDown = function(ev) {
+    Text.prototype._keyDown = function (ev) {
       return this._keyRight(ev);
     };
 
-    Text.prototype._keyLeft = function(ev) {
+    Text.prototype._keyLeft = function (ev) {
       var previous, selection;
       selection = ContentSelect.Range.query(this._domElement);
       if (!(selection.get()[0] === 0 && selection.isCollapsed())) {
@@ -3426,13 +3460,13 @@
         selection = new ContentSelect.Range(previous.content.length(), previous.content.length());
         return selection.select(previous.domElement());
       } else {
-        return ContentEdit.Root.get().trigger('previous-region', this.closest(function(node) {
+        return ContentEdit.Root.get().trigger('previous-region', this.closest(function (node) {
           return node.type() === 'Region';
         }));
       }
     };
 
-    Text.prototype._keyReturn = function(ev) {
+    Text.prototype._keyReturn = function (ev) {
       var element, insertAt, lineBreakStr, selection, tail, tip;
       ev.preventDefault();
       if (this.content.isWhitespace()) {
@@ -3472,7 +3506,7 @@
       return this.taint();
     };
 
-    Text.prototype._keyRight = function(ev) {
+    Text.prototype._keyRight = function (ev) {
       var next, selection;
       selection = ContentSelect.Range.query(this._domElement);
       if (!(this._atEnd(selection) && selection.isCollapsed())) {
@@ -3485,21 +3519,21 @@
         selection = new ContentSelect.Range(0, 0);
         return selection.select(next.domElement());
       } else {
-        return ContentEdit.Root.get().trigger('next-region', this.closest(function(node) {
+        return ContentEdit.Root.get().trigger('next-region', this.closest(function (node) {
           return node.type() === 'Region';
         }));
       }
     };
 
-    Text.prototype._keyTab = function(ev) {
+    Text.prototype._keyTab = function (ev) {
       return ev.preventDefault();
     };
 
-    Text.prototype._keyUp = function(ev) {
+    Text.prototype._keyUp = function (ev) {
       return this._keyLeft(ev);
     };
 
-    Text.prototype._atEnd = function(selection) {
+    Text.prototype._atEnd = function (selection) {
       var atEnd;
       atEnd = selection.get()[0] === this.content.length();
       if (selection.get()[0] === this.content.length() - 1 && this.content.characters[this.content.characters.length - 1].isTag('br')) {
@@ -3508,7 +3542,7 @@
       return atEnd;
     };
 
-    Text.prototype._flagIfEmpty = function() {
+    Text.prototype._flagIfEmpty = function () {
       if (this.content.length() === 0) {
         return this._addCSSClass('ce-element--empty');
       } else {
@@ -3516,7 +3550,7 @@
       }
     };
 
-    Text.prototype._syncContent = function(ev) {
+    Text.prototype._syncContent = function (ev) {
       var newSnapshot, snapshot;
       snapshot = this.content.html();
       this.content = new HTMLString.String(this._domElement.innerHTML, this.content.preserveWhitespace());
@@ -3533,7 +3567,7 @@
     };
 
     Text.mergers = {
-      'Text': function(element, target) {
+      'Text': function (element, target) {
         var offset;
         offset = target.content.length();
         if (element.content.length()) {
@@ -3551,7 +3585,7 @@
       }
     };
 
-    Text.fromDOMElement = function(domElement) {
+    Text.fromDOMElement = function (domElement) {
       return new this(domElement.tagName, this.getDOMElementAttributes(domElement), domElement.innerHTML.replace(/^\s+|\s+$/g, ''));
     };
 
@@ -3561,7 +3595,7 @@
 
   ContentEdit.TagNames.get().register(ContentEdit.Text, 'address', 'blockquote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p');
 
-  ContentEdit.PreText = (function(_super) {
+  ContentEdit.PreText = (function (_super) {
     __extends(PreText, _super);
 
     function PreText(tagName, attributes, content) {
@@ -3573,19 +3607,19 @@
       ContentEdit.Element.call(this, tagName, attributes);
     }
 
-    PreText.prototype.cssTypeName = function() {
+    PreText.prototype.cssTypeName = function () {
       return 'pre-text';
     };
 
-    PreText.prototype.type = function() {
+    PreText.prototype.type = function () {
       return 'PreText';
     };
 
-    PreText.prototype.typeName = function() {
+    PreText.prototype.typeName = function () {
       return 'Preformatted';
     };
 
-    PreText.prototype.html = function(indent) {
+    PreText.prototype.html = function (indent) {
       var content;
       if (indent == null) {
         indent = '';
@@ -3599,7 +3633,7 @@
       return ("" + indent + "<" + this._tagName + (this._attributesToString()) + ">") + ("" + this._cached + "</" + this._tagName + ">");
     };
 
-    PreText.prototype.updateInnerHTML = function() {
+    PreText.prototype.updateInnerHTML = function () {
       var html;
       html = this.content.html();
       html += '\n';
@@ -3608,7 +3642,7 @@
       return this._flagIfEmpty();
     };
 
-    PreText.prototype._onKeyUp = function(ev) {
+    PreText.prototype._onKeyUp = function (ev) {
       var html, newSnaphot, snapshot;
       snapshot = this.content.html();
       html = this._domElement.innerHTML.replace(/[\n]$/, '');
@@ -3620,7 +3654,7 @@
       return this._flagIfEmpty();
     };
 
-    PreText.prototype._keyReturn = function(ev) {
+    PreText.prototype._keyReturn = function (ev) {
       var cursor, selection, tail, tip;
       ev.preventDefault();
       selection = ContentSelect.Range.query(this._domElement);
@@ -3651,7 +3685,7 @@
 
     PreText.mergers = {};
 
-    PreText.fromDOMElement = function(domElement) {
+    PreText.fromDOMElement = function (domElement) {
       return new this(domElement.tagName, this.getDOMElementAttributes(domElement), domElement.innerHTML);
     };
 
@@ -3661,7 +3695,7 @@
 
   ContentEdit.TagNames.get().register(ContentEdit.PreText, 'pre');
 
-  ContentEdit.Image = (function(_super) {
+  ContentEdit.Image = (function (_super) {
     __extends(Image, _super);
 
     function Image(attributes, a) {
@@ -3672,19 +3706,19 @@
       this._aspectRatio = size[1] / size[0];
     }
 
-    Image.prototype.cssTypeName = function() {
+    Image.prototype.cssTypeName = function () {
       return 'image';
     };
 
-    Image.prototype.type = function() {
+    Image.prototype.type = function () {
       return 'Image';
     };
 
-    Image.prototype.typeName = function() {
+    Image.prototype.typeName = function () {
       return 'Image';
     };
 
-    Image.prototype.createDraggingDOMElement = function() {
+    Image.prototype.createDraggingDOMElement = function () {
       var helper;
       if (!this.isMounted()) {
         return;
@@ -3694,7 +3728,7 @@
       return helper;
     };
 
-    Image.prototype.html = function(indent) {
+    Image.prototype.html = function (indent) {
       var attributes, img;
       if (indent == null) {
         indent = '';
@@ -3709,7 +3743,7 @@
       }
     };
 
-    Image.prototype.mount = function() {
+    Image.prototype.mount = function () {
       var classes, style;
       this._domElement = document.createElement('div');
       classes = '';
@@ -3741,12 +3775,12 @@
 
     Image.placements = ['above', 'below', 'left', 'right', 'center'];
 
-    Image.fromDOMElement = function(domElement) {
+    Image.fromDOMElement = function (domElement) {
       var a, attributes, c, childNode, childNodes, _i, _len;
       a = null;
       if (domElement.tagName.toLowerCase() === 'a') {
         a = this.getDOMElementAttributes(domElement);
-        childNodes = (function() {
+        childNodes = (function () {
           var _i, _len, _ref, _results;
           _ref = domElement.childNodes;
           _results = [];
@@ -3791,7 +3825,7 @@
 
   ContentEdit.TagNames.get().register(ContentEdit.Image, 'img');
 
-  ContentEdit.Video = (function(_super) {
+  ContentEdit.Video = (function (_super) {
     __extends(Video, _super);
 
     function Video(tagName, attributes, sources) {
@@ -3805,19 +3839,19 @@
       this._aspectRatio = size[1] / size[0];
     }
 
-    Video.prototype.cssTypeName = function() {
+    Video.prototype.cssTypeName = function () {
       return 'video';
     };
 
-    Video.prototype.type = function() {
+    Video.prototype.type = function () {
       return 'Video';
     };
 
-    Video.prototype.typeName = function() {
+    Video.prototype.typeName = function () {
       return 'Video';
     };
 
-    Video.prototype._title = function() {
+    Video.prototype._title = function () {
       var src;
       src = '';
       if (this.attr('src')) {
@@ -3827,16 +3861,18 @@
           src = this.sources[0]['src'];
         }
       }
+      src = this.attr('title') || src;
+
       if (!src) {
         src = 'No video source set';
       }
       if (src.length > ContentEdit.HELPER_CHAR_LIMIT) {
-        src = text.substr(0, ContentEdit.HELPER_CHAR_LIMIT);
+        src = src.substr(0, ContentEdit.HELPER_CHAR_LIMIT);
       }
       return src;
     };
 
-    Video.prototype.createDraggingDOMElement = function() {
+    Video.prototype.createDraggingDOMElement = function () {
       var helper;
       if (!this.isMounted()) {
         return;
@@ -3846,7 +3882,7 @@
       return helper;
     };
 
-    Video.prototype.html = function(indent) {
+    Video.prototype.html = function (indent) {
       var attributes, source, sourceStrings, _i, _len, _ref;
       if (indent == null) {
         indent = '';
@@ -3865,7 +3901,7 @@
       }
     };
 
-    Video.prototype.mount = function() {
+    Video.prototype.mount = function () {
       var style;
       this._domElement = document.createElement('div');
       if (this.a && this.a['class']) {
@@ -3895,9 +3931,9 @@
 
     Video.placements = ['above', 'below', 'left', 'right', 'center'];
 
-    Video.fromDOMElement = function(domElement) {
+    Video.fromDOMElement = function (domElement) {
       var c, childNode, childNodes, sources, _i, _len;
-      childNodes = (function() {
+      childNodes = (function () {
         var _i, _len, _ref, _results;
         _ref = domElement.childNodes;
         _results = [];
@@ -3923,26 +3959,26 @@
 
   ContentEdit.TagNames.get().register(ContentEdit.Video, 'iframe', 'video');
 
-  ContentEdit.List = (function(_super) {
+  ContentEdit.List = (function (_super) {
     __extends(List, _super);
 
     function List(tagName, attributes) {
       List.__super__.constructor.call(this, tagName, attributes);
     }
 
-    List.prototype.cssTypeName = function() {
+    List.prototype.cssTypeName = function () {
       return 'list';
     };
 
-    List.prototype.type = function() {
+    List.prototype.type = function () {
       return 'List';
     };
 
-    List.prototype.typeName = function() {
+    List.prototype.typeName = function () {
       return 'List';
     };
 
-    List.prototype._onMouseOver = function(ev) {
+    List.prototype._onMouseOver = function (ev) {
       if (this.parent().type() === 'ListItem') {
         return;
       }
@@ -3959,10 +3995,10 @@
       'Video': ContentEdit.Element._dropBoth
     };
 
-    List.fromDOMElement = function(domElement) {
+    List.fromDOMElement = function (domElement) {
       var c, childNode, childNodes, list, _i, _len;
       list = new this(domElement.tagName, this.getDOMElementAttributes(domElement));
-      childNodes = (function() {
+      childNodes = (function () {
         var _i, _len, _ref, _results;
         _ref = domElement.childNodes;
         _results = [];
@@ -3994,36 +4030,36 @@
 
   ContentEdit.TagNames.get().register(ContentEdit.List, 'ol', 'ul');
 
-  ContentEdit.ListItem = (function(_super) {
+  ContentEdit.ListItem = (function (_super) {
     __extends(ListItem, _super);
 
     function ListItem(attributes) {
       ListItem.__super__.constructor.call(this, 'li', attributes);
     }
 
-    ListItem.prototype.cssTypeName = function() {
+    ListItem.prototype.cssTypeName = function () {
       return 'list-item';
     };
 
-    ListItem.prototype.list = function() {
+    ListItem.prototype.list = function () {
       if (this.children.length === 2) {
         return this.children[1];
       }
       return null;
     };
 
-    ListItem.prototype.listItemText = function() {
+    ListItem.prototype.listItemText = function () {
       if (this.children.length > 0) {
         return this.children[0];
       }
       return null;
     };
 
-    ListItem.prototype.type = function() {
+    ListItem.prototype.type = function () {
       return 'ListItem';
     };
 
-    ListItem.prototype.html = function(indent) {
+    ListItem.prototype.html = function (indent) {
       var lines;
       if (indent == null) {
         indent = '';
@@ -4039,7 +4075,7 @@
       return lines.join('\n');
     };
 
-    ListItem.prototype.indent = function() {
+    ListItem.prototype.indent = function () {
       var sibling;
       if (this.parent().children.indexOf(this) === 0) {
         return;
@@ -4054,7 +4090,7 @@
       return this.listItemText().restoreState();
     };
 
-    ListItem.prototype.remove = function() {
+    ListItem.prototype.remove = function () {
       var child, i, index, _i, _len, _ref;
       if (!this.parent()) {
         return;
@@ -4071,7 +4107,7 @@
       return this.parent().detach(this);
     };
 
-    ListItem.prototype.unindent = function() {
+    ListItem.prototype.unindent = function () {
       var child, grandParent, i, itemIndex, list, parent, parentIndex, selection, sibling, siblings, text, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref, _ref1;
       parent = this.parent();
       grandParent = parent.parent();
@@ -4157,16 +4193,16 @@
       }
     };
 
-    ListItem.prototype._onMouseOver = function(ev) {
+    ListItem.prototype._onMouseOver = function (ev) {
       ListItem.__super__._onMouseOver.call(this, ev);
       return this._removeCSSClass('ce-element--over');
     };
 
-    ListItem.prototype._addDOMEventListeners = function() {};
+    ListItem.prototype._addDOMEventListeners = function () {};
 
-    ListItem.prototype._removeDOMEventListners = function() {};
+    ListItem.prototype._removeDOMEventListners = function () {};
 
-    ListItem.fromDOMElement = function(domElement) {
+    ListItem.fromDOMElement = function (domElement) {
       var childNode, content, listDOMElement, listElement, listItem, listItemText, _i, _len, _ref, _ref1;
       listItem = new this(this.getDOMElementAttributes(domElement));
       content = '';
@@ -4200,26 +4236,26 @@
 
   })(ContentEdit.ElementCollection);
 
-  ContentEdit.ListItemText = (function(_super) {
+  ContentEdit.ListItemText = (function (_super) {
     __extends(ListItemText, _super);
 
     function ListItemText(content) {
       ListItemText.__super__.constructor.call(this, 'div', {}, content);
     }
 
-    ListItemText.prototype.cssTypeName = function() {
+    ListItemText.prototype.cssTypeName = function () {
       return 'list-item-text';
     };
 
-    ListItemText.prototype.type = function() {
+    ListItemText.prototype.type = function () {
       return 'ListItemText';
     };
 
-    ListItemText.prototype.typeName = function() {
+    ListItemText.prototype.typeName = function () {
       return 'List item';
     };
 
-    ListItemText.prototype.blur = function() {
+    ListItemText.prototype.blur = function () {
       if (this.content.isWhitespace()) {
         this.parent().remove();
       } else if (this.isMounted()) {
@@ -4229,7 +4265,7 @@
       return ContentEdit.Element.prototype.blur.call(this);
     };
 
-    ListItemText.prototype.html = function(indent) {
+    ListItemText.prototype.html = function (indent) {
       var content;
       if (indent == null) {
         indent = '';
@@ -4243,15 +4279,15 @@
       return "" + indent + this._cached;
     };
 
-    ListItemText.prototype._onMouseDown = function(ev) {
+    ListItemText.prototype._onMouseDown = function (ev) {
       var initDrag;
       ContentEdit.Element.prototype._onMouseDown.call(this, ev);
-      initDrag = (function(_this) {
-        return function() {
+      initDrag = (function (_this) {
+        return function () {
           var listRoot;
           if (ContentEdit.Root.get().dragging() === _this) {
             ContentEdit.Root.get().cancelDragging();
-            listRoot = _this.closest(function(node) {
+            listRoot = _this.closest(function (node) {
               return node.parent().type() === 'Region';
             });
             return listRoot.drag(ev.pageX, ev.pageY);
@@ -4265,21 +4301,21 @@
       return this._dragTimeout = setTimeout(initDrag, ContentEdit.DRAG_HOLD_DURATION);
     };
 
-    ListItemText.prototype._onMouseMove = function(ev) {
+    ListItemText.prototype._onMouseMove = function (ev) {
       if (this._dragTimeout) {
         clearTimeout(this._dragTimeout);
       }
       return ContentEdit.Element.prototype._onMouseMove.call(this, ev);
     };
 
-    ListItemText.prototype._onMouseUp = function(ev) {
+    ListItemText.prototype._onMouseUp = function (ev) {
       if (this._dragTimeout) {
         clearTimeout(this._dragTimeout);
       }
       return ContentEdit.Element.prototype._onMouseUp.call(this, ev);
     };
 
-    ListItemText.prototype._keyTab = function(ev) {
+    ListItemText.prototype._keyTab = function (ev) {
       ev.preventDefault();
       if (ev.shiftKey) {
         return this.parent().unindent();
@@ -4288,7 +4324,7 @@
       }
     };
 
-    ListItemText.prototype._keyReturn = function(ev) {
+    ListItemText.prototype._keyReturn = function (ev) {
       var grandParent, list, listItem, selection, tail, tip;
       ev.preventDefault();
       if (this.content.isWhitespace()) {
@@ -4327,7 +4363,7 @@
     };
 
     ListItemText.droppers = {
-      'ListItemText': function(element, target, placement) {
+      'ListItemText': function (element, target, placement) {
         var elementParent, insertIndex, listItem, targetParent;
         elementParent = element.parent();
         targetParent = target.parent();
@@ -4345,7 +4381,7 @@
         }
         return targetParent.parent().attach(listItem, insertIndex);
       },
-      'Text': function(element, target, placement) {
+      'Text': function (element, target, placement) {
         var cssClass, insertIndex, listItem, targetParent, text;
         if (element.type() === 'Text') {
           targetParent = target.parent();
@@ -4388,7 +4424,7 @@
     };
 
     ListItemText.mergers = {
-      'ListItemText': function(element, target) {
+      'ListItemText': function (element, target) {
         var offset;
         offset = target.content.length();
         if (element.content.length()) {
@@ -4418,26 +4454,26 @@
 
   _mergers['Text'] = _mergers['ListItemText'];
 
-  ContentEdit.Table = (function(_super) {
+  ContentEdit.Table = (function (_super) {
     __extends(Table, _super);
 
     function Table(attributes) {
       Table.__super__.constructor.call(this, 'table', attributes);
     }
 
-    Table.prototype.cssTypeName = function() {
+    Table.prototype.cssTypeName = function () {
       return 'table';
     };
 
-    Table.prototype.typeName = function() {
+    Table.prototype.typeName = function () {
       return 'Table';
     };
 
-    Table.prototype.type = function() {
+    Table.prototype.type = function () {
       return 'Table';
     };
 
-    Table.prototype.firstSection = function() {
+    Table.prototype.firstSection = function () {
       var section;
       if (section = this.thead()) {
         return section;
@@ -4449,7 +4485,7 @@
       return null;
     };
 
-    Table.prototype.lastSection = function() {
+    Table.prototype.lastSection = function () {
       var section;
       if (section = this.tfoot()) {
         return section;
@@ -4461,24 +4497,24 @@
       return null;
     };
 
-    Table.prototype.tbody = function() {
+    Table.prototype.tbody = function () {
       return this._getChild('tbody');
     };
 
-    Table.prototype.tfoot = function() {
+    Table.prototype.tfoot = function () {
       return this._getChild('tfoot');
     };
 
-    Table.prototype.thead = function() {
+    Table.prototype.thead = function () {
       return this._getChild('thead');
     };
 
-    Table.prototype._onMouseOver = function(ev) {
+    Table.prototype._onMouseOver = function (ev) {
       Table.__super__._onMouseOver.call(this, ev);
       return this._removeCSSClass('ce-element--over');
     };
 
-    Table.prototype._getChild = function(tagName) {
+    Table.prototype._getChild = function (tagName) {
       var child, _i, _len, _ref;
       _ref = this.children;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -4500,10 +4536,10 @@
       'Video': ContentEdit.Element._dropBoth
     };
 
-    Table.fromDOMElement = function(domElement) {
+    Table.fromDOMElement = function (domElement) {
       var c, childNode, childNodes, orphanRows, row, section, table, tagName, _i, _j, _len, _len1;
       table = new this(this.getDOMElementAttributes(domElement));
-      childNodes = (function() {
+      childNodes = (function () {
         var _i, _len, _ref, _results;
         _ref = domElement.childNodes;
         _results = [];
@@ -4555,30 +4591,30 @@
 
   ContentEdit.TagNames.get().register(ContentEdit.Table, 'table');
 
-  ContentEdit.TableSection = (function(_super) {
+  ContentEdit.TableSection = (function (_super) {
     __extends(TableSection, _super);
 
     function TableSection(tagName, attributes) {
       TableSection.__super__.constructor.call(this, tagName, attributes);
     }
 
-    TableSection.prototype.cssTypeName = function() {
+    TableSection.prototype.cssTypeName = function () {
       return 'table-section';
     };
 
-    TableSection.prototype.type = function() {
+    TableSection.prototype.type = function () {
       return 'TableSection';
     };
 
-    TableSection.prototype._onMouseOver = function(ev) {
+    TableSection.prototype._onMouseOver = function (ev) {
       TableSection.__super__._onMouseOver.call(this, ev);
       return this._removeCSSClass('ce-element--over');
     };
 
-    TableSection.fromDOMElement = function(domElement) {
+    TableSection.fromDOMElement = function (domElement) {
       var c, childNode, childNodes, section, _i, _len;
       section = new this(domElement.tagName, this.getDOMElementAttributes(domElement));
-      childNodes = (function() {
+      childNodes = (function () {
         var _i, _len, _ref, _results;
         _ref = domElement.childNodes;
         _results = [];
@@ -4605,18 +4641,18 @@
 
   })(ContentEdit.ElementCollection);
 
-  ContentEdit.TableRow = (function(_super) {
+  ContentEdit.TableRow = (function (_super) {
     __extends(TableRow, _super);
 
     function TableRow(attributes) {
       TableRow.__super__.constructor.call(this, 'tr', attributes);
     }
 
-    TableRow.prototype.cssTypeName = function() {
+    TableRow.prototype.cssTypeName = function () {
       return 'table-row';
     };
 
-    TableRow.prototype.isEmpty = function() {
+    TableRow.prototype.isEmpty = function () {
       var cell, text, _i, _len, _ref;
       _ref = this.children;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -4629,15 +4665,15 @@
       return true;
     };
 
-    TableRow.prototype.type = function() {
+    TableRow.prototype.type = function () {
       return 'TableRow';
     };
 
-    TableRow.prototype.typeName = function() {
+    TableRow.prototype.typeName = function () {
       return 'Table row';
     };
 
-    TableRow.prototype._onMouseOver = function(ev) {
+    TableRow.prototype._onMouseOver = function (ev) {
       TableRow.__super__._onMouseOver.call(this, ev);
       return this._removeCSSClass('ce-element--over');
     };
@@ -4646,10 +4682,10 @@
       'TableRow': ContentEdit.Element._dropVert
     };
 
-    TableRow.fromDOMElement = function(domElement) {
+    TableRow.fromDOMElement = function (domElement) {
       var c, childNode, childNodes, row, tagName, _i, _len;
       row = new this(this.getDOMElementAttributes(domElement));
-      childNodes = (function() {
+      childNodes = (function () {
         var _i, _len, _ref, _results;
         _ref = domElement.childNodes;
         _results = [];
@@ -4677,29 +4713,29 @@
 
   })(ContentEdit.ElementCollection);
 
-  ContentEdit.TableCell = (function(_super) {
+  ContentEdit.TableCell = (function (_super) {
     __extends(TableCell, _super);
 
     function TableCell(tagName, attributes) {
       TableCell.__super__.constructor.call(this, tagName, attributes);
     }
 
-    TableCell.prototype.cssTypeName = function() {
+    TableCell.prototype.cssTypeName = function () {
       return 'table-cell';
     };
 
-    TableCell.prototype.tableCellText = function() {
+    TableCell.prototype.tableCellText = function () {
       if (this.children.length > 0) {
         return this.children[0];
       }
       return null;
     };
 
-    TableCell.prototype.type = function() {
+    TableCell.prototype.type = function () {
       return 'TableCell';
     };
 
-    TableCell.prototype.html = function(indent) {
+    TableCell.prototype.html = function (indent) {
       var lines;
       if (indent == null) {
         indent = '';
@@ -4712,16 +4748,16 @@
       return lines.join('\n');
     };
 
-    TableCell.prototype._onMouseOver = function(ev) {
+    TableCell.prototype._onMouseOver = function (ev) {
       TableCell.__super__._onMouseOver.call(this, ev);
       return this._removeCSSClass('ce-element--over');
     };
 
-    TableCell.prototype._addDOMEventListeners = function() {};
+    TableCell.prototype._addDOMEventListeners = function () {};
 
-    TableCell.prototype._removeDOMEventListners = function() {};
+    TableCell.prototype._removeDOMEventListners = function () {};
 
-    TableCell.fromDOMElement = function(domElement) {
+    TableCell.fromDOMElement = function (domElement) {
       var tableCell, tableCellText;
       tableCell = new this(domElement.tagName, this.getDOMElementAttributes(domElement));
       tableCellText = new ContentEdit.TableCellText(domElement.innerHTML.replace(/^\s+|\s+$/g, ''));
@@ -4733,22 +4769,22 @@
 
   })(ContentEdit.ElementCollection);
 
-  ContentEdit.TableCellText = (function(_super) {
+  ContentEdit.TableCellText = (function (_super) {
     __extends(TableCellText, _super);
 
     function TableCellText(content) {
       TableCellText.__super__.constructor.call(this, 'div', {}, content);
     }
 
-    TableCellText.prototype.cssTypeName = function() {
+    TableCellText.prototype.cssTypeName = function () {
       return 'table-cell-text';
     };
 
-    TableCellText.prototype.type = function() {
+    TableCellText.prototype.type = function () {
       return 'TableCellText';
     };
 
-    TableCellText.prototype._isInFirstRow = function() {
+    TableCellText.prototype._isInFirstRow = function () {
       var cell, row, section, table;
       cell = this.parent();
       row = cell.parent();
@@ -4760,7 +4796,7 @@
       return row === section.children[0];
     };
 
-    TableCellText.prototype._isInLastRow = function() {
+    TableCellText.prototype._isInLastRow = function () {
       var cell, row, section, table;
       cell = this.parent();
       row = cell.parent();
@@ -4772,7 +4808,7 @@
       return row === section.children[section.children.length - 1];
     };
 
-    TableCellText.prototype._isLastInSection = function() {
+    TableCellText.prototype._isLastInSection = function () {
       var cell, row, section;
       cell = this.parent();
       row = cell.parent();
@@ -4783,7 +4819,7 @@
       return cell === row.children[row.children.length - 1];
     };
 
-    TableCellText.prototype.blur = function() {
+    TableCellText.prototype.blur = function () {
       if (this.isMounted()) {
         this._domElement.blur();
         this._domElement.removeAttribute('contenteditable');
@@ -4791,7 +4827,7 @@
       return ContentEdit.Element.prototype.blur.call(this);
     };
 
-    TableCellText.prototype.html = function(indent) {
+    TableCellText.prototype.html = function (indent) {
       var content;
       if (indent == null) {
         indent = '';
@@ -4805,11 +4841,11 @@
       return "" + indent + this._cached;
     };
 
-    TableCellText.prototype._onMouseDown = function(ev) {
+    TableCellText.prototype._onMouseDown = function (ev) {
       var initDrag;
       ContentEdit.Element.prototype._onMouseDown.call(this, ev);
-      initDrag = (function(_this) {
-        return function() {
+      initDrag = (function (_this) {
+        return function () {
           var cell, table;
           cell = _this.parent();
           if (ContentEdit.Root.get().dragging() === cell.parent()) {
@@ -4826,7 +4862,7 @@
       return this._dragTimeout = setTimeout(initDrag, ContentEdit.DRAG_HOLD_DURATION);
     };
 
-    TableCellText.prototype._keyBack = function(ev) {
+    TableCellText.prototype._keyBack = function (ev) {
       var cell, previous, row, selection;
       selection = ContentSelect.Range.query(this._domElement);
       if (!(selection.get()[0] === 0 && selection.isCollapsed())) {
@@ -4848,7 +4884,7 @@
       }
     };
 
-    TableCellText.prototype._keyDelete = function(ev) {
+    TableCellText.prototype._keyDelete = function (ev) {
       var lastChild, nextElement, row, selection;
       row = this.parent().parent();
       if (row.isEmpty()) {
@@ -4864,7 +4900,7 @@
       }
     };
 
-    TableCellText.prototype._keyDown = function(ev) {
+    TableCellText.prototype._keyDown = function (ev) {
       var cell, cellIndex, lastCell, next, nextRow, row;
       ev.preventDefault();
       cell = this.parent();
@@ -4875,12 +4911,12 @@
         if (next) {
           return next.focus();
         } else {
-          return ContentEdit.Root.get().trigger('next-region', this.closest(function(node) {
+          return ContentEdit.Root.get().trigger('next-region', this.closest(function (node) {
             return node.type() === 'Region';
           }));
         }
       } else {
-        nextRow = cell.parent().nextWithTest(function(node) {
+        nextRow = cell.parent().nextWithTest(function (node) {
           return node.type() === 'TableRow';
         });
         cellIndex = cell.parent().children.indexOf(cell);
@@ -4889,15 +4925,15 @@
       }
     };
 
-    TableCellText.prototype._keyReturn = function(ev) {
+    TableCellText.prototype._keyReturn = function (ev) {
       ev.preventDefault();
       return this._keyTab({
         'shiftKey': false,
-        'preventDefault': function() {}
+        'preventDefault': function () {}
       });
     };
 
-    TableCellText.prototype._keyTab = function(ev) {
+    TableCellText.prototype._keyTab = function (ev) {
       var cell, child, grandParent, newCell, newCellText, row, section, _i, _len, _ref;
       ev.preventDefault();
       cell = this.parent();
@@ -4918,7 +4954,7 @@
             newCell.attach(newCellText);
             row.attach(newCell);
           }
-          section = this.closest(function(node) {
+          section = this.closest(function (node) {
             return node.type() === 'TableSection';
           });
           section.attach(row);
@@ -4929,7 +4965,7 @@
       }
     };
 
-    TableCellText.prototype._keyUp = function(ev) {
+    TableCellText.prototype._keyUp = function (ev) {
       var cell, cellIndex, previous, previousRow, row;
       ev.preventDefault();
       cell = this.parent();
@@ -4939,12 +4975,12 @@
         if (previous) {
           return previous.focus();
         } else {
-          return ContentEdit.Root.get().trigger('previous-region', this.closest(function(node) {
+          return ContentEdit.Root.get().trigger('previous-region', this.closest(function (node) {
             return node === 'Region';
           }));
         }
       } else {
-        previousRow = cell.parent().previousWithTest(function(node) {
+        previousRow = cell.parent().previousWithTest(function (node) {
           return node.type() === 'TableRow';
         });
         cellIndex = cell.parent().children.indexOf(cell);
@@ -5635,7 +5671,7 @@
       ],
       [
         'heading',
-        'heading2',        
+        'heading2',
         'paragraph',
         'link-block',
         'unordered-list',
@@ -5650,6 +5686,7 @@
         'ew-media',
         'image',
         'video',
+        'soundcloud-embed',
         'preformatted',
         'content-field'
       ],
@@ -11188,3 +11225,213 @@
   })(ContentTools.Tools.Bold);
 
 })(this);
+
+(function () {
+  var extend = function (child, parent) {
+    for (var key in parent) {
+      if (hasProp.call(parent, key))
+        child[key] = parent[key];
+    }
+    function ctor() {
+      this.constructor = child;
+    }
+    ctor.prototype = parent.prototype;
+    child.prototype = new ctor();
+    child.__super__ = parent.prototype;
+    return child;
+  }, hasProp = {}.hasOwnProperty;
+  ContentTools.SoundcloudDialog = (function (superClass) {
+    extend(SoundcloudDialog, superClass);
+    function SoundcloudDialog() {
+      SoundcloudDialog.__super__.constructor.call(this, 'Insert soundcloud');
+    }
+
+    SoundcloudDialog.prototype.clearPreview = function () {
+      if (this._domPreview) {
+        ContentEdit.addCSSClass(this._domButton, 'ct-control--muted');
+        this._domPreview.parentNode.removeChild(this._domPreview);
+        return this._domPreview = void 0;
+      }
+    };
+    SoundcloudDialog.prototype.mount = function () {
+      var domControlGroup;
+      SoundcloudDialog.__super__.mount.call(this);
+      ContentEdit.addCSSClass(this._domElement, 'ct-soundcloud-dialog');
+      ContentEdit.addCSSClass(this._domView, 'ct-video-dialog__preview');
+      domControlGroup = this.constructor.createDiv(['ct-control-group']);
+      this._domControls.appendChild(domControlGroup);
+      this._domInput = document.createElement('textarea');
+      this._domInput.setAttribute('class', 'ct-soundcloud-dialog__input');
+      this._domInput.setAttribute('name', 'url');
+      this._domInput.setAttribute('placeholder', ContentEdit._('Paste Soundcloud embed code') + '...');
+      this._domInput.setAttribute('type', 'text');
+      domControlGroup.appendChild(this._domInput);
+      this._domButton = this.constructor.createDiv(['ct-control', 'ct-control--text', 'ct-control--insert', 'ct-control--muted']);
+      this._domButton.textContent = ContentEdit._('Insert');
+      domControlGroup.appendChild(this._domButton);
+      return this._addDOMEventListeners();
+    };
+
+    SoundcloudDialog.prototype.parseInput = function (text) {
+      var parser = document.createElement('div');
+      parser.innerHTML = text;
+      var soundcloudFrame = parser.querySelector('iframe');
+      this.clearPreview();
+
+      if (!soundcloudFrame)
+        return;
+
+      return {
+        scrolling: soundcloudFrame.getAttribute('scrolling'),
+        height: soundcloudFrame.getAttribute('height'),
+        src: soundcloudFrame.getAttribute('src'),
+        title: soundcloudFrame.getAttribute('src').substr(0, 82)
+      };
+    };
+
+    SoundcloudDialog.prototype.preview = function (url) {
+      var parser = document.createElement('div');
+      parser.innerHTML = url;
+      var soundcloudFrame = parser.querySelector('iframe');
+      this.clearPreview();
+
+      if (!soundcloudFrame)
+        return;
+
+      this._domPreview = document.createElement('iframe');
+      this._domPreview.setAttribute('frameborder', '0');
+      this._domPreview.setAttribute('scrolling', soundcloudFrame.getAttribute('scrolling'));
+      this._domPreview.setAttribute('height', soundcloudFrame.getAttribute('height'));
+      this._domPreview.setAttribute('src', soundcloudFrame.getAttribute('src'));
+      this._domPreview.setAttribute('width', '100%');
+      ContentEdit.removeCSSClass(this._domButton, 'ct-control--muted');
+      return this._domView.appendChild(this._domPreview);
+    };
+    SoundcloudDialog.prototype.save = function () {
+      var embedURL, videoURL;
+      videoURL = this._domInput.value.trim();
+      return this.trigger('save', this.parseInput(videoURL));
+      //}
+    };
+    SoundcloudDialog.prototype.show = function () {
+      SoundcloudDialog.__super__.show.call(this);
+      return this._domInput.focus();
+    };
+    SoundcloudDialog.prototype.unmount = function () {
+      if (this.isMounted()) {
+        this._domInput.blur();
+      }
+      SoundcloudDialog.__super__.unmount.call(this);
+      this._domButton = null;
+      this._domInput = null;
+      return this._domPreview = null;
+    };
+    SoundcloudDialog.prototype._addDOMEventListeners = function () {
+      var _this = this;
+      SoundcloudDialog.__super__._addDOMEventListeners.call(this);
+
+      this._domInput.addEventListener('input', function (ev) {
+        var updatePreview;
+        if (_this._updatePreviewTimeout) {
+          clearTimeout(_this._updatePreviewTimeout);
+        }
+
+        updatePreview = function () {
+          var embedURL, soundcloudURL;
+          soundcloudURL = _this._domInput.value.trim();
+          embedURL = soundcloudURL;
+          if (embedURL) {
+            return _this.preview(embedURL);
+          } else {
+            return _this.clearPreview();
+          }
+        };
+
+        return _this._updatePreviewTimeout = setTimeout(updatePreview, 500);
+      });
+
+      this._domInput.addEventListener('keypress', (function (_this) {
+        return function (ev) {
+          if (ev.keyCode === 13) {
+            return _this.save();
+          }
+        };
+      })(this));
+      return this._domButton.addEventListener('click', (function (_this) {
+        return function (ev) {
+          var cssClass;
+          ev.preventDefault();
+          cssClass = _this._domButton.getAttribute('class');
+          if (cssClass.indexOf('ct-control--muted') === -1) {
+            return _this.save();
+          }
+        };
+      })(this));
+    };
+    return SoundcloudDialog;
+  })(ContentTools.DialogUI);
+  ContentTools.Tools.SoundcloudEmbed = (function (superClass) {
+    extend(SoundcloudEmbed, superClass);
+    function SoundcloudEmbed() {
+      return SoundcloudEmbed.__super__.constructor.apply(this, arguments);
+    }
+
+    ContentTools.ToolShelf.stow(SoundcloudEmbed, 'soundcloud-embed');
+    SoundcloudEmbed.label = 'Soundcloud';
+    SoundcloudEmbed.icon = 'soundcloud';
+    SoundcloudEmbed.canApply = function (element, selection) {
+      return true;
+    };
+    SoundcloudEmbed.apply = function (element, selection, callback) {
+      var app, dialog, modal;
+      if (element.storeState) {
+        element.storeState();
+      }
+      app = ContentTools.EditorApp.get();
+      modal = new ContentTools.ModalUI();
+      dialog = new ContentTools.SoundcloudDialog();
+      dialog.bind('cancel', (function (_this) {
+        return function () {
+          dialog.unbind('cancel');
+          modal.hide();
+          dialog.hide();
+          if (element.restoreState) {
+            element.restoreState();
+          }
+          return callback(false);
+        };
+      })(this));
+
+      dialog.bind('save', (function (_this) {
+        return function (videoURL) {
+          var index, node, ref, video;
+          dialog.unbind('save');
+          if (videoURL) {
+            video = new ContentEdit.Video('iframe', {
+              'frameborder': 0,
+              'height': ContentTools.DEFAULT_VIDEO_HEIGHT,
+              'src': videoURL.src,
+              title: videoURL.title,
+              'width': ContentTools.DEFAULT_VIDEO_WIDTH
+            });
+            ref = _this._insertAt(element), node = ref[0], index = ref[1];
+            node.parent().attach(video, index);
+            video.focus();
+          } else {
+            if (element.restoreState) {
+              element.restoreState();
+            }
+          }
+          modal.hide();
+          dialog.hide();
+          return callback(videoURL !== '');
+        };
+      })(this));
+      app.attach(modal);
+      app.attach(dialog);
+      modal.show();
+      return dialog.show();
+    };
+    return SoundcloudEmbed;
+  })(ContentTools.Tool);
+}).call(this);
