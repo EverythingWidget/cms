@@ -880,19 +880,18 @@ session_start();
       uisId: self.uisId,
       defaultUIS: defaultUIS,
       homeUIS: homeUIS
-    },
-            function (data) {
-              $("body").EW().notify(data).show();
-              uisList.listUIStructures();
-              $('#form-title').html("<span>Edit</span> " + data.data.title);
-              self.oldStructure = structure;
-              if (reload === true) {
-                self.reloadFrame();
-              } else {
-                self.oldStructure = self.createContentHeirarchy();
-              }
-              lock.dispose();
-            }, "json");
+    }, function (data) {
+      $("body").EW().notify(data).show();
+      $(document).trigger("uis-list.refresh");
+      $('#form-title').html("<span>Edit</span> " + data.data.title);
+      self.oldStructure = structure;
+      if (reload === true) {
+        self.reloadFrame();
+      } else {
+        self.oldStructure = self.createContentHeirarchy();
+      }
+      lock.dispose();
+    }, "json");
   };
 
   UISForm.prototype.updateTemplateBody = function () {

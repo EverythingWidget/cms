@@ -655,6 +655,9 @@
         this.xtag.fields = [];
         this.xtag.lastField = this.createField('', '');
         this.xtag.active = this.xtag.lastField;
+
+        this.elementType = this.xtag.elementType;
+
         this.updateFieldsCount();
       }
     },
