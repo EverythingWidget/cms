@@ -58,13 +58,13 @@
       // you can use either states.<state> or states['<state>']
       states.article = function (full, id) {
         if (!id) {
-          component.currentItem.removeClass("selected");
+          System.ui.utility.removeClass(component.currentItem, 'selected');
         }
       };
 
       states.folder = function (full, id, command) {
         if (!id) {
-          component.currentItem.removeClass("selected");
+          System.ui.utility.removeClass(component.currentItem, 'selected');
         }
       };
 
@@ -96,12 +96,29 @@
           }
         }
       };
+
+      states.component = function (full, name) {
+        if (full === 'forms/test-form') {
+          var modal = EW.createModal({
+            onClose: function () {
+              component.module.setParam('component', null);
+            }
+          });
+          component.module.loadModule({
+            id: 'forms/test-form',
+            url: 'http://127.0.0.1:8000/EverythingWidget/~admin/html/content-management/test-file.php'
+          }, function (module) {
+            modal.html(module.html);
+            module.start();
+          });
+        }
+      }
     };
 
     DocumentsComponent.prototype.init = function () {
       var component = this;
- 
-      var templates =  System.ui.templates['system/content-management/documents'];
+
+      var templates = System.ui.templates['system/content-management/documents'];
       this.ui.components.folders_card = $(templates["folders-card"]);
       this.ui.components.folders_card_title = this.ui.components.folders_card.find(".card-header h1");
       this.ui.components.folders_card_title_action_right = this.ui.components.folders_card.find(".card-title-action-right");
@@ -212,6 +229,15 @@
           hash.parent = null;
         }
       }).hide();
+
+      this.testBtn = EW.addActionButton({
+        text: "tr{test form}",
+        //class: "btn-text btn-primary",
+        parent: System.UI.components.mainFloatMenu,
+        handler: function () {
+          component.module.setParam('component', 'forms/test-form');
+        }
+      });
 
       $(document).off("article-list");
       $(document).on("article-list.refresh", function (e, eventData) {

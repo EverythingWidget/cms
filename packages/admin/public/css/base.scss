@@ -877,6 +877,28 @@ body.Admin {
   top: 94px;
   left: 94px;
   bottom: 0;
+
+  & > .tabs-bar {
+    z-index: 5;
+    position: relative;
+    box-shadow: 0 1px 3px 0px rgba(0,0,0,0.06),0 0px 5px rgba(0,0,0,0.1); 
+  }
+
+  & > .tab-content {
+    background-color: transparent;
+    margin-left: 0;
+    position: absolute;
+    width: 100%;
+    top: 50px;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: inherit;
+  }
+
+  & > .header-pane.tabs-bar {
+    height: auto;
+  }
 }
 
 .header-pane .nav-tabs > li > a {
@@ -902,10 +924,6 @@ body.Admin {
 }
 
 .form-content > .tab-content {
-}
-
-#main-content > .header-pane.tabs-bar {
-  height: auto;
 }
 
 .top-pane.full {
@@ -1291,6 +1309,10 @@ h2.actions-bar span {
   display: block;
   margin-left: auto;
   margin-right: auto;
+}
+
+.z-index-2 {
+  box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 5px 9px 0 rgba(0,0,0,0.16);
 }
 
 .z-index-1 {
@@ -2235,6 +2257,7 @@ label.small {
   line-height: 18px;
   padding: 0 1px;
   font-weight: 400;
+  min-height: 29px
 }
 
 textarea.text-field {
@@ -3050,17 +3073,26 @@ body.dragging,body.dragging * {
 .text-icon {
   font-size: 1.12em;
   display: block;
-  margin: 0 0 5px 0;
-  padding: 10px 15px;
-  border: 0 solid #eee;
-  background-color: #eee;
+  margin: 0;
+  padding: 20px 15px;
+  background-color: #fff;
   cursor: default;
   min-height: 40px;
+  color: #555;
+
+  &::after {
+    content: '';
+    display: block;
+    height: 1px;
+    background-color: #eee;
+    margin-top: 20px;
+    margin-bottom: -20px;
+  }
 }
 
 .text-icon:hover {
-  background-color: #ddd;
-  border-color: #5cf;
+  color: #000;
+  background-color: #eee;
 }
 
 .text-icon h1,.text-icon h2,.text-icon h3,.text-icon h4,.text-icon h5,.text-icon h6 {
@@ -3073,8 +3105,7 @@ body.dragging,body.dragging * {
 .text-icon p {
   padding: 0;
   margin: 0;
-  display: block;
-  color: #333;
+  display: block;  
 }
 
 .text-item span {
@@ -3128,9 +3159,11 @@ a.link.active,.active > a.link {
 
 .list-modal {
   overflow: hidden;
-  position: absolute;
+  position: fixed;
   top: 0;
   bottom: 0;
+  z-index: 10;
+  box-shadow: 10px 0 20px rgba(0,0,0,0.19), 6px 0 6px rgba(0,0,0,0.23);
 }
 
 .list-modal > h1 {
@@ -3138,7 +3171,8 @@ a.link.active,.active > a.link {
   position: absolute;
   top: 0;
   height: 30px;
-  font-size: 14px;
+  font-size: 19px;
+  font-weight: bold;
   padding: 0 15px;
   line-height: 30px;
   margin: 0;
@@ -3380,31 +3414,13 @@ inline-dialog{
   -webkit-flex-flow: row wrap;
   justify-content: space-around;
   align-items: flex-start;
-}
-
-#main-content > .tabs-bar {
-  z-index: 5;
-  position: relative;
-  box-shadow: 0 1px 3px 0px rgba(0,0,0,0.06),0 0px 5px rgba(0,0,0,0.1); 
-}
-
-#main-content > .tab-content {
-  background-color: transparent;
-  margin-left: 0;
-  position: absolute;
-  width: 100%;
-  top: 50px;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  display: inherit;
-}
+} 
 
 system-list, dis-block {
   display: block;
 }
 
-system-json-input {
+system-input-json {
   //box-shadow: 0 2px 3px rgba(0,0,0,.1), 0 5px 9px rgba(0,0,0,.1);
   display: block;
   margin: 0;
@@ -3420,7 +3436,7 @@ system-json-input {
     overflow: hidden;
     border-bottom: 1px solid #ddd;
 
-    system-json-input {
+    system-input-json {
       &.value {
         width: auto;
         border-left-color: #aaa;
@@ -3456,4 +3472,9 @@ system-json-input {
 
     }
   }
+}
+
+.options-panel {
+  overflow: hidden;
+  min-height: 50px;
 }

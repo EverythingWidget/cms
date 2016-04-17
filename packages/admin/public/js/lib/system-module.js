@@ -4,12 +4,12 @@
     inited: false,
     started: false,
     active: false,
-    moduleIdentifier: "app",
+    stateKey: "app",
     navigation: {},
     params: {},
     html: "",
     installModules: [],
-    onEvents: {},
+    binds: {},
     installModulesOnInit: function (modules) {
       this.installModules = modules;
     },
@@ -18,6 +18,7 @@
       this.inited = true;
       this.trigger("onInit");
       this.triggerEvent('init');
+      this.solo = this.stateKey !== 'app';
 
       this.installModules.forEach(function (lib) {
         _this.domain.loadModule(lib);
@@ -28,11 +29,15 @@
       this.active = true;
       this.trigger("onStart");
       this.triggerEvent('start');
+      if (('system/' + this.domain.app.params[this.stateKey]).indexOf(this.id) <= -1) {
+        console.log(this.domain.app.params[this.stateKey]);
+        throw new Error('Could not find module `' + this.id + '` by state key `' + this.stateKey + '`');
+      }
       var newNav = $.extend(true, {}, this.domain.app.navigation);
-      var st = "system/" + this.domain.app.params[this.moduleIdentifier];
+      var st = "system/" + this.domain.app.params[this.stateKey];
       var napPath = st.indexOf(this.id) === 0 ? st.substr(this.id.length).split("/").filter(Boolean) : [];
 
-      newNav[this.moduleIdentifier] = napPath;
+      newNav[this.stateKey] = napPath;
       var nav = newNav;
       var params = this.domain.app.params;
       this.navigation = {};
@@ -44,7 +49,7 @@
       // This code is commented because its bug prone
       // hashChanged should be called only when the module params are inited with valid data
       // in other word start should be called after hashChanged
-      this.hashChanged(nav, params, this.hash, this.domain.getHashNav(this.moduleIdentifier));
+      this.hashChanged(nav, params, this.hash, this.domain.getHashNav(this.stateKey));
       //console.log(this.id , )
 
       var index = this.domain.notYetStarted.indexOf(this.id);
@@ -53,120 +58,7 @@
       }
     },
     dispose: function () {
-
     },
-    /** Creates a system module if does not exist and returns it.
-     * A module is more like a url state handler. It handles event that are originated from url.
-     * It's recommended that developer use modules only for listening to url events or as a controller
-     * and implement the business logic in a different class/object (e.g. Decorator object or a Service object)
-     * This way, developer wont mix the business logic whit the System library logic.
-     * 
-     * @param {String} id
-     * @param {Object} object
-     * @param {Boolean} set true to force the system to re init the module
-     * @returns {System.MODULE_ABSTRACT}
-     */
-    /*module: function (id, object, forceReload) {
-     var module, modulePath, moduleNavigation;
-     var domain = this.domain;
-     if (!domain) {
-     throw "Domain can NOT be null";
-     }
-     id = this.id + '/' + id;
-     
-     //if forceReload is true, then init the module again
-     if (!object && !forceReload) {
-     // Add the module to notYetStarted list so it can be started by startLastLoadedModule method
-     domain.notYetStarted.push(id);
-     return domain.modules[id];
-     }
-     
-     if (domain.modules[id]) {
-     return domain.modules[id];
-     }
-     
-     if (typeof (object) === "function") {
-     module = $.extend(true, {}, System.MODULE_ABSTRACT);
-     object.call(module, module);
-     } else {
-     module = $.extend(true, {}, System.MODULE_ABSTRACT, object || {});
-     }
-     
-     module.domain = domain;
-     module.id = id;
-     
-     modulePath = this.navigation[module.moduleIdentifier] ? this.navigation[module.moduleIdentifier] : [];
-     moduleNavigation = $.extend(true, {}, this.navigation);
-     moduleNavigation[module.moduleIdentifier] = modulePath.slice(id.split("/").length - 1);
-     
-     domain.modules[id] = module;
-     domain.notYetStarted.push(id);
-     
-     // Set module hash for this module when its inited
-     // module hash will be set in the hashChanged method as well
-     // if current navigation path is equal to this module id
-     //module.hash = System.modulesHashes[id.replace("system/", "")] = module.moduleIdentifier + "=" + id.replace("system/", "");
-     
-     module.init(moduleNavigation, this.params);
-     
-     return module;
-     },*/
-    /** Creates a system state if does not exist and returns it.
-     * A state is more like a url state handler. It handles event that are originated from url or state source.
-     * It's recommended that developer use state only for listening to url events 
-     * and implement the business logic in a different class/object (e.g. Component or Service)
-     * This way, developer wont mix the business logic whit the System library logic.
-     * 
-     * @param {String} id
-     * @param {Object} decorator
-     * @param {Boolean} set true to force the system to re init the module
-     * @returns {System.MODULE_ABSTRACT}
-     */
-    /*state: function (id, decorator, forceReload) {
-     var module, modulePath, moduleNavigation;
-     var domain = this.domain;
-     if (!domain) {
-     throw "Domain can NOT be null";
-     }
-     id = this.id + '/' + id;
-     
-     //if forceReload is true, then init the module again
-     if (!decorator && !forceReload) {
-     // Add the module to notYetStarted list so it can be started by startLastLoadedModule method
-     domain.notYetStarted.push(id);
-     return domain.modules[id];
-     }
-     
-     if (domain.modules[id]) {
-     return domain.modules[id];
-     }
-     
-     if (typeof (decorator) === "function") {
-     module = $.extend(true, {}, System.MODULE_ABSTRACT);
-     decorator.call(module);
-     } else {
-     module = $.extend(true, {}, System.MODULE_ABSTRACT, decorator || {});
-     }
-     
-     module.domain = domain;
-     module.id = id;
-     
-     modulePath = this.navigation[module.moduleIdentifier] ? this.navigation[module.moduleIdentifier] : [];
-     moduleNavigation = $.extend(true, {}, this.navigation);
-     moduleNavigation[module.moduleIdentifier] = modulePath.slice(id.split("/").length - 1);
-     
-     domain.modules[id] = module;
-     domain.notYetStarted.push(id);
-     
-     // Set module hash for this module when its inited
-     // module hash will be set in the hashChanged method as well
-     // if current navigation path is equal to this module id
-     //module.hash = System.modulesHashes[id.replace("system/", "")] = module.moduleIdentifier + "=" + id.replace("system/", "");
-     
-     module.init(moduleNavigation, this.params);
-     
-     return module;
-     },*/
     hashListeners: {},
     data: {},
     /**
@@ -184,9 +76,16 @@
     getParam: function (key) {
       return this.domain.getHashParam(key);
     },
-    setParam: function (param, value, replace) {
+    /**
+     * 
+     * @param {string} key Name of the parameter
+     * @param {string} value Value of the parameter
+     * @param {boolean} replace
+     * @returns {undefined}
+     */
+    setParam: function (key, value, replace) {
       var paramObject = {};
-      paramObject[param] = value;
+      paramObject[key] = value;
       this.domain.setHashParameters(paramObject, replace);
     },
     setParamIfNull: function (param, value) {
@@ -211,7 +110,7 @@
      */
     bind: function (event, action) {
       if ('string' === typeof (event) && 'function' === typeof (action)) {
-        this.onEvents[event] = action;
+        this.binds[event] = action;
       }
     },
     /**
@@ -227,21 +126,23 @@
       }
     },
     triggerEvent: function (event, args) {
-      if (typeof (this.onEvents[event]) === "function") {
-        this.onEvents[event].apply(this, args);
+      if (typeof (this.binds[event]) === "function") {
+        this.binds[event].apply(this, args);
       }
     },
     hashChanged: function (navigation, params, hashValue, fullNav) {
       var _this = this;
       var moduleNavigation = navigation;
 
-      var fullNavPath = params["app"];
+      var fullNavPath = params['app'];
 
-      //console.log(this.id, "system/" + fullNavPath, params, this.domain);
       if (this.id === "system/" + fullNavPath/* && System.app.activeModule !== this*/) {
         this.domain.app.activeModule = this;
         this.domain.app.activeModule.active = true;
-      } else {
+      } else if (!this.solo) {
+        if (this.domain.app.activeModule && this.domain.app.activeModule.active) {
+          this.domain.app.activeModule.triggerEvent('stop');
+        }
         this.domain.app.activeModule = null;
         this.active = false;
       }
@@ -254,29 +155,32 @@
       _this.navigation = navigation;
       _this.params = params;
       if (this.domain.app.activeModule && this.active && this.domain.app.activeModule.id === _this.id) {
-        $.each(allNavigations, function (key, value) {
-          var navHandler = _this.hashListeners[key];
-          if (navHandler) {
-            if (tempNav[key]) {
-              var currentKeyValue = tempNav[key].join("/");
+        for (var key in allNavigations) {
+          if (allNavigations.hasOwnProperty(key)) {
+            var stateHandler = _this.hashListeners[key];
 
-              if (navigation[key] && currentKeyValue === navigation[key].join("/")) {
-                //console.log("Same, ignore: " + key/*, navigation[key], value.join("/")*/);
-                return;
+            if (stateHandler) {
+              if (tempNav[key]) {
+                var currentKeyValue = tempNav[key].join("/");
+                if (navigation[key] && currentKeyValue === navigation[key].join("/")) {
+                  //console.log("Same, ignore: " + key/*, navigation[key], value.join("/")*/);
+                  continue;
+                }
               }
-            }
 
-            var args = [];
-            args.push(navigation[key]);
-            for (var i = 0; i < value.length; ++i) {
-              //i is always valid index in the arguments object
-              args.push(value[i]);
+              var stateParams = [];
+              stateParams.push(null);
+              if (navigation[key]) {
+                stateParams[0] = navigation[key].join('/');
+                for (var i = 0; i < navigation[key].length; i++) {
+                  stateParams.push(navigation[key][i]);
+                }
+              }
+              stateHandler.apply(_this, stateParams);
             }
-            navHandler.apply(_this, args);
           }
-        });
+        }
       } else if (!this.active) {
-
         var navHandler = _this.hashListeners["app"];
 
         //if navHandler is null call sub module navHandler
@@ -297,34 +201,27 @@
         }
       }
 
-
-      //this.hash = hashValue;
-
-      if (this.moduleIdentifier && navigation[this.moduleIdentifier] && navigation[this.moduleIdentifier][0])
-      {
-        // Set the app.activeModule according to the current navigation path
-        if (this.domain.modules[this.id + "/" + navigation[this.moduleIdentifier][0]]) {
-          this.activeModule = this.domain.modules[this.id + "/" + navigation[this.moduleIdentifier][0]];
-        }
-      } else {
-        this.activeModule = null;
+      //if (this.stateKey && navigation[this.stateKey] && navigation[this.stateKey][0])
+      //{
+      // Set the app.activeModule according to the current navigation path
+      if (navigation[this.stateKey] && this.domain.modules[this.id + "/" + navigation[this.stateKey][0]]) {
+        this.activeModule = this.domain.modules[this.id + "/" + navigation[this.stateKey][0]];
       }
+      //} else if (!this.solo) {
+      //this.activeModule = null;
+      //}
 
-      if (this.activeModule)
+      if (this.activeModule && this.activeModule.id === this.id + "/" + navigation[this.stateKey][0])
       {
         // Remove first part of navigation in order to force activeModule to only react to events at its level and higher 
-        //var modNav = navigation[this.moduleIdentifier].slice(1);
         moduleNavigation = $.extend(true, {}, navigation);
-        moduleNavigation[this.moduleIdentifier] = fullNav.slice(this.activeModule.id.split("/").length - 1);
-
-        /* Removed - cause a bug
-         * if (!this.activeModule.started) {
-         return;
-         }*/
-
+        moduleNavigation[this.stateKey] = fullNav.slice(this.activeModule.id.split("/").length - 1);
         // Call module level events handlers
         this.activeModule.hashChanged(moduleNavigation, this.params, hashValue, fullNav);
       }
+    },
+    loadModule: function (module, onDone) {
+      System.loadModule(module, onDone, this.scope);
     },
     hashHandler: function (nav, params) {
     }

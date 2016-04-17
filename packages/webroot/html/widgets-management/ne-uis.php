@@ -16,7 +16,7 @@ session_start();
   </ul>
 </div>
 <div id="ew-uis-editor" class="form-content tabs-bar row" style="padding:0px;">
-  <div class="list-modal z-index-1" style="width:400px;z-index:3;background-color:#fff;left:-400px;" id="items-list">      
+  <div class="list-modal" style="width:400px;background-color:#fff;left:-400px;" id="items-list">      
     <h1 class="pull-left">Select an item</h1><a href='javascript:void(0)' class='close-icon pull-right' style="margin:5px;"></a>      
     <div  id="items-list-content" ></div>
   </div>
@@ -145,14 +145,12 @@ session_start();
   outline: 1px solid #fff;
   outline-offset: -1px;
   z-index:10;
+  cursor: pointer;
   }
 
   /*.widget-glass-pane:hover
   {
-  border:1px solid rgba(255,255,255,.5);
-  outline:none;
-  box-shadow:0px 4px 15px 0px rgba(0,0,0,.85);
-  background-color:rgba(255,255,255,.2);
+  background-color:rgba(200,240,240,.3);
   }*/
 
   .widget-glass-pane .btn{float:left;margin:5px 0px 0px 5px;display:none;}
@@ -349,7 +347,7 @@ session_start();
       if (_this.dpPreference)
         _this.dpPreference.trigger("destroy");
     });
-    
+
     parentDialog.on("beforeClose", function () {
       //console.log(self.oldStructure, self.createContentHeirarchy(), self.createContentHeirarchy());
       if (JSON.stringify(_this.oldStructure) !== JSON.stringify(_this.createContentHeirarchy())) {
@@ -481,8 +479,7 @@ session_start();
           if (offset.top > (scrollTop + self.editorIFrame.height()) || offset.top + panel.outerHeight() < scrollTop) {
             frameBody.stop().animate({
               scrollTop: offset.top
-            },
-                    500);
+            }, 500);
           }
 
           self.currentElementHighlight.css({
@@ -666,12 +663,13 @@ session_start();
         glass[0].dataset.position = pos;
       });
     }
-    if (!repTimeout) {
-      repTimeout = setTimeout(function () {
-        repTimeout = null;
-        self.relocateGlassPanes();
-      }, 100);
-    }
+    //if (!repTimeout) {
+    clearTimeout(repTimeout);
+    repTimeout = setTimeout(function () {
+      repTimeout = null;
+      self.relocateGlassPanes();
+    }, 500);
+    //}
   };
 
   /** Create a json string from current layout structure heirarchy 
@@ -879,19 +877,18 @@ session_start();
       uisId: self.uisId,
       defaultUIS: defaultUIS,
       homeUIS: homeUIS
-    },
-            function (data) {
-              $("body").EW().notify(data).show();
-              uisList.listUIStructures();
-              $('#form-title').html("<span>Edit</span> " + data.data.title);
-              self.oldStructure = structure;
-              if (reload === true) {
-                self.reloadFrame();
-              } else {
-                self.oldStructure = self.createContentHeirarchy();
-              }
-              lock.dispose();
-            }, "json");
+    }, function (data) {
+      $("body").EW().notify(data).show();
+      $(document).trigger("uis-list.refresh");
+      $('#form-title').html("<span>Edit</span> " + data.data.title);
+      self.oldStructure = structure;
+      if (reload === true) {
+        self.reloadFrame();
+      } else {
+        self.oldStructure = self.createContentHeirarchy();
+      }
+      lock.dispose();
+    }, "json");
   };
 
   UISForm.prototype.updateTemplateBody = function () {
@@ -1269,12 +1266,11 @@ session_start();
       top: topOffset / 2,
       left: leftOffset / 2,
       height: newHeight
-    },
-            500, "Power1.easeInOut", function () {
-              self.loadInspectorEditor();
-              self.editorFrame.find(".widget-glass-pane").show();
-              self.relocateGlassPanes();
-            });
+    }, 500, "Power1.easeInOut", function () {
+      self.loadInspectorEditor();
+      self.editorFrame.find(".widget-glass-pane").show();
+      self.relocateGlassPanes();
+    });
   };
 
   EW.setHashParameter("screen", null, "neuis");

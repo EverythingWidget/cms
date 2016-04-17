@@ -19,7 +19,7 @@
 
   &.section {
     position: relative;
-    padding: 30px 0;
+    padding: 30px 0;       
   }
 
   &.content {
@@ -39,8 +39,6 @@
 
   &.daily-quote {
     background-color: #fff;
-    border: 0px solid #999;
-    border-width: 3px 0;
     background-position: center center;
     background-size: cover;
     margin: 30px -15px;
@@ -65,15 +63,16 @@
   }
 
   &.contact-us {  
-    background-image: url(images/bg-1.jpg);
-    background-attachment: fixed;
-    background-size: contain;
-    background-position: center;
+    min-height: 200px;
+    background-image: url(images/gifts.png);
+    background-repeat: no-repeat;
+    background-size: auto 88%;
+    background-position: right bottom;
     position: relative;
 
     margin-top: 0;
     padding: 30px 0;
-    color: #fff;
+    color: #666;
     font-weight: 300;
 
     h1 {
@@ -99,7 +98,9 @@
   }
 
   &.light-grey {
-    background-color: #eee;
+    margin: 30px -15px;
+    background-image: url('images/people-bg-dark.jpg');
+    background-size: cover;
   }
 
   &.events-row {
@@ -109,7 +110,7 @@
   &.footer {
     background-color: #ddd;
     min-height: 150px;
-    padding: 0px 0 0px;
+    padding: 30px 0 0;    
 
     h2 {
       margin: 0 0 15px;

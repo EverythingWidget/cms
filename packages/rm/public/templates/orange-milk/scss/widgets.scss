@@ -60,7 +60,7 @@
   &.important-event {
     height: 475px;
     background-color: #fff;
-    box-shadow: 0 3px 7px rgba(0,0,0,0.1),0 9px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 3px 7px rgba(0,0,0,0.18),0 9px 15px rgba(0,0,0,0.18);
     overflow: hidden;
     border-radius: 5px;
 
@@ -89,7 +89,6 @@
   &.events-list { 
     .owl-carousel {
       .owl-stage-outer{
-
         @media (min-width: 992px) {
           padding: 0;
         }
@@ -98,6 +97,7 @@
           padding: 15px 0;
         }
       }
+      
       .item {
         color: $font-color;
         height: 355px;
@@ -139,7 +139,6 @@
               font-size: 22px;
             }
 
-
             @media (min-width: 1360px) {
               font-size: 32px;
             }
@@ -147,7 +146,7 @@
         }
 
         img {
-          max-width: 100%;
+          width: 100%;
           margin: 0 auto;
           height: auto;
           max-height: 250px;
@@ -186,6 +185,18 @@
         background-color: #111;
       }
     }
+
+    &.rtl {
+      .owl-carousel {
+        .owl-stage-outer{
+          direction: ltr;
+        }
+        
+        .item {
+          direction: rtl;
+        }
+      }
+    }
   }
 
   &.list {
@@ -207,7 +218,7 @@
 
       .front-image {
         float: left;
-        max-height: 160px;
+        max-height: 1756x;
         max-width: 200px;
         margin-right: 20px;
       }
@@ -218,7 +229,7 @@
         font-weight: 500;
       }
 
-      .\@content\/date-created {
+      .\@content\/date-created , .\@post\/date-published {
         font-size: .9em;
         font-weight: 500;
         color:#aaa;
@@ -230,7 +241,6 @@
         margin: 15px 0;
         font-size: 1em;
         font-weight: 300;
-        margin-left: 220px;
       }
 
       .item-link {
@@ -316,6 +326,51 @@
         .btn-next {
           background-image: url(images/icon-arrow-left.png) !important;
           float: left;
+        }
+      }
+    }
+  }
+
+  &.cards.list{
+    font-size: 19px;
+
+    .list-item {
+      position: relative;
+      background-color: #fff;
+      padding: 15px; 
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+      transition: all 0.2s ease-in-out;
+
+      &:hover {
+        box-shadow: 0 10px 20px rgba(0,0,0,0.15), 0 6px 6px rgba(0,0,0,0.19);
+      }
+
+      .front-image {
+        margin: -15px;
+        margin-right: 15px;
+      }
+
+      .item-link {
+        border-radius: 0;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        border: 0px solid $font-akcent-color;
+        border-width: 1px 0 0 1px;
+        border-top-left-radius: 5px;
+
+      }
+    }
+
+    &.rtl {
+      .list-item {
+
+        .front-image {
+          margin-right: -15px;
+          margin-left: 15px;
+        }
+
+        .item-link {
         }
       }
     }
@@ -470,17 +525,33 @@
   }
 
   &.list-col-3 {
-    margin: 45px 0;
+    margin: 0;
+
+    .list-item {
+      &:not(:last-child) {
+        &::after{
+          content:' ';
+          width: 2px;
+          background-color: rgba(0,0,0,.1);
+          position: absolute;
+          top: 20px;
+          bottom: 20px;
+          right: -1px;
+          border-radius: 1px;
+        }
+      }
+    }
 
     .list-item-cell {
-      background-color: $akcent-background-color;
+      background-color: transparent;
       min-height: 430px;
       overflow: hidden;
-      padding: 15px;
-      border-bottom: 3px solid $font-akcent-color;
+      padding: 0;
       position: relative;
       color: $font-color;
       text-align: center;
+
+
 
       @media (min-width: 992px) {
         font-size: .73em;
@@ -491,10 +562,9 @@
       }
 
       .front-image {
-        max-width: 100%;
+        width: 100%;
         max-height: 220px;
         display: block;
-        margin: 0 auto 20px;
       }
 
       .person {
@@ -512,21 +582,23 @@
       }
 
       a {
-        width: 100%;
-        display: block;
-        color: $font-akcent-color;
-        position: absolute;
-        bottom: 0;
-        padding: 15px 0;  
-        left: 0;
+        background-color: transparent;
+        display: inline-block;
+        margin: 0 auto;
+        color: #000;
+        margin-top: 15px;
+        border-radius: 4px;
+        padding: 10px 25px;  
         font-weight: 500;
         text-align: center;
         transition: all .3s;
+        border: 2px solid #000;
+        opacity: .3;
       }
 
       a:hover {
-        background-color: $font-akcent-color;
-        color: #fff;
+
+        opacity: 1;
       }
     }
   }
@@ -544,7 +616,7 @@
 
     h2 {    
       font-weight: normal;
-      color: $font-akcent-color;    
+      color: #fff;    
     }
 
     img {
@@ -596,6 +668,7 @@
 
   &.google-map {
     width: 100%;
+    margin: 0;
     height: 450px;
     display: block;
 
@@ -641,7 +714,7 @@
 }
 
 .title h1 {
-  margin: 0px auto 0;
+  margin: -15px auto 45px;
 }
 
 .rtl {

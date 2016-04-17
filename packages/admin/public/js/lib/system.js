@@ -2,7 +2,7 @@
 
   var entities = {};
   System = {
-    moduleIdentifier: "app",
+    stateKey: "app",
     modules: {},
     uiTemplates: {},
     appPathfiledName: null,
@@ -83,9 +83,9 @@
       module.domain = domain;
       module.id = id;
 
-      modulePath = domain.app.navigation[module.moduleIdentifier] ? domain.app.navigation[module.moduleIdentifier] : [];
+      modulePath = domain.app.navigation[module.stateKey] ? domain.app.navigation[module.stateKey] : [];
       moduleNavigation = $.extend(true, {}, domain.app.navigation);
-      moduleNavigation[module.moduleIdentifier] = modulePath.slice(id.split("/").length - 1);
+      moduleNavigation[module.stateKey] = modulePath.slice(id.split("/").length - 1);
 
       domain.modules[id] = module;
       domain.notYetStarted.push(id);
@@ -93,7 +93,7 @@
       // Set module hash for this module when its inited
       // module hash will be set in the hashChanged method as well
       // if current navigation path is equal to this module id
-      //module.hash = System.modulesHashes[id.replace("system/", "")] = module.moduleIdentifier + "=" + id.replace("system/", "");
+      //module.hash = System.modulesHashes[id.replace("system/", "")] = module.stateKey + "=" + id.replace("system/", "");
 
       module.init(moduleNavigation, domain.app.params);
 
@@ -167,7 +167,7 @@
           });
 
           _this.setModuleHashValue(navigation, params, hashValue);
-          _this.app.hashChanged(navigation, params, hashValue, navigation[_this.app.moduleIdentifier]); // System
+          _this.app.hashChanged(navigation, params, hashValue, navigation[_this.app.stateKey]); // System
 
           _this.app.oldHash = '#' + hashValue;
         }
@@ -259,7 +259,7 @@
       var newHash = "#";
       var and = false;
       hashValue.replace(/([^&]*)=([^&]*)/g, function (m, k, v) {
-        if (parameters[k] != null) {
+        if (parameters[k] !== null && typeof parameters[k] !== 'undefined') {
           newHash += k + "=" + parameters[k];
           newHash += '&';
           and = true;
@@ -301,12 +301,11 @@
      * @param {callback} onDone
      * @returns {void}
      */
-    loadModule: function (mod, onDone) {
+    loadModule: function (mod, onDone, parentScope) {
       System.onModuleLoaded["system/" + mod.id] = onDone;
       var module = System.modules["system/" + mod.id];
 
       if (module) {
-
         if ("function" === typeof (System.onModuleLoaded["system/" + mod.id])) {
           System.onModuleLoaded["system/" + mod.id].call(this, module, module.html);
           System.onModuleLoaded["system/" + mod.id] = null;
@@ -325,56 +324,20 @@
           $("#system_" + mod.id.replace(/[\/-]/g, "_")).remove();
           //return;
         }
-        var scripts = null;
-        var raw = $(response);
-        //var scripts = raw.filter("script").remove();
-        var html = raw.filter(function (i, e) {
 
-          if (e.tagName && e.tagName.toLowerCase() === "script") {
-            //console.log(e.tagName);
-            scripts = $(e);
-            return false;
-          }
-          return true;
-
-        });
-        var templates = {};
-        /*html = html.filter(function (i, e) {
-         
-         if (e.dataset && e.dataset.uiTemplate) {
-         //console.log(e.tagName);
-         //templates[e.dataset.uiTemplate] = e;
-         return false;
-         }
-         return true;
-         
-         });*/
-        //console.debug('html ', mod.id);
-
-        //var docFragment = document.createDocumentFragment()
-        //docFragment.innerHTML = html.html();
-        //console.log(docFragment);
-        var temp = document.createElement('div');
-        for (var i = 0, len = html.length; i < len; i++) {
-          temp.appendChild(html[i]);
-        }
-        document.getElementsByTagName('body')[0].appendChild(temp);
-        temp.parentNode.removeChild(temp);
-        //
-
-        /*if(mod.id === 'content-management/media'){
-         console.debug('html ', mod.id,html);
-         console.debug('html ', System.ui.templates);
-         alert();
-         
-         }*/
-
-        System.uiTemplates["system/" + mod.id] = templates;
-
+        var filtered = System.parseContent(response);
+        //System.uiTemplates["system/" + mod.id] = templates;
 
         setTimeout(function () {
-          if (scripts)
-            $("head").append(scripts);
+          if (filtered.script) {
+            var scope = {
+              __moduleId: "system/" + mod.id,
+              parentScope: parentScope
+            };
+            var scriptContent = '(function(Scope){' + filtered.script.text() + '})(scope)';
+            eval(scriptContent);
+            //$("head").append('<script>' + scriptContent + '</script>');
+          }
 
           //$(html).remove();
           //var html = res;
@@ -383,29 +346,50 @@
           //console.log(System.app.modules);
           //var module = System.state(mod.id);
           if (!System.modules["system/" + mod.id]) {
-            alert("Invalid module: " + mod.id);
+            //alert("Invalid module: " + mod.id);
+            throw new Error('Could not find module: system/' + mod.id + ', url: ' + mod.url);
             return;
           }
 
-          System.modules["system/" + mod.id].html = html;
+          System.modules["system/" + mod.id].html = filtered.html;
+          System.modules["system/" + mod.id].scope = scope;
 
-          if (scripts)
-            scripts.attr("id", System.modules["system/" + mod.id].id.replace(/[\/-]/g, "_"));
+          //if (scripts)
+          //scripts.attr("id", System.modules["system/" + mod.id].id.replace(/[\/-]/g, "_"));
 
           if ("function" === typeof (System.onModuleLoaded["system/" + mod.id])) {
-            //onDone.call(this, System.modules["system/" + mod.id], response);
-            //console.log(System.modules["system/" + mod.id].html.html());
-
-            System.onModuleLoaded["system/" + mod.id].call(this, System.modules["system/" + mod.id], html);
-            //console.log(System.modules["system/" + mod.id].html.html());
+            System.onModuleLoaded["system/" + mod.id].call(this, System.modules["system/" + mod.id], filtered.html);
             System.onModuleLoaded["system/" + mod.id] = null;
-            ;
           }
 
           delete System.onLoadQueue["system/" + mod.id];
         }, 5);
 
       });
+    },
+    parseContent: function (raw) {
+      var scripts = null;
+      var raw = $(raw);
+      //var scripts = raw.filter("script").remove();
+      var html = raw.filter(function (i, e) {
+        if (e.tagName && e.tagName.toLowerCase() === "script") {
+          scripts = $(e);
+          return false;
+        }
+        return true;
+      });
+      var templates = {};
+      var temp = document.createElement('div');
+      for (var i = 0, len = html.length; i < len; i++) {
+        temp.appendChild(html[i]);
+      }
+      document.getElementsByTagName('body')[0].appendChild(temp);
+      temp.parentNode.removeChild(temp);
+
+      return {
+        html: html,
+        script: scripts
+      };
     },
     addActiveRequest: function (request) {
       var _this = this,
@@ -463,7 +447,7 @@
     init: function (mods) {
       this.app = $.extend(true, {}, System.MODULE_ABSTRACT);
       this.app.domain = this;
-      this.app.moduleIdentifier = this.moduleIdentifier;
+      this.app.stateKey = this.stateKey;
       this.app.id = "system";
       this.app.installModules = mods;
       this.app.init({}, {}, "");
@@ -471,6 +455,20 @@
   };
 
   System.utility = System.Util = {
+    extend: function (child, parent) {
+      var hasProp = {}.hasOwnProperty;
+      for (var key in parent) {
+        if (hasProp.call(parent, key))
+          child[key] = parent[key];
+      }
+      function ctor() {
+        this.constructor = child;
+      }
+      ctor.prototype = parent.prototype;
+      child.prototype = new ctor();
+      child.__super__ = parent.prototype;
+      return child;
+    },
     installModuleStateHandlers: function (module, states) {
       for (var state in states) {
         module.on(state, states[state]);
