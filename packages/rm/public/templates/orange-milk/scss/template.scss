@@ -30,8 +30,10 @@ $font-color: #444;
 //$font-akcent-color: #f50808;
 //$font-akcent-color: #0BB4D1;
 //$font-akcent-color: #FE9322;
-$font-akcent-color: #00a651;
-$font-akcent-color-dark: #04C160;
+//$font-akcent-color: #00a651;
+$font-akcent-color: #0599EF;
+$font-akcent-color-dark: #0C81C5;
+//$font-akcent-color-dark: #04C160;
 $nav-bar-bg: rgba(255,255,255,.9);
 
 @import 'blocks.scss';
@@ -46,6 +48,33 @@ $nav-bar-bg: rgba(255,255,255,.9);
     position: absolute;
     top: 0;
     z-index: 10;
+  }
+
+  .panel {
+    &.section {
+    }
+
+    &.article {
+      padding: 20px 50px;      
+      border: 0 solid rgba(0,0,0,.18);
+      overflow: hidden;
+      border-width: 1px 0;
+      
+
+      .widget-container {
+        padding: 0;
+      }
+
+      img {
+        margin: 30px auto;
+        display: block;
+
+        &:first-child {
+          margin: -20px -50px;
+          margin-bottom: 30px;
+        }
+      }
+    }
   }
 
   .widget {
@@ -81,8 +110,24 @@ $nav-bar-bg: rgba(255,255,255,.9);
     height: 80px;
   }
 
-  .panel.section {
-    width: 720px;  
+  .panel {
+    &.section {
+      width: 720px;  
+    }
+
+    &.article {
+      width: 720px;
+      padding: 30px 60px;
+      border-width: 1px;
+      border-radius: 3px;
+
+      img {
+        &:first-child {
+          margin: -60px -80px;
+          margin-bottom: 30px;
+        }
+      }
+    }
   }
 
   .widget {
@@ -112,15 +157,29 @@ $nav-bar-bg: rgba(255,255,255,.9);
 
 @media (min-width: 992px) {
 
-  .panel.section {
-    width: 940px;  
+  .panel{
+    &.section {
+      width: 940px;  
+    }
+
+    &.article {
+      width: 860px;
+      padding: 60px 80px;
+    }
   }
+
 }
 
 @media (min-width: 1360px) {
 
-  .panel.section {
-    width: 1200px;  
+  .panel {
+    &.section {
+      width: 1200px;  
+    }
+
+    &.article {
+      width: 860px;      
+    }
   }
 }
 
@@ -128,7 +187,7 @@ body {
   font-family: 'Roboto', 'FarNazaninBold';
   font-size: 17px;
   position: relative;
-  background-color: #eee;
+  background-color: #e0e0e0;
 }
 
 .content-box {
@@ -137,8 +196,12 @@ body {
 }
 
 .container {
+  background-color: #fafafa;
   overflow: hidden;
   width: 100%;
+  min-height: 100vh;
+  //box-shadow: 0 0 60px rgba(0, 0, 0, 0.25);
+  margin: 0 auto;
 }
 
 .panel {
@@ -188,9 +251,7 @@ body {
 }
 
 .rtl {
-  h2 {    
-    text-align: right;
-  }
+  
 }
 
 /*.people:before {

@@ -31,10 +31,15 @@ class EWCore {
     $this->request = $_REQUEST;
     spl_autoload_register(array(
         $this,
-        'autoload_core'));
+        'autoload_core'));     
+  }
 
-    $database_config = include('../config/database_config.php');
-
+  public function load_vendors() {
+    require '../vendor/autoload.php';
+  }
+  
+  public function init() {
+    $database_config = include('../config/database_config.php');   
     $this->load_vendors();
     self::$loaders_installed = true;
     self::init_packages();
@@ -55,45 +60,31 @@ class EWCore {
       static::$DB->bootEloquent();
     }
   }
-
-  public function load_vendors() {
-    require '../vendor/autoload.php';
+  
+  public function start() {
+    
   }
 
   public function process($parameters = null) {
-    //$db = \EWCore::get_db_connection();
-    // If parameters is null set the request as parameters
     if (!$parameters) {
       $parameters = $_REQUEST;
     }
 
     if ($parameters['_method_name'] && method_exists($this, $parameters['_method_name'])) {
-      //echo call_user_func(array($this, $this->request['_function_name']));
       $method_object = new ReflectionMethod($this, $parameters['_method_name']);
       $params = $method_object->getParameters();
       $functions_arguments = array();
       $this->current_method_args = array();
+      
       foreach ($params as $param) {
-        //$temp = null;
-        /* if (is_array($parameters[$param->getName()])) {
-          //var_dump($parameters[$param->getName()]);
-          $temp = array_map(function($val) use ($db) {
-
-          return is_string($val) ? $db->real_escape_string($val) : $val;
-          }, $parameters[$param->getName()]);
-
-          //$temp = $parameters[$param->getName()];
-          }
-          else {
-          $temp = $db->real_escape_string($parameters[$param->getName()]);
-          } */
         $functions_arguments[] = $parameters[$param->getName()];
         $this->current_method_args[$param->getName()] = $parameters[$param->getName()];
       }
-      //$method_object->
-      ob_start();
+      
+      ob_start();    
       echo $method_object->invokeArgs($this, $functions_arguments);
       $result = ob_get_clean();
+      
       $this->current_method_args = array();
 
       return $result;
@@ -1495,29 +1486,26 @@ class EWCore {
     } */
 
   public static function parse_css($path, $className = "panel") {
-    if (isset($_REQUEST["path"]))
+    if (isset($_REQUEST["path"])) {
       $path = $_REQUEST["path"];
+    }
+
     //Grab contents of css file
     $file = file_get_contents($path);
 
-//Strip out everything between { and }
-    $pattern_one = '/(?<=\{)(.*?)(?=\})/';
-
-//Match any and all selectors (and pseudos)
-    //$pattern_two = '/[\.|#][\. \w-]+[:[\w]+]?/';
+    //Strip out everything between { and }
+    //$pattern_one = '/(?<=\{)(.*?)(?=\})/';
+    //Match any and all selectors (and pseudos)
     $pattern_two = '/(div)?(\.' . $className . '\.)+[\w-]+/';
-    // '/(div)?(\.panel)+[\.\w-]+/'  for panels
-    // '/(div)?(\.widget)[\.\w-]+/' for widgets
-//Run the first regex pattern on the input
-    //$stripped = preg_replace($pattern_one, '', $file);
-//Variable to hold results
+
+    //Run the first regex pattern on the input
+    //Variable to hold results
     $selectors = array();
 
-//Run the second regex pattern on $stripped input
+    //Run the second regex pattern on $stripped input
     $matches = preg_match_all($pattern_two, $file, $selectors);
-//Show the results
-    //$selectors[0] = str_replace('.', ' ', $selectors[0]);
-    //print_r($selectors);
+    //Show the results
+    asort($selectors[0]);
     return json_encode(array_unique($selectors[0]));
   }
 

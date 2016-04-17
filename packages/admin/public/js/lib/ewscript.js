@@ -16,7 +16,7 @@ $.fn.serializeJSON = function (flag) {
     }
   });
 
-  $.each(this[0].querySelectorAll('[element-type="input"]'), function () {
+  $.each(this.find('[element-type="input"]'), function () {
     pureObject[this.getAttribute('name') || this.getAttribute('id')] = this.value;
   });
 

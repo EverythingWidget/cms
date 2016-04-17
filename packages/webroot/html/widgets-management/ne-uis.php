@@ -16,7 +16,7 @@ session_start();
   </ul>
 </div>
 <div id="ew-uis-editor" class="form-content tabs-bar row" style="padding:0px;">
-  <div class="list-modal z-index-1" style="width:400px;z-index:3;background-color:#fff;left:-400px;" id="items-list">      
+  <div class="list-modal" style="width:400px;background-color:#fff;left:-400px;" id="items-list">      
     <h1 class="pull-left">Select an item</h1><a href='javascript:void(0)' class='close-icon pull-right' style="margin:5px;"></a>      
     <div  id="items-list-content" ></div>
   </div>
@@ -145,14 +145,12 @@ session_start();
   outline: 1px solid #fff;
   outline-offset: -1px;
   z-index:10;
+  cursor: pointer;
   }
 
   /*.widget-glass-pane:hover
   {
-  border:1px solid rgba(255,255,255,.5);
-  outline:none;
-  box-shadow:0px 4px 15px 0px rgba(0,0,0,.85);
-  background-color:rgba(255,255,255,.2);
+  background-color:rgba(200,240,240,.3);
   }*/
 
   .widget-glass-pane .btn{float:left;margin:5px 0px 0px 5px;display:none;}
@@ -481,8 +479,7 @@ session_start();
           if (offset.top > (scrollTop + self.editorIFrame.height()) || offset.top + panel.outerHeight() < scrollTop) {
             frameBody.stop().animate({
               scrollTop: offset.top
-            },
-                    500);
+            }, 500);
           }
 
           self.currentElementHighlight.css({
@@ -671,7 +668,7 @@ session_start();
     repTimeout = setTimeout(function () {
       repTimeout = null;
       self.relocateGlassPanes();
-    }, 200);
+    }, 500);
     //}
   };
 
@@ -1269,12 +1266,11 @@ session_start();
       top: topOffset / 2,
       left: leftOffset / 2,
       height: newHeight
-    },
-            500, "Power1.easeInOut", function () {
-              self.loadInspectorEditor();
-              self.editorFrame.find(".widget-glass-pane").show();
-              self.relocateGlassPanes();
-            });
+    }, 500, "Power1.easeInOut", function () {
+      self.loadInspectorEditor();
+      self.editorFrame.find(".widget-glass-pane").show();
+      self.relocateGlassPanes();
+    });
   };
 
   EW.setHashParameter("screen", null, "neuis");

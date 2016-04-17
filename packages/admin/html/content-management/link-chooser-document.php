@@ -170,7 +170,8 @@
         _this.bSelect.comeIn(300);
         _this.document = {
           feederId: "admin/api/content-management/content-fields",
-          id: model.contentId
+          id: model.contentId,
+          fieldId: model.fieldId
         };
         _this.highlightContent(div);
       });

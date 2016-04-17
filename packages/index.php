@@ -1,8 +1,9 @@
 <?php
+
 //$before = microtime(true);
-/*echo '<pre>' . var_export($_SERVER, true) . '</pre>';
-echo '<pre>' . var_export($_REQUEST, true) . '</pre>';
-die();*/
+/* echo '<pre>' . var_export($_SERVER, true) . '</pre>';
+  echo '<pre>' . var_export($_REQUEST, true) . '</pre>';
+  die(); */
 ini_set('session.cookie_httponly', 1);
 session_start();
 header_remove("X-Powered-By");
@@ -16,7 +17,7 @@ header_remove("X-Powered-By");
 
 ob_start();
 require '../config/config.php';
-/*require '../config/database_config.php';*/
+/* require '../config/database_config.php'; */
 require '../core/EWCore.class.php';
 /* require '../core/modules/Valitron/Validator.php'; */
 ob_end_clean();
@@ -25,6 +26,10 @@ if (ob_get_level())
 
 $_file = null;
 error_reporting(E_WARNING | E_ERROR);
+
+$ew_core = new EWCore();
+$ew_core->init();
+
 /* $api_call = urldecode($_SERVER['REQUEST_URI']);
 
   $api_call =str_replace(EW_DIR,'', $api_call);
@@ -61,11 +66,9 @@ if ($default_language) {
   $language = $default_language;
 }
 
-if (preg_match("/^([^~]{2,3})$/", $elements[$parameter_index], $match)) {
+if (preg_match("/^([^~]{2})$/", $elements[$parameter_index], $match)) {
   $language = $match[0];
   $_REQUEST["_url_language"] = $language;
-  //echo array_shift($elements);   
-  //$parameter_index++;
   array_shift($elements);
 }
 
@@ -87,12 +90,20 @@ else {
 
 define('EW_ROOT_URL', $u);
 
-$EW = new \EWCore();
+
+
+$resource_types = [
+    'html', // All the HTML resources should be hosted here.
+    'api', // All the api resources should be hosted here.
+    'public', // All the publicly available resources should be hosted here.
+    'develop',
+    'test'
+];
 
 // Check the app parameter
 $resource_type = "html";
 $app_name = "webroot";
-
+//var_dump($elements[$parameter_index + 1]);
 if (strpos($elements[$parameter_index], '~') === 0) {
   $app_name = str_replace('~', '', $elements[$parameter_index]);
   $parameter_index++;
@@ -102,7 +113,15 @@ if (strpos($elements[$parameter_index], '~') === 0) {
     $parameter_index++;
   }
 }
+else if (in_array($elements[$parameter_index],$resource_types)) {
+  if (isset($elements[$parameter_index + 1])) {
+    $app_name = str_replace('~', '', $elements[$parameter_index + 1]);
+    $resource_type = $elements[$parameter_index];
+    $parameter_index += 2;
+  }
+}
 
+//echo $elements[$parameter_index + 1];
 // Read the section name parameter
 $section_name = null;
 if (isset($elements[$parameter_index]) && preg_match("/^([^\.]*)$/", $elements[$parameter_index], $match)) {
@@ -142,13 +161,12 @@ $RESULT_CONTENT = "RESULT_CONTENT: EMPTY";
 
 $real_class_name = $app_name . '\\' . $section_name;
 
-$RESULT_CONTENT = EWCore::process_request_command($app_name, $resource_type, $section_name, $function_name, $_REQUEST);
+$RESULT_CONTENT = $ew_core->process_request_command($app_name, $resource_type, $section_name, $function_name, $_REQUEST);
 
 function translate($match) {
   global $language;
   return EWCore::translate_to_locale($match, $language);
 }
-
 
 // show the result
 if ($RESULT_CONTENT) {

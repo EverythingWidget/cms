@@ -177,6 +177,10 @@ class Module {
     $part_index = 0;
     foreach ($method_parameters as $param) {
       $temp = NULL;
+      if ($param->isDefaultValueAvailable()) {
+        $temp = $param->getDefaultValue();
+      }
+
       $param_name = $param->getName();
 
       if (strpos($param_name, "_parts__") === 0) {
@@ -191,6 +195,7 @@ class Module {
       $functions_arguments[] = $temp;
       $this->current_method_args[$param->getName()] = $temp;
     }
+
     $method_object->setAccessible(true);
     $command_result = $method_object->invokeArgs($this, $functions_arguments);
 

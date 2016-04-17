@@ -31,7 +31,7 @@ class WidgetFeeder {
     $this->feeder_type = $feeder_type;
     $this->method_name = $method_name;
     $this->resourse_type = $resource_type;
-    $this->id = $module->get_app()->get_root()
+    $this->id = str_replace('_', '-', $module->get_app()->get_root())
             . '/' . $resource_type
             . '/' . \EWCore::camelToHyphen($module->get_name()
                     . '/' . $method_name);

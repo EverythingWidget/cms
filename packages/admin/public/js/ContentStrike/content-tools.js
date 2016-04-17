@@ -5686,7 +5686,7 @@
         'ew-media',
         'image',
         'video',
-        'soundcloud-embed',
+        'widget-embed',
         'preformatted',
         'content-field'
       ],
@@ -11241,29 +11241,29 @@
     return child;
   }, hasProp = {}.hasOwnProperty;
   ContentTools.SoundcloudDialog = (function (superClass) {
-    extend(SoundcloudDialog, superClass);
-    function SoundcloudDialog() {
-      SoundcloudDialog.__super__.constructor.call(this, 'Insert soundcloud');
+    extend(WidgetIFrame, superClass);
+    function WidgetIFrame() {
+      WidgetIFrame.__super__.constructor.call(this, 'Insert widget iframe');
     }
 
-    SoundcloudDialog.prototype.clearPreview = function () {
+    WidgetIFrame.prototype.clearPreview = function () {
       if (this._domPreview) {
         ContentEdit.addCSSClass(this._domButton, 'ct-control--muted');
         this._domPreview.parentNode.removeChild(this._domPreview);
         return this._domPreview = void 0;
       }
     };
-    SoundcloudDialog.prototype.mount = function () {
+    WidgetIFrame.prototype.mount = function () {
       var domControlGroup;
-      SoundcloudDialog.__super__.mount.call(this);
-      ContentEdit.addCSSClass(this._domElement, 'ct-soundcloud-dialog');
+      WidgetIFrame.__super__.mount.call(this);
+      ContentEdit.addCSSClass(this._domElement, 'ct-iframe-dialog');
       ContentEdit.addCSSClass(this._domView, 'ct-video-dialog__preview');
       domControlGroup = this.constructor.createDiv(['ct-control-group']);
       this._domControls.appendChild(domControlGroup);
       this._domInput = document.createElement('textarea');
-      this._domInput.setAttribute('class', 'ct-soundcloud-dialog__input');
+      this._domInput.setAttribute('class', 'ct-iframe-dialog__input');
       this._domInput.setAttribute('name', 'url');
-      this._domInput.setAttribute('placeholder', ContentEdit._('Paste Soundcloud embed code') + '...');
+      this._domInput.setAttribute('placeholder', ContentEdit._('Paste widget embed code') + '...');
       this._domInput.setAttribute('type', 'text');
       domControlGroup.appendChild(this._domInput);
       this._domButton = this.constructor.createDiv(['ct-control', 'ct-control--text', 'ct-control--insert', 'ct-control--muted']);
@@ -11272,63 +11272,64 @@
       return this._addDOMEventListeners();
     };
 
-    SoundcloudDialog.prototype.parseInput = function (text) {
+    WidgetIFrame.prototype.parseInput = function (text) {
       var parser = document.createElement('div');
       parser.innerHTML = text;
-      var soundcloudFrame = parser.querySelector('iframe');
+      var widgetIFrame = parser.querySelector('iframe');
       this.clearPreview();
 
-      if (!soundcloudFrame)
+      if (!widgetIFrame)
         return;
 
       return {
-        scrolling: soundcloudFrame.getAttribute('scrolling'),
-        height: soundcloudFrame.getAttribute('height'),
-        src: soundcloudFrame.getAttribute('src'),
-        title: soundcloudFrame.getAttribute('src').substr(0, 82)
+        scrolling: widgetIFrame.getAttribute('scrolling'),
+        height: widgetIFrame.getAttribute('height'),
+        width: widgetIFrame.getAttribute('width'),
+        src: widgetIFrame.getAttribute('src'),
+        title: widgetIFrame.getAttribute('src').substr(0, 82)
       };
     };
 
-    SoundcloudDialog.prototype.preview = function (url) {
+    WidgetIFrame.prototype.preview = function (url) {
       var parser = document.createElement('div');
       parser.innerHTML = url;
-      var soundcloudFrame = parser.querySelector('iframe');
+      var widgetIFrame = parser.querySelector('iframe');
       this.clearPreview();
 
-      if (!soundcloudFrame)
+      if (!widgetIFrame)
         return;
 
       this._domPreview = document.createElement('iframe');
       this._domPreview.setAttribute('frameborder', '0');
-      this._domPreview.setAttribute('scrolling', soundcloudFrame.getAttribute('scrolling'));
-      this._domPreview.setAttribute('height', soundcloudFrame.getAttribute('height'));
-      this._domPreview.setAttribute('src', soundcloudFrame.getAttribute('src'));
+      this._domPreview.setAttribute('scrolling', widgetIFrame.getAttribute('scrolling'));
+      this._domPreview.setAttribute('height', widgetIFrame.getAttribute('height'));
+      this._domPreview.setAttribute('src', widgetIFrame.getAttribute('src'));
       this._domPreview.setAttribute('width', '100%');
       ContentEdit.removeCSSClass(this._domButton, 'ct-control--muted');
       return this._domView.appendChild(this._domPreview);
     };
-    SoundcloudDialog.prototype.save = function () {
+    WidgetIFrame.prototype.save = function () {
       var embedURL, videoURL;
       videoURL = this._domInput.value.trim();
       return this.trigger('save', this.parseInput(videoURL));
       //}
     };
-    SoundcloudDialog.prototype.show = function () {
-      SoundcloudDialog.__super__.show.call(this);
+    WidgetIFrame.prototype.show = function () {
+      WidgetIFrame.__super__.show.call(this);
       return this._domInput.focus();
     };
-    SoundcloudDialog.prototype.unmount = function () {
+    WidgetIFrame.prototype.unmount = function () {
       if (this.isMounted()) {
         this._domInput.blur();
       }
-      SoundcloudDialog.__super__.unmount.call(this);
+      WidgetIFrame.__super__.unmount.call(this);
       this._domButton = null;
       this._domInput = null;
       return this._domPreview = null;
     };
-    SoundcloudDialog.prototype._addDOMEventListeners = function () {
+    WidgetIFrame.prototype._addDOMEventListeners = function () {
       var _this = this;
-      SoundcloudDialog.__super__._addDOMEventListeners.call(this);
+      WidgetIFrame.__super__._addDOMEventListeners.call(this);
 
       this._domInput.addEventListener('input', function (ev) {
         var updatePreview;
@@ -11368,17 +11369,17 @@
         };
       })(this));
     };
-    return SoundcloudDialog;
+    return WidgetIFrame;
   })(ContentTools.DialogUI);
-  ContentTools.Tools.SoundcloudEmbed = (function (superClass) {
+  ContentTools.Tools.WidgetIFrameEmbed = (function (superClass) {
     extend(SoundcloudEmbed, superClass);
     function SoundcloudEmbed() {
       return SoundcloudEmbed.__super__.constructor.apply(this, arguments);
     }
 
-    ContentTools.ToolShelf.stow(SoundcloudEmbed, 'soundcloud-embed');
-    SoundcloudEmbed.label = 'Soundcloud';
-    SoundcloudEmbed.icon = 'soundcloud';
+    ContentTools.ToolShelf.stow(SoundcloudEmbed, 'widget-embed');
+    SoundcloudEmbed.label = 'Widget iframe';
+    SoundcloudEmbed.icon = 'iframe';
     SoundcloudEmbed.canApply = function (element, selection) {
       return true;
     };
@@ -11409,10 +11410,10 @@
           if (videoURL) {
             video = new ContentEdit.Video('iframe', {
               'frameborder': 0,
-              'height': ContentTools.DEFAULT_VIDEO_HEIGHT,
+              'height': videoURL.height,
               'src': videoURL.src,
               title: videoURL.title,
-              'width': ContentTools.DEFAULT_VIDEO_WIDTH
+              'width': videoURL.width
             });
             ref = _this._insertAt(element), node = ref[0], index = ref[1];
             node.parent().attach(video, index);
