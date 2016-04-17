@@ -31,15 +31,15 @@ class EWCore {
     $this->request = $_REQUEST;
     spl_autoload_register(array(
         $this,
-        'autoload_core'));     
+        'autoload_core'));
   }
 
   public function load_vendors() {
     require '../vendor/autoload.php';
   }
-  
+
   public function init() {
-    $database_config = include('../config/database_config.php');   
+    $database_config = include('../config/database_config.php');
     $this->load_vendors();
     self::$loaders_installed = true;
     self::init_packages();
@@ -60,7 +60,7 @@ class EWCore {
       static::$DB->bootEloquent();
     }
   }
-  
+
   public function start() {
     
   }
@@ -75,16 +75,16 @@ class EWCore {
       $params = $method_object->getParameters();
       $functions_arguments = array();
       $this->current_method_args = array();
-      
+
       foreach ($params as $param) {
         $functions_arguments[] = $parameters[$param->getName()];
         $this->current_method_args[$param->getName()] = $parameters[$param->getName()];
       }
-      
-      ob_start();    
+
+      ob_start();
       echo $method_object->invokeArgs($this, $functions_arguments);
       $result = ob_get_clean();
-      
+
       $this->current_method_args = array();
 
       return $result;
@@ -1736,6 +1736,10 @@ class EWCore {
   }
 
   public static function camelToHyphen($val) {
+    return str_replace('_', '-', strtolower(preg_replace('/([a-zA-Z])(?=[A-Z])/', '$1-', $val)));
+  }
+
+  public static function camel_to_hyphen($val) {
     return str_replace('_', '-', strtolower(preg_replace('/([a-zA-Z])(?=[A-Z])/', '$1-', $val)));
   }
 
