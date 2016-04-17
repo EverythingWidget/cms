@@ -1212,6 +1212,8 @@ class WidgetsManagement extends \ew\Module {
    */
   public static function get_widget_feeder_by_url($id) {
     $id = (substr($id, -1) === "/") ? $id : "$id/";
+    $id = EWCore::camel_to_hyphen($id);
+
     if (isset(static::$widgets_feeders)) {
       foreach (static::$widgets_feeders as $feeder_id => $feeder_conf) {
         if ($feeder_conf->url === $id) {
@@ -1243,7 +1245,7 @@ class WidgetsManagement extends \ew\Module {
         $feeders[] = $feeder_config;
       }
     }
-    
+
     return \ew\APIResourceHandler::to_api_response($feeders, ["totalRows" => count($feeders)]);
   }
 
