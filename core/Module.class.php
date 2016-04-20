@@ -27,7 +27,6 @@ class Module {
    */
   public function __construct($app) {
     $this->app = $app;
-    $this->initParameters();
     $this->current_class = new \ReflectionClass($this);
   }
 
@@ -55,10 +54,6 @@ class Module {
    */
   public function get_app() {
     return $this->app;
-  }
-
-  function initParameters() {
-    
   }
 
   /**

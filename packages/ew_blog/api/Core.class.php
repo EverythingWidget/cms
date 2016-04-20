@@ -176,6 +176,7 @@ class Core extends \ew\Module {
   }
 
   public function ew_list_feeder_posts($id, $params = [], $token = 0, $size = 30, $order_by = 'DESC', $_language = 'en') {
+
     $query = \admin\ew_contents::select();
     $query->where('parent_id', '=', $id)
             ->join('ew_contents_labels as langs', 'ew_contents.id', '=', 'langs.content_id')
@@ -241,9 +242,14 @@ class Core extends \ew\Module {
       }
     }
 
+    $folder_info = \EWCore::call_cached_api('admin/api/content-management/contents', [
+                'id' => $id
+    ]);
+
     return \ew\APIResourceHandler::to_api_response($result, [
-                'page_size'       => count($articles),
-                "collection_size" => count($articles)
+                'parent_content_fields' => $folder_info['data']['content_fields'],
+                'page_size'             => count($articles),
+                "collection_size"       => count($articles)
     ]);
   }
 

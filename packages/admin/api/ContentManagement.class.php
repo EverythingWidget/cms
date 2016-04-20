@@ -691,9 +691,17 @@ class ContentManagement extends \ew\Module {
         ];
       }
     }
+
+    $folder_data = $this->get_content_by_id($id);
+    $parent_content_fields = [];
+    if (isset($folder_data['data']['content_fields'])) {
+      $parent_content_fields = $folder_data['data']['content_fields'];
+    }
+
     return \ew\APIResourceHandler::to_api_response($result, [
-                'page_size'       => $articles['collection_size'],
-                "collection_size" => count($articles_size['data'])
+                'parent_content_fields' => $parent_content_fields,
+                'page_size'             => $articles['collection_size'],
+                "collection_size"       => count($articles_size['data'])
     ]);
   }
 
