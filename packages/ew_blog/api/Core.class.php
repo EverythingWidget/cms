@@ -177,7 +177,14 @@ class Core extends \ew\Module {
 
   public function ew_list_feeder_posts($id, $params = [], $token = 0, $size = 30, $order_by = 'DESC', $_language = 'en') {
 
-    $query = \admin\ew_contents::select();
+    $query = \admin\ew_contents::select([
+                'ew_contents.id',
+                'date_created',
+                'content_fields',
+                'content',
+                'posts.date_published'
+    ]);
+
     $query->where('parent_id', '=', $id)
             ->join('ew_contents_labels as langs', 'ew_contents.id', '=', 'langs.content_id')
             ->join('ew_blog_posts as posts', 'ew_contents.id', '=', 'posts.content_id')
@@ -208,11 +215,6 @@ class Core extends \ew\Module {
             ->skip($token);
 
     $articles = $query->get([
-        'ew_contents.id',
-        'date_created',
-        'content_fields',
-        'content',
-        'posts.date_published'
     ]);
 
     $posts = array_map(function($row) {

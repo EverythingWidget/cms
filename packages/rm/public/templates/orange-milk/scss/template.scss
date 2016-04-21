@@ -30,10 +30,10 @@ $font-color: #444;
 //$font-akcent-color: #f50808;
 //$font-akcent-color: #0BB4D1;
 //$font-akcent-color: #FE9322;
-//$font-akcent-color: #00a651;
-$font-akcent-color: #0599EF;
-$font-akcent-color-dark: #0C81C5;
-//$font-akcent-color-dark: #04C160;
+$font-akcent-color: #00a651;
+/*$font-akcent-color: #0599EF;*/
+/*$font-akcent-color-dark: #0C81C5;*/
+$font-akcent-color-dark: #04C160;
 $nav-bar-bg: rgba(255,255,255,.9);
 
 @import 'blocks.scss';
@@ -55,22 +55,32 @@ $nav-bar-bg: rgba(255,255,255,.9);
     }
 
     &.article {
-      padding: 20px 50px;      
+      background-color: #fff;
+      padding: 0;      
+      padding-bottom: 20px;
       border: 0 solid rgba(0,0,0,.18);
+      background-clip: padding-box; 
       overflow: hidden;
       border-width: 1px 0;
-      
+      box-shadow: 0 3px 5px rgba(0,0,0,.1), 0 8px 14px rgba(0,0,0,.14); 
+
+      p, h1, h2, h3 {
+        padding-left: 50px;
+        padding-right: 50px;
+      }
+
 
       .widget-container {
         padding: 0;
       }
 
       img {
-        margin: 30px auto;
+        width: 100%;
+        margin: 0px auto;
         display: block;
 
         &:first-child {
-          margin: -20px -50px;
+          margin: 0;
           margin-bottom: 30px;
         }
       }
@@ -117,13 +127,18 @@ $nav-bar-bg: rgba(255,255,255,.9);
 
     &.article {
       width: 720px;
-      padding: 30px 60px;
-      border-width: 1px;
-      border-radius: 3px;
+      padding: 0;
+      padding-bottom: 30px;
+      border-width: 0px;
+      border-radius: 5px;
+
+      p, h1, h2, h3 {
+        padding-left: 60px;
+        padding-right: 60px;
+      }
 
       img {
         &:first-child {
-          margin: -60px -80px;
           margin-bottom: 30px;
         }
       }
@@ -164,7 +179,20 @@ $nav-bar-bg: rgba(255,255,255,.9);
 
     &.article {
       width: 860px;
-      padding: 60px 80px;
+      padding: 0;
+      padding-bottom: 60px;
+
+      p, h1, h2, h3 {
+        padding-left: 80px;
+        padding-right: 80px;
+      }
+
+      img {
+        &:first-child {
+          margin: 0;
+          margin-bottom: 60px;
+        }
+      }
     }
   }
 
@@ -174,11 +202,19 @@ $nav-bar-bg: rgba(255,255,255,.9);
 
   .panel {
     &.section {
-      width: 1200px;  
+      width: 1200px; 
+
+
     }
 
     &.article {
-      width: 860px;      
+      width: 860px;  
+
+
+
+      .widget {
+
+      }
     }
   }
 }
@@ -251,7 +287,7 @@ body {
 }
 
 .rtl {
-  
+
 }
 
 /*.people:before {
