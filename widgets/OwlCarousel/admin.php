@@ -97,3 +97,28 @@
   </h2>
   <input class="col-xs-12" type="text" name="smart-speed" id="smart-speed" value="200" data-slider="true" data-slider-range="200,10000" data-slider-snap="true" data-slider-highlight="true" data-slider-step="200" >
 </div>
+
+<div class="block-row">
+  <h2 class="ta-center">
+    tr{Content Fields}
+  </h2>
+  <ul id="widget-list-content-fields" class="list arrangeable fields">
+    <li class="" style="">
+      <div class="wrapper">
+        <div class="handle"></div>
+        <label>Field name</label>
+        <input class="text-field" name="content_fields"/>  
+      </div>
+    </li>
+  </ul>
+</div>
+
+<script>
+  $("#uis-widget").on("refresh", function (e, data) {
+    $("#widget-list-content-fields").EW().dynamicList({
+      value: {
+        'content_fields': data['content_fields']
+      }
+    });
+  });
+</script>

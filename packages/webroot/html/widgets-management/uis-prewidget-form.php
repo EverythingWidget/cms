@@ -22,12 +22,12 @@ $panelId = $_REQUEST['panelId'];
   } */
 ?>
 <div id="widgets-list-form">
-  <div class="header-pane   row">
+  <div class="header-pane">
     <h1 id="uis-widget-title" class="col-xs-12">
       <span>tr{Add}</span>tr{Widget}
     </h1>
   </div>
-  <div id="widgets-list" class="form-content row" >
+  <div id="widgets-list" class="form-content" >
     <div class="col-xs-12 mar-bot mt">
       <div class="text-icon" onclick="uisWidget.showWidgetControlPanel('<?php echo$widget_type ?>')">                        
         <h4>
@@ -65,15 +65,14 @@ $panelId = $_REQUEST['panelId'];
 </div>
 <div id="uis-widget-form" class="">
 </div>
-<div id="uis-panel-actions" class="footer-pane row actions-bar action-bar-items" >
+<div id="uis-panel-actions" class="footer-pane actions-bar action-bar-items" >
 </div>
 <script  type="text/javascript">
-
   function UISWidget() {
-    this.widgetId = "<?php echo $widgetId ?>";
-    this.widgetType = "<?php echo $widget_type ?>";
-    this.feederType = "<?php echo $feeder_type ?>";
-    this.template = "<?php echo $_REQUEST["template"] ?>";
+    this.widgetId = "<?= $widgetId ?>";
+    this.widgetType = "<?= $widget_type ?>";
+    this.feederType = "<?= $feeder_type ?>";
+    this.template = "<?= $_REQUEST["template"] ?>";
     this.bAdd = EW.addAction("Add", $.proxy(this.addWidgetToPanel, this), {
       display: "none"
     }).addClass("btn-success");
@@ -95,8 +94,8 @@ $panelId = $_REQUEST['panelId'];
       $("#uis-widget-title").html("Edit Widget");
       $("#widget-control-panel").fadeIn(300);
       $("#widgets-list-form").hide();
-      this.bAdd.comeOut(200);
-      this.bApply.comeIn(300);
+      this.bAdd.hide();
+      this.bApply.show();
 
       var widget = uisForm.getEditorItem(this.widgetId);
       this.showWidgetControlPanel(widget.attr("data-widget-type"));

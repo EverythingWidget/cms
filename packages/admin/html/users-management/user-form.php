@@ -127,10 +127,11 @@ $tabsDefault = EWCore::read_registry("ew-user-form-default");
 $tabs = EWCore::read_registry("ew-user-form");
 ?>
 <form id="user-form"  action="#" method="POST" onsubmit="return false;">
-  <div class="header-pane  tabs-bar row">
+  <div class="block-row header-pane tabs-bar">
     <h1 id='form-title' class="col-xs-12">
       tr{New User}
     </h1>
+    
     <ul class="nav nav-pills">
       <?php
       foreach ($tabsDefault as $id => $tab) {
@@ -145,8 +146,7 @@ $tabs = EWCore::read_registry("ew-user-form");
       ?>
     </ul>
   </div>
-  <div class="form-content  tabs-bar row">
-
+  <div class="block-row form-content  tabs-bar">
     <div class="tab-content col-xs-12">
       <?php
       foreach ($tabsDefault as $id => $tab) {
@@ -160,8 +160,7 @@ $tabs = EWCore::read_registry("ew-user-form");
       }
       ?>
     </div>
-
   </div>
-  <div class="footer-pane row actions-bar action-bar-items">
+  <div class="block-row footer-pane actions-bar action-bar-items">
   </div>
 </form>

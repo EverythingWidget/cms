@@ -2,7 +2,6 @@
 
 namespace ew_blog;
 
-use Module;
 use EWCore;
 
 /**
@@ -139,44 +138,61 @@ class Core extends \ew\Module {
     return json_encode($apps);
   }
 
-  public function ew_list_feeder_events($id, $_language) {
+  public function ew_list_feeder_events($id, $_language, $params = [], $order_by = 'DESC') {
     if (!isset($id)) {
       return \ew\APIResourceHandler::to_api_response([]);
     }
 
-    $articles = \admin\ew_contents::where('parent_id', '=', $id)
+    $query = \admin\ew_contents::select([
+                'ew_contents.id',
+                'ew_contents.content',
+                'ew_contents.content_fields',
+                'events.value AS event_date'
+    ]);
+    
+    $query->where('parent_id', '=', $id)
             ->join('ew_contents_labels as langs', 'ew_contents.id', '=', 'langs.content_id')
             ->join('ew_contents_labels as events', 'ew_contents.id', '=', 'events.content_id')
             ->where('type', 'article')
             ->where('langs.key', 'admin_ContentManagement_language')
             ->where('langs.value', $_language)
-            ->where('events.key', 'ew_blog_Core_event')
-            ->whereDate('events.value', '>=', date("Y-m-d"))
-            ->orderBy("events.value", 'ASC')
-            ->get([
-        '*',
-        'ew_contents.id',
-        \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")
-    ]);
+            ->where('events.key', 'ew_blog_Core_event');
 
-    if (isset($articles)) {
-      foreach ($articles as $article) {
+    if (strtoupper($order_by) === 'DEFAULT') {
+      $order_by = 'DESC';
+    }
+
+    $from_date = date("Y-m-d");
+    switch ($params['show']) {
+      case 'all':
+        break;
+      default:
+        $query->whereDate('events.value', '>=', $from_date);
+        break;
+    }
+
+    $query->orderBy("events.value", $order_by);
+
+    $events = $query->get();
+
+    if (isset($events)) {
+      foreach ($events as $article) {
         $result[] = [
-            "id"             => $article["id"],
-            "html"           => $article["content"],
-            "content_fields" => json_decode($article["content_fields"], true)
+            "id"             => $article->id,
+            "html"           => $article->content,
+            'event_date'     => $article->event_date,
+            "content_fields" => json_decode($article->content_fields, true)
         ];
       }
     }
 
     return \ew\APIResourceHandler::to_api_response($result, [
-                'page_size'       => $articles['collection_size'],
-                "collection_size" => count($articles['data'])
+                'page_size'       => $events->count(),
+                "collection_size" => $events->count()
     ]);
   }
 
   public function ew_list_feeder_posts($id, $params = [], $token = 0, $size = 30, $order_by = 'DESC', $_language = 'en') {
-
     $query = \admin\ew_contents::select([
                 'ew_contents.id',
                 'date_created',

@@ -1,4 +1,6 @@
-@import url(https://fonts.googleapis.com/css?family=Roboto:400,500,300,700,900);
+/*@import url(https://fonts.googleapis.com/css?family=Roboto:400,500,300,700,900);*/
+/*@import url(https://fonts.googleapis.com/css?family=Poppins:400,500,600,700,300);*/
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800);
 
 @font-face {
   font-family:'Homa';
@@ -326,7 +328,7 @@ root {
     background-color: #fff;
     left: 0;
     top: 0;
-    box-shadow: 2px 0 3px rgba(0,0,0,.1) , 3px 0 7px rgba(0,0,0,.1);
+    box-shadow: 2px 0 5px rgba(0,0,0,.04) , 3px 0 15px rgba(0,0,0,.08);
     z-index: 2;
     float: left;
   }
@@ -809,7 +811,7 @@ body.Admin {
   content: '';
   display: block;
   height: 32px;
-  margin: 0 -15px;
+  margin: 0;
   background-color: rgba(0,0,0,.28);
 }
 
@@ -817,42 +819,61 @@ body.Admin {
   display: none;
 }
 
-.header-pane h1 {
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  color: rgba(255,255,255,.9);
-  line-height: 54px;
-  margin: 0;
-  font-size: 1.7em;
-  padding: 0 30px;
-}
-
 .header-pane h1 span,span.header-label {
   float: left;
   line-height: inherit;
   padding-right: 10px;
   border-right: 0 solid #999;
-  font-weight: 400;
+  font-weight: 300;
 }
 
-.header-pane.tabs-bar {
-  overflow: auto;
-}
+.top-pane {
+  .header-pane {
+    padding-top: 32px;
+    margin-top: -32px;
+    position: relative;
+    z-index: 1;
 
-.top-pane .header-pane {
-  padding-top: 32px;
-  margin-top: -32px;
-  position: relative;
-  z-index: 1;
-}
+    &.tabs-bar {
+      overflow: auto;
+      height: 142px;   
 
-.top-pane .header-pane.tabs-bar {
-  height: 142px;   
-}
+      + .form-content {
+        top: 142px;
+      }
+    }
 
-.top-pane .form-content.tabs-bar {
-  top: 142px;
+    &.thin {
+      padding-top: 0;
+
+      &.tabs-bar {
+        height: 88px;  
+
+        + .form-content {
+          top: 88px;
+        }
+      }
+
+      h1 {
+        line-height: 32px;
+        font-size: 16px;  
+      }
+    }
+
+    h1 {
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      color: rgba(255,255,255,.9);
+      line-height: 54px;
+      margin: 0;
+      font-size: 23px;
+      padding: 0 30px;
+      font-weight: 400;
+    }
+  }
+
+
 }
 
 #app-content {
@@ -1720,8 +1741,8 @@ ul.actions-bar li label {
   /*background-color: #5cb1cc;*/
   background-color: #fff;
   position: absolute;
-  left: -166px; 
-  width: 250px;
+  left: -196px; 
+  width: 280px;
   min-height: 94px; 
   border-radius: 0;
   overflow: hidden;
@@ -1729,7 +1750,8 @@ ul.actions-bar li label {
   margin: 0;
   padding:  15px 0;
   /*box-shadow: 0 1px 1px rgba(0,0,0,.1) , 0 0px 3px rgba(0,0,0,.14);*/
-  box-shadow: 0 1px 3px rgba(0,0,0,.14) , 0 3px 6px rgba(0,0,0,.14);
+  /*box-shadow: 0 1px 3px rgba(0,0,0,.14) , 0 3px 6px rgba(0,0,0,.14);*/
+  box-shadow: 0 2px 5px rgba(0,0,0,.08) , 1px 3px 15px rgba(0,0,0,.1);
   color: #000;
   z-index: 1;
   float: left;  
@@ -1737,7 +1759,7 @@ ul.actions-bar li label {
   &.in {        
     height: auto;
     left: 94px;
-    width: 250px;
+    width: 280px;
     border-radius: 0;
     padding-top: 15px;
     padding-bottom: 15px;   
@@ -1753,7 +1775,7 @@ ul.actions-bar li label {
 
   &.out {
     height: 94px;
-    left:-156px;
+    left:-186px;
   }
 }
 
@@ -1813,7 +1835,7 @@ ul.actions-bar li label {
       margin-top: 0px;
     }
   }
-  
+
   li, .sections-menu-item  {
     padding: 0;
     display: block;
@@ -2339,7 +2361,7 @@ textarea.text-field {
 .text-field:focus, select:focus, select.active, .text-field.active {
   border-color: #039BE5;
   box-shadow: 0 0 3px 0 rgba(0,0,0,.0);
-  
+
 }
 
 .text-field:disabled {
@@ -2701,33 +2723,33 @@ table.contents td {
   text-align: center;
   padding: 5px;
   border-radius: 2px;
-  font-weight: 700;
-  font-size: 13px;
+  font-weight: 600;
+  font-size: 14px;
   min-height: 50px;
   cursor: pointer;
   overflow: hidden;
   -webkit-transition: all .3s;
   transition: all .3s;
+
+  &.image {
+    padding: 0;
+    width: 100%;
+    max-width: 200px;
+    margin: 0 15px 30px;
+    text-align: left;
+    padding: 0;
+    padding-bottom: 10px;
+    display: block;
+    .btn-circle {
+      opacity: .3;
+    }
+
+    &:hover .btn-circle {
+      opacity: 1;
+    }
+  }
 }
 
-.content-item.image {
-  padding: 0;
-  width: 100%;
-  max-width: 200px;
-  margin: 0 15px 30px;
-  text-align: left;
-  padding: 0;
-  padding-bottom: 10px;
-  display: block;
-}
-
-.content-item.image .btn-circle {
-  opacity: .3;
-}
-
-.content-item.image:hover .btn-circle {
-  opacity: 1;
-}
 
 .content-item:last-child {
 }
@@ -2735,23 +2757,23 @@ table.contents td {
 .content-item p {
   display: block;
   margin: 0;
-  padding: 10px;
-  padding-bottom: 0;
+  padding: 0;
+  padding-bottom: 10px;
   overflow: hidden;
   word-wrap: break-word;
-}
 
-.content-item p.date {
-  display: block;
-  margin: 0;
-  padding: 13px 10px;
-  direction: ltr;
-  color: #666;
-  font-weight: 400;
+  &.date {
+    display: block;
+    margin: 0;
+    padding: 12px 10px 5px;
+    direction: ltr;
+    color: #aaa;
+    font-weight: 500;
+  }
 }
 
 .content-item:hover {
-  background-color: #fafafa;   
+  box-shadow: 0 3px 5px rgba(0,0,0,0.08),0 2px 9px rgba(0,0,0,0.1);
 }
 
 .content-item.selected, .content-item:focus {
@@ -3160,34 +3182,37 @@ a.link.active,.active > a.link {
 }
 
 .list-modal {
+  background-color: #fff;
   overflow: hidden;
   position: fixed;
+  width: 400px;
   top: 0;
   bottom: 0;
   z-index: 10;
-  box-shadow: 10px 0 20px rgba(0,0,0,0.19), 6px 0 6px rgba(0,0,0,0.23);
+  box-shadow: 10px 0 20px rgba(0,0,0,0.19), 5px 0 6px rgba(0,0,0,0.23);
+
+  > h1 {
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    height: 30px;
+    font-size: 19px;
+    font-weight: bold;
+    padding: 0 15px;
+    line-height: 30px;
+    margin: 0;
+    width: 100%;
+  }
+
+  > .content-pane {
+    overflow: auto;
+    position: absolute;
+    top: 30px;
+    bottom: 0;
+    padding-bottom: 5px;
+  }
 }
 
-.list-modal > h1 {
-  overflow: hidden;
-  position: absolute;
-  top: 0;
-  height: 30px;
-  font-size: 19px;
-  font-weight: bold;
-  padding: 0 15px;
-  line-height: 30px;
-  margin: 0;
-  width: 100%;
-}
-
-.list-modal > div {
-  overflow: auto;
-  position: absolute;
-  top: 30px;
-  bottom: 0;
-  padding-bottom: 5px;
-}
 
 .tab-content.fix {
   position: absolute;
@@ -3441,7 +3466,7 @@ system-input-json {
 
     system-input-json {
       float: left;
-      
+
       &.value {
         width: 98%;
         border-left-color: #dadada; 

@@ -18,7 +18,7 @@
       this.inited = true;
       this.trigger("onInit");
       this.triggerEvent('init');
-      this.solo = this.stateKey !== 'app';
+      //this.solo = this.stateKey !== 'app';
 
       this.installModules.forEach(function (lib) {
         _this.domain.loadModule(lib);
@@ -134,7 +134,7 @@
       var _this = this;
       var moduleNavigation = navigation;
 
-      var fullNavPath = params['app'];
+      var fullNavPath = params[_this.stateKey];
 
       if (this.id === "system/" + fullNavPath/* && System.app.activeModule !== this*/) {
         this.domain.app.activeModule = this;
@@ -181,19 +181,19 @@
           }
         }
       } else if (!this.active) {
-        var navHandler = _this.hashListeners["app"];
+        var navHandler = _this.hashListeners[_this.stateKey];
 
         //if navHandler is null call sub module navHandler
-        if (navHandler && navigation["app"]) {
-          var currentKeyValue = tempNav["app"] ? tempNav["app"].join("/") : [];
+        if (navHandler && navigation[_this.stateKey]) {
+          var currentKeyValue = tempNav[_this.stateKey] ? tempNav[_this.stateKey].join("/") : [];
 
-          if (currentKeyValue !== navigation["app"].join("/")) {
+          if (currentKeyValue !== navigation[_this.stateKey].join("/")) {
             var args = [];
-            args.push(navigation["app"]);
+            args.push(navigation[_this.stateKey]);
 
-            for (var i = 0, len = navigation["app"].length; i < len; ++i) {
+            for (var i = 0, len = navigation[_this.stateKey].length; i < len; ++i) {
               //i is always valid index in the arguments object
-              args.push(navigation["app"][i]);
+              args.push(navigation[_this.stateKey][i]);
             }
 
             navHandler.apply(_this, args);

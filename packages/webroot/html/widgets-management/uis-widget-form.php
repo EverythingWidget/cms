@@ -58,7 +58,7 @@ EWCore::register_form("ew/ui/widget-form", "properties", ["title" => "Properties
 
 $tabs = EWCore::read_registry("ew/ui/widget-form");
 ?>
-<div class="header-pane  tabs-bar row">
+<div class="header-pane tabs-bar">
   <h1 id="uis-widget-title" class="col-xs-12">
     <span>tr{Widget}</span> <?php echo $widget_type; ?>
   </h1>
@@ -74,7 +74,7 @@ $tabs = EWCore::read_registry("ew/ui/widget-form");
   </ul>
 </div>
 
-<div id="widget-control-panel" class="form-content tabs-bar row" >
+<div id="widget-control-panel" class="form-content" >
   <input type="hidden" name="cmd" id="cmd" >
   <div class="tab-content">
     <?php
@@ -87,6 +87,3 @@ $tabs = EWCore::read_registry("ew/ui/widget-form");
     ?>
   </div>
 </div>
-
-<script  type="text/javascript">
-</script>

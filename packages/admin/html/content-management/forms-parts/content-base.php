@@ -1,6 +1,6 @@
 <form id="<?= $form_id ?>"  action="#" method="POST">
-  <div class="header-pane tabs-bar row">
-    <h1 id="form-title" class="col-xs-12">
+  <div class="header-pane thin tabs-bar">
+    <h1 id="form-title">
       <span>tr{New}</span>tr{<?= $form_config["formTitle"] ?>}
     </h1>
 
@@ -17,7 +17,7 @@
     </ul>
   </div>
 
-  <div class="form-content  tabs-bar">
+  <div class="form-content">
     <div class="tab-content">
       <div class="tab-pane active" id="content-properties">
         <?= get_properties($form_config, $form_id); ?>
@@ -35,7 +35,7 @@
     </div>
   </div>
 
-  <div class="footer-pane row actions-bar action-bar-items">
+  <div class="footer-pane actions-bar action-bar-items">
   </div>
 </form>
 

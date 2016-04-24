@@ -6,12 +6,12 @@ $container_id = $_REQUEST["containerId"];
 $name = $_REQUEST["name"];
 ?>
 <div id="uis-block-form">
-  <div class="header-pane   row">
-    <h1 id="uis-block-title" class="col-xs-12">
+  <div class="header-pane">
+    <h1 id="uis-block-title">
       Add Block
     </h1>
   </div>
-  <div class="form-content row">
+  <div class="form-content">
 
     <form id="block-form" >
       <div class="block-row mt">
@@ -55,7 +55,7 @@ $name = $_REQUEST["name"];
 </div>
 
 
-<div id="uis-panel-actions" class="footer-pane row actions-bar action-bar-items" >
+<div id="uis-panel-actions" class="footer-pane actions-bar action-bar-items" >
 
 </div>
 <script  type="text/javascript">

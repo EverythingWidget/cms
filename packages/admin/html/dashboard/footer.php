@@ -459,12 +459,9 @@
     };
 
     System.ui.components.sectionsMenuList[0].addEventListener('item-selected', function (e) {
-      //console.log(e.detail)
-      System.ui.behaviors.highlightAppSection(e.detail.index, e.detail.element);
-      //alert(e.detail.data.id + ' sss')
       System.setHashParameters({
         app: e.detail.data.id
-      }, true);
+      });
     });
 
     System.ui.components.navigationMenu.on("mouseenter", function (e) {
@@ -491,10 +488,12 @@
       EW.hoverApp = "system/" + e.target.dataset.app;
 
       var sections = System.modules["system/" + e.target.dataset.app] ? System.modules["system/" + e.target.dataset.app].data.sections : [];
-      System.ui.components.sectionsMenuList[0].data = sections;
+
+      if (System.ui.components.sectionsMenuList[0].data !== sections) {
+        System.ui.components.sectionsMenuList[0].data = sections;
+      }
 
       if (EW.oldApp === e.target.dataset.app) {
-        //System.UI.components.sectionsMenuList[0].value = currentSectionIndex;
         System.ui.behaviors.highlightAppSection(currentSectionIndex, System.ui.components.sectionsMenuList[0].links[currentSectionIndex]);
       }
 
@@ -522,7 +521,6 @@
         onComplete: function () {
           if (!states.loading_app && currentSectionIndex !== System.ui.components.sectionsMenuList[0].value) {
             System.ui.components.sectionsMenuList[0].data = EW.currentAppSections;
-            //System.UI.components.sectionsMenuList[0].value = currentSectionIndex;
             System.ui.behaviors.highlightAppSection(currentSectionIndex, EW.selectedSection);
           }
         }
@@ -568,8 +566,7 @@
     if (!System.getHashParam('app')) {
       System.setHashParameters({
         app: "content-management"
-      },
-              true);
+      }, true);
     }
 
     $(document).ajaxStart(function (event, data) {

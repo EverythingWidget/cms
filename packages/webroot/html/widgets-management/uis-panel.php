@@ -3,26 +3,20 @@ session_start();
 $uiStructureId = $_REQUEST['uisId'];
 $panel_id = $_REQUEST["panelId"];
 $container_id = $_REQUEST["containerId"];
-/* if (isset($panel_id))
-  {
-  $dbc = get_db_connection();
-
-  $result = $dbc->query("SELECT * FROM ui_structures_parts WHERE id = $panel_id");
-  $row = $result->fetch_assoc();
-  } */
 ?>
-<div class="header-pane tabs-bar row">
-  <h1 id="uis-panel-title" class="col-xs-12">
+<div class="header-pane tabs-bar">
+  <h1 id="uis-panel-title">
     <span>tr{Add}</span>tr{Panel}
   </h1>
+  
   <ul class="nav nav-pills">
     <li class="active"><a href="#properties" data-toggle="tab">Properties</a></li>
-    <!--<li><a href="#appearance" data-toggle="tab">Appearance</a></li>-->
-
+    
     <li><a href='#size-layout' data-toggle='tab'>Size & Layout</a></li>
   </ul>
 </div>
-<div class="form-content  tabs-bar row">
+
+<div class="form-content tabs-bar">
   <div class="tab-content">
     <div class="tab-pane active" id="properties">
       <form id="uis-panel" >
@@ -73,13 +67,11 @@ $container_id = $_REQUEST["containerId"];
     <div class="tab-pane" id="size-layout">
       <?php include 'uis-widget-size-layout.php'; ?>
     </div>
-
   </div>
-
 </div>
-<div id="uis-panel-actions" class="footer-pane row actions-bar action-bar-items" >
 
-</div>
+<div id="uis-panel-actions" class="footer-pane actions-bar action-bar-items"> </div>
+
 <script  type="text/javascript">
 
 
@@ -102,8 +94,8 @@ $container_id = $_REQUEST["containerId"];
         $("#title-text").prop("disabled", false);
       }
     });
-    this.panelId = "<?php echo $panel_id ?>";
-    this.containerId = "<?php echo $container_id ?>";
+    this.panelId = "<?= $panel_id ?>";
+    this.containerId = "<?= $container_id ?>";
     if (this.panelId)
     {
       var panel = $("#fr").contents().find("body #base-content-pane div[data-panel-id='" + this.panelId + "']");

@@ -20,8 +20,8 @@ EWCore::register_form("ew/ui/components/link-chooser", "custom-url", [
 
 $tabs = EWCore::read_registry("ew/ui/components/link-chooser");
 ?>
-<div class="header-pane tabs-bar row">
-  <h1 id="form-title" class="col-xs-12">
+<div class="header-pane tabs-bar">
+  <h1 id="form-title">
     tr{Link Chooser}
   </h1>  
 

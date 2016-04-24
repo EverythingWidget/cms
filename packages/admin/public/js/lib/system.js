@@ -168,7 +168,6 @@
 
           _this.setModuleHashValue(navigation, params, hashValue);
           _this.app.hashChanged(navigation, params, hashValue, navigation[_this.app.stateKey]); // System
-
           _this.app.oldHash = '#' + hashValue;
         }
       };
@@ -209,22 +208,26 @@
     setModuleHashValue: function (navigation, parameters, hashValue, init) {
       var nav = parameters["app"];
 
-      if (nav && System.modulesHashes[nav] && System.app.activeModule !== System.modules["system/" + nav]) {
+      if (!nav) {
+        return;
+      }
+
+      if (System.modulesHashes[nav] && System.app.activeModule !== System.modules["system/" + nav] && System.app.activeModule && System.app.activeModule.stateKey === 'app') {
         //window.location.hash = System.modulesHashes[nav];
         // When the navigation path is changed
         //alert(System.modulesHashes[nav] + " YES " + nav);
-      } else if (nav && !this.firstTime) {
+      } else if (!this.firstTime) {
         // first time indicates that the page is (re)loaded and the window.location.hash should be set
         // as the module hash value for the module which is specified by app parameter in the hash value.
         // Other modules get default hash value
         System.modulesHashes[nav] = hashValue;
         this.firstTime = true;
         //alert("first time: " + System.modulesHashes[nav] + " " + hashValue);
-      } else if (nav && !System.modulesHashes[nav]) {
+      } else if (!System.modulesHashes[nav]) {
         // When the module does not exist 
         System.modulesHashes[nav] = "app=" + nav;
         //alert(System.modulesHashes[nav] + " default hash");
-      } else if (nav && System.modulesHashes[nav]) {
+      } else if (System.modulesHashes[nav]) {
         // When the hash parameters value is changed from the browser url bar or originated from url bar
         System.modulesHashes[nav] = hashValue;
       }
@@ -237,6 +240,7 @@
      * @returns {undefined}
      */
     setHashParameters: function (parameters, replace, clean) {
+      var newParams = System.utility.clone(parameters);
       this.lastHashParams = parameters;
       var hashValue = window.location.hash;
       //var originHash = hashValue;
@@ -258,25 +262,27 @@
       var pairs = hashValue.split("&");
       var newHash = "#";
       var and = false;
+
       hashValue.replace(/([^&]*)=([^&]*)/g, function (m, k, v) {
-        if (parameters[k] !== null && typeof parameters[k] !== 'undefined') {
-          newHash += k + "=" + parameters[k];
+        if (newParams[k] !== null && typeof newParams[k] !== 'undefined') {
+          newHash += k + "=" + newParams[k];
           newHash += '&';
           and = true;
-          delete parameters[k];
-        } else if (!parameters.hasOwnProperty(k) && !clean) {
+          delete newParams[k];
+        } else if (!newParams.hasOwnProperty(k) && !clean) {
           newHash += k + "=" + v;
           newHash += '&';
           and = true;
         }
       });
       // New keys
-      $.each(parameters, function (key, value) {
+      $.each(newParams, function (key, value) {
         if (key && value) {
           newHash += key + "=" + value + "&";
           and = true;
         }
       });
+
       newHash = newHash.replace(/\&$/, '');
 
       if (replace) {
@@ -455,17 +461,29 @@
   };
 
   System.utility = System.Util = {
+    clone: function (source) {
+      if (null === source || "object" !== typeof source)
+        return source;
+      var copy = source.constructor();
+      for (var property in source) {
+        if (source.hasOwnProperty(property)) {
+          copy[property] = source[property];
+        }
+      }
+
+      return copy;
+    },
     extend: function (child, parent) {
       var hasProp = {}.hasOwnProperty;
       for (var key in parent) {
         if (hasProp.call(parent, key))
           child[key] = parent[key];
       }
-      function ctor() {
-        this.constructor = child;
-      }
-      ctor.prototype = parent.prototype;
-      child.prototype = new ctor();
+//      function ctor() {
+//        this.constructor = child;
+//      }
+//      ctor.prototype = parent.prototype;
+      //child.prototype = new ctor();
       child.__super__ = parent.prototype;
       return child;
     },

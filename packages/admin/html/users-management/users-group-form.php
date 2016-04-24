@@ -266,7 +266,7 @@ EWCore::register_form("ew/ui/user-form", "ew-user-permissions", ["title" => "Per
 $tabs = EWCore::read_registry("ew/ui/user-form");
 ?>
 <form id="users-group-form"  action="#" method="POST" onsubmit="return false;">
-  <div class="header-pane  tabs-bar row">
+  <div class="block-row header-pane tabs-bar">
     <h1 id='form-title' class="col-xs-12">
       tr{New Group}
     </h1>
@@ -282,7 +282,7 @@ $tabs = EWCore::read_registry("ew/ui/user-form");
       ?>
     </ul>
   </div>
-  <div class="form-content  tabs-bar row">
+  <div class="block-row form-content tabs-bar">
 
     <div class="tab-content col-xs-12" style="height:100%;position:absolute;">
       <?php
@@ -297,7 +297,7 @@ $tabs = EWCore::read_registry("ew/ui/user-form");
     </div>
 
   </div>
-  <div class="footer-pane row actions-bar action-bar-items">
+  <div class="block-row footer-pane actions-bar action-bar-items">
   </div>
 </form>
 

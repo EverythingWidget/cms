@@ -14,16 +14,16 @@
       <system-list id="folders-list" class="mt">
         <div tabindex='1' class='content-item folder' data-content-id='{{id}}'>
           <span></span>
-          <p>{{title}}</p>
           <p class='date'>{{round_date_created}}</p>
+          <p>{{title}}</p>          
         </div>
       </system-list>
 
       <system-list id="articles-list" class="mt">
         <div tabindex='1' class='content-item article' data-content-id='{{id}}'>
           <span></span>
-          <p>{{title}}</p>
           <p class='date'>{{round_date_created}}</p>
+          <p>{{title}}</p>          
         </div>
       </system-list>
     </div>
@@ -97,22 +97,30 @@
         }
       };
 
+      var modal;
       states.component = function (full, name) {
+
         if (full === 'forms/test-form') {
-          var modal = EW.createModal({
+          modal = EW.createModal({
             onClose: function () {
               component.module.setParam('component', null);
+              modal = null;
             }
           });
           component.module.loadModule({
             id: 'forms/test-form',
-            url: 'http://127.0.0.1:8000/EverythingWidget/~admin/html/content-management/test-file.php'
+            url: '~admin/html/content-management/test-file.php'
           }, function (module) {
             modal.html(module.html);
             module.start();
           });
         }
-      }
+
+        if (full === null && modal) {
+          modal.dispose();
+          modal = null;
+        }
+      };
     };
 
     DocumentsComponent.prototype.init = function () {
@@ -244,10 +252,10 @@
         component.listDocuments();
         if (eventData) {
           if (eventData.data.type === "article") {
-            EW.setHashParameters({
+            System.setHashParameters({
               folderId: null,
               articleId: eventData.data.id
-            }, "document");
+            });
           }
 
           if (eventData.data.type === "folder") {

@@ -1,4 +1,5 @@
-<div class='header-pane tabs-bar row'><h1 class='form-title'>Media</h1>
+<div class='header-pane tabs-bar'>
+  <h1 class='form-title'>Media</h1>
   <ul id="content-media-tabs" class="nav nav-pills">
     <li class="active">
       <a href="#media-photos" data-toggle="tab">Photos</a>

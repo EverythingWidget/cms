@@ -282,7 +282,7 @@ EverythingWidgets.prototype.getActivity = function (conf) {
   if (activityController.modalObject) {
     if (settings.modal && settings.modal.class) {
       activityController.modalObject.css("left", "");
-      activityController.modalObject.attr("class", "top-pane col-xs-12 " + settings.modal.class);
+      activityController.modalObject.attr("class", "top-pane " + settings.modal.class);
       activityController.modalObject.methods.setCloseButton();
     }
 
@@ -297,16 +297,11 @@ EverythingWidgets.prototype.getActivity = function (conf) {
     var hashParameters = {
       ew_activity: activityId
     };
-    // Call hash if it is a function
-    if (typeof hash === 'function') {
-      hash = hash(hashParameters) || {};
-    }
-
-    $.extend(hashParameters, hash);
 
     // if the activity contains a form then set a main hash parameter
     if (activityController.form) {
       _this.activitySource = activityController;
+      activityController.newParams = hash;
       _this.setHashParameters(hashParameters);
     }
     // if the activity does not contains any form then set a formless hash parameter
@@ -640,7 +635,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction) {
   this.isOpen = false;
   var modalPane = $(document.createElement("div"));
   modalPane.methods = methods;
-  modalPane.addClass("top-pane col-xs-12").addClass(settings.class);
+  modalPane.addClass("top-pane").addClass(settings.class);
   xButton = $("<a class='close-button x-icon'>");
   xButton.css({
     position: "absolute",
@@ -717,11 +712,10 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction) {
         xButton.detach();
         modalPane.stop().animate({
           transform: "scale(.0)"
-        },
-                400, "Power2.easeInOut", function () {
+        }, 400, "Power2.easeInOut", function () {
 
-                  closeAction();
-                });
+          closeAction();
+        });
         return;
       } else {
         System.UI.body = $('#base-pane')[0];
@@ -2424,14 +2418,12 @@ $(document).ready(function () {
     }
 
     var currentActivity = EW.activities[activityId] || EW.activities[activityName];
-    //console.log(EW.activitySource);
 
     if (activityName && activityName !== oldEWActivity) {
       var settings = {
         closeHash: {}, /*hash: {key: "ew_activity", value: activity},*/
         onOpen: function () {
           var modal = this;
-          //EW.lock(this);
           var activityParameters = EW.getHashParameters();
           // Manage post data if it is set
           if (currentActivity.parameters) {
@@ -2443,10 +2435,16 @@ $(document).ready(function () {
               $.extend(activityParameters, currentActivity.parameters);
             }
           }
+          // Add the parameters which have been pass to the activity caller function 
+          if (currentActivity.newParams) {
+            $.extend(activityParameters, currentActivity.newParams);
+          }
+
+          System.setHashParameters(activityParameters, true);
 
           $.ajax({
-            type: EW.activities[activityName].verb || "POST",
-            url: EW.activities[activityName].url,
+            type: currentActivity.verb || "POST",
+            url: currentActivity.url,
             data: activityParameters,
             success: function (data) {
               modal.html(data);
@@ -2455,19 +2453,16 @@ $(document).ready(function () {
               console.log(result);
               //alert(result.responseText);
               modal.html(result.responseText);
-              if (result.responseJSON)
+              if (result.responseJSON) {
                 alert(result.responseJSON.message);
+              }
+              
               EW.customAjaxErrorHandler = true;
             }
           });
         },
         onClose: function () {
-          //console.log(EW.activitySource, EW.activities[activityName]);
-          //alert(activityName + " > " + activityId);
           currentActivity = EW.activities[activityId] || EW.activities[activityName];
-          /*if (EW.activitySource && EW.activitySource.form) {
-           currentActivity = EW.activitySource;
-           }*/
 
           if (!currentActivity) {
             return;
@@ -2513,10 +2508,10 @@ $(document).ready(function () {
       }
       oldEWActivity = activityName;
     } else if (oldEWActivity !== activityName) {
-      if (oldEWActivity && EW.activities[oldEWActivity].modalObject)
+      if (oldEWActivity && EW.activities[oldEWActivity].modalObject) {
         EW.activities[oldEWActivity].modalObject.trigger("close");
-      //if (self.activities[oldEWActivity].hasModal)
-      //  self.activities[oldEWActivity].hasModal = false;
+      }
+
       oldEWActivity = activityName;
     }
   });

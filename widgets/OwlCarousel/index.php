@@ -104,6 +104,34 @@ webroot\WidgetsManagement::include_html_link([
     'rm/public/js/owl-carousel/owl.carousel.css',
     'rm/public/js/owl-carousel/owl.theme.default.css'
 ]);
+
+if ($widget_parameters["content_fields"]) {
+  $fields = $widget_parameters["content_fields"];
+
+  if (is_string($fields)) {
+    $fields = [$fields];
+  }
+
+  foreach ($items as $i => $item) {
+    $items[$i]['html'] = '';
+
+    foreach ($fields as $field) {
+      $field_data = $item['content_fields'][$field];
+      $tag = $field_data['tag'];
+
+      if (isset($tag)) {
+        if ($tag === 'img') {
+          $items[$i]['html'] .= "<img class='$field' src='{$field_data['src']}'/>";
+        }
+        else {
+          $items[$i]['html'] .= "<$tag class='$field'>{$field_data['content']}</$tag>";
+        }
+      }
+
+
+    }
+  }
+}
 ?>
 
 <div class="owl-carousel" style="width: 1px;min-width: 100%;">
@@ -111,8 +139,7 @@ webroot\WidgetsManagement::include_html_link([
   $index = 1;
   if (isset($items)) {
     foreach ($items as $item) {
-      //$row_seprator = false;
-      echo "<div class='item {$item["class"]}' >{$item["html"]}</div>";
+      echo "<div class='item' >{$item["html"]}</div>";
     }
   }
   ?>

@@ -1108,6 +1108,10 @@ class WidgetsManagement extends \ew\Module {
     if (!isset($template_settings)) {
       $template_settings = '{}';
     }
+    
+//    if(is_array($template_settings)){
+//      $template_settings = json_encode($template_settings);
+//    }
 
     if (file_exists(EW_TEMPLATES_DIR . $template . '/template.php')) {
       require_once EW_TEMPLATES_DIR . $template . '/template.php';

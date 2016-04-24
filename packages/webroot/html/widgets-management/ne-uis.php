@@ -1,25 +1,35 @@
 <?php
 session_start();
-//include_once $_SESSION['ROOT_DIR'] . '/config.php';
-//include_once 'WidgetsManagementCore.php';
 ?>
-
-
-<div class="header-pane tabs-bar row">
-  <h1 id="form-title" class="col-xs-12">
+<div class="header-pane thin tabs-bar">
+  <h1 id="form-title">
     <span>tr{New}</span>tr{Layout Structure}
   </h1>  
-  <ul id="ew-uis-editor-tabs" class="nav nav-pills xs-nav-tabs " >
+  <ul id="ew-uis-editor-tabs" class="nav nav-pills xs-nav-tabs" >
     <li class="active"><a href="#inspector" data-toggle='tab'>tr{Structure}</a></li>
     <li class="disable"><a href="#template-control" data-toggle='tab'>tr{Template}</a></li>
     <li class=""><a href="#pref" data-toggle='tab'>tr{Settings}</a></li>
   </ul>
 </div>
-<div id="ew-uis-editor" class="form-content tabs-bar row" style="padding:0px;">
-  <div class="list-modal" style="width:400px;background-color:#fff;left:-400px;" id="items-list">      
-    <h1 class="pull-left">Select an item</h1><a href='javascript:void(0)' class='close-icon pull-right' style="margin:5px;"></a>      
-    <div  id="items-list-content" ></div>
+
+<div id="ew-uis-editor" class="form-content" style="padding:0px;">
+  <div class="list-modal" style="left:-400px;" id="items-list">      
+    <h1 class="pull-left">Select an item</h1>
+    <a href='javascript:void(0)' onclick="this.parentNode.close()" class='close-icon pull-right' style="margin:5px;"></a>      
+    <system-list id="items-list-content" class="content-pane" action="a">
+      <a class='text-icon' data-label='{{title}}'>
+        <h4>{{title}}</h4>
+        <p>{{description}}</p>
+      </a>
+    </system-list>
   </div>
+
+  <div class="list-modal" style="left:-400px;" id="widget-size-and-layout">
+    <h1 class="pull-left">Widget layout manager</h1>
+    <a href='javascript:void(0)' class='close-icon pull-right' style="margin:5px;"></a>  
+    <?php include 'uis-widget-size-layout.php'; ?>
+  </div>
+
   <div class="uis-editor-tool-pane" id="uis-editor-tool-pane">
 
     <div class="tab-content">
@@ -80,6 +90,7 @@ session_start();
       </div>
     </div>
   </div>
+
   <div id="uis-editor-preview-pane" class="uis-editor-preview-pane">
     <div class="col-xs-12" >
       <input class="text-field" data-label="UIS Perview URL" name="perview_url" id="perview_url">
@@ -93,7 +104,8 @@ session_start();
     </div>
   </div>
 </div>
-<div class="footer-pane row actions-bar action-bar-items" style="border: none;">
+
+<div class="footer-pane actions-bar action-bar-items" style="border: none;">
   <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 pull-right" >
     <div class="btn-group btn-group-justified" data-toggle="buttons">
       <label class="btn btn-default ">
@@ -148,10 +160,10 @@ session_start();
   cursor: pointer;
   }
 
-  /*.widget-glass-pane:hover
+  .widget-glass-pane:hover
   {
   background-color:rgba(200,240,240,.3);
-  }*/
+  }
 
   .widget-glass-pane .btn{float:left;margin:5px 0px 0px 5px;display:none;}
   .widget-glass-pane:hover .btn{display:block;}
@@ -186,6 +198,7 @@ session_start();
     this.editorIFrame = $(document.getElementById("fr"));
     this.editorFrame = this.editorIFrame.contents().find("body");
     this.templateSettingsForm = $("#template_settings_form");
+    this.widgetsList = $("#items-list #items-list-content");
     this.bExportLayout = $();
     this.bSaveChanges = EW.addAction("Save Layout", $.proxy(this.updateUIS, this)).hide().addClass("btn-success");
     this.bPreview = EW.addAction("Preview Layout", $.proxy(this.previewLayout, this)).hide().addClass("btn-info");
@@ -195,33 +208,46 @@ session_start();
     this.bSaveAndStart = EW.addAction("Save And Start Editing", $.proxy(this.addUIStructure, this), {
       display: "none"
     });
+
     this.bSavePref = EW.addAction("Save Changes", $.proxy(this.updateUIS, this, true), {
       display: "none"
-    },
-            "uis-preference-actions").addClass("btn-success");
+    }, "uis-preference-actions").addClass("btn-success");
 
     if (EW.getActivity({
       activity: "webroot/api/widgets-management/export-uis"
-    }))
-    {
+    })) {
       $("#uis-preference-actions").append("<a class='btn btn-text btn-primary pull-right export-btn' href=~webroot/api/widgets-management/export-uis?uis_id=" + this.uisId + ">Export Layout</a>");
       this.bExportLayout = $("#uis-preference-actions a.export-btn");
       this.bExportLayout.hide();
     }
+
+    this.widgetsList.on('item-selected', function (event) {
+      var data = event.originalEvent.detail.data;
+      if (data.path === 'panel') {
+        _this.addPanel(data.parentId);
+      } else {
+        _this.widgetForm(data.path, data.parentId, data.feeder_type);
+      }
+    });
+
     $("#perview_url").EW().inputButton({
       title: "Apply",
       id: "set_url_btn",
       onClick: _this.reloadFrame
     });
-
-    // Add close action to the items list
-    $("#items-list a.close-icon").on("click", function (e) {
-      e.preventDefault();
-      $("#items-list").animate({
+    var itemsList = $("#items-list");
+    itemsList[0].close = function () {
+      itemsList.animate({
         left: -400
-      },
-              200);
-    });
+      }, 200);
+    };
+    // Add close action to the items list
+//    $("#items-list a.close-icon").on("click", function (e) {
+//      e.preventDefault();
+//      $("#items-list").animate({
+//        left: -400
+//      }, 200);
+//    });
 
     this.inspectorEditor[0].isValidParent = function (item, parent) {
       //UIUtil.hasCSSClass(item, "block")
@@ -474,13 +500,13 @@ session_start();
           var panel = frameBody.find("[data-panel-id='" + uisItem.attr('data-panel-id') + "']");
           // Scroll to the panel if the panel is not in view port
           var offset = panel.offset();
-          var scrollTop = frameBody.scrollTop();
-
-          if (offset.top > (scrollTop + self.editorIFrame.height()) || offset.top + panel.outerHeight() < scrollTop) {
-            frameBody.stop().animate({
-              scrollTop: offset.top
-            }, 500);
-          }
+//          var scrollTop = frameBody.scrollTop();
+//
+//          if (offset.top > (scrollTop + self.editorIFrame.height()) || offset.top + panel.outerHeight() < scrollTop) {
+//            frameBody.stop().animate({
+//              scrollTop: offset.top
+//            }, 500);
+//          }
 
           self.currentElementHighlight.css({
             top: offset.top,
@@ -534,11 +560,13 @@ session_start();
           e.preventDefault();
         };
 
+        widgetGlassPane.off('click').on('click', editWidget);
+
         var li = $("<li class='widget'><div href='#' class='item-label'><span class='handle widget'></span></div><a href='#' class='close-icon' ></a></li>");
         li.attr("data-linked-widget-id", widget.attr("data-widget-id"));
         var widgetTitle = li.find(".item-label");
 
-        widgetTitle.append(widget.attr("data-widget-title") + ': ' + (widget.attr('id') || ''));
+        widgetTitle.append(widget.attr("data-widget-title") + ' | ' + (widget.attr('id') || ''));
         widgetTitle.click(editWidget);
 
         li.find(".close-icon").click(function (e) {
@@ -548,8 +576,7 @@ session_start();
 
         var inlineEditor = self.inlineEditor[widget.attr('data-widget-id')];
 
-        if (inlineEditor)
-        {
+        if (inlineEditor) {
           inlineEditor.css({
             fontSize: "24px",
             position: "absolute",
@@ -567,18 +594,18 @@ session_start();
           //var widget = frameBody.find("[data-widget-id='" + widget.attr('data-widget-id') + "']");
           // Scroll to the widget if the panel is not in view port
           var offset = widget.offset();
-          var scrollTop = frameBody.scrollTop();
-
-          if (offset.top > (scrollTop + self.editorIFrame.height()) || offset.top + widget.outerHeight() < scrollTop) {
-
-            frameBody.stop().animate({
-              scrollTop: widget.offset().top
-            }, 500);
-          }
+//          var scrollTop = frameBody.scrollTop();
+//
+//          if (offset.top > (scrollTop + self.editorIFrame.height()) || offset.top + widget.outerHeight() < scrollTop) {
+//
+//            frameBody.stop().animate({
+//              scrollTop: widget.offset().top
+//            }, 500);
+//          }
 
           self.currentElementHighlight.css({
-            top: widget.offset().top,
-            left: widget.offset().left,
+            top: offset.top,
+            left: offset.left,
             position: "absolute",
             width: widget.outerWidth(),
             height: widget.outerHeight()
@@ -832,20 +859,19 @@ session_start();
       template_settings: JSON.stringify(self.templateSettings),
       defaultUIS: defaultUIS,
       homeUIS: homeUIS
-    },
-            function (data) {
-              self.uisTemplate = $('#template').val();
-              self.uisId = data.uisId;
+    }, function (data) {
+      self.uisTemplate = $('#template').val();
+      self.uisId = data.uisId;
 
-              EW.setHashParameters({
-                "uisId": self.uisId
-              });
+      EW.setHashParameters({
+        "uisId": self.uisId
+      });
 
-              $(document).trigger("uis-list.refresh");
-              self.reloadFrame();
-              self.init();
-              $("body").EW().notify(data).show();
-            }, "json");
+      $(document).trigger("uis-list.refresh");
+      self.reloadFrame();
+      self.init();
+      $("body").EW().notify(data).show();
+    }, "json");
   };
 
   UISForm.prototype.updateUIS = function (reload) {
@@ -1028,8 +1054,7 @@ session_start();
       //console.log(typeof (data));
       if (typeof (data) != 'object')
         data = $.parseJSON(data);
-    } catch (e)
-    {
+    } catch (e) {
       return false;
     }
     this.editor.ew_widget_data[widgetId] = data;
@@ -1046,8 +1071,7 @@ session_start();
     this.frameLoader = System.UI.lock({
       element: $.EW("getParentDialog", $("#ew-uis-editor"))[0],
       akcent: "loader center"
-    },
-            .5);
+    }, .5);
 
     $("#inspector-editor > .items").empty();
     $('#fr').attr({
@@ -1055,45 +1079,38 @@ session_start();
     });
   };
 
+  UISForm.prototype.showWidgetLayoutManager = function (parameters) {
+    $("#widget-size-and-layout").stop().animate({
+      left: "0px"
+    }, 300);
+  };
+
   UISForm.prototype.showWidgetsList = function (parentId) {
     var _this = this;
 
     $("#items-list").stop().animate({
       left: "0px"
-    },
-            300);
-    var listItemContent = $("#items-list #items-list-content");
-    listItemContent.html("<h2 style='text-align:center;'>Please Wait</h2>");
+    }, 300);
+
     $.post('~webroot/api/widgets-management/widgets-types', {
       template: _this.uisTemplate,
       uisId: _this.uisId
-    },
-            function (response) {
-              var items = [
-              ];
+    }, function (response) {
+      var items = [
+        {
+          title: 'Panel',
+          description: 'Add a panel',
+          path: 'panel'
+        }
+      ];
 
-              // Add panel item
-              var e = $("<div class='text-icon' data-label='Panel'><h4>Panel</h4><p>Add a panel</p></div>");
-              e.on("click", $.proxy(_this.addPanel, _this, parentId));
-              items.push(e);
+      items = items.concat(response['data']);
+      items.forEach(function (item) {
+        item.parentId = parentId;
+      });
 
-              var widget_link_tempalte = "<div class='text-icon' data-label='{{title}}'><h4>{{title}}</h4>" +
-                      "<p>{{description}}</p></div>";
-
-              $.each(response["data"], function (k, item) {
-                var div = document.createElement('div');
-                div.innerHTML = UIUtility.populate(widget_link_tempalte, item);
-                var widget_link = div.childNodes[0];
-
-                widget_link.addEventListener('click', function () {
-                  _this.widgetForm(item["path"], parentId, item["feeder_type"]);
-                });
-
-                items.push(widget_link);
-              });
-
-              listItemContent.html(items);
-            }, "json");
+      _this.widgetsList[0].data = items;
+    }, "json");
     return false;
   };
 
@@ -1108,10 +1125,9 @@ session_start();
       template: self.uisTemplate,
       uisId: self.uisId,
       id: id
-    },
-            function (data) {
-              d.html(data);
-            });
+    }, function (data) {
+      d.html(data);
+    });
     return false;
   };
 
@@ -1119,8 +1135,8 @@ session_start();
     var self = this;
     $("#items-list").stop().animate({
       left: "-400px"
-    },
-            300);
+    }, 300);
+
     var d = EW.createModal({
       class: "left"
     });
@@ -1155,24 +1171,27 @@ session_start();
 
   UISForm.prototype.widgetForm = function (widgetType, parentId, feederType) {
     var self = this;
+
     $("#items-list").stop().animate({
       left: "-400px"
-    },
-            300);
+    }, 300);
+
     var d = EW.createModal({
       class: "center"
     });
+
     self.currentDialog = d;
+
     $.post("<?php echo EW_ROOT_URL; ?>~webroot/html/widgets-management/uis-prewidget-form.php", {
       template: self.uisTemplate,
       widgetType: widgetType,
       feederType: feederType,
       uisId: self.uisId,
       panelId: parentId
-    },
-            function (data) {
-              d.html(data);
-            });
+    }, function (data) {
+      d.html(data);
+    });
+    
     return false;
   };
 
@@ -1202,11 +1221,10 @@ session_start();
       widgetId: wId,
       widgetType: w.attr("data-widget-type"),
       uiStructureId: self.uisId
-    },
-            function (data) {
-              d.html(data);
-              //uisWidget.editWidgetForm();
-            });
+    }, function (data) {
+      d.html(data);
+      //uisWidget.editWidgetForm();
+    });
     return false;
   };
 
@@ -1247,11 +1265,10 @@ session_start();
     $("#editor-container").stop().animate({
       left: left,
       width: width
-    },
-            500, "Power1.easeInOut", function () {
-              self.loadInspectorEditor();
-              self.editorFrame.find(".widget-glass-pane").show();
-            });
+    }, 500, "Power1.easeInOut", function () {
+      self.loadInspectorEditor();
+      self.editorFrame.find(".widget-glass-pane").show();
+    });
 
     var fh = self.editorWindow.outerHeight();
     $("#neuis").css("height", fh);

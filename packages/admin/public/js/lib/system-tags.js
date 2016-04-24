@@ -83,7 +83,7 @@
        }
        },*/
       set: function (value) {
-        this.xtag.value = null;
+        this.value = -1;
         if ("object" !== typeof value) {
           this.xtag.data = [];
           value = [];
@@ -116,7 +116,11 @@
     },
     value: {
       attribute: {},
-      set: function (value) {
+      set: function (value, oldValue) {
+        if (value === oldValue) {
+          return;
+        }
+
         value = parseInt(value);
 
         if (value > -1 /*&& value !== this.value*/ && this.xtag.data.length) {
@@ -143,11 +147,11 @@
   SystemList.events = {
     "click:delegate(a)": function (e) {
       e.preventDefault();
+      e.currentTarget.value = this.dataset.index;
     },
     "tap:delegate(a)": function (e) {
       e.preventDefault();
-      e.currentTarget.value = e.target.dataset.index;
-
+      e.currentTarget.value = this.dataset.index;
     }
   };
 
