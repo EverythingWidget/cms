@@ -149,7 +149,7 @@ class Core extends \ew\Module {
                 'ew_contents.content_fields',
                 'events.value AS event_date'
     ]);
-    
+
     $query->where('parent_id', '=', $id)
             ->join('ew_contents_labels as langs', 'ew_contents.id', '=', 'langs.content_id')
             ->join('ew_contents_labels as events', 'ew_contents.id', '=', 'events.content_id')
@@ -221,6 +221,7 @@ class Core extends \ew\Module {
         break;
       case 'all':
         break;
+      case 'past':
       default:
         $query->whereDate('posts.date_published', '<=', $from_date);
         break;
