@@ -9,7 +9,7 @@
     margin-bottom: 30px;
     position: relative;
   }
-  
+
   &.background {
     background-image: url('images/default-bg.jpg');
     background-repeat: no-repeat;
@@ -21,6 +21,20 @@
     top: 0;
     left: 0;
     width: 100%;
+
+    @media (min-width: 320px) {
+      img {
+        height: 50px;
+        margin: 0;
+      }
+    }
+
+    @media (min-width: 768px) {
+      img {
+        height: 70px;
+        margin: 5px 0;
+      }
+    }
   }
 
   &.section {
@@ -40,6 +54,16 @@
 
     p {
 
+    }
+
+    @media (min-width: 320px) {
+      padding-top: 50px;
+      margin-bottom: 50px;
+    }
+
+    @media (min-width: 768px) {
+      padding-top: 120px;
+      margin-bottom: 120px;
     }
   }
 

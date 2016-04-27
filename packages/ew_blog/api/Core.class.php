@@ -138,7 +138,7 @@ class Core extends \ew\Module {
     return json_encode($apps);
   }
 
-  public function ew_list_feeder_events($id, $_language, $params = [], $order_by = 'DESC') {
+  public function ew_list_feeder_events($id, $_language, $params = [], $order_by = 'ASC') {
     if (!isset($id)) {
       return \ew\APIResourceHandler::to_api_response([]);
     }
@@ -159,7 +159,7 @@ class Core extends \ew\Module {
             ->where('events.key', 'ew_blog_Core_event');
 
     if (strtoupper($order_by) === 'DEFAULT') {
-      $order_by = 'DESC';
+      $order_by = 'ASC';
     }
 
     $from_date = date("Y-m-d");
@@ -225,6 +225,10 @@ class Core extends \ew\Module {
       default:
         $query->whereDate('posts.date_published', '<=', $from_date);
         break;
+    }
+
+    if (!boolval($params['show_drafts'])) {
+      $query->where('posts.draft', '0');
     }
 
     $query->orderBy("posts.date_published", $order_by)
@@ -303,10 +307,11 @@ class Core extends \ew\Module {
   public function call_on_article_update($id, $__response_data, $ew_blog) {
     $pdo = EWCore::get_db_PDO();
     $publish_date = $ew_blog['date_published'];
+    $draft = $ew_blog['draft'];
     $table_name = 'ew_contents';
     $post_id = \ew\DBUtility::row_exist($pdo, 'ew_blog_posts', $id, 'content_id');
     if ($post_id) {
-      $this->update_post($post_id['id'], $publish_date);
+      $this->update_post($post_id['id'], $publish_date, $draft);
     }
     else {
       $this->add_post($__response_data['data']['id'], $publish_date);
@@ -340,7 +345,8 @@ class Core extends \ew\Module {
 
     if ($post) {
       $result['data'] = [
-          'ew_blog/date_published' => $date
+          'ew_blog/date_published' => $date,
+          'ew_blog/draft'          => $post['draft']
       ];
     }
 
@@ -356,17 +362,22 @@ class Core extends \ew\Module {
     return $stmt->fetch(\PDO::FETCH_ASSOC);
   }
 
-  public function add_post($content_id, $publish_date) {
+  public function add_post($content_id, $publish_date, $draft) {
     $pdo = EWCore::get_db_PDO();
-    $stmt = $pdo->prepare("INSERT INTO ew_blog_posts(content_id, date_published, user_id) VALUES (?, ?, ?)");
-    return $stmt->execute([$content_id, $publish_date, $_SESSION['EW.USER_ID']]);
+    $stmt = $pdo->prepare("INSERT INTO ew_blog_posts(content_id, date_published, draft, user_id) VALUES (?, ?, ?, ?)");
+    return $stmt->execute([
+                $content_id,
+                $publish_date,
+                $draft,
+                $_SESSION['EW.USER_ID']
+    ]);
   }
 
-  public function update_post($id, $publish_date) {
+  public function update_post($id, $publish_date, $draft) {
     $pdo = EWCore::get_db_PDO();
-    $stmt = $pdo->prepare("UPDATE ew_blog_posts SET date_published = ? WHERE id = ?");
+    $stmt = $pdo->prepare("UPDATE ew_blog_posts SET date_published = ?, draft = ? WHERE id = ?");
 
-    return $stmt->execute([$publish_date, $id]);
+    return $stmt->execute([$publish_date, $draft, $id]);
     //return $stmt->queryString;
   }
 

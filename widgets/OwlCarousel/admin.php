@@ -7,7 +7,8 @@
 ?>
 <div class="block-row mt mb">
   <div class="col-xs-12 ">      
-    <input class="text-field" name="feeder" id="feeder" data-label="Folder, article or list feeder" data-ew-plugin="link-chooser" >    
+    <!--<input class="text-field" name="feeder" id="feeder" data-label="Folder, article or list feeder" data-ew-plugin="link-chooser" >-->    
+    <system-input-json name="feeder" id="feeder" data-content-type="list"></system-input-json>
   </div>
   <div class="btn-group col-xs-12" data-toggle="buttons">
     <label class="btn btn-primary btn-sm pull-right" >

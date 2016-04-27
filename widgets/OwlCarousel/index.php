@@ -1,8 +1,13 @@
 <?php
-$feeder = json_decode($widget_parameters["feeder"], TRUE);
+if (!is_array($widget_parameters["feeder"])) {
+  $feeder = json_decode($widget_parameters["feeder"], TRUE);
+}
+else {
+  $feeder = $widget_parameters["feeder"];
+}
+
 $feeder_id = $feeder["feederId"];
 $id = $feeder["id"];
-//admin\WidgetsManagement::add_html_script("widgets/OwlCarousel/owl.carousel.js");
 
 if ($feeder["type"] === "widget-feeder") {
   $feeder_obj = webroot\WidgetsManagement::get_widget_feeder($feeder_id);
@@ -127,8 +132,6 @@ if ($widget_parameters["content_fields"]) {
           $items[$i]['html'] .= "<$tag class='$field'>{$field_data['content']}</$tag>";
         }
       }
-
-
     }
   }
 }

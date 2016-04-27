@@ -24,11 +24,11 @@ session_start();
     </system-list>
   </div>
 
-  <div class="list-modal" style="left:-400px;" id="widget-size-and-layout">
+<!--  <div class="list-modal" style="left:-400px;" id="widget-size-and-layout">
     <h1 class="pull-left">Widget layout manager</h1>
     <a href='javascript:void(0)' class='close-icon pull-right' style="margin:5px;"></a>  
     <?php include 'uis-widget-size-layout.php'; ?>
-  </div>
+  </div>-->
 
   <div class="uis-editor-tool-pane" id="uis-editor-tool-pane">
 

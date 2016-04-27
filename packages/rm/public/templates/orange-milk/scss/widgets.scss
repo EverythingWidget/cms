@@ -124,10 +124,10 @@
           padding: 15px;
           font-weight: 300;
           margin: 0;
-          
+
           &.title {
             font-size: 18px;
-            
+
             @media (min-width: 992px) {
               font-size: 15px;
             }
@@ -568,10 +568,20 @@
       color: $font-color;
       text-align: center;
 
-
+      @media (min-width: 320px) {
+        font-size: .73em;
+        
+        .person {
+          font-size: 21px;
+        }
+      }
 
       @media (min-width: 992px) {
         font-size: .73em;
+        
+        .person {
+          font-size: 25px;
+        }
       }
 
       @media (min-width: 1360px) {
@@ -583,9 +593,10 @@
         max-height: 220px;
         display: block;
       }
-
+      
       .person {
-        max-height: 24px;
+        min-height: 24px;
+        font-weight: 500;
       }
 
       .title {
@@ -594,7 +605,7 @@
         max-height: 58px;
       }
 
-      h2, {
+      h2 {
         font-weight: 500;             
       }
 

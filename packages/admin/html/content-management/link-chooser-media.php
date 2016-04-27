@@ -276,7 +276,7 @@
         title: "tr{Upload Photo}",
         activity: "admin/html/content-management/media/upload-form.php",
         parent: Domain.ui.components.mainFloatMenu,
-        hash: function () {
+        parameters: function () {
           return {
             parentId: component.module.getNav("album")[0]
           };
@@ -290,7 +290,7 @@
         title: "tr{Upload Audio}",
         activity: "admin/html/content-management/media/upload-audio-form.php",
         parent: Domain.ui.components.mainFloatMenu,
-        hash: function () {
+        parameters: function () {
           return {
             parentId: component.module.getNav("album")[0]
           };

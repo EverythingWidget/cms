@@ -58,10 +58,8 @@ $nav-bar-bg: rgba(255,255,255,.9);
       background-color: #fff;
       padding: 0;      
       padding-bottom: 20px;
-      border: 0 solid rgba(0,0,0,.18);
       background-clip: padding-box; 
       overflow: hidden;
-      border-width: 1px 0;
       box-shadow: 0 3px 5px rgba(0,0,0,.1), 0 8px 14px rgba(0,0,0,.14); 
 
       p, h1, h2, h3 {
@@ -95,6 +93,7 @@ $nav-bar-bg: rgba(255,255,255,.9);
 
       &.right {
         text-align: right;
+        float: right;
 
         li {
         }
@@ -107,7 +106,7 @@ $nav-bar-bg: rgba(255,255,255,.9);
       a {
         color: $font-color;
         font-weight: normal;
-        padding: 0 15px;
+        padding: 5px 15px;
         line-height: 40px;
         display: block;
       } 

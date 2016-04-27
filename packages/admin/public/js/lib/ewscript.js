@@ -407,7 +407,7 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler) {
   }
 
   var setInputData = function (key, value, form) {
-    //alert(key + " "+val)
+
     if ("string" === typeof key)
       key = key.replace(/(:|\.|\[|\]|,|\/)/g, "\\$1");
 
@@ -416,37 +416,45 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler) {
       form.find("[id='" + key + "']").val(handler(key, value));
     } else
     {
-      var element = $();
-      try
-      {
-        element = form.find(" :input[name='" + key + "'][value='" + value + "']");
-      } catch (e)
-      {
+      var element = [];
+      try {
+        element = form.find(":input[name='" + key + "'][value='" + value + "']");
+
+      } catch (e) {
 
       }
-
+      // Find the element only by its key
       if (element.length === 0) {
         element = form.find(":input[name='" + key + "']");
       }
-
+      // Find the element by its id
       if (element.length === 0) {
         element = form.find("#" + key);
-      } else {
-        if (element.is(":radio") || element.is(":checkbox"))
-          if (!element.is(":checked")) {
-            element.click();
-            element.prop("checked", true);
-          }
       }
-      if (element.is("img")) {
-        element.prop("src", value);
-        element.attr("data-file-extension", /[^.]+$/.exec(value));
-        element.attr("data-filename", /^[^.]+/.exec(value));
+      // Do not proceed furthur if the field is not found
+      if (element.length === 0) {
+        //console.warn('field not found: ' + key);
+        return;
+      }
+
+      if (element.is(":radio") || element.is(":checkbox")) {
+        if (element.val() === value && !element.is(":checked")) {
+          element.click();
+          element.prop("checked", true).change();
+        }
+
+      } else if (element.is("img")) {
+        element.prop("src", value).attr({
+          "data-file-extension": /[^.]+$/.exec(value),
+          "data-filename": /^[^.]+/.exec(value)
+        });
+
       } else if (element.is(":input")) {
-        //console.log(element);
         element.val(value).change();
+
       } else if (element.is('a')) {
         element.attr('href', value).text(value).change();
+
       } else {
         if (element[0] && element[0].elementType === 'input') {
           element[0].value = value;
@@ -457,31 +465,29 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler) {
   };
 
   if (!jsonData) {
-    $.each($(formId + " input[id]," + formId + " label[id]," + formId + " select[id]," + formId + " textarea[id]"), function (elm) {
+    $.each($(formId + " input," + formId + " label[id]," + formId + " select[id]," + formId + " textarea[id]"), function (elm) {
       var field = $(elm);
-      if (field.is(":radio") || field.is(":checkbox"))
-      {
-        if (field.is(":checked"))
-        {
+      if (field.is(":radio") || field.is(":checkbox")) {
+        if (field.is(":checked")) {
           field.click();
           field.prop("checked", false);
         }
-      } else if (field.is("input") || field.is("select") || field.is("textarea"))
-      {
+
+      } else if (field.is("input") || field.is("select") || field.is("textarea")) {
         field.val("").change();
-      } else if (field.is("img"))
-      {
-        field.prop("src", "");
-        field.attr("data-file-extension", "");
-        field.attr("data-filename", "");
-      } else
+
+      } else if (field.is("img")) {
+        field.prop("src", "").attr({
+          "data-file-extension": '',
+          "data-filename": ''
+        });
+
+      } else {
         field.text("");
+      }
     });
 
-    form.data("form-data", {});
-    form.trigger("refresh", [
-      {}
-    ]);
+    form.data("form-data", {}).trigger("refresh", [{}]);
     return;
   }
 
@@ -493,8 +499,7 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler) {
     }
   });
 
-  form.data("form-data", jsonData);
-  form.trigger("refresh", [
+  form.data("form-data", jsonData).trigger("refresh", [
     jsonData
   ]);
 };
@@ -503,14 +508,15 @@ EverythingWidgets.prototype.getParentDialog = function (element) {
   var parentDialog = element.closest(".top-pane");
   return parentDialog;
 };
+
 EverythingWidgets.prototype.createDropMenu = function (element, config) {
   var $element = $(element);
   var settings = $.extend({
     width: "400px",
     parent: "body",
     eventParent: $(window)
-  },
-          config);
+  }, config);
+
   var size = $("<div class='dropdown-menu'><div class='col-xs-12'></div></div>");
   size.css({
     width: settings.width,
@@ -546,37 +552,12 @@ EverythingWidgets.prototype.createDropMenu = function (element, config) {
     },
             200, "Power3.easeOut");
     isVisible = true;
-  }
+  };
 
   $($element).on("contextmenu", showDropMenu);
   if (settings.button)
     settings.button.on("click", showDropMenu);
   return size;
-};
-
-EverythingWidgets.prototype.createList = function (config) {
-  var list = {
-    element: document.createDocumentFragment(),
-    data: [
-    ],
-    selectedItem: null,
-    selectedIndex: null,
-    template: "",
-    select: function (index) {
-
-    },
-    setData: function (data) {
-
-
-
-      for (var i = 0, len = data.length; i < len; i++) {
-
-      }
-
-    }
-  };
-
-  return $.extend(list, config);
 };
 
 /**
@@ -2430,7 +2411,7 @@ $(document).ready(function () {
             // Add user defined post data to the postData variable
             // Call post data if it is a function
             if (typeof currentActivity.parameters === 'function') {
-              $.extend(activityParameters, currentActivity.parameters());
+              $.extend(activityParameters, currentActivity.parameters(activityParameters));
             } else {
               $.extend(activityParameters, currentActivity.parameters);
             }
@@ -2456,7 +2437,7 @@ $(document).ready(function () {
               if (result.responseJSON) {
                 alert(result.responseJSON.message);
               }
-              
+
               EW.customAjaxErrorHandler = true;
             }
           });

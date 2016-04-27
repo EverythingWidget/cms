@@ -215,7 +215,7 @@
         //class: "btn-text btn-primary",
         activity: "admin/html/content-management/folder-form.php",
         parent: System.UI.components.mainFloatMenu,
-        hash: function (hash) {
+        parameters: function (hash) {
           hash.parent = component.parentId;
         },
         onDone: function (hash) {
@@ -229,7 +229,7 @@
         //class: "btn-text btn-primary",
         activity: "admin/html/content-management/article-form.php_new",
         parent: System.UI.components.mainFloatMenu,
-        hash: function (hash) {
+        parameters: function (hash) {
           hash.parent = component.parentId;
         },
         onDone: function (hash) {

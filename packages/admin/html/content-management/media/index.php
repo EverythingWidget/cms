@@ -301,7 +301,7 @@
         title: "tr{New Album}",
         activity: "admin/html/content-management/media/album-form.php",
         parent: System.UI.components.mainFloatMenu,
-        hash: function (params) {
+        parameters: function (params) {
           params.albumId = null;
           return params;
         }
@@ -311,7 +311,7 @@
         title: "tr{Upload Photo}",
         activity: "admin/html/content-management/media/upload-form.php",
         parent: System.UI.components.mainFloatMenu,
-        hash: function () {
+        parameters: function () {
           return {
             parentId: System.getHashNav("album")[0]
           };
@@ -325,7 +325,7 @@
         title: "tr{Upload Audio}",
         activity: "admin/html/content-management/media/upload-audio-form.php",
         parent: System.UI.components.mainFloatMenu,
-        hash: function () {
+        parameters: function () {
           return {
             parentId: System.getHashNav("album")[0]
           };

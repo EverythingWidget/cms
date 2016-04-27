@@ -1,6 +1,37 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,500,300,700,900);
 /*@import url(https://fonts.googleapis.com/css?family=Poppins:400,500,600,700,300);*/
 /*@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800);*/
+/*@font-face{ 
+  font-family: 'geomanist';
+  src: url('fonts/geomanist-bold-webfont.ttf');
+  src: url('fonts/geomanist-bold-webfont.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face{ 
+  font-family: 'geomanist';
+  src: url('fonts/geomanist-book-webfont.ttf');
+  src: url('fonts/geomanist-book-webfont.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face{ 
+  font-family: 'geomanist';
+  src: url('fonts/geomanist-regular-webfont.ttf');
+  src: url('fonts/geomanist-regular-webfont.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face{ 
+  font-family: 'geomanist';
+  src: url('fonts/geomanist-light-webfont.ttf');
+  src: url('fonts/geomanist-light-webfont.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+}*/
 
 @font-face {
   font-family:'Homa';
@@ -659,7 +690,7 @@ ul.component li a {
 html,body {
   margin: 0;
   height: 100%;
-  font-family: Roboto,Homa;
+  font-family: Roboto, Homa;
 }
 
 .wrapper {
@@ -1910,26 +1941,72 @@ ul.actions-bar li label {
 ul.items {
   margin: 0;
   padding: 0 5px;
-  font-size: 13px;
-  font-weight: 700;
+  font-size: 16px;
+  font-weight: 300;
   list-style: none;
   overflow: hidden;
   display: block;
   position: relative;
-}
 
-ul.items li {
-  padding: 0;
-  margin: 6px 0 0;
-  display: block;
-  overflow: hidden;
-  min-height: 34px;
-  border: 1px solid transparent;
-  position: relative;
-  background-color: rgba(0,0,0,.1);
-}
-ul.items li:last-child {
-  margin-bottom: 6px;
+  li {
+    padding: 0;
+    margin: 6px 0 0;
+    display: block;
+    /*overflow: hidden;*/
+    min-height: 34px;
+    border: 1px solid transparent;
+    position: relative;
+    /*background-color: rgba(0,0,0,.1);*/    
+
+    &:last-child {
+      margin-bottom: 6px;
+    }
+
+    .item-label {
+      text-decoration: none;
+      color: #888;
+      padding: 6px 15px;
+      float: left;
+      line-height: 22px;
+      cursor: pointer;
+      background-color: rgba(0,0,0,.1);
+      border-radius: 3px;
+      text-transform: uppercase;
+
+      /*      &:before {
+              position: absolute;
+              content: ' ';
+              height: 2px;
+              width: 8px;
+              top: 15px;
+              left: 0;
+              background-color: red;
+            }
+      
+            &:after {
+              position: absolute;
+              content: ' ';
+              height: 26px;
+              width: 2px;
+              top: 30px;
+              left: 16px;
+              background-color: red;
+            }*/
+
+      &:hover {
+        background-color: silver;
+        color: #000;
+      }
+    }
+  }
+
+  ul {
+    padding: 0 0 0px 15px;
+    overflow: hidden;
+    margin-right: -1px;
+    width: 100%;
+    min-height: 40px;
+  }
 }
 
 ul.items li.block.highlight,ul.items li.highlight {
@@ -1947,21 +2024,6 @@ ul.items li.block {
   border-radius: 0;
 }
 
-ul.items li .item-label {
-  text-decoration: none;
-  color: #1190cf;
-  padding: 6px;
-  float: left;
-  line-height: 22px;
-  cursor: pointer;
-  overflow: hidden;
-}
-
-ul.items li .item-label:hover {
-  background-color: silver;
-  color: #000;
-}
-
 ul.items li.block li.block {
   margin-left: -7px;
   margin-bottom: 0;
@@ -1973,30 +2035,29 @@ ul.items li.panel {
 }
 
 ul.items li.panel > ul {
-  padding: 0;
-  padding-left: 4px;
   min-height: 40px;
 }
 
 ul.items li.widget {
   border: none;
-  padding: 0;
-  overflow: hidden;
+  padding: 0 6px;
+  /*overflow: hidden;*/
   background-color: transparent;
 }
 
 ul.items li.widget > .item-label {
-  background-color: #0080bb;
-  border-radius:2px;
+  background-color: #0097A7;
+  padding: 6px;
+  border-radius: 16px;
   color: #fff;
   float: none;
   display: block;
-  margin-right: 4px;
+  margin-right: 0;
   box-shadow: 0 1px 3px -1px rgba(0,0,0,.3);
 }
 
 ul.items li.widget > .item-label:hover {
-  background-color: #3399cf;
+  background-color: #09B0C1;
   box-shadow: 0 2px 6px -2px rgba(0,0,0,.5);
 }
 
@@ -2074,14 +2135,6 @@ ul.items li .close-icon:hover {
 
 ul.active {
   background-color: #fcc;
-}
-
-ul.items ul {
-  padding: 0 0 0px 15px;
-  overflow: hidden;
-  margin-right: -1px;
-  width: 100%;
-  min-height: 40px;
 }
 
 .dragged {
@@ -2299,7 +2352,7 @@ textarea.text-field {
   margin: 0;
   outline: none;
   display: block;
-  font-family: Roboto,Homa,Tahoma;
+  font-family: Roboto, Homa, Tahoma;
   font-size: 1.3em;
   font-weight: 400;
   background-color: transparent;
@@ -3505,4 +3558,49 @@ system-input-json {
 .options-panel {
   overflow: hidden;
   min-height: 50px;
+}
+
+.checkbox {
+  overflow:hidden;
+  display:block;
+  text-align: right;
+
+  input {
+    position: absolute;
+    visibility: hidden;
+
+    & + i {
+      background-color: #ccc;
+      position: relative;
+      width: 52px;
+      height: 30px;
+      border-radius: 15px;
+      margin-left: 15px;
+      transition: all .2s;
+      float: right;
+
+      &:after {
+        transition: all .2s;
+        position: absolute;
+        left: 0;
+        content: ' ';
+        margin: 2px;
+        width: 26px;
+        height: 26px;
+        background-color: #fff;
+        border-radius: 100%;
+      }
+    }
+
+    &:checked {
+      & + i {
+        background-color: #00BBEE;
+
+        &:after {
+          background-color: #fff;
+          left: calc(50% - 4px);
+        }
+      }
+    }
+  }
 }
