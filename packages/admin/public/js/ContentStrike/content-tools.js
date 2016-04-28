@@ -10898,7 +10898,7 @@
       });
       input.value = title.innerHTML = initValue;
       element.attr("content-field", initValue);
-      element.addCSSClass("ew-content-field");
+      //element.addCSSClass("ew-content-field");
 
       container.style.position = "absolute";
       var app = ContentTools.EditorApp.get();

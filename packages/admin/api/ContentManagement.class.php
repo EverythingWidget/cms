@@ -236,6 +236,7 @@ class ContentManagement extends \ew\Module {
 
           $field_value["src"][] = $this->get_node_src($field);
           $field_value["tag"][] = $field->tagName;
+          $field_value["class"][] = $field->getAttribute("class");
 
           $content_fields->{$field->getAttribute("content-field")} = $field_value;
         }
@@ -255,6 +256,10 @@ class ContentManagement extends \ew\Module {
               "tag"     => [
                   $current_field_value["tag"],
                   $field->tagName
+              ],
+              "class"   => [
+                  $current_field_value["class"],
+                  $field->getAttribute("class")
               ]
           ];
         }
@@ -265,7 +270,8 @@ class ContentManagement extends \ew\Module {
         $content_fields->{$field->getAttribute("content-field")} = ["content" => trim($html),
             "link"    => $link,
             "src"     => $src,
-            "tag"     => $field->tagName
+            "tag"     => $field->tagName,
+            "class"   => $field->getAttribute("class")
         ];
       }
     }
