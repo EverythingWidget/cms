@@ -24,11 +24,11 @@ session_start();
     </system-list>
   </div>
 
-<!--  <div class="list-modal" style="left:-400px;" id="widget-size-and-layout">
-    <h1 class="pull-left">Widget layout manager</h1>
-    <a href='javascript:void(0)' class='close-icon pull-right' style="margin:5px;"></a>  
-    <?php include 'uis-widget-size-layout.php'; ?>
-  </div>-->
+  <!--  <div class="list-modal" style="left:-400px;" id="widget-size-and-layout">
+      <h1 class="pull-left">Widget layout manager</h1>
+      <a href='javascript:void(0)' class='close-icon pull-right' style="margin:5px;"></a>  
+  <?php include 'uis-widget-size-layout.php'; ?>
+    </div>-->
 
   <div class="uis-editor-tool-pane" id="uis-editor-tool-pane">
 
@@ -566,10 +566,20 @@ session_start();
         li.attr("data-linked-widget-id", widget.attr("data-widget-id"));
         var widgetTitle = li.find(".item-label");
 
+        widgetGlassPane.on({
+          mouseenter: function () {
+            widgetTitle.addClass('hover');
+          },
+          mouseleave: function () {
+            widgetTitle.removeClass('hover');
+          }
+        });
+
+
         widgetTitle.append(widget.attr("data-widget-title") + ' | ' + (widget.attr('id') || ''));
         widgetTitle.click(editWidget);
 
-        li.find(".close-icon").click(function (e) {
+        li.find(".close-icon").on('click', function (e) {
           e.preventDefault();
           self.removeWidget(widget.attr('data-widget-id'));
         });
@@ -1137,36 +1147,33 @@ session_start();
       left: "-400px"
     }, 300);
 
-    var d = EW.createModal({
+    var panelFormDialog = EW.createModal({
       class: "left"
     });
-    self.currentDialog = d;
-    $.post('<?php echo EW_ROOT_URL; ?>~webroot/widgets-management/uis-panel.php', {
+
+    $.post('html/webroot/widgets-management/uis-panel.php', {
       template: self.uisTemplate,
       uisId: self.uisId,
       containerId: containerId
     }, function (data) {
-      d.html(data);
+      panelFormDialog.html(data);
     });
-    return false;
   };
 
   UISForm.prototype.editPanel = function (pid, containerId) {
     var self = this;
-    var d = EW.createModal({
+    var panelFormDialog = EW.createModal({
       class: "left"
     });
-    self.currentDialog = d;
-    $.post('<?php echo EW_ROOT_URL; ?>~webroot/widgets-management/uis-panel.php', {
+
+    $.post('html/webroot/widgets-management/uis-panel.php', {
       template: self.uisTemplate,
       uisId: self.uisId,
       panelId: pid,
       containerId: containerId
-    },
-            function (data) {
-              d.html(data);
-            });
-    return false;
+    }, function (data) {
+      panelFormDialog.html(data);
+    });
   };
 
   UISForm.prototype.widgetForm = function (widgetType, parentId, feederType) {
@@ -1191,7 +1198,7 @@ session_start();
     }, function (data) {
       d.html(data);
     });
-    
+
     return false;
   };
 
@@ -1206,49 +1213,38 @@ session_start();
 
   UISForm.prototype.editWidget = function (wId) {
     var self = this;
-    var d = EW.createModal({
+    var widgetFormDialog = EW.createModal({
       class: "left big"
     });
-    self.currentDialog = d;
 
-    var w = self.getEditorItem(wId);
-    //console.log(w);
-    //EW.setHashParameter("screen", null, "neuis");
-    var wi = $("#editor-container").width() * .2;
-
-    $.post("<?php echo EW_ROOT_URL; ?>~webroot/html/widgets-management/uis-prewidget-form.php", {
+    self.currentDialog = widgetFormDialog;
+    var widget = self.getEditorItem(wId);
+    $.post("html/webroot/widgets-management/uis-prewidget-form.php", {
       template: self.uisTemplate,
       widgetId: wId,
-      widgetType: w.attr("data-widget-type"),
+      widgetType: widget.attr("data-widget-type"),
       uiStructureId: self.uisId
     }, function (data) {
-      d.html(data);
-      //uisWidget.editWidgetForm();
+      widgetFormDialog.html(data);
     });
-    return false;
   };
 
   UISForm.prototype.removeWidget = function (wId) {
-    var self = this;
-    if (confirm("Do you really want to remove this Widget?"))
-    {
-      self.getEditorItem(wId).data("container").remove();
-      $("#inspector-editor").trigger("refresh");
+    var uisForm = this;
+    if (confirm("Do you really want to remove this Widget?")) {
+      uisForm.getEditorItem(wId).data("container").remove();
+      this.inspectorEditor.trigger("refresh");
     }
-    return false;
   };
 
   UISForm.prototype.removePanel = function (wId) {
-    if (confirm("Do you really want to remove this Panel?"))
-    {
+    if (confirm("Do you really want to remove this Panel?")) {
       $("#fr").contents().find("body #base-content-pane div[data-panel-id='" + wId + "']").remove();
-      $("#inspector-editor").trigger("refresh");
+      this.inspectorEditor.trigger("refresh");
     }
-    return false;
   };
 
   function setView() {
-    //obj('fr').contentDocument.body.innerHTML = '<link href="../templates/SpapcoDefault/template.css" rel="stylesheet" type="text/css">';
     $('#fr').contentDocument.getElementById('dynamicStyle').innerHTML = $('#style').value;
     $('#fr').contentDocument.getElementById('<?php echo $name ?>').className = 'Panel <?php echo $class ?> ' + $('#class').value;
     $('#classValue').innerHTML = 'Panel <?php echo $class ?> ' + $('#class').value;

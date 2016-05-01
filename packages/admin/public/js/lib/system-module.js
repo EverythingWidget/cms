@@ -113,6 +113,11 @@
         this.binds[event] = action;
       }
     },
+    stage: function (event, action) {
+      if ('string' === typeof (event) && 'function' === typeof (action)) {
+        this.binds[event] = action;
+      }
+    },
     /**
      * Call the event function if exist and pass the args to it
      * 

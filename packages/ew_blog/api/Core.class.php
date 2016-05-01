@@ -138,7 +138,7 @@ class Core extends \ew\Module {
     return json_encode($apps);
   }
 
-  public function ew_list_feeder_events($id, $_language, $params = [], $order_by = 'ASC') {
+  public function ew_list_feeder_events($id, $_language, $params = [], $order_by = 'ASC', $token = 0, $size = 100) {
     if (!isset($id)) {
       return \ew\APIResourceHandler::to_api_response([]);
     }
@@ -171,7 +171,11 @@ class Core extends \ew\Module {
         break;
     }
 
-    $query->orderBy("events.value", $order_by);
+    $ollection_size = $query->get()->count();
+
+    $query->orderBy("events.value", $order_by)
+            ->take($size)
+            ->skip($token);
 
     $events = $query->get();
 
@@ -186,9 +190,14 @@ class Core extends \ew\Module {
       }
     }
 
+    $folder_info = \EWCore::call_cached_api('admin/api/content-management/contents', [
+                'id' => $id
+    ]);
+
     return \ew\APIResourceHandler::to_api_response($result, [
-                'page_size'       => $events->count(),
-                "collection_size" => $events->count()
+                'parent_content_fields' => $folder_info['data']['content_fields'],
+                'page_size'             => $events->count(),
+                "collection_size"       => $ollection_size
     ]);
   }
 
@@ -231,12 +240,13 @@ class Core extends \ew\Module {
       $query->where('posts.draft', '0');
     }
 
+    $collection_size = $query->get()->count();
+
     $query->orderBy("posts.date_published", $order_by)
             ->take($size)
             ->skip($token);
 
-    $articles = $query->get([
-    ]);
+    $articles = $query->get();
 
     $posts = array_map(function($row) {
       $row["content_fields"] = json_decode($row["content_fields"], true);
@@ -271,8 +281,8 @@ class Core extends \ew\Module {
 
     return \ew\APIResourceHandler::to_api_response($result, [
                 'parent_content_fields' => $folder_info['data']['content_fields'],
-                'page_size'             => count($articles),
-                "collection_size"       => count($articles)
+                'page_size'             => $articles->count(),
+                "collection_size"       => $collection_size
     ]);
   }
 

@@ -51,8 +51,8 @@
   LinkChooserDomain.ui.components = {
     document: $(document)
   };
-  LinkChooserDomain.ui.components.mainFloatMenu = $("#media-chooser-main-actions");
-  LinkChooserDomain.ui.components.mainContent = $(EW.getParentDialog($("#media-chooser-main-actions")).find(".form-content"));
+  LinkChooserDomain.ui.components.mainFloatMenu = scope.ui.filter("#media-chooser-main-actions");
+  LinkChooserDomain.ui.components.mainContent = $(EW.getParentDialog(LinkChooserDomain.ui.components.mainFloatMenu).find(".form-content"));
   LinkChooserDomain.start();
 
   (function (Domain) {
@@ -94,8 +94,8 @@
 
       tabs.audios = function () {
         System.ui.behaviors.selectTab('#media-audios', component.ui.components.tabs_pills);
-        component.uploadAudioActivity.show();
-        component.newAlbumActivity.hide();
+        //component.uploadAudioActivity.show();
+        //component.newAlbumActivity.hide();
         component.uploadImageActivity.hide();
       };
     };
@@ -163,13 +163,12 @@
 
     MediaComponent.prototype.init = function () {
       var component = this;
-      var templates = System.ui.templates['system/media-chooser'];
       this.albumId = null;
-      this.albumCard = $(templates["album-card"]).hide();
+      this.albumCard = $(scope.uiViews.album_card).hide();
       this.albumCardTitleAction = this.albumCard.find(".card-title-action");
       this.albumCardTitleActionRight = this.albumCard.find(".card-title-action-right");
-      this.albumsList = $(templates['albums-list']);
-      this.audiosList = $(templates['audios-list']);
+      this.albumsList = $(scope.uiViews.albums_list);
+      this.audiosList = $(scope.uiViews.audios_list);
       this.currentItem = null;
 
       this.albumPropertiesBtn = EW.addActionButton({
@@ -263,14 +262,14 @@
       }).hide();
 
       /*this.newAlbumActivity = EW.addActivity({
-        title: "tr{New Album}",
-        activity: "admin/html/content-management/media/album-form.php",
-        parent: Domain.ui.components.mainFloatMenu,
-        hash: function (params) {
-          params.albumId = null;
-          return params;
-        }
-      });*/
+       title: "tr{New Album}",
+       activity: "admin/html/content-management/media/album-form.php",
+       parent: Domain.ui.components.mainFloatMenu,
+       hash: function (params) {
+       params.albumId = null;
+       return params;
+       }
+       });*/
 
       this.uploadImageActivity = EW.addActivity({
         title: "tr{Upload Photo}",
@@ -430,7 +429,7 @@
               .addClass(ext);
       div.attr("tabindex", "1");
       div.on("focus click", function () {
-        component.currentItem = System.ui.behaviors.selectElementOnly(div[0],component.currentItem);
+        component.currentItem = System.ui.behaviors.selectElementOnly(div[0], component.currentItem);
       });
 
       if (ImageURL) {
@@ -466,11 +465,11 @@
               .addClass(ext);
       div.attr("tabindex", "1");
       div[0].addEventListener("focus", function (e) {
-        component.currentItem = System.ui.behaviors.selectElementOnly(div[0],component.currentItem);
+        component.currentItem = System.ui.behaviors.selectElementOnly(div[0], component.currentItem);
       });
 
       div[0].addEventListener("click", function () {
-        component.currentItem = System.ui.behaviors.selectElementOnly(div[0],component.currentItem);
+        component.currentItem = System.ui.behaviors.selectElementOnly(div[0], component.currentItem);
       });
 
       if (ImageURL) {
@@ -522,7 +521,7 @@
         if (id > 0) {
           //mediaComponent.newAlbumActivity.hide();
           mediaComponent.uploadImageActivity.show();
-          mediaComponent.uploadAudioActivity.show();
+          //mediaComponent.uploadAudioActivity.show();
           mediaComponent.bBack.comeIn();
         } else {
           //mediaComponent.newAlbumActivity.show();
@@ -563,5 +562,6 @@
   }(LinkChooserDomain));
 
   LinkChooserDomain.state("media-chooser").start();
+  System.state('forms/media-chooser', function () { });
 
 </script>

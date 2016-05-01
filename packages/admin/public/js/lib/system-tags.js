@@ -333,11 +333,11 @@
 
         this.xtag.placeholder = document.createComment(' ' + this.module + '/' + this.name + ' ');
 
-        if (!System.ui.templates["system/" + this.module]) {
-          System.ui.templates["system/" + this.module] = {};
-        }
-
-        System.ui.templates["system/" + this.module][this.name] = this;
+//        if (!System.ui.templates["system/" + this.module]) {
+//          System.ui.templates["system/" + this.module] = {};
+//        }
+//
+//        System.ui.templates["system/" + this.module][this.name] = this;
       },
       inserted: function () {
         if (this.xtag.validate) {
@@ -346,7 +346,7 @@
         }
 
         this.xtag.originalParent = this.parentNode;
-        System.ui.templates["system/" + this.module][this.name] = this;
+//        System.ui.templates["system/" + this.module][this.name] = this;
         if (this.xtag.showWhenAdded) {
           this.xtag.showWhenAdded = null;
           this.show();

@@ -201,14 +201,13 @@
     };
 
     MediaComponent.prototype.init = function () {
-      var templates = System.ui.templates['system/content-management/media'];
       var component = this;
       this.albumId = null;
-      this.albumCard = $(templates["album-card"]).hide();
+      this.albumCard = $(scope.uiViews.album_card).hide();
       this.albumCardTitleAction = this.albumCard.find(".card-title-action");
       this.albumCardTitleActionRight = this.albumCard.find(".card-title-action-right");
-      this.albumsList = $(templates['albums-list']);
-      this.audiosList = $(templates['audios-list']);
+      this.albumsList = $(scope.uiViews.albums_list);
+      this.audiosList = $(scope.uiViews.audios_list);
       this.currentItem = null;
 
       this.albumPropertiesBtn = EW.addActionButton({

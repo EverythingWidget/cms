@@ -2006,6 +2006,7 @@ ul.items {
     margin-right: -1px;
     width: 100%;
     min-height: 40px;
+    display: block;
   }
 }
 
@@ -2032,10 +2033,10 @@ ul.items li.block li.block {
 ul.items li.panel {
   border-radius: 0;
   margin-right: 0;
-}
-
-ul.items li.panel > ul {
-  min-height: 40px;
+  > ul {
+    min-height: 40px;
+    padding-bottom: 20px;
+  }
 }
 
 ul.items li.widget {
@@ -2053,12 +2054,12 @@ ul.items li.widget > .item-label {
   float: none;
   display: block;
   margin-right: 0;
-  box-shadow: 0 1px 3px -1px rgba(0,0,0,.3);
+  box-shadow: 0 1px 2px rgba(0,0,0,.2);
+  transition: all .2s;
 }
 
-ul.items li.widget > .item-label:hover {
+ul.items li.widget > .item-label:hover, ul.items li.widget > .item-label.hover {
   background-color: #09B0C1;
-  box-shadow: 0 2px 6px -2px rgba(0,0,0,.5);
 }
 
 ul.items li.widget .close-icon {

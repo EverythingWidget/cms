@@ -325,7 +325,7 @@
 
       System.onLoadQueue["system/" + mod.id] = true;
 
-      $.get(mod.url, function (response) {
+      $.get(mod.url, mod.params | {}, function (response) {
         if (System.modules["system/" + mod.id]) {
           $("#system_" + mod.id.replace(/[\/-]/g, "_")).remove();
           //return;
@@ -336,9 +336,20 @@
 
         setTimeout(function () {
           if (filtered.script) {
+            var scopeUIViews = {};
+            Array.prototype.forEach.call(filtered.uiView, function (item) {
+              var key = item.getAttribute('name').replace(/([A-Z])|(\-)|(\s)/g, function ($1) {
+                return "_" + (/[A-Z]/.test($1) ? $1.toLowerCase() : '');
+              });
+
+              scopeUIViews[key] = item;
+            });
+
             var scope = {
               __moduleId: "system/" + mod.id,
-              parentScope: parentScope
+              parentScope: parentScope,
+              uiViews: scopeUIViews,
+              ui: filtered.html
             };
             var scriptContent = '(function(Scope){' + filtered.script.text() + '})(scope)';
             eval(scriptContent);
@@ -362,7 +373,6 @@
 
           //if (scripts)
           //scripts.attr("id", System.modules["system/" + mod.id].id.replace(/[\/-]/g, "_"));
-
           if ("function" === typeof (System.onModuleLoaded["system/" + mod.id])) {
             System.onModuleLoaded["system/" + mod.id].call(this, System.modules["system/" + mod.id], filtered.html);
             System.onModuleLoaded["system/" + mod.id] = null;
@@ -390,10 +400,12 @@
         temp.appendChild(html[i]);
       }
       document.getElementsByTagName('body')[0].appendChild(temp);
+      var uiView = temp.querySelectorAll('system-ui-view');
       temp.parentNode.removeChild(temp);
 
       return {
         html: html,
+        uiView: uiView,
         script: scripts
       };
     },

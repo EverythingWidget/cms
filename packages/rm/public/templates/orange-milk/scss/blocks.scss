@@ -12,8 +12,32 @@
 
   &.background {
     background-image: url('images/default-bg.jpg');
-    background-repeat: no-repeat;
-    background-size: contain;
+    background-repeat: repeat-x;
+    background-position: center top;
+  }
+
+  &.daily-feed-bg {
+    background-image: url('images/daily-feed-bg.jpg');
+    background-repeat: repeat-x;
+    background-position: center center;
+    min-height: 440px;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    .item-link {
+      border: 1px solid rgba(255,255,255,.8);
+      border-radius: 5px;
+      padding: 14px 20px;
+      color: #fff;
+      display: inline-block;
+      margin-top: 30px;
+
+      &:hover {
+        background-color: rgba(255,255,255,.2);
+      }
+    }
   }
 
   &.float.nav-bar {
@@ -65,13 +89,6 @@
       padding-top: 120px;
       margin-bottom: 120px;
     }
-  }
-
-  &.daily-quote {
-    background-color: #fff;
-    background-position: center center;
-    background-size: cover;
-    margin: 30px -15px;
   }
 
   &.text {

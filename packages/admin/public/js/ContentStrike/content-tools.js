@@ -8788,6 +8788,7 @@
     };
 
     _EditorApp.prototype.destroy = function () {
+      this.stop();
       return this.unmount();
     };
 
@@ -9040,7 +9041,12 @@
           var range = new ContentSelect.Range(lastChild._domElement.innerHTML.length, lastChild._domElement.innerHTML.length);
           lastChild.selection(range);
         }
-        lastChild.focus();
+
+        if (lastChild.focus) {
+          lastChild.focus();
+        } else {
+          lastChild._domElement.focus();
+        }
       }
     };
 
@@ -9310,7 +9316,7 @@
           }
         };
       })(this);
-      return this._watchInterval = setInterval(watch, 50);
+      return this._watchInterval = setInterval(watch, 100);
     };
 
     History.prototype._store = function() {
@@ -10949,7 +10955,7 @@
     };
 
     ContentField.canApply = function (element, selection) {
-      return element.parent().constructor.name === 'Region';
+      return element.parent().constructor.name === 'Region' || element._parent.constructor.name === 'ListItem';
     };
 
     //var oldContentField = null;
@@ -10957,7 +10963,11 @@
       if (element.attr("content-field")) {
 
       } else {
-        toContentField(element, "").focus();
+        if (element._parent.constructor.name === 'ListItem') {
+          toContentField(element._parent._parent, "").focus();
+        } else {
+          toContentField(element, "").focus();
+        }
       }
     };
 
@@ -10996,12 +11006,17 @@
         class: "center"
       });
       //imageChooserDialog.append("<div class='form-content grid tabs-bar no-footer'></div>");
-      $.post("~admin/html/content-management/link-chooser-media.php", {
-        callback: ""
-      }, function (data) {
+      //$.post("~admin/html/content-management/link-chooser-media.php", {
+      System.loadModule({
+        id: "forms/media-chooser",
+        url: "~admin/html/content-management/link-chooser-media.php",
+        params: {
+          callback: ""
+        }
+      }, function (module) {
         //imageChooserDialog.find(".form-content:first").append(data);
         //imageChooserDialog.prepend("<div class='header-pane tabs-bar row'><h1 class='form-title'>Media</h1></div>");
-        imageChooserDialog.html(data);
+        imageChooserDialog.html(module.html);
         var ref = _this._insertAt(element), node = ref[0], index = ref[1];
         imageChooserDialog[0].selectMedia = function (item) {
           var element = System.entity('services/media_chooser').selectItem(item);

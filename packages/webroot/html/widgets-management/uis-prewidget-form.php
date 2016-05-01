@@ -134,11 +134,9 @@ $panelId = $_REQUEST['panelId'];
         uisForm.setWidgetData(data["widget_id"], data["widget_data"]);
 
       var containerElement = $("#fr").contents().find("body #base-content-pane div[data-panel-id='<?php echo $panelId ?>']");
-      if (containerElement.hasClass("block"))
-      {
+      if (containerElement.hasClass("block")) {
         uisForm.addWidget(data["widget_html"], containerElement[0]);
-      } else
-      {
+      } else {
         uisForm.addWidget(data["widget_html"], containerElement[0]);
       }
 
@@ -191,8 +189,7 @@ $panelId = $_REQUEST['panelId'];
     var widget;
     self.widgetType = widgetType;
     // if widgetId exist, get the corresponding widget
-    if (self.widgetId != "")
-    {
+    if (self.widgetId != "") {
       widget = uisForm.getEditorItem(self.widgetId);
       //widgetParams = (widget.attr("data-widget-parameters")) ? $.parseJSON(widget.attr("data-widget-parameters")) : {};
       widgetParams = uisForm.editor.ew_widget_data[self.widgetId];
@@ -205,7 +202,7 @@ $panelId = $_REQUEST['panelId'];
     this.uisWidgetForm.html("").show();
     $("#widgets-list-form").hide();
     EW.lock(this.uisWidgetForm);
-    $.post('<?php echo EW_ROOT_URL; ?>~webroot/html/widgets-management/uis-widget-form.php', {
+    $.post('~webroot/html/widgets-management/uis-widget-form.php', {
       widgetType: widgetType,
       template: self.template,
       widgetParameters: JSON.stringify(self.widgetParameters)
@@ -214,14 +211,12 @@ $panelId = $_REQUEST['panelId'];
       self.uisWidgetForm.html(data);
       self.usedClassElement = $("#used-classes");
       // If widgetId exist, set data for widget control panel
-      if (self.widgetId != "")
-      {
+      if (self.widgetId != "") {
         $("#used-classes").text(widget.data("container").prop("class"));
         $("#style_class").val(widget.prop("class"));
         $("#style_id").val(widget.prop("id")).change();
         // If true, set values for the fields of widget control panel form
-        if (self.setData === true)
-        {
+        if (self.setData === true) {
           //widgetParams = (widget.attr("data-widget-parameters")) ? $.parseJSON(widget.attr("data-widget-parameters")) : {};
           // EW.setFormData("#uis-widget", widgetParams);
           $("#style_class").keyup(this.setClasses);
@@ -275,29 +270,24 @@ $panelId = $_REQUEST['panelId'];
       classBtn.text(classBtn.text().substring(8));
 
       a.change(function (event) {
-        if ($(this).is(":checked"))
-        {
+        if ($(this).is(":checked")) {
           classBtn.removeClass("btn-default").addClass("btn-success");
           $("#widget-classes").append(classBtn);
-        } else
-        {
+        } else {
           classBtn.removeClass("btn-success").addClass("btn-default");
           $("#available-classes").append(classBtn);
         }
         uisWidget.setClasses();
-        //event.preventDefault()
       });
 
       classBtn.prepend(a);
       classBtn.addClass("btn btn-default");
       $.each(widgetClasses, function (i, c) {
-        if (a.val() === (c))
-        {
+        if (a.val() === (c)) {
           classBtn.removeClass("btn-default");
           classBtn.addClass("btn-success active");
           a.prop('checked', true);
           $("#widget-classes").append(classBtn);
-          //widgetClasses.splice(i, 1);
         }
       });
     });
@@ -311,13 +301,11 @@ $panelId = $_REQUEST['panelId'];
         }
       });
     });
+    
     $.each($("#size-layout").find("input[data-slider]"), function (k, v) {
       $.each(classes, function (i, c) {
         var sub = c.match(/(\D+)(\d*)/);
-        //alert(sub[1]+" "+$(v).attr("name")+" "+sub[2]);
-        if (sub && $(v).attr("name") === sub[1])
-        {
-          //alert(sub[2]);
+        if (sub && $(v).attr("name") === sub[1]) {
           $(v).val(sub[2]).change();
         }
       });
@@ -342,10 +330,7 @@ $panelId = $_REQUEST['panelId'];
 
     $("#style_class").val(styleClass).change();
     $.each($("#size-layout input[data-slider]:not(:disabled)"), function (k, v) {
-      //if (parseInt(v.value)) {
-
-      $("#used-classes").append(v.name + v.value + " ");
-      //}
+      $("#used-classes").append(v.name + v.value + " ");     
     });
 
     $.each($("#size-layout input:radio:checked:not(:disabled),#size-layout input:checkbox:checked:not(:disabled)"), function (k, v) {

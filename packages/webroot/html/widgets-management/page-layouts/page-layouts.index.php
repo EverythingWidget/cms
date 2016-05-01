@@ -158,12 +158,12 @@ if ($path_uis_list) {
       }
       dialog.dispose();
     });
-    dialog.append("<div class='header-pane row'><h1 id='' class='col-xs-12'><span>Layouts</span> Select a layout</h1></div>");
+    dialog.append("<div class='header-pane'><h1 id='' class='col-xs-12'><span>Layouts</span> Select a layout</h1></div>");
     var d = $("<div id='' class='form-content'></div>");
     this.table.container.addClass("mt");
     d.append(this.table.container);
     dialog.append(d);
-    dialog.append($("<div class='footer-pane row actions-bar action-bar-items' ></div>").append(removeUISbtn));
+    dialog.append($("<div class='footer-pane actions-bar action-bar-items' ></div>").append(removeUISbtn));
     this.table.read();
   };
 

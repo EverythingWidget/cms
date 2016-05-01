@@ -56,9 +56,14 @@ function script() {
             url: "~webroot/html/widgets-management/uis-list.php"
           },
           {
-            title: "tr{Layouts and Contents}",
+            title: "tr{Page layouts}",
             id: "widgets-management/pages-uis",
-            url: "~webroot/html/widgets-management/pages-uis.php"
+            url: "~webroot/html/widgets-management/page-layouts/page-layouts.index.php"
+          }          ,
+          {
+            title: "tr{Feeders}",
+            id: "widgets-management/feeders",
+            url: "~webroot/html/widgets-management/feeders/feeders.index.php"
           }
         ];
 

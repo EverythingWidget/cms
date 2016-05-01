@@ -125,9 +125,7 @@
 
     DocumentsComponent.prototype.init = function () {
       var component = this;
-
-      var templates = System.ui.templates['system/content-management/documents'];
-      this.ui.components.folders_card = $(templates["folders-card"]);
+      this.ui.components.folders_card = $(scope.uiViews.folders_card);
       this.ui.components.folders_card_title = this.ui.components.folders_card.find(".card-header h1");
       this.ui.components.folders_card_title_action_right = this.ui.components.folders_card.find(".card-title-action-right");
       this.ui.components.folders_list = this.ui.components.folders_card.find("#folders-list");
