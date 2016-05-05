@@ -43,6 +43,8 @@
 <system-float-menu id='media-chooser-main-actions' class="ew-float-menu" position="se">  
 </system-float-menu>
 
+<system-ui-view name="main-actions"></system-ui-view>
+
 <script>
   var LinkChooserDomain = new System.Domain();
   LinkChooserDomain.init([]);
@@ -52,7 +54,7 @@
     document: $(document)
   };
   LinkChooserDomain.ui.components.mainFloatMenu = scope.ui.filter("#media-chooser-main-actions");
-  LinkChooserDomain.ui.components.mainContent = $(EW.getParentDialog(LinkChooserDomain.ui.components.mainFloatMenu).find(".form-content"));
+  LinkChooserDomain.ui.components.mainActions = scope.uiViews['main-actions'];
   LinkChooserDomain.start();
 
   (function (Domain) {
@@ -151,7 +153,8 @@
               path: this.data.result[e[0].index].content
             };
 
-            component.mediaChooserDialog[0].selectMedia(audio);
+            var mediaChooserDialog = EW.getParentDialog(LinkChooserDomain.ui.components.mainFloatMenu);
+            mediaChooserDialog[0].selectMedia(audio);
           }
         }
       });
@@ -250,7 +253,6 @@
       this.itemsList = $();
       this.bDel = $();
       this.listInited = false;
-      this.mediaChooserDialog = EW.getParentDialog($("#media-chooser-main-actions"));
 
       this.selectMediaAction = EW.addActionButton({
         text: "",
@@ -258,7 +260,7 @@
           component.selectMedia(component.selectedImage);
         },
         class: "btn-float btn-success icon-ok pos-se",
-        parent: this.mediaChooserDialog
+        parent: $(scope.uiViews.main_actions)
       }).hide();
 
       /*this.newAlbumActivity = EW.addActivity({
@@ -395,7 +397,6 @@
                 type: 'image',
                 src: element.absURL
               };
-
               Domain.state('media-chooser/photos').setParam("image", element.id);
             });
 
@@ -498,7 +499,9 @@
       img.onload = function () {
         _this.selectedImage.width = img.width;
         _this.selectedImage.height = img.height;
-        _this.mediaChooserDialog[0].selectMedia(_this.selectedImage);
+        
+        var mediaChooserDialog = EW.getParentDialog(LinkChooserDomain.ui.components.mainFloatMenu);
+        mediaChooserDialog[0].selectMedia(_this.selectedImage);
       };
       img.src = image.src;
     };
@@ -549,8 +552,9 @@
       this.on('select', mediaComponent.states.select);
 
       this.on("image", function (imageId) {
-        if (mediaComponent.albumId && parseInt(imageId) !== mediaComponent.albumId)
+        if (mediaComponent.albumId && parseInt(imageId) !== mediaComponent.albumId) {
           mediaComponent.selectMediaAction.comeIn();
+        }
       });
     });
 

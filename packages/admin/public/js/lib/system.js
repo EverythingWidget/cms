@@ -351,8 +351,8 @@
               uiViews: scopeUIViews,
               ui: filtered.html
             };
-            var scriptContent = '(function(Scope){' + filtered.script.text() + '})(scope)';
-            eval(scriptContent);
+            var scriptContent = filtered.script.text();
+            (new Function('scope', scriptContent)).call(null, scope);
             //$("head").append('<script>' + scriptContent + '</script>');
           }
 

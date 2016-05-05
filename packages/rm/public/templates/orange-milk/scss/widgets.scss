@@ -277,8 +277,15 @@
 
     .list-item {
 
+
+      .list-item-cell {        
+        overflow: hidden;
+        padding: 15px 0;
+      }
+
       & + .list-item {
-        margin-top: 30px;
+        margin-top: 5px;
+        border-top: 2px solid rgba(0,0,0,.1);
       }
 
       .front-image {
@@ -310,9 +317,10 @@
 
       .item-link {
         color: $font-akcent-color;
-        border: 2px solid $font-akcent-color;
+        border: 1px solid $font-akcent-color;
+        font-size: 16px;
         border-radius: 4px;
-        padding: 10px 30px;
+        padding: 8px 16px;
         float: right;
         margin-top: 15px;
 
@@ -324,6 +332,20 @@
         &:active {
           background-color: $font-akcent-color-dark;
           color: #fff;
+        }
+      }
+    }
+
+    &.rtl {
+      .list-item {
+        .front-image {
+          float: right;
+          margin-right: 0;
+          margin-left: 20px;
+        }
+
+        .item-link {
+          float: left;
         }
       }
     }
@@ -359,6 +381,7 @@
 
       .list-item-cell {
         max-width: 370px;
+        width: 100%;
         position: relative;
         border-radius: 3px;
         background-color: #fff;
@@ -394,6 +417,10 @@
         border-top-left-radius: 5px;       
         color: $font-akcent-color;
         padding: 10px 30px;
+        max-width: 350px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
 
         &:hover {
           background-color: $font-akcent-color;

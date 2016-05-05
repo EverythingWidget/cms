@@ -1108,7 +1108,7 @@ class WidgetsManagement extends \ew\Module {
     if (!isset($template_settings)) {
       $template_settings = '{}';
     }
-    
+
 //    if(is_array($template_settings)){
 //      $template_settings = json_encode($template_settings);
 //    }
@@ -1251,6 +1251,27 @@ class WidgetsManagement extends \ew\Module {
     }
 
     return \ew\APIResourceHandler::to_api_response($feeders, ["totalRows" => count($feeders)]);
+  }
+
+  public static function parse_html_to_parts($html_string) {
+    $doc = new \DOMDocument();
+    $doc->loadHTML('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">' . $html_string);
+
+    $xpath = new \DOMXpath($doc);
+    $parts = $xpath->query('//body/*');
+    $links = array();
+    foreach ($parts as $part) {
+      $tag_name = $part->tagName;
+      $text = trim($part->nodeValue);
+      $links[] = [
+          'content-field' => $part->getAttribute('content-field'),
+          'tag'           => $tag_name,
+          'text'          => $text,
+          'html'          => $doc->saveHTML($part),
+      ];
+    }
+
+    return $links;
   }
 
   public function get_title() {

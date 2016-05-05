@@ -657,6 +657,32 @@ class ContentManagement extends \ew\Module {
     return $result;
   }
 
+  private function create_html_parts($html_string) {
+    $doc = new \DOMDocument();
+    $doc->loadHTML('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">' . $html_string);
+
+    $xpath = new \DOMXpath($doc);
+    $articles = $xpath->query('//body/*');
+//print_r($articles);
+    // all links in .blogArticle
+    $links = array();
+    foreach ($articles as $container) {
+      //print_r($container);
+      // $arr = $container->;
+      //foreach ($arr as $item) {
+      $tag_name = $container->tagName;
+      $text = trim($container->nodeValue);
+      $links[] = array(
+          'content-field' => $container->getAttribute('content-field'),
+          'tag'           => $tag_name,
+          'text'          => $text,
+          'html'          => $doc->saveHTML($container),
+      );
+    }
+
+    return $links;
+  }
+
   public function ew_page_feeder_articles($id, $language = "en") {
 
     $articles = $this->contents_labels($id, "admin_ContentManagement_language", $language);
@@ -667,6 +693,7 @@ class ContentManagement extends \ew\Module {
       $result["title"] = $article["title"];
       $result["content"] = $article["content"];
       $result["content_fields"] = $article["content_fields"];
+
       return \ew\APIResourceHandler::to_api_response($result, ["type" => "object"]);
     }
 
