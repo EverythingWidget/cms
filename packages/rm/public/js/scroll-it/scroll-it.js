@@ -10,7 +10,7 @@
   'use strict';
 
   var pluginName = 'ScrollIt',
-    pluginVersion = '1.0.3';
+          pluginVersion = '1.0.3';
 
   /*
    * OPTIONS
@@ -31,18 +31,21 @@
      */
     var $this = this;
     var settings = $.extend(defaults, options),
-      active = 0,
-      lastIndex = $('[data-scroll-index]:last').attr('data-scroll-index'), watcher = true;
+            active = 0,
+            lastIndex = $('[data-scroll-index]:last').attr('data-scroll-index'), watcher = true;
+    var $body = $('body');
 
     /*
      * METHODS
      */
-    /*var indic = document.createElement('div');
-     indic.style.position = 'absolute';
-     indic.style.width = '100%';
-     indic.style.height = '10px';
-     indic.style.backgroundColor = 'red';
-     $('body').append(indic);*/
+//    var indic = document.createElement('div');
+//    indic.style.position = 'absolute';
+//    indic.style.width = '100%';
+//    indic.style.height = '15px';
+//    indic.style.zIndex = '1000';
+//    indic.style.backgroundColor = 'rgba(255,0,0,.6)';
+//    $('body').append(indic);
+
     /**
      * navigate
      *
@@ -56,20 +59,24 @@
       $('[data-scroll-nav=' + ndx + ']').addClass(settings.activeClass);
 
       watcher = false;
+      var target = $('[data-scroll-index=' + ndx + ']');
       var targetTop = $('[data-scroll-index=' + ndx + ']').offset().top + settings.topOffset;
 
-      $('body').stop().animate({
+      if (target.outerHeight() < window.innerHeight) {
+        targetTop -= ((window.innerHeight - target.outerHeight()) / 2);
+      }
+
+      $body.stop().animate({
         scrollTop: targetTop,
         easing: settings.easing
-      },
-        settings.scrollTime, function () {
-          active = ndx;
+      }, settings.scrollTime, function () {
+        active = ndx;
 
-          setTimeout(function () {
-            watcher = true;
-          }, 1);
+        setTimeout(function () {
+          watcher = true;
+        }, 1);
 
-        });
+      });
     };
 
     /**
@@ -79,7 +86,7 @@
      */
     var doScroll = function (e) {
       var target = $(e.target).closest("[data-scroll-nav]").attr('data-scroll-nav') ||
-        $(e.target).closest("[data-scroll-goto]").attr('data-scroll-goto');
+              $(e.target).closest("[data-scroll-goto]").attr('data-scroll-goto');
       navigate(parseInt(target));
 
     };
@@ -129,17 +136,23 @@
         return;
 
       var winTop = $(window).scrollTop(),
-        scrollHeight = window.document.body.scrollHeight,
-        innerHeight = window.innerHeight;
+              scrollHeight = window.document.body.scrollHeight,
+              innerHeight = window.innerHeight;
 
-      var top = (winTop * scrollHeight) / (scrollHeight - innerHeight);
-      //indic.style.top = top+'px';
+//      var top = (winTop * scrollHeight) / (scrollHeight - innerHeight);
+      var top = winTop + (innerHeight / 2);
+//      indic.style.top = top + 'px';
 
       var visible = sections.filter(function (ndx, div) {
-        return top >= $(div).offset().top + settings.topOffset; /*&&
-         winTop < $(div).offset().top + (settings.topOffset) + $(div).outerHeight()*/
+        if (top >= $(div).offset().top + settings.topOffset) {
+          return true;
+        }
 
-        winTop >= $(div).offset().top;
+        if (winTop + innerHeight === scrollHeight && $(div).offset().top >= top) {
+          return true;
+        }
+
+        return false;
       });
       var newActive = visible.last().attr('data-scroll-index');
       updateActive(newActive);

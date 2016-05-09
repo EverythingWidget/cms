@@ -1531,33 +1531,33 @@ ul.actions-bar li label {
 .list {
   list-style: none;
   padding: 0;
-}
 
-.list li {
-  display: block;
-  padding: 0;
-  margin: 0;
-  margin-bottom: 5px;
-  position: relative;
-  overflow: hidden;
-}
+  li, > .list-item {
+    display: block;
+    padding: 0;
+    margin: 0;
+    margin-bottom: 5px;
+    position: relative;
+    overflow: hidden;
 
-.list li .wrapper {
-  overflow: hidden;
-}
+    .wrapper {
+      overflow: hidden;
+    }
 
-.list li .close-icon {
-  position: absolute;
-  right: 2px;
-  top: 5px;
-  z-index: 1;
-}
+    .close-icon {
+      position: absolute;
+      right: 2px;
+      top: 5px;
+      z-index: 1;
+    }
 
-.list li .control {
-  position: static;
-  width: 100%;
-  top: 0;
-  margin: 0;
+    .control {
+      position: static;
+      width: 100%;
+      top: 0;
+      margin: 0;
+    }
+  }
 }
 
 .list.indent {

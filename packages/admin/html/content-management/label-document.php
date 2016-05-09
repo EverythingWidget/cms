@@ -5,7 +5,12 @@
 </div>
 
 <div class="col-xs-12">
-  <ul id="{{comp_id}}_attached" class="list"></ul>
+  <system-list id="{{comp_id}}_attached" class="list" selected-style="active">
+    <div class="list-item">
+      <a class="link" rel="ajax" href="#" item>{{title}}</a>
+    </div>
+  </system-list>
+  <!--<ul id="{{comp_id}}_attached" class="list"></ul>-->
 </div>
 
 <script>
@@ -13,6 +18,20 @@
     var text = $("#{{comp_id}}_text");
     var value = $("#{{comp_id}}_value");
     var attached = $("#{{comp_id}}_attached");
+    var oldIndex;
+
+    attached.on('item-selected', function (event) {
+      //var loader = System.ui.lock()
+      //if (attached[0].data[oldIndex] && attached[0].data[oldIndex] !== event.originalEvent.detail.data.id) {
+        //debugger;
+        $.post("~admin/api/content-management/get-article", {
+          articleId: event.originalEvent.detail.data.id
+        }, function (response) {
+          ContentForm.setData(response.data);
+        }, "json");
+      //}
+    });
+
     text.autocomplete({
       source: function (input) {
         $.post("~admin/api/content-management/contents", {
@@ -33,7 +52,6 @@
     });
 
     $("#{{form_id}}").on("refresh", function (e, formData) {
-
       if (!ContentForm.getLabel("{{comp_id}}")) {
         ContentForm.activeLabel("{{comp_id}}", true);
         value.val('$content.id');
@@ -44,30 +62,13 @@
         content_id: ContentForm.getLabel("{{comp_id}}"),
         key: "{{comp_id}}"
       }, function (response) {
-        attached.empty();
+        if (response['data'] && JSON.stringify(response['data']) !== JSON.stringify(attached[0].data)) {
+          attached[0].data = response['data'];
 
-        if (response['data']) {
-          $.each(response['data'], function (i, content) {
-            var langItem = $("<li class=''><a rel='ajax' href='#' class='link'>" + content.title + "</a></li>");
-
-            if (content.id == "{{value}}") {
-              value.val(content.id);
-              text.val(content.title).change();
+          $.each(attached[0].data, function (i, content) {
+            if (content.id === parseInt("{{value}}")) {
+              attached[0].value = i;
             }
-
-            if (content.id == formData.id) {
-              langItem.addClass("active");
-            } else {
-              langItem.find("a").on("click", function () {
-                $.post("~admin/api/content-management/get-article", {
-                  articleId: content.id
-                }, function (response) {
-                  ContentForm.setData(response.data[0]);
-                }, "json");
-              });
-            }
-
-            attached.append(langItem);
           });
         }
 

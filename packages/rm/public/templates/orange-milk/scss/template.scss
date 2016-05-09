@@ -62,18 +62,24 @@ $nav-bar-bg: rgba(255,255,255,.9);
       overflow: hidden;
       box-shadow: 0 3px 5px rgba(0,0,0,.1), 0 8px 14px rgba(0,0,0,.14); 
 
-      *:not(img:first-child) {
-        padding-left: 50px;
-        padding-right: 50px;
-      }
-
-
-      .widget-container {
+      .widget-container, .widget {
         padding: 0;
+        margin: 0;
       }
+
+      .widget {
+        padding: 20px;
+
+        > :not(img:first-child) {
+          padding-left: 50px;
+          padding-right: 50px;
+        }
+      }     
 
       img {
-        width: 100%;
+        width: auto;
+        max-width: 100%;
+        height: auto;
         margin: 0px auto;
         display: block;
 
@@ -131,12 +137,17 @@ $nav-bar-bg: rgba(255,255,255,.9);
       border-width: 0px;
       border-radius: 5px;
 
-      *:not(img:first-child) {
-        padding-left: 60px;
-        padding-right: 60px;
+      .widget {
+        padding: 0;
+
+        > :not(img):not(first-child) {
+          padding-left: 60px;
+          padding-right: 60px;
+        }
       }
 
       img {
+        width: auto;
         &:first-child {
           margin-bottom: 30px;
         }

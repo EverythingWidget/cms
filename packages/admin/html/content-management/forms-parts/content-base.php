@@ -140,7 +140,7 @@
         ContentForm.setLabels(contentInfo.labels);
       }
 
-      EW.setFormData(this.formId, contentInfo || {});
+      EW.setFormData(this.formId, contentInfo);
       $("#content").change();
     }
   };

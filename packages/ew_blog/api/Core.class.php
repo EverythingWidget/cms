@@ -372,7 +372,7 @@ class Core extends \ew\Module {
     return $stmt->fetch(\PDO::FETCH_ASSOC);
   }
 
-  public function add_post($content_id, $publish_date, $draft) {
+  public function add_post($content_id, $publish_date, $draft = 0) {
     $pdo = EWCore::get_db_PDO();
     $stmt = $pdo->prepare("INSERT INTO ew_blog_posts(content_id, date_published, draft, user_id) VALUES (?, ?, ?, ?)");
     return $stmt->execute([

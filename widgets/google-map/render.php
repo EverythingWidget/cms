@@ -1,7 +1,5 @@
 <div class="map-container"></div>
-
-<script src="https://maps.googleapis.com/maps/api/js?callback=initMap&q=Kerkgracht+60,1354+AM+Almere" async defer></script>
-
+<script src="https://maps.googleapis.com/maps/api/js?callback=initMap&q=Kerkgracht+60,1354+AM+Almere" defer></script>
 <script>
   function initMap() {
     var mapDiv = document.querySelector('[data-widget-id={$widget_id}] .map-container');

@@ -492,6 +492,12 @@
 
     MediaComponent.prototype.selectMedia = function (image) {
       var _this = this;
+      var mediaChooserDialog = EW.getParentDialog(LinkChooserDomain.ui.components.mainFloatMenu);
+      var loader = System.UI.lock({
+        element: mediaChooserDialog[0],
+        akcent: "loader center"
+      }, .5);
+
       var img = new Image();
       img.onerror = function (e) {
         alert('Image is invalid');
@@ -499,8 +505,7 @@
       img.onload = function () {
         _this.selectedImage.width = img.width;
         _this.selectedImage.height = img.height;
-        
-        var mediaChooserDialog = EW.getParentDialog(LinkChooserDomain.ui.components.mainFloatMenu);
+        loader.dispose();
         mediaChooserDialog[0].selectMedia(_this.selectedImage);
       };
       img.src = image.src;

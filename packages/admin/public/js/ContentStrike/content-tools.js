@@ -5003,19 +5003,19 @@
  */
 (function () {
   var __hasProp = {}.hasOwnProperty,
-    __extends = function (child, parent) {
-      for (var key in parent) {
-        if (__hasProp.call(parent, key))
-          child[key] = parent[key];
-      }
-      function ctor() {
-        this.constructor = child;
-      }
-      ctor.prototype = parent.prototype;
-      child.prototype = new ctor();
-      child.__super__ = parent.prototype;
-      return child;
-    };
+          __extends = function (child, parent) {
+            for (var key in parent) {
+              if (__hasProp.call(parent, key))
+                child[key] = parent[key];
+            }
+            function ctor() {
+              this.constructor = child;
+            }
+            ctor.prototype = parent.prototype;
+            child.prototype = new ctor();
+            child.__super__ = parent.prototype;
+            return child;
+          };
 
   ContentEdit.TagNames.get().register(ContentEdit.Text, 'address', 'blockquote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'a');
 
@@ -5152,8 +5152,21 @@
       }
       img = "" + indent + "<img" + (this._attributesToString()) + ">";
       if (this.a) {
+        this.a['data-ce-tag'] = 'img';
+        if (this._attributes['content-field']) {
+          this.a['content-field'] = this._attributes['content-field'];
+        }
+
+        var newAttributes = {};
+        for (var attr in this._attributes) {
+          if (this._attributes.hasOwnProperty(attr) && attr !== 'content-field') {
+            newAttributes[attr] = this._attributes[attr];
+          }
+        }
+
+        img = "" + indent + "<img " + ContentEdit.attributesToString(newAttributes) + ">";
         attributes = ContentEdit.attributesToString(this.a);
-        attributes = "" + attributes + " data-ce-tag=\"img\"";
+        attributes = "" + attributes;
         return ("" + indent + "<a " + attributes + ">\n") + ("" + ContentEdit.INDENT + img + "\n") + ("" + indent + "</a>");
       } else {
         return img;
@@ -5248,6 +5261,12 @@
           attributes['height'] = domElement.clientHeight;
         }
       }
+
+      if (a && a['content-field']) {
+        attributes['content-field'] = a['content-field'];
+        delete a['content-field'];
+      }
+      
       return new this(attributes, a);
     };
 
@@ -10679,9 +10698,10 @@
     };
 
     LinkBlock.apply = function (element, selection, callback) {
-      var content, insertAt, parent, textElement;
-      element.storeState();
+      var content, insertAt, parent, textElement;      
+      
       if (element.type() === 'PreText') {
+        element.storeState();
         content = element.content.html().replace(/&nbsp;/g, ' ');
         textElement = new HTMLString.Tag(this.tagName, {
           href: ""
@@ -10691,11 +10711,12 @@
         parent.detach(element);
         parent.attach(textElement, insertAt);
         element.blur();
+        element.restoreState();
         textElement.focus();
         textElement.selection(selection);
       } else {
         element.tagName(this.tagName);
-        element.restoreState();
+        //element.restoreState();
         ContentTools.Tools.Link.apply(element, selection, callback);
       }
       return callback(true);
@@ -11038,7 +11059,7 @@
               var image = new ContentEdit.Image({
                 src: element.src,
                 width: element.width,
-                hight: element.height
+                height: element.height
               });
               if (node.parent()) {
                 node.parent().attach(image, index);
@@ -11147,6 +11168,7 @@
         measureSpan = domElement.getElementsByClassName('ct--puesdo-select');
         rect = measureSpan[0].getBoundingClientRect();
       }
+      
       app = ContentTools.EditorApp.get();
       modal = new ContentTools.ModalUI(transparent = true, allowScrolling = true);
       modal.bind('click', function () {
