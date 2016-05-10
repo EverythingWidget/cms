@@ -19,16 +19,24 @@
     var value = $("#{{comp_id}}_value");
     var attached = $("#{{comp_id}}_attached");
     var oldIndex;
+    window.testData = [
+      {title: 'test'},
+      {title: 'test 2'},
+      {title: 'test 3'}
+    ];
+    
+    var prop = new System.Property(window.testData);
+    attached[0].data = prop;
 
     attached.on('item-selected', function (event) {
       //var loader = System.ui.lock()
       //if (attached[0].data[oldIndex] && attached[0].data[oldIndex] !== event.originalEvent.detail.data.id) {
-        //debugger;
-        $.post("~admin/api/content-management/get-article", {
-          articleId: event.originalEvent.detail.data.id
-        }, function (response) {
-          ContentForm.setData(response.data);
-        }, "json");
+      //debugger;
+//        $.post("~admin/api/content-management/get-article", {
+//          articleId: event.originalEvent.detail.data.id
+//        }, function (response) {
+//          ContentForm.setData(response.data);
+//        }, "json");
       //}
     });
 
@@ -62,15 +70,15 @@
         content_id: ContentForm.getLabel("{{comp_id}}"),
         key: "{{comp_id}}"
       }, function (response) {
-        if (response['data'] && JSON.stringify(response['data']) !== JSON.stringify(attached[0].data)) {
-          attached[0].data = response['data'];
-
-          $.each(attached[0].data, function (i, content) {
-            if (content.id === parseInt("{{value}}")) {
-              attached[0].value = i;
-            }
-          });
-        }
+//        if (response['data'] && JSON.stringify(response['data']) !== JSON.stringify(attached[0].data)) {
+//          attached[0].data = response['data'];
+//
+//          $.each(attached[0].data, function (i, content) {
+//            if (content.id === parseInt("{{value}}")) {
+//              attached[0].value = i;
+//            }
+//          });
+//        }
 
       }, "json");
     });

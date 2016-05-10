@@ -11,8 +11,7 @@
 <script>
 
   (function () {
-    function getInternetExplorerVersion()
-    {
+    function getInternetExplorerVersion() {
       var rv = -1;
       if (navigator.appName == 'Microsoft Internet Explorer')
       {
@@ -30,7 +29,7 @@
 
       return rv;
     }
-    
+
     var ieVersion = getInternetExplorerVersion();
     if (ieVersion !== -1 && ieVersion < 11)
     {
@@ -45,6 +44,7 @@
 <script src="~rm/public/js/gsap/TweenLite.min.js"></script>
 <script src="~rm/public/js/gsap/TimelineLite.min.js"></script>
 <script src="~admin/public/js/lib/system.js"></script>  
+<script src="~admin/public/js/lib/system-property.js"></script>  
 <script src="~admin/public/js/lib/system-ui.js" ></script>   
 <script src="~admin/public/js/lib/system-module.js"></script>  
 <script src="~admin/public/js/lib/system-domain.js"></script>  

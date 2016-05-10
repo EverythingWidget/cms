@@ -21,6 +21,7 @@
 })();
 
 (function (xtag, UIUtilty) {
+
   var SystemList = {
   };
 
@@ -100,20 +101,48 @@
        return  '[ object data ]';
        }
        },*/
+      /**
+       * 
+       * @param {object|Syste.Property} value
+       * @returns {undefined}
+       */
       set: function (value) {
+        var element = this;
+
         this.value = -1;
         if ("object" !== typeof value) {
           this.xtag.data = [];
           value = [];
         }
 
+        var toRender = value;
+
+        if (value instanceof System.Property) {
+          value.registerConsumer(element);
+          toRender = value.data;
+        }
+
         this.xtag.data = value;
 
         if (this.onSetData) {
-          this.onSetData(value);
+          this.onSetData(toRender);
         }
 
-        this.render(value, this.xtag.action);
+        this.render(toRender, this.xtag.action);
+//        var oldVal = JSON.stringify(value);
+//
+//        function watch() {
+//          if (oldVal !== JSON.stringify(value)) {
+//            clearTimeout(element.xtag.watcher);
+//            element.xtag.watcher = null;
+//            oldVal = JSON.stringify(value);
+//            element.data = value;
+//            return true;
+//          }
+//          element.xtag.watcher = setTimeout(watch, 100);
+//        }
+//
+//        watch();
       },
       get: function () {
         return this.xtag.data;
@@ -155,6 +184,8 @@
         }
 
         this.xtag.value = value;
+
+
       },
       get: function () {
         return this.xtag.value;
