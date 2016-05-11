@@ -2,27 +2,40 @@
   System.Property = SystemProperty;
 
   function SystemProperty(data) {
-    if(typeof data !== 'object'){
+    if (typeof data !== 'object') {
       throw new Error('System.Property only accept object as the data');
     }
     var property = this;
-    this.data = data;
-    this.consumers = [];
-    var oldData = JSON.stringify(data);
 
-    function watch() {
-      var newData = JSON.stringify(data);
-      if (oldData !== newData) {
-        clearTimeout(property.watcher);
-        property.watcher = null;
-        oldData = newData;
-        property.data = data;
-        property.changed();
+    this.consumers = [];
+
+    for (var property in data) {
+      if (data.hasOwnProperty(property)) {
+        Object.defineProperty(data, property, {
+          enumerable: true,
+          set: function (value) {
+            this['_' + property] = value;
+          }
+        });
       }
-      property.watcher = setTimeout(watch, 100);
     }
 
-    watch();
+    this.data = data;
+    //var oldData = JSON.stringify(data);
+
+//    function watch() {
+//      var newData = JSON.stringify(data);
+//      if (oldData !== newData) {
+//        clearTimeout(property.watcher);
+//        property.watcher = null;
+//        oldData = newData;
+//        property.data = data;
+//        property.changed();
+//      }
+//      property.watcher = setTimeout(watch, 100);
+//    }
+//
+//    watch();
   }
 
   SystemProperty.prototype.changed = function () {

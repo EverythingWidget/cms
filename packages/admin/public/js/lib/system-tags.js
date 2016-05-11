@@ -117,10 +117,10 @@
 
         var toRender = value;
 
-        if (value instanceof System.Property) {
-          value.registerConsumer(element);
-          toRender = value.data;
-        }
+//        if (value instanceof System.Property) {
+//          value.registerConsumer(element);
+//          toRender = value.data;
+//        }
 
         this.xtag.data = value;
 

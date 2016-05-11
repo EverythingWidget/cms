@@ -5,39 +5,35 @@
 </div>
 
 <div class="col-xs-12">
-  <system-list id="{{comp_id}}_attached" class="list" selected-style="active">
-    <div class="list-item">
-      <a class="link" rel="ajax" href="#" item>{{title}}</a>
+  <ul id="{{comp_id}}_attached" class="list">
+    <div v-for="item in items" class="list-item">
+      <a class="link {{item.id === currentDocId ? 'active': ''}}" rel="ajax" href="#" v-on:click="select(item)">{{item.title}}</a>
     </div>
-  </system-list>
-  <!--<ul id="{{comp_id}}_attached" class="list"></ul>-->
+  </ul>
 </div>
 
 <script>
   (function () {
     var text = $("#{{comp_id}}_text");
     var value = $("#{{comp_id}}_value");
-    var attached = $("#{{comp_id}}_attached");
-    var oldIndex;
-    window.testData = [
-      {title: 'test'},
-      {title: 'test 2'},
-      {title: 'test 3'}
-    ];
-    
-    var prop = new System.Property(window.testData);
-    attached[0].data = prop;
 
-    attached.on('item-selected', function (event) {
-      //var loader = System.ui.lock()
-      //if (attached[0].data[oldIndex] && attached[0].data[oldIndex] !== event.originalEvent.detail.data.id) {
-      //debugger;
-//        $.post("~admin/api/content-management/get-article", {
-//          articleId: event.originalEvent.detail.data.id
-//        }, function (response) {
-//          ContentForm.setData(response.data);
-//        }, "json");
-      //}
+    var relatedDocuments = new Vue({
+      el: "#{{comp_id}}_attached",
+      data: {
+        currentDocId: parseInt("{{value}}"),
+        items: []
+      },
+      methods: {
+        select: function (item) {
+          var _this = this;
+          $.post("~admin/api/content-management/get-article", {
+            articleId: item.id
+          }, function (response) {
+            _this.currentDocId = item.id;
+            ContentForm.setData(response.data);
+          }, "json");
+        }
+      }
     });
 
     text.autocomplete({
@@ -70,16 +66,7 @@
         content_id: ContentForm.getLabel("{{comp_id}}"),
         key: "{{comp_id}}"
       }, function (response) {
-//        if (response['data'] && JSON.stringify(response['data']) !== JSON.stringify(attached[0].data)) {
-//          attached[0].data = response['data'];
-//
-//          $.each(attached[0].data, function (i, content) {
-//            if (content.id === parseInt("{{value}}")) {
-//              attached[0].value = i;
-//            }
-//          });
-//        }
-
+        relatedDocuments.items = response['data'];
       }, "json");
     });
   }());

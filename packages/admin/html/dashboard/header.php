@@ -40,11 +40,11 @@
 
 </script>
 <script src="~rm/public/js/ui-utility/ui-utility.js" ></script>   
-<script src="https://code.jquery.com/jquery-2.1.0.min.js"></script>       
+<script src="https://code.jquery.com/jquery-2.1.0.min.js"></script>     
+<script src="https://cdn.jsdelivr.net/vue/1.0.23/vue.min.js"></script>
 <script src="~rm/public/js/gsap/TweenLite.min.js"></script>
 <script src="~rm/public/js/gsap/TimelineLite.min.js"></script>
 <script src="~admin/public/js/lib/system.js"></script>  
-<script src="~admin/public/js/lib/system-property.js"></script>  
 <script src="~admin/public/js/lib/system-ui.js" ></script>   
 <script src="~admin/public/js/lib/system-module.js"></script>  
 <script src="~admin/public/js/lib/system-domain.js"></script>  

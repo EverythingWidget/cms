@@ -5,27 +5,25 @@
 
       <div class="card-title-action-right"></div>
 
-      <h1>
-        tr{Contents}
-      </h1>
+      <h1> {{ card_title.text }} </h1>
     </div>
 
     <div class='card-content top-devider'>
-      <system-list id="folders-list" class="mt">
-        <div tabindex='1' class='content-item folder' data-content-id='{{id}}'>
+      <div id="folders-list" class="mt">
+        <div v-for="folder in folders" tabindex='1' class='content-item folder' data-content-id='{{ folder.id }}'>
           <span></span>
-          <p class='date'>{{round_date_created}}</p>
-          <p>{{title}}</p>          
+          <p class='date'>{{ folder.round_date_created }}</p>
+          <p>{{ folder.title }}</p>          
         </div>
-      </system-list>
+      </div>
 
-      <system-list id="articles-list" class="mt">
-        <div tabindex='1' class='content-item article' data-content-id='{{id}}'>
+      <div id="articles-list" class="mt">
+        <div v-for="article in articles" tabindex='1' class='content-item article' data-content-id='{{ article.id }}'>
           <span></span>
-          <p class='date'>{{round_date_created}}</p>
-          <p>{{title}}</p>          
+          <p class='date'>{{ article.round_date_created }}</p>
+          <p>{{ article.title }}</p>          
         </div>
-      </system-list>
+      </div>
     </div>
   </div>
 </system-ui-view>
@@ -125,11 +123,19 @@
 
     DocumentsComponent.prototype.init = function () {
       var component = this;
-      this.ui.components.folders_card = $(scope.uiViews.folders_card);
-      this.ui.components.folders_card_title = this.ui.components.folders_card.find(".card-header h1");
-      this.ui.components.folders_card_title_action_right = this.ui.components.folders_card.find(".card-title-action-right");
-      this.ui.components.folders_list = this.ui.components.folders_card.find("#folders-list");
-      this.ui.components.articles_list = this.ui.components.folders_card.find("#articles-list");
+      component.ui.components.folders_card = $(scope.uiViews.folders_card);
+      component.ui.components.folders_card_title_action_right = component.ui.components.folders_card.find(".card-title-action-right");
+      component.ui.components.folders_list = component.ui.components.folders_card.find("#folders-list");
+      component.ui.components.articles_list = component.ui.components.folders_card.find("#articles-list");
+
+      component.ui.vue = new Vue({
+        el: scope.uiViews.folders_card,
+        data: {
+          card_title: 'tr{Contents}',
+          folders: [],
+          articles: []
+        }
+      });
 
       this.upAction = EW.addActionButton({
         text: "",
@@ -203,14 +209,8 @@
       this.upParentId = 0;
       this.currentItem = null;
 
-      this.ui.components.folders_list.empty();
-      this.ui.components.articles_list.empty();
-
-      //this.ui.components.folders_card[0].hide();
-
       this.bNewFolder = EW.addActivity({
         title: "tr{New Folder}",
-        //class: "btn-text btn-primary",
         activity: "admin/html/content-management/folder-form.php",
         parent: System.UI.components.mainFloatMenu,
         parameters: function (hash) {
@@ -238,7 +238,6 @@
 
       this.testBtn = EW.addActionButton({
         text: "tr{test form}",
-        //class: "btn-text btn-primary",
         parent: System.UI.components.mainFloatMenu,
         handler: function () {
           component.module.setParam('component', 'forms/test-form');
@@ -270,7 +269,7 @@
 
       this.module.setParamIfNull("dir", "0/list");
 
-      this.ui.components.folders_list.off('click').on('click', '.folder', function (e) {
+      component.ui.components.folders_list.off('click').on('click', '.folder', function (e) {
         System.setHashParameters({
           article: null,
           folder: e.currentTarget.getAttribute('data-content-id')
@@ -279,18 +278,18 @@
         component.currentItem = System.ui.behaviors.selectElementOnly(e.currentTarget, component.currentItem);
       });
 
-      this.ui.components.folders_list.off('dblclick').on('dblclick', '.folder', function (e) {
+      component.ui.components.folders_list.off('dblclick').on('dblclick', '.folder', function (e) {
         component.module.setParam("dir", e.currentTarget.getAttribute('data-content-id') + "/list");
       });
 
 
-      this.ui.components.articles_list.off('click').on('click', '.article', function (e) {
+      component.ui.components.articles_list.off('click').on('click', '.article', function (e) {
         component.module.setParam('folder', null);
         component.module.setParam('article', e.currentTarget.getAttribute('data-content-id'));
         component.currentItem = System.ui.behaviors.selectElementOnly(e.currentTarget, component.currentItem);
       });
 
-      this.ui.components.articles_list.off('dblclick').on('dblclick', '.article', function (e) {
+      component.ui.components.articles_list.off('dblclick').on('dblclick', '.article', function (e) {
         component.seeArticleActivity({
           articleId: e.currentTarget.getAttribute('data-content-id')
         });
@@ -334,27 +333,12 @@
       System.addActiveRequest($.get('~admin/api/content-management/contents-folders', {
         parent_id: component.parentId
       }, function (response) {
-        component.ui.components.folders_card_title.text(response.parent.title || "tr{Contents}");
+        component.ui.vue.card_title = response.parent.title || "tr{Contents}";
 
         if (response.data[0]) {
           component.upParentId = response.data[0].up_parent_id;
         }
 
-//        var temp = null;
-//        $.each(response.data, function (index, element) {
-//          pId = element.up_parent_id;
-//          hasNode = true;
-//          //temp = component.createFolderElement(element.title, element.round_date_created, element.id, element);
-//          /*if (element.id == folder) {
-//           temp.addClass("selected");
-//           _this.currentItem = temp[0];
-//           }*/
-//          foldersElements.push(element);
-//        });
-//
-//        if (hasNode) {
-//          component.upParentId = pId;
-//        }
         foldersElements = response.data;
 
         foldersLoaded = true;
@@ -392,12 +376,16 @@
           fade: .4,
           color: "#eee",
           onComplete: function () {
-            component.ui.components.folders_list[0].data = foldersElements;
-            component.ui.components.articles_list[0].data = articlesElements;
-            var item = document.querySelector('[data-content-id="' + currentSelected + '"]');
-            if (item) {
-              component.currentItem = System.ui.behaviors.selectElementOnly(item, component.currentItem);
-            }
+            component.ui.vue.folders = foldersElements;
+            component.ui.vue.articles = articlesElements;
+
+            component.ui.vue.$nextTick(function () {
+              var item = document.querySelector('[data-content-id="' + currentSelected + '"]');
+              if (item) {
+                component.currentItem = System.ui.behaviors.selectElementOnly(item, component.currentItem);
+              }
+            });
+
             loader.remove();
           }
         });
