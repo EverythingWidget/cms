@@ -110,17 +110,15 @@ $HTML_CSS = webroot\WidgetsManagement::get_html_links_concatinated();
     }
     ?>      
 
-    <?= $HTML_CSS ?>
-    <?= $HTML_LINKS; ?>
-    <?= $TEMPLATE_LINK; ?>      
+
 
     <script src="https://code.jquery.com/jquery-2.1.4.min.js" defer></script>    
 
     <script id="widget-data">
-         (function () {
-           window.ew_widget_data = {};
+      (function () {
+        window.ew_widget_data = {};
 <?= $WIDGET_DATA; ?>
-         })();
+      })();
     </script>
     <?= $HTML_SCRIPTS; ?>
     <?= $TEMPLATE_SCRIPT; ?>      
@@ -130,5 +128,9 @@ $HTML_CSS = webroot\WidgetsManagement::get_html_links_concatinated();
     <div id="base-content-pane" class="container">
       <?= $HTML_BODY; ?>
     </div>
+
+    <?= $HTML_CSS ?>
+    <?= $HTML_LINKS; ?>
+    <?= $TEMPLATE_LINK; ?>    
   </body>  
 </html>
