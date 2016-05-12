@@ -609,11 +609,11 @@ class WidgetsManagement extends \ew\Module {
     $widget_title_string = "data-widget-title='$widget_title' ";
     $widget_editor_title_string = "data-widget-editor-title='{$widget_parameters['editor_title']}' ";
     //}
-    $__widget_html_output.= "<div class='widget-container $style_class' data-widget-container='true'>";
-    $__widget_html_output.= "<div class='widget $WIDGET_STYLE_CLASS' $WIDGET_STYLE_ID data-widget-id='$widget_id'";
-    $__widget_html_output.= $widget_type_string . $widget_title_string . $widget_editor_title_string;
-    $__widget_html_output .="data-widget='true'>";
-    $__widget_html_output.= $widget_content;
+    $__widget_html_output .= "<div class='widget-container $style_class' data-widget-container='true'>";
+    $__widget_html_output .= "<div class='widget $WIDGET_STYLE_CLASS' $WIDGET_STYLE_ID data-widget-id='$widget_id' ";
+    $__widget_html_output .= $widget_type_string . $widget_title_string . $widget_editor_title_string;
+    $__widget_html_output .= "data-widget='true'>";
+    $__widget_html_output .= $widget_content;
     self::$widget_style_class = "";
     self::add_widget_data($widget_id, $params);
 
