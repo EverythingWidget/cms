@@ -31,7 +31,7 @@ $HTML_BODY = $VIEW["body_html"];
 $WIDGET_DATA = $VIEW["widget_data"];
 
 $TEMPLATE_LINK = ($_REQUEST["_uis_template"]) ?
-        '<link rel="stylesheet" type="text/css" id="template-css" href="~rm/public/' . $_REQUEST["_uis_template"] . '/template.css" />' : "";
+        '<link rel="stylesheet" property="stylesheet" type="text/css" id="template-css" href="~rm/public/' . $_REQUEST["_uis_template"] . '/template.css" />' : "";
 
 // If template has a 'template.php' then include it
 $template_php = EW_PACKAGES_DIR . '/rm/public/' . $_REQUEST["_uis_template"] . '/template.php';

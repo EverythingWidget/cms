@@ -244,8 +244,7 @@
         }
       });
 
-      $(document).off("article-list");
-      $(document).on("article-list.refresh", function (e, eventData) {
+      $(document).off("article-list.refresh").on("article-list.refresh", function (e, eventData) {
         component.listDocuments();
         if (eventData) {
           if (eventData.data.type === "article") {

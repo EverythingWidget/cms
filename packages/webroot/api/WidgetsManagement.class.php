@@ -949,7 +949,7 @@ class WidgetsManagement extends \ew\Module {
   public static function get_html_links() {
     $link_tags = "";
     foreach (self::$html_links as $href) {
-      $link_tags.="<link rel='stylesheet' type='text/css' href='$href' />";
+      $link_tags .= "<link rel='stylesheet' property='stylesheet' type='text/css' href='$href' />";
     }
     return $link_tags;
   }
@@ -990,7 +990,7 @@ class WidgetsManagement extends \ew\Module {
     }
 
     if ($minified_css) {
-      $css_tag.="<link rel='stylesheet' type='text/css' id='ew-compiled-css' href='$cache_path_url' />";
+      $css_tag.="<link rel='stylesheet' property='stylesheet' type='text/css' id='ew-compiled-css' href='$cache_path_url' />";
     }
 
     return $css_tag;
