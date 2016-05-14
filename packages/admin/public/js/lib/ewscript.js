@@ -722,7 +722,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction) {
     if (!modalPane.isOpen)
     {
       if (settings.lockUI || settings.class === "full") {
-        self.lock(basePane, " ", .5);
+        self.lock(basePane, ' ', 1);
       }
 
       if (!$.contains(document.body, modalPane)) {
@@ -1189,8 +1189,7 @@ EverythingWidgets.prototype.lock = function (obj, string, delay) {
     text: ""
   };
   var glass = $(document.createElement("div"));
-  glass.addClass("glass-pane-lock ");
-  glass.css({
+  glass.addClass("glass-pane-lock ").css({
     position: "absolute",
     top: "0px",
     left: "0px",
@@ -1198,6 +1197,7 @@ EverythingWidgets.prototype.lock = function (obj, string, delay) {
     bottom: "0px",
     opacity: 0
   });
+
   if (!string) {
     glass[0].innerHTML = "<span class='loader'></span>";
   } else if (typeof (string) === "object") {
@@ -1211,34 +1211,15 @@ EverythingWidgets.prototype.lock = function (obj, string, delay) {
   }
 
   $(obj).append(glass);
-  /*if (EW.activeElement) {
-   System.UI.Animation.rippleOut({
-   from: EW.activeElement[0],
-   to: glass[0],
-   time: delay
-   });
-   }*/
+
   var of = {
     top: 0,
     left: 0
   };
-  if (EW.activeElement)
-  {
+  if (EW.activeElement) {
     of = EW.activeElement.offset();
   }
-  /*if ($(obj).is("body"))
-   {
-   //$("html").css({perspectiveOrigin: of.left + "px " + of.top + "px"});
-   $("#base-pane").animate({
-   transform: "translateZ(-50px)"
-   
-   },
-   460, "Power3.easeInOut");
-   }*/
-  //var height = $(obj).outerHeight(true) === 0 ? "100%" : $(obj).outerHeight(true) - 20;
-  /*glass.animate({
-   opacity: 1
-   }, delay || 0);*/
+
   glass.css("transition", "opacity " + delay + "s");
   glass.css("opacity", 1);
   return glass;

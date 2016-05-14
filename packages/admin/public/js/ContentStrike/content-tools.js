@@ -5150,6 +5150,8 @@
       if (indent == null) {
         indent = '';
       }
+      this._attributes['alt'] = this._attributes['alt'] || '';
+      
       img = "" + indent + "<img" + (this._attributesToString()) + ">";
       if (this.a) {
         this.a['data-ce-tag'] = 'img';

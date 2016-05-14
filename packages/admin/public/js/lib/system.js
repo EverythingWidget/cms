@@ -392,6 +392,11 @@
           scripts = $(e);
           return false;
         }
+
+//        if (e.tagName && e.tagName.toLowerCase() === 'link') {
+//          return false;
+//        }
+
         return true;
       });
       var templates = {};

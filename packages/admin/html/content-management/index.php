@@ -25,7 +25,7 @@ echo admin\AppsManagement::create_section_main_form();
       var component = this;
       this.module.data.sections = <?= EWCore::read_registry_as_json('ew/ui/apps/contents/navs') ?>;
 
-      this.module.installModules = this.module.data.sections;
+      //this.module.installModules = this.module.data.sections;
 
       /* This code can be simplified more
        * this.on("app", function (full, section) {

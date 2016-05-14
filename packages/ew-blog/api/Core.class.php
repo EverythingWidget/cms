@@ -31,6 +31,7 @@ class Core extends \ew\Module {
 //    if (!$stm->execute()) {
 //      echo json_encode(EWCore::log_error(500, '', $stm->errorInfo()));
 //    }
+
     $table_install = EWCore::create_table('ew_blog_posts', [
                 'id'             => 'BIGINT AUTO_INCREMENT PRIMARY KEY',
                 'content_id'     => 'VARCHAR(200) NOT NULL',
@@ -70,7 +71,7 @@ class Core extends \ew\Module {
 
     EWCore::register_form("ew/ui/forms/content/tabs", "post-publish", [
         'title' => 'Publish',
-        "form"  => EWCore::get_view('ew_blog/html/core/tab-post-publish.php')
+        "form"  => EWCore::get_view('ew-blog/html/core/tab-post-publish.php')
     ]);
 
     $this->add_listener('admin/api/content-management/add-article', 'call_on_article_update');

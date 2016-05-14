@@ -59,7 +59,7 @@ class HTMLResourceHandler extends ResourceHandler {
   }
 
   protected function handle($app, $package_original, $resource_type, $module_name, $method_name, $parameters = null) {
-    $package = str_replace('-', '_', $package_original);
+    $package = str_replace('_', '-', $package_original);
     $matches = [];
     preg_match('/(.*\.[^-]{2,4})/', $parameters["_file"], $matches);
     $file = isset($matches[1]) ? $matches[1] : $parameters["_file"];

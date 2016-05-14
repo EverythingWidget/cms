@@ -279,23 +279,22 @@
         borderRadius: distRect.width * parseInt(ss.borderRadius, 10) / sourceRect.width,
         margin: 0,
         transform: "scale(" + sourceRect.width / distRect.width + "," + sourceRect.height / distRect.height + ")",
-        boxShadow: ss.boxShadow,
+        //boxShadow: ss.boxShadow,
         transformOrigin: "0 0"
-      },
-              {
-                opacity: 1,
-                left: ds.left,
-                top: ds.top,
-                margin: ds.margin,
-                transform: "scale(1,1)",
-                borderRadius: ds.borderRadius,
-                boxShadow: ds.boxShadow,
-                ease: conf.ease || "Power2.easeInOut",
-                onComplete: function () {
-                  if (conf.onComplete)
-                    conf.onComplete();
-                }
-              });
+      }, {
+        opacity: 1,
+        left: ds.left,
+        top: ds.top,
+        margin: ds.margin,
+        transform: "scale(1,1)",
+        borderRadius: ds.borderRadius,
+        //boxShadow: ds.boxShadow,
+        ease: conf.ease || "Power2.easeInOut",
+        onComplete: function () {
+          if (conf.onComplete)
+            conf.onComplete();
+        }
+      });
     },
     slideOut: function (conf) {
       var t = conf.time || system.UI.DEFAULTS.animationDuration,
@@ -349,30 +348,29 @@
         left: -sourceRect.width,
         lineHeight: sourceRect.height + 'px',
         fontSize: '3em'
-      },
-              {
-                left: 0,
-                ease: conf.ease || "Power2.easeInOut",
-                delay: conf.delay || 0,
-                onComplete: function () {
-                  conf.element.style.visibility = "";
+      }, {
+        left: 0,
+        ease: conf.ease || "Power2.easeInOut",
+        delay: conf.delay || 0,
+        onComplete: function () {
+          conf.element.style.visibility = "";
 
-                  if (conf.fade > 0) {
-                    tween.to(transformBox, conf.fade, {
-                      opacity: 0,
-                      ease: "Power0.easeNone",
-                      onComplete: function () {
-                        transformBox.parentNode.removeChild(transformBox);
-                      }
-                    });
-                  } else {
-                    transformBox.parentNode.removeChild(transformBox);
-                  }
+          if (conf.fade > 0) {
+            tween.to(transformBox, conf.fade, {
+              opacity: 0,
+              ease: "Power0.easeNone",
+              onComplete: function () {
+                transformBox.parentNode.removeChild(transformBox);
+              }
+            });
+          } else {
+            transformBox.parentNode.removeChild(transformBox);
+          }
 
-                  if (conf.onComplete)
-                    conf.onComplete();
-                }
-              });
+          if (conf.onComplete)
+            conf.onComplete();
+        }
+      });
     },
     blastTo: function (conf) {
       var t = conf.time || system.UI.DEFAULTS.animationDuration;
@@ -495,8 +493,10 @@
       transformBox.style.zIndex = (ds.zIndex === "0" || ds.zIndex === "auto") ? 1 : ds.zIndex;
       transformBox.style.overflow = "hidden";
       transformBox.style.transformOrigin = "top left";
-      //transformBox.style.width = distRect.width + "px";
-      //transformBox.style.height = distRect.height + "px"
+      transformBox.style.width = sourceRect.width + 'px';
+      transformBox.style.height = sourceRect.height + 'px';
+      transformBox.style.left = sourceRect.left + 'px';
+      transformBox.style.top = sourceRect.top + 'px';
 
       if (conf.text) {
         transformBox.innerHTML = conf.text;
@@ -509,110 +509,48 @@
       }
 
       system.UI.body.appendChild(transformBox);
-      /*var timeline = new TimelineLite({smoothChildTiming: true});
-       
-       var circleWidth = window.innerWidth / 3;
-       
-       timeline.to(transformBox, 0, {
-       width: sourceRect.width,
-       height: sourceRect.height,
-       left: sourceRect.left,
-       top: sourceRect.top
-       }).to(transformBox, t, {
-       width: circleWidth,
-       height: circleWidth,
-       lineHeight: circleWidth + 'px',
-       fontSize: '1.5em',
-       left: circleWidth,
-       top: (window.innerHeight / 2) - (circleWidth / 2),
-       borderRadius: circleWidth / 2,
-       ease: "Power2.easeInOut"
-       }).to(transformBox, t, {
-       width: distRect.width,
-       height: distRect.height,
-       //transform: "scale(1,1)",
-       left: distRect.left,
-       top: distRect.top,
-       lineHeight: distRect.height + 'px',
-       fontSize: '3em',
-       backgroundColor: (ds.backgroundColor.indexOf("rgba") !== -1 ||
-       ds.backgroundColor === "transparent") ? "rgb(190,190,190)" : ds.backgroundColor,
-       boxShadow: ds.boxShadow,
-       borderRadius: ds.borderRadius,
-       ease: "Power2.easeInOut",
-       delay: conf.delay || 0,
-       onComplete: function () {
-       
-       conf.from.style.transition = "";
-       conf.to.style.visibility = "";
-       
-       
-       if (conf.fade > 0) {
-       tween.to(transformBox, conf.fade, {
-       opacity: 0,
-       ease: "Power0.easeNone",
-       delay: .01,
-       onComplete: function () {
-       transformBox.parentNode.removeChild(transformBox);
-       }
-       });
-       } else {
-       transformBox.parentNode.removeChild(transformBox);
-       }
-       
-       
-       
-       if (conf.onComplete)
-       conf.onComplete();
-       }
-       }).play();*/
 
+      setTimeout(function () {
+        animate();
+      }, 1);
 
-      tween.fromTo(transformBox, t, {
-        width: sourceRect.width,
-        height: sourceRect.height,
-        left: sourceRect.left,
-        top: sourceRect.top
-      },
-              {
-                width: distRect.width,
-                height: distRect.height,
-                //transform: "scale(1,1)",
-                left: distRect.left,
-                top: distRect.top,
-                lineHeight: distRect.height + 'px',
-                fontSize: '3em',
-                backgroundColor: (ds.backgroundColor.indexOf("rgba") !== -1 ||
-                        ds.backgroundColor === "transparent") ? "rgb(190,190,190)" : ds.backgroundColor,
-                boxShadow: ds.boxShadow,
-                borderRadius: ds.borderRadius,
-                ease: conf.ease || "Power2.easeInOut",
-                delay: conf.delay || 0,
+      function animate() {
+        tween.to(transformBox, t, {
+          width: distRect.width,
+          height: distRect.height,
+          left: distRect.left,
+          top: distRect.top,
+          lineHeight: distRect.height + 'px',
+          fontSize: '3em',
+          backgroundColor: (ds.backgroundColor.indexOf("rgba") !== -1 ||
+                  ds.backgroundColor === "transparent") ? "rgb(190,190,190)" : ds.backgroundColor,
+          //boxShadow: ds.boxShadow,
+          borderRadius: ds.borderRadius,
+          ease: conf.ease || "Power2.easeInOut",
+          delay: conf.delay || 0,
+          onComplete: function () {
+            conf.from.style.transition = "";
+            conf.to.style.visibility = "";
+
+            if (conf.fade > 0) {
+              tween.to(transformBox, conf.fade, {
+                opacity: 0,
+                ease: "Power0.easeNone",
+                delay: .01,
                 onComplete: function () {
-
-                  conf.from.style.transition = "";
-                  conf.to.style.visibility = "";
-
-
-                  if (conf.fade > 0) {
-                    tween.to(transformBox, conf.fade, {
-                      opacity: 0,
-                      ease: "Power0.easeNone",
-                      delay: .01,
-                      onComplete: function () {
-                        transformBox.parentNode.removeChild(transformBox);
-                      }
-                    });
-                  } else {
-                    transformBox.parentNode.removeChild(transformBox);
-                  }
-
-
-
-                  if (conf.onComplete)
-                    conf.onComplete();
+                  transformBox.parentNode.removeChild(transformBox);
                 }
               });
+            } else {
+              transformBox.parentNode.removeChild(transformBox);
+            }
+
+            if (conf.onComplete) {
+              conf.onComplete();
+            }
+          }
+        });
+      }
     },
     /**
      * 

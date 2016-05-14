@@ -505,7 +505,7 @@ class EWCore {
       if (strpos($app_dir, '.') === 0)
         continue;
 
-      $package = str_replace('-', '\\', $app_dir);
+      $package = str_replace('-', '_', $app_dir);
 
 
       if (is_dir($app_dir)) {
@@ -517,6 +517,7 @@ class EWCore {
         try {
           require_once EW_PACKAGES_DIR . "/" . $app_dir . "/App.app.php";
           $app_class_name = $package . "\\App";
+          
           self::$APPS[$package] = new $app_class_name();
         }
         catch (Exception $ex) {
@@ -526,6 +527,7 @@ class EWCore {
     }
 
     foreach (self::$APPS as $key => $app) {
+//      echo $app->get_root() . "/App.app.php <br>";
       $app->init_app();
     }
     // Optimization tip
@@ -572,7 +574,8 @@ class EWCore {
   private static function autoload_core($class_name) {
     if (strpos($class_name, '\\')) {
       $class_name = end(explode('\\', $class_name));
-    }
+    }    
+
     $file = EW_ROOT_DIR . 'core/' . $class_name . '.class.php';
     //echo $file."<br>";
     if (file_exists($file)) {

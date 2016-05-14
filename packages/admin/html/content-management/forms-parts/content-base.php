@@ -47,8 +47,8 @@
     initLabels: function (labels) {
       var allLabels = this.allLabels.slice(0);
       $.each(labels, function (i, el) {
-        var t = $("#" + el.key + "_control_button");
-        t[0].setAttribute('active', true);
+        var labelSwitch = $("#" + el.key + "_control_button");
+        labelSwitch.attr('active', true);
 
         allLabels.splice(allLabels.indexOf(el.key), 1);
       });

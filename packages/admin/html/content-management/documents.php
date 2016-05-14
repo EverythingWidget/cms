@@ -1,28 +1,26 @@
-<system-ui-view module="content-management/documents" name="folders-card" class="block-row">
-  <div id="folders-card" class="card z-index-1 center-block col-lg-9 col-md-10 col-xs-12">
-    <div  class='card-header'>
-      <div class="card-title-action"></div>
+<system-ui-view module="content-management/documents" name="folders-card" class="card card-big center-block z-index-1">
+  <div  class='card-header'>
+    <div class="card-title-action"></div>
 
-      <div class="card-title-action-right"></div>
+    <div class="card-title-action-right"></div>
 
-      <h1> {{ card_title.text }} </h1>
+    <h1> {{ card_title }} </h1>
+  </div>
+
+  <div class='card-content top-devider'>
+    <div id="folders-list" class="mt">
+      <div v-for="folder in folders" tabindex='1' class='content-item folder' data-content-id='{{ folder.id }}'>
+        <span></span>
+        <p class='date'>{{ folder.round_date_created }}</p>
+        <p>{{ folder.title }}</p>          
+      </div>
     </div>
 
-    <div class='card-content top-devider'>
-      <div id="folders-list" class="mt">
-        <div v-for="folder in folders" tabindex='1' class='content-item folder' data-content-id='{{ folder.id }}'>
-          <span></span>
-          <p class='date'>{{ folder.round_date_created }}</p>
-          <p>{{ folder.title }}</p>          
-        </div>
-      </div>
-
-      <div id="articles-list" class="mt">
-        <div v-for="article in articles" tabindex='1' class='content-item article' data-content-id='{{ article.id }}'>
-          <span></span>
-          <p class='date'>{{ article.round_date_created }}</p>
-          <p>{{ article.title }}</p>          
-        </div>
+    <div id="articles-list" class="mt">
+      <div v-for="article in articles" tabindex='1' class='content-item article' data-content-id='{{ article.id }}'>
+        <span></span>
+        <p class='date'>{{ article.round_date_created }}</p>
+        <p>{{ article.title }}</p>          
       </div>
     </div>
   </div>

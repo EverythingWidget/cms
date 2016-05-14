@@ -56,7 +56,8 @@ class App {
 
   public function load_modules($dir) {
     $app_root = $this->get_root();
-    $path = EW_PACKAGES_DIR . '/' . $app_root . '/' . $dir;
+    $app_root_path = str_replace('_', '-', $app_root);
+    $path = EW_PACKAGES_DIR . '/' . $app_root_path . '/' . $dir;
     if (!file_exists($path))
       return;
     $sections = scandir($path);
@@ -73,7 +74,6 @@ class App {
       if (!$i = strpos($section_name, '.class.php')) {
         continue;
       }
-
       require_once $path . '/' . $section_name;
 
       $section_class_name = substr($section_name, 0, $i);

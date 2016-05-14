@@ -547,22 +547,18 @@
       EW.apps[e.id] = e;
     });
 
-    var items = [
-      '<ul class="apps-menu-list">'
-    ];
+    var appsVue = new Vue({
+      el: '#apps-menu',
+      data: {
+        apps: installModules
+      }
+    });
+
     $.each(installModules, function (key, val) {
-
-      items.push('<li class=""><a class="apps-menu-link" data-app="'
-              + val['id'] + '"><span class="">'
-              + val['title'] + '</span></a></li>');
-
       val.file = "index.php";
       val.id = val['id'];
       EW.apps[val['id']] = val;
-
     });
-    items.push('</ul>');
-    $(items.join('')).appendTo("#apps-menu");
 
     System.init(installModules);
     System.app.on('app', System.services.app_service.load);
