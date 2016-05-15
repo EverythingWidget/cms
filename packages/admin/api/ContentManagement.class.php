@@ -665,13 +665,8 @@ class ContentManagement extends \ew\Module {
 
     $xpath = new \DOMXpath($doc);
     $articles = $xpath->query('//body/*');
-//print_r($articles);
-    // all links in .blogArticle
-    $links = array();
+    $links = [];
     foreach ($articles as $container) {
-      //print_r($container);
-      // $arr = $container->;
-      //foreach ($arr as $item) {
       $tag_name = $container->tagName;
       $text = trim($container->nodeValue);
       $links[] = array(
@@ -686,17 +681,18 @@ class ContentManagement extends \ew\Module {
   }
 
   public function ew_page_feeder_articles($id, $language = "en") {
-
     $articles = $this->contents_labels($id, "admin_ContentManagement_language", $language);
     $article = [];
 
     if ($articles) {
-      $article = $articles["data"][0];
-      $result["title"] = $article["title"];
-      $result["content"] = $article["content"];
-      $result["content_fields"] = $article["content_fields"];
+      $article = $articles['data'][0];
+      $result['title'] = $article['title'];
+      $result['keywords'] = $article['keywords'];
+      $result['description'] = $article['description'];
+      $result['content'] = $article['content'];
+      $result['content_fields'] = $article['content_fields'];
 
-      return \ew\APIResourceHandler::to_api_response($result, ["type" => "object"]);
+      return \ew\APIResourceHandler::to_api_response($result, ['type' => 'object']);
     }
 
     return \ew\APIResourceHandler::to_api_response([]);

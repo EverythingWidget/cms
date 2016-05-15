@@ -10,12 +10,14 @@ $currentAppConf = EWCore::call_api("admin/api/settings/read-settings", [
 
 $website_title = $currentAppConf["webroot/title"];
 $pageDescription = $currentAppConf["webroot/description"];
-$defaultKeywords = $currentAppConf["webroot/keywords"];
+$website_keywords = $currentAppConf["webroot/keywords"];
 $favicon = $currentAppConf["webroot/favicon"];
 $google_analytics_id = $currentAppConf["webroot/google-analytics-id"];
 
 $_SESSION['ROOT_DIR'] = EW_ROOT_DIR;
 $_REQUEST['cmdResult'] = '';
+
+\webroot\WidgetsManagement::set_html_keywords($website_title . ',' . $website_keywords);
 
 webroot\WidgetsManagement::include_html_link(["rm/public/css/bootstrap.css"]);
 
@@ -63,8 +65,9 @@ if (file_exists($template_php)) {
   'src' => '~rm/public/' . $_REQUEST["_uis_template"] . '/template.js'
   ]);
   } */
-
-$HTML_TITLE = (webroot\WidgetsManagement::get_html_title()) ? webroot\WidgetsManagement::get_html_title() . " - " . $website_title : $website_title;
+$current_path = str_replace(EW_DIR, '', $_SERVER['REQUEST_URI']);
+$html_keywords_string = webroot\WidgetsManagement::get_html_title();
+$HTML_TITLE = ($current_path === '/' || !$current_path) ? $website_title : $html_keywords_string;
 $HTML_KEYWORDS = webroot\WidgetsManagement::get_html_keywords();
 $HTML_SCRIPTS = webroot\WidgetsManagement::get_html_scripts();
 $HTML_LINKS = webroot\WidgetsManagement::get_html_links();
@@ -78,9 +81,9 @@ $HTML_CSS = webroot\WidgetsManagement::get_html_links_concatinated();
     <meta name="viewport" content="width=device-width, initial-scale=1" />  
 
     <?php
-    echo '<title>' . $HTML_TITLE . '</title>';
+    echo "<title>$HTML_TITLE</title>";
     echo "<meta name='description' content='$pageDescription'/>";
-    echo "<meta name='keywords' content='$defaultKeywords, $HTML_KEYWORDS, $website_title'/>";
+    echo "<meta name='keywords' content='$HTML_KEYWORDS'/>";
     echo "<link rel='shortcut icon' href='$favicon'>";
     echo "<link rel='apple-touch-icon-precomposed' href='$favicon'>";
     echo '<meta name="msapplication-TileColor" content="#FFFFFF">';
@@ -104,14 +107,10 @@ $HTML_CSS = webroot\WidgetsManagement::get_html_links_concatinated();
 
         ga('create', '<?= $google_analytics_id ?>', 'auto');
         ga('send', 'pageview');
-
       </script>
       <?php
     }
     ?>      
-
-
-
     <script src="https://code.jquery.com/jquery-2.1.4.min.js" defer></script>    
 
     <script id="widget-data">

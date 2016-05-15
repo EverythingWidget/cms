@@ -281,9 +281,14 @@ class Core extends \ew\Module {
     ]);
 
     return \ew\APIResourceHandler::to_api_response($result, [
-                'parent_content_fields' => $folder_info['data']['content_fields'],
-                'page_size'             => $articles->count(),
-                "collection_size"       => $collection_size
+                'parent'          => [
+                    'title'          => $folder_info['data']['title'],
+                    'keywords'       => $folder_info['data']['keywords'],
+                    'description'    => $folder_info['data']['description'],
+                    'content_fields' => $folder_info['data']['content_fields'],
+                ],
+                'page_size'       => $articles->count(),
+                "collection_size" => $collection_size
     ]);
   }
 

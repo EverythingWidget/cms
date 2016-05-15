@@ -20,7 +20,7 @@ class WidgetsManagement extends \ew\Module {
   private static $html_scripts = array();
   private static $html_included_links = [];
   private static $html_links = array();
-  private static $html_keywords;
+  private static $html_keywords = [];
   private static $widgets_feeders = array();
   protected $resource = "api";
   public static $WIDGET_FEEDER = "ew-widget-feeder";
@@ -1004,12 +1004,20 @@ class WidgetsManagement extends \ew\Module {
     return self::$title;
   }
 
-  public static function set_html_keywords($keywords) {
-    self::$html_keywords .= $keywords . ", ";
+  public static function set_html_keywords($value) {
+    if (is_array($value)) {
+      self::$html_keywords = array_merge(self::$html_keywords, $value);
+      return;
+    }
+
+    $keywords = explode(',', $value);
+    $trimmed_keywords = array_map('trim', $keywords);
+
+    self::$html_keywords = array_merge(self::$html_keywords, $trimmed_keywords);
   }
 
   public static function get_html_keywords() {
-    return self::$html_keywords;
+    return implode(',', array_filter(array_unique(self::$html_keywords)));
   }
 
   public function show_container($container_id) {

@@ -399,13 +399,13 @@
         p, h1, h2, h3 {
           padding: 0 15px;
         }
-      }      
 
-      .front-image {
-        float: none;
-        display: block; 
-        max-width: 100%;
-      }
+        .article-image, img:first-child {
+          float: none;
+          display: block; 
+          max-width: 100%;
+        }
+      }      
 
       .item-link {
         border-radius: 0;
