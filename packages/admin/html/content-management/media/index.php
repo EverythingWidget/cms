@@ -281,7 +281,7 @@
 
       this.initAudiosTab();
 
-      System.UI.components.document.off("media-list.refresh").on("media-list.refresh", function (e, eventData) {
+      System.UI.components.document.off("media-list.refresh").on("media-list.refresh", function () {
         component.listMedia();
       });
 
