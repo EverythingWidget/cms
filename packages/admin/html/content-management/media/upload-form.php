@@ -15,7 +15,7 @@
     </div>
   </form>
 </div>
-<div class="footer-pane row actions-bar action-bar-items" >
+<div class="footer-pane actions-bar action-bar-items" >
 
 </div>
 <style>

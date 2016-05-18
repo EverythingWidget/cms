@@ -225,12 +225,21 @@
         this.xtag.indicator.className = "ew-float-menu-indicator";
         this.xtag.indicator.style.position = "absolute";
 
-        this.xtag.indicator.addEventListener("click", function () {
+        this.xtag.indicator.addEventListener("mouseenter", function () {
+          if (!_this.expanded) {
+            _this.expand();
+          }
+        });
+
+//        this.xtag.indicator.addEventListener("mouseleave", function () {
+//          if (_this.expanded) {
+//            _this.contract();
+//          }
+//        });
+
+        this.addEventListener("mouseleave", function () {
           if (_this.expanded) {
             _this.contract();
-
-          } else {
-            _this.expand();
           }
         });
 
@@ -309,24 +318,24 @@
 
         TweenLite.to(this, .3, {
           className: this.xtag.originClassName + " expand",
-          ease: "Power2.easeInOut"
+          ease: "Power2.easeOut"
         });
 
         TweenLite.to(this.xtag.indicator, .3, {
           className: "+=active",
-          ease: "Power2.easeInOut"
+          ease: "Power2.easeOut"
         });
       },
       contract: function () {
         /*if (!this.expanded)
          return;*/
         this.expanded = false;
-        TweenLite.to(this, .4, {
+        TweenLite.to(this, .3, {
           className: this.xtag.originClassName,
           ease: "Power2.easeInOut"
         });
 
-        TweenLite.to(this.xtag.indicator, .4, {
+        TweenLite.to(this.xtag.indicator, .3, {
           className: this.xtag.originClassName + "-indicator",
           ease: "Power2.easeInOut"
         });
@@ -334,13 +343,13 @@
       on: function (flag) {
         if (this.xtag.indicator.parentNode) {
           //this.xtag.indicator.className = this.xtag.originClassName + "-indicator";
-          TweenLite.to(this.xtag.indicator, .4, {
+          TweenLite.to(this.xtag.indicator, .3, {
             className: "-=destroy",
             onComplete: function () {
             }
           });
 
-          TweenLite.to(this.xtag.indicator, .4, {
+          TweenLite.to(this.xtag.indicator, .3, {
             className: "-=destroy",
             ease: "Power2.easeInOut"
           });
@@ -359,7 +368,7 @@
             }
           });
 
-          TweenLite.to(_this, .4, {
+          TweenLite.to(_this, .3, {
             className: "-=expand",
             ease: "Power2.easeInOut"
           });

@@ -96,18 +96,17 @@ root {
     overflow: hidden;
     text-align: right;
     opacity: 1;
-    border-radius: 100px;
-    transform-origin: 175px 25px;
-    width: 0px;
-    height: 0px;
+    border-radius: 100%;
+    width: 0;
+    height: 0;
   }
 
   .ew-float-menu.expand {
-    height: auto;
     width: auto;
-    margin-top: 55px;
+    height: auto;
+    opacity: 1;
+    padding-top: 55px;
     border-radius: 0;
-
   }
 
   .ew-float-menu[position='se'] {
@@ -118,7 +117,7 @@ root {
   }
   .ew-float-menu.expand[position='se'] {
     margin-top: 0;
-    margin-bottom: 55px;
+    padding-bottom: 55px;
   }
 
   .ew-float-menu-indicator {
@@ -1386,7 +1385,7 @@ h2.actions-bar span {
   @media (min-width:768px) {
     border-radius: 6px;
   }
-  
+
   @media (min-width:992px) {
   }
 
@@ -1413,7 +1412,7 @@ h2.actions-bar span {
       max-width: 1280px;
     }
   }
-  
+
   &-medium {
     @media (min-width:320px) {
       width: 100%;
@@ -1452,7 +1451,7 @@ h2.actions-bar span {
     }
   }
 
-  
+
   p {
     padding: 0;
     margin: 0;
@@ -1526,6 +1525,8 @@ h2.actions-bar span {
   min-height: 98px;
   z-index: 1;
 }
+
+
 
 .btn-circle {
   width: 44px;
@@ -2852,14 +2853,14 @@ table.contents td {
   transition: all .3s;
 
   &.image {
-    padding: 0;
-    width: 100%;
-    max-width: 200px;
-    margin: 0 15px 30px;
-    text-align: left;
-    padding: 0;
-    padding-bottom: 10px;
-    display: block;
+    /*    padding: 0;
+        width: 100%;
+        max-width: 200px;
+        margin: 0 15px 30px;
+        text-align: left;
+        padding: 0;
+        padding-bottom: 10px;*/
+
     .btn-circle {
       opacity: .3;
     }
@@ -3561,7 +3562,72 @@ inline-dialog{
   -webkit-flex-flow: row wrap;
   justify-content: space-around;
   align-items: flex-start;
-} 
+}
+
+.grid {
+  &-header {
+    padding: 30px 25px 0px;
+    background-color: rgba(255, 255, 255, .7);
+
+    h1 {
+      margin: 0;
+      font-size: 2.2em;
+
+      &:last-child {
+        padding-bottom: 25px;
+      }
+    }
+  }
+
+  &-content {
+    padding: 5px;
+  }
+
+  &-cell {
+    background-color: #fff;
+    float: left;
+    margin: 5px;
+    height: 200px;
+    overflow: hidden;
+    position: relative;
+
+
+    img {
+      height: 200px;
+      margin-bottom: -52px;
+      z-index: 0;
+    }
+
+    .title {
+      margin: 0;
+      padding: 12px 14px;
+      float: left;
+      color: #000;
+      font-weight: 500;
+    }
+
+    &-caption {
+      position: relative;
+      background-color: #fff;
+      opacity: .8;
+      z-index: 1;
+      display: block;
+      overflow: hidden;
+      padding: 4px 0;
+      display: none;
+    }
+
+    &:hover {     
+      .grid-cell-caption {
+        display: block;
+      }
+    }
+
+    &:focus {
+      outline: 2px solid #000;
+    }
+  }
+}
 
 system-list, dis-block {
   display: block;

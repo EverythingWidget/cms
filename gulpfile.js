@@ -90,7 +90,7 @@ gulp.task('watch-admin-styles', [
   'admin:compile:scss','admin:compile:base:scss'
 ], function () {
   gulp.watch('packages/admin/**/*.scss', [
-    'admin:compile:scss'
+    'admin:compile:scss','admin:compile:base:scss'
   ]).on('change', function () {
     browserSync.reload();
   });
