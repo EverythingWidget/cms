@@ -2,6 +2,7 @@
 session_start();
 global $rootAddress, $pageAddress;
 
+$current_path = str_replace(EW_DIR, '', $_SERVER['REQUEST_URI']);
 $app = "webroot";
 
 $currentAppConf = EWCore::call_api("admin/api/settings/read-settings", [
@@ -9,7 +10,7 @@ $currentAppConf = EWCore::call_api("admin/api/settings/read-settings", [
         ]);
 
 $website_title = $currentAppConf["webroot/title"];
-$pageDescription = $currentAppConf["webroot/description"];
+$page_description = ($current_path === '/' || !$current_path) ? $currentAppConf["webroot/description"] : null;
 $website_keywords = $currentAppConf["webroot/keywords"];
 $favicon = $currentAppConf["webroot/favicon"];
 $google_analytics_id = $currentAppConf["webroot/google-analytics-id"];
@@ -65,7 +66,7 @@ if (file_exists($template_php)) {
   'src' => '~rm/public/' . $_REQUEST["_uis_template"] . '/template.js'
   ]);
   } */
-$current_path = str_replace(EW_DIR, '', $_SERVER['REQUEST_URI']);
+
 $html_keywords_string = webroot\WidgetsManagement::get_html_title();
 $HTML_TITLE = ($current_path === '/' || !$current_path) ? $website_title : $html_keywords_string;
 $HTML_KEYWORDS = webroot\WidgetsManagement::get_html_keywords();
@@ -82,7 +83,9 @@ $HTML_CSS = webroot\WidgetsManagement::get_html_links_concatinated();
 
     <?php
     echo "<title>$HTML_TITLE</title>";
-    echo "<meta name='description' content='$pageDescription'/>";
+    if ($page_description) {
+      echo "<meta name='description' content='$pageDescription'/>";
+    }
     echo "<meta name='keywords' content='$HTML_KEYWORDS'/>";
     echo "<link rel='shortcut icon' href='$favicon'>";
     echo "<link rel='apple-touch-icon-precomposed' href='$favicon'>";
