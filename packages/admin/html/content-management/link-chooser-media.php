@@ -18,8 +18,8 @@
         <div class="block-column anim-fade-in"></div>
       </system-ui-view >
 
-      <system-ui-view module="media-chooser" name="album-card" class="card z-index-1 center-block col-lg-9 col-md-10 col-xs-12">
-        <div  class="card-header">
+      <system-ui-view module="media-chooser" name="album-card" class="grid">
+        <div  class="grid-header">
           <div class="card-title-action"></div>
           <div class="card-title-action-right"></div>
           <h1>
@@ -27,9 +27,7 @@
           </h1>
         </div>
 
-        <div class="card-content top-devider block-row">
-          <div class="album-images-list grid-list"></div>
-        </div>
+        <div class="album-images-list grid-content block-row"></div>
       </system-ui-view>
     </div> 
 
@@ -183,7 +181,7 @@
         },
         class: "btn btn-text btn-default btn-circle icon-edit",
         parent: this.albumCardTitleActionRight
-      }).hide();
+      });
 
       this.deleteAlbumActivity = EW.addActivity({
         activity: "admin/api/content-management/delete-album",
@@ -345,15 +343,16 @@
       elementsList.html("<h2>Loading...</h2><div class='loader center'></div>");
       this.listInited = false;
 
-      component.itemsList = component.albumCard.find(".card-content .album-images-list").empty();
+      component.itemsList = component.albumCard.find(".album-images-list").empty();
       var albumsList = this.albumsList.children().eq(0);
       if (component.albumId === 0) {
         //this.albumPropertiesBtn.comeOut();
       } else {
         //this.albumPropertiesBtn.comeIn();
       }
+      Domain.state('media-chooser/photos').setParam('image', null);
 
-      System.addActiveRequest($.get('<?php echo EW_ROOT_URL; ?>~admin/api/content-management/get-media-list', {
+      System.addActiveRequest($.get('api/admin/content-management/get-media-list', {
         parent_id: component.albumId
       }, function (response) {
         if (component.albumId === 0) {
@@ -420,12 +419,12 @@
 
     MediaComponent.prototype.createImageElement = function (title, type, ext, size, ImageURL, id) {
       var component = this,
-              column = $(document.createElement("div")),
+              caption = $(document.createElement("div")),
               div = $(document.createElement("div")),
               img = $(document.createElement("img"));
 
-      //column.addClass("col-lg-3 col-md-4 col-xs-6 block-row");
-      div.addClass("content-item z-index-0")
+      caption.addClass('grid-cell-caption');
+      div.addClass("grid-cell")
               .addClass(type)
               .addClass(ext);
       div.attr("tabindex", "1");
@@ -440,15 +439,15 @@
         div.append("<span></span>");
       }
 
-      div.append("<button class='pull-right btn-text btn-circle btn-danger icon-delete'></button>");
+      caption.append("<button class='pull-right btn-text btn-circle btn-danger icon-delete'></button>");
       if (size) {
-        div.append("<p class='date'>" + size + " KB</p>");
+        caption.append("<p class='title date'>" + size + " KB</p>");
       }
-
+      div.append(caption);
       div.attr("data-item-id", id);
 
       var divTree = UIUtility.toTreeObject(div[0]);
-      divTree.button._.addEventListener('click', function () {
+      divTree.div.button._.addEventListener('click', function () {
         component.selectedItemId = id;
         component.deleteImageActivity();
       });
@@ -530,12 +529,12 @@
           //mediaComponent.newAlbumActivity.hide();
           mediaComponent.uploadImageActivity.show();
           //mediaComponent.uploadAudioActivity.show();
-          mediaComponent.bBack.comeIn();
+          //mediaComponent.bBack.comeIn();
         } else {
           //mediaComponent.newAlbumActivity.show();
           mediaComponent.uploadImageActivity.hide();
           mediaComponent.uploadAudioActivity.hide();
-          mediaComponent.bBack.comeOut();
+          //mediaComponent.bBack.comeOut();
         }
 
         if (!id) {
@@ -556,9 +555,11 @@
 
       this.on('select', mediaComponent.states.select);
 
-      this.on("image", function (imageId) {
+      this.on('image', function (imageId) {
         if (mediaComponent.albumId && parseInt(imageId) !== mediaComponent.albumId) {
           mediaComponent.selectMediaAction.comeIn();
+        } else {
+          mediaComponent.selectMediaAction.comeOut();
         }
       });
     });

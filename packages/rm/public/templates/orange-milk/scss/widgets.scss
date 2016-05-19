@@ -115,6 +115,10 @@
     overflow: hidden;
     border-radius: 5px;
 
+    .list-content, .list-item, .list-item-cell {     
+      height: 100%;
+    }
+
     img {
       width: 100%;
       margin: 0 auto;

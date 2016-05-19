@@ -5,6 +5,20 @@ echo admin\AppsManagement::create_section_main_form();
 ?>
 <script>
   (function () {
+    System.entity('services/media_chooser', {
+      selectItem: function (item) {
+        if (item.type === 'image')
+          return item;
+
+        if (item.type === 'audio')
+          return {
+            type: 'text',
+            text: item.path
+          };
+
+        return null;
+      }
+    });
 
     function ContentManagementComponent(module) {
       var component = this;

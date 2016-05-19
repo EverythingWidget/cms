@@ -9105,8 +9105,10 @@
         ContentEdit.Root.get().focused().blur();
       }
       clearInterval(this._updatePositionInterval);
-      this.history.stopWatching();
-      this.history = null;
+      if (this.history) {
+        this.history.stopWatching();
+        this.history = null;
+      }
       this._toolbox.hide();
       this._inspector.hide();
       this._regions = {};

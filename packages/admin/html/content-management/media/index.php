@@ -38,21 +38,6 @@
 
 <script>
   (function () {
-    System.entity('services/media_chooser', {
-      selectItem: function (item) {
-        if (item.type === 'image')
-          return item;
-
-        if (item.type === 'audio')
-          return {
-            type: 'text',
-            text: item.path
-          };
-
-        return null;
-      }
-    });
-
     System.entity('components/media/photos', {
       create: function (module) {
         var mediaComponent = System.entity('components/media').$service;
@@ -65,11 +50,11 @@
           if (id > 0) {
             mediaComponent.newAlbumActivity.hide();
             mediaComponent.uploadImageActivity.comeIn();
-            mediaComponent.bBack.comeIn();
+            //mediaComponent.bBack.comeIn();
           } else {
             mediaComponent.newAlbumActivity.comeIn();
             mediaComponent.uploadImageActivity.hide();
-            mediaComponent.bBack.hide();
+            //mediaComponent.bBack.hide();
           }
 
           if (!id) {
@@ -218,7 +203,7 @@
         },
         class: "btn btn-text btn-default btn-circle icon-edit",
         parent: this.albumCardTitleActionRight
-      }).hide();
+      });
 
       this.deleteAlbumActivity = EW.addActivity({
         activity: "admin/api/content-management/delete-album",
@@ -382,10 +367,10 @@
       component.itemsList = component.albumCard.find(".album-images-list").empty();
       var albumsList = this.albumsList.children().eq(0);
       if (component.albumId === 0) {
-        this.albumPropertiesBtn.comeOut();
+        //this.albumPropertiesBtn.comeOut();
         //this.deleteAlbumBtn.comeOut();
       } else {
-        this.albumPropertiesBtn.comeIn();
+        //this.albumPropertiesBtn.comeIn();
         //this.deleteAlbumBtn.comeIn();
       }
       System.addActiveRequest($.get('<?php echo EW_ROOT_URL; ?>~admin/api/content-management/get-media-list', {

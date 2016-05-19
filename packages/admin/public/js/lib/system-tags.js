@@ -232,7 +232,7 @@
         });
 
 //        this.xtag.indicator.addEventListener("mouseleave", function () {
-//          if (_this.expanded) {
+//          if (!_this.expanded) {
 //            _this.contract();
 //          }
 //        });
@@ -251,7 +251,7 @@
       inserted: function () {
         this.className = this.xtag.originClassName;
         this.xtag.indicator.className = "ew-float-menu-indicator";
-        this.parentNode.appendChild(this.xtag.indicator);
+        this.parentNode.insertBefore(this.xtag.indicator, this);
       },
       attributeChanged: function (attrName, oldValue, newValue) {
       },
@@ -316,29 +316,34 @@
          height: distDim.height
          });*/
 
-        TweenLite.to(this, .3, {
-          className: this.xtag.originClassName + " expand",
-          ease: "Power2.easeOut"
-        });
+        System.ui.utility.addClass(this, 'expand');
+        System.ui.utility.addClass(this.xtag.indicator, 'active');
 
-        TweenLite.to(this.xtag.indicator, .3, {
-          className: "+=active",
-          ease: "Power2.easeOut"
-        });
+//        TweenLite.to(this, .3, {
+//          className: this.xtag.originClassName + " expand",
+//          ease: "Power2.easeOut"
+//        });
+//
+//        TweenLite.to(this.xtag.indicator, .3, {
+//          className: "+=active",
+//          ease: "Power2.easeOut"
+//        });
       },
       contract: function () {
         /*if (!this.expanded)
          return;*/
         this.expanded = false;
-        TweenLite.to(this, .3, {
-          className: this.xtag.originClassName,
-          ease: "Power2.easeInOut"
-        });
-
-        TweenLite.to(this.xtag.indicator, .3, {
-          className: this.xtag.originClassName + "-indicator",
-          ease: "Power2.easeInOut"
-        });
+        System.ui.utility.removeClass(this, 'expand');
+        System.ui.utility.removeClass(this.xtag.indicator, 'active');
+//        TweenLite.to(this, .3, {
+//          className: this.xtag.originClassName,
+//          ease: "Power2.easeInOut"
+//        });
+//
+//        TweenLite.to(this.xtag.indicator, .3, {
+//          className: this.xtag.originClassName + "-indicator",
+//          ease: "Power2.easeInOut"
+//        });
       },
       on: function (flag) {
         if (this.xtag.indicator.parentNode) {
