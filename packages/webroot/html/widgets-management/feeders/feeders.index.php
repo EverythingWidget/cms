@@ -45,8 +45,8 @@
 
     // ------- //
 
-    System.state("widgets-management/feeders", function () {
-      System.entity('components/widgets-management/feeders').create(this);
+    System.state("widgets-management/feeders", function (state) {
+      System.entity('components/widgets-management/feeders').create(state);
     });
   })();
 </script>

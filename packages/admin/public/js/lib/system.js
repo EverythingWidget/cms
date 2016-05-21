@@ -53,7 +53,7 @@
      * @param {Object} object
      * @returns {sys.ABSTRACT_MODULE}
      */
-    state: function (id, decorator) {
+    state: function (id, handlaer) {
       //return this.app.module(id, object, false);
       var module, modulePath, moduleNavigation;
       var domain = this;
@@ -63,7 +63,7 @@
       id = this.app.id + '/' + id;
 
       //if forceReload is true, then init the module again
-      if (!decorator/* && this.modules[id]*/) {
+      if (!handlaer/* && this.modules[id]*/) {
         // Add the module to notYetStarted list so it can be started by startLastLoadedModule method
         domain.notYetStarted.push(id);
         return domain.modules[id];
@@ -73,11 +73,11 @@
         return domain.modules[id];
       }
 
-      if (typeof (decorator) === "function") {
+      if (typeof (handlaer) === "function") {
         module = $.extend(true, {}, System.MODULE_ABSTRACT);
-        decorator.call(module);
+        handlaer.call(null, module);
       } else {
-        module = $.extend(true, {}, System.MODULE_ABSTRACT, decorator || {});
+        module = $.extend(true, {}, System.MODULE_ABSTRACT, handlaer || {});
       }
 
       module.domain = domain;

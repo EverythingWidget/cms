@@ -226,18 +226,16 @@ if ($path_uis_list) {
   var pageUIS;
 
   (function () {
-    var Section = function () {
-      this.type = "appSection";
-      this.onInit = function () {
+    System.state("widgets-management/pages-uis", function (state) {
+      state.type = "appSection";
+      state.onInit = function () {
 
       };
 
-      this.onStart = function () {
+      state.onStart = function () {
         pageUIS = new PageUIS();
         pageUIS.allUISList.read();
       };
-    };
-
-    System.state("widgets-management/pages-uis", Section);
+    });
   })();
 </script>

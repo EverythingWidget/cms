@@ -27,11 +27,9 @@ function script() {
   ?>
   <script  >
     (function () {
-
-
-      System.state("settings", function () {
-        this.type = "app";
-        this.onInit = function (nav) {
+      System.state("settings", function (state) {
+        state.type = "app";
+        state.onInit = function (nav) {
 
           this.data.sections = [
             {
@@ -48,10 +46,10 @@ function script() {
 
         };
 
-        this.onStart = function () {
+        state.onStart = function () {
         };
 
-        this.on("app", function (p, section) {
+        state.on('app', function (p, section) {
           if (!section) {
             System.UI.components.sectionsMenuList[0].value = '0';
             return;

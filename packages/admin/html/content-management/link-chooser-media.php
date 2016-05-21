@@ -27,12 +27,13 @@
           </h1>
         </div>
 
-        <div class="album-images-list grid-content block-row"></div>
+        <div class="album-images-list grid-content block-row">
+        </div>
       </system-ui-view>
     </div> 
 
     <div id="media-audios" class="tab-pane" >
-      <system-ui-view module="media-chooser" name="audios-list" class="block-row">  
+      <system-ui-view module="media-chooser" name="audios-list" class="block-row">          
       </system-ui-view >
     </div>
   </div>

@@ -54,8 +54,8 @@ echo admin\AppsManagement::create_section_main_form();
       this.data.tab = null;
     };
 
-    System.state("content-management", function () {
-      new ContentManagementComponent(this);
+    System.state("content-management", function (state) {
+      new ContentManagementComponent(state);
     });
   })();
 </script>

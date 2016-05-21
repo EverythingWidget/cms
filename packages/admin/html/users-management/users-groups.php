@@ -1,7 +1,7 @@
 <?php ?>
 <script >
   (function () {
-    
+
     function UsersGroups() {
       var _this = this;
       this.bNewGroup = EW.addActionButton({
@@ -30,9 +30,9 @@
           $.post("<?php echo EW_ROOT_URL; ?>~admin/html/users-management/users-group-form.php", {
             groupId: groupId
           },
-            function (data) {
-              _this.userGroupModal.html(data);
-            });
+                  function (data) {
+                    _this.userGroupModal.html(data);
+                  });
         },
         onClose: function () {
           EW.setHashParameter("form", null);
@@ -41,8 +41,7 @@
       });
     }
 
-    UsersGroups.prototype.usersGroupsList = function ()
-    {
+    UsersGroups.prototype.usersGroupsList = function () {
       var self = this;
       if (this.table)
       {
@@ -68,24 +67,20 @@
         rowCount: true,
         url: "<?php echo EW_ROOT_URL; ?>~admin/api/users-management/groups",
         pageSize: 30,
-        onDelete: function (id)
-        {
-          this.confirm("tr{Are you sure of deleting of this group?}", function ()
-          {
+        onDelete: function (id) {
+          this.confirm("tr{Are you sure of deleting of this group?}", function () {
             //EW.lock($("#main-content"));
             $.post('<?php echo EW_ROOT_URL; ?>~admin/api/users-management/delete-group', {
               id: id
             },
-              function (data)
-              {
-                UsersGroups.usersGroupsList();
-                $("body").EW().notify(data).show();
-                //EW.unlock($("#main-content"));
-              }, "json");
+                    function (data) {
+                      UsersGroups.usersGroupsList();
+                      $("body").EW().notify(data).show();
+                      //EW.unlock($("#main-content"));
+                    }, "json");
           });
         },
-        onEdit: function (id)
-        {
+        onEdit: function (id) {
           EW.setHashParameter("groupId", id);
           EW.setHashParameter("form", "group");
         }
@@ -95,8 +90,8 @@
     };
 
 
-    System.state("users-management/users-groups", function () {
-      this.onStart = function () {
+    System.state("users-management/users-groups", function (state) {
+      state.onStart = function () {
         new UsersGroups();
       };
     });

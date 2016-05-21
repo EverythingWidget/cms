@@ -1,6 +1,6 @@
 <script >
   (function () {
-    function UsersComponent(module) {
+    function UsersStateHandler(module) {
       var component = this;
       this.module = module;
 
@@ -13,11 +13,11 @@
       };
     }
 
-    UsersComponent.prototype.init = function () {
+    UsersStateHandler.prototype.init = function () {
 
     };
 
-    UsersComponent.prototype.start = function () {
+    UsersStateHandler.prototype.start = function () {
       this.table = null;
       this.bAddUser = EW.addActivity({
         title: "tr{New User}",
@@ -34,7 +34,7 @@
       this.usersList();
     };
 
-    UsersComponent.prototype.usersList = function () {
+    UsersStateHandler.prototype.usersList = function () {
       var component = this,
               editActivity;
 
@@ -93,8 +93,8 @@
       });
     };
 
-    System.state("users-management/users", function () {
-      new UsersComponent(this);
+    System.state("users-management/users", function (state) {
+      new UsersStateHandler(state);
     });
 
   })();

@@ -28,7 +28,7 @@
 
 <script data-name="documents">
   (function () {
-    function DocumentsComponent(module) {
+    function DocumentsStateManager(module) {
       var component = this;
       this.module = module;
       this.states = {};
@@ -48,7 +48,7 @@
       });
     }
 
-    DocumentsComponent.prototype.defineStateHandlers = function (states) {
+    DocumentsStateManager.prototype.defineStateHandlers = function (states) {
       var component = this;
 
       // you can use either states.<state> or states['<state>']
@@ -119,7 +119,7 @@
       };
     };
 
-    DocumentsComponent.prototype.init = function () {
+    DocumentsStateManager.prototype.init = function () {
       var component = this;
       component.ui.components.folders_card = $(scope.uiViews.folders_card);
       component.ui.components.folders_card_title_action_right = component.ui.components.folders_card.find(".card-title-action-right");
@@ -199,7 +199,7 @@
       System.Util.installModuleStateHandlers(this.module, this.states);
     };
 
-    DocumentsComponent.prototype.start = function () {
+    DocumentsStateManager.prototype.start = function () {
       var component = this;
       this.parentId = null;
       this.folderId = 0;
@@ -293,12 +293,12 @@
       });
     };
 
-    DocumentsComponent.prototype.preCategory = function () {
+    DocumentsStateManager.prototype.preCategory = function () {
       this.currentItem = null;
       this.module.setParam("dir", this.upParentId + "/list");
     };
 
-    DocumentsComponent.prototype.seeDetails = function () {
+    DocumentsStateManager.prototype.seeDetails = function () {
       var tFolderId = System.getHashParam("folder");
       var tArticleId = System.getHashParam("article");
       EW.activeElement = this.ui.components.folders_card.find(".card-header");
@@ -315,7 +315,7 @@
       }
     };
 
-    DocumentsComponent.prototype.listDocuments = function () {
+    DocumentsStateManager.prototype.listDocuments = function () {
       var component = this,
               pId = 0,
               hasNode = false,
@@ -389,10 +389,8 @@
       };
     };
 
-    var DocumentStatesManager = function () {
-      new DocumentsComponent(this);
-    };
-
-    System.state("content-management/documents", DocumentStatesManager);
+    System.state("content-management/documents", function (state) {
+      new DocumentsStateManager(state);
+    });
   }());
 </script>

@@ -221,20 +221,15 @@
 
   (function () {
 
-    var UISList = function () {
-      this.type = "appSection";
-      this.onInit = function () {
+    System.state("widgets-management/uis-list", function (state) {
+      state.type = "appSection";
+      state.onInit = function () { };
 
-
-      };
-
-      this.onStart = function () {
+      state.onStart = function () {
         uisList = new UIStructureList();
         uisList.table.read();
       };
-    };
-
-    System.state("widgets-management/uis-list", UISList);
+    });
   })();
 </script>
 

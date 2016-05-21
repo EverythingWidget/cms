@@ -39,8 +39,8 @@ echo admin\AppsManagement::create_section_main_form();
       this.data.tab = null;
     };
 
-    System.state("users-management", function () {
-      new UsersManagementComponent(this);
+    System.state("users-management", function (state) {
+      new UsersManagementComponent(state);
     });
 
   })();

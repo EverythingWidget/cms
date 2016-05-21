@@ -76,8 +76,8 @@ function script() {
         this.data.tab = null;
       };
 
-      System.state("widgets-management", function () {
-        new WidgetsManagementComponent(this);
+      System.state("widgets-management", function (state) {
+        new WidgetsManagementComponent(state);
       });
 
     })();

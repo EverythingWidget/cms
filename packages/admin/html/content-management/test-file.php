@@ -9,13 +9,13 @@ echo "<p>this is the test file</p>";
 ?>
 <script>
   (function () {
-    System.state("forms/test-form", function () {
-      this.stateKey = 'component';
+    System.state("forms/test-form", function (state) {
+      state.stateKey = 'component';
       
-      this.bind('init', function () {
+      state.bind('init', function () {
       });
 
-      this.bind('start', function () {
+      state.bind('start', function () {
       });
     });
   })();

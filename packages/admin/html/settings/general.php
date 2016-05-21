@@ -5,7 +5,7 @@
 <script  type="text/javascript">
 
   (function () {
-    function SettingsComponent(module) {
+    function SettingsStateHandler(module) {
       var component = this;
       this.module = module;
       this.module.type = "app-section";
@@ -20,11 +20,11 @@
       };
     }
 
-    SettingsComponent.prototype.init = function () {
+    SettingsStateHandler.prototype.init = function () {
 
     };
 
-    SettingsComponent.prototype.start = function () {
+    SettingsStateHandler.prototype.start = function () {
       var component = this;
       this.selectMediaAction = EW.addActionButton({
         text: "",
@@ -39,7 +39,7 @@
       this.loadAppsGeneralSettings(<?= json_encode(EWCore::read_registry("ew/ui/settings/general")) ?>);
     };
 
-    SettingsComponent.prototype.loadAppsGeneralSettings = function (apps) {
+    SettingsStateHandler.prototype.loadAppsGeneralSettings = function (apps) {
       var settingsCard = $("#settings-cards");
       settingsCard.empty();
 
@@ -56,7 +56,7 @@
       }
     };
 
-    SettingsComponent.prototype.saveAppSetings = function (apps) {
+    SettingsStateHandler.prototype.saveAppSetings = function (apps) {
       var data = $("#settings-cards").serializeJSON();
 
       $.post("~admin/api/settings/save-settings", {
@@ -68,8 +68,8 @@
     };
 
 
-    System.state("settings/general", function () {
-      new SettingsComponent(this);
+    System.state("settings/general", function (state) {
+      new SettingsStateHandler(state);
     });
   })();
 </script>

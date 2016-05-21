@@ -38,59 +38,61 @@
 
 <script>
   (function () {
-    System.entity('components/media/photos', {
-      create: function (module) {
-        var mediaComponent = System.entity('components/media').$service;
 
-        module.bind('start', function () {
-          mediaComponent.uploadAudioActivity.hide();
-        });
+    function MediaPhotos() {}
 
-        module.on('album', function (e, id, images) {
-          if (id > 0) {
-            mediaComponent.newAlbumActivity.hide();
-            mediaComponent.uploadImageActivity.comeIn();
-            //mediaComponent.bBack.comeIn();
-          } else {
-            mediaComponent.newAlbumActivity.comeIn();
-            mediaComponent.uploadImageActivity.hide();
-            //mediaComponent.bBack.hide();
-          }
+    MediaPhotos.prototype.create = function (state) {
+      var mediaStateHandler = System.entity('objects/media-state-handler');
 
-          if (!id) {
-            id = 0;
-          }
+      state.bind('start', function () {
+        mediaStateHandler.uploadAudioActivity.hide();
+      });
 
-          if (images) {
-            if (id !== null && mediaComponent.albumId !== id) {
-              mediaComponent.albumId = parseInt(id);
-              if (mediaComponent.listInited) {
-                mediaComponent.module.setParam("select", null, true);
-              }
+      state.on('album', function (e, id, images) {
+        if (id > 0) {
+          mediaStateHandler.newAlbumActivity.hide();
+          mediaStateHandler.uploadImageActivity.comeIn();
+        } else {
+          mediaStateHandler.newAlbumActivity.comeIn();
+          mediaStateHandler.uploadImageActivity.hide();
+        }
 
-              mediaComponent.listMedia();
+        if (!id) {
+          id = 0;
+        }
+
+        if (images) {
+          if (id !== null && mediaStateHandler.albumId !== id) {
+            mediaStateHandler.albumId = parseInt(id);
+            if (mediaStateHandler.listInited) {
+              mediaStateHandler.module.setParam("select", null, true);
             }
+
+            mediaStateHandler.listMedia();
           }
-        });
+        }
+      });
 
-        module.on('select', mediaComponent.states.select);
+      state.on('select', mediaStateHandler.states.select);
+    };
 
-      }
-    });
+    System.entity('components/media/photos', new MediaPhotos());
 
-    System.entity('components/media/audios', {
-      create: function (module) {
-        var mediaComponent = System.entity('components/media').$service;
+    function MediaAudios() {}
 
-        module.bind('start', function () {
-          mediaComponent.uploadAudioActivity.comeIn();
-          mediaComponent.newAlbumActivity.hide();
-          mediaComponent.uploadImageActivity.hide();
-        });
-      }
-    });
+    MediaAudios.prototype.create = function (module) {
+      var mediaComponent = System.entity('components/media').$service;
 
-    function MediaComponent(module) {
+      module.bind('start', function () {
+        mediaComponent.uploadAudioActivity.comeIn();
+        mediaComponent.newAlbumActivity.hide();
+        mediaComponent.uploadImageActivity.hide();
+      });
+    };
+
+    System.entity('components/media/audios', new MediaAudios());
+
+    function MediaStateHandler(module) {
       var component = this;
       component.states = {};
       component.tabs = {};
@@ -109,13 +111,12 @@
       component.module.onStart = function () {
         component.start();
       };
-
       component.defineTabs(component.tabs);
       component.defineStateHandlers(component.states);
       System.Util.installModuleStateHandlers(component.module, component.states);
     }
 
-    MediaComponent.prototype.defineTabs = function (tabs) {
+    MediaStateHandler.prototype.defineTabs = function (tabs) {
       var component = this;
       tabs.photos = function () {
         component.module.setParamIfNot('app', 'content-management/media/photos');
@@ -131,7 +132,7 @@
       };
     };
 
-    MediaComponent.prototype.defineStateHandlers = function (states) {
+    MediaStateHandler.prototype.defineStateHandlers = function (states) {
       var component = this;
 
       states.select = function (nav, itemId) {
@@ -162,14 +163,13 @@
       };
     };
 
-    MediaComponent.prototype.initAudiosTab = function () {
+    MediaStateHandler.prototype.initAudiosTab = function () {
       this.audiosListTable = EW.createTable({
         name: "audio-list",
         rowLabel: "{name}",
         columns: [
           "title",
-          "content"
-        ],
+          "content"],
         headers: {
           Title: {},
           Path: {}
@@ -184,7 +184,7 @@
       this.audiosListTable.read();
     };
 
-    MediaComponent.prototype.init = function () {
+    MediaStateHandler.prototype.init = function () {
       var component = this;
       this.albumId = null;
       this.albumCard = $(scope.uiViews.album_card).hide();
@@ -195,16 +195,13 @@
       this.currentItem = null;
 
       this.albumPropertiesBtn = EW.addActionButton({
-        text: '',
-        handler: function () {
-          component.seeAlbumActivity({
-            albumId: System.getHashNav("album")[0]
+        text: '', handler: function () {
+          component.seeAlbumActivity({albumId: System.getHashNav("album")[0]
           });
         },
         class: "btn btn-text btn-default btn-circle icon-edit",
         parent: this.albumCardTitleActionRight
       });
-
       this.deleteAlbumActivity = EW.addActivity({
         activity: "admin/api/content-management/delete-album",
         text: "tr{}",
@@ -214,7 +211,6 @@
           if (!confirm("tr{Are you sure of deleting this album?}")) {
             return false;
           }
-
           return {
             id: component.albumId
           };
@@ -233,7 +229,6 @@
           if (!confirm("tr{Are you sure of deleting this image?} ")) {
             return false;
           }
-
           return {
             'id': component.selectedItemId
           };
@@ -245,8 +240,7 @@
       });
 
       this.bBack = EW.addActionButton({
-        text: "",
-        class: "btn-text btn-default btn-circle icon-back",
+        text: "", class: "btn-text btn-default btn-circle icon-back",
         handler: function () {
           System.setHashParameters({
             album: "0/images"
@@ -262,7 +256,6 @@
           class: "center properties"
         }
       });
-
       this.initAudiosTab();
 
       System.UI.components.document.off("media-list.refresh").on("media-list.refresh", function () {
@@ -274,7 +267,7 @@
       });
     };
 
-    MediaComponent.prototype.start = function () {
+    MediaStateHandler.prototype.start = function () {
       var component = this;
       this.itemsList = $();
       this.bDel = $();
@@ -287,8 +280,7 @@
         parameters: function (params) {
           params.albumId = null;
           return params;
-        }
-      });
+        }});
 
       this.uploadImageActivity = EW.addActivity({
         title: "tr{Upload Photo}",
@@ -341,22 +333,21 @@
       });
     };
 
-    MediaComponent.prototype.seeItemDetails = function () {
+    MediaStateHandler.prototype.seeItemDetails = function () {
       var albumId = this.selectedItemId;
       EW.activeElement = this.currentItem;
       if (albumId) {
         this.albumId = albumId;
-        this.seeAlbumActivity({
-          albumId: albumId
+        this.seeAlbumActivity({albumId: albumId
         });
       }
     };
 
-    MediaComponent.prototype.seeImageActivity = function (id) {
+    MediaStateHandler.prototype.seeImageActivity = function (id) {
 
     };
 
-    MediaComponent.prototype.listMedia = function () {
+    MediaStateHandler.prototype.listMedia = function () {
       var component = this;
       //var albums = $("<div class='row box-content'></div>");
       this.itemsList = $("<div class='box-content anim-fade-in'></div>");
@@ -439,7 +430,7 @@
       }, "json"));
     };
 
-    MediaComponent.prototype.createImageElement = function (title, type, ext, size, ImageURL, id) {
+    MediaStateHandler.prototype.createImageElement = function (title, type, ext, size, ImageURL, id) {
       var component = this,
               caption = $(document.createElement("div")),
               div = $(document.createElement("div")),
@@ -478,7 +469,7 @@
       return div;
     };
 
-    MediaComponent.prototype.createAlbumElement = function (title, type, ext, size, ImageURL, id) {
+    MediaStateHandler.prototype.createAlbumElement = function (title, type, ext, size, ImageURL, id) {
       var component = this,
               div = $(document.createElement("div")),
               img = $(document.createElement("img"));
@@ -515,23 +506,23 @@
     System.entity('components/media', {
       $service: null,
       create: function (module) {
-        return new MediaComponent(module);
+        return new MediaStateHandler(module);
       },
       service: function (module) {
         return this.$service !== null ? this.$service : this.$service = this.create(module);
       }
     });
 
-    System.state("content-management/media", function () {
-      System.entity('components/media').service(this);
+    System.state("content-management/media", function (state) {
+      System.entity('objects/media-state-handler', new MediaStateHandler(state));
     });
 
-    System.state("content-management/media/photos", function () {
-      System.entity('components/media/photos').create(this);
+    System.state("content-management/media/photos", function (state) {
+      System.entity('components/media/photos').create(state);
     });
 
-    System.state("content-management/media/audios", function () {
-      System.entity('components/media/audios').create(this);
+    System.state("content-management/media/audios", function (state) {
+      System.entity('components/media/audios').create(state);
     });
 
 
