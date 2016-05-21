@@ -2,7 +2,11 @@
   <div class="block-row mt">
     <input type="hidden" id="id" name="id" value="">
     <input type="hidden" id="type" name="type" value="<?php echo $form_config["contentType"] ?>">
-    <input class="text-field" data-label="tr{Title}" value="" id="title" name="title" data-validate="r"/>
+    <system-field class="field">
+      <label>tr{Title}</label>
+      <input class="text-field" value="" id="title" name="title" data-validate="r" required/>  
+    </system-field>
+
   </div>
 
   <div class="block-row">

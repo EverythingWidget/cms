@@ -2351,16 +2351,49 @@ label.value {
   padding: 0;
 }
 
-label.label-float {
+.field {
   line-height: 24px;
   min-height: 20px;
   padding: 0;
   font-size: 17px;
-  font-weight: 500;
   color: #999;
   background-color: transparent;
-  padding: 0;
+  margin: 0;
   border-radius: 0;
+  padding: 20px 0 15px;
+  display: block;
+  position: relative;
+
+  transition: all .2s ease;
+  z-index: 1;
+
+  > label {
+    position: absolute;
+    top: 30px;    
+    font-weight: 500;
+    line-height: 20px;
+    font-size: 17px;
+    color: #aaa;
+    z-index: 2;
+    transition: all .2s ease;
+  }
+
+  &[focus] > label , &:not([empty]) > label {
+    top: 5px;
+  }
+
+  &[focus] > label {
+    color: #039BE5;
+  }
+}
+
+label.label-float {
+  line-height: 20px;
+  padding: 0;
+  font-size: 17px;
+  font-weight: 500;
+  color: #aaa;
+  background-color: transparent;
   margin: 24px 0 5px;
   -webkit-transition: all .3s ease;
   -moz-transition: all .3s ease;
@@ -2374,12 +2407,10 @@ label.label-float.focused {
   color: #039BE5;
   text-shadow: none;
   margin-top: 0px;
-  font-size: 14px;
 }
 
 .label-float.valued {
-  margin-top: 0px;
-  font-size: 14px;
+  margin-top: 0px; 
 }
 
 .label-float-input, .text-field.label-float-input {
@@ -2414,7 +2445,7 @@ textarea.text-field {
 
 .text-field, select {
   width: 100%;
-  min-height: 28px;
+  min-height: 38px;
   line-height: 26px;
   padding: 5px 0px;
   /* padding-top: 20px; */
@@ -2424,7 +2455,7 @@ textarea.text-field {
   outline: none;
   display: block;
   font-family: Roboto, Homa, Tahoma;
-  font-size: 1.3em;
+  font-size: 17px;
   font-weight: 400;
   background-color: transparent;
   border-radius: 0;
@@ -3589,7 +3620,7 @@ inline-dialog{
   &-cell {
     background-color: #fff;
     float: left;
-    margin: 5px;
+    margin: 4px;
     height: 200px;
     overflow: hidden;
     position: relative;
@@ -3607,6 +3638,10 @@ inline-dialog{
       float: left;
       color: #000;
       font-weight: 500;
+      width: 100px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
 
     &-caption {
@@ -3614,10 +3649,10 @@ inline-dialog{
       background-color: rgba(250,250,250, .7);
       opacity: 1;
       z-index: 1;
-      display: block;
+      display: none;
       overflow: hidden;
       padding: 4px 0;
-      display: none;
+
     }
 
     &:hover {     
@@ -3628,6 +3663,9 @@ inline-dialog{
 
 
     &.image {
+      min-width: 150px;
+      background-color: transparent;
+
       &:hover {
         outline: 2px solid rgba(0,0,0,.2);
       }

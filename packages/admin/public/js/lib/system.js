@@ -1,6 +1,7 @@
 (function () {
 
   var entities = {};
+  var importedLibraries = {};
   System = {
     stateKey: "app",
     modules: {},
@@ -351,10 +352,60 @@
               uiViews: scopeUIViews,
               ui: filtered.html
             };
+            var imports = [];
+            var importsOfScope = {};
             var scriptContent = filtered.script.text();
-            (new Function('scope', scriptContent)).call(null, scope);
-            //$("head").append('<script>' + scriptContent + '</script>');
+
+            // extract imports from the source code
+            scriptContent.replace(/import\[['|"](.*)['|"]\]\;/gm, function (match, path) {
+              imports.push(path);
+              return '// ' + path;
+            });
+            //console.log('Libraries to be imported: ', imports);
+
+            function doneImporting() {
+              if (imports.length === 0) {
+                (new Function('scope, $import', scriptContent)).call(null, scope, importsOfScope);
+                moduleLoaded();
+              }
+            }
+
+            if (imports.length) {
+              imports.forEach(function (item) {
+                if (importedLibraries[item]) {
+                  importsOfScope[item] = importedLibraries[item];
+                  imports.splice(imports.indexOf(item), 1);
+                  doneImporting();
+                } else {
+                  $.get(item, {}).complete(function (response) {
+                    if (response.status !== 200) {
+                      //console.warn('Library not found: ', item);
+                      imports.splice(imports.indexOf(item), 1);
+                      return doneImporting();
+                    }
+
+                    // If thid library is already loaded via an old request, then use it as import
+                    // This will insure the singleton of every library
+                    if (importedLibraries[item]) {
+                      importsOfScope[item] = importedLibraries[item];
+                      imports.splice(imports.indexOf(item), 1);
+                      return doneImporting();
+                    }
+
+                    importsOfScope[item] = importedLibraries[item] = (new Function('scope', response.responseText)).call(null, scope);
+                    imports.splice(imports.indexOf(item), 1);
+                    doneImporting();
+                  });
+                }
+              });
+
+              return;
+            }
+
+            doneImporting();
           }
+
+          moduleLoaded();
 
           //$(html).remove();
           //var html = res;
@@ -362,23 +413,26 @@
           //System.activityTree.unshift(System.apps[id]);
           //console.log(System.app.modules);
           //var module = System.state(mod.id);
-          if (!System.modules["system/" + mod.id]) {
-            //alert("Invalid module: " + mod.id);
-            throw new Error('Could not find module: system/' + mod.id + ', url: ' + mod.url);
-            return;
+
+          function moduleLoaded() {
+            if (!System.modules["system/" + mod.id]) {
+              //alert("Invalid module: " + mod.id);
+              throw new Error('Could not find module: system/' + mod.id + ', url: ' + mod.url);
+              return;
+            }
+
+            System.modules["system/" + mod.id].html = filtered.html;
+            System.modules["system/" + mod.id].scope = scope;
+
+            //if (scripts)
+            //scripts.attr("id", System.modules["system/" + mod.id].id.replace(/[\/-]/g, "_"));
+            if ("function" === typeof (System.onModuleLoaded["system/" + mod.id])) {
+              System.onModuleLoaded["system/" + mod.id].call(this, System.modules["system/" + mod.id], filtered.html);
+              System.onModuleLoaded["system/" + mod.id] = null;
+            }
+
+            delete System.onLoadQueue["system/" + mod.id];
           }
-
-          System.modules["system/" + mod.id].html = filtered.html;
-          System.modules["system/" + mod.id].scope = scope;
-
-          //if (scripts)
-          //scripts.attr("id", System.modules["system/" + mod.id].id.replace(/[\/-]/g, "_"));
-          if ("function" === typeof (System.onModuleLoaded["system/" + mod.id])) {
-            System.onModuleLoaded["system/" + mod.id].call(this, System.modules["system/" + mod.id], filtered.html);
-            System.onModuleLoaded["system/" + mod.id] = null;
-          }
-
-          delete System.onLoadQueue["system/" + mod.id];
         }, 5);
 
       });

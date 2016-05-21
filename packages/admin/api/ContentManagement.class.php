@@ -339,7 +339,7 @@ class ContentManagement extends \ew\Module {
         $file = $this->images_resources[0] . $match[1] . "." . $match[4];
       }
       else {
-        $file = EW_PACKAGES_DIR . "/admin/ContentManagement/no-image.png";
+        $file = EW_PACKAGES_DIR . "/admin/ContentManagement/media/no-image.png";
         /* $apps_dir = opendir("/is/htdocs/wp1067381_3GN1OJU4CE/www/culturenights/app/webroot/img/logos/");
           while ($app_root = readdir($apps_dir))
           {
@@ -846,7 +846,7 @@ class ContentManagement extends \ew\Module {
 
     return \ew\APIResourceHandler::to_api_response($rows, [
                 "collection_size" => $folders->count(),
-                "parent"          => isset($container_id) ? $container_id->toArray() : []
+                "parent"          => isset($container_id) ? $container_id->toArray() : null
     ]);
   }
 
@@ -908,7 +908,10 @@ class ContentManagement extends \ew\Module {
         return $e;
       }, $articles->toArray());
 
-      return \ew\APIResourceHandler::to_api_response($data, ["collection_size" => $articles->count()]);
+      return \ew\APIResourceHandler::to_api_response($data, [
+                  "collection_size" => $articles->count(),
+                  "parent"          => isset($container_id) ? $container_id->toArray() : null
+      ]);
     }
 
     return \EWCore::log_error(400, 'tr{Something went wrong}');

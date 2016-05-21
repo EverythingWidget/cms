@@ -5,6 +5,7 @@ echo admin\AppsManagement::create_section_main_form();
 ?>
 <script>
   (function () {
+
     System.entity('services/media_chooser', {
       selectItem: function (item) {
         if (item.type === 'image')
@@ -20,26 +21,27 @@ echo admin\AppsManagement::create_section_main_form();
       }
     });
 
-    function ContentManagementComponent(module) {
+    function ContentManagementStateHandler(state) {
       var component = this;
-      this.module = module;
-      this.module.type = "app";
+      this.state = state;
+      this.state.type = "app";
       this.data = {};
 
-      this.module.bind('init', function () {
+      this.state.bind('init', function () {
         component.init();
       });
 
-      this.module.bind('start', function () {
+      this.state.bind('start', function () {
         component.start();
       });
     }
 
-    ContentManagementComponent.prototype.init = function () {
+    ContentManagementStateHandler.prototype.init = function () {
       var component = this;
-      this.module.data.sections = <?= EWCore::read_registry_as_json('ew/ui/apps/contents/navs') ?>;
+      this.state.data.sections = <?= EWCore::read_registry_as_json('ew/ui/apps/contents/navs') ?>;
 
-      //this.module.installModules = this.module.data.sections;
+      // Pre install sub state handlers
+      //this.state.installModules = this.state.data.sections;
 
       /* This code can be simplified more
        * this.on("app", function (full, section) {
@@ -47,15 +49,15 @@ echo admin\AppsManagement::create_section_main_form();
        });*/
 
       // Simplified version of above snippet
-      this.module.on('app', System.ui.behave(System.ui.behaviors.selectAppSection, component));
+      this.state.on('app', System.ui.behave(System.ui.behaviors.selectAppSection, component));
     };
 
-    ContentManagementComponent.prototype.start = function () {
+    ContentManagementStateHandler.prototype.start = function () {
       this.data.tab = null;
     };
 
     System.state("content-management", function (state) {
-      new ContentManagementComponent(state);
+      new ContentManagementStateHandler(state);
     });
   })();
 </script>

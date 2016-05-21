@@ -28,39 +28,39 @@
 
 <script data-name="documents">
   (function () {
-    function DocumentsStateManager(module) {
+    function DocumentsStateHandler(state) {
       var component = this;
-      this.module = module;
+      this.state = state;
       this.states = {};
       this.ui = {
         components: {},
         behaviors: {}
       };
 
-      this.module.type = "app-section";
+      this.state.type = "app-section";
 
-      this.module.bind('init', function () {
+      this.state.bind('init', function () {
         component.init();
       });
 
-      this.module.bind('start', function () {
+      this.state.bind('start', function () {
         component.start();
       });
     }
 
-    DocumentsStateManager.prototype.defineStateHandlers = function (states) {
-      var component = this;
+    DocumentsStateHandler.prototype.defineStateHandlers = function (states) {
+      var handler = this;
 
       // you can use either states.<state> or states['<state>']
       states.article = function (full, id) {
         if (!id) {
-          System.ui.utility.removeClass(component.currentItem, 'selected');
+          System.ui.utility.removeClass(handler.currentItem, 'selected');
         }
       };
 
       states.folder = function (full, id, command) {
         if (!id) {
-          System.ui.utility.removeClass(component.currentItem, 'selected');
+          System.ui.utility.removeClass(handler.currentItem, 'selected');
         }
       };
 
@@ -68,27 +68,27 @@
         if (!id) {
           id = 0;
         } else {
-          component.bNewFolder.comeIn();
+          handler.bNewFolder.comeIn();
         }
 
         if (list) {
-          if (component.parentId !== parseInt(id)) {
-            component.preParentId = component.parentId;
-            component.parentId = parseInt(id);
+          if (handler.parentId !== parseInt(id)) {
+            handler.preParentId = handler.parentId;
+            handler.parentId = parseInt(id);
 
-            component.listDocuments();
+            handler.listDocuments();
           }
 
           if (id === "0") {
-            component.upAction.comeOut(300);
-            component.bSee.comeOut();
-            component.deleteFolderActivity.comeOut();
+            handler.upAction.comeOut(300);
+            handler.bSee.comeOut();
+            handler.deleteFolderActivity.comeOut();
           }
 
           if (id > 0) {
-            component.upAction.comeIn(300);
-            component.bSee.comeIn();
-            component.deleteFolderActivity.comeIn();
+            handler.upAction.comeIn(300);
+            handler.bSee.comeIn();
+            handler.deleteFolderActivity.comeIn();
           }
         }
       };
@@ -119,14 +119,14 @@
       };
     };
 
-    DocumentsStateManager.prototype.init = function () {
-      var component = this;
-      component.ui.components.folders_card = $(scope.uiViews.folders_card);
-      component.ui.components.folders_card_title_action_right = component.ui.components.folders_card.find(".card-title-action-right");
-      component.ui.components.folders_list = component.ui.components.folders_card.find("#folders-list");
-      component.ui.components.articles_list = component.ui.components.folders_card.find("#articles-list");
+    DocumentsStateHandler.prototype.init = function () {
+      var handler = this;
+      handler.ui.components.folders_card = $(scope.uiViews.folders_card);
+      handler.ui.components.folders_card_title_action_right = handler.ui.components.folders_card.find(".card-title-action-right");
+      handler.ui.components.folders_list = handler.ui.components.folders_card.find("#folders-list");
+      handler.ui.components.articles_list = handler.ui.components.folders_card.find("#articles-list");
 
-      component.ui.vue = new Vue({
+      handler.ui.folders_card_vue = new Vue({
         el: scope.uiViews.folders_card,
         data: {
           card_title: 'tr{Contents}',
@@ -186,20 +186,20 @@
           }
 
           return {
-            id: component.parentId
+            id: handler.parentId
           };
         },
         onDone: function (response) {
           $("body").EW().notify(response).show();
-          component.preCategory();
+          handler.preCategory();
         }
       }).hide();
 
       this.defineStateHandlers(this.states);
-      System.Util.installModuleStateHandlers(this.module, this.states);
+      System.Util.installModuleStateHandlers(this.state, this.states);
     };
 
-    DocumentsStateManager.prototype.start = function () {
+    DocumentsStateHandler.prototype.start = function () {
       var component = this;
       this.parentId = null;
       this.folderId = 0;
@@ -234,13 +234,13 @@
         }
       }).hide();
 
-      this.testBtn = EW.addActionButton({
-        text: "tr{test form}",
-        parent: System.UI.components.mainFloatMenu,
-        handler: function () {
-          component.module.setParam('component', 'forms/test-form');
-        }
-      });
+//      this.testBtn = EW.addActionButton({
+//        text: "tr{test form}",
+//        parent: System.UI.components.mainFloatMenu,
+//        handler: function () {
+//          component.state.setParam('component', 'forms/test-form');
+//        }
+//      });
 
       $(document).off("article-list.refresh").on("article-list.refresh", function (e, eventData) {
         component.listDocuments();
@@ -264,7 +264,7 @@
       this.bNewFile.comeIn();
       this.bNewFolder.comeIn();
 
-      this.module.setParamIfNull("dir", "0/list");
+      this.state.setParamIfNull("dir", "0/list");
 
       component.ui.components.folders_list.off('click').on('click', '.folder', function (e) {
         System.setHashParameters({
@@ -276,13 +276,13 @@
       });
 
       component.ui.components.folders_list.off('dblclick').on('dblclick', '.folder', function (e) {
-        component.module.setParam("dir", e.currentTarget.getAttribute('data-content-id') + "/list");
+        component.state.setParam("dir", e.currentTarget.getAttribute('data-content-id') + "/list");
       });
 
 
       component.ui.components.articles_list.off('click').on('click', '.article', function (e) {
-        component.module.setParam('folder', null);
-        component.module.setParam('article', e.currentTarget.getAttribute('data-content-id'));
+        component.state.setParam('folder', null);
+        component.state.setParam('article', e.currentTarget.getAttribute('data-content-id'));
         component.currentItem = System.ui.behaviors.selectElementOnly(e.currentTarget, component.currentItem);
       });
 
@@ -293,12 +293,12 @@
       });
     };
 
-    DocumentsStateManager.prototype.preCategory = function () {
+    DocumentsStateHandler.prototype.preCategory = function () {
       this.currentItem = null;
-      this.module.setParam("dir", this.upParentId + "/list");
+      this.state.setParam("dir", this.upParentId + "/list");
     };
 
-    DocumentsStateManager.prototype.seeDetails = function () {
+    DocumentsStateHandler.prototype.seeDetails = function () {
       var tFolderId = System.getHashParam("folder");
       var tArticleId = System.getHashParam("article");
       EW.activeElement = this.ui.components.folders_card.find(".card-header");
@@ -315,25 +315,22 @@
       }
     };
 
-    DocumentsStateManager.prototype.listDocuments = function () {
+    DocumentsStateHandler.prototype.listDocuments = function () {
       var component = this,
-              pId = 0,
-              hasNode = false,
               articlesLoaded = false,
               foldersLoaded = false,
               currentSelected = System.getHashParam("article") || System.getHashParam("folder");
 
       var loader = $("<div class='loader top'></div>");
       this.ui.components.folders_card.find(".card-content").append(loader);
-
       var foldersElements = [];
       System.addActiveRequest($.get('~admin/api/content-management/contents-folders', {
         parent_id: component.parentId
       }, function (response) {
-        component.ui.vue.card_title = response.parent.title || "tr{Contents}";
+        component.ui.folders_card_vue.card_title = response.parent ? response.parent.title : "tr{Contents}";
 
-        if (response.data[0]) {
-          component.upParentId = response.data[0].up_parent_id;
+        if (response.parent) {
+          component.upParentId = response.parent.parent_id;
         }
 
         foldersElements = response.data;
@@ -342,13 +339,12 @@
         done();
       }, "json"));
 
-
       var articlesElements = [];
       System.addActiveRequest($.get('~admin/api/content-management/contents-articles', {
         parent_id: component.parentId
       }, function (response) {
-        if (response.data[0]) {
-          component.upParentId = response.data[0].up_parent_id;
+        if (response.parent) {
+          component.upParentId = response.parent.parent_id;
         }
 
         articlesElements = response.data;
@@ -373,10 +369,10 @@
           fade: .4,
           color: "#eee",
           onComplete: function () {
-            component.ui.vue.folders = foldersElements;
-            component.ui.vue.articles = articlesElements;
+            component.ui.folders_card_vue.folders = foldersElements;
+            component.ui.folders_card_vue.articles = articlesElements;
 
-            component.ui.vue.$nextTick(function () {
+            component.ui.folders_card_vue.$nextTick(function () {
               var item = document.querySelector('[data-content-id="' + currentSelected + '"]');
               if (item) {
                 component.currentItem = System.ui.behaviors.selectElementOnly(item, component.currentItem);
@@ -389,8 +385,8 @@
       };
     };
 
-    System.state("content-management/documents", function (state) {
-      new DocumentsStateManager(state);
+    System.state('content-management/documents', function (state) {
+      new DocumentsStateHandler(state);
     });
   }());
 </script>

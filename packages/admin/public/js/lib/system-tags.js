@@ -883,4 +883,74 @@
 
   xtag.register('system-input-json', SystemInputJson);
 
+  var SystemField = {
+    lifecycle: {
+      created: function () {
+        var element = this;
+        this.xtag._input = this.querySelectorAll('input, textarea, select')[0];
+
+        var inputValue = null;
+        /*Object.defineProperty(this.xtag._input, 'value', {
+         configurable: true,
+         enumerable: true,
+         set: function (value) {
+         if (value) {
+         element.removeAttribute('empty');
+         } else {
+         element.setAttribute('empty', '');
+         }
+         
+         inputValue = value;
+         element.xtag._input.setAttribute('value', value);
+         console.log('o->', this.value);
+         },
+         get: function () {
+         return inputValue;
+         }
+         });*/
+
+        if (this.xtag._input) {
+          if (this.xtag._input.value) {
+            element.removeAttribute('empty');
+          } else {
+            element.setAttribute('empty', '');
+          }
+
+          this.xtag._input.addEventListener('focus', function () {
+            element.setAttribute('focus', '');
+          });
+
+          this.xtag._input.addEventListener('blur', function () {
+            element.removeAttribute('focus');
+          });
+
+          this.xtag._input.onchange= function (e) {
+            if (this.value) {
+              element.removeAttribute('empty');
+            } else {
+              element.setAttribute('empty', '');
+            }           
+          };
+
+          this.xtag._input.addEventListener('input', function (e) {
+            if (this.value) {
+              element.removeAttribute('empty');
+            } else {
+              element.setAttribute('empty', '');
+            }           
+          });
+        }
+      },
+      inserted: function () {
+      },
+      removed: function () {
+      }
+    },
+    accessors: {
+    },
+    events: {
+    }
+  };
+
+  xtag.register('system-field', SystemField);
 })(xtag, UIUtility);

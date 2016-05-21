@@ -290,7 +290,7 @@
         var $element = $(element);
         $element.off("change.image-chooser");
         $element.on("change.image-chooser", function () {
-          image.attr("src", $element.val() || "asset/images/no-image.png");
+          image.attr("src", $element.val() || "html/admin/content-management/media/no-image.png");
         });
 
         defaults.callback = function (link) {
