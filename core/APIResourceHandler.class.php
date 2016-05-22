@@ -16,7 +16,7 @@ namespace ew;
 class APIResourceHandler extends ResourceHandler {
 
   private $verbs = [
-      'GET'    => 'get',
+      'GET'    => 'read',
       'POST'   => 'create',
       'PUT'    => 'update',
       'DELETE' => 'delete'
@@ -35,7 +35,7 @@ class APIResourceHandler extends ResourceHandler {
     if (preg_match('/_/', $command)) {
       return \EWCore::log_error(400, "Incorrect function name: $command");
     }
-    $verb = $this->verbs[$_SERVER['REQUEST_METHOD']];
+    $verb = $this->verbs[strtoupper($_SERVER['REQUEST_METHOD'])];
 
     // Set the verb as command name if command is empty
     $command_name = $command ? $command : $verb;
@@ -47,51 +47,59 @@ class APIResourceHandler extends ResourceHandler {
     $app_name = $app->get_root();
     $resource_name = $resource_type;
     $real_class_name = $app_name . '\\' . $module_class_name;
-    
+
     $call = false;
 
     if (!$module_class_name) {
       return \EWCore::log_error(400, "<h4>$app_name-api </h4><p>Please specify the api command</p>");
     }
-    
+
     if (class_exists($real_class_name)) {
-      $permission_id = \EWCore::does_need_permission($app_name, $module_name, $resource_name . '/' . $command_name);
-      
-      $parameters["_parts"] = array_slice(explode('/', $parameters["_file"]), 1);
+      //echo "$app_name, $module_name, $resource_name / $command_name";
       $app_section_object = new $real_class_name($app);
+      $api_method_name = $verb . '_' . $method_name;
+      $api_command_name = $verb . '-' . $method_name;
+      if (method_exists($app_section_object, $method_name)) {
+        $api_method_name = $method_name;
+        $api_command_name = $command_name;
+      }
+
+      $permission_id = \EWCore::does_need_permission($app_name, $module_name, $resource_name . '/' . $api_command_name);
+
+      if (!method_exists($app_section_object, $api_method_name)) {
+        return \EWCore::log_error(404, "$app_name-$resource_name: Method not found: `$api_method_name`");
+      }
+
+      $parameters["_parts"] = array_slice(explode('/', $parameters["_file"]), 1);
 
       if ($permission_id === "public-access") {
-        $result = $app_section_object->process_request($verb, $method_name, $parameters);
+        $result = $app_section_object->process_request($verb, $api_method_name, $parameters);
         $call = true;
       }
       else {
-        //var_dump($permission_id);
-
-        if (!method_exists($app_section_object, $method_name)) {
-          return \EWCore::log_error(404, "$app_name-$resource_name: Method not found: `$method_name`");
-        }
-
         if ($permission_id && $permission_id !== false) {
-          if (\admin\UsersManagement::group_has_permission($app_name, $module_name, $permission_id, $_SESSION['EW.USER_GROUP_ID'])) {
-            $result = $app_section_object->process_request($verb, $method_name, $parameters);
+          if (\admin\UsersManagement::group_has_permission($app_name, $api_method_name, $permission_id, $_SESSION['EW.USER_GROUP_ID'])) {
+            $result = $app_section_object->process_request($verb, $api_method_name, $parameters);
             $call = true;
           }
         }
         else if ($app_section_object->is_unathorized_method_invoke()) {
-          $result = $app_section_object->process_request($verb, $method_name, $parameters);
+          $result = $app_section_object->process_request($verb, $api_method_name, $parameters);
           $call = true;
         }
       }
 
-      if (!isset($result) && $call === false) {
-        return \EWCore::log_error(403, "You do not have corresponding permission to invoke this api request", array(
-                    "Access Denied" => "$app_name/$module_class_name/$method_name"));
+      if (!isset($result)) {
+        if ($call === false) {
+          return \EWCore::log_error(403, "You do not have corresponding permission to invoke this api request", [
+                      "Access Denied" => "$app_name/$module_class_name/$api_command_name"
+          ]);
+        }
       }
 
-      $api_listeners = \EWCore::read_registry("$app_name/$resource_name/$module_name/$command_name");
+      $api_listeners = \EWCore::read_registry("$app_name/$resource_name/$module_name/$api_command_name");
 
-      if (isset($api_listeners) && !is_array($result)) {
-
+      if (isset($api_listeners) && is_string($result)) {
         $converted_result = json_decode($result, true);
         if (json_last_error() === JSON_ERROR_NONE) {
           $result = $converted_result;
@@ -116,7 +124,7 @@ class APIResourceHandler extends ResourceHandler {
               $listener_result = $listener_method_object->invokeArgs($listener["object"], $arguments);
 
               if (isset($listener_result)) {
-                $result = array_merge_recursive($result, $listener_result);
+                $result = array_merge_recursive(is_array($result) ? $result : [], $listener_result);
               }
             }
           }
@@ -124,6 +132,10 @@ class APIResourceHandler extends ResourceHandler {
       }
       catch (Exception $e) {
         echo $e->getTraceAsString();
+      }
+
+      if (is_null($result)) {
+        $result = $this->to_api_response(null);
       }
 
       if (!isset($output_array)) {
@@ -139,9 +151,19 @@ class APIResourceHandler extends ResourceHandler {
   }
 
   public static function to_api_response($data, $meta = []) {
-    $response = ["statusCode" => 200];
+    $response = [];
+    $response['status_code'] = 200;
+
+    if (is_null($data)) {
+      $response['type'] = null;
+    }
+    else {
+      $response['type'] = array_keys($data) === range(0, count($data) - 1) ? 'list' : 'item';
+    }
+
     $response = array_merge($response, $meta);
-    $response["data"] = $data;
+    $response['data'] = $data;
+
     return $response;
   }
 

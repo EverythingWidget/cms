@@ -165,6 +165,8 @@ class Module {
     $method_object = new \ReflectionMethod($this, $method_name);
     $method_parameters = $method_object->getParameters();
 
+    $parameters['_input'] = $parameters;
+    
     ksort($method_parameters);
 
     $functions_arguments = array();
@@ -189,7 +191,7 @@ class Module {
       }
       $functions_arguments[] = $temp;
       $this->current_method_args[$param->getName()] = $temp;
-    }
+    }       
 
     $method_object->setAccessible(true);
     $command_result = $method_object->invokeArgs($this, $functions_arguments);

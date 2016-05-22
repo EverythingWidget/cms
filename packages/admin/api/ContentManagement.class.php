@@ -135,9 +135,7 @@ class ContentManagement extends \ew\Module {
 
   protected function install_permissions() {
     $this->register_permission("see-content", "User can see the contents", [
-        'html/index.php',
         'api/index',
-        "api/contents",
         "api/content_fields",
         "api/contents_labels",
         "api/get_category",
@@ -149,13 +147,14 @@ class ContentManagement extends \ew\Module {
         "api/media-audios",
         "api/ew-list-feeder-folders",
         "api/ew-page-feeder-articles",
+        // html resources
+        'html/index.php',
         "html/article-form.php",
         "html/folder-form.php",
         "html/media/album-form.php"
     ]);
 
     $this->register_permission("manipulate-content", "User can add new, edit, delete contents", [
-        'html/index.php',
         'api/index',
         "api/add_content",
         "api/add_folder",
@@ -175,11 +174,20 @@ class ContentManagement extends \ew\Module {
         "api/upload_audio",
         "api/register-audio",
         "api/media-audios",
+        // html resources
+        'html/index.php',
         "html/article-form.php:tr{New Article}",
         "html/folder-form.php:tr{New Folder}",
         "html/media/album-form.php:tr{New Album}",
         "html/media/upload-form.php",
         "html/media/upload-audio-form.php",
+    ]);
+
+    $this->register_public_access([
+        'api/create_contents',
+        'api/read_contents',
+        'api/update_contents',
+        'api/delete_contents',
     ]);
   }
 
@@ -771,7 +779,7 @@ class ContentManagement extends \ew\Module {
       }
 
       if (is_numeric($url_parts[1])) {
-        $article = $this->contents($url_parts[1]);
+        $article = $this->read_contents($url_parts[1]);
 
         if (isset($article['data'])) {
           return \webroot\WidgetsManagement::get_path_uis('/folders/' . $article['data']['parent_id']);
@@ -917,15 +925,6 @@ class ContentManagement extends \ew\Module {
     return \EWCore::log_error(400, 'tr{Something went wrong}');
   }
 
-  public function contents($_parts__id, $title_filter = null, $type = null, $token = 0, $size = null) {
-    if (isset($_parts__id)) {
-      return $this->get_content_by_id($_parts__id);
-    }
-    else {
-      return $this->get_contents($title_filter, $type, $token, $size);
-    }
-  }
-
   public function content_fields($_parts__id, $language) {
     $content = $this->get_content_by_id($_parts__id, $language);
 
@@ -933,8 +932,10 @@ class ContentManagement extends \ew\Module {
   }
 
   private function get_content_by_id($id, $language = 'en') {
-    if (!isset($id))
+    if (!isset($id)) {
       return \EWCore::log_error(400, 'tr{Content Id is requird}');
+    }
+
     $content = ew_contents::find($id, ['*',
                 \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
 
@@ -1674,6 +1675,21 @@ class ContentManagement extends \ew\Module {
    */
   public static function create_content_form($form_config = null) {
     return \EWCore::load_file("admin/html/content-management/content-form.php", $form_config);
+  }
+
+  public function read_contents($_parts__id, $title_filter = null, $type = null, $token = 0, $size = null) {
+    if (isset($_parts__id)) {
+      $data = $this->get_content_by_id($_parts__id);
+    }
+    else {
+      $data = $this->get_contents($title_filter, $type, $token, $size);
+    }
+
+    return $data;
+  }
+
+  public function update_contents() {
+    return ['Not implemented yet'];
   }
 
 }

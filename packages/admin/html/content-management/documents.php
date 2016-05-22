@@ -9,7 +9,9 @@
 
   <div class='card-content top-devider'>
     <div id="folders-list" class="mt">
-      <div v-for="folder in folders" tabindex='1' class='content-item folder' data-content-id='{{ folder.id }}'>
+      <div v-for="folder in folders" tabindex='1' class='content-item folder' data-content-id='{{ folder.id }}'
+           @drop="moveItem"
+           @dragover="isAllowed">
         <span></span>
         <p class='date'>{{ folder.round_date_created }}</p>
         <p>{{ folder.title }}</p>          
@@ -17,7 +19,9 @@
     </div>
 
     <div id="articles-list" class="mt">
-      <div v-for="article in articles" tabindex='1' class='content-item article' data-content-id='{{ article.id }}'>
+      <div tabindex='1' draggable="true" class='content-item article' data-content-id='{{ article.id }}'
+           v-for="article in articles" 
+           @dragstart="dragStart">
         <span></span>
         <p class='date'>{{ article.round_date_created }}</p>
         <p>{{ article.title }}</p>          
@@ -132,6 +136,18 @@
           card_title: 'tr{Contents}',
           folders: [],
           articles: []
+        },
+        methods: {
+          dragStart: function (event) {
+            event.dataTransfer.setData('item', event.target.getAttribute('data-content-id'));
+          },
+          moveItem: function (event) {
+            event.preventDefault();
+            console.log(event.dataTransfer.getData('item'));
+          },
+          isAllowed: function (event) {
+            event.preventDefault();
+          }
         }
       });
 

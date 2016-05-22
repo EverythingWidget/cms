@@ -22,5 +22,8 @@ RewriteRule ^public/([^/]*)/(.*) packages/$1/public/$2 [L]
 RewriteCond %{REQUEST_URI} ~(.*)/public/ [NC]
 RewriteRule ~(.*)/public/(.*) packages/$1/public/$2 [L]
 
+RewriteCond %{REQUEST_URI} !(/$|\.) 
+RewriteRule (.*) %{REQUEST_URI}/ [R=301,L] 
+
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^(.*) packages/index.php [L]

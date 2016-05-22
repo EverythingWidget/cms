@@ -113,7 +113,7 @@ if (strpos($elements[$parameter_index], '~') === 0) {
     $parameter_index++;
   }
 }
-else if (in_array($elements[$parameter_index],$resource_types)) {
+else if (in_array($elements[$parameter_index], $resource_types)) {
   if (isset($elements[$parameter_index + 1])) {
     $app_name = str_replace('~', '', $elements[$parameter_index + 1]);
     $resource_type = $elements[$parameter_index];
@@ -161,7 +161,12 @@ $RESULT_CONTENT = "RESULT_CONTENT: EMPTY";
 
 $real_class_name = $app_name . '\\' . $section_name;
 
-$RESULT_CONTENT = $ew_core->process_request_command($app_name, $resource_type, $section_name, $function_name, $_REQUEST);
+$inputs = array();
+parse_str(file_get_contents('php://input'), $inputs);
+
+$request_params = array_merge($_REQUEST, $inputs);
+
+$RESULT_CONTENT = $ew_core->process_request_command($app_name, $resource_type, $section_name, $function_name, $request_params);
 
 function translate($match) {
   global $language;
