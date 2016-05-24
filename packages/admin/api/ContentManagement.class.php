@@ -309,10 +309,6 @@ class ContentManagement extends \ew\Module {
     return $result;
   }
 
-  public function ew_page_feeder_ssss($id, $language) {
-    return null;
-  }
-
   public function image_loader($file) {
     echo "asdad";
     preg_match('/(.*)\.?(\d*)?,?(\d*)?\.([^\.]\w*)/', $file, $match);
@@ -1675,6 +1671,55 @@ class ContentManagement extends \ew\Module {
    */
   public static function create_content_form($form_config = null) {
     return \EWCore::load_file("admin/html/content-management/content-form.php", $form_config);
+  }
+  
+  public function create_contents($_input) {
+    return $_input;
+//    $v = new \Valitron\Validator(compact([
+//                'title',
+//                'type',
+//                'parent_id'
+//    ]));
+//
+//    $v->rules([
+//        "required" => [
+//            ["title"], ["type"]
+//        ],
+//        "integer"  => "parent_id"
+//    ]);
+//
+//    if (!$v->validate()) {
+//      return EWCore::log_error("400", "tr{Content has not been added}", $v->errors());
+//    }
+//
+//    $content = new ew_contents;
+//    $content->author_id = $_SESSION['EW.USER_ID'];
+//    $content->type = $_input['type'];
+//    $content->title = $_input['title'];
+//    $content->slug = EWCore::to_slug($title, "ew_contents");
+//    $content->keywords = $keywords;
+//    $content->description = $description;
+//    $content->parent_id = $parent_id;
+//    $content->content = $html_content;
+//    if (isset($html_content)) {
+//      $content_fields = $this->get_content_fields($html_content);
+//      $content->content_fields = json_encode($content_fields->content_fields);
+//      $content->parsed_content = $content_fields->html;
+//    }
+//    $content->featured_image = $featured_image;
+//    $content->date_created = date('Y-m-d H:i:s');
+//    $content->date_modified = date('Y-m-d H:i:s');
+//    $content->save();
+//
+//    if ($content->id) {
+//      $id = $content->id;
+//      $labels = json_decode($labels, true);
+//      if (is_array($labels))
+//        foreach ($labels as $key => $value) {
+//          $this->update_label($id, $key, $value);
+//        }
+//    }
+//    return \ew\APIResourceHandler::to_api_response($content->toArray());
   }
 
   public function read_contents($_parts__id, $title_filter = null, $type = null, $token = 0, $size = null) {

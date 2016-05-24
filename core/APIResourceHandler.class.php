@@ -23,8 +23,8 @@ class APIResourceHandler extends ResourceHandler {
   ];
 
   protected function handle($app, $package, $resource_type, $module_name, $command, $parameters = null) {
-    $output_array = $this->get_parameter("output_array");
-    if ($output_array !== true) {
+    $output_as_array = $this->get_parameter("output_array");
+    if ($output_as_array !== true) {
       header("Content-Type: application/json");
     }
     // check module name string
@@ -71,25 +71,27 @@ class APIResourceHandler extends ResourceHandler {
       }
 
       $parameters["_parts"] = array_slice(explode('/', $parameters["_file"]), 1);
+      $response = new APIResponse();
+      $parameters['_response'] = $response;
 
       if ($permission_id === "public-access") {
-        $result = $app_section_object->process_request($verb, $api_method_name, $parameters);
+        $response_data = $app_section_object->process_request($verb, $api_method_name, $parameters);
         $call = true;
       }
       else {
         if ($permission_id && $permission_id !== false) {
           if (\admin\UsersManagement::group_has_permission($app_name, $api_method_name, $permission_id, $_SESSION['EW.USER_GROUP_ID'])) {
-            $result = $app_section_object->process_request($verb, $api_method_name, $parameters);
+            $response_data = $app_section_object->process_request($verb, $api_method_name, $parameters);
             $call = true;
           }
         }
         else if ($app_section_object->is_unathorized_method_invoke()) {
-          $result = $app_section_object->process_request($verb, $api_method_name, $parameters);
+          $response_data = $app_section_object->process_request($verb, $api_method_name, $parameters);
           $call = true;
         }
       }
 
-      if (!isset($result)) {
+      if (!isset($response_data)) {
         if ($call === false) {
           return \EWCore::log_error(403, "You do not have corresponding permission to invoke this api request", [
                       "Access Denied" => "$app_name/$module_class_name/$api_command_name"
@@ -99,70 +101,87 @@ class APIResourceHandler extends ResourceHandler {
 
       $api_listeners = \EWCore::read_registry("$app_name/$resource_name/$module_name/$api_command_name");
 
-      if (isset($api_listeners) && is_string($result)) {
-        $converted_result = json_decode($result, true);
-        if (json_last_error() === JSON_ERROR_NONE) {
-          $result = $converted_result;
-        }
-      }
+//      if (isset($api_listeners) && is_string($result)) {
+//        $converted_result = json_decode($result, true);
+//        if (json_last_error() === JSON_ERROR_NONE) {
+//          $result = $converted_result;
+//        }
+//      }
+
 
       try {
         // Call the listeners with the same data as the command data
         if (isset($api_listeners)) {
-          if (!is_array($result)) {
-            $converted_result = json_decode($result, true);
-            if (json_last_error() === JSON_ERROR_NONE) {
-              $result = $converted_result;
-            }
+          if ($response_data instanceof APIResponse && $response_data !== $response) {
+            $response = $response_data;
+            $parameters['_response'] = $response;
+          }
+          else if (!($response_data instanceof APIResponse)) {
+            $response->set_data($response_data);
           }
 
-          foreach ($api_listeners as $id => $listener) {
-            if (method_exists($listener["object"], $listener["method"])) {
-              $listener_method_object = new \ReflectionMethod($listener["object"], $listener["method"]);
-              $arguments = \EWCore::create_arguments($listener_method_object, $parameters, $result);
-
-              $listener_result = $listener_method_object->invokeArgs($listener["object"], $arguments);
-
-              if (isset($listener_result)) {
-                $result = array_merge_recursive(is_array($result) ? $result : [], $listener_result);
-              }
-            }
-          }
+//          if (is_object($result)) {
+//            $result = (array) $result;
+//          }
+//          if (!is_array($result) && is_string($result)) {
+//            $converted_result = json_decode($result, true);
+//            if (json_last_error() === JSON_ERROR_NONE) {
+//              $result = $converted_result;
+//            }
+//          }
+          
+          $this->execute_api_listeners($api_listeners, $response);
         }
       }
       catch (Exception $e) {
         echo $e->getTraceAsString();
       }
 
-      if (is_null($result)) {
-        $result = $this->to_api_response(null);
+//      if (is_null($result)) {
+//        $result = $this->to_api_response(null);
+//      }
+
+      if (isset($output_as_array)) {
+        return $response->to_array();
       }
 
-      if (!isset($output_array)) {
-        if (is_array($result)) {
-          return json_encode($result);
-        }
-      }
-      return $result;
+      return $response->to_json();
     }
     else {
       return \EWCore::log_error(404, "Section not found: `$module_class_name`");
     }
   }
 
+  private function execute_api_listeners($api_listeners, $response) {
+    foreach ($api_listeners as $id => $listener) {
+      if (method_exists($listener["object"], $listener["method"])) {
+        $response_data = $response->to_array();
+        $listener_method_object = new \ReflectionMethod($listener["object"], $listener["method"]);
+        $arguments = \EWCore::create_arguments($listener_method_object, $parameters, $response_data);
+
+        $listener_result = $listener_method_object->invokeArgs($listener["object"], $arguments);
+
+        if (isset($listener_result)) {
+          $response->set_data(array_merge_recursive(is_array($response_data) ? $response_data : [], $listener_result));
+        }
+      }
+    }
+  }
+
   public static function to_api_response($data, $meta = []) {
-    $response = [];
-    $response['status_code'] = 200;
+    $response = new APIResponse();
+    //$response['status_code'] = 200;
+    $response->set_status_code(200);
 
     if (is_null($data)) {
-      $response['type'] = null;
+      $response->set_type(null);
     }
     else {
-      $response['type'] = array_keys($data) === range(0, count($data) - 1) ? 'list' : 'item';
+      $response->set_type(array_keys($data) === range(0, count($data) - 1) ? 'list' : 'item');
     }
 
-    $response = array_merge($response, $meta);
-    $response['data'] = $data;
+    $response->set_meta($meta);
+    $response->set_data($data);
 
     return $response;
   }

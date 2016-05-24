@@ -165,7 +165,7 @@ class Module {
     $method_object = new \ReflectionMethod($this, $method_name);
     $method_parameters = $method_object->getParameters();
 
-    $parameters['_input'] = $parameters;
+    $parameters['_input'] = (object) $parameters;
     
     ksort($method_parameters);
 
