@@ -1672,7 +1672,7 @@ class ContentManagement extends \ew\Module {
   public static function create_content_form($form_config = null) {
     return \EWCore::load_file("admin/html/content-management/content-form.php", $form_config);
   }
-  
+
   public function create_contents($_input) {
     return $_input;
 //    $v = new \Valitron\Validator(compact([
@@ -1733,8 +1733,9 @@ class ContentManagement extends \ew\Module {
     return $data;
   }
 
-  public function update_contents() {
-    return ['Not implemented yet'];
+  public function update_contents($_response) {
+    $_response->set_status_code(501);
+    return ['message' => 'update functionality is not implemented'];
   }
 
 }

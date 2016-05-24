@@ -44,8 +44,8 @@ class App {
   }
 
   protected function install_resource_handlers() {
-    $this->addResource("api", new APIResourceHandler($this));
-    $this->addResource($this->default_resource, new HTMLResourceHandler($this));
+    $this->register_resource_handler("api", new APIResourceHandler($this));
+    $this->register_resource_handler($this->default_resource, new HTMLResourceHandler($this));
   }
 
   public function init_app() {
@@ -194,7 +194,7 @@ class App {
     ];
   }
 
-  public function addResource($name, $func) {
+  public function register_resource_handler($name, $func) {
     $this->resources[$name] = $func;
   }
 

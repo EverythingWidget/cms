@@ -29,6 +29,7 @@ class APIResponse implements \JsonSerializable {
 
   public function set_status_code($code) {
     $this->status_code = $code;
+    http_response_code($code);
   }
 
   public function set_type($type) {
