@@ -79,10 +79,10 @@
         var key = node.nodeName.toLowerCase();
         if (indexIndicator[key]) {
           indexIndicator[key]++;
-          jsTree[key + '_' + indexIndicator[key]] = UIUtility.toTreeObject(node);
+          jsTree[key + '_' + indexIndicator[key]] = System.ui.utility.toTreeObject(node);
         } else {
           indexIndicator[key] = 1;
-          jsTree[node.nodeName.toLowerCase()] = UIUtility.toTreeObject(node);
+          jsTree[node.nodeName.toLowerCase()] = System.ui.utility.toTreeObject(node);
         }
 
         jsTree._children.push(node);

@@ -52,7 +52,7 @@
       });
     }
 
-    DocumentsStateHandler.prototype.defineStateHandlers = function (states) {
+    DocumentsStateHandler.prototype.defineStates = function (states) {
       var handler = this;
 
       // you can use either states.<state> or states['<state>']
@@ -99,7 +99,6 @@
 
       var modal;
       states.component = function (full, name) {
-
         if (full === 'forms/test-form') {
           modal = EW.createModal({
             onClose: function () {
@@ -211,7 +210,7 @@
         }
       }).hide();
 
-      this.defineStateHandlers(this.states);
+      this.defineStates(this.states);
       System.Util.installModuleStateHandlers(this.state, this.states);
     };
 

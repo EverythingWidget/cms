@@ -40,7 +40,13 @@ class App {
     $app_root = $this->get_root();
     $path = EW_PACKAGES_DIR . '/' . $app_root . '/' . $dir;
 
-    $this->load_modules("api");
+    try {
+      $this->load_modules();
+      $this->load_dependecies('api/repositories');
+    }
+    catch (\Exception $e) {
+      return $e->getMessage();
+    }
   }
 
   protected function install_resource_handlers() {
@@ -53,16 +59,16 @@ class App {
       $this->loaded_modules[$in]->init();
     }
   }
-
-  public function load_modules($dir) {
+  
+  private function load_dependecies($dir){
     $app_root = $this->get_root();
     $app_root_path = str_replace('_', '-', $app_root);
     $path = EW_PACKAGES_DIR . '/' . $app_root_path . '/' . $dir;
     if (!file_exists($path))
-      return;
+      return [];
     $sections = scandir($path);
 
-    $this->loaded_modules = [];
+    $dependencies = [];
 
     for ($in = 0, $len = count($sections); $in < $len; $in++) {
       $section_name = $sections[$in];
@@ -77,10 +83,24 @@ class App {
       require_once $path . '/' . $section_name;
 
       $section_class_name = substr($section_name, 0, $i);
-      $real_class_name = "$app_root\\$section_class_name";
+      $dependencies[] = "$app_root\\$section_class_name";
+//
+//      if (array_key_exists($class_type, class_parents($real_class_name))) {
+//        $dependencies [] = new $real_class_name($this);
+//      }
+    }
+    
+    return $dependencies;
+  }
 
-      if (array_key_exists('ew\Module', class_parents($real_class_name))) {
-        $this->loaded_modules [] = new $real_class_name($this);
+  public function load_modules() {
+    $apis = $this->load_dependecies('api');
+    
+    $this->loaded_modules = [];
+
+    foreach ($apis as $api) {
+      if (array_key_exists('ew\Module', class_parents($api))) {
+        $this->loaded_modules [] = new $api($this);
       }
     }
   }

@@ -10,14 +10,14 @@
         states.loading_app = true;
         System.ui.components.appTitle.text(app.title);
         if (EW.selectedApp) {
-          UIUtility.removeClass(EW.selectedApp, "selected");
+          System.ui.utility.removeClass(EW.selectedApp, "selected");
         }
 
         EW.selectedApp = $(".apps-menu-link[data-app='" + app.id + "']").addClass("selected")[0];
 
         System.ui.components.sectionsMenuTitle.addClass("inline-loader");
         if (EW.selectedSection)
-          UIUtility.addClass(EW.selectedSection, "inline-loader");
+          System.ui.utility.addClass(EW.selectedSection, "inline-loader");
 
         $("#action-bar-items").empty();
         $("#main-content").remove();
@@ -67,7 +67,7 @@
           EW.oldSectionId = sectionData.id;
           System.ui.components.sectionsMenuTitle.text(sectionData.title);
           System.ui.components.sectionsMenuTitle.addClass("inline-loader");
-          UIUtility.addClass(element, "inline-loader");
+          System.ui.utility.addClass(element, "inline-loader");
 
           $("#action-bar-items").find("button,div").remove();
           System.ui.components.appMainActions.empty();
@@ -98,7 +98,7 @@
             }
 
             System.ui.components.sectionsMenuTitle.removeClass("inline-loader");
-            UIUtility.removeClass(element, "inline-loader");
+            System.ui.utility.removeClass(element, "inline-loader");
 
             anim = TweenLite.fromTo(System.ui.components.mainContent[0], .5, {
               opacity: 0,
@@ -430,11 +430,11 @@
       currentSectionIndex = index;
 
       if (EW.selectedSection) {
-        UIUtility.removeClass(EW.selectedSection, "selected");
+        System.ui.utility.removeClass(EW.selectedSection, "selected");
       }
 
       EW.selectedSection = section;
-      UIUtility.addClass(EW.selectedSection, "selected");
+      System.ui.utility.addClass(EW.selectedSection, "selected");
     };
 
     System.ui.behaviors.selectTab = function (tabHref, tabsContainer) {
@@ -543,6 +543,7 @@
     initPlugins(document);
 
     var installModules = <?= EWCore::read_apps_sections(); ?>;
+    console.log(installModules);
     installModules.forEach(function (e) {
       EW.apps[e.id] = e;
     });

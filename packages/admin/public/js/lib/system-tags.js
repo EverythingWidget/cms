@@ -20,7 +20,7 @@
   window.CustomEvent = CustomEvent;
 })();
 
-(function (xtag, UIUtilty) {
+(function (xtag) {
 
   var SystemList = {
   };
@@ -48,7 +48,7 @@
       var selectableItem = null;
       for (var i = 0, len = data.length; i < len; i++) {
         //data[i]._itemIndex = i;
-        var item = xtag.createFragment(UIUtilty.populate(this.template, data[i]));
+        var item = xtag.createFragment(System.ui.utility.populate(this.template, data[i]));
         if (action) {
           selectableItem = xtag.query(item, action)[0];
 
@@ -515,7 +515,7 @@
         e.currentTarget.xtag.glass.width = diDimension.width + "px";
         e.currentTarget.xtag.glass.height = diDimension.height + "px";
         draggedItem.appendChild(e.currentTarget.xtag.glass);
-        UIUtilty.addClass(draggedItem, "dragged");
+        System.ui.utility.addClass(draggedItem, "dragged");
 
         //console.log(e, draggedItem);
         e.stopPropagation();
@@ -618,7 +618,7 @@
           this.xtag.draggedItem.style.left = "";
           this.xtag.draggedItem.style.top = "";
           this.xtag.draggedItem.removeChild(this.xtag.glass);
-          UIUtilty.removeClass(this.xtag.draggedItem, "dragged");
+          System.ui.utility.removeClass(this.xtag.draggedItem, "dragged");
 
           if (this.xtag.placeHolder.parentNode) {
             this.onDrop(this.xtag.draggedItem, this.xtag.tempParent, this.xtag.tempIndex);
@@ -953,4 +953,4 @@
   };
 
   xtag.register('system-field', SystemField);
-})(xtag, UIUtility);
+})(xtag);
