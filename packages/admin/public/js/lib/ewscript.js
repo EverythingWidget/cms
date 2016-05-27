@@ -1526,8 +1526,7 @@ EWTable.prototype.read = function (customURLData) {
   var urlData = $.extend(_this.urlData, {
     token: _this.token,
     size: _this.pageSize
-  },
-          customURLData);
+  }, customURLData);
 
   setTimeout(function () {
     $.ajax({
@@ -1535,11 +1534,11 @@ EWTable.prototype.read = function (customURLData) {
       url: _this.url,
       data: urlData,
       dataType: "json",
-      success: function (data) {
+      success: function (response) {
         var tillRow = (_this.token + _this.pageSize);
-        if (_this.token + _this.pageSize > data.totalRows) {
+        if (_this.token + _this.pageSize > response.properties.size) {
           _this.next.css('visibility', 'hidden');
-          tillRow = data.totalRows;
+          tillRow = response.properties.size;
         } else {
           _this.next.css('visibility', 'visible');
         }
@@ -1548,9 +1547,9 @@ EWTable.prototype.read = function (customURLData) {
         } else {
           _this.previous.css('visibility', 'visible');
         }
-        _this.data = data;
-        if (data.data) {
-          _this.data.result = data.data;
+        _this.data = response;
+        if (response.data) {
+          _this.data.result = response.data;
         }
         _this.table.css({
           marginTop: "-5%",
@@ -1564,13 +1563,12 @@ EWTable.prototype.read = function (customURLData) {
         var th = $("<thead>");
         th.append(_this.dynamicHeader);
         _this.table.prepend(th);
-        _this.pageInfo.text(_this.token + "-" + tillRow + " of " + data.totalRows);
+        _this.pageInfo.text(_this.token + "-" + tillRow + " of " + response.properties.size);
         lock.dispose();
         _this.table.animate({
           marginTop: "0px",
           opacity: 1
-        },
-                400, "Power2.easeOut");
+        }, 400, "Power2.easeOut");
       },
       error: function (o) {
         //console.log(o);

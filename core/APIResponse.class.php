@@ -20,7 +20,7 @@ class APIResponse implements \JsonSerializable {
   private $status_code = 200;
   private $type = null;
   private $data = [];
-  private $properties = [];
+  public $properties = [];
   private $meta = [];
 
   public function __construct() {
@@ -49,9 +49,18 @@ class APIResponse implements \JsonSerializable {
   }
 
   public function to_array() {
+    $type = null;
+    if (!is_null($this->data)) {
+      $type = array_keys($this->data) === range(0, count($this->data) - 1) ? 'list' : 'item';
+    }
+
+    if (!is_null($this->type)) {
+      $type = $this->type;
+    }
+
     return array_merge([
         'status_code' => $this->status_code,
-        'type'        => $this->type,
+        'type'        => $type,
         'properties'  => $this->properties,
         'data'        => $this->data
             ], $this->meta);

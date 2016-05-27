@@ -34,7 +34,7 @@ class UsersManagement extends \ew\Module {
     $this->register_permission("see-users", "User can see users list", [
         "api/get",
         "api/users",
-        "api/groups",
+        "api/read_groups",
         "api/get_user_by_id",
         "api/get_user_by_email",
         "html/user-form.php-see",
@@ -251,7 +251,7 @@ class UsersManagement extends \ew\Module {
     return true;
   }
 
-  public function users($_verb, $token = 0, $size = 999999) {
+  public function users($_response, $token = 0, $size = 999999) {
     $db = \EWCore::get_db_connection();
 
     if (!isset($token)) {
@@ -272,42 +272,37 @@ class UsersManagement extends \ew\Module {
       $rows[] = $r;
     }
     $db->close();
-    $out = [
-        "totalRows" => $totalRows['COUNT(*)'],
-        "result"    => $rows];
-    return json_encode($out);
+
+    $_response->properties['size'] = intval($totalRows['COUNT(*)']);
+    return $rows;
   }
 
-  public static function get_users_groups_list() {
+  public static function get_users_groups_list($_response, $page = 0, $page_size = 100) {
     $db = \EWCore::get_db_connection();
 
-    $token = $db->real_escape_string($_REQUEST["token"]);
-    $size = $db->real_escape_string($_REQUEST["size"]);
-    if (!$token) {
-      $token = 0;
+    if (!$page) {
+      $page = 0;
     }
-    if (!$size) {
-      $size = 1000000000;
+    if (!$page_size) {
+      $page_size = 100;
     }
     $totalRows = $db->query("SELECT COUNT(*) FROM ew_users_groups") or die(error_reporting());
     $totalRows = $totalRows->fetch_assoc();
 
-    $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_users_groups ORDER BY id LIMIT $token, $size") or die($db->error);
+    $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_users_groups ORDER BY id LIMIT $page, $page_size") or die($db->error);
 
     $rows = [];
     while ($r = $result->fetch_assoc()) {
       $rows[] = $r;
     }
-
-    $out = [
-        "totalRows" => $totalRows['COUNT(*)'],
-        "result"    => $rows];
     $db->close();
 
-    return json_encode($out);
+    $_response->properties['size'] = intval($totalRows['COUNT(*)']);
+    $_response->properties['page_size'] = $page_size;
+    return $rows;
   }
 
-  public function get_user_group_by_id($groupId) {
+  public function get_user_group_by_id($_response, $groupId) {
     $db = \EWCore::get_db_PDO();
 
     $statement = $db->prepare("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_users_groups WHERE id = ?");
@@ -645,11 +640,15 @@ class UsersManagement extends \ew\Module {
     //return \EWCore::log_error(400, "Not defined");
   }
 
-  public function groups($_verb, $_parts) {
-    if (isset($_parts[0])) {
-      return $this->get_user_group_by_id($_parts[0]);
-    }
-    return $this->get_users_groups_list();
+//  public function groups($_response, $_parts) {
+//    if (isset($_parts[0])) {
+//      return $this->get_user_group_by_id($_response, $_parts[0]);
+//    }
+//    return $this->get_users_groups_list($_response);
+//  }
+
+  public function read_groups($_input, $_response) {
+    return (new UsersGroupsRepository())->read($_input, $_response);
   }
 
 }
