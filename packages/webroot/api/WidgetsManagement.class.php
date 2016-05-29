@@ -52,6 +52,7 @@ class WidgetsManagement extends \ew\Module {
         "content" => $this->link_chooser_form]);
 
     $this->register_permission("view", "User can view the widgets section", array(
+        'api/read_layouts',
         "api/get_uis",
         "api/get_uis_list",
         "api/get_widgets_types",
@@ -1280,6 +1281,33 @@ class WidgetsManagement extends \ew\Module {
     }
 
     return $links;
+  }
+
+  public function create_layouts($_input, $_response) {
+    
+  }
+
+  public function read_layouts($_input, $_response, $_parts__id) {
+    $_input->id = $_parts__id;
+    $result = (new LayoutsRepository())->read($_input);
+
+    if ($result->error) {
+      $_response->set_status_code($result->error);
+      return $result;
+    }
+
+    $_response->properties['total'] = $result->total;
+    $_response->properties['page_size'] = $result->size;
+
+    return $result->data;
+  }
+
+  public function update_layouts($_input, $_response) {
+    
+  }
+
+  public function delete_layouts($_input, $_response) {
+    
   }
 
   public function get_title() {

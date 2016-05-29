@@ -1350,11 +1350,9 @@ EWTable.prototype.createRow = function (val, rc) {
     edit.addClass("btn btn-text edit");
     edit.click(function () {
       EW.activeElement = tableRow;
-      //EW.activeElement.attr("data-label", tableRow.data("row-title"));
-      ewTable.config.onEdit.apply(tableRow, new Array(fieldId));
+      ewTable.config.onEdit.apply(tableRow, [fieldId]);
     });
     actionsCellBtns.push(edit);
-    //actionsCell.append(edit);
   }
   if (ewTable.config.onDelete)
   {
@@ -1536,9 +1534,9 @@ EWTable.prototype.read = function (customURLData) {
       dataType: "json",
       success: function (response) {
         var tillRow = (_this.token + _this.pageSize);
-        if (_this.token + _this.pageSize > response.properties.size) {
+        if (_this.token + _this.pageSize > response.total) {
           _this.next.css('visibility', 'hidden');
-          tillRow = response.properties.size;
+          tillRow = response.total;
         } else {
           _this.next.css('visibility', 'visible');
         }
@@ -1563,7 +1561,7 @@ EWTable.prototype.read = function (customURLData) {
         var th = $("<thead>");
         th.append(_this.dynamicHeader);
         _this.table.prepend(th);
-        _this.pageInfo.text(_this.token + "-" + tillRow + " of " + response.properties.size);
+        _this.pageInfo.text(_this.token + "-" + tillRow + " of " + response.total);
         lock.dispose();
         _this.table.animate({
           marginTop: "0px",
@@ -2403,7 +2401,7 @@ $(document).ready(function () {
           System.setHashParameters(activityParameters, true);
 
           $.ajax({
-            type: currentActivity.verb || "POST",
+            type: currentActivity.verb || "GET",
             url: currentActivity.url,
             data: activityParameters,
             success: function (data) {

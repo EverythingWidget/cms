@@ -1352,8 +1352,8 @@ session_start();
     EW.uisForm = uisForm;
 
 <?php
-$uis_info = \EWCore::call("webroot/api/widgets-management/get-uis", ["uisId" => $_REQUEST['uisId']]);
-echo 'EW.setFormData("#uis-preference",' . (($uis_info != null) ? ($uis_info) : "null") . ');';
+$uis_info = \EWCore::call_api("webroot/api/widgets-management/layouts/{$_REQUEST['uisId']}");
+echo 'EW.setFormData("#uis-preference",' . (($uis_info != null) ? ($uis_info['data']) : "null") . ');';
 ?>
 
   });

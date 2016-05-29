@@ -87,7 +87,7 @@
         Template: {}
       },
       rowCount: true,
-      url: "<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/get-uis-list",
+      url: "api/webroot/widgets-management/layouts",
       pageSize: 30,
       onDelete: function (id) {
         this.confirm("Are you sure of deleting this UIS?", function () {
@@ -122,7 +122,7 @@
         "tr{Clone}": function (row) {
           if (confirm("Are you sure you want to clone UIS:" + row.data("field-name") + "?"))
           {
-            $.post('<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/clone-uis', {
+            $.get('api/webroot/widgets-management/clone-uis', {
               uisId: row.data("field-id")
             },
                     function (data) {
@@ -188,24 +188,22 @@
 
     $.post('<?php echo EW_ROOT_URL; ?>~webroot/widgets-management/ne-uis.php', {
       uisId: EW.getHashParameter("uis-id")
-    },
-            function (data) {
-              tp.html(data);
-            });
+    }, function (data) {
+      tp.html(data);
+    });
   };
 
   UIStructureList.prototype.deleteUIS = function (id) {
     var self = this;
     $.post('<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/delete-uis', {
       uisId: id
-    },
-            function (data) {
-              EW.setHashParameter("categoryId", null);
-              $("body").EW().notify(data).show();
-              self.table.removeRow(id);
-              return true;
+    }, function (data) {
+      EW.setHashParameter("categoryId", null);
+      $("body").EW().notify(data).show();
+      self.table.removeRow(id);
+      return true;
 
-            }, "json");
+    }, "json");
   };
 
 

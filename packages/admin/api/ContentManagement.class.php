@@ -689,7 +689,7 @@ class ContentManagement extends \ew\Module {
     $article = [];
 
     if ($articles) {
-      $article = $articles['data'][0];
+      $article = $articles->data[0];
       $result['title'] = $article['title'];
       $result['keywords'] = $article['keywords'];
       $result['description'] = $article['description'];
@@ -1677,15 +1677,19 @@ class ContentManagement extends \ew\Module {
     return (new ContentsRepository())->create($_input, $_response);
   }
 
-  public function read_contents($_parts__id, $title_filter = null, $type = null, $token = 0, $size = null) {
-    if (isset($_parts__id)) {
-      $data = $this->get_content_by_id($_parts__id);
-    }
-    else {
-      $data = $this->get_contents($title_filter, $type, $token, $size);
+  public function read_contents($_input, $_response, $_parts__id) {
+    $_input->id = $_parts__id;
+    $result = (new ContentsRepository())->read($_input, $_response);
+    
+    if($result->error) {
+      $_response->set_status_code($result->error);
+      return $result;
     }
 
-    return $data;
+    $_response->properties['total'] = $result->total;
+    $_response->properties['page_size'] = $result->size;
+
+    return $result->data;
   }
 
   public function update_contents($_input, $_response) {

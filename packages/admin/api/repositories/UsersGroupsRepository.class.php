@@ -15,27 +15,27 @@ namespace admin;
  */
 class UsersGroupsRepository implements \ew\CRUDRepository {
 
-  public function create($input, $response) {
+  public function create($input) {
     
   }
 
-  public function delete($input, $response) {
+  public function delete($input) {
     
   }
 
-  public function read($input, $response) {
+  public function read($input) {
     if (isset($input->id)) {
-      return $this->find_by_id($response, $input->id);
+      return $this->find_by_id($input->id);
     }
 
-    return $this->all($response, $input->page, $input->page_size);
+    return $this->all($input->page, $input->page_size);
   }
 
-  public function update($input, $response) {
+  public function update($input) {
     
   }
 
-  public function all($response, $page = 0, $page_size = 100) {
+  public function all($page = 0, $page_size = 100) {
     $db = \EWCore::get_db_connection();
 
     if (is_null($page)) {
@@ -56,8 +56,8 @@ class UsersGroupsRepository implements \ew\CRUDRepository {
     }
     $db->close();
 
-    $response->properties['size'] = intval($totalRows['COUNT(*)']);
-    $response->properties['page_size'] = $page_size;
+//    $response->properties['total'] = intval($totalRows['COUNT(*)']);
+//    $response->properties['page_size'] = $page_size;
     return $rows;
   }
 

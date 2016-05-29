@@ -16,11 +16,11 @@ namespace ew;
 interface CRUDRepository {
 
   //put your code here
-  public function create($input, $response);
+  public function create($input);
 
-  public function read($input, $response);
+  public function read($input);
 
-  public function update($input, $response);
+  public function update($input);
 
-  public function delete($input, $response);
+  public function delete($input);
 }
