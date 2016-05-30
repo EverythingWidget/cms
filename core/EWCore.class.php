@@ -176,29 +176,27 @@ class EWCore {
     return $response_data;
   }
 
-  public static function create_arguments($method, $parameters, $response_data) {
+  public static function create_arguments($method, $parameters = [], $response) {
     $arguments = $method->getParameters();
     $method_arguments = array();
-    $namespaces = [];
-    foreach ($parameters as $par => $value) {
-      if (preg_match('/(.*)\/(.*)/', $par, $m)) {
-        if (!$parameters[$m[1]])
-          $parameters[$m[1]] = [];
-        $parameters[$m[1]][$m[2]] = $value;
+
+    if (is_array($parameters)) {
+      foreach ($parameters as $par => $value) {
+        if (preg_match('/(.*)\/(.*)/', $par, $m)) {
+          if (!$parameters[$m[1]])
+            $parameters[$m[1]] = [];
+          $parameters[$m[1]][$m[2]] = $value;
+        }
       }
     }
-    //print_r($parameters);
+
     foreach ($arguments as $arg) {
       $temp = null;
-      if (/* $arg->getName() === "_data" || */$arg->getName() === "__parameters") {
-        $method_arguments[] = $parameters;
-        continue;
-      }
 
       if ($arg->getName() === "__response_data") {
-        $method_arguments[] = $response_data;
+        $method_arguments[] = $response->to_array();
         continue;
-      }
+      }     
 
       if (isset($parameters[$arg->getName()])) {
         $temp = $parameters[$arg->getName()];
@@ -517,7 +515,7 @@ class EWCore {
         try {
           require_once EW_PACKAGES_DIR . "/" . $app_dir . "/App.app.php";
           $app_class_name = $package . "\\App";
-          
+
           self::$APPS[$package] = new $app_class_name();
         }
         catch (Exception $ex) {
@@ -574,7 +572,7 @@ class EWCore {
   private static function autoload_core($class_name) {
     if (strpos($class_name, '\\')) {
       $class_name = end(explode('\\', $class_name));
-    }    
+    }
 
     $file = EW_ROOT_DIR . 'core/' . $class_name . '.class.php';
     //echo $file."<br>";

@@ -10,7 +10,7 @@ namespace admin;
 class ContentsRepository implements \ew\CRUDRepository {
   
   public function __construct() {
-    require_once '../models/ew_contents.php';;
+    require_once '/../models/ew_contents.php';;
   }
 
   public function create($input) {
@@ -111,7 +111,6 @@ class ContentsRepository implements \ew\CRUDRepository {
                 \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
 
     if (isset($content)) {
-      $content->content_fields = json_decode($content->content_fields, true);
       $labels = $this->get_content_labels($id);
       $content->labels = $labels;
       $content->labels = $this->parse_labels($labels, $content);

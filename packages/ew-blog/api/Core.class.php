@@ -74,8 +74,8 @@ class Core extends \ew\Module {
         "form"  => EWCore::get_view('ew-blog/html/core/tab-post-publish.php')
     ]);
 
-    $this->add_listener('admin/api/content-management/add-article', 'call_on_article_update');
-    $this->add_listener('admin/api/content-management/update-article', 'call_on_article_update');
+    $this->add_listener('admin/api/content-management/add-article', 'call_on_content_update');
+    $this->add_listener('admin/api/content-management/update-article', 'call_on_content_update');
     $this->add_listener('admin/api/content-management/get-article', 'call_on_article_get');
   }
 
@@ -320,7 +320,7 @@ class Core extends \ew\Module {
     return \ew\APIResourceHandler::to_api_response([], ["type" => "object"]);
   }
 
-  public function call_on_article_update($id, $__response_data, $ew_blog) {
+  public function call_on_content_update($id, $__response_data, $ew_blog) {
     $pdo = EWCore::get_db_PDO();
     $publish_date = $ew_blog['date_published'];
     $draft = $ew_blog['draft'];
@@ -334,9 +334,7 @@ class Core extends \ew\Module {
     }
 
     return [
-        'data'     => [
-            'date_published' => $publish_date,
-        ],
+        'date_published' => $publish_date,
         'included' => [
             [
                 'type' => 'ew_blog_post',
@@ -360,7 +358,7 @@ class Core extends \ew\Module {
     $result = [];
 
     if ($post) {
-      $result['data'] = [
+      $result = [
           'ew_blog/date_published' => $date,
           'ew_blog/draft'          => $post['draft']
       ];

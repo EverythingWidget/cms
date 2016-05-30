@@ -596,9 +596,9 @@
         });
         errorsList += '</ul>';
       } catch (e) {
-        console.log("ajaxError:");
-        console.log(e, status);
+        console.log("ajaxError: ",e);
         console.log(data);
+        console.log(e.stack);
       }
 
       $("body").EW().notify({

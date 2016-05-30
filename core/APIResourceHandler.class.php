@@ -129,8 +129,8 @@ class APIResourceHandler extends ResourceHandler {
 //              $result = $converted_result;
 //            }
 //          }
-          
-          $this->execute_api_listeners($api_listeners, $response);
+
+          $this->execute_api_listeners($api_listeners, $parameters, $response);
         }
       }
       catch (Exception $e) {
@@ -152,17 +152,17 @@ class APIResourceHandler extends ResourceHandler {
     }
   }
 
-  private function execute_api_listeners($api_listeners, $response) {
+  private function execute_api_listeners($api_listeners, $parameters, $response) {
     foreach ($api_listeners as $id => $listener) {
       if (method_exists($listener["object"], $listener["method"])) {
-        $response_data = $response->to_array();
+        //$response_data = $response->to_array();
         $listener_method_object = new \ReflectionMethod($listener["object"], $listener["method"]);
-        $arguments = \EWCore::create_arguments($listener_method_object, $parameters, $response_data);
+        $arguments = \EWCore::create_arguments($listener_method_object, $parameters, $response);
 
         $listener_result = $listener_method_object->invokeArgs($listener["object"], $arguments);
 
         if (isset($listener_result)) {
-          $response->set_data(array_merge_recursive(is_array($response_data) ? $response_data : [], $listener_result));
+          $response->set_data(array_merge_recursive(is_array($response->data) ? $response->data : [], $listener_result));
         }
       }
     }

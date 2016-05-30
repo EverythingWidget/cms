@@ -33,6 +33,10 @@ class ew_contents extends \Illuminate\Database\Eloquent\Model {
       'parent_id' => [
           'integer'
   ]];
+  
+  protected $casts = [
+        'content_fields' => 'json',
+    ];
 
   public function __construct(array $attributes = []) {
     parent::__construct($attributes);

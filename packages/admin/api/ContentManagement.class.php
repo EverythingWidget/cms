@@ -425,7 +425,7 @@ class ContentManagement extends \ew\Module {
     return $labels->toArray();
   }
 
-  public static function contents_labels($content_id, $key, $value = '%') {
+  public static function contents_labels($_input,$_response, $content_id, $key, $value = '%') {
     if (preg_match('/\$content\.(\w*)/', $content_id))
       return [];
 
@@ -458,12 +458,9 @@ class ContentManagement extends \ew\Module {
         \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")
     ]);
 
-    $data = array_map(function($e) {
-      $e["content_fields"] = json_decode($e["content_fields"], true);
-      return $e;
-    }, $result->toArray());
+    $_response->properties['total'] = $rows->count();
 
-    return \ew\APIResourceHandler::to_api_response($data, ["collection_size" => $rows->count()]);
+    return $result->toArray();
   }
 
   private function content_relationships($id_slug, $key, $value = '%') {
@@ -513,12 +510,7 @@ class ContentManagement extends \ew\Module {
       ]);
     }
 
-    $data = array_map(function($e) {
-      $e["content_fields"] = json_decode($e["content_fields"], true);
-      return $e;
-    }, $result->toArray());
-
-    return \ew\APIResourceHandler::to_api_response($data, ["collection_size" => $rows->count()]);
+    return \ew\APIResourceHandler::to_api_response($result->toArray(), ["collection_size" => $rows->count()]);
   }
 
   /**
@@ -802,10 +794,10 @@ class ContentManagement extends \ew\Module {
       return \EWCore::log_error(404, "Requested article not found", "article is not exist: $articleId");
     }
 
-    $article_info = $article->toArray();
-    $article_info["labels"] = $this->get_content_labels($articleId);
+    $article_info = $article;
+    $article_info->labels = $this->get_content_labels($articleId);
 
-    return \ew\APIResourceHandler::to_api_response($article_info);
+    return $article_info->toArray();
   }
 
   public function update_article($id, $title, $parent_id, $keywords = null, $description = null, $content = null, $labels = null) {
@@ -868,12 +860,7 @@ class ContentManagement extends \ew\Module {
           'ew_contents.id',
           \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
 
-      $data = array_map(function($e) {
-        $e["content_fields"] = json_decode($e["content_fields"], true);
-        return $e;
-      }, $articles->toArray());
-
-      return \ew\APIResourceHandler::to_api_response($data, ["collection_size" => $articles->count()]);
+      return \ew\APIResourceHandler::to_api_response($articles->toArray(), ["collection_size" => $articles->count()]);
     }
     else {
       $container_id = ew_contents::find($parent_id);
@@ -908,7 +895,7 @@ class ContentManagement extends \ew\Module {
 
       $data = array_map(function($e) use ($up_parent_id) {
         $e["up_parent_id"] = $up_parent_id;
-        $e["content_fields"] = json_decode($e["content_fields"], true);
+        //$e["content_fields"] = json_decode($e["content_fields"], true);
         return $e;
       }, $articles->toArray());
 
@@ -937,7 +924,7 @@ class ContentManagement extends \ew\Module {
 
     if (isset($content)) {
       //$cf = $this->get_content_fields($content->content);
-      $content->content_fields = json_decode($content->content_fields, true);
+      //$content->content_fields = json_decode($content->content_fields, true);
       //$content->parsed_content = $cf['html'];
 
       $labels = $this->get_content_labels($id);
@@ -970,7 +957,7 @@ class ContentManagement extends \ew\Module {
 
     if (isset($content)) {
       //$cf = $this->get_content_fields($content->content);
-      $content->content_fields = json_decode($content->content_fields, true);
+      //$content->content_fields = json_decode($content->content_fields, true);
       //$content->parsed_content = $cf['html'];
 
       $labels = $this->get_content_labels($slug);
@@ -996,12 +983,7 @@ class ContentManagement extends \ew\Module {
                     ->orderBy('title')->take($size)->skip($token)->get(['*',
         \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
 
-    $data = array_map(function($e) {
-      $e["content_fields"] = json_decode($e["content_fields"], true);
-      return $e;
-    }, $contents->toArray());
-
-    return \ew\APIResourceHandler::to_api_response($data, ["collection_size" => $contents->count()]);
+    return \ew\APIResourceHandler::to_api_response($contents->toArray(), ["collection_size" => $contents->count()]);
   }
 
   public function add_folder($title, $parent_id, $keywords, $description, $labels) {
@@ -1680,8 +1662,8 @@ class ContentManagement extends \ew\Module {
   public function read_contents($_input, $_response, $_parts__id) {
     $_input->id = $_parts__id;
     $result = (new ContentsRepository())->read($_input, $_response);
-    
-    if($result->error) {
+
+    if ($result->error) {
       $_response->set_status_code($result->error);
       return $result;
     }

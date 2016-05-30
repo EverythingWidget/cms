@@ -118,9 +118,9 @@ class WidgetsManagement extends \ew\Module {
     }
   }
 
-  public function call_on_folder_get($__response_data) {
+  public function call_on_folder_get($_response) {
     $result = [];
-    $content_data = $__response_data["data"];
+    $content_data = $_response->data;
 
     if (isset($content_data) && $content_data["id"]) {
       $uis_id = $content_data["id"];
@@ -128,16 +128,15 @@ class WidgetsManagement extends \ew\Module {
       if ($content_data['type'] === 'article') {
         $page_uis = $this->get_path_uis("/articles/$uis_id");
       }
-      else if ($__response_data["data"]['type'] === 'folder') {
+      else if ($content_data['type'] === 'folder') {
         $page_uis = $this->get_path_uis("/folders/$uis_id");
       }
-
-      $result["data"] = [
-          "webroot/page_uis_id" => ($page_uis["uis_id"]) ? $page_uis["uis_id"] : "",
-          "webroot/name"        => ($page_uis["uis_name"]) ? $page_uis["uis_name"] : "Inherit/Default"
-      ];
     }
-    return $result;
+    
+    return [
+        "webroot/page_uis_id" => ($page_uis["uis_id"]) ? $page_uis["uis_id"] : "",
+        "webroot/name"        => ($page_uis["uis_name"]) ? $page_uis["uis_name"] : "Inherit/Default"
+    ];
   }
 
   public function get_templates() {

@@ -7,7 +7,9 @@
 <div class="col-xs-12">
   <ul id="{{comp_id}}_attached" class="list">
     <div v-for="item in items" class="list-item">
-      <a class="link {{item.id === currentDocId ? 'active': ''}}" rel="ajax" href="#" v-on:click="select(item)">{{item.title}}</a>
+      <a v-bind:class="{'link': true,'active' : item.id === contentId}" href="#" v-on:click="select($event, item)">
+        {{item.title}}
+      </a>
     </div>
   </ul>
 </div>
@@ -17,21 +19,26 @@
     var text = $("#{{comp_id}}_text");
     var value = $("#{{comp_id}}_value");
 
-    var relatedDocuments = new Vue({
+    var relatedDocumentsVue = new Vue({
       el: "#{{comp_id}}_attached",
       data: {
-        currentDocId: parseInt("{{value}}"),
+        contentId: parseInt("{{value}}"),
         items: []
       },
       methods: {
-        select: function (item) {
-          var _this = this;
-          $.post("~admin/api/content-management/get-article", {
-            articleId: item.id
-          }, function (response) {
-            _this.currentDocId = item.id;
+        select: function ($event, item) {
+          $event.preventDefault();
+
+          if (item.id === relatedDocumentsVue.contentId) {
+            return;
+          }
+
+          $.get('api/admin/content-management/contents/' + item.id, success);
+          
+          function success(response) {
+            relatedDocumentsVue.contentId = item.id;
             ContentForm.setData(response.data);
-          }, "json");
+          }
         }
       }
     });
@@ -56,17 +63,19 @@
     });
 
     $("#{{form_id}}").on("refresh", function (e, formData) {
+      relatedDocumentsVue.contentId = formData.id;
+
       if (!ContentForm.getLabel("{{comp_id}}")) {
         ContentForm.activeLabel("{{comp_id}}", true);
         value.val('$content.id');
         text.val(formData["title"]).change();
       }
 
-      $.post("~admin/api/content-management/contents-labels", {
+      $.get("api/admin/content-management/contents-labels", {
         content_id: ContentForm.getLabel("{{comp_id}}"),
         key: "{{comp_id}}"
       }, function (response) {
-        relatedDocuments.items = response['data'];
+        relatedDocumentsVue.items = response['data'];
       }, "json");
     });
   }());
