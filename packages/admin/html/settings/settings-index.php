@@ -7,7 +7,7 @@
     </h1>
   </div>
 
-  <div class='card-content top-devider'>
+  <div class='card-content'>
     <h2 class="">Current version: <span id="current-version">v0.9.0</span></h2>
     <h2 class="">Latest: <span id="latest-version"></span></h2>
     <button type="button" class="btn btn-default" onclick="System.controller('ew-settings').checkForUpdate()">

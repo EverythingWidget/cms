@@ -7,7 +7,7 @@
     <h1> {{ card_title }} </h1>
   </div>
 
-  <div class='card-content top-devider'>
+  <div class='card-content'>
     <div id="folders-list" class="mt">
       <div v-for="folder in folders" tabindex='1' class='content-item folder' data-content-id='{{ folder.id }}'
            @drop="moveItem"

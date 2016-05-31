@@ -132,7 +132,7 @@ class WidgetsManagement extends \ew\Module {
         $page_uis = $this->get_path_uis("/folders/$uis_id");
       }
     }
-    
+
     return [
         "webroot/page_uis_id" => ($page_uis["uis_id"]) ? $page_uis["uis_id"] : "",
         "webroot/name"        => ($page_uis["uis_name"]) ? $page_uis["uis_name"] : "Inherit/Default"
@@ -257,7 +257,7 @@ class WidgetsManagement extends \ew\Module {
     return json_encode($rows);
   }
 
-  public function get_all_pages_uis_list() {
+  public function get_all_pages_uis_list($_response) {
     $db = \EWCore::get_db_connection();
     $result = $db->query("SELECT ew_pages_ui_structures.id AS id, ew_pages_ui_structures.path AS path, ew_ui_structures.name AS name FROM ew_pages_ui_structures,ew_ui_structures WHERE ew_pages_ui_structures.ui_structure_id = ew_ui_structures.id AND ew_pages_ui_structures.path LIKE '%'") or die(error_reporting());
     $rows = array();
@@ -265,10 +265,10 @@ class WidgetsManagement extends \ew\Module {
       $rows[] = $r;
     }
     $db->close();
-    //$out = array(;
-    return json_encode(array(
-        "totalRows" => $result->num_rows,
-        "result"    => $rows));
+
+    $_response->properties['total'] = $result->num_rows;
+
+    return $rows;
   }
 
   public function add_uis($name = null, $template = null, $template_settings = null, $structure = null) {

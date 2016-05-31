@@ -196,7 +196,7 @@ class EWCore {
       if ($arg->getName() === "__response_data") {
         $method_arguments[] = $response->to_array();
         continue;
-      }     
+      }
 
       if (isset($parameters[$arg->getName()])) {
         $temp = $parameters[$arg->getName()];
@@ -1215,6 +1215,10 @@ class EWCore {
   }
 
   public static function read_activities() {
+    return json_encode(static::read_activities_as_array());
+  }
+
+  public static function read_activities_as_array() {
     EWCore::init_packages();
     $pers = self::$permissions_groups;
     $allowed_activities = array();
@@ -1255,7 +1259,8 @@ class EWCore {
         }
       }
     }
-    return json_encode($allowed_activities);
+
+    return $allowed_activities;
   }
 
   /**
@@ -1304,6 +1309,11 @@ class EWCore {
     EWCore::init_packages();
 
     $properties = isset(self::$registry[$name]) ? self::$registry[$name] : [];
+    
+    if($name === '*') {
+      $properties = self::$registry;
+    }
+    
     $result = [];
     foreach ($properties as $property => $data) {
       $data['__registry_id'] = $property;
@@ -1314,8 +1324,6 @@ class EWCore {
   }
 
   public static function read_registry_as_json($name, $option = 0) {
-    EWCore::init_packages();
-
     return json_encode(static::read_registry_as_array($name, $option));
   }
 

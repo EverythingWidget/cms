@@ -45,7 +45,8 @@ $default_page = webroot\WidgetsManagement::get_path_uis("@DEFAULT");
           </div>
           <?php
           $widgets_types_list = webroot\WidgetsManagement::get_widget_feeders("page");
-          $pages = $widgets_types_list["data"];
+          $pages = $widgets_types_list->data[0];
+           
           //Show list of pages and their layouts
           if (isset($pages)) {
             foreach ($pages as $page) {
@@ -212,7 +213,7 @@ if ($path_uis_list) {
       $("#apps-page-uis [name='" + pageUIS.currentElement.prop("name") + "_uisId']").val(uisId.data("field-id"));
       pageUIS.currentElement.val("Loading...").change();
       var uisName = uisId.data("field-name");
-      $.post("<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/set-uis", {
+      $.post("~webroot/api/widgets-management/set-uis", {
         path: pageUIS.currentElement.prop("name"),
         uisId: uisId.data("field-id")
       }, function (data) {

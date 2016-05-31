@@ -137,7 +137,7 @@ class ContentManagement extends \ew\Module {
     $this->register_permission("see-content", "User can see the contents", [
         'api/index',
         "api/content_fields",
-        "api/contents_labels",
+        "api/contents-labels",
         "api/get_category",
         "api/get_article",
         "api/albums",
@@ -145,8 +145,6 @@ class ContentManagement extends \ew\Module {
         "api/contents_articles",
         "api/get_media_list",
         "api/media-audios",
-        "api/ew-list-feeder-folders",
-        "api/ew-page-feeder-articles",
         // html resources
         'html/index.php',
         "html/article-form.php",
@@ -188,6 +186,9 @@ class ContentManagement extends \ew\Module {
         'api/read_contents',
         'api/update_contents',
         'api/delete_contents',
+        'api/ew-page-feeder-articles',
+        'api/ew-list-feeder-folders',
+        'api/ew-list-feeder-related-contents'
     ]);
   }
 
@@ -425,7 +426,7 @@ class ContentManagement extends \ew\Module {
     return $labels->toArray();
   }
 
-  public static function contents_labels($_input,$_response, $content_id, $key, $value = '%') {
+  public static function contents_labels($_response, $content_id, $key, $value = '%') {
     if (preg_match('/\$content\.(\w*)/', $content_id))
       return [];
 
@@ -676,8 +677,8 @@ class ContentManagement extends \ew\Module {
     return $links;
   }
 
-  public function ew_page_feeder_articles($id, $language = "en") {
-    $articles = $this->contents_labels($id, "admin_ContentManagement_language", $language);
+  public function ew_page_feeder_articles($_response, $id, $language = "en") {
+    $articles = $this->contents_labels($_response, $id, "admin_ContentManagement_language", $language);
     $article = [];
 
     if ($articles) {
@@ -694,18 +695,18 @@ class ContentManagement extends \ew\Module {
     return \ew\APIResourceHandler::to_api_response([]);
   }
 
-  public function ew_list_feeder_folders($id, $token = 0, $size, $order_by = null, $_language = 'en') {
+  public function ew_list_feeder_folders($_response, $id, $token = 0, $size, $order_by = null, $_language = 'en') {
     if (!$token)
       $token = 0;
     if (!$size)
       $size = 30;
 
-    $articles_size = $this->contents_articles($id, null, null, null, $_language);
-    $articles = $this->contents_articles($id, $token, $size, $order_by, $_language);
+    $articles_size = $this->contents_articles($_response, $id, null, null, null, $_language);
+    $articles = $this->contents_articles($_response, $id, $token, $size, $order_by, $_language);
 
     $result = [];
-    if (isset($articles["data"])) {
-      foreach ($articles["data"] as $article) {
+    if (isset($articles)) {
+      foreach ($articles as $article) {
         $article["content_fields"]['@content/date-created'] = [
             'tag'     => 'p',
             'content' => \DateTime::createFromFormat('Y-m-d H:i:s', $article['date_created'])->format('Y-m-d')
@@ -719,17 +720,21 @@ class ContentManagement extends \ew\Module {
       }
     }
 
-    $folder_data = $this->get_content_by_id($id);
+    $folder_data = (new ContentsRepository)->find_by_id($id);
     $parent_content_fields = [];
-    if (isset($folder_data['data']['content_fields'])) {
-      $parent_content_fields = $folder_data['data']['content_fields'];
+    if (isset($folder_data->data['content_fields'])) {
+      $parent_content_fields = $folder_data->data['content_fields'];
     }
 
-    return \ew\APIResourceHandler::to_api_response($result, [
-                'parent_content_fields' => $parent_content_fields,
-                'page_size'             => $articles['collection_size'],
-                "collection_size"       => count($articles_size['data'])
-    ]);
+    $_response->properties['collection_size'] = count($articles_size['data']);
+    $_response->properties['page_size'] = $articles['collection_size'];
+    $_response->properties['parent_content_fields'] = $parent_content_fields;
+
+    return $result;
+  }
+
+  public function ew_list_feeder_related_contents($_response, $content_id, $key, $value = '%') {
+    return $this->contents_labels($_response, $content_id, $key, $value);
   }
 
   public function ew_menu_feeder_languages($id, $token = 0, $size) {
@@ -846,7 +851,7 @@ class ContentManagement extends \ew\Module {
     ]);
   }
 
-  public function contents_articles($parent_id = null, $token, $size, $order_by = null, $_language = 'en') {
+  public function contents_articles($_response, $parent_id = null, $token, $size, $order_by = null, $_language = 'en') {
     if (!isset($token)) {
       $token = 0;
     }
@@ -899,10 +904,10 @@ class ContentManagement extends \ew\Module {
         return $e;
       }, $articles->toArray());
 
-      return \ew\APIResourceHandler::to_api_response($data, [
-                  "collection_size" => $articles->count(),
-                  "parent"          => isset($container_id) ? $container_id->toArray() : null
-      ]);
+      $_response->properties['total'] = $articles->count();
+      $_response->properties['parent'] = isset($container_id) ? $container_id->toArray() : null;
+
+      return $data;
     }
 
     return \EWCore::log_error(400, 'tr{Something went wrong}');
@@ -1249,7 +1254,7 @@ class ContentManagement extends \ew\Module {
     ]);
   }
 
-  public function get_media_list($parent_id, $token = null, $size = null) {
+  public function get_media_list($_response, $parent_id, $token = null, $size = null) {
     $db = \EWCore::get_db_connection();
 
     $path = "/";
@@ -1258,12 +1263,12 @@ class ContentManagement extends \ew\Module {
     $new_width = 140;
     try {
       $files = [];
-      $include = ["included" => []];
+      $included = [];
       // Folder
       $files = ew_contents::where('type', 'album')->where('type', 'album')->where('parent_id', $parent_id)->orderBy('title')->get(['*',
                   \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")])->toArray();
       if (isset($parent_id) && $parent_id !== "0") {
-        $include["included"]["album"] = ew_contents::where('type', 'album')->where('id', $parent_id)->orderBy('title')->get(['*',
+        $included["album"] = ew_contents::where('type', 'album')->where('id', $parent_id)->orderBy('title')->get(['*',
                     \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")])->toArray()[0];
       }
       // images
@@ -1330,8 +1335,10 @@ class ContentManagement extends \ew\Module {
     catch (Exception $e) {
       echo $e->getMessage();
     }
-    //var_dump($files);
-    return \ew\APIResourceHandler::to_api_response($files, $include);
+
+    $_response->properties['included'] = $included;
+
+    return $files;
   }
 
   public function albums($_parts__id) {

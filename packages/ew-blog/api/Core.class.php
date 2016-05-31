@@ -183,10 +183,10 @@ class Core extends \ew\Module {
     if (isset($events)) {
       foreach ($events as $article) {
         $result[] = [
-            "id"             => $article->id,
-            "html"           => $article->content,
+            'id'             => $article->id,
+            'html'           => $article->content,
             'event_date'     => $article->event_date,
-            "content_fields" => json_decode($article->content_fields, true)
+            'content_fields' => $article->content_fields
         ];
       }
     }
@@ -249,13 +249,10 @@ class Core extends \ew\Module {
 
     $articles = $query->get();
 
-    $posts = array_map(function($row) {
-      $row["content_fields"] = json_decode($row["content_fields"], true);
-      return $row;
-    }, $articles->toArray());
+    $posts = $articles->toArray();
 
     $result = [];
-    if (isset($posts)) {
+    if (is_array($posts)) {
       foreach ($posts as $post) {
         $content_fields = $post["content_fields"];
         $content_fields['@content/date-created'] = [
@@ -313,7 +310,7 @@ class Core extends \ew\Module {
       $result["title"] = $post_data["title"];
       $result["content"] = $post_data["content"];
       $result["parsed_content"] = $post_data["parsed_content"];
-      $result["content_fields"] = json_decode($post_data["content_fields"], true);
+      //$result["content_fields"] = json_decode($post_data["content_fields"], true);
       $result["publish_date"] = $post_data["publish_date"];
       return \ew\APIResourceHandler::to_api_response($result, ["type" => "object"]);
     }
@@ -335,7 +332,7 @@ class Core extends \ew\Module {
 
     return [
         'date_published' => $publish_date,
-        'included' => [
+        'included'       => [
             [
                 'type' => 'ew_blog_post',
                 'id'   => $post_id['id']

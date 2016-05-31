@@ -29,8 +29,6 @@ else {
     return;
   $items_list = EWCore::call_api($feeder_id, ["id" => $id]);
 }
-
-
 $item_per_slide_lg = 1;
 $item_per_slide_md = 1;
 $item_per_slide_sm = 1;

@@ -7,7 +7,7 @@
     </h1>
   </div>
 
-  <div class='card-content top-devider'>
+  <div class='card-content'>
     <input class="text-field" data-label="Title" name="webroot/title" />
     <input class="text-field" data-label="Keywords" name="webroot/keywords" />
     <textarea class="text-field" data-label="Description" name="webroot/description" ></textarea>

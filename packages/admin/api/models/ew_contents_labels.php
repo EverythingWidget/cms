@@ -11,13 +11,17 @@
  *
  * @author Eeliya
  */
-class ew_contents_labels extends \Illuminate\Database\Eloquent\Model
-{
-   protected $fillable = ['content_id', 'key', 'value'];
-   public function __construct(array $attributes = [])
-   {
-      parent::__construct($attributes);
-      $this->timestamps = false;
-   }
-   //put your code here
+class ew_contents_labels extends \Illuminate\Database\Eloquent\Model {
+
+  protected $fillable = ['content_id', 'key', 'value'];
+  protected $casts = [
+      'content_fields' => 'json',
+  ];
+
+  public function __construct(array $attributes = []) {
+    parent::__construct($attributes);
+    $this->timestamps = false;
+  }
+
+  //put your code here
 }
