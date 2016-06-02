@@ -139,7 +139,7 @@ class Core extends \ew\Module {
     return json_encode($apps);
   }
 
-  public function ew_list_feeder_events($id, $_language, $params = [], $order_by = 'ASC', $token = 0, $size = 100) {
+  public function ew_list_feeder_events($_response, $id, $_language, $params = [], $order_by = 'ASC', $token = 0, $page_size = 100) {
     if (!isset($id)) {
       return \ew\APIResourceHandler::to_api_response([]);
     }
@@ -175,7 +175,7 @@ class Core extends \ew\Module {
     $ollection_size = $query->get()->count();
 
     $query->orderBy("events.value", $order_by)
-            ->take($size)
+            ->take($page_size)
             ->skip($token);
 
     $events = $query->get();
@@ -194,15 +194,15 @@ class Core extends \ew\Module {
     $folder_info = \EWCore::call_cached_api('admin/api/content-management/contents', [
                 'id' => $id
     ]);
+    
+    $_response->properties['total'] = $ollection_size;
+    $_response->properties['page_size'] = $events->count();
+    $_response->properties['parent_content_fields'] = $folder_info['data']['content_fields'];
 
-    return \ew\APIResourceHandler::to_api_response($result, [
-                'parent_content_fields' => $folder_info['data']['content_fields'],
-                'page_size'             => $events->count(),
-                "collection_size"       => $ollection_size
-    ]);
+    return $result;
   }
 
-  public function ew_list_feeder_posts($id, $params = [], $token = 0, $size = 30, $order_by = 'DESC', $_language = 'en') {
+  public function ew_list_feeder_posts($id, $params = [], $token = 0, $page_size = 30, $order_by = 'DESC', $_language = 'en') {
     $query = \admin\ew_contents::select([
                 'ew_contents.id',
                 'date_created',
@@ -244,7 +244,7 @@ class Core extends \ew\Module {
     $collection_size = $query->get()->count();
 
     $query->orderBy("posts.date_published", $order_by)
-            ->take($size)
+            ->take($page_size)
             ->skip($token);
 
     $articles = $query->get();
@@ -285,7 +285,7 @@ class Core extends \ew\Module {
                     'content_fields' => $folder_info['data']['content_fields'],
                 ],
                 'page_size'       => $articles->count(),
-                "collection_size" => $collection_size
+                "total" => $collection_size
     ]);
   }
 

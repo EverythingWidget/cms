@@ -511,7 +511,7 @@ class ContentManagement extends \ew\Module {
       ]);
     }
 
-    return \ew\APIResourceHandler::to_api_response($result->toArray(), ["collection_size" => $rows->count()]);
+    return \ew\APIResourceHandler::to_api_response($result->toArray(), ['total' => $rows->count()]);
   }
 
   /**
@@ -697,14 +697,14 @@ class ContentManagement extends \ew\Module {
     return [];
   }
 
-  public function ew_list_feeder_folders($_response, $id, $token = 0, $size, $order_by = null, $_language = 'en') {
+  public function ew_list_feeder_folders($_response, $id, $token = 0, $page_size, $order_by = null, $_language = 'en') {
     if (!$token)
       $token = 0;
-    if (!$size)
-      $size = 30;
+    if (!$page_size)
+      $page_size = 30;
 
-    $articles_size = $this->contents_articles($_response, $id, null, null, null, $_language);
-    $articles = $this->contents_articles($_response, $id, $token, $size, $order_by, $_language);
+    //$articles_size = $this->contents_articles($_response, $id, null, null, null, $_language);
+    $articles = $this->contents_articles($_response, $id, $token, $page_size, $order_by, $_language);
 
     $result = [];
     if (isset($articles)) {
@@ -728,8 +728,8 @@ class ContentManagement extends \ew\Module {
       $parent_content_fields = $folder_data->data['content_fields'];
     }
 
-    $_response->properties['collection_size'] = count($articles_size['data']);
-    $_response->properties['page_size'] = $articles['collection_size'];
+    $_response->properties['total'] = $articles['total'];
+    $_response->properties['page_size'] = $articles['page_size'];
     $_response->properties['parent_content_fields'] = $parent_content_fields;
 
     return $result;
@@ -739,11 +739,11 @@ class ContentManagement extends \ew\Module {
     return $this->contents_labels($_response, $content_id, $key, $value);
   }
 
-  public function ew_menu_feeder_languages($id, $token = 0, $size) {
+  public function ew_menu_feeder_languages($id, $token = 0, $page_size) {
     if (!$token)
       $token = 0;
-    if (!$size)
-      $size = 30;
+    if (!$page_size)
+      $page_size = 30;
 
     return ['title' => ['link' => '',
             'icon' => '']];
@@ -832,7 +832,7 @@ class ContentManagement extends \ew\Module {
     }
   }
 
-  public function contents_folders($parent_id, $token, $size) {
+  public function contents_folders($parent_id, $token, $page_size) {
     $container_id = ew_contents::find($parent_id);
     $up_parent_id = $container_id['parent_id'] ? $container_id['parent_id'] : 0;
     //$container_id = $container_id['parent_id'];
@@ -848,17 +848,17 @@ class ContentManagement extends \ew\Module {
     }
 
     return \ew\APIResourceHandler::to_api_response($rows, [
-                "collection_size" => $folders->count(),
+                "total" => $folders->count(),
                 "parent"          => isset($container_id) ? $container_id->toArray() : null
     ]);
   }
 
-  public function contents_articles($_response, $parent_id = null, $token, $size, $order_by = null, $_language = 'en') {
+  public function contents_articles($_response, $parent_id = null, $token, $page_size, $order_by = null, $_language = 'en') {
     if (!isset($token)) {
       $token = 0;
     }
-    if (!$size) {
-      $size = '18446744073709551610';
+    if (!$page_size) {
+      $page_size = '18446744073709551610';
     }
 
     // if there is no parent_id then select all the articles
@@ -867,7 +867,7 @@ class ContentManagement extends \ew\Module {
           'ew_contents.id',
           \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
 
-      return \ew\APIResourceHandler::to_api_response($articles->toArray(), ["collection_size" => $articles->count()]);
+      return \ew\APIResourceHandler::to_api_response($articles->toArray(), ["total" => $articles->count()]);
     }
     else {
       $container_id = ew_contents::find($parent_id);
@@ -878,7 +878,7 @@ class ContentManagement extends \ew\Module {
                 ->where('type', 'article')
                 ->where('ew_contents_labels.key', 'admin_ContentManagement_language')
                 ->where('ew_contents_labels.value', $_language)
-                ->take($size)
+                ->take($page_size)
                 ->skip($token)
                 ->orderBy("date_modified", $order_by)
                 ->get(['*',
@@ -891,7 +891,7 @@ class ContentManagement extends \ew\Module {
                 ->where('type', 'article')
                 ->where('ew_contents_labels.key', 'admin_ContentManagement_language')
                 ->where('ew_contents_labels.value', $_language)
-                ->take($size)
+                ->take($page_size)
                 ->skip($token)
                 ->get([
             '*',
@@ -976,21 +976,21 @@ class ContentManagement extends \ew\Module {
     return EWCore::log_error(404, "content not found");
   }
 
-  private function get_contents($title_filter = '%', $type = '%', $token = 0, $size = 99999999999999) {
+  private function get_contents($title_filter = '%', $type = '%', $token = 0, $page_size = 99999999999999) {
     if (!$token) {
       $token = 0;
     }
 
-    if (!$size) {
-      $size = '18446744073709551610';
+    if (!$page_size) {
+      $page_size = '18446744073709551610';
     }
 
     $contents = ew_contents::where('type', 'LIKE', $type)
                     ->where(\Illuminate\Database\Capsule\Manager::raw("`title` COLLATE UTF8_GENERAL_CI"), 'LIKE', $title_filter . '%')
-                    ->orderBy('title')->take($size)->skip($token)->get(['*',
+                    ->orderBy('title')->take($page_size)->skip($token)->get(['*',
         \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
 
-    return \ew\APIResourceHandler::to_api_response($contents->toArray(), ["collection_size" => $contents->count()]);
+    return \ew\APIResourceHandler::to_api_response($contents->toArray(), ["total" => $contents->count()]);
   }
 
   public function add_folder($title, $parent_id, $keywords, $description, $labels) {
@@ -1162,14 +1162,14 @@ class ContentManagement extends \ew\Module {
     return $this->delete_content($id);
   }
 
-  public function get_documents_list($parentId, $token = null, $size = null) {
+  public function get_documents_list($parentId, $token = null, $page_size = null) {
     $db = \EWCore::get_db_connection();
 
     if (!isset($token)) {
       $token = 0;
     }
-    if (!$size) {
-      $size = 99999999999999;
+    if (!$page_size) {
+      $page_size = 99999999999999;
     }
 
     $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM content_categories WHERE parent_id = '$parentId' ORDER BY title") or die("safasfasf");
@@ -1188,7 +1188,7 @@ class ContentManagement extends \ew\Module {
     $documents = array_merge($categories, $articles);
     $db->close();
     $out = [
-        "collection_size" => count($documents),
+        "total" => count($documents),
         "result"          => $documents];
     return json_encode($out);
   }
@@ -1252,7 +1252,7 @@ class ContentManagement extends \ew\Module {
         \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
 
     return \ew\APIResourceHandler::to_api_response($audios->toArray(), [
-                'collection_size' => $audios->count()
+                'total' => $audios->count()
     ]);
   }
 

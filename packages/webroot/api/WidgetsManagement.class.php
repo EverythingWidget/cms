@@ -214,19 +214,19 @@ class WidgetsManagement extends \ew\Module {
     return json_encode(["html" => $this->get_app()->get_view('html/widgets-management/uis-tab.php', $form_config)]);
   }
 
-  public function get_uis_list($token = 0, $size = 99999999999999) {
+  public function get_uis_list($token = 0, $page_size = 99999999999999) {
     $db = \EWCore::get_db_connection();
 
     if (!isset($token)) {
       $token = 0;
     }
-    if (!$size) {
-      $size = 99999999999999;
+    if (!$page_size) {
+      $page_size = 99999999999999;
     }
 
     $totalRows = $db->query("SELECT COUNT(*)  FROM ew_ui_structures ") or die(error_reporting());
     $totalRows = $totalRows->fetch_assoc();
-    $result = $db->query("SELECT *  FROM ew_ui_structures ORDER BY name LIMIT $token,$size") or die(error_reporting());
+    $result = $db->query("SELECT *  FROM ew_ui_structures ORDER BY name LIMIT $token,$page_size") or die(error_reporting());
 
 //$out = array();
     $rows = array();

@@ -251,21 +251,21 @@ class UsersManagement extends \ew\Module {
     return true;
   }
 
-  public function users($_response, $token = 0, $size = 999999) {
+  public function users($_response, $token = 0, $page_size = 999999) {
     $db = \EWCore::get_db_connection();
 
     if (!isset($token)) {
       $token = 0;
     }
-    if (!isset($size)) {
-      $size = '18446744073709551610';
+    if (!isset($page_size)) {
+      $page_size = '18446744073709551610';
     }
-    $size = ", $size";
+    $page_size = ", $page_size";
 
     $totalRows = $db->query("SELECT COUNT(*) FROM ew_users, ew_users_groups WHERE ew_users.group_id = ew_users_groups.id") or die(error_reporting());
     $totalRows = $totalRows->fetch_assoc();
 //echo $size;
-    $result = $db->query("SELECT ew_users.id,email, first_name, last_name,ew_users_groups.title, DATE_FORMAT(ew_users.date_created,'%Y-%m-%d') AS round_date_created FROM ew_users, ew_users_groups WHERE ew_users.group_id = ew_users_groups.id ORDER BY ew_users.id LIMIT $token $size") or die($db->error);
+    $result = $db->query("SELECT ew_users.id,email, first_name, last_name,ew_users_groups.title, DATE_FORMAT(ew_users.date_created,'%Y-%m-%d') AS round_date_created FROM ew_users, ew_users_groups WHERE ew_users.group_id = ew_users_groups.id ORDER BY ew_users.id LIMIT $token $page_size") or die($db->error);
 
     $rows = [];
     while ($r = $result->fetch_assoc()) {

@@ -1523,7 +1523,7 @@ EWTable.prototype.read = function (customURLData) {
 
   var urlData = $.extend(_this.urlData, {
     token: _this.token,
-    size: _this.pageSize
+    page_size: _this.pageSize
   }, customURLData);
 
   setTimeout(function () {

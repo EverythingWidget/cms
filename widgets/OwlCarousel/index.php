@@ -18,7 +18,7 @@ if ($feeder["type"] === "widget-feeder") {
   $items_list = EWCore::call_api($feeder_obj->api_url, [
               "id"        => $id,
               "token"     => $token * $num_of_items_per_page,
-              "size"      => $num_of_items_per_page,
+              "page_size"      => $num_of_items_per_page,
               "order_by"  => $order,
               '_language' => $_REQUEST['_language']
   ]);
