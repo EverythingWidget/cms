@@ -103,38 +103,39 @@ class EWCore {
     return static::process_request_command($parts[0], $parts[1], $parts[2], $parts[3], $pars);
   }
 
-  public static function call_api($url, $parameters = []) {
+  public static function call_api($url, $parameters = [], $verb = 'GET') {
     $parts = explode('/', $url);
-    $pars = array_merge($_REQUEST, [
+    $params = array_merge($_REQUEST, [
         '_file' => implode('/', array_slice($parts, 3))
             ], $parameters);
 
-    ksort($pars);
+    ksort($params);
 
-    $pars["_APIResourceHandler_output_array"] = true;
+    $params["_APIResourceHandler_output_array"] = true;
+    $params["_APIResourceHandler_verb"] = $verb;
 
-    return static::process_request_command($parts[0], $parts[1], $parts[2], $parts[3], $pars);
+    return static::process_request_command($parts[0], $parts[1], $parts[2], $parts[3], $params);
   }
 
   private static $CACHED_API_CALL_RESULTS = [];
 
   public static function call_cached_api($url, $parameters = []) {
     $parts = explode('/', $url);
-    $pars = array_merge($_REQUEST, [
+    $params = array_merge($_REQUEST, [
         '_file' => implode('/', array_slice($parts, 3))
             ], $parameters);
 
-    ksort($pars);
+    ksort($params);
 
-    $cached_resource_id = $url . ' ' . implode('-', $pars);
+    $cached_resource_id = $url . ' ' . implode('-', $params);
 
     if (isset(static::$CACHED_API_CALL_RESULTS[$cached_resource_id])) {
       return static::$CACHED_API_CALL_RESULTS[$cached_resource_id];
     }
 
-    $pars["_APIResourceHandler_output_array"] = true;
+    $params["_APIResourceHandler_output_array"] = true;
 
-    static::$CACHED_API_CALL_RESULTS[$cached_resource_id] = static::process_request_command($parts[0], $parts[1], $parts[2], $parts[3], $pars);
+    static::$CACHED_API_CALL_RESULTS[$cached_resource_id] = static::process_request_command($parts[0], $parts[1], $parts[2], $parts[3], $params);
     return static::$CACHED_API_CALL_RESULTS[$cached_resource_id];
   }
 
@@ -1309,11 +1310,11 @@ class EWCore {
     EWCore::init_packages();
 
     $properties = isset(self::$registry[$name]) ? self::$registry[$name] : [];
-    
-    if($name === '*') {
+
+    if ($name === '*') {
       $properties = self::$registry;
     }
-    
+
     $result = [];
     foreach ($properties as $property => $data) {
       $data['__registry_id'] = $property;

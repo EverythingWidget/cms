@@ -23,7 +23,9 @@ class APIResourceHandler extends ResourceHandler {
   ];
 
   protected function handle($app, $package, $resource_type, $module_name, $command, $parameters = null) {
-    $output_as_array = $this->get_parameter("output_array");
+    $output_as_array = $this->get_parameter('output_array');
+    $api_verb = $this->get_parameter('verb');
+
     if ($output_as_array !== true) {
       header("Content-Type: application/json");
     }
@@ -35,7 +37,12 @@ class APIResourceHandler extends ResourceHandler {
     if (preg_match('/_/', $command)) {
       return \EWCore::log_error(400, "Incorrect function name: $command");
     }
-    $verb = $this->verbs[strtoupper($_SERVER['REQUEST_METHOD'])];
+
+    $verb = $api_verb ? $this->verbs[strtoupper($api_verb)] : $this->verbs[strtoupper($_SERVER['REQUEST_METHOD'])];
+
+    if (!$verb) {
+      return \EWCore::log_error(400, 'Request verb is unknown: $verb');      
+    }
 
     // Set the verb as command name if command is empty
     $command_name = $command ? $command : $verb;
