@@ -11,6 +11,7 @@ $links = $widget_parameters["link"];
 $icons = $widget_parameters["icon"];
 
 $feeder = json_decode($widget_parameters["feeder"], true);
+
 if ($feeder) {
   $feeder_obj = webroot\WidgetsManagement::get_widget_feeder($feeder["feederId"]);
 
@@ -36,6 +37,7 @@ if ($feeder) {
     $icons = $menu_item["src"];
   }
 }
+
 $result_html = "";
 ?>
 <ul>
@@ -121,16 +123,16 @@ $result_html = "";
     preg_match($pattern, $_SERVER['REQUEST_URI'] . '.', $match);
     $active = ($match) ? "active" : "";
 
-    echo "<li class='$active' ><a href='$link_url'>$titles</a>";
+    $result_html .= "<li class='$active' ><a href='$link_url'>$titles</a>";
     if ($sub_menus) {
-      echo "<ul>";
+      $result_html .= "<ul>";
       foreach ($sub_menus as $sub_menu) {
-        echo "<li class='$active'><a href='" . EW_DIR_URL . $url_language . "{$sub_menu["link"]}'>";
-        echo $sub_menu["title"] . "</a></li>";
+        $result_html .= "<li class='$active'><a href='" . EW_DIR_URL . $url_language . "{$sub_menu["link"]}'>";
+        $result_html .= $sub_menu["title"] . "</a></li>";
       }
-      echo "</ul>";
+      $result_html .= "</ul>";
     }
-    echo '</li>';
+    $result_html .= '</li>';
   }
 
   echo $result_html;

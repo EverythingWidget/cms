@@ -681,18 +681,20 @@ class ContentManagement extends \ew\Module {
     $articles = $this->contents_labels($_response, $id, "admin_ContentManagement_language", $language);
     $article = [];
 
-    if ($articles) {
-      $article = $articles->data[0];
+    if ($articles[0]) {
+      $article = $articles[0];
       $result['title'] = $article['title'];
       $result['keywords'] = $article['keywords'];
       $result['description'] = $article['description'];
       $result['content'] = $article['content'];
       $result['content_fields'] = $article['content_fields'];
 
-      return \ew\APIResourceHandler::to_api_response($result, ['type' => 'object']);
+      $_response->properties['type'] = 'object';
+
+      return $result;
     }
 
-    return \ew\APIResourceHandler::to_api_response([]);
+    return [];
   }
 
   public function ew_list_feeder_folders($_response, $id, $token = 0, $size, $order_by = null, $_language = 'en') {
