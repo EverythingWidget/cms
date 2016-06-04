@@ -1,6 +1,14 @@
 <system-ui-view module="content-management/documents" name="folders-card" class="card card-big center-block z-index-1">
-  <div  class='card-header'>
-    <div class="card-title-action"></div>
+  <div  class='card-header'
+        data-content-id='{{ upParentId }}'
+        v-on:drop="moveItem"
+        v-on:dragover="isAllowed">
+    <div class="card-title-action">
+      <button type="button" class="btn btn-text icon-back btn-circle"
+              transition="slide"              
+              v-if="parentId"
+              v-on:click="goUp()"></button>
+    </div>
 
     <div class="card-title-action-right"></div>
 
@@ -10,8 +18,8 @@
   <div class='card-content'>
     <div id="folders-list" class="mt">
       <div v-for="folder in folders" tabindex='1' class='content-item folder' data-content-id='{{ folder.id }}'
-           @drop="moveItem"
-           @dragover="isAllowed">
+           v-on:drop="moveItem"
+           v-on:dragover="isAllowed">
         <span></span>
         <p class='date'>{{ folder.round_date_created }}</p>
         <p>{{ folder.title }}</p>          
@@ -21,12 +29,13 @@
     <div id="articles-list" class="mt">
       <div tabindex='1' draggable="true" class='content-item article' data-content-id='{{ article.id }}'
            v-for="article in articles" 
-           @dragstart="dragStart">
+           v-on:dragstart="dragStart">
         <span></span>
         <p class='date'>{{ article.round_date_created }}</p>
         <p>{{ article.title }}</p>          
       </div>
-    </div>
+    </div>    
+
   </div>
 </system-ui-view>
 
@@ -84,13 +93,11 @@
           }
 
           if (id === "0") {
-            handler.upAction.comeOut(300);
             handler.bSee.comeOut();
             handler.deleteFolderActivity.comeOut();
           }
 
           if (id > 0) {
-            handler.upAction.comeIn(300);
             handler.bSee.comeIn();
             handler.deleteFolderActivity.comeIn();
           }
@@ -124,6 +131,29 @@
 
     DocumentsStateHandler.prototype.init = function () {
       var handler = this;
+
+      Object.defineProperty(this, 'parentId', {
+        set: function (value) {
+          handler.ui.folders_card_vue.parentId = value;
+          this.$parentId = value;
+        },
+        get: function () {
+          return this.$parentId;
+        }
+      });
+
+      Object.defineProperty(this, 'upParentId', {
+        set: function (value) {
+          handler.ui.folders_card_vue.upParentId = value;
+          this.$upParentId = value;
+        },
+        get: function () {
+          return this.$upParentId;
+        }
+      });
+
+
+
       handler.ui.components.folders_card = $(scope.uiViews.folders_card);
       handler.ui.components.folders_card_title_action_right = handler.ui.components.folders_card.find(".card-title-action-right");
       handler.ui.components.folders_list = handler.ui.components.folders_card.find("#folders-list");
@@ -132,6 +162,8 @@
       handler.ui.folders_card_vue = new Vue({
         el: scope.uiViews.folders_card,
         data: {
+          upParentId: 0,
+          parentId: 0,
           card_title: 'tr{Contents}',
           folders: [],
           articles: []
@@ -142,20 +174,25 @@
           },
           moveItem: function (event) {
             event.preventDefault();
-            console.log(event.dataTransfer.getData('item'));
+            if (parseInt(event.currentTarget.getAttribute('data-content-id')) !== this.parentId) {
+              handler.moveItem(event.dataTransfer.getData('item'), event.currentTarget.getAttribute('data-content-id'));
+            }
           },
           isAllowed: function (event) {
             event.preventDefault();
+          },
+          goUp: function () {
+            handler.preCategory.call(handler);
           }
         }
       });
 
-      this.upAction = EW.addActionButton({
-        text: "",
-        class: "btn-text icon-back btn-circle",
-        handler: $.proxy(this.preCategory, this),
-        parent: this.ui.components.folders_card.find(".card-title-action")
-      });
+//      this.upAction = EW.addActionButton({
+//        text: "",
+//        class: "btn-text icon-back btn-circle",
+//        handler: $.proxy(this.preCategory, this),
+//        parent: this.ui.components.folders_card.find(".card-title-action")
+//      });
 
       this.seeFolderActivity = EW.getActivity({
         activity: "admin/html/content-management/folder-form.php_see",
@@ -216,10 +253,8 @@
 
     DocumentsStateHandler.prototype.start = function () {
       var component = this;
-      this.parentId = null;
       this.folderId = 0;
       this.articleId = 0;
-      this.upParentId = 0;
       this.currentItem = null;
 
       this.bNewFolder = EW.addActivity({
@@ -308,6 +343,34 @@
       });
     };
 
+    DocumentsStateHandler.prototype.moveItem = function (id, toId) {
+      var handler = this;
+      var loader = System.ui.lock({
+        element: handler.ui.components.folders_card[0],
+        akcent: 'loader center'
+      });
+
+      $.ajax({
+        type: 'PUT',
+        url: 'api/admin/content-management/contents',
+        data: {
+          id: id,
+          parent_id: toId
+        },
+        success: function (response) {
+          if (response.status_code === 200) {
+            handler.ui.folders_card_vue.articles.forEach(function (item, index) {
+              if (item.id === response.data.id) {
+                handler.ui.folders_card_vue.articles.splice(index, 1);
+              }
+            });
+          }
+
+          loader.dispose();
+        }
+      });
+    };
+
     DocumentsStateHandler.prototype.preCategory = function () {
       this.currentItem = null;
       this.state.setParam("dir", this.upParentId + "/list");
@@ -374,7 +437,8 @@
         }
 
         var startPoint = (component.currentItem) ?
-                component.currentItem.getBoundingClientRect() : component.upAction[0].getBoundingClientRect();
+                component.currentItem.getBoundingClientRect() :
+                component.ui.components.folders_card[0].getBoundingClientRect();
 
         System.UI.Animation.blastTo({
           fromPoint: startPoint,

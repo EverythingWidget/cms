@@ -53,11 +53,11 @@ gulp.task('admin:compile:base:scss', function (a) {
           .pipe(rename(function (path) {
             //path.dirname += "/..";
           }))
-          .pipe(sourcemaps.write('./'))
-          .pipe(gulp.dest('packages/admin/public/css/'))
-          .pipe(browserSync.stream({
-            match: "**/*.css"
-          }));
+          //.pipe(sourcemaps.write('./'))
+          .pipe(gulp.dest('packages/admin/public/css/'));
+//          .pipe(browserSync.stream({
+//            match: "**/*.css"
+//          }));
 });
 
 gulp.task('admin:compile:scss', function (a) {
@@ -69,7 +69,7 @@ gulp.task('admin:compile:scss', function (a) {
           .pipe(rename(function (path) {
             //path.dirname += "/";
           }))
-          .pipe(sourcemaps.write())
+          //.pipe(sourcemaps.write())
           .pipe(gulp.dest('packages/admin/html/'))
           .pipe(browserSync.stream({
             match: "**/*.css"

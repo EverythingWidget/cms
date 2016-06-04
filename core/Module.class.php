@@ -295,10 +295,6 @@ class Module {
   }
 
   public function register_content_component($key, $comp_object) {
-    //$ro = new ReflectionClass($this);
-    //$defaults = ["componentObject" => $comp_object];
-    //$defaults = array_merge($defaults, $comp_object);
-    //$label_id = \EWCore::camelToHyphen($this->app->get_root() . '-' . $this->get_section_name() . '-' . $key);
     $label_id = $this->app->get_root() . '_' . $this->get_section_name() . '_' . $key;
     \EWCore::register_object(\EWCore::$EW_CONTENT_COMPONENT, $label_id, $comp_object);
   }
@@ -316,44 +312,6 @@ class Module {
     $defaults = array_merge($defaults, $default_value);
     \EWCore::register_object("ew-content-labels", $this->app->get_root() . '_' . $this->get_section_name() . '_' . $key, $defaults);
   }
-
-  /**
-   * 
-   * @param string $name id of parent form
-   * @param type $id if of new section
-   * @param type $form
-   */
-  /* public function register_form($name, $id, $form, $resource = 'api')
-    {
-    $defaults = ["app" => $this->app->get_root(),
-    "resource" => $resource,
-    "module" => \EWCore::camelToHyphen($this->get_section_name()),
-    "method" => 'ew-form-' . $id];
-    $form_structure = array_merge($defaults, $form);
-    \EWCore::register_object($name, $this->app->get_root() . '_' . $this->get_section_name() . '_' . $id, $form_structure);
-    } */
-
-  /**
-   * In order to EWCore can find the function which is binded to this feeder id, the function name should be defined in the follow format: ew_<b>[feeder_type]</b>_feeder_<b>[function_name]</b>
-   * @param type $type The type of feeder
-   * @param type $id
-   * @param type $function_name Name of the fucntion without the prefix
-   */
-  /* public function register_widget_feeder($type, $id, $function_name = null)
-    {
-    if (!$function_name)
-    {
-    $function_name = $id;
-    }
-
-    if (!strpos($function_name, ".php"))
-    {
-    $function_name = array(
-    $this,
-    "ew_" . $type . "_feeder_" . $function_name);
-    }
-    \webroot\WidgetsManagement::add_widget_feeder($type, $this->app->get_root(), $id, $function_name);
-    } */
 
   public function register_content_type($type_name, $get, $get_list) {
     

@@ -8,9 +8,10 @@ namespace admin;
  * @author Eeliya
  */
 class ContentsRepository implements \ew\CRUDRepository {
-  
+
   public function __construct() {
-    require_once '/../models/ew_contents.php';;
+    require_once '/../models/ew_contents.php';
+    ;
   }
 
   public function create($input) {
@@ -43,11 +44,19 @@ class ContentsRepository implements \ew\CRUDRepository {
   }
 
   public function update($input) {
-    $result = new \stdClass;
-    $result->error = 503;
-    $result->message = 'ContentsRepository: REST update functionality is not implemented';
+    if ($input->title === '') {
+      $result = new \stdClass;
+      $result->error = 400;
+      $result->message = 'Content title can not be empty';
+      
+      return $result;
+    }
 
-    return $result;
+    $content = ew_contents::find($input->id);
+    $content->fill((array) $input);
+    $content->save();
+
+    return $content;
   }
 
   // ------ //

@@ -197,12 +197,12 @@ class Core extends \ew\Module {
     
     $_response->properties['total'] = $ollection_size;
     $_response->properties['page_size'] = $events->count();
-    $_response->properties['parent_content_fields'] = $folder_info['data']['content_fields'];
+    $_response->properties['parent'] = $folder_info['data'];
 
     return $result;
   }
 
-  public function ew_list_feeder_posts($id, $params = [], $token = 0, $page_size = 30, $order_by = 'DESC', $_language = 'en') {
+  public function ew_list_feeder_posts($_response,$id, $params = [], $token = 0, $page_size = 30, $order_by = 'DESC', $_language = 'en') {
     $query = \admin\ew_contents::select([
                 'ew_contents.id',
                 'date_created',
@@ -247,13 +247,13 @@ class Core extends \ew\Module {
             ->take($page_size)
             ->skip($token);
 
-    $articles = $query->get();
+    $query_result = $query->get();
 
-    $posts = $articles->toArray();
+    $query_result_array = $query_result->toArray();
 
-    $result = [];
-    if (is_array($posts)) {
-      foreach ($posts as $post) {
+    $posts = [];
+    if (is_array($query_result_array)) {
+      foreach ($query_result_array as $post) {
         $content_fields = $post["content_fields"];
         $content_fields['@content/date-created'] = [
             'tag'     => 'p',
@@ -265,7 +265,7 @@ class Core extends \ew\Module {
             'content' => \DateTime::createFromFormat('Y-m-d H:i:s', $post['date_published'])->format('Y-m-d')
         ];
 
-        $result[] = [
+        $posts[] = [
             "id"             => $post["id"],
             "html"           => $post["content"],
             "content_fields" => $content_fields
@@ -277,16 +277,16 @@ class Core extends \ew\Module {
                 'id' => $id
     ]);
 
-    return \ew\APIResourceHandler::to_api_response($result, [
-                'parent'          => [
+    $_response->properties['total'] = $collection_size;
+    $_response->properties['page_size'] = $query_result->count();
+    $_response->properties['parent'] = [
                     'title'          => $folder_info['data']['title'],
                     'keywords'       => $folder_info['data']['keywords'],
                     'description'    => $folder_info['data']['description'],
                     'content_fields' => $folder_info['data']['content_fields'],
-                ],
-                'page_size'       => $articles->count(),
-                "total" => $collection_size
-    ]);
+                ];
+            
+    return $posts;
   }
 
   public function ew_page_feeder_post($id, $params = [], $_language = 'en') {

@@ -14,6 +14,7 @@
   <div id="media-photos" class="tab-pane active">
     <system-ui-view module="content-management/media" name="albums-list" class="block-row">  
       <div tabindex="1" v-for="album in albums" class="content-item album" 
+           v-if="albumId === 0"
            v-on:focus="selectItem(album.id)" 
            v-on:dblclick="openAlbum(album.id)">
         <span></span>
@@ -272,6 +273,7 @@
       handler.ui.media_photos_vue = new Vue({
         el: scope.ui.find('#media-photos')[0],
         data: {
+          albumId: 0,
           albums: [],
           images: []
         },
@@ -414,11 +416,15 @@
           albumsList.hide();
           stateHandler.albumCard.find("h1").text(response.included.album.title);
         }
+
+        stateHandler.ui.media_photos_vue.albumId = stateHandler.albumId;
+
         if (stateHandler.albumId === 0) {
           stateHandler.ui.media_photos_vue.albums = response.data;
         } else {
           stateHandler.ui.media_photos_vue.images = response.data;
         }
+
         stateHandler.listInited = true;
         stateHandler.ui.media_photos_vue.$nextTick(function () {
           if (stateHandler.selectedItemId) {

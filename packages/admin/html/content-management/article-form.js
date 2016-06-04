@@ -31,7 +31,8 @@ function Article() {
 
   this.bEditAndClose = EW.addActivity({title: "tr{Save and Close}",
     defaultClass: "btn-success pull-right",
-    activity: "admin/api/content-management/update-article",
+    verb: 'PUT',
+    activity: 'admin/api/content-management/update-contents',
     parameters: function () {
       if (!$("#article-form").EW().validate()) {
         return false;
@@ -53,7 +54,8 @@ function Article() {
     }}).hide();
 
   this.bUpdate = EW.addActivity({
-    activity: "admin/api/content-management/update-article",
+    verb: 'PUT',
+    activity: 'admin/api/content-management/update-contents',
     title: "tr{Update}",
     defaultClass: "btn-success",
     parameters: function () {

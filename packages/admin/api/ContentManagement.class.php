@@ -103,13 +103,13 @@ class ContentManagement extends \ew\Module {
         "form"        => "admin/html/content-management/label-language.php"
     ]);
 
-    EWCore::register_form("ew/ui/apps/contents/navs", "documents", [
+    EWCore::register_form('ew/ui/apps/contents/navs', "documents", [
         'id'    => 'content-management/documents',
         'title' => 'Documents',
         'url'   => '~admin/html/content-management/documents.php'
     ]);
 
-    EWCore::register_form("ew/ui/apps/contents/navs", "media", [
+    EWCore::register_form('ew/ui/apps/contents/navs', "media", [
         'id'    => 'content-management/media',
         'title' => 'Media',
         'url'   => '~admin/html/content-management/media/index.php'
@@ -124,11 +124,11 @@ class ContentManagement extends \ew\Module {
   }
 
   protected function install_feeders() {
-    $article_feeder = new \ew\WidgetFeeder("articles", $this, "page", "ew-page-feeder-articles");
+    $article_feeder = new \ew\WidgetFeeder('articles', $this, 'page', "ew-page-feeder-articles");
     $article_feeder->set_title('articles');
     \webroot\WidgetsManagement::register_widget_feeder($article_feeder);
 
-    $folder_feeder = new \ew\WidgetFeeder("folders", $this, "list", "ew-list-feeder-folders");
+    $folder_feeder = new \ew\WidgetFeeder('folders', $this, 'list', "ew-list-feeder-folders");
     $folder_feeder->set_title('folders');
     \webroot\WidgetsManagement::register_widget_feeder($folder_feeder);
   }
@@ -158,6 +158,9 @@ class ContentManagement extends \ew\Module {
         "api/add_folder",
         "api/add-article",
         "api/add_album",
+        'api/create_contents',
+        'api/update_contents',
+        'api/delete_contents',
         "api/update_content",
         "api/update_folder",
         "api/update_article",
@@ -182,10 +185,7 @@ class ContentManagement extends \ew\Module {
     ]);
 
     $this->register_public_access([
-        'api/create_contents',
         'api/read_contents',
-        'api/update_contents',
-        'api/delete_contents',
         'api/ew-page-feeder-articles',
         'api/ew-list-feeder-folders',
         'api/ew-list-feeder-related-contents'
@@ -723,14 +723,14 @@ class ContentManagement extends \ew\Module {
     }
 
     $folder_data = (new ContentsRepository)->find_by_id($id);
-    $parent_content_fields = [];
-    if (isset($folder_data->data['content_fields'])) {
-      $parent_content_fields = $folder_data->data['content_fields'];
+    $parent_data = [];
+    if (isset($folder_data->data)) {
+      $parent_data = $folder_data->data;
     }
 
     $_response->properties['total'] = $articles['total'];
     $_response->properties['page_size'] = $articles['page_size'];
-    $_response->properties['parent_content_fields'] = $parent_content_fields;
+    $_response->properties['parent'] = $parent_data;
 
     return $result;
   }
@@ -848,8 +848,8 @@ class ContentManagement extends \ew\Module {
     }
 
     return \ew\APIResourceHandler::to_api_response($rows, [
-                "total" => $folders->count(),
-                "parent"          => isset($container_id) ? $container_id->toArray() : null
+                "total"  => $folders->count(),
+                "parent" => isset($container_id) ? $container_id->toArray() : null
     ]);
   }
 
@@ -1188,8 +1188,8 @@ class ContentManagement extends \ew\Module {
     $documents = array_merge($categories, $articles);
     $db->close();
     $out = [
-        "total" => count($documents),
-        "result"          => $documents];
+        "total"  => count($documents),
+        "result" => $documents];
     return json_encode($out);
   }
 
@@ -1684,10 +1684,16 @@ class ContentManagement extends \ew\Module {
   }
 
   public function update_contents($_input, $_response) {
-    return (new ContentsRepository())->update($_input, $_response);
+    $result = (new ContentsRepository())->update($_input, $_response);
+
+    if ($result->error) {
+      $_response->set_status_code($result->error);
+    }
+
+    return $result;
   }
 
-  public function delete_contents($_response) {
+  public function delete_contents($_input, $_response) {
     return (new ContentsRepository())->delete($_input, $_response);
   }
 

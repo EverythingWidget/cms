@@ -2502,17 +2502,21 @@ $(document).ready(function () {
           }, "FORMLESS_ACTIVITY");
           return;
         }
-
-        $.post(currentActivity.url, activityParameters, function (data) {
-          if (currentActivity.onDone) {
-            currentActivity.onDone.apply(currentActivity, [
-              data
-            ]);
-          }
-          // Trigger activityName.done event
-          EW.$docuement.trigger(activity + ".done", data);
-          EW.activitySource = null;
-        }, "json");
+        
+        $.ajax({
+          type: currentActivity.verb || "GET",
+          url: currentActivity.url,
+          data: activityParameters,
+          success: function (data) {
+            if (currentActivity.onDone) {
+              currentActivity.onDone.apply(currentActivity, [
+                data
+              ]);
+            }
+            // Trigger activityName.done event
+            EW.$docuement.trigger(activity + ".done", data);
+            EW.activitySource = null;
+          }});
       } else {
         alert("Formless activity not found");
       }
