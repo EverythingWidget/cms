@@ -168,7 +168,6 @@ class ContentManagement extends \ew\Module {
         "api/delete_content",
         "api/delete_content_by_id",
         "api/delete_folder",
-        "api/delete_article",
         "api/delete-album",
         "api/delete-image",
         "api/upload-file",
@@ -579,7 +578,7 @@ class ContentManagement extends \ew\Module {
           $this->update_label($id, $key, $value);
         }
     }
-    return \ew\APIResourceHandler::to_api_response($content->toArray());
+    return $content->toArray();
   }
 
   public function update_content($id, $title, $type, $parent_id, $keywords, $description, $html_content, $featured_image, $labels) {
@@ -1158,10 +1157,6 @@ class ContentManagement extends \ew\Module {
     return $this->delete_content($id);
   }
 
-  public function delete_article($id) {
-    return $this->delete_content($id);
-  }
-
   public function get_documents_list($parentId, $token = null, $page_size = null) {
     $db = \EWCore::get_db_connection();
 
@@ -1694,7 +1689,11 @@ class ContentManagement extends \ew\Module {
   }
 
   public function delete_contents($_input, $_response) {
-    return (new ContentsRepository())->delete($_input, $_response);
+    $result = (new ContentsRepository())->delete($_input, $_response);
+
+    $_response->properties['message'] = $result->message;
+
+    return $result;
   }
 
 }

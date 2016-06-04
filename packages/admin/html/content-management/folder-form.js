@@ -10,7 +10,8 @@
   var bSave = EW.addActivity({
     title: "tr{Save}",
     defaultClass: "btn-success",
-    activity: "admin/api/content-management/add-folder",
+    verb: 'POST',
+    activity: "admin/api/content-management/create-contents",
     parameters: function () {
       if (!$("#category-form").EW().validate()) {
         return false;
@@ -28,7 +29,8 @@
   var bEdit = EW.addActivity({
     title: "tr{Save Changes}",
     defaultClass: "btn-success",
-    activity: "admin/api/content-management/update-folder",
+    verb: 'PUT',
+    activity: 'admin/api/content-management/update-contents',
     parameters: function () {
       if (!$("#category-form").EW().validate())
       {

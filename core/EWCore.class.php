@@ -167,6 +167,7 @@ class EWCore {
         // Create an instance of section with its parent App
         $app_object = new $real_class_name;
         $class_exist = true;
+        
         $response_data = $app_object->process_command($package, $resource_type, $module_name, $method_name, $parameters);
       }
       else {

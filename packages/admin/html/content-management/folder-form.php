@@ -14,6 +14,7 @@ function inputs() {
   ob_start();
   ?>
   <input type="hidden" id="parent_id" name="parent_id" value="">
+  <input type="hidden" id="type" name="type" value="folder">
   <?php
 
   return ob_get_clean();

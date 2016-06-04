@@ -3,7 +3,8 @@ function Article() {
   var dialog = $.EW("getParentDialog", $("#article-form"));
   var loader;
   this.bAdd = EW.addActivity({
-    activity: "admin/api/content-management/add-article",
+    verb: 'POST',
+    activity: "admin/api/content-management/create-contents",
     title: "tr{Save}",
     defaultClass: "btn-success",
     parameters: function () {
@@ -78,7 +79,10 @@ function Article() {
       loader.dispose();
     }}).hide();
 
-  this.bDelete = EW.addActivity({title: "tr{Delete}", defaultClass: "btn-danger", activity: "admin/api/content-management/delete-article",
+  this.bDelete = EW.addActivity({title: "tr{Delete}",
+    defaultClass: "btn-danger",
+    verb: 'DELETE',
+    activity: "admin/api/content-management/delete-contents",
     parameters: function () {
       if (confirm("tr{Delete this article?}")) {
         return {id: $("#id").val()};
@@ -86,10 +90,10 @@ function Article() {
         return null;
       }
     },
-    onDone: function (data) {
+    onDone: function (response) {
       $.EW("getParentDialog", $("#article-form")).trigger("destroy");
       EW.setHashParameter("articleId", null, "document");
-      System.UI.components.body.EW().notify(data).show();
+      System.UI.components.body.EW().notify(response).show();
       $(document).trigger("article-list.refresh");
     }}).hide();
 

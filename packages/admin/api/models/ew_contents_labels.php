@@ -15,7 +15,7 @@ class ew_contents_labels extends \Illuminate\Database\Eloquent\Model {
 
   protected $fillable = ['content_id', 'key', 'value'];
   protected $casts = [
-      'content_fields' => 'json',
+      'content_fields' => 'array',
   ];
 
   public function __construct(array $attributes = []) {
