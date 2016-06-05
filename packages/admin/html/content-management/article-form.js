@@ -4,7 +4,7 @@ function Article() {
   var loader;
   this.bAdd = EW.addActivity({
     verb: 'POST',
-    activity: "admin/api/content-management/create-contents",
+    activity: "admin/api/content-management/contents",
     title: "tr{Save}",
     defaultClass: "btn-success",
     parameters: function () {
@@ -33,7 +33,7 @@ function Article() {
   this.bEditAndClose = EW.addActivity({title: "tr{Save and Close}",
     defaultClass: "btn-success pull-right",
     verb: 'PUT',
-    activity: 'admin/api/content-management/update-contents',
+    activity: 'admin/api/content-management/contents',
     parameters: function () {
       if (!$("#article-form").EW().validate()) {
         return false;
@@ -56,7 +56,7 @@ function Article() {
 
   this.bUpdate = EW.addActivity({
     verb: 'PUT',
-    activity: 'admin/api/content-management/update-contents',
+    activity: 'admin/api/content-management/contents',
     title: "tr{Update}",
     defaultClass: "btn-success",
     parameters: function () {
@@ -82,7 +82,7 @@ function Article() {
   this.bDelete = EW.addActivity({title: "tr{Delete}",
     defaultClass: "btn-danger",
     verb: 'DELETE',
-    activity: "admin/api/content-management/delete-contents",
+    activity: "admin/api/content-management/contents",
     parameters: function () {
       if (confirm("tr{Delete this article?}")) {
         return {id: $("#id").val()};

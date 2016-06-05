@@ -41,18 +41,19 @@ class WidgetsManagement extends \ew\Module {
         "title" => "UI",
         "form"  => $uis_content_tab
     ]);
-    $this->add_listener("admin/api/content-management/update-folder", "call_on_folder_update");
-    $this->add_listener("admin/api/content-management/update-article", "call_on_article_update");
-    $this->add_listener("admin/api/content-management/get-article", "call_on_folder_get");
-    $this->add_listener("admin/api/content-management/contents", "call_on_folder_get");
+    $this->add_listener('admin/api/content-management/contents-update', 'on_contents_update');
+    $this->add_listener('admin/api/content-management/get-article', 'call_on_folder_get');
+    $this->add_listener('admin/api/content-management/contents-read', 'on_contents_read');
   }
 
   protected function install_permissions() {
-    EWCore::register_form("ew/ui/components/link-chooser", "uis-chooser", ["title"   => "UI Structures",
-        "content" => $this->link_chooser_form]);
+    EWCore::register_form("ew/ui/components/link-chooser", "uis-chooser", [
+        "title"   => "UI Structures",
+        "content" => $this->link_chooser_form
+    ]);
 
-    $this->register_permission("view", "User can view the widgets section", array(
-        'api/read_layouts',
+    $this->register_permission("view", "User can view the widgets section", [
+        'api/layouts-read',
         "api/get_uis",
         "api/get_uis_list",
         "api/get_widgets_types",
@@ -62,13 +63,14 @@ class WidgetsManagement extends \ew\Module {
         "api/get_template_settings_form",
         "api/get_layout",
         "api/get_templates",
-        "api/create_widget",
-        "api/update-uis",
-        "api/ew_form_uis_tab",
-        "html/ne-uis.php_see",
-        'html/' . $this->get_index()));
+        'api/create_widget',
+        'api/update-uis',
+        'api/ew_form_uis_tab',
+        'html/ne-uis.php_see',
+        'html/' . $this->get_index()
+    ]);
 
-    $this->register_permission("manipulate", "User can create and edit layouts", array(
+    $this->register_permission("manipulate", "User can create and edit layouts", [
         "api/add_uis",
         "api/get_uis",
         "api/set_uis",
@@ -85,7 +87,8 @@ class WidgetsManagement extends \ew\Module {
         "api/delete_uis",
         "api/clone_uis",
         "html/ne-uis.php",
-        'html/' . $this->get_index()));
+        'html/' . $this->get_index()
+    ]);
 
 
     $this->register_permission("export-uis", "User can export UIS", array(
@@ -94,32 +97,21 @@ class WidgetsManagement extends \ew\Module {
     $this->register_permission("import-uis", "User can import UIS", array(
         "api/import_uis",
         "html/ne-uis.php"));
-
-    //$this->register_content_label("uis", "");
   }
 
-  public function call_on_folder_update($id, $webroot) {
+  public function on_contents_update($_response, $id, $webroot) {
     $page_uis_id = $webroot['page_uis_id'];
+    $type = $_response->data['type'];
+
     if (isset($id) && $page_uis_id) {
-      $this->set_uis("/folders/" . $id, $page_uis_id);
+      $this->set_uis("/{$type}s/" . $id, $page_uis_id);
     }
     else {
-      $this->set_uis("/folders/" . $id, null);
+      $this->set_uis("/{$type}s/" . $id, null);
     }
   }
 
-  public function call_on_article_update($id, $webroot) {
-    $page_uis_id = $webroot['page_uis_id'];
-    if (isset($id) && $page_uis_id) {
-      $this->set_uis("/articles/" . $id, $page_uis_id);
-    }
-    else {
-      $this->set_uis("/articles/" . $id, null);
-    }
-  }
-
-  public function call_on_folder_get($_response) {
-    $result = [];
+  public function on_contents_read($_response) {
     $content_data = $_response->data;
 
     if (isset($content_data) && $content_data["id"]) {
@@ -134,8 +126,8 @@ class WidgetsManagement extends \ew\Module {
     }
 
     return [
-        "webroot/page_uis_id" => ($page_uis["uis_id"]) ? $page_uis["uis_id"] : "",
-        "webroot/name"        => ($page_uis["uis_name"]) ? $page_uis["uis_name"] : "Inherit/Default"
+        'webroot/page_uis_id' => ($page_uis["uis_id"]) ? $page_uis["uis_id"] : "",
+        'webroot/name'        => ($page_uis["uis_name"]) ? $page_uis["uis_name"] : "Inherit/Default"
     ];
   }
 
@@ -167,6 +159,7 @@ class WidgetsManagement extends \ew\Module {
         }
       }
     }
+    
     return json_encode($apps);
   }
 
@@ -214,7 +207,7 @@ class WidgetsManagement extends \ew\Module {
     return json_encode(["html" => $this->get_app()->get_view('html/widgets-management/uis-tab.php', $form_config)]);
   }
 
-  public function get_uis_list($token = 0, $page_size = 99999999999999) {
+  public function get_uis_list($_response, $token = 0, $page_size = 99999999999999) {
     $db = \EWCore::get_db_connection();
 
     if (!isset($token)) {
@@ -234,10 +227,10 @@ class WidgetsManagement extends \ew\Module {
       $rows[] = $r;
     }
     $db->close();
-    $out = array(
-        "totalRows" => $totalRows['COUNT(*)'],
-        "result"    => $rows);
-    return ($out);
+
+    $_response->properties['total'] = $totalRows['COUNT(*)'];
+
+    return $rows;
   }
 
   public function get_path_uis_list() {
@@ -1282,11 +1275,11 @@ class WidgetsManagement extends \ew\Module {
     return $links;
   }
 
-  public function create_layouts($_input, $_response) {
+  public function layouts_create($_input, $_response) {
     
   }
 
-  public function read_layouts($_input, $_response, $_parts__id) {
+  public function layouts_read($_input, $_response, $_parts__id) {
     $_input->id = $_parts__id;
     $result = (new LayoutsRepository())->read($_input);
 
@@ -1301,11 +1294,11 @@ class WidgetsManagement extends \ew\Module {
     return $result->data;
   }
 
-  public function update_layouts($_input, $_response) {
+  public function layouts_update($_input, $_response) {
     
   }
 
-  public function delete_layouts($_input, $_response) {
+  public function layouts_delete($_input, $_response) {
     
   }
 

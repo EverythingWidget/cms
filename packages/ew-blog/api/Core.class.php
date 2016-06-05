@@ -74,9 +74,9 @@ class Core extends \ew\Module {
         "form"  => EWCore::get_view('ew-blog/html/core/tab-post-publish.php')
     ]);
 
-    $this->add_listener('admin/api/content-management/add-article', 'call_on_content_update');
-    $this->add_listener('admin/api/content-management/update-article', 'call_on_content_update');
-    $this->add_listener('admin/api/content-management/get-article', 'call_on_article_get');
+    $this->add_listener('admin/api/content-management/contents-create', 'on_contents_update');
+    $this->add_listener('admin/api/content-management/contents-update', 'on_contents_update');
+    $this->add_listener('admin/api/content-management/contents-read', 'call_on_article_get');
   }
 
   protected function install_permissions() {
@@ -194,7 +194,7 @@ class Core extends \ew\Module {
     $folder_info = \EWCore::call_cached_api('admin/api/content-management/contents', [
                 'id' => $id
     ]);
-    
+
     $_response->properties['total'] = $ollection_size;
     $_response->properties['page_size'] = $events->count();
     $_response->properties['parent'] = $folder_info['data'];
@@ -202,7 +202,7 @@ class Core extends \ew\Module {
     return $result;
   }
 
-  public function ew_list_feeder_posts($_response,$id, $params = [], $token = 0, $page_size = 30, $order_by = 'DESC', $_language = 'en') {
+  public function ew_list_feeder_posts($_response, $id, $params = [], $token = 0, $page_size = 30, $order_by = 'DESC', $_language = 'en') {
     $query = \admin\ew_contents::select([
                 'ew_contents.id',
                 'date_created',
@@ -280,12 +280,12 @@ class Core extends \ew\Module {
     $_response->properties['total'] = $collection_size;
     $_response->properties['page_size'] = $query_result->count();
     $_response->properties['parent'] = [
-                    'title'          => $folder_info['data']['title'],
-                    'keywords'       => $folder_info['data']['keywords'],
-                    'description'    => $folder_info['data']['description'],
-                    'content_fields' => $folder_info['data']['content_fields'],
-                ];
-            
+        'title'          => $folder_info['data']['title'],
+        'keywords'       => $folder_info['data']['keywords'],
+        'description'    => $folder_info['data']['description'],
+        'content_fields' => $folder_info['data']['content_fields'],
+    ];
+
     return $posts;
   }
 
@@ -317,8 +317,13 @@ class Core extends \ew\Module {
     return \ew\APIResourceHandler::to_api_response([], ["type" => "object"]);
   }
 
-  public function call_on_content_update($id, $__response_data, $ew_blog) {
+  public function on_contents_update($id, $_response, $ew_blog) {
     $pdo = EWCore::get_db_PDO();
+
+    if ($_response->data['type'] !== 'article') {
+      return [];
+    }
+
     $publish_date = $ew_blog['date_published'];
     $draft = $ew_blog['draft'];
     $table_name = 'ew_contents';
@@ -327,7 +332,7 @@ class Core extends \ew\Module {
       $this->update_post($post_id['id'], $publish_date, $draft);
     }
     else {
-      $this->add_post($__response_data['data']['id'], $publish_date);
+      $this->add_post($_response->data['id'], $publish_date);
     }
 
     return [

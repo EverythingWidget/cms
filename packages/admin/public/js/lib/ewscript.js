@@ -69,6 +69,13 @@ function EverythingWidgets() {
   this.customFunction = function () {
 
   };
+
+  this.verbs = {
+    get: 'read',
+    post: 'create',
+    put: 'update',
+    delete: 'delete'
+  };
 }
 
 EverythingWidgets.prototype.showAllComponents = function () {
@@ -266,6 +273,10 @@ EverythingWidgets.prototype.getActivity = function (conf) {
 
   url = settings.activity.substr(0, settings.activity.lastIndexOf("_")) || settings.activity;
 
+  if (settings.verb) {
+    url += '-' + this.verbs[settings.verb.toLowerCase()];
+  }
+
   if (!_this.activities[url]) {
     console.log("activity does not exist: " + url + "!");
     console.log(_this.activities);
@@ -275,7 +286,7 @@ EverythingWidgets.prototype.getActivity = function (conf) {
   if (url !== settings.activity) {
     _this.activities[settings.activity] = $.extend({}, _this.activities[url]);
   }
-//console.log(_this.activities[settings.activity])
+
   activityId = settings.activity;
   activityController = _this.activities[activityId];
 
@@ -2399,6 +2410,7 @@ $(document).ready(function () {
           }
 
           System.setHashParameters(activityParameters, true);
+          activityParameters = EW.getHashParameters();
 
           $.ajax({
             type: currentActivity.verb || "GET",
@@ -2502,7 +2514,7 @@ $(document).ready(function () {
           }, "FORMLESS_ACTIVITY");
           return;
         }
-        
+
         $.ajax({
           type: currentActivity.verb || "GET",
           url: currentActivity.url,

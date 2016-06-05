@@ -1237,10 +1237,12 @@ class EWCore {
               }
               $resource_name = $parts[0];
               $method_name = $parts[1];
+              
               $title = $method_name;
-              if (strpos($method, ':')) {
+              
+              if (strpos($method_name, ':')) {                
                 $temp = explode(':', $method_name, 2);
-                $method = $temp[0];
+                $method_name = $temp[0];
                 $title = $temp[1];
               }
 

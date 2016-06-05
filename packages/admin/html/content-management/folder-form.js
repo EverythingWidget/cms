@@ -11,7 +11,7 @@
     title: "tr{Save}",
     defaultClass: "btn-success",
     verb: 'POST',
-    activity: "admin/api/content-management/create-contents",
+    activity: "admin/api/content-management/contents",
     parameters: function () {
       if (!$("#category-form").EW().validate()) {
         return false;
@@ -30,7 +30,7 @@
     title: "tr{Save Changes}",
     defaultClass: "btn-success",
     verb: 'PUT',
-    activity: 'admin/api/content-management/update-contents',
+    activity: 'admin/api/content-management/contents',
     parameters: function () {
       if (!$("#category-form").EW().validate())
       {
@@ -48,7 +48,8 @@
   var bDelete = EW.addActivity({
     title: "tr{Delete}",
     defaultClass: "btn-danger",
-    activity: "admin/api/content-management/delete-folder",
+    verb: 'DELETE',
+    activity: "admin/api/content-management/contents",
     parameters: function () {
       if (!confirm("tr{Are you sure of deleting this folder?}")) {
         return false;

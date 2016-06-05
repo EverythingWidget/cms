@@ -29,10 +29,9 @@
           var groupId = EW.getHashParameter("groupId");
           $.post("<?php echo EW_ROOT_URL; ?>~admin/html/users-management/users-group-form.php", {
             groupId: groupId
-          },
-                  function (data) {
-                    _this.userGroupModal.html(data);
-                  });
+          }, function (data) {
+            _this.userGroupModal.html(data);
+          });
         },
         onClose: function () {
           EW.setHashParameter("form", null);
@@ -72,12 +71,11 @@
             //EW.lock($("#main-content"));
             $.post('<?php echo EW_ROOT_URL; ?>~admin/api/users-management/delete-group', {
               id: id
-            },
-                    function (data) {
-                      UsersGroups.usersGroupsList();
-                      $("body").EW().notify(data).show();
-                      //EW.unlock($("#main-content"));
-                    }, "json");
+            }, function (data) {
+              UsersGroups.usersGroupsList();
+              $("body").EW().notify(data).show();
+              //EW.unlock($("#main-content"));
+            }, "json");
           });
         },
         onEdit: function (id) {

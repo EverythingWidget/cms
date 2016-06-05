@@ -41,7 +41,7 @@ class APIResourceHandler extends ResourceHandler {
     $verb = $api_verb ? $this->verbs[strtoupper($api_verb)] : $this->verbs[strtoupper($_SERVER['REQUEST_METHOD'])];
 
     if (!$verb) {
-      return \EWCore::log_error(400, 'Request verb is unknown: $verb');      
+      return \EWCore::log_error(400, 'Request verb is unknown: $verb');
     }
 
     // Set the verb as command name if command is empty
@@ -64,8 +64,8 @@ class APIResourceHandler extends ResourceHandler {
     if (class_exists($real_class_name)) {
       //echo "$app_name, $module_name, $resource_name / $command_name";
       $app_section_object = new $real_class_name($app);
-      $api_method_name = $verb . '_' . $method_name;
-      $api_command_name = $verb . '-' . $method_name;
+      $api_method_name = $method_name . '_' . $verb;
+      $api_command_name = $method_name . '-' . $verb;
       if (method_exists($app_section_object, $method_name)) {
         $api_method_name = $method_name;
         $api_command_name = $command_name;

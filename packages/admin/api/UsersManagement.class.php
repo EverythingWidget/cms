@@ -32,14 +32,15 @@ class UsersManagement extends \ew\Module {
 
   protected function install_permissions() {
     $this->register_permission("see-users", "User can see users list", [
-        "api/get",
-        "api/users",
-        "api/read_groups",
-        "api/get_user_by_id",
-        "api/get_user_by_email",
-        "html/user-form.php-see",
-        "api/logout",
-        'html/' . $this->get_index()]);
+        'api/get',
+        'api/users-read',
+        'api/groups-read',
+        'api/get_user_by_id',
+        'api/get_user_by_email',
+        'api/logout',
+        'html/user-form.php-see',
+        'html/' . $this->get_index()
+    ]);
 
     $this->register_permission("manipulate-users", "User can add, edit delete users", [
         "api/add_user",
@@ -251,30 +252,31 @@ class UsersManagement extends \ew\Module {
     return true;
   }
 
-  public function users($_response, $token = 0, $page_size = 999999) {
+  public function users_read($_response, $token = 0, $page_size = 100) {
     $db = \EWCore::get_db_connection();
 
     if (!isset($token)) {
       $token = 0;
     }
     if (!isset($page_size)) {
-      $page_size = '18446744073709551610';
+      $page_size = 100;
     }
-    $page_size = ", $page_size";
 
     $totalRows = $db->query("SELECT COUNT(*) FROM ew_users, ew_users_groups WHERE ew_users.group_id = ew_users_groups.id") or die(error_reporting());
     $totalRows = $totalRows->fetch_assoc();
 //echo $size;
-    $result = $db->query("SELECT ew_users.id,email, first_name, last_name,ew_users_groups.title, DATE_FORMAT(ew_users.date_created,'%Y-%m-%d') AS round_date_created FROM ew_users, ew_users_groups WHERE ew_users.group_id = ew_users_groups.id ORDER BY ew_users.id LIMIT $token $page_size") or die($db->error);
+    $result = $db->query("SELECT ew_users.id,email, first_name, last_name,ew_users_groups.title, DATE_FORMAT(ew_users.date_created,'%Y-%m-%d') AS round_date_created FROM ew_users, ew_users_groups WHERE ew_users.group_id = ew_users_groups.id ORDER BY ew_users.id LIMIT $token, $page_size") or die($db->error);
 
-    $rows = [];
+    $users = [];
     while ($r = $result->fetch_assoc()) {
-      $rows[] = $r;
+      $users[] = $r;
     }
     $db->close();
 
-    $_response->properties['size'] = intval($totalRows['COUNT(*)']);
-    return $rows;
+    $_response->properties['total'] = intval($totalRows['COUNT(*)']);
+    $_response->properties['page_size'] = $page_size;
+
+    return $users;
   }
 
   public static function get_users_groups_list($_response, $page = 0, $page_size = 100) {
@@ -647,8 +649,13 @@ class UsersManagement extends \ew\Module {
 //    return $this->get_users_groups_list($_response);
 //  }
 
-  public function read_groups($_input, $_response) {
-    return (new UsersGroupsRepository())->read($_input, $_response);
+  public function groups_read($_input, $_response) {
+    $result = (new UsersGroupsRepository())->read($_input, $_response);
+    
+    $_response->properties['total'] = $result->total;
+    $_response->properties['page_size'] = $result->size;
+    
+    return $result->data;
   }
 
 }

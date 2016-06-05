@@ -7,7 +7,11 @@
 
 function AlbumForm() {
   var self = this;
-  this.bAdd = EW.addActivity({title: "tr{Save}", defaultClass: "btn-success", activity: "admin/api/content-management/add-album",
+  this.bAdd = EW.addActivity({
+    title: "tr{Save}",
+    defaultClass: "btn-success",
+    verb: 'POST',
+    activity: "admin/api/content-management/contents",
     parameters: function () {
       if (!$("#album-form").EW().validate()) {
         return false;
@@ -23,9 +27,10 @@ function AlbumForm() {
     }
   }).hide();
 
-  this.bEdit = EW.addActivity({title: "tr{Save Changes}", 
+  this.bEdit = EW.addActivity({title: "tr{Save Changes}",
     defaultClass: "btn-success",
-    activity: "admin/api/content-management/update-album",
+    verb: 'PUT',
+    activity: "admin/api/content-management/contents",
     parameters: function () {
       if (!$("#album-form").EW().validate()) {
         return false;

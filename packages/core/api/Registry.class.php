@@ -23,18 +23,18 @@ class Registry extends \ew\Module {
 
   protected function install_permissions() {
     $this->register_public_access([
-        'api/read_activities',
-        'api/read_items'
+        'api/activities-read',
+        'api/items-read'
     ]);
   }
 
-  public function read_activities($_response) {
+  public function activities_read($_response) {
     $_response->properties['system_version'] = $this->get_app()->get_app_version();
 
     return \EWCore::read_activities_as_array();
   }
 
-  public function read_items($_response, $key) {
+  public function items_read($_response, $key) {
     $_response->properties['system_version'] = $this->get_app()->get_app_version();
 
     if (!isset($key)) {

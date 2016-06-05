@@ -14,6 +14,9 @@
       title: "tr{New Layout}",
       activity: "webroot/html/widgets-management/ne-uis.php",
       parent: System.UI.components.mainFloatMenu,
+      parameters: {
+        uisId: null
+      },
       modal: {
         class: "full"
       },
@@ -94,19 +97,17 @@
           var _this = this;
           $.post('<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/delete-uis', {
             uisId: id
-          },
-                  function (data) {
-                    EW.setHashParameter("categoryId", null);
-                    $("body").EW().notify(data).show();
-                    self.table.removeRow(id);
-                    _this._messageRow.remove();
-                    return true;
-                  }, "json");
+          }, function (data) {
+            EW.setHashParameter("categoryId", null);
+            $("body").EW().notify(data).show();
+            self.table.removeRow(id);
+            _this._messageRow.remove();
+            return true;
+          }, "json");
         });
       },
       onEdit: ((editActivity = EW.getActivity({
-        verb: "get",
-        activity: "webroot/html/widgets-management/ne-uis.php",
+        activity: "webroot/html/widgets-management/ne-uis.php-see",
         modal: {
           class: "full"
         },

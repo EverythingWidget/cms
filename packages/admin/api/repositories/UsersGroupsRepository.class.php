@@ -44,7 +44,7 @@ class UsersGroupsRepository implements \ew\CRUDRepository {
     if (is_null($page_size)) {
       $page_size = 100;
     }
-    
+
     $totalRows = $db->query("SELECT COUNT(*) FROM ew_users_groups") or die(error_reporting());
     $totalRows = $totalRows->fetch_assoc();
 
@@ -56,9 +56,13 @@ class UsersGroupsRepository implements \ew\CRUDRepository {
     }
     $db->close();
 
-//    $response->properties['total'] = intval($totalRows['COUNT(*)']);
-//    $response->properties['page_size'] = $page_size;
-    return $rows;
+    $result = new \stdClass;
+
+    $result->total = intval($totalRows['COUNT(*)']);
+    $result->size = $page_size;
+    $result->data = $rows;
+
+    return $result;
   }
 
   public function find_by_id($groupId) {
@@ -75,7 +79,7 @@ class UsersGroupsRepository implements \ew\CRUDRepository {
 
       return $user_group_info;
     }
-    
+
     return null;
   }
 

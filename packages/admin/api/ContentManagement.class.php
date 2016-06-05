@@ -145,7 +145,7 @@ class ContentManagement extends \ew\Module {
         "api/contents_articles",
         "api/get_media_list",
         "api/media-audios",
-        // html resources
+        // ------ html resources ------ //
         'html/index.php',
         "html/article-form.php",
         "html/folder-form.php",
@@ -154,13 +154,10 @@ class ContentManagement extends \ew\Module {
 
     $this->register_permission("manipulate-content", "User can add new, edit, delete contents", [
         'api/index',
-        "api/add_content",
-        "api/add_folder",
-        "api/add-article",
-        "api/add_album",
-        'api/create_contents',
-        'api/update_contents',
-        'api/delete_contents',
+        'api/add_content',
+        'api/contents-create',
+        'api/contents-update',
+        'api/contents-delete',
         "api/update_content",
         "api/update_folder",
         "api/update_article",
@@ -174,17 +171,17 @@ class ContentManagement extends \ew\Module {
         "api/upload_audio",
         "api/register-audio",
         "api/media-audios",
-        // html resources
+        // ------ html resources ------ //
         'html/index.php',
-        "html/article-form.php:tr{New Article}",
-        "html/folder-form.php:tr{New Folder}",
-        "html/media/album-form.php:tr{New Album}",
+        "html/article-form.php",
+        "html/folder-form.php",
+        "html/media/album-form.php",
         "html/media/upload-form.php",
         "html/media/upload-audio-form.php",
     ]);
 
     $this->register_public_access([
-        'api/read_contents',
+        'api/contents-read',
         'api/ew-page-feeder-articles',
         'api/ew-list-feeder-folders',
         'api/ew-list-feeder-related-contents'
@@ -631,30 +628,6 @@ class ContentManagement extends \ew\Module {
     return EWCore::log_error("400", "Something went wrong, content has not been updated");
   }
 
-  public function add_article($title, $parent_id, $keywords, $description, $labels, $content) {
-    if (!$parent_id)
-      $parent_id = 0;
-
-    //$htmlContent = $_REQUEST['content'];
-
-    if (!$title) {
-      \EWCore::log_error(400, "tr{Title is requierd}");
-    }
-
-    $result = $this->add_content("article", $title, $parent_id, $keywords, $description, $content, "", $labels);
-
-    if ($result["data"]["id"]) {
-
-      return \ew\APIResourceHandler::to_api_response($this->get_content_by_id($result["data"]["id"])["data"], [
-                  "message" => "tr{The new article has been added succesfully}",
-                  "status"  => "success"
-      ]);
-      // End of plugins actions call
-    }
-
-    return $result;
-  }
-
   private function create_html_parts($html_string) {
     $doc = new \DOMDocument();
     $doc->loadHTML('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">' . $html_string);
@@ -831,10 +804,10 @@ class ContentManagement extends \ew\Module {
     }
   }
 
-  public function contents_folders($parent_id, $token, $page_size) {
+  public function contents_folders($_response, $parent_id, $token, $page_size) {
     $container_id = ew_contents::find($parent_id);
     $up_parent_id = $container_id['parent_id'] ? $container_id['parent_id'] : 0;
-    //$container_id = $container_id['parent_id'];
+
     $folders = ew_contents::where('parent_id', '=', $parent_id)->where('type', 'folder')->get(['*',
         \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
 
@@ -846,10 +819,10 @@ class ContentManagement extends \ew\Module {
       $rows[] = $i;
     }
 
-    return \ew\APIResourceHandler::to_api_response($rows, [
-                "total"  => $folders->count(),
-                "parent" => isset($container_id) ? $container_id->toArray() : null
-    ]);
+    $_response->properties['total'] = $folders->count();
+    $_response->properties['parent'] = isset($container_id) ? $container_id->toArray() : null;
+
+    return $rows;
   }
 
   public function contents_articles($_response, $parent_id = null, $token, $page_size, $order_by = null, $_language = 'en') {
@@ -866,7 +839,9 @@ class ContentManagement extends \ew\Module {
           'ew_contents.id',
           \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
 
-      return \ew\APIResourceHandler::to_api_response($articles->toArray(), ["total" => $articles->count()]);
+      $_response->properties['total'] = $articles->count();
+
+      return $articles->toArray();
     }
     else {
       $container_id = ew_contents::find($parent_id);
@@ -901,7 +876,6 @@ class ContentManagement extends \ew\Module {
 
       $data = array_map(function($e) use ($up_parent_id) {
         $e["up_parent_id"] = $up_parent_id;
-        //$e["content_fields"] = json_decode($e["content_fields"], true);
         return $e;
       }, $articles->toArray());
 
@@ -990,33 +964,6 @@ class ContentManagement extends \ew\Module {
         \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
 
     return \ew\APIResourceHandler::to_api_response($contents->toArray(), ["total" => $contents->count()]);
-  }
-
-  public function add_folder($title, $parent_id, $keywords, $description, $labels) {
-    $db = \EWCore::get_db_connection();
-
-    if (!$parent_id)
-      $parent_id = 0;
-
-    $html_content = $_REQUEST['content'];
-
-    $result = $this->add_content("folder", $title, $parent_id, $keywords, $description, $html_content, "", $labels);
-    //$result = json_decode($result, true);
-
-    if ($result['data']["id"]) {
-      $content_id = $result['data']["id"];
-      $res = [
-          "status"  => "success",
-          "message" => "Folder has been added successfully",
-          "data"    => [
-              "id"   => $content_id,
-              "type" => "folder"
-          ]
-      ];
-
-      return \ew\APIResourceHandler::to_api_response($res);
-    }
-    return $result;
   }
 
   public function get_category($id) {
@@ -1352,22 +1299,6 @@ class ContentManagement extends \ew\Module {
     return json_encode([]);
   }
 
-  public function add_album($title = null, $keywords = NULL, $description = NULL, $html_content = NULL, $labels) {
-
-    $validator = new \Valitron\Validator($this->get_current_command_args());
-    $validator->rule('required', ['title']);
-    if (!$validator->validate()) {
-      return EWCore::log_error(400, 'tr{Form validation error}', $validator->errors());
-    }
-
-    $result = $this->add_content("album", $title, 0, $keywords, $description, $htmlContent, "", $labels);
-    //$result = json_decode($result, true);
-    //$res = array(status => "success", message => "The directory {" . $title . "} hase been created succesfuly");*/
-    return json_encode(['status'  => "success",
-        'message' => "The directory '$title' hase been created succesfuly",
-        'data'    => $result]);
-  }
-
   public function update_album() {
     $db = \EWCore::get_db_connection();
     $albumId = $db->real_escape_string($_REQUEST['id']);
@@ -1659,11 +1590,11 @@ class ContentManagement extends \ew\Module {
     return \EWCore::load_file("admin/html/content-management/content-form.php", $form_config);
   }
 
-  public function create_contents($_response, $_input) {
+  public function contents_create($_response, $_input) {
     return (new ContentsRepository())->create($_input, $_response);
   }
 
-  public function read_contents($_input, $_response, $_parts__id) {
+  public function contents_read($_input, $_response, $_parts__id) {
     $_input->id = $_parts__id;
     $result = (new ContentsRepository())->read($_input, $_response);
 
@@ -1678,7 +1609,7 @@ class ContentManagement extends \ew\Module {
     return $result->data;
   }
 
-  public function update_contents($_input, $_response) {
+  public function contents_update($_input, $_response) {
     $result = (new ContentsRepository())->update($_input, $_response);
 
     if ($result->error) {
@@ -1688,7 +1619,13 @@ class ContentManagement extends \ew\Module {
     return $result;
   }
 
-  public function delete_contents($_input, $_response) {
+  /**
+   * @permissionId see-content
+   * @param type $_input
+   * @param type $_response
+   * @return type
+   */
+  public function contents_delete($_input, $_response) {
     $result = (new ContentsRepository())->delete($_input, $_response);
 
     $_response->properties['message'] = $result->message;

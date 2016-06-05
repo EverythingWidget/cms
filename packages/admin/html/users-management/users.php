@@ -69,8 +69,7 @@
           });
         },
         onEdit: ((editActivity = EW.getActivity({
-          verb: "get",
-          activity: "admin/html/users-management/user-form.php-see",
+          activity: "admin/html/users-management/user-form.php_see",
           modal: {
             class: "center"
           },
