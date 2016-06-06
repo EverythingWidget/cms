@@ -59,7 +59,7 @@ class UsersGroupsRepository implements \ew\CRUDRepository {
     $result = new \stdClass;
 
     $result->total = intval($totalRows['COUNT(*)']);
-    $result->size = $page_size;
+    $result->page_size = $page_size;
     $result->data = $rows;
 
     return $result;

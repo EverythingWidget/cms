@@ -35,7 +35,7 @@ class ew_contents extends \Illuminate\Database\Eloquent\Model {
   ]];
   
   protected $casts = [
-        'content_fields' => 'json',
+        'content_fields' => 'array',
     ];
 
   public function __construct(array $attributes = []) {

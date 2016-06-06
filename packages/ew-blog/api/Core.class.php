@@ -346,8 +346,12 @@ class Core extends \ew\Module {
     ];
   }
 
-  public function call_on_article_get($articleId) {
-    $post = $this->get_post($articleId);
+  public function call_on_article_get($_response,$id) {
+    if(isset($_response->properties['total'])) {
+      return [];
+    }
+    
+    $post = $this->get_post($id);
     $date = $post['date_published'];
 
     if (!$date || $date === '0000-00-00 00:00:00') {

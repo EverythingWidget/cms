@@ -62,7 +62,7 @@ class ContentsRepository implements \ew\CRUDRepository {
       }
     }
 
-    return $content->toArray();
+    return $content;
   }
 
   public function delete($input) {
@@ -149,16 +149,16 @@ class ContentsRepository implements \ew\CRUDRepository {
     $contents = ew_contents::orderBy('title')->take($page_size)->skip($page * $page_size)->get(['*',
         \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
 
-    $data = array_map(function($e) {
-      $e["content_fields"] = json_decode($e["content_fields"], true);
-      return $e;
-    }, $contents->toArray());
+//    $data = array_map(function($e) {
+//      $e["content_fields"] = json_decode($e["content_fields"], true);
+//      return $e;
+//    }, $contents->toArray());
 
     $result = new \stdClass;
 
-    $result->total = ew_contents::all()->count();
-    $result->size = $page_size;
-    $result->data = $data;
+    $result->total = ew_contents::count();
+    $result->page_size = $page_size;
+    $result->data = $contents;
 
     return $result;
   }
@@ -180,7 +180,7 @@ class ContentsRepository implements \ew\CRUDRepository {
       $content->labels = $labels;
       $content->labels = $this->parse_labels($labels, $content);
 
-      $result->data = $content->toArray();
+      $result->data = $content;
 
       return $result;
     }

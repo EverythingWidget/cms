@@ -167,7 +167,7 @@ class EWCore {
         // Create an instance of section with its parent App
         $app_object = new $real_class_name;
         $class_exist = true;
-        
+
         $response_data = $app_object->process_command($package, $resource_type, $module_name, $method_name, $parameters);
       }
       else {
@@ -197,6 +197,11 @@ class EWCore {
 
       if ($arg->getName() === "__response_data") {
         $method_arguments[] = $response->to_array();
+        continue;
+      }
+
+      if ($arg->getName() === '_input') {
+        $method_arguments[] = $parameters;
         continue;
       }
 
@@ -1237,10 +1242,10 @@ class EWCore {
               }
               $resource_name = $parts[0];
               $method_name = $parts[1];
-              
+
               $title = $method_name;
-              
-              if (strpos($method_name, ':')) {                
+
+              if (strpos($method_name, ':')) {
                 $temp = explode(':', $method_name, 2);
                 $method_name = $temp[0];
                 $title = $temp[1];
@@ -1812,6 +1817,10 @@ class EWCore {
 
     $sql .= ") CHARACTER SET utf8 COLLATE utf8_general_ci";
     return $sql;
+  }
+
+  public static function is_list($array) {
+    return count(array_filter(array_keys($array), 'is_string')) > 0;
   }
 
 }

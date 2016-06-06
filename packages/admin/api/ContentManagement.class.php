@@ -1604,9 +1604,9 @@ class ContentManagement extends \ew\Module {
     }
 
     $_response->properties['total'] = $result->total;
-    $_response->properties['page_size'] = $result->size;
+    $_response->properties['page_size'] = $result->page_size;
 
-    return $result->data;
+    return $result->data->toArray();
   }
 
   public function contents_update($_input, $_response) {
@@ -1614,6 +1614,7 @@ class ContentManagement extends \ew\Module {
 
     if ($result->error) {
       $_response->set_status_code($result->error);
+      return $result;
     }
 
     return $result;

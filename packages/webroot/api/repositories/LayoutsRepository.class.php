@@ -55,7 +55,7 @@ class LayoutsRepository implements \ew\CRUDRepository {
 
     $result->total = ew_ui_structures::all()->count();
     $result->size = $page_size;
-    $result->data = $data->toArray();
+    $result->data = $data;
 
     return $result;
   }
@@ -79,6 +79,7 @@ class LayoutsRepository implements \ew\CRUDRepository {
       }
 
       $result->data = $layout;
+      
       return $result;
     }
 
