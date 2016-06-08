@@ -9,7 +9,7 @@ namespace admin;
  */
 class ew_users extends \Illuminate\Database\Eloquent\Model {
 
-  protected $fillables = [
+  protected $fillable = [
       'email',
       'password',
       'first_name',
@@ -19,9 +19,17 @@ class ew_users extends \Illuminate\Database\Eloquent\Model {
       'permission',
       'verfication_code',
       'verified',
-      'disable',
-      'date_created'
-  ];
+      'disable'
+      ];
+  
+  public static $RULES = [
+      'email'     => [
+          'required',
+          'email'
+      ],
+      'password' => [
+          'required'
+  ]];
 
   public function __construct(array $attributes = []) {
     parent::__construct($attributes);

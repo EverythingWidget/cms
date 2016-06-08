@@ -23,6 +23,7 @@ class ew_contents extends \Illuminate\Database\Eloquent\Model {
       'content',
       'date_modified'
   ];
+  
   public static $rules = [
       'title'     => [
           'required'

@@ -43,7 +43,7 @@ class UsersManagement extends \ew\Module {
     ]);
 
     $this->register_permission("manipulate-users", "User can add, edit delete users", [
-        "api/add_user",
+        'api/users-create',
         "api/update_user",
         "api/delete_user",
         "html/user-form.php",
@@ -65,6 +65,7 @@ class UsersManagement extends \ew\Module {
         'html/' . $this->get_index()]);
 
     $this->register_public_access([
+        'api/users-create',
         "api/am-i-in"
     ]);
 
@@ -252,6 +253,18 @@ class UsersManagement extends \ew\Module {
     return true;
   }
 
+  public function users_create($_input, \ew\APIResponse $_response) {
+    $result = (new UsersRepository())->create($_input);
+
+    if ($result->error) {
+      $_response->set_status_code($result->error);
+
+      return $result;
+    }
+
+    return $result->data->toArray();
+  }
+
   public function users_read($_response, $_input, $_parts__id) {
     $_input->id = $_parts__id;
 //    $db = \EWCore::get_db_connection();
@@ -308,6 +321,7 @@ class UsersManagement extends \ew\Module {
 
     $_response->properties['size'] = intval($totalRows['COUNT(*)']);
     $_response->properties['page_size'] = $page_size;
+
     return $rows;
   }
 

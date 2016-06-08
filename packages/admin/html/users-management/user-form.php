@@ -29,13 +29,13 @@ function get_ew_user_form($user_id) {
   <div class="row">    
     <div class="col-xs-12 mt">
       <?php
-      $users_groups = json_decode(admin\UsersManagement::get_users_groups_list(), true);
+      $users_groups = EWCore::call_api("admin/api/users-management/groups");
       //print_r($users_groups["result"]);
       ?>
       <select id="group_id" name="group_id" data-width="100%" data-label="tr{Group}">
         <?php
-        foreach ($users_groups["result"] as $group) {
-          echo "<option value='{$group["id"]}'>{$group["title"]}</option>";
+        foreach ($users_groups['data'] as $group) {
+          echo "<option value='{$group['id']}'>{$group['title']}</option>";
         }
         ?>
       </select>
@@ -43,20 +43,26 @@ function get_ew_user_form($user_id) {
   </div>
   <script  type="text/javascript">
     var UserForm = (function () {
-      function UserForm()
-      {
+      function UserForm() {
         this.bAdd = EW.addAction("tr{Add}", $.proxy(this.addUser, this)).hide();
         this.bSave = EW.addAction("tr{Save Changes}", $.proxy(this.updateUser, this)).addClass("btn-success").hide();
       }
 
-      UserForm.prototype.addUser = function ()
-      {
+      UserForm.prototype.addUser = function () {
         if ($("#email").val())
         {
           //alert(media.itemId);
           var formParams = $.parseJSON($("#user-form").serializeJSON());
           EW.lock($("#user-form"), "Saving...");
-          $.post('<?php echo EW_ROOT_URL; ?>~admin/api/users-management/add-user', formParams, function (data) {
+          $.ajax({
+            type: 'POST',
+            url: 'api/admin/users-management/users',
+            data: formParams,
+            success: success
+          });
+
+          function success(data) {
+            debugger;
             if (data.status === "success")
             {
               $.EW("getParentDialog", $("#user-form")).trigger("close");
@@ -67,11 +73,10 @@ function get_ew_user_form($user_id) {
               $("body").EW().notify(data).show();
             }
             EW.unlock($("#user-form"));
-          }, "json");
+          }
         }
       };
-      UserForm.prototype.updateUser = function ()
-      {
+      UserForm.prototype.updateUser = function () {
         if ($("#email").val())
         {
           //alert(media.itemId);
@@ -119,7 +124,7 @@ function get_ew_user_form($user_id) {
 }
 
 EWCore::register_form("ew-user-form-default", "ew-user-form", [
-    "title" => "User Info",
+    "title"   => "User Info",
     "content" => get_ew_user_form($_REQUEST['userId'])
 ]);
 
@@ -131,7 +136,7 @@ $tabs = EWCore::read_registry("ew-user-form");
     <h1 id='form-title' class="col-xs-12">
       tr{New User}
     </h1>
-    
+
     <ul class="nav nav-pills">
       <?php
       foreach ($tabsDefault as $id => $tab) {
