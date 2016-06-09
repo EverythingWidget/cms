@@ -290,13 +290,18 @@ class UsersManagement extends \ew\Module {
 //    $_response->properties['total'] = intval($totalRows['COUNT(*)']);
 //    $_response->properties['page_size'] = $page_size;
 
-    $users = (new UsersRepository())->read($_input);
+    $result = (new UsersRepository())->read($_input);
+    
+    if ($result->error) {
+      $_response->set_status_code($result->error);
+      return $result;
+    }
 
-    $_response->properties['total'] = $users->total;
-    $_response->properties['page_size'] = $users->page_size;
+    $_response->properties['total'] = $result->total;
+    $_response->properties['page_size'] = $result->page_size;
 
 
-    return $users->data->toArray();
+    return $result->data->toArray();
   }
 
   public static function get_users_groups_list($_response, $page = 0, $page_size = 100) {

@@ -20,24 +20,29 @@ class ew_users extends \Illuminate\Database\Eloquent\Model {
       'verfication_code',
       'verified',
       'disable'
-      ];
-  
+  ];
+  protected $hidden = [
+      'password'
+  ];
   public static $RULES = [
-      'email'     => [
+      'email'    => [
           'required',
           'email'
       ],
       'password' => [
           'required'
-  ]];
+      ]
+  ];
 
   public function __construct(array $attributes = []) {
     parent::__construct($attributes);
+
     $this->timestamps = false;
   }
 
   public function group() {
-    return $this->belongsTo('ew_users_groups', 'group_id');
+    require_once 'ew_users_groups.php';
+    return $this->belongsTo('admin\ew_users_groups', 'group_id');
   }
 
 }

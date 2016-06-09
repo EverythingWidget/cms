@@ -68,7 +68,7 @@ class LayoutsRepository implements \ew\CRUDRepository {
     $home_uis = WidgetsManagement::get_path_uis("@HOME_PAGE");
 
     if ($layout) {
-      $layout['template_settings'] = json_decode($layout['template_settings'], true);
+      $layout['template_settings'] = $layout['template_settings'];
 
       if ($default_uis["id"] == $id) {
         $layout["uis-default"] = true;

@@ -1331,12 +1331,12 @@ EWTable.prototype.createHeadersRow = function (headers) {
   tr[0].innerHTML = ths.join('');
   return tr;
 };
-EWTable.prototype.createRow = function (val, rc) {
+EWTable.prototype.createRow = function (columnValues, rowCounter) {
   var ewTable = this;
   var tableRow = $(document.createElement("tr"));
-  tableRow.data("field-id", val.id);
-  tableRow.attr("data-field-id", val.id);
-  var fieldId = val.id;
+  tableRow.data("field-id", columnValues.id);
+  tableRow.attr("data-field-id", columnValues.id);
+  var fieldId = columnValues.id;
   if (ewTable.config.onClick)
   {
     tableRow.click(function () {
@@ -1365,14 +1365,15 @@ EWTable.prototype.createRow = function (val, rc) {
     });
     actionsCellBtns.push(edit);
   }
+
   if (ewTable.config.onDelete)
   {
     var del = $(document.createElement("button"));
     del.attr("type", "button");
     del.addClass("btn btn-text delete");
     del.click(function () {
+
       tableRow.confirm = function (text, delFunction) {
-        var oldCells = null;
         var messageRow = $(document.createElement("div"));
         tableRow._messageRow = messageRow;
         messageRow[0].className = "row-block label label-danger";
@@ -1405,12 +1406,9 @@ EWTable.prototype.createRow = function (val, rc) {
         cancelBtn.on("click", function () {
           messageRow.animate({
             transform: "scale(0,1)"
-          },
-                  400,
-                  "Power3.easeInOut",
-                  function () {
-                    messageRow.remove();
-                  });
+          }, 400, "Power3.easeInOut", function () {
+            messageRow.remove();
+          });
         });
 
         $(document).one("keydown", function (e) {
@@ -1418,14 +1416,14 @@ EWTable.prototype.createRow = function (val, rc) {
             cancelBtn.click();
           }   // esc
         });
+        
         ewTable.tableBodyDiv.append(messageRow);
         messageRow.animate({
           transform: "scale(1,1)"
-        },
-                400,
-                "Power2.easeInOut");
+        }, 400, "Power2.easeInOut");
       };
-      if (ewTable.config.onDelete.apply(tableRow, new Array(fieldId)))
+
+      if (ewTable.config.onDelete.apply(tableRow, [fieldId]))
         tableRow.removeRow(fieldId);
     });
     actionsCellBtns.push(del);
@@ -1449,21 +1447,22 @@ EWTable.prototype.createRow = function (val, rc) {
     });
   }
   //delete val.id;
-  var index = rc;
+  var index = rowCounter;
   // Set the row label 
   if (ewTable.config.rowLabel)
     var rt = ewTable.config.rowLabel.replace(/{(\w+)}/g, function (a, p) {
-      return val[p];
+      return columnValues[p];
     });
   tableRow.data("label", rt);
   // When user spacify columns attribute 
   if (ewTable.config.columns)
   {
     var columnString = ewTable.config.columns.join(" ");
-    var row = columnString.replace(/(\w+)/g, function (a, p) {
-      //alert(p);
-      tableRow.data("field-" + a, val[p]);
-      return '<td>' + val[p] + '</td>';
+    var row = columnString.replace(/(\S+)/g, function (a, p) {
+      var value = System.utility.getProperty(columnValues, p);
+
+      tableRow[0].setAttribute('data-field-' + a, value);
+      return '<td>' + value + '</td>';
     });
     /*$.each(ewTable.config.columns, function (k, v) {
      
@@ -1480,7 +1479,7 @@ EWTable.prototype.createRow = function (val, rc) {
   } else
   {
 
-    $.each(val, function (k, v) {
+    $.each(columnValues, function (k, v) {
       if (ewTable.headers.children().eq(index).css("display") !== "none")
       {
         //alert(k+" "+index);

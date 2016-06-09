@@ -7,6 +7,7 @@
  */
 
 namespace admin;
+
 /**
  * Description of UsersGroupsRepository
  *
@@ -70,7 +71,7 @@ class UsersRepository implements \ew\CRUDRepository {
 
     $result->total = ew_users::count();
     $result->page_size = $page_size;
-    $result->data = ew_users::take($page_size)->skip($page * $page_size)->get();
+    $result->data = ew_users::with('group')->take($page_size)->skip($page * $page_size)->get();
 
     return $result;
   }
@@ -78,7 +79,16 @@ class UsersRepository implements \ew\CRUDRepository {
   public function find_by_id($id) {
     $result = new \stdClass;
 
-    $result->data = ew_users::find($id);
+    $data = ew_users::with('group')->find($id);
+
+    if ($data) {
+      $result->data = $data;
+
+      return $result;
+    }
+
+    $result->error = 404;
+    $result->message = 'user_not_found';
 
     return $result;
   }

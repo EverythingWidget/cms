@@ -16,6 +16,10 @@ namespace webroot;
 class ew_ui_structures extends \Illuminate\Database\Eloquent\Model {
 
   protected $table = 'ew_ui_structures';
+  protected $casts = [
+      'template_settings' => 'object',
+      'structure'         => 'array'
+  ];
 
   public function __construct(array $attributes = []) {
     parent::__construct($attributes);

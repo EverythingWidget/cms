@@ -46,7 +46,7 @@
       this.table = EW.createTable({
         name: "users-list",
         rowLabel: "{first_name} {last_name}",
-        columns: ["email", "first_name", "last_name", "title"],
+        columns: ["email", "first_name", "last_name", "group.title"],
         headers: {
           "tr{Username}": {
           },
