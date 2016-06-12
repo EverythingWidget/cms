@@ -105,7 +105,7 @@ class EWCore {
 
   public static function call_api($url, $parameters = [], $verb = 'GET') {
     $parts = explode('/', $url);
-    $params = array_merge($_REQUEST, [
+    $params = array_merge(/*$_REQUEST, */[
         '_file' => implode('/', array_slice($parts, 3))
             ], $parameters);
 

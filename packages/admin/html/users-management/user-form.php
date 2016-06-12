@@ -1,8 +1,10 @@
 <?php
 session_start();
+$user_id = $_REQUEST['id'];
 
-//admin\UsersManagement::get_user_by_id($_REQUEST["userId"]);
-function get_ew_user_form($user_id) {
+$data = $user_id ? EWCore::call_api("admin/api/users-management/users", ['id' => $user_id]) : [];
+
+function get_ew_user_form($user_id, $data) {
   ob_start();
   ?>
   <input type="hidden" id="id" name="id" value="">
@@ -30,7 +32,6 @@ function get_ew_user_form($user_id) {
     <div class="col-xs-12 mt">
       <?php
       $users_groups = EWCore::call_api("admin/api/users-management/groups");
-      //print_r($users_groups["result"]);
       ?>
       <select id="group_id" name="group_id" data-width="100%" data-label="tr{Group}">
         <?php
@@ -43,80 +44,82 @@ function get_ew_user_form($user_id) {
   </div>
   <script  type="text/javascript">
     var UserForm = (function () {
+      var dialog = $.EW("getParentDialog", $("#user-form"));
+      var loader;
+
       function UserForm() {
-        this.bAdd = EW.addAction("tr{Add}", $.proxy(this.addUser, this)).hide();
-        this.bSave = EW.addAction("tr{Save Changes}", $.proxy(this.updateUser, this)).addClass("btn-success").hide();
+        var _this = this;
+        this.bAdd = EW.addActivity({
+          title: "tr{Add}",
+          modal: {
+            class: "center"
+          },
+          verb: 'POST',
+          activity: 'admin/api/users-management/users',
+          parameters: function () {
+            if (!$("#email").val()) {
+              return false;
+            }
+
+            loader = System.UI.lock({
+              element: dialog[0],
+              akcent: 'loader center'
+            });
+
+            return $.parseJSON($("#user-form").serializeJSON());
+          },
+          onDone: function (response) {
+            loader.dispose();
+            $(document).trigger("users-list.refresh");
+            $("body").EW().notify(response).show();
+          }
+        });
+
+        this.bSave = EW.addActivity({
+          title: "tr{Save}",
+          modal: {
+            class: "center"
+          },
+          defaultClass: 'btn-success',
+          verb: 'PUT',
+          activity: 'admin/api/users-management/users',
+          parameters: function () {
+            if (!$("#email").val()) {
+              return false;
+            }
+
+            loader = System.UI.lock({
+              element: dialog[0],
+              akcent: 'loader center'
+            });
+
+            return $.parseJSON($("#user-form").serializeJSON());
+          },
+          onDone: function (response) {
+            loader.dispose();
+            $(document).trigger("users-list.refresh");
+            $("body").EW().notify(response).show();
+          }
+        });
+
+        $('#user-form').on('refresh', function (event, data) {
+          if (data['id']) {
+            $("#form-title").html("<span>tr{User Info}</span>" + data["first_name"]);
+            _this.bAdd.comeOut();
+            _this.bSave.comeIn();
+          } else {
+            $("#user-form #password").val("<?= admin\UsersManagement::random_password() ?>").change();
+            _this.bAdd.comeIn();
+            _this.bSave.comeOut();
+          }
+        });
       }
 
-      UserForm.prototype.addUser = function () {
-        if ($("#email").val())
-        {
-          //alert(media.itemId);
-          var formParams = $.parseJSON($("#user-form").serializeJSON());
-          EW.lock($("#user-form"), "Saving...");
-          $.ajax({
-            type: 'POST',
-            url: 'api/admin/users-management/users',
-            data: formParams,
-            success: success
-          });
-
-          function success(data) {
-            debugger;
-            if (data.status === "success")
-            {
-              $.EW("getParentDialog", $("#user-form")).trigger("close");
-              $(document).trigger("users-list.refresh");
-              $("body").EW().notify(data).show();
-            } else
-            {
-              $("body").EW().notify(data).show();
-            }
-            EW.unlock($("#user-form"));
-          }
-        }
-      };
-      UserForm.prototype.updateUser = function () {
-        if ($("#email").val())
-        {
-          //alert(media.itemId);
-          var formParams = $.parseJSON($("#user-form").serializeJSON());
-          EW.lock($("#user-form"), "Saving...");
-          $.post('<?php echo EW_ROOT_URL; ?>~admin/api/users-management/update-user', formParams, function (data) {
-            if (data.status === "success")
-            {
-              $(document).trigger("users-list.refresh");
-              $("body").EW().notify(data).show();
-            } else
-            {
-              $("body").EW().notify(data).show();
-            }
-            EW.unlock($("#user-form"));
-          }, "json");
-        }
-      };
       return new UserForm();
     })();
 
-  <?php
-  if ($user_id) {
-    $row = EWCore::call_api("admin/api/users-management/get-user-by-id", ["userId" => $user_id]);
-    if (isset($row["data"])) {
-      ?>
-        var formData = <?= json_encode($row["data"]); ?>;
-        $("#form-title").html("<span>tr{User Info}</span>" + formData["first_name"]);
-        EW.setFormData("#user-form", formData);
-        UserForm.bSave.comeIn(300);
-      <?php
-    }
-  }
-  else {
-    ?>
-      $("#user-form #password").val("<?php echo admin\UsersManagement::random_password() ?>").change();
-      UserForm.bAdd.comeIn(300);
-    <?php
-  }
-  ?>
+    var formData = <?= json_encode($data['data']); ?>;
+    EW.setFormData("#user-form", formData);
 
   </script>
   <?php
@@ -125,7 +128,7 @@ function get_ew_user_form($user_id) {
 
 EWCore::register_form("ew-user-form-default", "ew-user-form", [
     "title"   => "User Info",
-    "content" => get_ew_user_form($_REQUEST['userId'])
+    "content" => get_ew_user_form($user_id, $data)
 ]);
 
 $tabsDefault = EWCore::read_registry("ew-user-form-default");
@@ -145,6 +148,7 @@ $tabs = EWCore::read_registry("ew-user-form");
         else
           echo "<li ><a href='#{$id}' data-toggle='tab'>tr{" . $tab["title"] . "}</a></li>";
       }
+
       foreach ($tabs as $id => $tab) {
         echo "<li ><a href='#{$id}' data-toggle='tab'>tr{" . $tab["title"] . "}</a></li>";
       }

@@ -4,40 +4,31 @@
 
     function UsersGroups() {
       var _this = this;
-      this.bNewGroup = EW.addActionButton({
-        text: "tr{New Group}",
+      this.bNewGroup = EW.addActivity({
+        title: "tr{New Group}",
         parent: System.UI.components.mainFloatMenu,
-        handler: function () {
-          EW.setHashParameter("groupId", null);
-          EW.setHashParameter("form", "group");
-        }
+        parameters: function () {
+          return {
+            groupId: null
+          };
+        },
+        activity: 'admin/html/users-management/users-group-form.php'
       });
       $(document).off("users-groups-list.refresh");
       $(document).on("users-groups-list.refresh", function () {
         _this.usersGroupsList();
       });
 
-      this.usersGroupsList();
-
-      _this.userGroupModal = EW.createModal({
-        hash: {
-          key: "form",
-          value: "group"
-        },
-        onOpen: function () {
-          EW.lock(this);
-          var groupId = EW.getHashParameter("groupId");
-          $.post("<?php echo EW_ROOT_URL; ?>~admin/html/users-management/users-group-form.php", {
-            groupId: groupId
-          }, function (data) {
-            _this.userGroupModal.html(data);
+      this.editGroupActivity = EW.getActivity({
+        activity: 'admin/html/users-management/users-group-form.php_edit',
+        onDone: function () {
+          System.setHashParameters({
+            groupId: null
           });
-        },
-        onClose: function () {
-          EW.setHashParameter("form", null);
-          EW.setHashParameter("groupId", null);
         }
       });
+
+      this.usersGroupsList();
     }
 
     UsersGroups.prototype.usersGroupsList = function () {
@@ -51,9 +42,9 @@
         name: "users-groups-list",
         rowLabel: "{title}",
         columns: [
-          "title",
-          "description",
-          "round_date_created"
+          'title',
+          'description',
+          'date_created'
         ],
         headers: {
           "tr{Title}": {
@@ -68,19 +59,29 @@
         pageSize: 30,
         onDelete: function (id) {
           this.confirm("tr{Are you sure of deleting of this group?}", function () {
-            //EW.lock($("#main-content"));
-            $.post('<?php echo EW_ROOT_URL; ?>~admin/api/users-management/delete-group', {
-              id: id
-            }, function (data) {
-              UsersGroups.usersGroupsList();
-              $("body").EW().notify(data).show();
-              //EW.unlock($("#main-content"));
-            }, "json");
+            $.ajax({
+              type: 'DELETE',
+              url: 'api/admin/users-management/groups',
+              data: {
+                id: id
+              },
+              success: function (data) {
+                self.usersGroupsList();
+                $("body").EW().notify(data).show();
+                //EW.unlock($("#main-content"));
+              }
+            });
+
+            return true;
           });
         },
         onEdit: function (id) {
-          EW.setHashParameter("groupId", id);
-          EW.setHashParameter("form", "group");
+
+          if (self.editGroupActivity) {
+            self.editGroupActivity({
+              groupId: id
+            });
+          }
         }
       });
       $("#main-content").html(this.table.container);

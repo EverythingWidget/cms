@@ -1,8 +1,7 @@
 <?php
 session_start();
 
-function get_ew_user_form()
-{
+function get_ew_user_form() {
   ob_start();
   ?>
   <input type="hidden" id="id" name="id" value="">
@@ -19,8 +18,7 @@ function get_ew_user_form()
   return ob_get_clean();
 }
 
-function get_ew_users_permissions_form()
-{
+function get_ew_users_permissions_form() {
   ob_start();
   ?>
   <input type="hidden" id="permission" name="permission">
@@ -31,10 +29,8 @@ function get_ew_users_permissions_form()
     <ul class="list permissions tree" data-toggle="buttons">
       <?php
       $permissions_titles = \EWCore::read_permissions_titles();
-      if (isset($permissions_titles))
-      {
-        foreach ($permissions_titles as $app_name => $sections)
-        {
+      if (isset($permissions_titles)) {
+        foreach ($permissions_titles as $app_name => $sections) {
           ?>
           <li>
             <label data-value="<?= $app_name ?>">
@@ -45,8 +41,7 @@ function get_ew_users_permissions_form()
             </label>
             <ul class="row">
               <?php
-              foreach ($sections["section"] as $section_name => $sections_permissions)
-              {
+              foreach ($sections["section"] as $section_name => $sections_permissions) {
                 ?>
                 <li >
                   <label data-value="<?= "$app_name.$section_name" ?>">
@@ -56,8 +51,7 @@ function get_ew_users_permissions_form()
                   </label>
                   <ul>
                     <?php
-                    foreach ($sections_permissions["permission"] as $permission_name => $permission_info)
-                    {
+                    foreach ($sections_permissions["permission"] as $permission_name => $permission_info) {
                       ?>
                       <li class="permission-item">
                         <label  data-value="<?php echo "$app_name.$section_name.$permission_name" ?>">
@@ -84,8 +78,8 @@ function get_ew_users_permissions_form()
   </div>
   <script  type="text/javascript">
     var UsersGroupsForm = (function () {
-      function UsersGroupsForm()
-      {
+      function UsersGroupsForm() {
+        var _this = this;
         var permissions = [
         ];
         this.name = "ha";
@@ -93,16 +87,25 @@ function get_ew_users_permissions_form()
         this.bAdd = EW.addAction("tr{Save}", $.proxy(this.addGroup, this)).hide();
         this.bDelete = EW.addAction("tr{Delete}", $.proxy(this.deleteGroup, this)).addClass("btn-danger").hide();
 
+        $("#users-group-form").on('refresh', function (e, formData) {
+          if (formData['id']) {
+            $("#form-title").html("<span>tr{Group Info}</span>" + formData["title"]);
+            _this.readClasses();
+            _this.bSave.comeIn(300);
+            _this.bDelete.comeIn(300);
+          } else {
+            _this.bAdd.comeIn(300);
+          }
+        });
+
         this.readClasses();
       }
-      UsersGroupsForm.prototype.readClasses = function ()
-      {
+      UsersGroupsForm.prototype.readClasses = function () {
         var $self = this;
         var givenPermissions = $("#permission").val().split(",");
         //alert($("#permission").text());
         $("#permission").empty();
-        $.each($("#all-permissions").find("label"), function (k, v)
-        {
+        $.each($("#all-permissions").find("label"), function (k, v) {
           var a = $(v).find("input");
           if (!$(v).hasClass("btn"))
           {
@@ -110,8 +113,7 @@ function get_ew_users_permissions_form()
             a.val($(v).attr("data-value"));
             a.hide();
             //$(v).text($(v).text());
-            a.change(function (event)
-            {
+            a.change(function (event) {
               var label = $(v);
               if ($(this).is(":checked"))
               {
@@ -144,8 +146,7 @@ function get_ew_users_permissions_form()
             $(v).addClass("btn btn-white");
           }
           //
-          $.each(givenPermissions, function (i, c)
-          {
+          $.each(givenPermissions, function (i, c) {
             if (a.val() === (c))
             {
               //a.click();
@@ -158,30 +159,44 @@ function get_ew_users_permissions_form()
         });
       };
 
-      UsersGroupsForm.prototype.readPermission = function ()
-      {
+      UsersGroupsForm.prototype.readPermission = function () {
         var permissions = [
         ];
-        //var $self = this;
-        /*$("#used-classes").text("");
-         $.each($("#panel-classes").find("input"), function(k, v) {
-         $("#used-classes").append($(v).val() + " ");
-         });
-         $("#used-classes").append($("#style_class").val());*/
+
         $.each($("#users-group-form").find("li.permission-item input:checkbox:checked"), function (k, v) {
           if (!$(v).is(":disabled"))
             permissions.push($(v).val());
         });
+
         return permissions;
-
-        //alert($self.permissions.toString());
-        //$("#used-classes").append($("#style_class").val());
       };
 
 
 
-      UsersGroupsForm.prototype.updateGroup = function ()
-      {
+      UsersGroupsForm.prototype.updateGroup = function () {
+        var $self = this;
+        if ($("#title").val())
+        {
+          //alert(media.itemId);
+          var formParams = $.parseJSON($("#users-group-form").serializeJSON());
+          formParams["permission"] = $self.readPermission().toString();
+          var locker = System.ui.lock({
+            element: $("#users-group-form").parent()[0],
+            akcent: 'loader center'
+          });
+
+          $.ajax({
+            type: 'PUT',
+            url: 'api/admin/users-management/groups', data: formParams, success: function (response) {
+              $(document).trigger("users-groups-list.refresh");
+              $("body").EW().notify(response).show();
+              EW.setFormData("#users-group-form", response.data);
+              locker.dispose();
+            }
+          });
+        }
+      };
+      UsersGroupsForm.prototype.addGroup = function () {
         var $self = this;
         if ($("#title").val())
         {
@@ -189,78 +204,56 @@ function get_ew_users_permissions_form()
           var formParams = $.parseJSON($("#users-group-form").serializeJSON());
           formParams["permission"] = $self.readPermission().toString();
           EW.lock($("#users-group-form"), "Saving...");
-          $.post('<?php echo EW_ROOT_URL; ?>~admin/api/users-management/update-group', formParams, function (data) {
-            $(document).trigger("users-groups-list.refresh");
-            $("body").EW().notify(data).show();
+          $.ajax({
+            type: 'POST',
+            url: 'api/admin/users-management/groups/',
+            data: formParams,
+            success: function (data) {
+              $.EW("getParentDialog", $("#users-group-form")).trigger("close");
+              $(document).trigger('users-groups-list.refresh');
+              $("body").EW().notify(data).show();
 
-            EW.unlock($("#users-group-form"));
-          }, "json");
-        }
-      };
-      UsersGroupsForm.prototype.addGroup = function ()
-      {
-        var $self = this;
-        if ($("#title").val())
-        {
-          //alert(media.itemId);
-          var formParams = $.parseJSON($("#users-group-form").serializeJSON());
-          formParams["permission"] = $self.readPermission().toString();
-          EW.lock($("#users-group-form"), "Saving...");
-          $.post('<?php echo EW_ROOT_URL; ?>~admin/api/users-management/add-group', formParams, function (data) {
-            $.EW("getParentDialog", $("#users-group-form")).trigger("close");
-            UsersGroups.usersGroupsList();
-            $("body").EW().notify(data).show();
-
-            EW.unlock($("#users-group-form"));
-          }, "json");
+              EW.unlock($("#users-group-form"));
+            }
+          });
         }
       };
 
-      UsersGroupsForm.prototype.deleteGroup = function ()
-      {
-        var $self = this;
+      UsersGroupsForm.prototype.deleteGroup = function () {
         if (confirm("Are you sure of deleting of this group?"))
         {
           var formParams = $.parseJSON($("#users-group-form").serializeJSON());
-          EW.lock($("#users-group-form"));
-          $.post('<?php echo EW_ROOT_URL; ?>~admin/api/users-management/delete-group', formParams, function (data) {
-            $.EW("getParentDialog", $("#users-group-form")).trigger("close");
-            UsersGroups.usersGroupsList();
-            $("body").EW().notify(data).show();
-
-            EW.unlock($("#users-group-form"));
-          }, "json");
+          $.ajax({
+            type: 'DELETE',
+            url: 'api/admin/users-management/groups',
+            data: formParams,
+            success: function (data) {
+              $.EW("getParentDialog", $("#users-group-form")).trigger('destroy');
+              $("body").EW().notify(data).show();
+              $(document).trigger('users-groups-list.refresh');
+            }
+          });
         }
       };
       return new UsersGroupsForm();
     })();
   <?php
   $row = [];
-  if (isset($_REQUEST["groupId"]))
-  {
-    $row = EWCore::call_api("admin/api/users-management/get-user-group-by-id", ["groupId" => $_REQUEST["groupId"]]);
+  if ($_REQUEST["groupId"]) {
+    $row = EWCore::call_api('admin/api/users-management/groups', ['id' => $_REQUEST["groupId"]]);
   }
   ?>
     var formData = <?= isset($row) ? json_encode($row["data"]) : 'null' ?>;
     EW.setFormData("#users-group-form", formData);
-    if (formData)
-    {
-      $("#form-title").html("<span>tr{Group Info}</span>" + formData["title"]);
-      UsersGroupsForm.readClasses();
-      UsersGroupsForm.bSave.comeIn(300);
-      UsersGroupsForm.bDelete.comeIn(300);
-    } else {
 
-      UsersGroupsForm.bAdd.comeIn(300);
-    }
   </script>
   <?php
   return ob_get_clean();
 }
 
-EWCore::register_form("ew/ui/user-form", "ew-user-form", ["title" => "Group Info",
+EWCore::register_form("ew/ui/user-form", "ew-user-form", ["title"   => "Group Info",
     "content" => get_ew_user_form()]);
-EWCore::register_form("ew/ui/user-form", "ew-user-permissions", ["title" => "Permissions",
+EWCore::register_form("ew/ui/user-form", "ew-user-permissions", ["title"   => "Permissions",
     "content" => get_ew_users_permissions_form()]);
 
 $tabs = EWCore::read_registry("ew/ui/user-form");
@@ -272,8 +265,7 @@ $tabs = EWCore::read_registry("ew/ui/user-form");
     </h1>
     <ul class="nav nav-pills">
       <?php
-      foreach ($tabs as $id => $tab)
-      {
+      foreach ($tabs as $id => $tab) {
         if ($id == "ew-user-form")
           echo "<li class='active'><a href='#{$id}' data-toggle='tab'>tr{" . $tab["title"] . "}</a></li>";
         else
@@ -286,8 +278,7 @@ $tabs = EWCore::read_registry("ew/ui/user-form");
 
     <div class="tab-content col-xs-12" style="height:100%;position:absolute;">
       <?php
-      foreach ($tabs as $id => $tab)
-      {
+      foreach ($tabs as $id => $tab) {
         if ($id == "ew-user-form")
           echo "<div class='tab-pane active' id='{$id}'>{$tab["content"]}</div>";
         else

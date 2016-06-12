@@ -67,24 +67,22 @@ class LayoutsRepository implements \ew\CRUDRepository {
     $default_uis = WidgetsManagement::get_path_uis("@DEFAULT");
     $home_uis = WidgetsManagement::get_path_uis("@HOME_PAGE");
 
-    if ($layout) {
-      $layout['template_settings'] = $layout['template_settings'];
+    if (!$layout) {
+      $result->error = 404;
+      $result->message = 'layout_not_found';
 
-      if ($default_uis["id"] == $id) {
-        $layout["uis-default"] = true;
-      }
-
-      if ($home_uis["id"] == $id) {
-        $layout["uis-home-page"] = true;
-      }
-
-      $result->data = $layout;
-      
       return $result;
     }
 
-    $result->error = 404;
-    $result->message = 'Layout not found';
+    if ($default_uis["id"] == $id) {
+      $layout["uis-default"] = true;
+    }
+
+    if ($home_uis["id"] == $id) {
+      $layout["uis-home-page"] = true;
+    }
+
+    $result->data = $layout;
 
     return $result;
   }

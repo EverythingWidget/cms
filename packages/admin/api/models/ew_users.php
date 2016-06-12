@@ -35,13 +35,14 @@ class ew_users extends \Illuminate\Database\Eloquent\Model {
   ];
 
   public function __construct(array $attributes = []) {
+    require_once 'ew_users_groups.php';
     parent::__construct($attributes);
 
     $this->timestamps = false;
   }
 
   public function group() {
-    require_once 'ew_users_groups.php';
+
     return $this->belongsTo('admin\ew_users_groups', 'group_id');
   }
 

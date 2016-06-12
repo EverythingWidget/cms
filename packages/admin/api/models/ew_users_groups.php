@@ -16,9 +16,10 @@ class ew_users_groups extends \Illuminate\Database\Eloquent\Model {
       'type',
       'permission',
   ];
-
-
   public static $RULES = [
+      'title' => [
+          'required'
+      ]
   ];
 
   public function __construct(array $attributes = []) {
@@ -29,4 +30,13 @@ class ew_users_groups extends \Illuminate\Database\Eloquent\Model {
   public function users() {
     return $this->hasMany('ew_users', 'group_id');
   }
+
+  public function getPermissionAttribute($value) {
+    if ($this->attributes['type'] === 'superuser') {
+      $value = implode(',', \EWCore::read_permissions_ids());
+    }
+
+    return $value;
+  }
+
 }

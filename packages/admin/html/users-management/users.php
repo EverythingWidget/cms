@@ -1,20 +1,44 @@
 <script >
   (function () {
-    function UsersStateHandler(module) {
-      var component = this;
-      this.module = module;
 
-      this.module.onInit = function () {
+    function UsersStateHandler(state) {
+      var component = this;
+      this.state = state;
+      this.handlers = {};
+
+      this.state.onInit = function () {
         component.init();
       };
 
-      this.module.onStart = function () {
+      this.state.onStart = function () {
         component.start();
       };
     }
 
-    UsersStateHandler.prototype.init = function () {
+    UsersStateHandler.prototype.defineStates = function (handlers) {
+      var component = this;
 
+      handlers.app = function (full, value) {
+        if (parseInt(value)) {
+          component.editActivity(false, {id: value});
+        }
+      };
+    };
+
+    UsersStateHandler.prototype.init = function () {
+      var component = this;
+      this.editActivity = EW.getActivity({
+        activity: "admin/html/users-management/user-form.php_edit",
+        modal: {
+          class: "center"
+        },
+        onDone: function () {
+          component.state.setNav(null);
+        }
+      });
+
+      this.defineStates(this.handlers);
+      System.Util.installModuleStateHandlers(this.state, this.handlers);
     };
 
     UsersStateHandler.prototype.start = function () {
@@ -68,19 +92,9 @@
             }, "json");
           });
         },
-        onEdit: ((editActivity = EW.getActivity({
-          activity: "admin/html/users-management/user-form.php_see",
-          modal: {
-            class: "center"
-          },
-          onDone: function (hash) {
-            hash["userId"] = null;
-          }
-        })) ? function (id) {
-          editActivity({
-            userId: id
-          });
-        } : null)
+        onEdit: function (id) {
+          component.state.setNav(id);
+        }
       });
 
       System.UI.components.mainContent.html(this.table.container);

@@ -5,9 +5,9 @@ session_start();
 function get_article_data($id) {
   $articleInfo = [];
   $articleInfo["parent_id"] = $_REQUEST["parent"];
-  if ($_REQUEST["articleId"]) {
-    $articleInfo = EWCore::call_api("admin/api/content-management/get-article", [
-                "articleId" => $id
+  if ($_REQUEST["article"]) {
+    $articleInfo = EWCore::call_api("admin/api/content-management/contents", [
+                "id" => $id
             ])["data"];
   }
 
@@ -27,5 +27,5 @@ EWCore::register_form("ew/ui/forms/content/properties", "article-properties", ["
 echo admin\ContentManagement::create_content_form(["formId"         => "article-form",
     "contentType"    => "article",
     "include_script" => EWCore::get_view('admin/html/content-management/article-form.js'),
-    "data"           => get_article_data($_REQUEST["articleId"])]);
+    "data"           => get_article_data($_REQUEST["article"])]);
 

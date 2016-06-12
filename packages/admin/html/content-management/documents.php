@@ -202,7 +202,7 @@
         onDone: function () {
           System.setHashParameters({
             folderId: null,
-            articleId: null
+            article: null
           });
         }
       });
@@ -211,8 +211,7 @@
         activity: "admin/html/content-management/article-form.php_see",
         onDone: function () {
           System.setHashParameters({
-            folderId: null,
-            articleId: null
+            folderId: null
           });
         }
       });
@@ -277,9 +276,10 @@
         parent: System.UI.components.mainFloatMenu,
         parameters: function (hash) {
           hash.parent = component.parentId;
+          hash.article = null;
         },
         onDone: function (hash) {
-          hash.articleId = null;
+          hash.article = null;
           hash.parent = null;
         }
       }).hide();
@@ -298,14 +298,14 @@
           if (eventData.data.type === "article") {
             System.setHashParameters({
               folderId: null,
-              articleId: eventData.data.id
+              article: eventData.data.id
             });
           }
 
           if (eventData.data.type === "folder") {
             EW.setHashParameters({
               folderId: eventData.data.id,
-              articleId: null
+              article: null
             }, "document");
           }
         }
@@ -338,7 +338,7 @@
 
       component.ui.components.articles_list.off('dblclick').on('dblclick', '.article', function (e) {
         component.seeArticleActivity({
-          articleId: e.currentTarget.getAttribute('data-content-id')
+          article: e.currentTarget.getAttribute('data-content-id')
         });
       });
     };
@@ -388,7 +388,7 @@
       } else if (tArticleId) {
         this.articleId = tArticleId;
         this.seeArticleActivity({
-          articleId: tArticleId
+          article: tArticleId
         });
       }
     };

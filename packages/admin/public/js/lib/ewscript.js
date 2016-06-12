@@ -304,7 +304,7 @@ EverythingWidgets.prototype.getActivity = function (conf) {
   activityController = $.extend({}, activityController, conf);
   _this.activities[activityId] = activityController;
 
-  var activityCaller = function (hash) {
+  var activityCaller = function (hash, privateParams) {
     var hashParameters = {
       ew_activity: activityId
     };
@@ -313,7 +313,10 @@ EverythingWidgets.prototype.getActivity = function (conf) {
     if (activityController.form) {
       _this.activitySource = activityController;
       activityController.newParams = hash;
-      _this.setHashParameters(hashParameters);
+      activityController.privateParams = privateParams;
+      
+      // 2016-06-12: the `true` can cause issue 
+      System.setHashParameters(hashParameters, true);
     }
     // if the activity does not contains any form then set a formless hash parameter
     else {
@@ -1395,7 +1398,7 @@ EWTable.prototype.createRow = function (columnValues, rowCounter) {
         deleteBtn.text("Delete");
         messageRow.append(deleteBtn);
         deleteBtn.on("click", function () {
-          if (delFunction.apply(tableRow, new Array(fieldId))) {
+          if (delFunction.apply(tableRow, [fieldId])) {
             cancelBtn.trigger("click");
             ewTable.removeRow(fieldId);
           }
@@ -1416,7 +1419,7 @@ EWTable.prototype.createRow = function (columnValues, rowCounter) {
             cancelBtn.click();
           }   // esc
         });
-        
+
         ewTable.tableBodyDiv.append(messageRow);
         messageRow.animate({
           transform: "scale(1,1)"
@@ -2414,7 +2417,7 @@ $(document).ready(function () {
           $.ajax({
             type: currentActivity.verb || "GET",
             url: currentActivity.url,
-            data: activityParameters,
+            data: $.extend({}, activityParameters, currentActivity.privateParams),
             success: function (data) {
               modal.html(data);
             },

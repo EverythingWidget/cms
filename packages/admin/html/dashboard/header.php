@@ -40,7 +40,7 @@
 
 </script>
    
-<script src="https://code.jquery.com/jquery-2.1.0.min.js"></script>     
+<script src="~rm/public/js/jquery/build.js"></script>     
 
 <script src="https://vuejs.org/js/vue.js"></script>
 <script src="~admin/public/js/lib/vue-animations.js"></script>

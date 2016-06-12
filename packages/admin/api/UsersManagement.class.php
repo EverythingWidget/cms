@@ -44,7 +44,7 @@ class UsersManagement extends \ew\Module {
 
     $this->register_permission("manipulate-users", "User can add, edit delete users", [
         'api/users-create',
-        "api/update_user",
+        "api/users-update",
         "api/delete_user",
         "html/user-form.php",
         "api/logout",
@@ -58,11 +58,12 @@ class UsersManagement extends \ew\Module {
         'html/' . $this->get_index()]);
 
     $this->register_permission("manipulate-groups", "User can add, edit delete user group", [
-        "api/add_group",
-        "api/update_group",
-        "api/delete_group",
-        "html/users-group-form.php:tr{New Group}",
-        'html/' . $this->get_index()]);
+        'api/groups-create',
+        'api/groups-update',
+        'api/groups-delete',
+        'html/users-group-form.php',
+        'html/' . $this->get_index()
+    ]);
 
     $this->register_public_access([
         'api/users-create',
@@ -291,7 +292,7 @@ class UsersManagement extends \ew\Module {
 //    $_response->properties['page_size'] = $page_size;
 
     $result = (new UsersRepository())->read($_input);
-    
+
     if ($result->error) {
       $_response->set_status_code($result->error);
       return $result;
@@ -300,6 +301,32 @@ class UsersManagement extends \ew\Module {
     $_response->properties['total'] = $result->total;
     $_response->properties['page_size'] = $result->page_size;
 
+
+    return $result->data->toArray();
+  }
+
+  public function users_update(\ew\APIResponse $_response, $_input, $_parts__id) {
+    $_input->id = $_parts__id;
+
+    $result = (new UsersRepository())->update($_input);
+
+    $_response->properties['message'] = $result->message;
+
+    if ($result->error) {
+      $_response->set_status_code($result->error);
+
+      return $result;
+    }
+
+    return $result->data->toArray();
+  }
+
+  public function users_delete(\ew\APIResponse $_response, $_input, $_parts__id) {
+    $_input->id = $_parts__id;
+
+    $result = (new UsersRepository())->delete($_input);
+
+    $_response->properties['message'] = $result->message;
 
     return $result->data->toArray();
   }
@@ -675,13 +702,61 @@ class UsersManagement extends \ew\Module {
 //    return $this->get_users_groups_list($_response);
 //  }
 
-  public function groups_read($_input, $_response) {
-    $result = (new UsersGroupsRepository())->read($_input, $_response);
+  public function groups_create(\ew\APIResponse $_response, $_input) {
+    $result = (new UsersGroupsRepository())->create($_input);
+
+    $_response->properties['message'] = $result->message;
+
+    if ($result->error) {
+      $_response->set_status_code($result->error);
+
+      return $result;
+    }
+
+    return $result->data->toArray();
+  }
+
+  public function groups_read(\ew\APIResponse $_response, $_input, $_parts__id) {
+    $_input->id = $_parts__id;
+
+    $result = (new UsersGroupsRepository())->read($_input);
+
+    if ($result->error) {
+      $_response->set_status_code($result->error);
+
+      return $result;
+    }
 
     $_response->properties['total'] = $result->total;
     $_response->properties['page_size'] = $result->page_size;
 
-    return $result->data;
+    return $result->data->toArray();
+  }
+
+  public function groups_update(\ew\APIResponse $_response, $_input, $_parts__id) {
+    $_input->id = $_parts__id;
+
+    $result = (new UsersGroupsRepository())->update($_input);
+
+    $_response->properties['message'] = $result->message;
+
+    if ($result->error) {
+      $_response->set_status_code($result->error);
+
+      return $result;
+    }
+
+    return $result->data->toArray();
+  }
+
+  public function groups_delete(\ew\APIResponse $_response, $_input, $_parts__id) {
+    $_input->id = $_parts__id;
+
+    $result = (new UsersGroupsRepository())->delete($_input);
+
+    $_response->properties['message'] = $result->message;
+
+    return $result->data->toArray();
   }
 
 }

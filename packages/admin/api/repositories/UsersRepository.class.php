@@ -46,10 +46,6 @@ class UsersRepository implements \ew\CRUDRepository {
     return $result;
   }
 
-  public function delete($input) {
-    
-  }
-
   public function read($input) {
     if (isset($input->id)) {
       return $this->find_by_id($input->id);
@@ -59,8 +55,63 @@ class UsersRepository implements \ew\CRUDRepository {
   }
 
   public function update($input) {
-    
+    $result = new \stdClass;
+    $input->password = 'password_may_not_be_updated';
+    $validation_result = \SimpleValidator\Validator::validate((array) $input, ew_users::$RULES);
+    unset($input->password);
+
+    if (!$validation_result->isSuccess()) {
+      $result->error = 400;
+      $result->message = $validation_result->getErrors();
+
+      return $result;
+    }
+
+    $user = ew_users::find($input->id);
+
+    if (!$user) {
+      $result->error = 404;
+      $result->message = 'user_not_found';
+
+      return $result;
+    }
+
+    $user->fill((array) $input);
+    $user->save();
+
+    $result->data = $user;
+    $result->message = 'user_has_been_updated';
+
+    return $result;
   }
+
+  public function delete($input) {
+    $result = new \stdClass;
+
+    $result->message = 'user_has_been_deleted';
+
+    $user = ew_users::find($input->id);
+
+    if (!$user) {
+      $result->error = 404;
+      $result->message = 'user_not_found';
+
+      return $result;
+    }
+
+    if (!$user->delete()) {
+      $result->error = 500;
+      $result->message = 'user_has_not_been_deleted';
+
+      return $result;
+    }
+
+    $result->data = $user;
+
+    return $result;
+  }
+
+  // ------ //
 
   public function all($page = 0, $page_size = 100) {
     if (!isset($page_size)) {
@@ -81,14 +132,14 @@ class UsersRepository implements \ew\CRUDRepository {
 
     $data = ew_users::with('group')->find($id);
 
-    if ($data) {
-      $result->data = $data;
+    if (!$data) {
+      $result->error = 404;
+      $result->message = 'user_not_found';
 
       return $result;
     }
 
-    $result->error = 404;
-    $result->message = 'user_not_found';
+    $result->data = $data;
 
     return $result;
   }

@@ -543,7 +543,7 @@
     initPlugins(document);
 
     var installModules = <?= EWCore::read_apps_sections(); ?>;
-    console.log(installModules);
+    //console.log(installModules);
     installModules.forEach(function (e) {
       EW.apps[e.id] = e;
     });
