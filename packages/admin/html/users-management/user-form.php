@@ -42,8 +42,9 @@ function get_ew_user_form($user_id, $data) {
       </select>
     </div>
   </div>
-  <script  type="text/javascript">
-    var UserForm = (function () {
+
+  <script type="text/javascript">
+    (function () {
       var dialog = $.EW("getParentDialog", $("#user-form"));
       var loader;
 
@@ -115,7 +116,7 @@ function get_ew_user_form($user_id, $data) {
         });
       }
 
-      return new UserForm();
+      new UserForm();
     })();
 
     var formData = <?= json_encode($data['data']); ?>;
