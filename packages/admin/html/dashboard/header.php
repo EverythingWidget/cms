@@ -39,10 +39,10 @@
   })();
 
 </script>
-   
+
 <script src="~rm/public/js/jquery/build.js"></script>     
 
-<script src="https://vuejs.org/js/vue.js"></script>
+<script src="public/rm/js/vue/vue.js"></script>
 <script src="~admin/public/js/lib/vue-animations.js"></script>
 <script src="~rm/public/js/gsap/TweenLite.min.js"></script>
 <script src="~rm/public/js/gsap/TimelineLite.min.js"></script>

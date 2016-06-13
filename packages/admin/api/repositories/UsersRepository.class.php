@@ -39,8 +39,14 @@ class UsersRepository implements \ew\CRUDRepository {
     $user->password = static::generate_hash($input->password);
     $datetime = new \DateTime();
     $user->date_created = $datetime->format('y-m-d H:i:s');
-    $user->save();
+    if (!$user->save()) {
+      $result->error = 500;
+      $result->message = 'user_has_not_been_created';
+      
+      return $result;
+    }
 
+    $result->message = 'user_has_been_created';
     $result->data = $user;
 
     return $result;

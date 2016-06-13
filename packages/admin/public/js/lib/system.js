@@ -304,138 +304,133 @@
     },
     /**
      * 
-     * @param {json} mod  id: the id of module, url: path to the module
+     * @param {json} module  id: the id of module, url: path to the module
      * @param {callback} onDone
      * @returns {void}
      */
-    loadModule: function (mod, onDone, parentScope) {
-      System.onModuleLoaded["system/" + mod.id] = onDone;
-      var module = System.modules["system/" + mod.id];
+    loadModule: function (module, onDone, parentScope) {
+      System.onModuleLoaded["system/" + module.id] = onDone;
+      var moduleExist = System.modules["system/" + module.id];
 
-      if (module) {
-        if ("function" === typeof (System.onModuleLoaded["system/" + mod.id])) {
-          System.onModuleLoaded["system/" + mod.id].call(this, module, module.html);
-          System.onModuleLoaded["system/" + mod.id] = null;
+      if (moduleExist) {
+        if ("function" === typeof (System.onModuleLoaded["system/" + module.id])) {
+          System.onModuleLoaded["system/" + module.id].call(this, moduleExist, moduleExist.html);
+          System.onModuleLoaded["system/" + module.id] = null;
         }
 
         return;
       }
-      if (System.onLoadQueue["system/" + mod.id]) {
+
+      if (System.onLoadQueue["system/" + module.id]) {
         return;
       }
 
-      System.onLoadQueue["system/" + mod.id] = true;
+      System.onLoadQueue["system/" + module.id] = true;
 
-      $.get(mod.url, mod.params | {}, function (response) {
-        if (System.modules["system/" + mod.id]) {
-          $("#system_" + mod.id.replace(/[\/-]/g, "_")).remove();
+      $.get(module.url, module.params | {}, function (response) {
+        if (System.modules["system/" + module.id]) {
+          $("#system_" + module.id.replace(/[\/-]/g, "_")).remove();
           //return;
         }
 
         var filtered = System.parseContent(response);
-        //System.uiTemplates["system/" + mod.id] = templates;
 
         setTimeout(function () {
-          if (filtered.script) {
-            var scopeUIViews = {};
-            Array.prototype.forEach.call(filtered.uiView, function (item) {
-              var key = item.getAttribute('name').replace(/([A-Z])|(\-)|(\s)/g, function ($1) {
-                return "_" + (/[A-Z]/.test($1) ? $1.toLowerCase() : '');
-              });
-
-              scopeUIViews[key] = item;
-            });
-
-            var scope = {
-              __moduleId: "system/" + mod.id,
-              parentScope: parentScope,
-              uiViews: scopeUIViews,
-              ui: filtered.html
-            };
-            var imports = [];
-            var importsOfScope = {};
-            var scriptContent = filtered.script.text();
-
-            // extract imports from the source code
-            scriptContent.replace(/import\[['|"](.*)['|"]\]\;/gm, function (match, path) {
-              imports.push(path);
-              return '// ' + path;
-            });
-            //console.log('Libraries to be imported: ', imports);
-
-            function doneImporting() {
-              if (imports.length === 0) {
-                (new Function('scope, $import', scriptContent)).call(null, scope, importsOfScope);
-                moduleLoaded();
-              }
-            }
-
-            if (imports.length) {
-              imports.forEach(function (item) {
-                if (importedLibraries[item]) {
-                  importsOfScope[item] = importedLibraries[item];
-                  imports.splice(imports.indexOf(item), 1);
-                  doneImporting();
-                } else {
-                  $.get(item, {}).complete(function (response) {
-                    if (response.status !== 200) {
-                      //console.warn('Library not found: ', item);
-                      imports.splice(imports.indexOf(item), 1);
-                      return doneImporting();
-                    }
-
-                    // If thid library is already loaded via an old request, then use it as import
-                    // This will insure the singleton of every library
-                    if (importedLibraries[item]) {
-                      importsOfScope[item] = importedLibraries[item];
-                      imports.splice(imports.indexOf(item), 1);
-                      return doneImporting();
-                    }
-
-                    importsOfScope[item] = importedLibraries[item] = (new Function('scope', response.responseText)).call(null, scope);
-                    imports.splice(imports.indexOf(item), 1);
-                    doneImporting();
-                  });
-                }
-              });
-
-              return;
-            }
-
-            doneImporting();
-          }
-
-          moduleLoaded();
-
-          //$(html).remove();
-          //var html = res;
-          //System.apps[id] = $.extend({}, System.state, self.apps[id]);
-          //System.activityTree.unshift(System.apps[id]);
-          //console.log(System.app.modules);
-          //var module = System.state(mod.id);
-
-          function moduleLoaded() {
-            if (!System.modules["system/" + mod.id]) {
-              //alert("Invalid module: " + mod.id);
-              throw new Error('Could not find module: system/' + mod.id + ', url: ' + mod.url);
-              return;
-            }
-
-            System.modules["system/" + mod.id].html = filtered.html;
-            System.modules["system/" + mod.id].scope = scope;
-
-            //if (scripts)
-            //scripts.attr("id", System.modules["system/" + mod.id].id.replace(/[\/-]/g, "_"));
-            if ("function" === typeof (System.onModuleLoaded["system/" + mod.id])) {
-              System.onModuleLoaded["system/" + mod.id].call(this, System.modules["system/" + mod.id], filtered.html);
-              System.onModuleLoaded["system/" + mod.id] = null;
-            }
-
-            delete System.onLoadQueue["system/" + mod.id];
-          }
-        }, 5);
-
+          compile(filtered);
+        }, 1);
       });
+
+      function compile(filtered) {
+        //if (filtered.script) {
+        var scopeUIViews = {};
+        Array.prototype.forEach.call(filtered.uiView, function (item) {
+          var key = item.getAttribute('name').replace(/([A-Z])|(\-)|(\s)/g, function ($1) {
+            return "_" + (/[A-Z]/.test($1) ? $1.toLowerCase() : '');
+          });
+
+          scopeUIViews[key] = item;
+        });
+
+        var scope = {
+          __moduleId: "system/" + module.id,
+          parentScope: parentScope,
+          uiViews: scopeUIViews,
+          ui: filtered.html,
+          imports: {}
+        };
+        var imports = [];
+        //var importsOfScope = {};
+        var scriptContent = filtered.script || '';
+
+        // extract imports from the source code
+        scriptContent = scriptContent.replace(/\/\*[\s\S]*?\*\/|([^:]|^)\/\/.*$/gm, '');
+        filtered.script = scriptContent.replace(/Scope\.import\(['|"](.*)['|"]\)\;/gm, function (match, path) {
+          imports.push(path);
+          return "Scope.imports['" + path + "']";
+        });
+
+        //console.log('Libraries to be imported: ', imports);
+
+        if (imports.length) {
+          imports.forEach(function (item) {
+            if (importedLibraries[item]) {
+              //importedLibraries[item];
+              imports.splice(imports.indexOf(item), 1);
+              doneImporting(module, scope, imports, filtered, importedLibraries);
+            } else {
+              System.loadModule({
+                id: (new Date()).valueOf() + '-' + performance.now(),
+                url: item
+              }, function (loaded) {
+                doneImporting(module, scope, imports, filtered, importedLibraries);
+              });
+            }
+          });
+
+          return false;
+        }
+
+
+        moduleLoaded(module, scope, filtered, importedLibraries);
+      }
+
+      function doneImporting(module, scope, imports, filtered, importsOfScope) {
+        imports.splice(imports.indexOf(module.url), 1);
+
+        if (imports.length === 0) {
+          // This will load the original initilizer
+          moduleLoaded(module, scope, filtered, importsOfScope);
+        }
+      }
+
+      function moduleLoaded(module, scope, filtered, importsOfScope) {
+//        if (!module.isDependency && !System.modules["system/" + module.id]) {
+//          //alert("Invalid module: " + mod.id);
+//          throw new Error('Could not find module: system/' + module.id + ', url: ' + module.url);
+//          return false;
+//        }
+
+        scope.imports = importsOfScope;
+        (new Function('Scope', filtered.script)).call(null, scope);
+        importedLibraries[module.url] = scope.export;
+        //console.log(scope.export);
+        delete scope.export;
+
+        if (!System.modules["system/" + module.id]) {
+          System.modules["system/" + module.id] = {};
+        }
+
+        System.modules["system/" + module.id].html = filtered ? filtered.html : '';
+        System.modules["system/" + module.id].scope = scope;
+
+
+        if ('function' === typeof (System.onModuleLoaded['system/' + module.id])) {
+          System.onModuleLoaded['system/' + module.id].call(this, System.modules['system/' + module.id], filtered.html);
+          System.onModuleLoaded['system/' + module.id] = null;
+        }
+
+        delete System.onLoadQueue["system/" + module.id];
+      }
     },
     parseContent: function (raw) {
       var scripts = null;
@@ -443,7 +438,7 @@
       //var scripts = raw.filter("script").remove();
       var html = raw.filter(function (i, e) {
         if (e.tagName && e.tagName.toLowerCase() === "script") {
-          scripts = $(e);
+          scripts = e.innerHTML;
           return false;
         }
 
@@ -579,7 +574,7 @@
           break;
         }
       }
-      
+
       return obj[props[i]];
     }
   };

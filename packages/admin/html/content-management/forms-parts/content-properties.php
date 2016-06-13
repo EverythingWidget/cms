@@ -6,7 +6,6 @@
       <label>tr{Title}</label>
       <input class="text-field" value="" id="title" name="title" data-validate="r" required/>  
     </system-field>
-
   </div>
 
   <div class="block-row">

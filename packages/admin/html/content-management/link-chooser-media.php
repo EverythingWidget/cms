@@ -52,8 +52,8 @@
   LinkChooserDomain.ui.components = {
     document: $(document)
   };
-  LinkChooserDomain.ui.components.mainFloatMenu = scope.ui.filter("#media-chooser-main-actions");
-  LinkChooserDomain.ui.components.mainActions = scope.uiViews['main-actions'];
+  LinkChooserDomain.ui.components.mainFloatMenu = Scope.ui.filter("#media-chooser-main-actions");
+  LinkChooserDomain.ui.components.mainActions = Scope.uiViews['main-actions'];
   LinkChooserDomain.start();
 
   (function (Domain) {
@@ -166,11 +166,11 @@
     MediaComponent.prototype.init = function () {
       var component = this;
       this.albumId = null;
-      this.albumCard = $(scope.uiViews.album_card).hide();
+      this.albumCard = $(Scope.uiViews.album_card).hide();
       this.albumCardTitleAction = this.albumCard.find(".card-title-action");
       this.albumCardTitleActionRight = this.albumCard.find(".card-title-action-right");
-      this.albumsList = $(scope.uiViews.albums_list);
-      this.audiosList = $(scope.uiViews.audios_list);
+      this.albumsList = $(Scope.uiViews.albums_list);
+      this.audiosList = $(Scope.uiViews.audios_list);
       this.currentItem = null;
 
       this.albumPropertiesBtn = EW.addActionButton({
@@ -259,7 +259,7 @@
           component.selectMedia(component.selectedImage);
         },
         class: "btn-float btn-success icon-ok pos-se",
-        parent: $(scope.uiViews.main_actions)
+        parent: $(Scope.uiViews.main_actions)
       }).hide();
 
       /*this.newAlbumActivity = EW.addActivity({

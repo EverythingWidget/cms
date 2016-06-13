@@ -45,7 +45,7 @@ class UsersManagement extends \ew\Module {
     $this->register_permission("manipulate-users", "User can add, edit delete users", [
         'api/users-create',
         "api/users-update",
-        "api/delete_user",
+        "api/users-delete",
         "html/user-form.php",
         "api/logout",
         'html/' . $this->get_index()]);
@@ -256,6 +256,8 @@ class UsersManagement extends \ew\Module {
 
   public function users_create($_input, \ew\APIResponse $_response) {
     $result = (new UsersRepository())->create($_input);
+
+    $_response->properties['message'] = $result->message;
 
     if ($result->error) {
       $_response->set_status_code($result->error);
@@ -665,29 +667,6 @@ class UsersManagement extends \ew\Module {
     return json_encode([
         status  => "unsuccess",
         message => "User has been NOT updated"]);
-  }
-
-  public static function delete_user($userId = null) {
-
-    $db = \EWCore::get_db_connection();
-    if (!$userId)
-      $userId = $db->real_escape_string($_REQUEST["id"]);
-    $user_info = json_decode(self::get_user_by_id($userId), true);
-    $stm = $db->prepare("DELETE FROM ew_users WHERE id = ?");
-    $stm->bind_param("s", $userId);
-
-    if ($stm->execute()) {
-      $db->close();
-
-      return json_encode([
-          status  => "success",
-          title   => $user_info["email"],
-          message => "User  '{$user_info["email"]}' has been deleted successfully"]);
-    }
-    return json_encode([
-        status  => "unsuccess",
-        title   => "Update user Unsuccessfull",
-        message => "User has been NOT deleted"]);
   }
 
   public function get($_verb) {

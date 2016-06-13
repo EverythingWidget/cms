@@ -41,6 +41,9 @@
 
 <script data-name="documents">
   (function () {
+    var tt = Scope.import('html/admin/content-management/test-file.php');
+    var t2 = Scope.import('html/admin/users-management/index.php');
+    console.log('tt->', tt,t2);
     function DocumentsStateHandler(state) {
       var component = this;
       this.state = state;
@@ -62,18 +65,18 @@
     }
 
     DocumentsStateHandler.prototype.defineStates = function (states) {
-      var handler = this;
+      var component = this;
 
       // you can use either states.<state> or states['<state>']
       states.article = function (full, id) {
         if (!id) {
-          System.ui.utility.removeClass(handler.currentItem, 'selected');
+          System.ui.utility.removeClass(component.currentItem, 'selected');
         }
       };
 
       states.folder = function (full, id, command) {
         if (!id) {
-          System.ui.utility.removeClass(handler.currentItem, 'selected');
+          System.ui.utility.removeClass(component.currentItem, 'selected');
         }
       };
 
@@ -81,25 +84,25 @@
         if (!id) {
           id = 0;
         } else {
-          handler.bNewFolder.comeIn();
+          component.bNewFolder.comeIn();
         }
 
         if (list) {
-          if (handler.parentId !== parseInt(id)) {
-            handler.preParentId = handler.parentId;
-            handler.parentId = parseInt(id);
+          if (component.parentId !== parseInt(id)) {
+            component.preParentId = component.parentId;
+            component.parentId = parseInt(id);
 
-            handler.listDocuments();
+            component.listDocuments();
           }
 
           if (id === "0") {
-            handler.bSee.comeOut();
-            handler.deleteFolderActivity.comeOut();
+            component.bSee.comeOut();
+            component.deleteFolderActivity.comeOut();
           }
 
           if (id > 0) {
-            handler.bSee.comeIn();
-            handler.deleteFolderActivity.comeIn();
+            component.bSee.comeIn();
+            component.deleteFolderActivity.comeIn();
           }
         }
       };
@@ -109,11 +112,11 @@
         if (full === 'forms/test-form') {
           modal = EW.createModal({
             onClose: function () {
-              component.module.setParam('component', null);
+              component.state.setParam('component', null);
               modal = null;
             }
           });
-          component.module.loadModule({
+          component.state.loadModule({
             id: 'forms/test-form',
             url: '~admin/html/content-management/test-file.php'
           }, function (module) {
@@ -152,15 +155,13 @@
         }
       });
 
-
-
-      handler.ui.components.folders_card = $(scope.uiViews.folders_card);
+      handler.ui.components.folders_card = $(Scope.uiViews.folders_card);
       handler.ui.components.folders_card_title_action_right = handler.ui.components.folders_card.find(".card-title-action-right");
       handler.ui.components.folders_list = handler.ui.components.folders_card.find("#folders-list");
       handler.ui.components.articles_list = handler.ui.components.folders_card.find("#articles-list");
 
       handler.ui.folders_card_vue = new Vue({
-        el: scope.uiViews.folders_card,
+        el: Scope.uiViews.folders_card,
         data: {
           upParentId: 0,
           parentId: 0,

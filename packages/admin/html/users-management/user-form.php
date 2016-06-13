@@ -8,39 +8,45 @@ function get_ew_user_form($user_id, $data) {
   ob_start();
   ?>
   <input type="hidden" id="id" name="id" value="">
-  <div class="row">
-    <div class="col-xs-12 col-md-12 col-lg-12 mt">
-      <input class="text-field" data-label="tr{Username}" value="" id="email" name="email"/>
-    </div>    
+  <div class="row mt">
+    <system-field class="field col-xs-12">
+      <label>tr{Username}</label>
+      <input class="text-field" value="" id="email" name="email" data-validate="r" required/>  
+    </system-field>
   </div>
   <div class="row">
-    <div class="col-xs-12 col-md-6 col-lg-6">
-      <input class="text-field" id="first_name" data-label="tr{First Name}" name="first_name"  />
-    </div>
-    <div class="col-xs-12 col-md-6 col-lg-6">
-      <input class="text-field" id="last_name" data-label="tr{Last Name}" name="last_name"  />
-    </div>
+    <system-field class="field col-xs-12 col-md-6 col-lg-6">
+      <label>tr{First Name}</label>
+      <input class="text-field" value="" id="first_name" name="first_name" />  
+    </system-field>
+
+    <system-field class="field col-xs-12 col-md-6 col-lg-6">
+      <label>tr{Last Name}</label>
+      <input class="text-field" value="" id="last_name" name="last_name" />  
+    </system-field>   
   </div>
   <?php if (!isset($user_id)) { ?>
     <div class="row">
-      <div class="col-xs-12 col-md-12 col-lg-12 mt">
-        <input class="text-field" data-label="tr{Password}" value="" id="password" name="password"/>
-      </div>    
+      <system-field class="field col-xs-12">
+        <label>tr{Password}</label>
+        <input class="text-field" value="" id="password" name="password"/>
+      </system-field>   
+
     </div>
   <?php } ?>
   <div class="row">    
-    <div class="col-xs-12 mt">
-      <?php
-      $users_groups = EWCore::call_api("admin/api/users-management/groups");
-      ?>
-      <select id="group_id" name="group_id" data-width="100%" data-label="tr{Group}">
+
+    <system-field class="field col-xs-12">
+      <label>tr{Group}</label>
+      <select id="group_id" name="group_id" data-width="100%">
         <?php
+        $users_groups = EWCore::call_api('admin/api/users-management/groups');
         foreach ($users_groups['data'] as $group) {
           echo "<option value='{$group['id']}'>{$group['title']}</option>";
         }
         ?>
       </select>
-    </div>
+    </system-field>   
   </div>
 
   <script type="text/javascript">

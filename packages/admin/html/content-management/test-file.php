@@ -11,12 +11,16 @@ echo "<p>this is the test file</p>";
   (function () {
     System.state("forms/test-form", function (state) {
       state.stateKey = 'component';
-      
+
       state.bind('init', function () {
+        console.log('init', this.id);
       });
 
       state.bind('start', function () {
+        console.log('start', this.id);
       });
     });
+
+    Scope.export = {name: 'eeliya'};
   })();
 </script>

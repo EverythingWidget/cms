@@ -86,10 +86,17 @@
         pageSize: 30,
         onDelete: function (id) {
           this.confirm("tr{Are you sure of deleting of this user?}", function () {
-            $.post('<?php echo EW_ROOT_URL; ?>~admin/api/users-management/delete-user', {id: id}, function (data) {
-              System.UI.components.document.trigger("users-list.refresh");
-              System.UI.components.body.EW().notify(data).show();
-            }, "json");
+            $.ajax({
+              type: 'DELETE',
+              url: 'api/admin/users-management/users',
+              data: {id: id},
+              success: function (response) {
+                System.UI.components.document.trigger("users-list.refresh");
+                System.UI.components.body.EW().notify(response).show();
+              }
+            });
+            
+            return true;
           });
         },
         onEdit: function (id) {

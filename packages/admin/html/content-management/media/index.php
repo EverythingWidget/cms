@@ -201,11 +201,11 @@
     MediaStateHandler.prototype.init = function () {
       var handler = this;
       this.albumId = null;
-      this.albumCard = $(scope.uiViews.album_card).hide();
+      this.albumCard = $(Scope.uiViews.album_card).hide();
       this.albumCardTitleAction = this.albumCard.find(".card-title-action");
       this.albumCardTitleActionRight = this.albumCard.find(".card-title-action-right");
-      this.albumsList = $(scope.uiViews.albums_list);
-      this.audiosList = $(scope.uiViews.audios_list);
+      this.albumsList = $(Scope.uiViews.albums_list);
+      this.audiosList = $(Scope.uiViews.audios_list);
       this.currentItem = null;
 
       this.albumPropertiesBtn = EW.addActionButton({
@@ -271,7 +271,7 @@
         }
       });
       handler.ui.media_photos_vue = new Vue({
-        el: scope.ui.find('#media-photos')[0],
+        el: Scope.ui.find('#media-photos')[0],
         data: {
           albumId: 0,
           albums: [],
