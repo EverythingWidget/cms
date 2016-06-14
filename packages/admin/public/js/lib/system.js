@@ -38,7 +38,8 @@
       }
 
       if (entities[entity_id]) {
-        throw new Error("An entity with this id already exist. Entities can't be overwriten");
+        //throw new Error("An entity with this id already exist. Entities can't be overwriten");
+        return console.warn("An entity with this id already exist. Entities can't be overwriten");
       }
 
       entities[entity_id] = entityObject;
@@ -308,9 +309,21 @@
      * @param {callback} onDone
      * @returns {void}
      */
-    loadModule: function (module, onDone, parentScope) {
+    loadModule: function (module, onDone) {
       System.onModuleLoaded["system/" + module.id] = onDone;
       var moduleExist = System.modules["system/" + module.id];
+
+      var invokers = [module.url];
+
+      if (module.invokers) {
+        if (module.invokers.indexOf(module.url) !== -1) {
+          throw new Error('circular dependencies: \n' + module.invokers.join('\n') + '\nwanna load: ' + module.url);
+        }
+
+        invokers = module.invokers;
+        invokers.push(module.url);
+      }
+      //console.log(invokers);
 
       if (moduleExist) {
         if ("function" === typeof (System.onModuleLoaded["system/" + module.id])) {
@@ -328,10 +341,10 @@
       System.onLoadQueue["system/" + module.id] = true;
 
       $.get(module.url, module.params | {}, function (response) {
-        if (System.modules["system/" + module.id]) {
-          $("#system_" + module.id.replace(/[\/-]/g, "_")).remove();
-          //return;
-        }
+//        if (System.modules["system/" + module.id]) {
+//          $("#system_" + module.id.replace(/[\/-]/g, "_")).remove();
+//          //return;
+//        }
 
         var filtered = System.parseContent(response);
 
@@ -353,7 +366,7 @@
 
         var scope = {
           __moduleId: "system/" + module.id,
-          parentScope: parentScope,
+          parentScope: module.scope || null,
           uiViews: scopeUIViews,
           ui: filtered.html,
           imports: {}
@@ -365,24 +378,30 @@
         // extract imports from the source code
         scriptContent = scriptContent.replace(/\/\*[\s\S]*?\*\/|([^:]|^)\/\/.*$/gm, '');
         filtered.script = scriptContent.replace(/Scope\.import\(['|"](.*)['|"]\)\;/gm, function (match, path) {
-          imports.push(path);
-          return "Scope.imports['" + path + "']";
+          var query = path.match(/([\S]+)/gm);
+          imports.push({
+            url: query[query.length - 1],
+            fresh: query.indexOf('new') !== -1
+          });
+
+          return "Scope.imports['" + query[query.length - 1] + "']";
         });
 
         //console.log('Libraries to be imported: ', imports);
 
         if (imports.length) {
           imports.forEach(function (item) {
-            if (importedLibraries[item]) {
-              //importedLibraries[item];
-              imports.splice(imports.indexOf(item), 1);
+            if (importedLibraries[item.url] && !item.fresh) {
               doneImporting(module, scope, imports, filtered, importedLibraries);
             } else {
               System.loadModule({
                 id: (new Date()).valueOf() + '-' + performance.now(),
-                url: item
+                url: item.url,
+                fresh: item.fresh,
+                scope: scope,
+                invokers: invokers
               }, function (loaded) {
-                doneImporting(module, scope, imports, filtered, importedLibraries);
+                doneImporting(module, scope, imports, filtered, loaded.scope.imports);
               });
             }
           });
@@ -410,11 +429,25 @@
 //          return false;
 //        }
 
-        scope.imports = importsOfScope;
-        (new Function('Scope', filtered.script)).call(null, scope);
-        importedLibraries[module.url] = scope.export;
-        //console.log(scope.export);
-        delete scope.export;
+        if (importedLibraries[module.url] && !module.fresh) {
+          scope.imports[module.url] = importedLibraries[module.url];
+        } else {
+          scope.imports = importsOfScope;
+          (new Function('Scope', filtered.script)).call(null, scope);
+
+          if (!importedLibraries[module.url]) {
+            importedLibraries[module.url] = scope.export;
+          } else {
+            scope.imports[module.url] = importedLibraries[module.url];
+          }
+
+
+          if (module.fresh) {
+            scope.imports[module.url] = scope.export;
+          }
+
+          delete scope.export;
+        }
 
         if (!System.modules["system/" + module.id]) {
           System.modules["system/" + module.id] = {};

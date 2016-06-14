@@ -9,7 +9,10 @@ echo "<p>this is the test file</p>";
 ?>
 <script>
   (function () {
-    System.state("forms/test-form", function (state) {
+    //var test_file_2 = Scope.import('html/admin/content-management/test-file-2.php');
+    //console.log('test-file->', test_file_2);
+
+    System.state('forms/test-form', function (state) {
       state.stateKey = 'component';
 
       state.bind('init', function () {
@@ -21,6 +24,9 @@ echo "<p>this is the test file</p>";
       });
     });
 
-    Scope.export = {name: 'eeliya'};
+    Scope.export = {
+      name: 'eeliya ' + (new Date()).valueOf() + ':' + performance.now(),
+      state: System.state('forms/test-form')
+    };
   })();
 </script>

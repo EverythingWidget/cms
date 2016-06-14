@@ -41,9 +41,9 @@
 
 <script data-name="documents">
   (function () {
-    var tt = Scope.import('html/admin/content-management/test-file.php');
-    var t2 = Scope.import('html/admin/users-management/index.php');
-    console.log('tt->', tt,t2);
+    var tt = Scope.import('new html/admin/content-management/test-file.php');
+    console.log('docs->', tt);
+    
     function DocumentsStateHandler(state) {
       var component = this;
       this.state = state;

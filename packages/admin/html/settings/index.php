@@ -27,6 +27,9 @@ function script() {
   ?>
   <script  >
     (function () {
+      var tt = Scope.import('html/admin/content-management/test-file.php');
+      console.log('settings->', tt);
+
       System.state("settings", function (state) {
         state.type = "app";
         state.onInit = function (nav) {
