@@ -42,7 +42,6 @@
 <script data-name="documents">
   (function () {
     var tt = Scope.import('new html/admin/content-management/test-file.php');
-    var jquery = Scope.import('https://code.jquery.com/jquery-3.0.0.js');
     console.log('docs->', tt,jquery);
     
     function DocumentsStateHandler(state) {
