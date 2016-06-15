@@ -42,7 +42,7 @@
 <script data-name="documents">
   (function () {
     var tt = Scope.import('new html/admin/content-management/test-file.php');
-    console.log('docs->', tt,jquery);
+    console.log('docs->', tt);
     
     function DocumentsStateHandler(state) {
       var component = this;
