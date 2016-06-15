@@ -161,7 +161,7 @@ class Module {
     if ($preProcessorsResult !== true) {
       return $preProcessorsResult;
     }
-    $db = \EWCore::get_db_connection();
+    //$db = \EWCore::get_db_connection();
     $method_object = new \ReflectionMethod($this, $method_name);
     $method_parameters = $method_object->getParameters();
 

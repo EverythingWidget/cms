@@ -69,9 +69,9 @@ class ContentsRepository implements \ew\CRUDRepository {
     $result = new \stdClass;
     //$result->error = 503;
     $result->message = 'Item has been deleted successfully';
-    
+
     $content = ew_contents::find($input->id);
-    
+
     $content->delete();
 
     return $result;
@@ -87,7 +87,7 @@ class ContentsRepository implements \ew\CRUDRepository {
       return $this->find_by_id($input->id, $input->_language);
     }
 
-    return $this->all($input->page, $input->page_size);
+    return $this->all($input->page, $input->page_size, $input->filter);
   }
 
   public function update($input) {
@@ -138,7 +138,7 @@ class ContentsRepository implements \ew\CRUDRepository {
     }, $labels);
   }
 
-  public function all($page = 0, $page_size = 100) {
+  public function all($page = 0, $page_size = 100, $filter = null) {
     if (is_null($page)) {
       $page = 0;
     }
@@ -146,7 +146,11 @@ class ContentsRepository implements \ew\CRUDRepository {
       $page_size = 100;
     }
 
-    $contents = ew_contents::orderBy('title')->take($page_size)->skip($page * $page_size)->get(['*',
+    $query = ew_contents::select();
+
+    \ew\DBUtility::filter($query, $filter);
+
+    $contents = $query->orderBy('title')->take($page_size)->skip($page * $page_size)->get(['*',
         \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
 
 //    $data = array_map(function($e) {
@@ -158,6 +162,7 @@ class ContentsRepository implements \ew\CRUDRepository {
 
     $result->total = ew_contents::count();
     $result->page_size = $page_size;
+    //$result->filter = $filter;
     $result->data = $contents;
 
     return $result;
