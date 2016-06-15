@@ -392,7 +392,8 @@
         if (imports.length) {
           imports.forEach(function (item) {
             if (importedLibraries[item.url] && !item.fresh) {
-              doneImporting(module, scope, imports, filtered, importedLibraries);
+              scope.imports[item.url] = importedLibraries[item.url];
+              doneImporting(module, scope, imports, filtered, scope.imports);
             } else {
               System.loadModule({
                 id: (new Date()).valueOf() + '-' + performance.now(),
@@ -408,7 +409,6 @@
 
           return false;
         }
-
 
         moduleLoaded(module, scope, filtered, importedLibraries);
       }
@@ -437,13 +437,10 @@
 
           if (!importedLibraries[module.url]) {
             importedLibraries[module.url] = scope.export;
+          } else if (module.fresh) {
+            scope.imports[module.url] = scope.export;
           } else {
             scope.imports[module.url] = importedLibraries[module.url];
-          }
-
-
-          if (module.fresh) {
-            scope.imports[module.url] = scope.export;
           }
 
           delete scope.export;

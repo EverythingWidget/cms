@@ -264,7 +264,7 @@
     return lockPane;
   };
 
-  SystemUI.prototype.Animation = {
+  SystemUI.prototype.animations = SystemUI.prototype.Animation = {
     transformBetween: function (conf) {
       var time = conf.time || system.UI.DEFAULTS.animationDuration;
       var sourceRect = conf.from.getBoundingClientRect();
@@ -476,27 +476,52 @@
       var transformBox = document.createElement("div");
       var sourceStyle = window.getComputedStyle(conf.from, null);
       var ds = window.getComputedStyle(conf.to, null);
-      transformBox.style.position = "absolute";
-      transformBox.style.textAlign = "center";
-      transformBox.style.backgroundColor = (sourceStyle.backgroundColor.indexOf("rgba") !== -1 ||
-              sourceStyle.backgroundColor === "transparent") ? "rgb(190,190,190)" : sourceStyle.backgroundColor;
-      transformBox.style.boxShadow = sourceStyle.boxShadow;
-      transformBox.style.borderRadius = sourceStyle.borderRadius;
+
+      tween.set(transformBox, {
+        position: 'absolute',
+        x: sourceRect.left,
+        y: sourceRect.top,
+        textAlign: 'center',
+        backgroundColor: (sourceStyle.backgroundColor.indexOf("rgba") !== -1 ||
+                sourceStyle.backgroundColor === "transparent") ? "rgb(190,190,190)" : sourceStyle.backgroundColor,
+        boxShadow: sourceStyle.boxShadow,
+        borderRadius: sourceStyle.borderRadius,
+        color: conf.textColor || sourceStyle.color,
+        fontSize: sourceStyle.fontSize,
+        fontWeight: sourceStyle.fontWeight,
+        lineHeight: sourceRect.height + 'px',
+        textTransform: sourceStyle.textTransform,
+        whiteSpace: "nowrap",
+        zIndex: (ds.zIndex === "0" || ds.zIndex === "auto") ? 1 : ds.zIndex,
+        overflow: "hidden",
+        transformOrigin: "top left",
+        width: sourceRect.width + 'px',
+        height: sourceRect.height + 'px',
+        left: 0,
+        top: 0,
+      });
+      //transformBox.style.position = "absolute";
+//      transformBox.style.textAlign = "center";
+//      transformBox.style.backgroundColor = (sourceStyle.backgroundColor.indexOf("rgba") !== -1 ||
+//              sourceStyle.backgroundColor === "transparent") ? "rgb(190,190,190)" : sourceStyle.backgroundColor;
+//      transformBox.style.boxShadow = sourceStyle.boxShadow;
+//      transformBox.style.borderRadius = sourceStyle.borderRadius;
       //transformBox.style.padding = ss.padding;
-      transformBox.style.color = conf.textColor || sourceStyle.color;
-      transformBox.style.fontSize = sourceStyle.fontSize;
-      transformBox.style.fontWeight = sourceStyle.fontWeight;
-      transformBox.style.lineHeight = sourceRect.height + 'px';
-      transformBox.style.textTransform = sourceStyle.textTransform;
+//      transformBox.style.color = conf.textColor || sourceStyle.color;
+//      transformBox.style.fontSize = sourceStyle.fontSize;
+//      transformBox.style.fontWeight = sourceStyle.fontWeight;
+//      transformBox.style.lineHeight = sourceRect.height + 'px';
+//      transformBox.style.textTransform = sourceStyle.textTransform;
       //transformBox.style.textOverflow = "clip";
-      transformBox.style.whiteSpace = "nowrap";
-      transformBox.style.zIndex = (ds.zIndex === "0" || ds.zIndex === "auto") ? 1 : ds.zIndex;
-      transformBox.style.overflow = "hidden";
-      transformBox.style.transformOrigin = "top left";
-      transformBox.style.width = sourceRect.width + 'px';
-      transformBox.style.height = sourceRect.height + 'px';
-      transformBox.style.left = sourceRect.left + 'px';
-      transformBox.style.top = sourceRect.top + 'px';
+//      transformBox.style.whiteSpace = "nowrap";
+//      transformBox.style.zIndex = (ds.zIndex === "0" || ds.zIndex === "auto") ? 1 : ds.zIndex;
+//      transformBox.style.overflow = "hidden";
+//      transformBox.style.transformOrigin = "top left";
+//      transformBox.style.width = sourceRect.width + 'px';
+//      transformBox.style.height = sourceRect.height + 'px';
+//      transformBox.style.left = 0;
+//      transformBox.style.top = 0;
+      //transformBox.style.transform = 'translate(' + sourceRect.left + 'px,' + sourceRect.top + 'px)';
 
       if (conf.text) {
         transformBox.innerHTML = conf.text;
@@ -518,8 +543,8 @@
         tween.to(transformBox, t, {
           width: distRect.width,
           height: distRect.height,
-          left: distRect.left,
-          top: distRect.top,
+          x: distRect.left,
+          y: distRect.top,
           lineHeight: distRect.height + 'px',
           fontSize: '3em',
           backgroundColor: (ds.backgroundColor.indexOf("rgba") !== -1 ||

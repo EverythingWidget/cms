@@ -24,9 +24,13 @@ echo "<p>this is the test file</p>";
       });
     });
 
+//    Scope.export = {
+//      name: 'eeliya ' + (new Date()).valueOf() + ':' + performance.now(),
+//      state: System.state('forms/test-form')
+//    };
+
     Scope.export = {
-      name: 'eeliya ' + (new Date()).valueOf() + ':' + performance.now(),
-      state: System.state('forms/test-form')
+      name: 'eeliya ' + (new Date()).valueOf() + ':' + performance.now()
     };
   })();
 </script>

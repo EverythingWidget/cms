@@ -5,7 +5,7 @@ echo admin\AppsManagement::create_section_main_form();
 ?>
 <script>
   (function () {
-var tt = Scope.import('html/admin/content-management/test-file.php');
+var tt = Scope.import('new html/admin/content-management/test-file.php');
     console.log('users-management->', tt);
     /**
      * Users management component
