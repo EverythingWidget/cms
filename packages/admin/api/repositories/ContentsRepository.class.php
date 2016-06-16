@@ -161,7 +161,7 @@ class ContentsRepository implements \ew\CRUDRepository {
     $result = new \stdClass;
 
     $result->total = ew_contents::count();
-    $result->page_size = $page_size;
+    $result->page_size = intval($page_size);
     //$result->filter = $filter;
     $result->data = $contents;
 

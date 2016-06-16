@@ -490,17 +490,17 @@
         position: 'absolute',
         x: sourceRect.left,
         y: sourceRect.top,
-        textAlign: 'center',
+//        textAlign: 'center',
         backgroundColor: (sourceStyle.backgroundColor.indexOf("rgba") !== -1 ||
                 sourceStyle.backgroundColor === "transparent") ? "rgb(190,190,190)" : sourceStyle.backgroundColor,
         boxShadow: sourceStyle.boxShadow,
         borderRadius: sourceStyle.borderRadius,
-        color: conf.textColor || sourceStyle.color,
-        fontSize: sourceStyle.fontSize,
-        fontWeight: sourceStyle.fontWeight,
-        lineHeight: sourceRect.height + 'px',
-        textTransform: sourceStyle.textTransform,
-        whiteSpace: "nowrap",
+//        color: conf.textColor || sourceStyle.color,
+//        fontSize: sourceStyle.fontSize,
+//        fontWeight: sourceStyle.fontWeight,
+//        lineHeight: sourceRect.height + 'px',
+//        textTransform: sourceStyle.textTransform,
+//        whiteSpace: "nowrap",
         zIndex: (ds.zIndex === "0" || ds.zIndex === "auto") ? 1 : ds.zIndex,
         overflow: "hidden",
         transformOrigin: "top left",
@@ -510,9 +510,9 @@
         top: 0
       });
 
-      if (conf.text) {
-        transformBox.innerHTML = conf.text;
-      }
+//      if (conf.text) {
+//        transformBox.innerHTML = conf.text;
+//      }
 
       conf.to.style.visibility = "hidden";
       if (conf.flow) {

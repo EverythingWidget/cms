@@ -8,19 +8,26 @@ function get_properties_form() {
   global $widget_info;
   ob_start();
   ?>
-  <div class="col-xs-12" >    
-    <div class="block-row">
-      <input data-label="ID" class="text-field" value="<?php echo $widget_info["style_id"] ?>" name="style_id" id="style_id" >
-      <input data-label="Class" id="style_class" name="style_class" class="text-field" >
-      <label class="block-row small" id="used-classes"></label>
-    </div>
 
-    <div class="block-row">
-      <h3 class="line-header">Applied classes</h3>
-      <div class=" block-row options-panel" id="widget-classes" data-toggle="buttons">
-      </div>
+  <div class="block-row">
+    <system-field class="field col-xs-12">
+      <label>tr{ID}</label>
+      <input class="text-field" value="<?php echo $widget_info["style_id"] ?>" name="style_id" id="style_id" >
+    </system-field>
+
+    <system-field class="field col-xs-12">
+      <label>tr{Class}</label>
+      <input id="style_class" name="style_class" class="text-field" >
+      <label class="block-row small" id="used-classes"></label>
+    </system-field>    
+  </div>
+
+  <div class="col-xs-12">
+    <h3 class="line-header">Applied classes</h3>
+    <div class=" block-row options-panel" id="widget-classes" data-toggle="buttons">
     </div>
   </div>
+
 
   <div class="block-row">
     <div class="col-xs-12"  >
@@ -49,11 +56,11 @@ function get_size_layout_form() {
   return ob_get_clean();
 }
 
-EWCore::register_form("ew/ui/widget-form", "widget-cp", ["title" => "Widget CP",
+EWCore::register_form("ew/ui/widget-form", "widget-cp", ["title"   => "Widget CP",
     "content" => webroot\WidgetsManagement::get_widget_cp($widget_type)]);
-EWCore::register_form("ew/ui/widget-form", "size-layout", ["title" => "Size & Layout",
+EWCore::register_form("ew/ui/widget-form", "size-layout", ["title"   => "Size & Layout",
     "content" => get_size_layout_form()]);
-EWCore::register_form("ew/ui/widget-form", "properties", ["title" => "Properties",
+EWCore::register_form("ew/ui/widget-form", "properties", ["title"   => "Properties",
     "content" => get_properties_form()]);
 
 $tabs = EWCore::read_registry("ew/ui/widget-form");

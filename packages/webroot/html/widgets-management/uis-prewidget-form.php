@@ -39,7 +39,7 @@ $panelId = $_REQUEST['panelId'];
       </div>
       <?php
       $widget_feeders = webroot\WidgetsManagement::get_widget_feeders($feeder_type);
-      $widgets_types_list = $widget_feeders["data"];
+      $widgets_types_list = $widget_feeders->data;
       $rowNum = 0;
       $oldApp = "";
       foreach ($widgets_types_list as $row) {

@@ -1,7 +1,9 @@
-<div class="col-xs-12">
-  <input class="text-field" type="hidden" id="{{comp_id}}_key" name="key" value="{{comp_id}}"/>
-  <input class="text-field" type="hidden" id="{{comp_id}}_value" name="value" value=""/>
-  <select id="{{comp_id}}_select" data-label="tr{Add a language}">
+<input class="text-field" type="hidden" id="{{comp_id}}_key" name="key" value="{{comp_id}}"/>
+<input class="text-field" type="hidden" id="{{comp_id}}_value" name="value" value=""/>
+
+<system-field class="field col-xs-12">
+  <label>tr{Add a language}</label>
+  <select id="{{comp_id}}_select">
     <option value="en">Default</option>
     <option value="en">English</option>
     <option value="es">Spanish</option>
@@ -12,10 +14,11 @@
     <option value="fa">فارسی</option>
     <option value="nl">Dutch</option>
   </select>
-</div>
+</system-field>
+
 <div class="col-xs-12">
   <ul id="{{comp_id}}_languages" class="list links">
-    <li v-for="item in items" v-bind:class="{ 'active': item.id === contentId }">
+    <li v-for="item in items" v-bind:class="{ 'active': item.id === contentId }" transition="slide-vertical">
       <a href='#' class='link' v-on:click="select($event,item)">
         {{ languages[item.value] }}
         <p>

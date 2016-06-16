@@ -8,10 +8,10 @@ $container_id = $_REQUEST["containerId"];
   <h1 id="uis-panel-title">
     <span>tr{Add}</span>tr{Panel}
   </h1>
-  
+
   <ul class="nav nav-pills">
     <li class="active"><a href="#properties" data-toggle="tab">Properties</a></li>
-    
+
     <li><a href='#size-layout' data-toggle='tab'>Size & Layout</a></li>
   </ul>
 </div>
@@ -22,16 +22,17 @@ $container_id = $_REQUEST["containerId"];
       <form id="uis-panel" >
         <div class="block-row">
           <input type="hidden" name="cmd" id="cmd" >
-
-          <div class="col-xs-12">
-            <input data-label="ID" id="style_id" name="style_id" class="text-field" value="<?php echo $row["style_id"] ?>">
-          </div>
+          <system-field class="field col-xs-12">
+            <label>tr{ID}</label>
+            <input id="style_id" name="style_id" class="text-field" value="<?php echo $row["style_id"] ?>">
+          </system-field> 
         </div>
         <div class="block-row">
-          <div class="col-xs-12">
-            <input id="style_class" data-label="Class" name="style_class" class="text-field" >
+          <system-field class="field col-xs-12">
+            <label>tr{Class}</label>
+            <input id="style_class" name="style_class" class="text-field" >
             <label class="small" id="used-classes"><?php echo $row["style_class"] ?></label>
-          </div>
+          </system-field>   
         </div>
         <div class="block-row">
           <div class="col-xs-12" >
@@ -79,11 +80,11 @@ $container_id = $_REQUEST["containerId"];
     this.bAdd = EW.addAction("tr{Add}", $.proxy(this.addPanel, this), {
       display: "none"
     },
-      "uis-panel-actions");
+            "uis-panel-actions");
     this.bEdit = EW.addAction("tr{Save}", $.proxy(this.updatePanel, this), {
       display: "none"
     },
-      "uis-panel-actions");
+            "uis-panel-actions");
     $("#appearance-conf input[name='title']").change(function () {
 
       if ($(this).val() == "")
@@ -120,7 +121,7 @@ $container_id = $_REQUEST["containerId"];
     var classes = $("#used-classes").text();
     classes = classes.replace('panel', '');
     classes = classes.split(' ');
-    
+
     $.each($("#available-classes").find("label"), function (k, classBtn) {
       var flag = $("<input type='checkbox'>");
       classBtn = $(classBtn);
@@ -156,9 +157,9 @@ $container_id = $_REQUEST["containerId"];
 
     $.each($sizeAndLayout.find("input:radio, input:checkbox"), function (k, v) {
       var $v = $(v), value = $v.val();
-          
 
-      $.each(classes, function (i, c) {         
+
+      $.each(classes, function (i, c) {
         if (value === c /*&& !$v.is(":checked")*/) {
           $v.click();
           $v.prop("checked", true);
@@ -169,8 +170,8 @@ $container_id = $_REQUEST["containerId"];
 
     $.each($sizeAndLayout.find("input[data-slider]"), function (k, v) {
       $.each(classes, function (i, c) {
-         if(!c)
-            return;
+        if (!c)
+          return;
         var sub = c.match(/(\D+)(\d*)/);
         if (sub && $(v).attr("name") === sub[1])
         {
@@ -179,7 +180,7 @@ $container_id = $_REQUEST["containerId"];
         }
       });
     });
-    
+
     $("#size-layout input:radio,#size-layout input:checkbox,input[data-slider]").change(function (event) {
       self.setClasses();
     });

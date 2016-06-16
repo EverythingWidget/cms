@@ -140,7 +140,7 @@
         ContentForm.setLabels(contentInfo.labels);
       }
 
-      EW.setFormData(this.formId, contentInfo);
+      EW.setFormData(ContentForm.formId, contentInfo);
       $("#content").change();
     }
   };
@@ -148,12 +148,10 @@
   ContentForm.uiForm = $(ContentForm.formId);
   ContentForm.uiTitle = ContentForm.uiForm.find("#form-title");
 
-
-
 <?= $form_config["include_script"] ?>
 
 // Set form data when the form is completely loaded
-  $(document).ready(function () {
+  (function () {
     $.each($(ContentForm.formId + " .content-label"), function (i, e) {
       var $e = $(e);
       var lcb = $e.find(".label-control-button");
@@ -164,9 +162,13 @@
           $e.attr("data-activated", true);
           lcb.text("Turned On");
           lcb.addClass("btn-success").removeClass("btn-default");
-          $e.stop().animate({
-            className: "-=disabled"
-          }, 500, "Power3.easeInOut");
+          $e.removeClass('disabled');
+          TweenLite.fromTo($e[0], .3, {
+            opacity: 0
+          }, {
+            delay: .05,
+            opacity: 1
+          });
 
         } else {
           $e.attr("data-activated", false);
@@ -175,13 +177,14 @@
           lcb.removeClass("btn-success").addClass("btn-default");
           $e.stop().animate({
             className: "+=disabled"
-          }, 400, "Power3.easeInOut");
+          }, 300, "Power3.easeInOut");
         }
       });
     });
+
     ContentForm.setData(<?= $content_data; ?>);
     $(ContentForm.formId).find("#title").focus();
-  });
+  })();
 
 </script>
 <?= $form_config["script"] ?>

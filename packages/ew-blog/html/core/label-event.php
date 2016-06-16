@@ -1,6 +1,9 @@
 <div class="col-xs-12">
-  <input class="text-field" type="hidden" id="{{comp_id}}_key" name="key" value="{{comp_id}}"/>
-  <input class="text-field" data-label="Select a date" id="{{comp_id}}_value" name="value" value=""/>
+  <input class="text-field" type="hidden" id="{{comp_id}}_key" name="key" value="{{comp_id}}"/>  
+  <system-field class="field col-xs-12">
+    <label>tr{Select a date}</label>
+    <input class="text-field" id="{{comp_id}}_value" name="value" value=""/>
+  </system-field>  
 </div>
 <div class="col-xs-12">
   <system-list class="list" id="{{comp_id}}_fields_list" action="a">

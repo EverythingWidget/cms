@@ -2401,7 +2401,7 @@ label.value {
   transition: all .2s ease;
   z-index: 1;
 
-  > label {
+  > label:first-child {
     position: absolute;
     top: 30px;    
     font-weight: 500;
@@ -2412,11 +2412,11 @@ label.value {
     transition: all .2s ease;
   }
 
-  &[focus] > label , &:not([empty]) > label {
+  &[focus] > label:first-child , &:not([empty]) > label:first-child {
     top: 5px;
   }
 
-  &[focus] > label {
+  &[focus] > label:first-child {
     color: #039BE5;
   }
 }
@@ -3143,6 +3143,7 @@ div.notification p,div.notification h4 {
   background-color: #f0f0f0;
   padding: 15px;
   overflow: hidden;
+  height: auto;
 }
 
 .box.box-grey h3 {
@@ -3539,6 +3540,16 @@ inline-dialog{
   margin-right: 0;
   border-left-width: 0 !important;
   border-right-width: 0 !important;
+}
+
+.trans-slide-vertical {
+  height: 0;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  margin-top: 0;
+  margin-bottom: 0;
+  border-top-width: 0 !important;
+  border-bottom-width: 0 !important;
 }
 
 .elements-list {

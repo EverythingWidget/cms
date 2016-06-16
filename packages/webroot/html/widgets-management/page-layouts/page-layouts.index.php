@@ -26,10 +26,11 @@ $default_page = webroot\WidgetsManagement::get_path_uis("@DEFAULT");
         </div>
         <div class="col-xs-12">
           <div class="row">
-            <div class="col-xs-12 mar-bot">
-              <input type="hidden" class=""  name="@DEFAULTuisId" id="DEFAULT" value="<?= $default_page["uis_id"] ?>">
-              <input class="text-field app-page-uis" data-label="Default Layout" name="@DEFAULT" id="DEFAULT" value="<?= $default_page["uis_name"] ?>">
-            </div>
+            <system-field class="field col-xs-12">
+              <label>tr{Default Layout}</label>
+              <input type="hidden" name="@DEFAULTuisId" id="DEFAULT" value="<?= $default_page["uis_id"] ?>">
+              <input class="text-field app-page-uis" name="@DEFAULT" id="DEFAULT" value="<?= $default_page["uis_name"] ?>">
+            </system-field> 
           </div>
           <div class="row">
             <div class="col-xs-12 mar-bot">
@@ -46,7 +47,7 @@ $default_page = webroot\WidgetsManagement::get_path_uis("@DEFAULT");
           <?php
           $widgets_types_list = webroot\WidgetsManagement::get_widget_feeders("page");
           $pages = $widgets_types_list->data[0];
-           
+
           //Show list of pages and their layouts
           if (isset($pages)) {
             foreach ($pages as $page) {

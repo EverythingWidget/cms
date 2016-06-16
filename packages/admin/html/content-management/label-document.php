@@ -1,12 +1,14 @@
-<div class="col-xs-12">
-  <input class="text-field" type="hidden" id="{{comp_id}}_key" name="key" value="{{comp_id}}"/>
-  <input class="text-field" type="hidden" id="{{comp_id}}_value" name="value" value=""/>
-  <input class="text-field" data-label="Select a content" id="{{comp_id}}_text" name="text" value="" />
-</div>
+<input class="text-field" type="hidden" id="{{comp_id}}_key" name="key" value="{{comp_id}}"/>
+<input class="text-field" type="hidden" id="{{comp_id}}_value" name="value" value=""/>
+
+<system-field class="field col-xs-12">
+  <label>tr{Select a content}</label>
+  <input class="text-field" id="{{comp_id}}_text" name="text" value=""/>  
+</system-field>
 
 <div class="col-xs-12">
   <ul id="{{comp_id}}_attached" class="list">
-    <div v-for="item in items" class="list-item">
+    <div v-for="item in items" class="list-item" transition="slide-vertical">
       <a v-bind:class="{'link': true,'active' : item.id === contentId}" href="#" v-on:click="select($event, item)">
         {{item.title}}
       </a>
@@ -34,7 +36,7 @@
           }
 
           $.get('api/admin/content-management/contents/' + item.id, success);
-          
+
           function success(response) {
             relatedDocumentsVue.contentId = item.id;
             ContentForm.setData(response.data);
@@ -45,15 +47,21 @@
 
     text.autocomplete({
       source: function (input) {
-        $.post("~admin/api/content-management/contents", {
-          title_filter: text.val(),
-          type: "article",
-          size: 30
+        $.get('api/admin/content-management/contents', {
+          filter: {
+            where: {
+              type: 'article',
+              title: {
+                like: text.val() + '%'
+              }
+            }
+          },          
+          page_size: 10
         }, function (response) {
           input.trigger("updateList", [
             response.data
           ]);
-        }, "json");
+        });
       },
       templateText: "<li class='text-item'><a href='#'><%= title %><span><%= date_created %></span></a><li>",
       insertText: function (item) {
@@ -71,12 +79,12 @@
         text.val(formData["title"]).change();
       }
 
-      $.get("api/admin/content-management/contents-labels", {
+      $.get('api/admin/content-management/contents-labels', {
         content_id: ContentForm.getLabel("{{comp_id}}"),
         key: "{{comp_id}}"
       }, function (response) {
         relatedDocumentsVue.items = response['data'];
-      }, "json");
+      });
     });
   }());
 </script>

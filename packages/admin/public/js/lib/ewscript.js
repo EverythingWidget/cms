@@ -314,7 +314,7 @@ EverythingWidgets.prototype.getActivity = function (conf) {
       _this.activitySource = activityController;
       activityController.newParams = hash;
       activityController.privateParams = privateParams;
-      
+
       // 2016-06-12: the `true` can cause issue 
       System.setHashParameters(hashParameters, true);
     }
@@ -782,10 +782,9 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction) {
          methods.setCloseButton();
          modalPane.isOpen = true;
          }});*/
-        System.UI.Animation.blastTo({
-          fromPoint: originElement[0],
+        System.UI.Animation.transform({
+          from: originElement[0],
           to: modalPane[0],
-          area: modalPane[0],
           time: .7,
           ease: "Power2.easeInOut",
           fade: .3,
@@ -798,14 +797,18 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction) {
           }
         });
       } else {
-        modalPane.animate({
-          opacity: "1"
-        }, 520, "Power3.easeOut", function () {
-          //modalPane.css("left", "");
-          methods.setCloseButton();
-          modalPane.isOpen = true;
-          if (settings.class === "full")
-          {
+        TweenLite.fromTo(modalPane[0], .52, {
+          opacity: 0
+        }, {
+          opacity: "1",
+          ease: "Power3.easeOut",
+          onComplete: function () {
+            //modalPane.css("left", "");
+            methods.setCloseButton();
+            modalPane.isOpen = true;
+            if (settings.class === "full")
+            {
+            }
           }
         });
       }
@@ -847,7 +850,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction) {
     modalPane.html = modalPane.__proto__.html;
     var withTillModalOpen = function () {
       if (!modalPane.isOpen) {
-        setTimeout(withTillModalOpen);
+        setTimeout(withTillModalOpen, 1);
         return;
       }
       modalPane.html(data);
@@ -1235,8 +1238,13 @@ EverythingWidgets.prototype.lock = function (obj, string, delay) {
     of = EW.activeElement.offset();
   }
 
-  glass.css("transition", "opacity " + delay + "s");
-  glass.css("opacity", 1);
+  //glass.css("transition", "opacity " + delay + "s");
+  //glass.css("opacity", 1);
+
+  TweenLite.to(glass[0], delay, {
+    opacity: 1
+  });
+
   return glass;
 };
 

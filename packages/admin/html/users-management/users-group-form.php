@@ -6,13 +6,17 @@ function get_ew_user_form() {
   ?>
   <input type="hidden" id="id" name="id" value="">
   <input type="hidden" id="group_id" name="group_id" value="">
-  <div class="row mar-bot">
-    <div class="col-xs-12 col-md-12 col-lg-12 mt">
-      <input class="text-field" data-label="tr{Title}" value="" id="title" name="title"/>
-    </div>    
-    <div class="col-xs-12 col-md-12 col-lg-12 mt">
-      <textarea class="text-field" id="description" data-label="tr{Description}" name="description"  /></textarea>
-    </div>
+  
+  <div class="row mt">
+    <system-field class="field col-xs-12">
+      <label>tr{Title}</label>
+      <input class="text-field" value="" id="title" name="title"/>
+    </system-field>  
+
+    <system-field class="field col-xs-12">
+      <label>tr{Description}</label>
+      <textarea class="text-field" id="description" name="description"  /></textarea>
+    </system-field> 
   </div>  
   <?php
   return ob_get_clean();

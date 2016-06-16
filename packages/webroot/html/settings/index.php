@@ -8,9 +8,21 @@
   </div>
 
   <div class='card-content'>
-    <input class="text-field" data-label="Title" name="webroot/title" />
-    <input class="text-field" data-label="Keywords" name="webroot/keywords" />
-    <textarea class="text-field" data-label="Description" name="webroot/description" ></textarea>
+
+    <system-field class="field">
+      <label>tr{Title}</label>
+      <input class="text-field" name="webroot/title" />
+    </system-field>
+
+    <system-field class="field">
+      <label>tr{Keywords}</label>
+      <input class="text-field" name="webroot/keywords" />
+    </system-field>
+
+    <system-field class="field">
+      <label>tr{Description}</label>
+      <textarea class="text-field" name="webroot/description" ></textarea>
+    </system-field>
 
     <div class="mt+">
       <label>
@@ -24,6 +36,9 @@
     <h1>Google Analytics</h1>
   </div>
   <div class='card-content'>
-    <input class="text-field" data-label="Google analytics ID" name="webroot/google-analytics-id" />
+    <system-field class="field">
+      <label>tr{Google analytics ID}</label>
+      <input class="text-field" name="webroot/google-analytics-id" />
+    </system-field>    
   </div>
 </div>

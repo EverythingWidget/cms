@@ -17,8 +17,10 @@
 
   <form id="register-audio-form">   
     <div class="col-xs-12 mt" id="choose-files">
-
-      <input class="text-field" data-label="Audio file path"  name="path" id="path" />
+      <system-field class="field">
+        <label>tr{Audio file path}</label>
+        <input class="text-field" name="path" id="path" />
+      </system-field>
     </div>
   </form>
 </div>
