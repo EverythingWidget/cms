@@ -24,6 +24,7 @@ class Registry extends \ew\Module {
   protected function install_permissions() {
     $this->register_public_access([
         'api/activities-read',
+        'api/permissions-read',
         'api/items-read'
     ]);
   }
@@ -32,6 +33,10 @@ class Registry extends \ew\Module {
     $_response->properties['system_version'] = $this->get_app()->get_app_version();
 
     return \EWCore::read_activities_as_array();
+  }
+  
+  public function permissions_read($_response) {
+    return \EWCore::read_permissions_as_array();
   }
 
   public function items_read($_response, $key) {

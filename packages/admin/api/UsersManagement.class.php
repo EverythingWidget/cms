@@ -270,30 +270,10 @@ class UsersManagement extends \ew\Module {
 
   public function users_read($_response, $_input, $_parts__id) {
     $_input->id = $_parts__id;
-//    $db = \EWCore::get_db_connection();
-//
-//    if (!isset($token)) {
-//      $token = 0;
-//    }
-//    if (!isset($page_size)) {
-//      $page_size = 100;
-//    }
-//
-//    $totalRows = $db->query("SELECT COUNT(*) FROM ew_users, ew_users_groups WHERE ew_users.group_id = ew_users_groups.id") or die(error_reporting());
-//    $totalRows = $totalRows->fetch_assoc();
-////echo $size;
-//    $result = $db->query("SELECT ew_users.id,email, first_name, last_name,ew_users_groups.title, DATE_FORMAT(ew_users.date_created,'%Y-%m-%d') AS round_date_created FROM ew_users, ew_users_groups WHERE ew_users.group_id = ew_users_groups.id ORDER BY ew_users.id LIMIT $token, $page_size") or die($db->error);
-//
-//    $users = [];
-//    while ($r = $result->fetch_assoc()) {
-//      $users[] = $r;
-//    }
-//    $db->close();
-//
-//    $_response->properties['total'] = intval($totalRows['COUNT(*)']);
-//    $_response->properties['page_size'] = $page_size;
 
     $result = (new UsersRepository())->read($_input);
+    
+    $_response->properties['message'] = $result->message;
 
     if ($result->error) {
       $_response->set_status_code($result->error);
