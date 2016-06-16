@@ -378,28 +378,37 @@
       //var sourceRect = conf.fromPoint;
       var sourceRect = conf.fromPoint;
       var distRect = conf.area.getBoundingClientRect();
+      var to = conf.to.getBoundingClientRect();
       var wrapper = document.createElement("div");
       var blast = document.createElement("div");
       //var sourceStyle = window.getComputedStyle(conf.from, null);
       var ds = window.getComputedStyle(conf.area, null);
       var radius = distRect.width > distRect.height ? distRect.width : distRect.height;
 
-      wrapper.style.position = "absolute";
-      /*wrapper.style.textAlign = "center";
-       wrapper.style.fontSize = "3em";
-       wrapper.style.lineHeight = radius + 'px';
-       wrapper.style.whiteSpace = "nowrap";*/
-      //wrapper.style.zIndex = (ds.zIndex === "0" || ds.zIndex === "auto") ? 1 : ds.zIndex;
-      wrapper.style.zIndex = "";
-      wrapper.style.overflow = "hidden";
-      //wrapper.style.width = distRect.width + "px";
-      //wrapper.style.height = distRect.height + "px";
-      wrapper.style.width = "100%";
-      wrapper.style.height = "100%";
-      //wrapper.style.top = distRect.top + "px";
-      //wrapper.style.left = distRect.left + "px";
-      wrapper.style.top = "0px";
-      wrapper.style.left = "0px";
+      tween.set(wrapper, {
+        position: 'absolute',
+        overflow: 'hidden',
+        width: '100%',
+        height: '100%',
+        top: 0,
+        left: 0
+      });
+//      wrapper.style.position = "absolute";
+//      /*wrapper.style.textAlign = "center";
+//       wrapper.style.fontSize = "3em";
+//       wrapper.style.lineHeight = radius + 'px';
+//       wrapper.style.whiteSpace = "nowrap";*/
+//      //wrapper.style.zIndex = (ds.zIndex === "0" || ds.zIndex === "auto") ? 1 : ds.zIndex;
+//      wrapper.style.zIndex = "";
+//      wrapper.style.overflow = "hidden";
+//      //wrapper.style.width = distRect.width + "px";
+//      //wrapper.style.height = distRect.height + "px";
+//      wrapper.style.width = "100%";
+//      wrapper.style.height = "100%";
+//      //wrapper.style.top = distRect.top + "px";
+//      //wrapper.style.left = distRect.left + "px";
+//      wrapper.style.top = "0px";
+//      wrapper.style.left = "0px";
       //wrapper.style.borderRadius = ds.borderRadius;
 
       blast.style.position = "absolute";
@@ -498,30 +507,8 @@
         width: sourceRect.width + 'px',
         height: sourceRect.height + 'px',
         left: 0,
-        top: 0,
+        top: 0
       });
-      //transformBox.style.position = "absolute";
-//      transformBox.style.textAlign = "center";
-//      transformBox.style.backgroundColor = (sourceStyle.backgroundColor.indexOf("rgba") !== -1 ||
-//              sourceStyle.backgroundColor === "transparent") ? "rgb(190,190,190)" : sourceStyle.backgroundColor;
-//      transformBox.style.boxShadow = sourceStyle.boxShadow;
-//      transformBox.style.borderRadius = sourceStyle.borderRadius;
-      //transformBox.style.padding = ss.padding;
-//      transformBox.style.color = conf.textColor || sourceStyle.color;
-//      transformBox.style.fontSize = sourceStyle.fontSize;
-//      transformBox.style.fontWeight = sourceStyle.fontWeight;
-//      transformBox.style.lineHeight = sourceRect.height + 'px';
-//      transformBox.style.textTransform = sourceStyle.textTransform;
-      //transformBox.style.textOverflow = "clip";
-//      transformBox.style.whiteSpace = "nowrap";
-//      transformBox.style.zIndex = (ds.zIndex === "0" || ds.zIndex === "auto") ? 1 : ds.zIndex;
-//      transformBox.style.overflow = "hidden";
-//      transformBox.style.transformOrigin = "top left";
-//      transformBox.style.width = sourceRect.width + 'px';
-//      transformBox.style.height = sourceRect.height + 'px';
-//      transformBox.style.left = 0;
-//      transformBox.style.top = 0;
-      //transformBox.style.transform = 'translate(' + sourceRect.left + 'px,' + sourceRect.top + 'px)';
 
       if (conf.text) {
         transformBox.innerHTML = conf.text;
@@ -611,32 +598,31 @@
         left: sourceRect.left,
         top: sourceRect.top
                 //opacity: 1
-      },
-              {
-                width: distRect.width,
-                height: distRect.height,
-                left: distRect.left,
-                top: distRect.top,
-                ease: conf.ease || "Power2.easeInOut",
-                onComplete: function () {
-                  conf.to.style.visibility = "";
-                  conf.from.style.transition = "";
-                  if (conf.fade > 0) {
-                    tween.to(transformBox, conf.fade, {
-                      opacity: 0,
-                      ease: "Power0.easeNone",
-                      onComplete: function () {
-                        transformBox.parentNode.removeChild(transformBox);
-                      }
-                    });
-                  } else {
-                    transformBox.parentNode.removeChild(transformBox);
-                  }
+      }, {
+        width: distRect.width,
+        height: distRect.height,
+        left: distRect.left,
+        top: distRect.top,
+        ease: conf.ease || "Power2.easeInOut",
+        onComplete: function () {
+          conf.to.style.visibility = "";
+          conf.from.style.transition = "";
+          if (conf.fade > 0) {
+            tween.to(transformBox, conf.fade, {
+              opacity: 0,
+              ease: "Power0.easeNone",
+              onComplete: function () {
+                transformBox.parentNode.removeChild(transformBox);
+              }
+            });
+          } else {
+            transformBox.parentNode.removeChild(transformBox);
+          }
 
-                  if (conf.onComplete)
-                    conf.onComplete();
-                }
-              });
+          if (conf.onComplete)
+            conf.onComplete();
+        }
+      });
     },
     /**
      * 
@@ -677,30 +663,29 @@
         top: sourceTop - halfWidth,
         transform: "scale(0)"
                 //opacity: 1
-      },
-              {
-                transform: "scale(2)",
-                ease: conf.ease || "Power2.easeInOut",
-                delay: conf.delay || 0,
-                onComplete: function () {
-                  conf.to.style.visibility = "";
-                  conf.from.style.transition = "";
-                  if (conf.fade > 0) {
-                    tween.to(transformBox, conf.fade, {
-                      opacity: 0,
-                      ease: "Power0.easeNone",
-                      onComplete: function () {
-                        transformBox.parentNode.removeChild(transformBox);
-                      }
-                    });
-                  } else if (transformBox.parentNode) {
-                    transformBox.parentNode.removeChild(transformBox);
-                  }
+      }, {
+        transform: "scale(2)",
+        ease: conf.ease || "Power2.easeInOut",
+        delay: conf.delay || 0,
+        onComplete: function () {
+          conf.to.style.visibility = "";
+          conf.from.style.transition = "";
+          if (conf.fade > 0) {
+            tween.to(transformBox, conf.fade, {
+              opacity: 0,
+              ease: "Power0.easeNone",
+              onComplete: function () {
+                transformBox.parentNode.removeChild(transformBox);
+              }
+            });
+          } else if (transformBox.parentNode) {
+            transformBox.parentNode.removeChild(transformBox);
+          }
 
-                  if (conf.onComplete)
-                    conf.onComplete();
-                }
-              });
+          if (conf.onComplete)
+            conf.onComplete();
+        }
+      });
     },
     scaleTransform: function (conf) {
       var time = conf.time || system.UI.DEFAULTS.animationDuration;

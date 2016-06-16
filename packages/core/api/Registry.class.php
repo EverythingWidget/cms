@@ -2,10 +2,7 @@
 
 namespace core;
 
-use EWCore;
-
 /**
- * Description of SectionManagement
  *
  * @author Eeliya
  */

@@ -782,9 +782,10 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction) {
          methods.setCloseButton();
          modalPane.isOpen = true;
          }});*/
-        System.UI.Animation.transform({
-          from: originElement[0],
+        System.UI.Animation.blastTo({
+          fromPoint: originElement[0],
           to: modalPane[0],
+          area: modalPane[0],
           time: .7,
           ease: "Power2.easeInOut",
           fade: .3,
