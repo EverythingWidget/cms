@@ -145,6 +145,7 @@ class ContentManagement extends \ew\Module {
         "api/contents_articles",
         "api/get_media_list",
         "api/media-audios",
+        'api/get-content-by-slug',
         // ------ html resources ------ //
         'html/index.php',
         "html/article-form.php",
@@ -730,12 +731,12 @@ class ContentManagement extends \ew\Module {
     if ($url_parts[0] === 'articles') {
       if (is_string($url_parts[1])) {
         $article = $this->get_content_by_slug($url_parts[1]);
-        if (isset($article['data'])) {
-          return \webroot\WidgetsManagement::get_path_uis('/articles/' . $article['data']['id']);
+        if (isset($article)) {
+          return \webroot\WidgetsManagement::get_path_uis('/articles/' . $article['id']);
         }
       }
 
-      $uis = \webroot\WidgetsManagement::get_path_uis("/folders/{$article['data']['parent_id']}/articles");
+      $uis = \webroot\WidgetsManagement::get_path_uis("/folders/{$article['parent_id']}/articles");
       if (isset($uis)) {
         return $uis;
       }
@@ -748,8 +749,8 @@ class ContentManagement extends \ew\Module {
       if (is_numeric($url_parts[1])) {
         $article = $this->read_contents($url_parts[1]);
 
-        if (isset($article['data'])) {
-          return \webroot\WidgetsManagement::get_path_uis('/folders/' . $article['data']['parent_id']);
+        if (isset($article)) {
+          return \webroot\WidgetsManagement::get_path_uis('/folders/' . $article['parent_id']);
         }
       }
 
@@ -943,7 +944,7 @@ class ContentManagement extends \ew\Module {
       $labels = $this->get_content_labels($slug);
       $content->labels = $this->parse_labels($labels, $content);
 
-      return \ew\APIResourceHandler::to_api_response($content->toArray()[0]);
+      return $content->toArray();
     }
 
     return EWCore::log_error(404, "content not found");
@@ -1605,8 +1606,10 @@ class ContentManagement extends \ew\Module {
 
     $_response->properties['total'] = $result->total;
     $_response->properties['page_size'] = $result->page_size;
+    //$_response->properties['filter'] = $result->filter;
 
     return $result->data->toArray();
+    return $_input;
   }
 
   public function contents_update($_input, $_response) {

@@ -13,13 +13,15 @@
   </div>
 
   <div class="row">
-    <div class="col-xs-12 col-md-6 col-lg-6">
-      <textarea class="text-field" id="keywords" data-label="tr{Keywords}" name="keywords"></textarea>
-    </div>
-
-    <div class="col-xs-12 col-md-6 col-lg-6">
-      <textarea class="text-field" id="description" data-label="tr{Description}" name="description"></textarea>
-    </div>
+    <system-field class="field col-xs-12 col-md-6 col-lg-6">
+      <label>tr{Keywords}</label>
+      <textarea class="text-field" value="" id="keywords" name="keywords"></textarea>
+    </system-field>
+    
+    <system-field class="field col-xs-12 col-md-6 col-lg-6">
+      <label>tr{Description}</label>
+      <textarea class="text-field" value="" id="description" name="description"></textarea>
+    </system-field>
   </div>
 
   <?php

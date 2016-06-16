@@ -16,10 +16,10 @@ if ($feeder["type"] === "widget-feeder") {
   }
 
   $items_list = EWCore::call_api($feeder_obj->api_url, [
-              "id"        => $id,
-              "token"     => $token * $num_of_items_per_page,
-              "page_size"      => $num_of_items_per_page,
-              "order_by"  => $order,
+              'id'        => $id,
+              'token'     => $token * $num_of_items_per_page,
+              'page_size' => $num_of_items_per_page,
+              'order_by'  => $order,
               '_language' => $_REQUEST['_language']
   ]);
 }
@@ -27,7 +27,13 @@ else {
   $id = $feeder["id"];
   if (!$feeder_id)
     return;
-  $items_list = EWCore::call_api($feeder_id, ["id" => $id]);
+  $items_list = EWCore::call_api($feeder_id, [
+              'id'        => $id,
+              'token'     => $token * $num_of_items_per_page,
+              'page_size' => $num_of_items_per_page,
+              'order_by'  => $order,
+              '_language' => $_REQUEST['_language']
+  ]);
 }
 $item_per_slide_lg = 1;
 $item_per_slide_md = 1;
@@ -94,7 +100,7 @@ $row_num = ($token * $num_of_items_per_page) + $num_of_items_per_page;
 
 //$items_list = EWCore::get_widget_feeder("list", $feeder_app, $feeder_id, [$id, $token * $num_of_items_per_page, $num_of_items_per_page]);
 //
-$items_count = $items_list["totalRows"];
+$items_count = $items_list["total"];
 $items = $items_list["data"];
 $page = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 
