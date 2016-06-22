@@ -1592,35 +1592,22 @@ class ContentManagement extends \ew\Module {
   }
 
   public function contents_create($_response, $_input) {
-    return (new ContentsRepository())->create($_input, $_response);
+    $result = (new ContentsRepository())->create($_input);
+
+    return \ew\APIResponse::standard_response($_response, $result);
   }
 
   public function contents_read($_input, $_response, $_parts__id) {
     $_input->id = $_parts__id;
-    $result = (new ContentsRepository())->read($_input, $_response);
+    $result = (new ContentsRepository())->read($_input);
 
-    if ($result->error) {
-      $_response->set_status_code($result->error);
-      return $result;
-    }
-
-    $_response->properties['total'] = $result->total;
-    $_response->properties['page_size'] = $result->page_size;
-    //$_response->properties['filter'] = $result->filter;
-
-    return $result->data->toArray();
-    return $_input;
+    return \ew\APIResponse::standard_response($_response, $result);
   }
 
   public function contents_update($_input, $_response) {
-    $result = (new ContentsRepository())->update($_input, $_response);
+    $result = (new ContentsRepository())->update($_input);
 
-    if ($result->error) {
-      $_response->set_status_code($result->error);
-      return $result;
-    }
-
-    return $result;
+    return \ew\APIResponse::standard_response($_response, $result);
   }
 
   /**
@@ -1630,11 +1617,9 @@ class ContentManagement extends \ew\Module {
    * @return type
    */
   public function contents_delete($_input, $_response) {
-    $result = (new ContentsRepository())->delete($_input, $_response);
+    $result = (new ContentsRepository())->delete($_input);
 
-    $_response->properties['message'] = $result->message;
-
-    return $result;
+    return \ew\APIResponse::standard_response($_response, $result);
   }
 
 }

@@ -127,24 +127,14 @@ class APIResourceHandler extends ResourceHandler {
             if ($response_data instanceof \stdClass) {
               $response_data = (array) $response_data;
             }
-            else if (is_object($response_data)) {
-              die(\EWCore::log_error(500, 'Module can not return object. Only array or stdClass is allowed', [
+            else if ($response_data !== null && !is_a($response_data, 'stdClass') && !is_array($response_data)) {
+              die(\EWCore::log_error(500, 'Module can not return object. Only array or stdClass is allowed ' . get_class($response_data), [
                           $real_class_name . '->' . $api_method_name . ' returns object.'
               ]));
             }
 
             $response->set_data($response_data);
           }
-
-//          if (is_object($result)) {
-//            $result = (array) $result;
-//          }
-//          if (!is_array($result) && is_string($result)) {
-//            $converted_result = json_decode($result, true);
-//            if (json_last_error() === JSON_ERROR_NONE) {
-//              $result = $converted_result;
-//            }
-//          }
 
           $this->execute_api_listeners($api_listeners, $parameters, $response);
         }
@@ -183,7 +173,7 @@ class APIResourceHandler extends ResourceHandler {
           if ($listener_result instanceof \stdClass) {
             $listener_result = (array) $listener_result;
           }
-          else if (is_object($listener_result)) {
+          else if ($listener_result !== null && !is_a($listener_result, 'stdClass') && !is_array($listener_result)) {
             die(\EWCore::log_error(500, 'Module can not return object. Only array or stdClass is allowed', [
                         get_class($listener['object']) . '->' . $listener['method'] . ' returns object.'
             ]));

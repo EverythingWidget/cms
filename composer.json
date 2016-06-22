@@ -1,9 +1,10 @@
 {
-  "name": "ewcms/ewcms",
+  "name": "ew/cms",
   "description": "A CMS made for web developers",
   "keywords": [
     "cms",
-    "content management system"
+    "content management system",
+    "everything widget"
   ],
   "type": "project",
   "license": "MIT",

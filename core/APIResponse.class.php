@@ -25,7 +25,7 @@ class APIResponse implements \JsonSerializable {
   public function __construct() {
     $this->properties = [
         'status_code' => 200
-        ];
+    ];
   }
 
   public function set_status_code($code) {
@@ -44,12 +44,12 @@ class APIResponse implements \JsonSerializable {
   public function set_meta($meta) {
     $this->properties['meta'] = $meta;
   }
-  
-  public function add_link($key,$value) {
-    if(!in_array('links', $this->properties)) {
+
+  public function add_link($key, $value) {
+    if (!in_array('links', $this->properties)) {
       $this->properties['links'] = [];
     }
-    
+
     $this->properties['links'][$key] = $value;
   }
 
@@ -76,6 +76,28 @@ class APIResponse implements \JsonSerializable {
     $cloned = clone $this;
     $cloned->data = '@data';
     return $cloned->to_array();
+  }
+
+  /** Creates a standard response out of <var>$_response</var> with passed <var>$result</var> 
+   * 
+   * @param APIResponse $_response The response object
+   * @param Result $result The repository result
+   * @return array
+   */
+  public static function standard_response($_response, $result) {
+    $_response->properties['message'] = $result->message;
+
+    if ($result->error) {
+      $_response->set_status_code($result->error);
+
+      //return $result->data;
+      return null;
+    }
+
+    $_response->properties['total'] = $result->total;
+    $_response->properties['page_size'] = $result->page_size;
+
+    return $result->data->toArray();
   }
 
 }

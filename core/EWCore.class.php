@@ -1225,44 +1225,57 @@ class EWCore {
     return json_encode(static::read_activities_as_array());
   }
 
-  public static function read_activities_as_array() {
+  /**
+   * 
+   * @param \ew\Module $module
+   * @return array
+   */
+  public static function read_activities_as_array($module = null) {
     EWCore::init_packages();
     $pers = self::$permissions_groups;
     $allowed_activities = array();
 
-    foreach ($pers as $app_name => $sections) {
-      foreach ($sections["section"] as $section_name => $sections_permissions) {
-        foreach ($sections_permissions["permission"] as $permission_name => $permission_info) {
-          if (admin\UsersManagement::group_has_permission($app_name, $section_name, [$permission_name], $_SESSION['EW.USER_GROUP_ID'])) {
-            foreach ($permission_info["methods"] as $method) {
-              $parts = explode('/', $method, 2);
-              if (count($parts) < 2) {
-                //throw new Exception("Activity name is wrong");
-                return EWCore::log_error('500', 'Wrong actovity name', ["$app_name | $section_name | $method_name"]);
+    foreach ($pers as $app => $sections) {
+
+      if (is_null($module) || $app === $module->get_app()->get_root()) {
+
+        foreach ($sections["section"] as $section_name => $sections_permissions) {
+
+          if (is_null($module) || $section_name === \EWCore::camelToHyphen($module->get_name())) {
+
+            foreach ($sections_permissions["permission"] as $permission_name => $permission_info) {
+              if (admin\UsersManagement::group_has_permission($app, $section_name, [$permission_name], $_SESSION['EW.USER_GROUP_ID'])) {
+                foreach ($permission_info["methods"] as $method) {
+                  $parts = explode('/', $method, 2);
+                  if (count($parts) < 2) {
+                    //throw new Exception("Activity name is wrong");
+                    return EWCore::log_error('500', 'Wrong activity name', ["$app | $section_name"]);
+                  }
+                  $resource_name = $parts[0];
+                  $method_name = $parts[1];
+
+                  $title = $method_name;
+
+                  if (strpos($method_name, ':')) {
+                    $temp = explode(':', $method_name, 2);
+                    $method_name = $temp[0];
+                    $title = $temp[1];
+                  }
+
+                  $is_form = (strpos($method_name, '.php') && $method_name !== "index.php") ? true : false;
+                  $url = $is_form ? EW_ROOT_URL . '~' . $app . '/' . $resource_name . "/" . $section_name . "/" . $method_name : EW_ROOT_URL . '~' . $app . '/' . $resource_name . "/" . $section_name . "/" . $method_name;
+                  //echo $url;
+                  $allowed_activities["$app/$resource_name/$section_name/$method_name"] = [
+                      "activityTitle" => $title,
+                      "app"           => $app,
+                      "appTitle"      => "tr:$app{" . $sections["appTitle"] . "}",
+                      "section"       => $section_name,
+                      "sectionTitle"  => "tr:$app{" . $sections_permissions["sectionTitle"] . "}",
+                      "url"           => $url,
+                      "form"          => $is_form
+                  ];
+                }
               }
-              $resource_name = $parts[0];
-              $method_name = $parts[1];
-
-              $title = $method_name;
-
-              if (strpos($method_name, ':')) {
-                $temp = explode(':', $method_name, 2);
-                $method_name = $temp[0];
-                $title = $temp[1];
-              }
-
-              $is_form = (strpos($method_name, '.php') && $method_name !== "index.php") ? true : false;
-              $url = $is_form ? EW_ROOT_URL . '~' . $app_name . '/' . $resource_name . "/" . $section_name . "/" . $method_name : EW_ROOT_URL . '~' . $app_name . '/' . $resource_name . "/" . $section_name . "/" . $method_name;
-              //echo $url;
-              $allowed_activities["$app_name/$resource_name/$section_name/$method_name"] = [
-                  "activityTitle" => $title,
-                  "app"           => $app_name,
-                  "appTitle"      => "tr:$app_name{" . $sections["appTitle"] . "}",
-                  "section"       => $section_name,
-                  "sectionTitle"  => "tr:$app_name{" . $sections_permissions["sectionTitle"] . "}",
-                  "url"           => $url,
-                  "form"          => $is_form
-              ];
             }
           }
         }
@@ -1355,6 +1368,7 @@ class EWCore {
 
   public static function read_permissions_as_array() {
     EWCore::init_packages();
+
     return self::$permissions_groups;
   }
 

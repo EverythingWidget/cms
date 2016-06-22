@@ -51,7 +51,7 @@ class LayoutsRepository implements \ew\CRUDRepository {
 
     $data = ew_ui_structures::take($page_size)->skip($page * $page_size)->get();
 
-    $result = new \stdClass;
+    $result = new \ew\Result();
 
     $result->total = ew_ui_structures::all()->count();
     $result->size = $page_size;
@@ -61,7 +61,7 @@ class LayoutsRepository implements \ew\CRUDRepository {
   }
 
   public function find_by_id($id) {
-    $result = new \stdClass;
+    $result = new \ew\Result();
     $layout = ew_ui_structures::find($id);
 
     $default_uis = WidgetsManagement::get_path_uis("@DEFAULT");

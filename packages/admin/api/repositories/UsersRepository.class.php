@@ -20,7 +20,7 @@ class UsersRepository implements \ew\CRUDRepository {
   }
 
   public function create($input) {
-    $result = new \stdClass;
+    $result = new \ew\Result();
     $validation_result = \SimpleValidator\Validator::validate((array) $input, ew_users::$RULES);
 
     if ($validation_result->isSuccess() !== true) {
@@ -41,12 +41,12 @@ class UsersRepository implements \ew\CRUDRepository {
     $user->date_created = $datetime->format('y-m-d H:i:s');
     if (!$user->save()) {
       $result->error = 500;
-      $result->message = 'user_has_not_been_created';
-      
+      $result->message = 'user has not been created';
+
       return $result;
     }
 
-    $result->message = 'user_has_been_created';
+    $result->message = 'user has been created';
     $result->data = $user;
 
     return $result;
@@ -61,8 +61,8 @@ class UsersRepository implements \ew\CRUDRepository {
   }
 
   public function update($input) {
-    $result = new \stdClass;
-    $input->password = 'password_may_not_be_updated';
+    $result = new \ew\Result();
+    $input->password = 'password may not be updated';
     $validation_result = \SimpleValidator\Validator::validate((array) $input, ew_users::$RULES);
     unset($input->password);
 
@@ -77,7 +77,7 @@ class UsersRepository implements \ew\CRUDRepository {
 
     if (!$user) {
       $result->error = 404;
-      $result->message = 'user_not_found';
+      $result->message = 'user not found';
 
       return $result;
     }
@@ -86,28 +86,28 @@ class UsersRepository implements \ew\CRUDRepository {
     $user->save();
 
     $result->data = $user;
-    $result->message = 'user_has_been_updated';
+    $result->message = 'user has been updated';
 
     return $result;
   }
 
   public function delete($input) {
-    $result = new \stdClass;
+    $result = new \ew\Result();
 
-    $result->message = 'user_has_been_deleted';
+    $result->message = 'user has been deleted';
 
     $user = ew_users::find($input->id);
 
     if (!$user) {
       $result->error = 404;
-      $result->message = 'user_not_found';
+      $result->message = 'user not found';
 
       return $result;
     }
 
     if (!$user->delete()) {
       $result->error = 500;
-      $result->message = 'user_has_not_been_deleted';
+      $result->message = 'user has not been deleted';
 
       return $result;
     }
@@ -124,7 +124,7 @@ class UsersRepository implements \ew\CRUDRepository {
       $page_size = 100;
     }
 
-    $result = new \stdClass;
+    $result = new \ew\Result();
 
     $result->total = ew_users::count();
     $result->page_size = $page_size;
@@ -134,13 +134,13 @@ class UsersRepository implements \ew\CRUDRepository {
   }
 
   public function find_by_id($id) {
-    $result = new \stdClass;
+    $result = new \ew\Result();
 
     $data = ew_users::with('group')->find($id);
 
     if (!$data) {
       $result->error = 404;
-      $result->message = 'user_not_found';
+      $result->message = 'user not found';
 
       return $result;
     }

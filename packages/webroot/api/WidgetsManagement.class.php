@@ -41,7 +41,7 @@ class WidgetsManagement extends \ew\Module {
         "title" => "UI",
         "form"  => $uis_content_tab
     ]);
-    
+
     $this->add_listener('admin/api/content-management/contents-update', 'on_contents_update');
     $this->add_listener('admin/api/content-management/get-article', 'call_on_folder_get');
     $this->add_listener('admin/api/content-management/contents-read', 'on_contents_read');
@@ -113,10 +113,10 @@ class WidgetsManagement extends \ew\Module {
   }
 
   public function on_contents_read($_response, $_input) {
-    if(isset($_response->properties['total'])) {
+    if (isset($_response->properties['total'])) {
       return null;
     }
-    
+
     $content_data = $_response->data;
 
     if (isset($content_data) && $content_data["id"]) {
@@ -164,7 +164,7 @@ class WidgetsManagement extends \ew\Module {
         }
       }
     }
-    
+
     return json_encode($apps);
   }
 
@@ -1288,15 +1288,7 @@ class WidgetsManagement extends \ew\Module {
     $_input->id = $_parts__id;
     $result = (new LayoutsRepository())->read($_input);
 
-    if ($result->error) {
-      $_response->set_status_code($result->error);
-      return $result;
-    }
-
-    $_response->properties['total'] = $result->total;
-    $_response->properties['page_size'] = $result->size;
-
-    return $result->data->toArray();
+    return \ew\APIResponse::standard_response($_response, $result);
   }
 
   public function layouts_update($_input, $_response) {

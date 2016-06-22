@@ -20,7 +20,7 @@ class UsersGroupsRepository implements \ew\CRUDRepository {
   }
 
   public function create($input) {
-    $result = new \stdClass;
+    $result = new \ew\Result();
     $validation_result = \SimpleValidator\Validator::validate((array) $input, ew_users_groups::$RULES);
 
     if ($validation_result->isSuccess() !== true) {
@@ -41,28 +41,28 @@ class UsersGroupsRepository implements \ew\CRUDRepository {
     $group->save();
 
     $result->data = $group;
-    $result->message = 'users_group_added';
+    $result->message = 'users group has been created';
 
     return $result;
   }
 
   public function delete($input) {
-    $result = new \stdClass;
+    $result = new \ew\Result();
 
-    $result->message = 'users_group_has_been_deleted';
+    $result->message = 'users group has been deleted';
 
     $group = ew_users_groups::find($input->id);
 
     if (!$group) {
       $result->error = 404;
-      $result->message = 'users_group_not_found';
+      $result->message = 'users group not found';
 
       return $result;
     }
 
     if (!$group->delete()) {
       $result->error = 500;
-      $result->message = 'users_group_has_not_been_deleted';
+      $result->message = 'users group has not been deleted';
 
       return $result;
     }
@@ -81,7 +81,7 @@ class UsersGroupsRepository implements \ew\CRUDRepository {
   }
 
   public function update($input) {
-    $result = new \stdClass;
+    $result = new \ew\Result();
     $validation_result = \SimpleValidator\Validator::validate((array) $input, ew_users_groups::$RULES);
 
     if (!$validation_result->isSuccess()) {
@@ -99,7 +99,7 @@ class UsersGroupsRepository implements \ew\CRUDRepository {
 
     if (!$group) {
       $result->error = 404;
-      $result->message = 'users_group_not_found';
+      $result->message = 'users group not found';
 
       return $result;
     }
@@ -108,7 +108,7 @@ class UsersGroupsRepository implements \ew\CRUDRepository {
     $group->save();
 
     $result->data = $group;
-    $result->message = 'users_group_has_been_updated';
+    $result->message = 'users group has been updated';
 
     return $result;
   }
@@ -122,7 +122,7 @@ class UsersGroupsRepository implements \ew\CRUDRepository {
       $page_size = 100;
     }
 
-    $result = new \stdClass;
+    $result = new \ew\Result();
 
     $result->total = ew_users_groups::count();
     $result->page_size = $page_size;
@@ -132,13 +132,13 @@ class UsersGroupsRepository implements \ew\CRUDRepository {
   }
 
   public function find_by_id($id) {
-    $result = new \stdClass;
+    $result = new \ew\Result();
 
     $data = ew_users_groups::find($id);
 
     if (!$data) {
       $result->error = 404;
-      $result->message = 'users_group_not_found';
+      $result->message = 'users group not found';
 
       return $result;
     }

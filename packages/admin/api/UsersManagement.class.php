@@ -66,7 +66,7 @@ class UsersManagement extends \ew\Module {
     ]);
 
     $this->register_public_access([
-        'api/users-create',
+        'api/read',
         "api/am-i-in"
     ]);
 
@@ -257,34 +257,15 @@ class UsersManagement extends \ew\Module {
   public function users_create($_input, \ew\APIResponse $_response) {
     $result = (new UsersRepository())->create($_input);
 
-    $_response->properties['message'] = $result->message;
-
-    if ($result->error) {
-      $_response->set_status_code($result->error);
-
-      return $result;
-    }
-
-    return $result->data->toArray();
+    return \ew\APIResponse::standard_response($_response, $result);
   }
 
   public function users_read($_response, $_input, $_parts__id) {
     $_input->id = $_parts__id;
 
     $result = (new UsersRepository())->read($_input);
-    
-    $_response->properties['message'] = $result->message;
 
-    if ($result->error) {
-      $_response->set_status_code($result->error);
-      return $result;
-    }
-
-    $_response->properties['total'] = $result->total;
-    $_response->properties['page_size'] = $result->page_size;
-
-
-    return $result->data->toArray();
+    return \ew\APIResponse::standard_response($_response, $result);
   }
 
   public function users_update(\ew\APIResponse $_response, $_input, $_parts__id) {
@@ -292,15 +273,7 @@ class UsersManagement extends \ew\Module {
 
     $result = (new UsersRepository())->update($_input);
 
-    $_response->properties['message'] = $result->message;
-
-    if ($result->error) {
-      $_response->set_status_code($result->error);
-
-      return $result;
-    }
-
-    return $result->data->toArray();
+    return \ew\APIResponse::standard_response($_response, $result);
   }
 
   public function users_delete(\ew\APIResponse $_response, $_input, $_parts__id) {
@@ -308,9 +281,7 @@ class UsersManagement extends \ew\Module {
 
     $result = (new UsersRepository())->delete($_input);
 
-    $_response->properties['message'] = $result->message;
-
-    return $result->data->toArray();
+    return \ew\APIResponse::standard_response($_response, $result);
   }
 
   public static function get_users_groups_list($_response, $page = 0, $page_size = 100) {
@@ -367,126 +338,6 @@ class UsersManagement extends \ew\Module {
       $db->close();
       return json_encode($rows);
     }
-  }
-
-  public function add_group($title = null, $description = null, $permission = null) {
-    $db = \EWCore::get_db_connection();
-    /* if (!$title)
-      $title = $db->real_escape_string($_REQUEST["title"]);
-      if (!$description)
-      $description = $db->real_escape_string($_REQUEST["description"]);
-      if (!$permission)
-      $permission = $db->real_escape_string($_REQUEST["permission"]); */
-
-    $stm = $db->prepare("INSERT INTO ew_users_groups (title, description, permission, date_created)
-            VALUES (?, ?, ?, ?)");
-    $stm->bind_param("ssss", $title, $description, $permission, date('Y-m-d H:i:s'));
-
-    if ($stm->execute()) {
-//$db->close();
-
-      /* $actions = EWCore::read_actions_registry("ew-article-action-get");
-        try
-        {
-        foreach ($actions as $userId => $data)
-        {
-        if (method_exists($data["class"], $data["function"]))
-        {
-        $func_result = call_user_func(array($data["class"], $data["function"]), $rows);
-        if ($func_result)
-        $rows = $func_result;
-        }
-        }
-        } catch (Exception $e)
-        {
-
-        } */
-
-      return json_encode([
-          status  => "success",
-          title   => $title,
-          message => "Users group '$title' has been added successfully",
-          "id"    => $db->insert_id]);
-    }
-    return json_encode([
-        status  => "unsuccess",
-        title   => "Update Group Unsuccessfull",
-        message => "Users group has been NOT added"]);
-  }
-
-  public function update_group($id = null, $title = null, $description = null, $permission = null) {
-    $db = \EWCore::get_db_connection();
-
-    $stm = $db->prepare("UPDATE ew_users_groups 
-            SET title = ? 
-            , description = ? 
-            , permission = ? WHERE id = ?");
-    $stm->bind_param("ssss", $title, $description, $permission, $id);
-
-    if ($stm->execute()) {
-      $db->close();
-
-      /* $actions = EWCore::read_actions_registry("ew-article-action-get");
-        try
-        {
-        foreach ($actions as $userId => $data)
-        {
-        if (method_exists($data["class"], $data["function"]))
-        {
-        $func_result = call_user_func(array($data["class"], $data["function"]), $rows);
-        if ($func_result)
-        $rows = $func_result;
-        }
-        }
-        } catch (Exception $e)
-        {
-
-        } */
-
-      return json_encode([
-          status  => "success",
-          title   => $title,
-          message => "tr{Users group} '$title' tr{has been updated successfully}"]);
-    }
-    return EWCore::log_error("400", "Users group has been NOT updated", $db->error_list);
-//return json_encode(array(status => "unsuccess", title => "Update Group Unsuccessfull", message => "Users group has been NOT updated"));
-  }
-
-  public function delete_group($groupId = null) {
-
-    $db = \EWCore::get_db_connection();
-    if (!$groupId)
-      $groupId = $db->real_escape_string($_REQUEST["id"]);
-    $group_info = $this->get_user_group_by_id($groupId);
-    $stm = $db->prepare("DELETE FROM ew_users_groups WHERE id = ?");
-    $stm->bind_param("s", $groupId);
-
-    if ($stm->execute()) {
-      $db->close();
-
-      /* $actions = EWCore::read_actions_registry("ew-article-action-get");
-        try
-        {
-        foreach ($actions as $userId => $data)
-        {
-        if (method_exists($data["class"], $data["function"]))
-        {
-        $func_result = call_user_func(array($data["class"], $data["function"]), $rows);
-        if ($func_result)
-        $rows = $func_result;
-        }
-        }
-        } catch (Exception $e)
-        {
-
-        } */
-
-      return json_encode([
-          status  => "success",
-          title   => $group_info["title"],
-          message => "tr{Users group} '{$group_info["title"]}' tr{has been deleted successfully}"]);
-    }
-    return EWCore::log_error("400", "tr{Users group has been NOT deleted}", $db->error_list);
   }
 
   public static function get_user_by_id($userId) {
@@ -616,63 +467,10 @@ class UsersManagement extends \ew\Module {
     return json_encode($user_info);
   }
 
-  public function update_user($id, $email, $first_name, $last_name, $password, $group_id = 0) {
-    $db = \EWCore::get_db_connection();
-    /* if (!$id)
-      $id = $db->real_escape_string($_REQUEST["id"]);
-      if (!$email)
-      $email = $db->real_escape_string($_REQUEST["email"]);
-      if (!$first_name)
-      $first_name = $db->real_escape_string($_REQUEST["first_name"]);
-      if (!$last_name)
-      $last_name = $db->real_escape_string($_REQUEST["last_name"]);
-      if (!$password)
-      $password = $db->real_escape_string($_REQUEST["password"]);
-      if (!$group_id)
-      $group_id = $db->real_escape_string($_REQUEST["group_id"]);
-      if (!$group_id)
-      $group_id = 0; */
-
-    $stm = $db->prepare("UPDATE ew_users SET email = ?, first_name = ?, last_name = ?, password = ?, group_id = ? WHERE id = ?");
-    $stm->bind_param("ssssss", $email, $first_name, $last_name, $password, $group_id, $id);
-
-    if ($stm->execute()) {
-      $db->close();
-      return json_encode([
-          status  => "success",
-          email   => $email,
-          message => "User '$email' has been updated successfully",
-          "id"    => $id]);
-    }
-    return json_encode([
-        status  => "unsuccess",
-        message => "User has been NOT updated"]);
-  }
-
-  public function get($_verb) {
-    return $this->users($_verb);
-    //return \EWCore::log_error(400, "Not defined");
-  }
-
-//  public function groups($_response, $_parts) {
-//    if (isset($_parts[0])) {
-//      return $this->get_user_group_by_id($_response, $_parts[0]);
-//    }
-//    return $this->get_users_groups_list($_response);
-//  }
-
   public function groups_create(\ew\APIResponse $_response, $_input) {
     $result = (new UsersGroupsRepository())->create($_input);
 
-    $_response->properties['message'] = $result->message;
-
-    if ($result->error) {
-      $_response->set_status_code($result->error);
-
-      return $result;
-    }
-
-    return $result->data->toArray();
+    return \ew\APIResponse::standard_response($_response, $result);
   }
 
   public function groups_read(\ew\APIResponse $_response, $_input, $_parts__id) {
@@ -680,16 +478,7 @@ class UsersManagement extends \ew\Module {
 
     $result = (new UsersGroupsRepository())->read($_input);
 
-    if ($result->error) {
-      $_response->set_status_code($result->error);
-
-      return $result;
-    }
-
-    $_response->properties['total'] = $result->total;
-    $_response->properties['page_size'] = $result->page_size;
-
-    return $result->data->toArray();
+    return \ew\APIResponse::standard_response($_response, $result);
   }
 
   public function groups_update(\ew\APIResponse $_response, $_input, $_parts__id) {
@@ -697,15 +486,7 @@ class UsersManagement extends \ew\Module {
 
     $result = (new UsersGroupsRepository())->update($_input);
 
-    $_response->properties['message'] = $result->message;
-
-    if ($result->error) {
-      $_response->set_status_code($result->error);
-
-      return $result;
-    }
-
-    return $result->data->toArray();
+    return \ew\APIResponse::standard_response($_response, $result);
   }
 
   public function groups_delete(\ew\APIResponse $_response, $_input, $_parts__id) {
@@ -713,9 +494,15 @@ class UsersManagement extends \ew\Module {
 
     $result = (new UsersGroupsRepository())->delete($_input);
 
-    $_response->properties['message'] = $result->message;
+    return \ew\APIResponse::standard_response($_response, $result);
+  }
 
-    return $result->data->toArray();
+  public function read() {
+    return [
+        'title'       => $this->get_title(),
+        'description' => $this->get_description(),
+        'resources'   => \EWCore::read_activities_as_array($this)
+    ];
   }
 
 }

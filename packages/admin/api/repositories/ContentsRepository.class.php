@@ -15,21 +15,21 @@ class ContentsRepository implements \ew\CRUDRepository {
   }
 
   public function create($input) {
-    $result = new \stdClass;
-    $result->error = 503;
-    $result->message = 'ContentsRepository: REST create functionality is not implemented';
+    $result = new \ew\Result();       
+    $validator = new \Valitron\Validator((array) $input);
 
-    $v = new \Valitron\Validator((array) $input);
-
-    $v->rules([
+    $validator->rules([
         "required" => [
             ["title"], ["type"]
         ],
         "integer"  => "parent_id"
     ]);
 
-    if (!$v->validate()) {
-      $result->reason = $v->errors();
+    if (!$validator->validate()) {
+      $result->error = 503;
+      $result->message = 'ContentsRepository: REST create functionality is not implemented';
+      $result->reason = $validator->errors();
+      
       return $result;
     }
 
@@ -61,18 +61,23 @@ class ContentsRepository implements \ew\CRUDRepository {
         }
       }
     }
+    
+    $result->message = 'content has been created';
+    $result->data = $content;
 
-    return $content;
+    return $result;
   }
 
   public function delete($input) {
-    $result = new \stdClass;
+    $result = new \ew\Result();
     //$result->error = 503;
-    $result->message = 'Item has been deleted successfully';
+    $result->message = 'item has been deleted successfully';
 
     $content = ew_contents::find($input->id);
 
     $content->delete();
+    
+    $result->data = $content;
 
     return $result;
   }
@@ -91,10 +96,11 @@ class ContentsRepository implements \ew\CRUDRepository {
   }
 
   public function update($input) {
-    if ($input->title === '') {
-      $result = new \stdClass;
+    $result = new \ew\Result();
+    
+    if ($input->title === '') {     
       $result->error = 400;
-      $result->message = 'Content title can not be empty';
+      $result->message = 'content title can not be empty';
 
       return $result;
     }
@@ -111,8 +117,10 @@ class ContentsRepository implements \ew\CRUDRepository {
       $content->parsed_content = null;
     }
     $content->save();
+    
+    $result->data = $content;
 
-    return $content;
+    return $result;
   }
 
   // ------ //
@@ -158,7 +166,7 @@ class ContentsRepository implements \ew\CRUDRepository {
 //      return $e;
 //    }, $contents->toArray());
 
-    $result = new \stdClass;
+    $result = new \ew\Result();
 
     $result->total = ew_contents::count();
     $result->page_size = intval($page_size);
@@ -169,7 +177,7 @@ class ContentsRepository implements \ew\CRUDRepository {
   }
 
   public function find_by_id($id, $language = 'en') {
-    $result = new \stdClass;
+    $result = new \ew\Result();
 
     if (!isset($id)) {
       $result->error = 400;
@@ -241,7 +249,7 @@ class ContentsRepository implements \ew\CRUDRepository {
   }
 
   private function get_content_fields($html) {
-    $content_fields = new \stdClass();
+    $content_fields = new \ew\Result();
     if (!isset($html) || $html === "") {
       return $content_fields;
     }
@@ -332,7 +340,7 @@ class ContentsRepository implements \ew\CRUDRepository {
       }
     }
 
-    $result = new \stdClass();
+    $result = new \ew\Result();
 
     $result->html = $innerHTML;
     $result->content_fields = (array) $content_fields;
