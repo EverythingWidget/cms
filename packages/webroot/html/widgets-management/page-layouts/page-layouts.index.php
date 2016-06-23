@@ -89,13 +89,13 @@ $default_page = webroot\WidgetsManagement::get_path_uis("@DEFAULT");
         "Layout Name": {}
       },
       rowCount: true,
-      url: "<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/get-all-pages-uis-list",
+      url: "api/webroot/widgets-management/get-all-pages-uis-list/",
       pageSize: 30,
       onDelete: function (id) {
         this.confirm("Are you sure?", function () {
           //EW.lock(pageUIS.allUISList.table, "");
           var row = this;
-          $.post("<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/set-uis", {
+          $.post("api/webroot/api/widgets-management/set-uis", {
             path: row.data("field-path")
           }, function (data) {
             $("input[name='" + row.data("field-path") + "']").val("").change();
@@ -135,7 +135,7 @@ if ($path_uis_list) {
         Template: {}
       },
       rowCount: true,
-      url: "~webroot/api/widgets-management/get-uis-list",
+      url: "api/webroot/widgets-management/get-uis-list/",
       pageSize: 30,
       columns: [
         "name",

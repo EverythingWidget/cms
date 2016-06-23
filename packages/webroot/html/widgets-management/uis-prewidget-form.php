@@ -126,18 +126,18 @@ $panelId = $_REQUEST['panelId'];
       widget_style_class: widgetStyleClass,
       style_id: styleId,
       widget_parameters: wp
-    }, function (data) {
+    }, function (response) {
       EW.lock($.EW("getParentDialog", self.uisWidgetForm));
 
       // Add widget data to the widget-data script tag
-      if (data["widget_data"])
-        uisForm.setWidgetData(data["widget_id"], data["widget_data"]);
+      if (response.data["widget_data"])
+        uisForm.setWidgetData(response.data["widget_id"], response.data["widget_data"]);
 
       var containerElement = $("#fr").contents().find("body #base-content-pane div[data-panel-id='<?php echo $panelId ?>']");
       if (containerElement.hasClass("block")) {
-        uisForm.addWidget(data["widget_html"], containerElement[0]);
+        uisForm.addWidget(response.data["widget_html"], containerElement[0]);
       } else {
-        uisForm.addWidget(data["widget_html"], containerElement[0]);
+        uisForm.addWidget(response.data["widget_html"], containerElement[0]);
       }
 
       $("#inspector-editor").trigger("refresh");
@@ -166,17 +166,17 @@ $panelId = $_REQUEST['panelId'];
       widget_style_class: widgetStyleClass,
       style_id: styleId,
       widget_parameters: wp
-    }, function (data) {
+    }, function (response) {
       EW.lock($.EW("getParentDialog", self.uisWidgetForm));
       // Remove the old widget script
       uisForm.getEditor().find("head #" + self.widgetId).remove();
 
       // Add widget data to the widget-data script tag
-      if (data["widget_data"]) {
-        uisForm.setWidgetData(data["widget_id"], data["widget_data"]);
+      if (response.data["widget_data"]) {
+        uisForm.setWidgetData(response.data["widget_id"], response.data["widget_data"]);
       }
 
-      uisForm.replaceWidget(data["widget_html"], widget.parent()[0]);
+      uisForm.replaceWidget(response.data["widget_html"], widget.parent()[0]);
 
       $.EW("getParentDialog", self.uisWidgetForm).trigger("close");
       $("#inspector-editor").trigger("refresh");
@@ -301,7 +301,7 @@ $panelId = $_REQUEST['panelId'];
         }
       });
     });
-    
+
     $.each($("#size-layout").find("input[data-slider]"), function (k, v) {
       $.each(classes, function (i, c) {
         var sub = c.match(/(\D+)(\d*)/);
@@ -330,7 +330,7 @@ $panelId = $_REQUEST['panelId'];
 
     $("#style_class").val(styleClass).change();
     $.each($("#size-layout input[data-slider]:not(:disabled)"), function (k, v) {
-      $("#used-classes").append(v.name + v.value + " ");     
+      $("#used-classes").append(v.name + v.value + " ");
     });
 
     $.each($("#size-layout input:radio:checked:not(:disabled),#size-layout input:checkbox:checked:not(:disabled)"), function (k, v) {

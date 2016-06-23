@@ -16,7 +16,7 @@ namespace admin;
 class UsersGroupsRepository implements \ew\CRUDRepository {
 
   public function __construct() {
-    require_once '/../models/ew_users_groups.php';
+    require_once EW_PACKAGES_DIR . '/admin/api/models/ew_users_groups.php';
   }
 
   public function create($input) {

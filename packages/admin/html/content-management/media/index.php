@@ -189,7 +189,7 @@
           Path: {}
         },
         rowCount: true,
-        url: "~admin/api/content-management/media-audios",
+        url: "api/admin/content-management/media-audios/",
         pageSize: 30
       });
 
@@ -401,7 +401,7 @@
         //this.deleteAlbumBtn.comeIn();
       }
 
-      $.get('~admin/api/content-management/get-media-list', {
+      $.get('api/admin/content-management/get-media-list/', {
         parent_id: stateHandler.albumId
       }, done);
 

@@ -15,6 +15,10 @@ $feeder = json_decode($widget_parameters["feeder"], true);
 if ($feeder) {
   $feeder_obj = webroot\WidgetsManagement::get_widget_feeder($feeder["feederId"]);
 
+  if (is_null($feeder_obj)) {
+    echo 'feeder not found: ' . $feeder["feederId"];
+    return;
+  }
 
   $page = EWCore::call_api($feeder_obj->api_url, [
               "id"       => $feeder["id"],

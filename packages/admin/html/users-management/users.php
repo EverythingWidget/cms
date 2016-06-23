@@ -82,13 +82,13 @@
           }
         },
         rowCount: true,
-        url: "api/admin/users-management/users",
+        url: "api/admin/users-management/users/",
         pageSize: 30,
         onDelete: function (id) {
           this.confirm("tr{Are you sure of deleting of this user?}", function () {
             $.ajax({
               type: 'DELETE',
-              url: 'api/admin/users-management/users',
+              url: 'api/admin/users-management/users/',
               data: {id: id},
               success: function (response) {
                 System.UI.components.document.trigger("users-list.refresh");

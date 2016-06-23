@@ -165,7 +165,7 @@ class WidgetsManagement extends \ew\Module {
       }
     }
 
-    return json_encode($apps);
+    return $apps;
   }
 
   public function category_action_get($_data) {
@@ -419,15 +419,15 @@ class WidgetsManagement extends \ew\Module {
       }
       $stm->close();
       $db->close();
-      return json_encode(array(
+      return [
           status    => "success",
           "message" => "tr{The layout has been saved successfully}",
-          "data"    => [title => $name]));
+          "data"    => [title => $name]];
     }
     else {
-      return json_encode(array(
+      return [
           status  => "unsuccess",
-          message => $error));
+          message => $error];
     }
   }
 
@@ -653,10 +653,10 @@ class WidgetsManagement extends \ew\Module {
       header("Content-Type: text/html");
       require_once EW_PACKAGES_DIR . '/rm/public/' . $path . '/template.php';
       $template = new \template();
-      return $template->get_template_settings_form();
+      return ['html' => $template->get_template_settings_form()];
     }
     else {
-      return "tr{Nothing to configure}";
+      return [];
     }
   }
 
@@ -1124,7 +1124,7 @@ class WidgetsManagement extends \ew\Module {
       $template = new \template();
       $template_body = $template->get_template_body($template_body, $settings);
       $template_script = $template->get_template_script($settings);
-      $template_script = preg_replace('/\'json\|\$template_settings\'/', $template_settings, $template_script);
+      $template_script = preg_replace('/\'json\|\$template_settings\'/', json_encode($template_settings), $template_script);
     }
 
     return [

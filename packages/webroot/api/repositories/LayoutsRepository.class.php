@@ -16,7 +16,7 @@ namespace webroot;
 class LayoutsRepository implements \ew\CRUDRepository {
 
   public function __construct() {
-    require_once '/../models/ew_ui_structures.php';
+    require_once EW_PACKAGES_DIR . '/webroot/api/models/ew_ui_structures.php';
   }
 
   public function create($input) {

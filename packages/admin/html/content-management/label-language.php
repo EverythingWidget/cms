@@ -46,7 +46,7 @@
             return;
           }
 
-          $.get('api/admin/content-management/get-article', {articleId: item.id}, function (response) {
+          $.get('api/admin/content-management/get-article/', {articleId: item.id}, function (response) {
             ContentForm.setData(response.data);
           });
         }
@@ -73,7 +73,7 @@
         $("#{{comp_id}}_select").change();
       }
 
-      $.get("api/admin/content-management/contents-labels", {
+      $.get("api/admin/content-management/contents-labels/", {
         content_id: documentId,
         key: "{{comp_id}}"
       }, success);

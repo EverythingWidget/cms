@@ -47,7 +47,7 @@
 
     text.autocomplete({
       source: function (input) {
-        $.get('api/admin/content-management/contents', {
+        $.get('api/admin/content-management/contents/', {
           filter: {
             where: {
               type: 'article',
@@ -79,7 +79,7 @@
         text.val(formData["title"]).change();
       }
 
-      $.get('api/admin/content-management/contents-labels', {
+      $.get('api/admin/content-management/contents-labels/', {
         content_id: ContentForm.getLabel("{{comp_id}}"),
         key: "{{comp_id}}"
       }, function (response) {

@@ -1263,7 +1263,7 @@ class EWCore {
                   }
 
                   $is_form = (strpos($method_name, '.php') && $method_name !== "index.php") ? true : false;
-                  $url = $is_form ? EW_ROOT_URL . '~' . $app . '/' . $resource_name . "/" . $section_name . "/" . $method_name : EW_ROOT_URL . '~' . $app . '/' . $resource_name . "/" . $section_name . "/" . $method_name;
+                  $url = $is_form ? EW_ROOT_URL . '~' . $app . '/' . $resource_name . "/" . $section_name . "/" . $method_name : EW_ROOT_URL . '~' . $app . '/' . $resource_name . "/" . $section_name . "/" . $method_name . '/';
                   //echo $url;
                   $allowed_activities["$app/$resource_name/$section_name/$method_name"] = [
                       "activityTitle" => $title,

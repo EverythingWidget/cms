@@ -47,7 +47,7 @@ session_start();
         </form>
       </div>
       <div class="tab-pane col-xs-12" id="pref">
-        <form id="uis-preference" onsubmit="return false;">
+        <form id="layout-form" onsubmit="return false;">
           <div class="row mt">
             <div class="col-xs-12" >
               <input class="text-field" data-label="UIS Name" name="name" id="name">
@@ -72,9 +72,9 @@ session_start();
               <select data-label="UIS Template" id="template" name="template">
                 <option value="">---</option>
                 <?php
-                $templates = json_decode(EWCore::call("webroot/api/widgets-management/get-templates"), true);
+                $templates = EWCore::call_api("webroot/api/widgets-management/get-templates");
                 //print_r($templates);
-                foreach ($templates as $t) {
+                foreach ($templates['data'] as $t) {
                   ?>
                   <option value="<?php echo $t["templatePath"] ?>"><?php echo $t["templateName"] ?></option>
                   <?php
@@ -85,7 +85,7 @@ session_start();
             </div>
           </div>
 
-          <div id="uis-preference-actions" class="actions-bar action-bar-items" ></div>
+          <div id="layout-form-actions" class="actions-bar action-bar-items" ></div>
         </form>
       </div>
     </div>
@@ -191,6 +191,7 @@ session_start();
     this.uisTemplate = "";
     this.oldStructure = {};
     this.inlineEditor = {};
+    this.layoutForm = $("#layout-form");
     this.editorWindow = $("#editor-container");
     this.editorWindow.width($(window).width() - 400);
     this.uis_editor_tool_pane = $("#uis-editor-tool-pane");
@@ -211,13 +212,13 @@ session_start();
 
     this.bSavePref = EW.addAction("Save Changes", $.proxy(this.updateUIS, this, true), {
       display: "none"
-    }, "uis-preference-actions").addClass("btn-success");
+    }, "layout-form-actions").addClass("btn-success");
 
     if (EW.getActivity({
       activity: "webroot/api/widgets-management/export-uis"
     })) {
-      $("#uis-preference-actions").append("<a class='btn btn-text btn-primary pull-right export-btn' href=~webroot/api/widgets-management/export-uis?uis_id=" + this.uisId + ">Export Layout</a>");
-      this.bExportLayout = $("#uis-preference-actions a.export-btn");
+      $("#layout-form-actions").append("<a class='btn btn-text btn-primary pull-right export-btn' href=~webroot/api/widgets-management/export-uis?uis_id=" + this.uisId + ">Export Layout</a>");
+      this.bExportLayout = $("#layout-form-actions a.export-btn");
       this.bExportLayout.hide();
     }
 
@@ -235,37 +236,29 @@ session_start();
       id: "set_url_btn",
       onClick: _this.reloadFrame
     });
+    
     var itemsList = $("#items-list");
     itemsList[0].close = function () {
       itemsList.animate({
         left: -400
       }, 200);
     };
-    // Add close action to the items list
-//    $("#items-list a.close-icon").on("click", function (e) {
-//      e.preventDefault();
-//      $("#items-list").animate({
-//        left: -400
-//      }, 200);
-//    });
 
     this.inspectorEditor[0].isValidParent = function (item, parent) {
       //UIUtil.hasCSSClass(item, "block")
       var $parent = $(parent);
-      if (System.ui.utility.hasClass(item, "block") && !$parent.is(".items"))
-      {
+      if (System.ui.utility.hasClass(item, "block") && !$parent.is(".items"))      {
         return false;
       }
-      if (System.ui.utility.hasClass(item, "widget") && $parent.is(".items"))
-      {
-
+      
+      if (System.ui.utility.hasClass(item, "widget") && $parent.is(".items"))      {
         return false;
       }
-      if (System.ui.utility.hasClass(item, "panel") && $parent.is(".items"))
-      {
-        //console.log(item.index() + "  " + container.el.children().eq(item.index() - 1).hasClass("block"));
+      
+      if (System.ui.utility.hasClass(item, "panel") && $parent.is(".items"))      {
         return false;
       }
+      
       return true;
     };
 
@@ -360,7 +353,7 @@ session_start();
 
     // Load inspector editor when the content of frame has been loaded
     this.editorIFrame.load(function () {
-      $(document.getElementById("fr").contentDocument.head).append("<style id='editor-style'>" + $("#editor-css").html() + "</style>");
+      $(document.getElementById("fr").contentDocument.head).append("<style id='editor-style'>" + $("#editor-css").html() + "</style>");     
       _this.oldStructure = _this.createContentHeirarchy();
       $("#template").off("change").change($.proxy(_this.reloadFrame, _this));
       _this.changeTemplate();
@@ -383,11 +376,11 @@ session_start();
       }
     });
 
-    $("#uis-preference").on("refresh", function (e, data) {
+    _this.layoutForm.on("refresh", function (e, data) {
       if (data.id) {
         $('#form-title').html('<span>tr{Edit}</span>' + data.name);
         _this.uisId = data.id;
-        $("#uis-preference-actions .export-btn").attr("href", "~webroot/api/widgets-management/export-uis?uis_id=" + _this.uisId);
+        $("#layout-form-actions .export-btn").attr("href", "~webroot/api/widgets-management/export-uis?uis_id=" + _this.uisId);
         _this.uisTemplate = data.template;
 
         if (data.template_settings) {
@@ -400,6 +393,7 @@ session_start();
       }
       _this.init();
     });
+
     _this.relocateGlassPanes();
   }
 
@@ -833,11 +827,11 @@ session_start();
     if (template) {
       $.post("<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/get-template-settings-form", {
         path: template
-      }, function (data) {
+      }, function (response) {
         _this.frameLoader.dispose();
         _this.uisTemplate = template;
         _this.templateSettingsForm.off("getData");
-        _this.templateSettingsForm.html(data);
+        _this.templateSettingsForm.html(response['html']);
         EW.setFormData("#template_settings_form", _this.templateSettings);
         _this.updateTemplateBody();
       });
@@ -940,11 +934,11 @@ session_start();
     // Read template settings from template settings form
     _this.templateSettingsForm.trigger("getData");
 
-    $.post('~webroot/api/widgets-management/get-layout', {
+    $.get('~webroot/api/widgets-management/get-layout/', {
       uisId: _this.uisId,
       template: _this.uisTemplate,
       template_settings: JSON.stringify(_this.templateSettings)
-    }, function (data) {
+    }, function (response) {
       var myIframe = _this.editorIFrame[0],
               myIframeContent = $(myIframe).contents(),
               head = myIframeContent.find("head"),
@@ -953,27 +947,27 @@ session_start();
       head.find("#template-script").remove();
       head.find("#widget-data").remove();
       if ($('#template').val()) {
-        head.find("#template-css").attr("href", "~rm/public/" + $('#template').val() + "/template.css");
+        body.find("#template-css").attr("href", "~rm/public/" + $('#template').val() + "/template.css");
       }
 
       body.find("#base-content-pane").remove();
 
       var widgetData = myIframe.contentWindow.document.createElement("script");
       widgetData.id = "widget-data";
-      widgetData.innerHTML = data["widget_data"];
+      widgetData.innerHTML = response.data["widget_data"];
       myIframe.contentWindow.document.head.appendChild(widgetData);
       var templateBody = myIframe.contentWindow.document.createElement("div");
       templateBody.id = "base-content-pane";
       templateBody.className = "container";
-      templateBody.innerHTML = data["template_body"];
+      templateBody.innerHTML = response.data["template_body"];
       myIframe.contentWindow.document.body.appendChild(templateBody);
 
       // Adding template script after adding template body
-      if (data["template_script"]) {
+      if (response.data["template_script"]) {
         var script = myIframe.contentWindow.document.createElement("script");
         //script.type = "text/javascript";
         script.id = "template-script";
-        var templateScript = $('<script>' + data["template_script"] + '</script').attr("id", "template-script");
+        var templateScript = $('<script>' + response.data["template_script"] + '</script').attr("id", "template-script");
         script.innerHTML = templateScript.html();
 
         myIframe.contentWindow.document.head.appendChild(script);
@@ -986,9 +980,9 @@ session_start();
         evalScript(scripts[script], myIframe);
       }
 
-      var evt = document.createEvent('Event');
-      evt.initEvent('load', false, false);
-      myIframe.contentWindow.dispatchEvent(evt);
+//      var evt = document.createEvent('Event');
+//      evt.initEvent('load', false, false);
+//      myIframe.contentWindow.dispatchEvent(evt);
 
       _this.inspectorEditor.trigger("refresh");
       lock.dispose();
@@ -1262,7 +1256,7 @@ session_start();
       left: left,
       width: width
     }, 500, "Power1.easeInOut", function () {
-      self.loadInspectorEditor();
+      //self.loadInspectorEditor();
       self.editorFrame.find(".widget-glass-pane").show();
     });
 
@@ -1280,7 +1274,7 @@ session_start();
       left: leftOffset / 2,
       height: newHeight
     }, 500, "Power1.easeInOut", function () {
-      self.loadInspectorEditor();
+      //self.loadInspectorEditor();
       self.editorFrame.find(".widget-glass-pane").show();
       self.relocateGlassPanes();
     });
@@ -1355,7 +1349,7 @@ session_start();
 if ($_REQUEST['uisId']) {
   $uis_info = \EWCore::call_api("webroot/api/widgets-management/layouts/{$_REQUEST['uisId']}");
 }
-echo 'EW.setFormData("#uis-preference",' . (($uis_info != null) ? json_encode($uis_info['data']) : "null") . ');';
+echo 'EW.setFormData("#layout-form",' . (($uis_info != null) ? json_encode($uis_info['data']) : "null") . ');';
 ?>
 
   });

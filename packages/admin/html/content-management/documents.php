@@ -402,7 +402,7 @@
       var loader = $("<div class='loader top'></div>");
       this.ui.components.folders_card.find(".card-content").append(loader);
       var foldersElements = [];
-      System.addActiveRequest($.get('~admin/api/content-management/contents-folders', {
+      System.addActiveRequest($.get('api/admin/content-management/contents-folders/', {
         parent_id: component.parentId
       }, function (response) {
         component.ui.folders_card_vue.card_title = response.parent ? response.parent.title : "tr{Contents}";
@@ -418,7 +418,7 @@
       }, "json"));
 
       var articlesElements = [];
-      System.addActiveRequest($.get('~admin/api/content-management/contents-articles', {
+      System.addActiveRequest($.get('api/admin/content-management/contents-articles/', {
         parent_id: component.parentId
       }, function (response) {
         if (response.parent) {

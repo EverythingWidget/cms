@@ -36,6 +36,7 @@
         class: "btn-float btn-success icon-ok",
         parent: System.UI.components.appMainActions
       });
+
       this.loadAppsGeneralSettings(<?= json_encode(EWCore::read_registry("ew/ui/settings/general")) ?>);
     };
 
@@ -51,7 +52,8 @@
 
         $.get(apps[app].url, function (response) {
           settingsCard.append(response);
-          EW.setFormData("#settings-cards",<?= EWCore::call("admin/api/settings/read-settings") ?>);
+
+          EW.setFormData("#settings-cards",<?= json_encode(EWCore::call_api("admin/api/settings/read-settings")['data']) ?>);
         });
       }
     };
@@ -61,8 +63,7 @@
 
       $.post("~admin/api/settings/save-settings", {
         params: data
-      },
-      function (response) {
+      }, function (response) {
         System.UI.components.body.EW().notify(response).show();
       });
     };

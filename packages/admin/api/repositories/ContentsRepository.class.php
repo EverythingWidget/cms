@@ -10,12 +10,12 @@ namespace admin;
 class ContentsRepository implements \ew\CRUDRepository {
 
   public function __construct() {
-    require_once '/../models/ew_contents.php';
-    require_once '/../models/ew_contents_labels.php';
+    require_once EW_PACKAGES_DIR . '/admin/api/models/ew_contents.php';
+    require_once EW_PACKAGES_DIR . '/admin/api/models/ew_contents_labels.php';
   }
 
   public function create($input) {
-    $result = new \ew\Result();       
+    $result = new \ew\Result();
     $validator = new \Valitron\Validator((array) $input);
 
     $validator->rules([
@@ -29,7 +29,7 @@ class ContentsRepository implements \ew\CRUDRepository {
       $result->error = 503;
       $result->message = 'ContentsRepository: REST create functionality is not implemented';
       $result->reason = $validator->errors();
-      
+
       return $result;
     }
 
@@ -61,7 +61,7 @@ class ContentsRepository implements \ew\CRUDRepository {
         }
       }
     }
-    
+
     $result->message = 'content has been created';
     $result->data = $content;
 
@@ -76,7 +76,7 @@ class ContentsRepository implements \ew\CRUDRepository {
     $content = ew_contents::find($input->id);
 
     $content->delete();
-    
+
     $result->data = $content;
 
     return $result;
@@ -97,8 +97,8 @@ class ContentsRepository implements \ew\CRUDRepository {
 
   public function update($input) {
     $result = new \ew\Result();
-    
-    if ($input->title === '') {     
+
+    if ($input->title === '') {
       $result->error = 400;
       $result->message = 'content title can not be empty';
 
@@ -106,6 +106,14 @@ class ContentsRepository implements \ew\CRUDRepository {
     }
 
     $content = ew_contents::find($input->id);
+
+    if (!$content) {
+      $result->error = 404;
+      $result->message = 'contentnot found';
+
+      return $result;
+    }
+
     $content->fill((array) $input);
     if (isset($content->content)) {
       $content_fields = $this->get_content_fields($content->content);
@@ -117,7 +125,7 @@ class ContentsRepository implements \ew\CRUDRepository {
       $content->parsed_content = null;
     }
     $content->save();
-    
+
     $result->data = $content;
 
     return $result;

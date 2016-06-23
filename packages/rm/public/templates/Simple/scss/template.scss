@@ -198,7 +198,10 @@ body {
   margin-top: 30px;
 }
 
-.widget.menu-bar{} 
+.widget.menu-bar {
+  display: block; 
+} 
+
 .menu-bar ul{list-style:none;margin:0px;overflow:hidden;padding:0;}
 .menu-bar li{float:left;margin-right:10px;}
 .menu-bar li.active a,.menu-bar a.active {

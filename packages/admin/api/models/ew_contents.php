@@ -1,6 +1,6 @@
 <?php
-namespace admin;
 
+namespace admin;
 
 /**
  * Description of ew_settings
@@ -21,9 +21,9 @@ class ew_contents extends \Illuminate\Database\Eloquent\Model {
       'parent_id',
       'featured_image',
       'content',
+      'parsed_content',
       'date_modified'
   ];
-  
   public static $rules = [
       'title'     => [
           'required'
@@ -34,10 +34,9 @@ class ew_contents extends \Illuminate\Database\Eloquent\Model {
       'parent_id' => [
           'integer'
   ]];
-  
   protected $casts = [
-        'content_fields' => 'array',
-    ];
+      'content_fields' => 'array',
+  ];
 
   public function __construct(array $attributes = []) {
     parent::__construct($attributes);

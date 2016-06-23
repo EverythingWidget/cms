@@ -55,13 +55,13 @@
           }
         },
         rowCount: true,
-        url: "<?php echo EW_ROOT_URL; ?>~admin/api/users-management/groups",
+        url: "<?php echo EW_ROOT_URL; ?>~admin/api/users-management/groups/",
         pageSize: 30,
         onDelete: function (id) {
           this.confirm("tr{Are you sure of deleting of this group?}", function () {
             $.ajax({
               type: 'DELETE',
-              url: 'api/admin/users-management/groups',
+              url: 'api/admin/users-management/groups/',
               data: {
                 id: id
               },

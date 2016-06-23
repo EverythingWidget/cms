@@ -90,7 +90,7 @@
         Template: {}
       },
       rowCount: true,
-      url: "api/webroot/widgets-management/layouts",
+      url: "api/webroot/widgets-management/layouts/",
       pageSize: 30,
       onDelete: function (id) {
         this.confirm("Are you sure of deleting this UIS?", function () {
