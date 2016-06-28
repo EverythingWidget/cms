@@ -1239,17 +1239,17 @@ class EWCore {
 
       if (is_null($module) || $app === $module->get_app()->get_root()) {
 
-        foreach ($sections["section"] as $section_name => $sections_permissions) {
+        foreach ($sections["section"] as $module_name => $modules_permissions) {
 
-          if (is_null($module) || $section_name === \EWCore::camelToHyphen($module->get_name())) {
+          if (is_null($module) || $module_name === \EWCore::camelToHyphen($module->get_name())) {
 
-            foreach ($sections_permissions["permission"] as $permission_name => $permission_info) {
-              if (admin\UsersManagement::group_has_permission($app, $section_name, [$permission_name], $_SESSION['EW.USER_GROUP_ID'])) {
+            foreach ($modules_permissions["permission"] as $permission_name => $permission_info) {
+              if (admin\UsersManagement::group_has_permission($app, $module_name, [$permission_name], $_SESSION['EW.USER_GROUP_ID'])) {
                 foreach ($permission_info["methods"] as $method) {
                   $parts = explode('/', $method, 2);
                   if (count($parts) < 2) {
                     //throw new Exception("Activity name is wrong");
-                    return EWCore::log_error('500', 'Wrong activity name', ["$app | $section_name"]);
+                    return EWCore::log_error('500', 'Wrong activity name', ["$app | $module_name"]);
                   }
                   $resource_name = $parts[0];
                   $method_name = $parts[1];
@@ -1262,17 +1262,29 @@ class EWCore {
                     $title = $temp[1];
                   }
 
+
+
                   $is_form = (strpos($method_name, '.php') && $method_name !== "index.php") ? true : false;
-                  $url = $is_form ? EW_ROOT_URL . '~' . $app . '/' . $resource_name . "/" . $section_name . "/" . $method_name : EW_ROOT_URL . '~' . $app . '/' . $resource_name . "/" . $section_name . "/" . $method_name . '/';
-                  //echo $url;
-                  $allowed_activities["$app/$resource_name/$section_name/$method_name"] = [
-                      "activityTitle" => $title,
-                      "app"           => $app,
-                      "appTitle"      => "tr:$app{" . $sections["appTitle"] . "}",
-                      "section"       => $section_name,
-                      "sectionTitle"  => "tr:$app{" . $sections_permissions["sectionTitle"] . "}",
-                      "url"           => $url,
-                      "form"          => $is_form
+                  $url = $is_form ?
+                          EW_ROOT_URL . "~$app/$resource_name/$module_name/$method_name" :
+                          EW_ROOT_URL . "~$app/$resource_name/$module_name/$method_name/";
+
+                  preg_match('/(.*)\-(\w*)$/i', $method_name, $verb);
+
+                  $allowed_activities["$app/$resource_name/$module_name/$method_name"] = [
+//                      "activityTitle" => $title,
+                      'form'    => $is_form,
+                      'class'   => str_replace('-', '_', $app) . '\\' . EWCore::hyphenToCamel($module_name),
+                      'app'     => $app,
+//                      "appTitle"      => "tr:$app{" . $sections["appTitle"] . "}",
+//                      "section" => $module_name,
+                      'module'  => $module_name,
+//                      "sectionTitle"  => "tr:$app{" . $sections_permissions["sectionTitle"] . "}",
+                      "url"     => $url,
+                      'request' => [
+                          'method' => ew\APIResourceHandler::$VERBS[$verb[2]],
+                          'url'    => EW_ROOT_URL . "$resource_name/$app/$module_name/$verb[1]"
+                      ],
                   ];
                 }
               }
@@ -1367,6 +1379,12 @@ class EWCore {
   }
 
   public static function read_permissions_as_array() {
+    EWCore::init_packages();
+
+    return self::$permissions_groups;
+  }
+
+  public static function read_public_activities_as_array($module) {
     EWCore::init_packages();
 
     return self::$permissions_groups;

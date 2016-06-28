@@ -22,7 +22,8 @@ class Registry extends \ew\Module {
     $this->register_public_access([
         'api/activities-read',
         'api/permissions-read',
-        'api/items-read'
+        'api/items-read',
+        'api/read'
     ]);
   }
 
@@ -31,7 +32,7 @@ class Registry extends \ew\Module {
 
     return \EWCore::read_activities_as_array();
   }
-  
+
   public function permissions_read($_response) {
     return \EWCore::read_permissions_as_array();
   }
@@ -44,6 +45,13 @@ class Registry extends \ew\Module {
     }
 
     return \EWCore::read_registry_as_array($key);
+  }
+
+  public function read() {
+    return [
+        'title'       => $this->get_title(),
+        'description' => $this->get_description()
+    ];
   }
 
 }

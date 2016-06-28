@@ -2527,8 +2527,8 @@ $(document).ready(function () {
         }
 
         $.ajax({
-          type: currentActivity.verb || "GET",
-          url: currentActivity.url,
+          type: currentActivity.request.method || "GET",
+          url: currentActivity.request.url,
           data: activityParameters,
           success: function (data) {
             if (currentActivity.onDone) {

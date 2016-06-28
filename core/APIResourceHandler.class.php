@@ -21,6 +21,12 @@ class APIResourceHandler extends ResourceHandler {
       'PUT'    => 'update',
       'DELETE' => 'delete'
   ];
+  public static $VERBS = [
+      'read'   => 'GET',
+      'create' => 'POST',
+      'update' => 'PUT',
+      'delete' => 'DELETE'
+  ];
 
   protected function handle($app, $package, $resource_type, $module_name, $command, $parameters = null) {
     $output_as_array = $this->get_parameter('output_array');
