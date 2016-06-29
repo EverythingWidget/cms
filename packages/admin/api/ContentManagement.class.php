@@ -1295,9 +1295,9 @@ class ContentManagement extends \ew\Module {
     if ($rows = $result->fetch_assoc()) {
       $db->close();
 
-      return json_encode($rows);
+      return $rows;
     }
-    return json_encode([]);
+    return [];
   }
 
   public function update_album() {

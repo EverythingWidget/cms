@@ -1262,14 +1262,17 @@ class EWCore {
                     $title = $temp[1];
                   }
 
-
-
                   $is_form = (strpos($method_name, '.php') && $method_name !== "index.php") ? true : false;
                   $url = $is_form ?
                           EW_ROOT_URL . "~$app/$resource_name/$module_name/$method_name" :
                           EW_ROOT_URL . "~$app/$resource_name/$module_name/$method_name/";
 
+                  $verb = [];
                   preg_match('/(.*)\-(\w*)$/i', $method_name, $verb);
+
+                  $request_url = $is_form ?
+                          EW_ROOT_URL . "$resource_name/$app/$module_name/$method_name" :
+                          EW_ROOT_URL . "$resource_name/$app/$module_name/$verb[1]";
 
                   $allowed_activities["$app/$resource_name/$module_name/$method_name"] = [
 //                      "activityTitle" => $title,
@@ -1283,7 +1286,7 @@ class EWCore {
                       "url"     => $url,
                       'request' => [
                           'method' => ew\APIResourceHandler::$VERBS[$verb[2]],
-                          'url'    => EW_ROOT_URL . "$resource_name/$app/$module_name/$verb[1]"
+                          'url'    => $request_url
                       ],
                   ];
                 }

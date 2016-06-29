@@ -20,13 +20,13 @@ class UsersManagement extends \ew\Module {
     EWCore::register_form("ew/ui/apps/users/navs", "users", [
         'id'    => 'users-management/users',
         'title' => 'Users',
-        'url'   => '~admin/html/users-management/users.php'
+        'url'   => '~admin/html/users-management/users/component.php'
     ]);
 
     EWCore::register_form("ew/ui/apps/users/navs", "groups", [
         'id'    => 'users-management/users-groups',
         'title' => 'Groups',
-        'url'   => '~admin/html/users-management/users-groups.php'
+        'url'   => '~admin/html/users-management/groups/component.php'
     ]);
   }
 
@@ -38,7 +38,7 @@ class UsersManagement extends \ew\Module {
         'api/get_user_by_id',
         'api/get_user_by_email',
         'api/logout',
-        'html/user-form.php-see',
+        'html/users/user-form/component.php',
         'html/' . $this->get_index()
     ]);
 
@@ -46,7 +46,7 @@ class UsersManagement extends \ew\Module {
         'api/users-create',
         "api/users-update",
         "api/users-delete",
-        "html/user-form.php",
+        'html/users/user-form/component.php',
         "api/logout",
         'html/' . $this->get_index()]);
 
@@ -54,14 +54,14 @@ class UsersManagement extends \ew\Module {
         "api/get_users_groups_list",
         "api/get_user_group_by_id",
         "api/get_users_group_by_type",
-        "html/users-group-form.php",
+        'html/groups/group-form/component.php',
         'html/' . $this->get_index()]);
 
     $this->register_permission("manipulate-groups", "User can add, edit delete user group", [
         'api/groups-create',
         'api/groups-update',
         'api/groups-delete',
-        'html/users-group-form.php',
+        'html/groups/group-form/component.php',
         'html/' . $this->get_index()
     ]);
 

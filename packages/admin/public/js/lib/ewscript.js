@@ -713,10 +713,17 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction) {
         });
         return;
       } else {
+        if (originElement.parent().is('system-float-menu')) {
+          originElement.css({visibility: '', display: null});
+          console.log(originElement)
+          originElement = [originElement.parent()[0].__xtag__.indicator]
+        }
+
         System.UI.body = $('#base-pane')[0];
         System.UI.Animation.transform({
           from: modalPane[0],
           to: originElement[0],
+          evolve: false,
           time: .4,
           fade: .3,
           ease: "Power2.easeInOut",
@@ -2424,8 +2431,8 @@ $(document).ready(function () {
           activityParameters = EW.getHashParameters();
 
           $.ajax({
-            type: currentActivity.verb || "GET",
-            url: currentActivity.url,
+            type: currentActivity.request.method || "GET",
+            url: currentActivity.request.url,
             data: $.extend({}, activityParameters, currentActivity.privateParams),
             success: function (data) {
               modal.html(data);

@@ -53,17 +53,17 @@ function script() {
           {
             title: "tr{Layouts}",
             id: "widgets-management/uis-list",
-            url: "~webroot/html/widgets-management/uis-list.php"
+            url: "~webroot/html/widgets-management/layouts/component.php"
           },
           {
             title: "tr{Page layouts}",
             id: "widgets-management/pages-uis",
-            url: "~webroot/html/widgets-management/page-layouts/page-layouts.index.php"
+            url: "~webroot/html/widgets-management/page-layouts/component.php"
           }          ,
           {
             title: "tr{Feeders}",
             id: "widgets-management/feeders",
-            url: "~webroot/html/widgets-management/feeders/feeders.index.php"
+            url: "~webroot/html/widgets-management/feeders/component.php"
           }
         ];
 

@@ -514,7 +514,10 @@
 //        transformBox.innerHTML = conf.text;
 //      }
 
-      conf.to.style.visibility = "hidden";
+      if (!conf.hasOwnProperty('evolve') || conf.evolve) {
+        conf.to.style.visibility = "hidden";
+      }
+      
       if (conf.flow) {
         conf.from.style.visibility = "hidden";
         conf.from.style.transition = "none";

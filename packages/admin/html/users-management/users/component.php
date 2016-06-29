@@ -28,7 +28,7 @@
     UsersStateHandler.prototype.init = function () {
       var component = this;
       this.editActivity = EW.getActivity({
-        activity: "admin/html/users-management/user-form.php_edit",
+        activity: "admin/html/users-management/users/user-form/component.php_edit",
         modal: {
           class: "center"
         },
@@ -49,7 +49,7 @@
         modal: {
           class: "center"
         },
-        activity: "admin/html/users-management/user-form.php",
+        activity: "admin/html/users-management/users/user-form/component.php",
         paramters: {
           userId: null
         }

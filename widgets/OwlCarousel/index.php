@@ -100,6 +100,8 @@ $row_num = ($token * $num_of_items_per_page) + $num_of_items_per_page;
 
 //$items_list = EWCore::get_widget_feeder("list", $feeder_app, $feeder_id, [$id, $token * $num_of_items_per_page, $num_of_items_per_page]);
 //
+
+
 $items_count = $items_list["total"];
 $items = $items_list["data"];
 $page = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
@@ -114,7 +116,7 @@ webroot\WidgetsManagement::include_html_link([
     'rm/public/js/owl-carousel/owl.theme.default.css'
 ]);
 
-if ($widget_parameters["content_fields"]) {
+if ($widget_parameters['content_fields'] && isset($items)) {
   $fields = $widget_parameters["content_fields"];
 
   if (is_string($fields)) {

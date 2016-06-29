@@ -596,7 +596,7 @@
         });
         errorsList += '</ul>';
       } catch (e) {
-        console.log("ajaxError: ",e);
+        console.log("ajaxError: ", e);
         console.log(data);
         console.log(e.stack);
       }
