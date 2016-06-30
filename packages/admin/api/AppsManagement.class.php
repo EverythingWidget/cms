@@ -109,10 +109,4 @@ class AppsManagement extends \ew\Module {
   public function get_description() {
     return "Your app's Control Panel";
   }
-
-  public function index() {
-    include '../html/AppsManagement/index.php';
-  }
-
-//put your code here
 }
