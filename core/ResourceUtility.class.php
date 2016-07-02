@@ -4,11 +4,11 @@ namespace ew;
 
 class ResourceUtility {
 
-  public static function get_view($path, $view_data = []) {
-    $full_path = EW_PACKAGES_DIR . '/' . $path;
+  public static function get_view($path, $view_data = [], $absolute_path = false) {
+    $full_path = $absolute_path ? $path : EW_PACKAGES_DIR . '/' . $path;
 
     if (!file_exists($full_path)) {
-      return \EWCore::log_error(404, "<h4>View: File not found</h4><p>File `$full_path`, not found</p>");
+      return \EWCore::log_error(404, "View: File not found: `$full_path`");
     }
 
     ob_start();

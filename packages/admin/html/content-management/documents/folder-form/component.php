@@ -19,16 +19,9 @@ function inputs() {
   return ob_get_clean();
 }
 
-function script() {
-  ob_start();
-  include 'folder-form.js';
-  return ob_get_clean();
-}
-
 EWCore::register_form("ew/ui/forms/content/properties", "category-properties", ["content" => inputs()]);
 echo admin\ContentManagement::create_content_form(["formTitle"      => "Folder",
     "formId"         => "category-form",
     "contentType"    => "folder",
-    "include_script" => script(),
+    "include_script" => \ew\ResourceUtility::get_view(__DIR__ . '/component.js', [], true),
     "data"           => get_folder_data($_REQUEST["folderId"])]);
-

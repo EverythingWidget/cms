@@ -53,6 +53,9 @@
   };
 
   SystemUI.prototype.utility.addClass = function (el, className) {
+    if (!el)
+      return;
+
     if (el.classList)
       el.classList.add(className);
     else
@@ -60,6 +63,9 @@
   };
 
   SystemUI.prototype.utility.removeClass = function (el, className) {
+    if (!el)
+      return;
+    
     if (el.classList)
       el.classList.remove(className);
     else
@@ -479,7 +485,7 @@
       });
     },
     transform: function (conf) {
-      var t = conf.time || system.UI.DEFAULTS.animationDuration;
+      var duration = conf.time || system.UI.DEFAULTS.animationDuration;
       var sourceRect = conf.from.getBoundingClientRect();
       var distRect = conf.to.getBoundingClientRect();
       var transformBox = document.createElement("div");
@@ -517,7 +523,7 @@
       if (!conf.hasOwnProperty('evolve') || conf.evolve) {
         conf.to.style.visibility = "hidden";
       }
-      
+
       if (conf.flow) {
         conf.from.style.visibility = "hidden";
         conf.from.style.transition = "none";
@@ -530,7 +536,7 @@
       }, 1);
 
       function animate() {
-        tween.to(transformBox, t, {
+        tween.to(transformBox, duration, {
           width: distRect.width,
           height: distRect.height,
           x: distRect.left,

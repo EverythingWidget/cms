@@ -90,23 +90,23 @@ class ContentManagement extends \ew\Module {
     $this->register_content_component("document", [
         "title"       => "Document",
         "description" => "Main document",
-        "explorer"    => "admin/html/content-management/explorer-document.php",
-        "explorerUrl" => "~admin/content-management/explorer-document.php",
-        "form"        => "admin/html/content-management/label-document.php"
+        "explorer"    => "admin/html/content-management/documents/explorer-document.php",
+        "explorerUrl" => "~admin/content-management/documents/explorer-document.php",
+        "form"        => "admin/html/content-management/documents/label-document.php"
     ]);
 
     $this->register_content_component("language", [
         "title"       => "Language",
         "description" => "Language of the content",
-        "explorer"    => "admin/html/content-management/explorer-language.php",
-        "explorerUrl" => "~admin/content-management/explorer-language.php",
-        "form"        => "admin/html/content-management/label-language.php"
+        "explorer"    => "admin/html/content-management/documents/explorer-language.php",
+        "explorerUrl" => "~admin/content-management/documents/explorer-language.php",
+        "form"        => "admin/html/content-management/documents/label-language.php"
     ]);
 
     EWCore::register_form('ew/ui/apps/contents/navs', "documents", [
         'id'    => 'content-management/documents',
         'title' => 'Documents',
-        'url'   => '~admin/html/content-management/documents.php'
+        'url'   => '~admin/html/content-management/documents/component.php'
     ]);
 
     EWCore::register_form('ew/ui/apps/contents/navs', "media", [
@@ -148,8 +148,8 @@ class ContentManagement extends \ew\Module {
         'api/get-content-by-slug',
         // ------ html resources ------ //
         'html/index.php',
-        "html/article-form.php",
-        "html/folder-form.php",
+        "html/documents/article-form/component.php",
+        "html/documents/folder-form/component.php",
         "html/media/album-form.php"
     ]);
 
@@ -174,8 +174,8 @@ class ContentManagement extends \ew\Module {
         "api/media-audios",
         // ------ html resources ------ //
         'html/index.php',
-        "html/article-form.php",
-        "html/folder-form.php",
+        "html/documents/article-form/component.php",
+        "html/documents/folder-form/component.php",
         "html/media/album-form.php",
         "html/media/upload-form.php",
         "html/media/upload-audio-form.php",
@@ -1137,7 +1137,7 @@ class ContentManagement extends \ew\Module {
   }
 
   public function get_title() {
-    return "Content";
+    return "Contents";
   }
 
   public function get_description() {

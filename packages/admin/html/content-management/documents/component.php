@@ -195,7 +195,7 @@
 //      });
 
       this.seeFolderActivity = EW.getActivity({
-        activity: "admin/html/content-management/folder-form.php_see",
+        activity: "admin/html/content-management/documents/folder-form/component.php_see",
         modal: {
           class: "center properties"
         },
@@ -208,7 +208,7 @@
       });
 
       this.seeArticleActivity = EW.getActivity({
-        activity: "admin/html/content-management/article-form.php_see",
+        activity: "admin/html/content-management/documents/article-form/component.php_see",
         onDone: function () {
           System.setHashParameters({
             folderId: null
@@ -258,7 +258,7 @@
 
       this.bNewFolder = EW.addActivity({
         title: "tr{New Folder}",
-        activity: "admin/html/content-management/folder-form.php",
+        activity: "admin/html/content-management/documents/folder-form/component.php",
         parent: System.UI.components.mainFloatMenu,
         parameters: function (hash) {
           hash.parent = component.parentId;
@@ -271,8 +271,7 @@
 
       this.bNewFile = EW.addActivity({
         title: "tr{New Article}",
-        //class: "btn-text btn-primary",
-        activity: "admin/html/content-management/article-form.php_new",
+        activity: "admin/html/content-management/documents/article-form/component.php_new",
         parent: System.UI.components.mainFloatMenu,
         parameters: function (hash) {
           hash.parent = component.parentId;

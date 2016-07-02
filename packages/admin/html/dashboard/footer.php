@@ -8,7 +8,7 @@
           return;
 
         states.loading_app = true;
-        System.ui.components.appTitle.text(app.title);
+//        System.ui.components.appTitle.text(app.title);
         if (EW.selectedApp) {
           System.ui.utility.removeClass(EW.selectedApp, "selected");
         }
@@ -84,7 +84,7 @@
               return;
             }
 
-            System.ui.components.mainContent.css("opacity", 0);
+//            System.ui.components.mainContent.css("opacity", 0);
             System.ui.components.mainContent.html(data);
             mod.start();
             if (anim) {
@@ -100,13 +100,11 @@
             System.ui.components.sectionsMenuTitle.removeClass("inline-loader");
             System.ui.utility.removeClass(element, "inline-loader");
 
-            anim = TweenLite.fromTo(System.ui.components.mainContent[0], .5, {
-              opacity: 0,
-              ease: "Power2.easeInOut",
-              top: "0"
+            anim = TweenLite.fromTo(System.ui.components.mainContent[0], .5, {              
+              className: '-=in'
             }, {
-              top: "+=94px",
-              opacity: 1,
+              className:'+=in',
+              ease: "Power2.easeOut",
               onComplete: function () {
               }
             });

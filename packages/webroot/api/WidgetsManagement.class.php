@@ -42,6 +42,24 @@ class WidgetsManagement extends \ew\Module {
         "form"  => $uis_content_tab
     ]);
 
+    EWCore::register_form('ew/ui/apps/widgets/navs', 'layouts', [
+        'id'    => 'widgets-management/uis-list',
+        'title' => 'tr{Layouts}',
+        'url'   => 'html/webroot/widgets-management/layouts/component.php'
+    ]);
+
+    EWCore::register_form('ew/ui/apps/widgets/navs', 'page-layouts', [
+        'id'    => 'widgets-management/pages-uis',
+        'title' => 'tr{Page layouts}',
+        'url'   => 'html/webroot/widgets-management/page-layouts/component.php'
+    ]);
+
+    EWCore::register_form('ew/ui/apps/widgets/navs', 'feeders', [
+        'id'    => 'widgets-management/feeders',
+        'title' => 'tr{Feeders}',
+        'url'   => 'html/webroot/widgets-management/feeders/component.php'
+    ]);
+
     $this->add_listener('admin/api/content-management/contents-update', 'on_contents_update');
     $this->add_listener('admin/api/content-management/get-article', 'call_on_folder_get');
     $this->add_listener('admin/api/content-management/contents-read', 'on_contents_read');

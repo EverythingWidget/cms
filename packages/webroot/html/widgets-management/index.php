@@ -48,24 +48,7 @@ function script() {
 
 
       WidgetsManagementComponent.prototype.init = function () {
-
-        this.module.data.sections = [
-          {
-            title: "tr{Layouts}",
-            id: "widgets-management/uis-list",
-            url: "~webroot/html/widgets-management/layouts/component.php"
-          },
-          {
-            title: "tr{Page layouts}",
-            id: "widgets-management/pages-uis",
-            url: "~webroot/html/widgets-management/page-layouts/component.php"
-          }          ,
-          {
-            title: "tr{Feeders}",
-            id: "widgets-management/feeders",
-            url: "~webroot/html/widgets-management/feeders/component.php"
-          }
-        ];
+        this.module.data.sections = <?= EWCore::read_registry_as_json('ew/ui/apps/widgets/navs') ?>;        
 
         this.module.data.installModules = this.module.data.sections;
 

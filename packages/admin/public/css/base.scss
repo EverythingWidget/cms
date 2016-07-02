@@ -957,6 +957,15 @@ body.Admin {
   top: 94px;
   left: 94px;
   bottom: 0;
+  opacity: 0;
+  z-index:5;
+  transform:  translateY(-50px);
+  transform-origin: center top;
+
+  &.in {
+    opacity: 1;
+    transform: translateY(0%);
+  }
 
   & > .tabs-bar {
     z-index: 5;

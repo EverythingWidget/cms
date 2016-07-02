@@ -715,12 +715,11 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction) {
       } else {
         if (originElement.parent().is('system-float-menu')) {
           originElement.css({visibility: '', display: null});
-          console.log(originElement)
           originElement = [originElement.parent()[0].__xtag__.indicator]
         }
 
-        System.UI.body = $('#base-pane')[0];
-        System.UI.Animation.transform({
+        System.ui.body = $('#base-pane')[0];
+        System.ui.animations.transform({
           from: modalPane[0],
           to: originElement[0],
           evolve: false,
@@ -793,7 +792,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction) {
           from: originElement[0],
           to: modalPane[0],
           time: .7,
-          ease: "Power2.easeInOut",
+          ease: "Power3.easeInOut",
           fade: .3,
           flow: true,
           text: originElement.data("label"),
