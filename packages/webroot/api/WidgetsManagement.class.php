@@ -85,7 +85,6 @@ class WidgetsManagement extends \ew\Module {
         'api/create_widget',
         'api/update-uis',
         'api/ew_form_uis_tab',
-        //'html/ne-uis.php_see',
         'html/layouts/layout-form/component.php',
         'html/' . $this->get_index()
     ]);

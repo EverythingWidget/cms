@@ -712,8 +712,7 @@ UISForm.prototype.updateUIS = function (reload) {
   var lock = System.UI.lock({
     element: $.EW("getParentDialog", $("#ew-uis-editor"))[0],
     akcent: "loader center"
-  },
-          .5);
+  }, .5);
 
   var structure = JSON.stringify(self.createContentHeirarchy());
   var defaultUIS = $("#uis-default").is(":checked");
@@ -1006,7 +1005,7 @@ UISForm.prototype.widgetForm = function (widgetType, parentId, feederType) {
 
   self.currentDialog = d;
 
-  $.post("<?php echo EW_ROOT_URL; ?>~webroot/html/widgets-management/uis-prewidget-form.php", {
+  $.post("html/webroot/widgets-management/layouts/widget-form/component.php", {
     template: self.uisTemplate,
     widgetType: widgetType,
     feederType: feederType,
@@ -1036,7 +1035,7 @@ UISForm.prototype.editWidget = function (wId) {
 
   self.currentDialog = widgetFormDialog;
   var widget = self.getEditorItem(wId);
-  $.post("html/webroot/widgets-management/uis-prewidget-form.php", {
+  $.post("html/webroot/widgets-management/layouts/widget-form/component.php", {
     template: self.uisTemplate,
     widgetId: wId,
     widgetType: widget.attr("data-widget-type"),

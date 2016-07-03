@@ -44,7 +44,6 @@
     dp.append("<div class='header-pane row'><h1 id='' class='col-xs-12'> UIS List: Select UIS</h1></div>");
     dp.append($("<div id='' class='form-content no-footer' ></div>").append(this.table.container));
     this.table.read();
-    //$.post('/admin/WidgetsManagement/get_uis_list',function(data));
   };
 
   UisTab.prototype.setPageUIS = function (uisId) {

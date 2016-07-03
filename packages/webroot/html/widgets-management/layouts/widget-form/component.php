@@ -202,7 +202,7 @@ $panelId = $_REQUEST['panelId'];
     this.uisWidgetForm.html("").show();
     $("#widgets-list-form").hide();
     EW.lock(this.uisWidgetForm);
-    $.post('~webroot/html/widgets-management/uis-widget-form.php', {
+    $.post('~webroot/html/widgets-management/layouts/widget-form/form.php', {
       widgetType: widgetType,
       template: self.template,
       widgetParameters: JSON.stringify(self.widgetParameters)
