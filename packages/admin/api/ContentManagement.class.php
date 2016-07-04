@@ -34,9 +34,19 @@ class ContentManagement extends \ew\Module {
     require_once 'asset/DocumentComponent.class.php';
     require_once 'asset/LanguageComponent.class.php';
 
+    EWCore::register_form('ew/ui/components/link-chooser', "custom-url", [
+        "title"   => "URL",
+        "content" => \ew\ResourceUtility::get_view('admin/html/content-management/link-chooser/url-tab.php')
+    ]);
+
     ob_start();
-    include EW_PACKAGES_DIR . '/admin/html/content-management/link-chooser-document.php';
+    include EW_PACKAGES_DIR . '/admin/html/content-management/link-chooser/link-chooser-document.php';
     $link_chooser_document = ob_get_clean();
+
+    EWCore::register_form("ew/ui/components/link-chooser", "content-chooser", [
+        "title"   => "Contents",
+        "content" => $link_chooser_document
+    ]);
 
     $ew_tags_table_install = EWCore::create_table('ew_tags', [
                 'id'            => 'BIGINT(20) AUTO_INCREMENT PRIMARY KEY',
@@ -74,18 +84,14 @@ class ContentManagement extends \ew\Module {
       include EW_PACKAGES_DIR . '/admin/html/content-management/link-chooser-document.php';
       $link_chooser_media = ob_get_clean(); */
 
-    EWCore::register_form("ew/ui/components/link-chooser", "content-chooser", [
-        "title"   => "Contents",
-        "content" => $link_chooser_document
-    ]);
 
     /* EWCore::register_form("ew/ui/components/link-chooser", "media-chooser", ["title"   => "Media",
       "content" => $link_chooser_media]); */
 
-    EWCore::register_resource("images", [
-        $this,
-        "image_loader"
-    ]);
+//    EWCore::register_resource("images", [
+//        $this,
+//        "image_loader"
+//    ]);
 
     $this->register_content_component("document", [
         "title"       => "Document",

@@ -1,25 +1,9 @@
 <?php
 $data = $_REQUEST["data"];
 
-function custom_url_tab() {
-  ob_start();
-  include 'link-chooser/url-tab.php';
-  return ob_get_clean();
-}
-
-/* function custom_widget_feeder_tab() {
-  ob_start();
-  include 'link-chooser/widget-feeder-tab.php';
-  return ob_get_clean();
-  } */
-
-EWCore::register_form("ew/ui/components/link-chooser", "custom-url", [
-    "title"   => "URL",
-    "content" => custom_url_tab()
-]);
-
 $tabs = EWCore::read_registry("ew/ui/components/link-chooser");
 ?>
+
 <div class="header-pane tabs-bar">
   <h1 id="form-title">
     tr{Link Chooser}
