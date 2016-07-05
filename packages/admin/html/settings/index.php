@@ -25,11 +25,11 @@ function sidebar() {
 function script() {
   ob_start();
   ?>
-  <script  >
+  <import name="test_file_2" from="html/admin/content-management/test-file-2.html"/>
+  <script>
+    
     (function () {
-      var tt = Scope.import('html/admin/content-management/test-file.php');
-      console.log('settings->', tt);
-
+      console.log(Scope.imports['test_file_2'].call());
       System.state("settings", function (state) {
         state.type = "app";
         state.onInit = function (nav) {
@@ -65,6 +65,7 @@ function script() {
         return this;
       });
     })();
+    
   </script>
   <?php
   return ob_get_clean();

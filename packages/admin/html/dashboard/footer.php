@@ -49,8 +49,8 @@
           EW.oldApp = app;
           System.services.app_service.on_load(EW.apps[app]);
 
-          System.loadModule(EW.apps[app], function (mod) {
-            System.services.app_service.on_loaded(mod, mod.html);
+          System.loadModule(EW.apps[app], function (stateHandler) {
+            System.services.app_service.on_loaded(stateHandler, stateHandler.html);
           });
           return;
         }
@@ -77,7 +77,7 @@
           System.ui.components.mainContent.empty();
           System.abortAllRequests();
 
-          System.loadModule(sectionData, function (mod, data) {
+          System.loadModule(sectionData, function (stateHandler, data) {
             $("#action-bar-items").find("button,div").remove();
 
             if (!System.getHashNav("app")[0]) {
@@ -86,7 +86,7 @@
 
 //            System.ui.components.mainContent.css("opacity", 0);
             System.ui.components.mainContent.html(data);
-            mod.start();
+            stateHandler.start();
             if (anim) {
               anim.pause();
             }

@@ -346,17 +346,17 @@
 //          //return;
 //        }
 
-        var filtered = System.parseContent(response);
+        var parsedContent = System.parseContent(response, module);
 
         setTimeout(function () {
-          compile(filtered);
+          compile(parsedContent);
         }, 1);
       });
 
-      function compile(filtered) {
+      function compile(parsedContent) {
         //if (filtered.script) {
         var scopeUIViews = {};
-        Array.prototype.forEach.call(filtered.uiView, function (item) {
+        Array.prototype.forEach.call(parsedContent.uiView, function (item) {
           var key = item.getAttribute('name').replace(/([A-Z])|(\-)|(\s)/g, function ($1) {
             return "_" + (/[A-Z]/.test($1) ? $1.toLowerCase() : '');
           });
@@ -368,41 +368,44 @@
           __moduleId: "system/" + module.id,
           parentScope: module.scope || null,
           uiViews: scopeUIViews,
-          ui: filtered.html,
+          ui: parsedContent.html,
           imports: {}
         };
-        var imports = [];
+
+//        console.log(parsedContent.imports);
+        var imports = Array.prototype.slice.call(parsedContent.imports, 0);
         //var importsOfScope = {};
-        var scriptContent = filtered.script || '';
+//        var scriptContent = parsedContent.script || '';
 
         // extract imports from the source code
-        scriptContent = scriptContent.replace(/\/\*[\s\S]*?\*\/|([^:]|^)\/\/.*$/gm, '');
-        filtered.script = scriptContent.replace(/Scope\.import\(['|"](.*)['|"]\)\;/gm, function (match, path) {
-          var query = path.match(/([\S]+)/gm);
-          imports.push({
-            url: query[query.length - 1],
-            fresh: query.indexOf('new') !== -1
-          });
-
-          return "Scope.imports['" + query[query.length - 1] + "']";
-        });
+//        scriptContent = scriptContent.replace(/\/\*[\s\S]*?\*\/|([^:]|^)\/\/.*$/gm, '');
+//        parsedContent.script = scriptContent.replace(/Scope\.import\(['|"](.*)['|"]\)\;/gm, function (match, path) {
+//          var query = path.match(/([\S]+)/gm);
+//          imports.push({
+//            url: query[query.length - 1],
+//            fresh: query.indexOf('new') !== -1
+//          });
+//
+//          return "Scope.imports['" + query[query.length - 1] + "']";
+//        });
 
         //console.log('Libraries to be imported: ', imports);
 
         if (imports.length) {
           imports.forEach(function (item) {
-            if (importedLibraries[item.url] && !item.fresh) {
-              scope.imports[item.url] = importedLibraries[item.url];
-              doneImporting(module, scope, imports, filtered, scope.imports);
+            if (importedLibraries[item.from] && !item.fresh) {
+//              scope.imports[item.name] = importedLibraries[item.from].module;
+              doneImporting(module, scope, imports, parsedContent);
             } else {
               System.loadModule({
                 id: (new Date()).valueOf() + '-' + performance.now(),
-                url: item.url,
+                name: item.name,
+                url: item.from,
                 fresh: item.fresh,
                 scope: scope,
                 invokers: invokers
               }, function (loaded) {
-                doneImporting(module, scope, imports, filtered, loaded.scope.imports);
+                doneImporting(module, scope, imports, parsedContent);
               });
             }
           });
@@ -410,19 +413,19 @@
           return false;
         }
 
-        moduleLoaded(module, scope, filtered, importedLibraries);
+        moduleLoaded(module, scope, parsedContent);
       }
 
-      function doneImporting(module, scope, imports, filtered, importsOfScope) {
+      function doneImporting(module, scope, imports, filtered) {
         imports.splice(imports.indexOf(module.url), 1);
 
         if (imports.length === 0) {
           // This will load the original initilizer
-          moduleLoaded(module, scope, filtered, importsOfScope);
+          moduleLoaded(module, scope, filtered);
         }
       }
 
-      function moduleLoaded(module, scope, filtered, importsOfScope) {
+      function moduleLoaded(module, scope, filtered) {
 //        if (!module.isDependency && !System.modules["system/" + module.id]) {
 //          //alert("Invalid module: " + mod.id);
 //          throw new Error('Could not find module: system/' + module.id + ', url: ' + module.url);
@@ -430,17 +433,27 @@
 //        }
 
         if (importedLibraries[module.url] && !module.fresh) {
-          scope.imports[module.url] = importedLibraries[module.url];
+          scope.imports[module.name] = importedLibraries[module.url].module;
         } else {
-          scope.imports = importsOfScope;
+
+          for (var item in importedLibraries) {
+            if (importedLibraries.hasOwnProperty(item)) {
+              var asset = importedLibraries[item];
+              scope.imports[asset.name] = asset.module;
+            }
+          }
+
           (new Function('Scope', filtered.script)).call(null, scope);
 
           if (!importedLibraries[module.url]) {
-            importedLibraries[module.url] = scope.export;
+            importedLibraries[module.url] = {
+              name: module.name || module.url,
+              module: scope.export
+            };
           } else if (module.fresh) {
-            scope.imports[module.url] = scope.export;
+            importedLibraries[module.url].module = scope.export;
           } else {
-            scope.imports[module.url] = importedLibraries[module.url];
+            scope.imports[module.name] = importedLibraries[module.url].module;
           }
 
           delete scope.export;
@@ -462,13 +475,34 @@
         delete System.onLoadQueue["system/" + module.id];
       }
     },
-    parseContent: function (raw) {
+    parseContent: function (raw, module) {
       var scripts = null;
+      var imports = [];
+      if (!System.utility.isHTML(raw)) {
+        console.log('Resource is not a valid html file:', module.url);
+        
+        return {
+          html: [],
+          imports: [],
+          uiView: [],
+          script: []
+        };
+      }
       var raw = $(raw);
       //var scripts = raw.filter("script").remove();
       var html = raw.filter(function (i, e) {
-        if (e.tagName && e.tagName.toLowerCase() === "script") {
+        if (e.tagName && e.tagName.toLowerCase() === 'script') {
           scripts = e.innerHTML;
+          return false;
+        }
+
+        if (e.tagName && e.tagName.toLowerCase() === 'import') {
+          imports.push({
+            name: e.getAttribute('name'),
+            from: e.getAttribute('from'),
+            fresh: e.hasAttribute('fresh')
+          });
+
           return false;
         }
 
@@ -489,6 +523,7 @@
 
       return {
         html: html,
+        imports: imports,
         uiView: uiView,
         script: scripts
       };
@@ -606,6 +641,15 @@
       }
 
       return obj[props[i]];
+    },
+    isHTML: function (str) {
+      var element = document.createElement('div');
+      element.innerHTML = str;
+      for (var c = element.childNodes, i = c.length; i--; ) {
+        if (c[i].nodeType === 1)
+          return true;
+      }
+      return false;
     }
   };
 

@@ -38,11 +38,11 @@
 
   </div>
 </system-ui-view>
-
+<import name="test_file_2" from="html/admin/content-management/test-file-2.html"/>
 <script data-name="documents">
   (function () {
-//    var tt = Scope.import('new html/admin/content-management/test-file.php');
-    
+    console.log(Scope.imports['test_file_2'].call());
+
     function DocumentsStateHandler(state) {
       var component = this;
       this.state = state;
@@ -117,7 +117,7 @@
           });
           component.state.loadModule({
             id: 'forms/test-form',
-            url: '~admin/html/content-management/test-file.php'
+            url: 'html/admin/content-management/test-file.php'
           }, function (module) {
             modal.html(module.html);
             module.start();
@@ -283,13 +283,13 @@
         }
       }).hide();
 
-//      this.testBtn = EW.addActionButton({
-//        text: "tr{test form}",
-//        parent: System.UI.components.mainFloatMenu,
-//        handler: function () {
-//          component.state.setParam('component', 'forms/test-form');
-//        }
-//      });
+      this.testBtn = EW.addActionButton({
+        text: "tr{test form}",
+        parent: System.UI.components.mainFloatMenu,
+        handler: function () {
+          component.state.setParam('component', 'forms/test-form');
+        }
+      });
 
       $(document).off("article-list.refresh").on("article-list.refresh", function (e, eventData) {
         component.listDocuments();

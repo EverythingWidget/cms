@@ -7,6 +7,7 @@
 
 echo "<p>this is the test file</p>";
 ?>
+<import name="test_file_2" from="html/admin/content-management/test-file-2.html" />
 <script>
   (function () {
     //var test_file_2 = Scope.import('html/admin/content-management/test-file-2.php');
