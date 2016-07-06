@@ -38,11 +38,9 @@
 
   </div>
 </system-ui-view>
-<import name="test_file_2" from="html/admin/content-management/test-file-2.html"/>
-<script data-name="documents">
-  (function () {
-    console.log(Scope.imports['test_file_2'].call());
 
+<script>
+  (function () {
     function DocumentsStateHandler(state) {
       var component = this;
       this.state = state;

@@ -17,9 +17,23 @@ class Settings extends \ew\Module {
     \EWCore::register_app("settings", $this);
     include_once 'models/ew_settings.php';
 
-    \EWCore::register_form("ew/ui/settings/general", "ew-admin-settings", ["title"   => "EW Admin",
-        "content" => "",
-        "url"     => "~admin/html/settings/settings-index.php"]);
+    \EWCore::register_form('ew/ui/settings/general', 'ew-admin-settings', [
+        'title'   => "EW Admin",
+        'content' => '',
+        'url'     => 'html/admin/settings/settings-index.php'
+    ]);
+
+    \EWCore::register_form('ew/ui/apps/settings/navs', 'general', [
+        'id'    => 'settings/general',
+        'title' => 'tr{General}',
+        'url'   => 'html/admin/settings/general.php'
+    ]);
+
+    \EWCore::register_form('ew/ui/apps/settings/navs', 'media', [
+        'id'    => 'settings/preference',
+        'title' => 'tr{Preference}',
+        'url'   => 'html/admin/settings/preference.php'
+    ]);
   }
 
   protected function install_permissions() {
@@ -172,53 +186,53 @@ class Settings extends \ew\Module {
     echo EW_ROOT_DIR . '\n';
 
     //download zip file onto your server in a temporary directory
-    /*try {
+    /* try {
       $archive = $updater->downloadVersion('v0.9.2', $tempDir);
       echo $archive . '\n';
-    }
-    catch (PguRemoteException $e) {
+      }
+      catch (PguRemoteException $e) {
       die($e);
       //couldn't download latest version
-    }
+      }
 
-    //extract zip file to the same temporary directory
-    try {
+      //extract zip file to the same temporary directory
+      try {
 
       $updater->extractArchive($archive);
       unlink($archive);
-    }
-    catch (PguRemoteException $e) {
+      }
+      catch (PguRemoteException $e) {
       die($e);
       //the zip is corrupted or you don't have persmission to write to the extract location
-    }
+      }
 
-    //BACKUP: you could do a backup here
-    //get a description of the update to show to your user
-    //$updateTitle = $updater->getTitle($nextVersion);
-    //$updateDescription = $updater->getDescription($nextVersion);
+      //BACKUP: you could do a backup here
+      //get a description of the update to show to your user
+      //$updateTitle = $updater->getTitle($nextVersion);
+      //$updateDescription = $updater->getDescription($nextVersion);
 
-    try {
+      try {
       $update_folder_name = "";
       $scanned_directory = array_values(array_diff(scandir($tempDir), array('..', '.')));
       var_dump($scanned_directory);
       $update_folder_name = $scanned_directory[0];
       //note that $tempDir, $extractDir and $root were defined in the previous script
       $result = $updater->moveFilesRecursive(
-              $tempDir . DIRECTORY_SEPARATOR . $update_folder_name, $root
-              , [
-          EW_ROOT_DIR . 'config'
+      $tempDir . DIRECTORY_SEPARATOR . $update_folder_name, $root
+      , [
+      EW_ROOT_DIR . 'config'
       ]);
       rmdir($tempDir);
-    }
-    catch (PguOverwriteException $e) {
+      }
+      catch (PguOverwriteException $e) {
       die($e);
       //couldn't overwrite existing installation
       // /!\ WARNING /!\ You should restore your backup here!
-    }*/
-    /*$host = $_SERVER['HTTP_HOST'];
-    $uri = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
-    $extra = '~admin/';
-    header("Location: http://$host$uri/$extra");*/
+      } */
+    /* $host = $_SERVER['HTTP_HOST'];
+      $uri = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+      $extra = '~admin/';
+      header("Location: http://$host$uri/$extra"); */
   }
 
   //put your code here

@@ -4,49 +4,16 @@
  * and open the template in the editor.
  */
 
-function sidebar() {
-  ob_start();
-  ?>
-  <ul>
-    <li>
-      <a rel="ajax" data-default="true" data-ew-nav="general" href="~admin/settings/general.php">General</a>
-    </li>     
-    <li>
-      <a rel="ajax" data-ew-nav="apps-plugins" href="~admin/settings/apps-plugins.php">Apps & Plugins</a>
-    </li>     
-    <li>
-      <a rel="ajax" data-ew-nav="preference" href="~admin/settings/perference.php">Preference</a>
-    </li>     
-  </ul>
-  <?php
-  return ob_get_clean();
-}
-
 function script() {
   ob_start();
   ?>
-  <import name="test_file_2" from="html/admin/content-management/test-file-2.html"/>
   <script>
-    
     (function () {
-      console.log(Scope.imports['test_file_2'].call());
-      System.state("settings", function (state) {
-        state.type = "app";
+      System.state('settings', function (state) {
+        state.type = 'app';
         state.onInit = function (nav) {
-
-          this.data.sections = [
-            {
-              title: "tr{General}",
-              id: "settings/general",
-              url: "~admin/html/settings/general.php"
-            },
-            {
-              title: "tr{Preference}",
-              id: "settings/preference",
-              url: "~admin/html/settings/preference.php"
-            }
-          ];
-
+          var stateHandler = this;
+          stateHandler.data.sections = <?= EWCore::read_registry_as_json('ew/ui/apps/settings/navs') ?>;
         };
 
         state.onStart = function () {
@@ -65,13 +32,11 @@ function script() {
         return this;
       });
     })();
-    
+
   </script>
   <?php
   return ob_get_clean();
 }
 
-//EWCore::register_form("ew-section-main-form", "sidebar", ["content" => sidebar()]);
-//EWCore::register_form("ew-section-main-form", "content", ["content" => content()]);
 echo admin\AppsManagement::create_section_main_form(["script" => script()]);
 
