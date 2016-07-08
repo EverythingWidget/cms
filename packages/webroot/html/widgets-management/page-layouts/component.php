@@ -16,8 +16,8 @@ $default_page = webroot\WidgetsManagement::get_path_uis("@DEFAULT");
 </div>
 <div class="no-footer tab-content">
   <div id="uis_list" class="tab-pane active static-block col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 col-sm-12 col-sm-offset-0 col-xs-12">
-
   </div> 
+
   <div class="tab-pane col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 col-sm-12 col-sm-offset-0 col-xs-12" id="pages-uis">
     <form id="apps-page-uis" onsubmit="return false;">         
       <div class="box box-white z-index-1">
@@ -202,10 +202,9 @@ if ($path_uis_list) {
     $.post("<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/set-uis", {
       path: "@DEFAULT",
       uisId: uisId.data("field-id")
-    },
-            function (data) {
-              $("body").EW().notify(data).show();
-            }, "json");
+    }, function (data) {
+      $("body").EW().notify(data).show();
+    }, "json");
   };
 
   PageUIS.prototype.setPageUIS = function (uisId) {
@@ -228,16 +227,24 @@ if ($path_uis_list) {
   var pageUIS;
 
   (function () {
-    System.state("widgets-management/pages-uis", function (state) {
-      state.type = "appSection";
-      state.onInit = function () {
-
+    System.entity('state-handlers/page-layouts', function (state) {
+      var handler = {
+        tab: 'all-layouts'
       };
+//      state.type = "appSection";
+      
+      state.bind('init', function () {
+      });
 
-      state.onStart = function () {
+      state.bind('start', function () {
         pageUIS = new PageUIS();
         pageUIS.allUISList.read();
-      };
+      });
+    });
+
+    System.state("widgets-management/pages-uis", function (state) {
+      var pageLayoutsStateHandler = System.entity('state-handlers/page-layouts');
+      new pageLayoutsStateHandler(state);
     });
   })();
 </script>

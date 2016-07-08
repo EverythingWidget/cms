@@ -958,7 +958,7 @@ body.Admin {
   left: 94px;
   bottom: 0;
   opacity: 0;
-  z-index:5;
+  z-index: 1;
   transform:  translateY(-50px);
   transform-origin: center top;
 
@@ -967,10 +967,13 @@ body.Admin {
     transform: translateY(0%);
   }
 
+  &.tabs-bar-on {
+    top: 144px;
+  }
+
   & > .tabs-bar {
-    z-index: 5;
     position: relative;
-    box-shadow: 0 1px 3px 0px rgba(0,0,0,0.06),0 0px 5px rgba(0,0,0,0.1); 
+    box-shadow: 0 1px 2px 0px rgba(0,0,0,0.06); 
   }
 
   & > .tab-content {
@@ -1235,6 +1238,14 @@ a.apps-menu-link:hover {
   width: 100%;
   z-index: 5;
   box-shadow: 0 1px 3px 0px rgba(0,0,0,0.06),0 0px 5px rgba(0,0,0,0.1);
+
+  &.tabs-bar-on {
+    height: 144px;
+  }
+
+  .tabs-bar {
+    margin-left: 94px;
+  }
 }
 
 .app-bar.in {
@@ -3641,8 +3652,12 @@ inline-dialog{
   top: 69px
 }
 
+.priority-1 {
+  right: 180px;
+}
+
 .priority-2 {
-  right: 230px;
+  right: 245px;
 }
 
 .grid-list {

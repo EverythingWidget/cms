@@ -37,7 +37,7 @@ if (!isset($_SESSION['login'])) {
         </div>
       </div>
 
-      <div id="app-bar" class="app-bar">
+      <div id="app-bar" class="app-bar tabs-bar-on">
         <div id="sections-menu-title" class="app-bar-title">
           tr{Documents}
         </div>
@@ -52,6 +52,18 @@ if (!isset($_SESSION['login'])) {
         <div class="action-pane" >
           <div id="action-bar-items" class="actions-bar action-bar-items" style="display:block;float:none;">
           </div>
+        </div>
+
+        <div class="tabs-bar">
+          <ul class="nav nav-pills nav-black-text">
+            <li class="active">
+              <a href="#uis_list" data-toggle="tab">Tab 1</a>
+            </li>
+
+            <li>
+              <a href="#pages-uis" data-toggle="tab">Tab 2</a>
+            </li>
+          </ul>
         </div>
       </div>
 

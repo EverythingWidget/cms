@@ -26,7 +26,7 @@
 
     SettingsStateHandler.prototype.start = function () {
       var component = this;
-      this.selectMediaAction = EW.addActionButton({
+      this.saveSettings = EW.addActionButton({
         text: "",
         handler: function () {
           component.saveAppSetings([
@@ -37,7 +37,20 @@
         parent: System.UI.components.appMainActions
       });
 
-      this.loadAppsGeneralSettings(<?= json_encode(EWCore::read_registry("ew/ui/settings/general")) ?>);
+      this.refresh = EW.addActionButton({
+        text: 'R',
+        handler: function () {
+          component.loadAppsGeneralSettings(<?= json_encode(EWCore::read_registry("ew/ui/settings/general")) ?>);
+        },
+        class: "btn-float priority-1 btn-primary icon-refresh",
+        parent: System.UI.components.appMainActions
+      });
+
+      if (!component.appsLoaded) {
+        component.loadAppsGeneralSettings(<?= json_encode(EWCore::read_registry("ew/ui/settings/general")) ?>);
+      }
+
+      component.appsLoaded = true;
     };
 
     SettingsStateHandler.prototype.loadAppsGeneralSettings = function (apps) {
