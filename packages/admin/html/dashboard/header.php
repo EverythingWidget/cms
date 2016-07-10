@@ -45,7 +45,7 @@
 <script src="public/rm/js/vue/vue.js"></script>
 <script src="~admin/public/js/lib/vue-animations.js"></script>
 <script src="~rm/public/js/gsap/TweenLite.min.js"></script>
-<script src="~rm/public/js/gsap/TweenLite.min.js"></script>
+<script src="~rm/public/js/gsap/TimelineLite.min.js"></script>
 <script src="~admin/public/js/lib/system.js"></script>  
 <script src="~admin/public/js/lib/system-ui.js" ></script>   
 <script src="~admin/public/js/lib/system-module.js"></script>  

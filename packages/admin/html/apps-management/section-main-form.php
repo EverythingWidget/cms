@@ -5,12 +5,12 @@ if (isset($app_main_form) && $form_config) {
 }
 ?>
 
-<div id="main-content" class="tabs-bar-on col-xs-12" role="main">
+
   <?php
   if ($app_main_form['content']) {
     echo $app_main_form['content']['content'];
   }
   ?>
-</div>
+
 <?php
 echo $app_main_form["script"];

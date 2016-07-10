@@ -16,15 +16,17 @@
         EW.selectedApp = $(".apps-menu-link[data-app='" + app.id + "']").addClass("selected")[0];
 
         System.ui.components.sectionsMenuTitle.addClass("inline-loader");
-        if (EW.selectedSection)
+        if (EW.selectedSection) {
           System.ui.utility.addClass(EW.selectedSection, "inline-loader");
+        }
 
         $("#action-bar-items").empty();
-        $("#main-content").remove();
+        System.entity('ui/main-content').show = false;
+        //$("#main-content").remove();
       },
       on_loaded: function (app, html) {
         $("#app-content").append(html);
-        System.ui.components.mainContent = $("#main-content");
+        //System.ui.components.mainContent = $("#main-content");
 
 
         if (app.type === "app"/* && app.id === "system/" + System.getHashParam("app")*/) {
@@ -64,10 +66,13 @@
           var sectionData = System.ui.components.sectionsMenuList[0].data[element.dataset.index];
           if (!sectionData/* || sectionData.id === EW.oldSectionId*/)
             return;
+
           EW.oldSectionId = sectionData.id;
           System.ui.components.sectionsMenuTitle.text(sectionData.title);
           System.ui.components.sectionsMenuTitle.addClass("inline-loader");
           System.ui.utility.addClass(element, "inline-loader");
+
+          System.entity('ui/app-bar').tabs = null;
 
           $("#action-bar-items").find("button,div").remove();
           System.ui.components.appMainActions.empty();
@@ -85,6 +90,7 @@
             }
 
 //            System.ui.components.mainContent.css("opacity", 0);
+            System.entity('ui/main-content').show = false;
             System.ui.components.mainContent.html(data);
             stateHandler.start();
             if (anim) {
@@ -99,15 +105,18 @@
 
             System.ui.components.sectionsMenuTitle.removeClass("inline-loader");
             System.ui.utility.removeClass(element, "inline-loader");
-
-            anim = TweenLite.fromTo(System.ui.components.mainContent[0], .5, {              
-              className: '-=in'
-            }, {
-              className:'+=in',
-              ease: "Power2.easeOut",
-              onComplete: function () {
-              }
+            Vue.nextTick(function () {
+              System.entity('ui/main-content').show = true;
             });
+
+//            anim = TweenLite.fromTo(System.ui.components.mainContent[0], .5, {
+//              className: '-=in'
+//            }, {
+//              className: '+=in',
+//              ease: "Power2.easeOut",
+//              onComplete: function () {
+//              }
+//            });
           });
         }
       }
@@ -552,6 +561,46 @@
         apps: installModules
       }
     });
+
+    var appBarVue = new Vue({
+      el: '#app-bar',
+      data: {
+        tabs: null
+      },
+      computed: {
+        styleClass: function () {
+          var classes = [];
+
+          if (this.tabs && this.tabs.length) {
+            classes.push('tabs-bar-on');
+          }
+
+          return classes.join(' ');
+        }
+      }
+    });
+
+    System.entity('ui/app-bar', appBarVue);
+
+    var mainContentVue = new Vue({
+      el: '#main-content',
+      data: {
+        show: false
+      },
+      computed: {
+        styleClass: function () {
+          var classes = [];
+
+          if (appBarVue.tabs && appBarVue.tabs.length) {
+            classes.push('tabs-bar-on');
+          }
+
+          return classes.join(' ');
+        }
+      }
+    });
+
+    System.entity('ui/main-content', mainContentVue);
 
     $.each(installModules, function (key, val) {
       val.file = "index.php";

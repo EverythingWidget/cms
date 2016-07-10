@@ -943,6 +943,7 @@ body.Admin {
   left: 0;
   right: 0;
   z-index: 0;
+  perspective: 5000px;
 }
 
 #main-content {
@@ -959,13 +960,15 @@ body.Admin {
   bottom: 0;
   opacity: 0;
   z-index: 1;
+  perspective: 600px;
   transform:  translateY(-50px);
   transform-origin: center top;
+  
 
-  &.in {
+/*  &.in {
     opacity: 1;
     transform: translateY(0%);
-  }
+  }*/
 
   &.tabs-bar-on {
     top: 144px;
@@ -1236,11 +1239,14 @@ a.apps-menu-link:hover {
   position: absolute;
   top: 0;
   width: 100%;
+  overflow: hidden;
   z-index: 5;
   box-shadow: 0 1px 3px 0px rgba(0,0,0,0.06),0 0px 5px rgba(0,0,0,0.1);
+  transition: all .3s ease-out;
 
   &.tabs-bar-on {
     height: 144px;
+
   }
 
   .tabs-bar {

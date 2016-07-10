@@ -33,7 +33,7 @@
       // handle cancellation
     }
   });
-  
+
   Vue.transition('slide-vertical', {
     enter: function (element, done) {
       element.className += ' trans-slide-vertical';
@@ -54,4 +54,28 @@
       });
     }
   });
+
+  Vue.transition('in', {
+    css: false,
+    enter: function (element, done) {
+      TweenLite.fromTo(element, .5, {
+        opacity: 0,
+        y: 150,
+        rotationX: -35
+      }, {
+        opacity: 1,
+        y: 0,
+        rotationX: 0,
+        ease: "Power1.easeInOut",
+        onComplete: function () {
+          done();
+        }
+      });
+    },
+    leave: function (element, done) {
+      done();
+    }
+  });
+
+
 })();

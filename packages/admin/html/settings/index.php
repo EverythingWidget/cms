@@ -17,6 +17,7 @@ function script() {
         };
 
         state.onStart = function () {
+          
         };
 
         state.on('app', function (p, section) {

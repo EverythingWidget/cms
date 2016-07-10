@@ -51,6 +51,15 @@
       }
 
       component.appsLoaded = true;
+
+      System.entity('ui/app-bar').tabs = [
+        {
+          title: 'Tab 1'
+        },
+        {
+          title: 'Tab 2'
+        }
+      ];
     };
 
     SettingsStateHandler.prototype.loadAppsGeneralSettings = function (apps) {

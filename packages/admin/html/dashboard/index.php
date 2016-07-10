@@ -37,7 +37,7 @@ if (!isset($_SESSION['login'])) {
         </div>
       </div>
 
-      <div id="app-bar" class="app-bar tabs-bar-on">
+      <div id="app-bar" class="app-bar" v-bind:class="styleClass">
         <div id="sections-menu-title" class="app-bar-title">
           tr{Documents}
         </div>
@@ -54,14 +54,10 @@ if (!isset($_SESSION['login'])) {
           </div>
         </div>
 
-        <div class="tabs-bar">
+        <div id="tabs-menu" class="tabs-bar" v-if="tabs && tabs.length">
           <ul class="nav nav-pills nav-black-text">
-            <li class="active">
-              <a href="#uis_list" data-toggle="tab">Tab 1</a>
-            </li>
-
-            <li>
-              <a href="#pages-uis" data-toggle="tab">Tab 2</a>
+            <li v-for="tab in tabs">
+              <a href="#uis_list">{{ tab.title }}</a>
             </li>
           </ul>
         </div>
@@ -72,9 +68,12 @@ if (!isset($_SESSION['login'])) {
       <system-float-menu id="main-float-menu" class="ew-float-menu">          
       </system-float-menu>
 
-      <div id="home-pane" class="home-pane" >
-      </div>
-      <?php ?>
+      <!--<div id="home-pane" class="home-pane"></div>-->
+      
+      <div id="main-content" class="col-xs-12 in" 
+           v-show="show" 
+           v-bind:class="styleClass" 
+           transition="in"></div>
     </div>
 
     <div id="notifications-panel"></div>   
