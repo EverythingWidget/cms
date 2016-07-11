@@ -951,9 +951,11 @@ body.Admin {
   min-width: 320px;
   width: calc(100% - 94px);
   position: absolute;
-  overflow: auto;
+  overflow: scroll;
+  overflow-x: hidden;
   padding-left: 0px;
   padding-right: 0px;
+  margin-right: -14px;
   display: block;
   top: 94px;
   left: 94px;
@@ -963,12 +965,12 @@ body.Admin {
   perspective: 600px;
   transform:  translateY(-50px);
   transform-origin: center top;
-  
 
-/*  &.in {
-    opacity: 1;
-    transform: translateY(0%);
-  }*/
+
+  /*  &.in {
+      opacity: 1;
+      transform: translateY(0%);
+    }*/
 
   &.tabs-bar-on {
     top: 144px;
