@@ -65,7 +65,7 @@
   SystemUI.prototype.utility.removeClass = function (el, className) {
     if (!el)
       return;
-    
+
     if (el.classList)
       el.classList.remove(className);
     else
@@ -390,32 +390,16 @@
       //var sourceStyle = window.getComputedStyle(conf.from, null);
       var ds = window.getComputedStyle(conf.area, null);
       var radius = distRect.width > distRect.height ? distRect.width : distRect.height;
-
+      radius = 100;
       tween.set(wrapper, {
         position: 'absolute',
         overflow: 'hidden',
         width: '100%',
         height: '100%',
         top: 0,
-        left: 0
+        left: 0,
+        backgroundColor: 'rgba(255,255,255,0)'
       });
-//      wrapper.style.position = "absolute";
-//      /*wrapper.style.textAlign = "center";
-//       wrapper.style.fontSize = "3em";
-//       wrapper.style.lineHeight = radius + 'px';
-//       wrapper.style.whiteSpace = "nowrap";*/
-//      //wrapper.style.zIndex = (ds.zIndex === "0" || ds.zIndex === "auto") ? 1 : ds.zIndex;
-//      wrapper.style.zIndex = "";
-//      wrapper.style.overflow = "hidden";
-//      //wrapper.style.width = distRect.width + "px";
-//      //wrapper.style.height = distRect.height + "px";
-//      wrapper.style.width = "100%";
-//      wrapper.style.height = "100%";
-//      //wrapper.style.top = distRect.top + "px";
-//      //wrapper.style.left = distRect.left + "px";
-//      wrapper.style.top = "0px";
-//      wrapper.style.left = "0px";
-      //wrapper.style.borderRadius = ds.borderRadius;
 
       blast.style.position = "absolute";
       blast.style.backgroundColor = (ds.backgroundColor.indexOf("rgba") !== -1 ||
@@ -425,13 +409,14 @@
         blast.style.backgroundColor = conf.color;
       }
       blast.style.width = blast.style.height = radius + "px";
-      blast.style.borderRadius = "50%";
+      blast.style.borderRadius = (radius / 2) + 'px';
       blast.style.zIndex = 1;
 
       //var initScale = sourceRect.width < sourceRect.height ? sourceRect.width / distRect.width : sourceRect.height / distRect.height;
       blast.style.transform = "scale(0)";
       blast.style.top = (sourceRect.top + (sourceRect.height / 2)) - (radius / 2) - distRect.top + "px";
       blast.style.left = (sourceRect.left + (sourceRect.width / 2)) - (radius / 2) - distRect.left + "px";
+
 
       if (conf.text) {
         blast.innerHTML = conf.text;
@@ -448,28 +433,30 @@
       //wrapper
       conf.area.style.position = "relative";
       conf.area.appendChild(wrapper);
-      if (conf.from)
+      if (conf.from) {
         tween.to(conf.from, t / 2, {
           opacity: 0
         });
+      }
+
+      tween.to(wrapper, t / 2, {
+        backgroundColor: '#fff'
+      });
 
       tween.to(blast, t, {
-        transform: "scale(1.42)",
-        top: (distRect.height - radius) / 2,
-        left: (distRect.width - radius) / 2,
+        scale: 35,
+        //backgroundColor: conf.toColor || null,
+        opacity: 0,
         //transformOrigin: "50% 50%",
         //top: (sourceRect.top-radius)/2,
         //left: (sourceRect.left-radius)/2,
-        ease: "Power2.easeInOut",
+        ease: "Power0.easeInOut",
         onComplete: function () {
-          //conf.area.style.position = "";
-          //conf.to.style.visibility = "";
-          //conf.to.style.opacity = "1";
-          //conf.from.style.transition = "";
+          blast.style.border = 'none';
           if (conf.fade > 0) {
             tween.to(wrapper, conf.fade, {
               opacity: 0,
-              ease: "Power0.easeNone",
+              ease: "Power0.easeInOut",
               onComplete: function () {
                 conf.area.style.position = "";
                 wrapper.parentNode.removeChild(wrapper);
@@ -479,8 +466,34 @@
             wrapper.parentNode.removeChild(wrapper);
           }
 
-          if (conf.onComplete)
-            conf.onComplete();
+          conf.area.style.height = 'auto';
+
+          setTimeout(function () {
+            var oldHeight = conf.area.offsetHeight;
+
+            if (conf.onComplete) {
+              conf.onComplete();
+            }
+
+            
+            setTimeout(function () {
+              conf.area.style.height = 'auto';
+
+              var newHeight = conf.area.scrollHeight;
+
+              //conf.area.style.height = oldHeight + 'px';
+
+              tween.fromTo(conf.area, .3, {
+                height: oldHeight
+              }, {
+                height: newHeight,
+                ease: 'Power1.easeInOut',
+                onComplete: function () {
+                  conf.area.style.height = 'auto';
+                }
+              });
+            }, 1);
+          }, 1);
         }
       });
     },

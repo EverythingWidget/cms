@@ -58,15 +58,19 @@
   Vue.transition('in', {
     css: false,
     enter: function (element, done) {
-      TweenLite.fromTo(element, .5, {
+      var timeline = new TimelineLite({});
+      timeline.fromTo(element, .6, {
         opacity: 0,
-        y: 150,
-        rotationX: -35
+        y: 0,
+        z: -550,
+        rotationX: -22,
+        transformOrigin: 'center center'
       }, {
         opacity: 1,
         y: 0,
         rotationX: 0,
-        ease: "Power1.easeInOut",
+        z: 0,
+        ease: 'Power1.easeInOut',
         onComplete: function () {
           done();
         }

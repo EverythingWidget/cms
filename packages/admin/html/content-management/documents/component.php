@@ -437,13 +437,14 @@
                 component.currentItem.getBoundingClientRect() :
                 component.ui.components.folders_card[0].getBoundingClientRect();
 
-        System.UI.Animation.blastTo({
+        System.ui.animations.blastTo({
           fromPoint: startPoint,
           to: component.ui.components.folders_card[0],
           area: component.ui.components.folders_card.find(".card-content")[0],
           time: .5,
-          fade: .4,
-          color: "#eee",
+          fade: .5,
+          color: '#eee',
+          toColor: '#fff',
           onComplete: function () {
             component.ui.folders_card_vue.folders = foldersElements;
             component.ui.folders_card_vue.articles = articlesElements;
