@@ -471,10 +471,6 @@
       tween.to(blast, t, {
         scale: 35,
         backgroundColor: conf.toColor || null,
-        //opacity: 0,
-        //transformOrigin: "50% 50%",
-        //top: (sourceRect.top-radius)/2,
-        //left: (sourceRect.left-radius)/2,
         ease: "Power0.easeInOut",
         onComplete: function () {
           blast.style.border = 'none';

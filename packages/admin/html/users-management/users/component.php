@@ -38,7 +38,7 @@
       });
 
       this.defineStates(this.handlers);
-      System.Util.installModuleStateHandlers(this.state, this.handlers);
+      System.utility.installModuleStateHandlers(this.state, this.handlers);
     };
 
     UsersStateHandler.prototype.start = function () {

@@ -18,7 +18,7 @@
 
 <div class="col-xs-12">
   <ul id="{{comp_id}}_languages" class="list links">
-    <li v-for="item in items" v-bind:class="{ 'active': item.id === contentId }" transition="slide-vertical">
+    <li v-for="item in items" track-by="id" v-bind:class="{ 'active': item.id === contentId }" transition="slide-vertical">
       <a href='#' class='link' v-on:click="select($event,item)">
         {{ languages[item.value] }}
         <p>

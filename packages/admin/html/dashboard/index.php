@@ -56,8 +56,8 @@ if (!isset($_SESSION['login'])) {
 
         <div id="tabs-menu" class="tabs-bar" v-if="tabs && tabs.length">
           <ul class="nav nav-pills nav-black-text">
-            <li v-for="tab in tabs">
-              <a href="#uis_list">{{ tab.title }}</a>
+            <li v-for="tab in tabs" v-bind:class="{'active': tab.state === selectedTab}">
+              <a v-bind:href="tab.state" rel="subsection" v-on:click="goTo(tab, $event)">{{ tab.title }}</a>
             </li>
           </ul>
         </div>
@@ -69,7 +69,7 @@ if (!isset($_SESSION['login'])) {
       </system-float-menu>
 
       <!--<div id="home-pane" class="home-pane"></div>-->
-      
+
       <div id="main-content" class="col-xs-12 in" 
            v-show="show" 
            v-bind:class="styleClass" 

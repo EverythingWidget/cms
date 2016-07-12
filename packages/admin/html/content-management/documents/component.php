@@ -245,7 +245,7 @@
       }).hide();
 
       this.defineStates(this.states);
-      System.Util.installModuleStateHandlers(this.state, this.states);
+      System.utility.installModuleStateHandlers(this.state, this.states);
     };
 
     DocumentsStateHandler.prototype.start = function () {

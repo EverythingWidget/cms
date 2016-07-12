@@ -5,17 +5,17 @@
 <script  type="text/javascript">
 
   (function () {
-    function SettingsStateHandler(module) {
+    function SettingsStateHandler(state) {
       var component = this;
-      this.module = module;
-      this.module.type = "app-section";
-      this.module.component = this;
+      this.state = state;
+      this.state.type = "app-section";
+      this.state.component = this;
 
-      this.module.onInit = function () {
+      this.state.onInit = function () {
         component.init();
       };
 
-      this.module.onStart = function () {
+      this.state.onStart = function () {
         component.start();
       };
     }
@@ -25,11 +25,12 @@
     };
 
     SettingsStateHandler.prototype.start = function () {
-      var component = this;
+      var handler = this;
+
       this.saveSettings = EW.addActionButton({
         text: "",
         handler: function () {
-          component.saveAppSetings([
+          handler.saveAppSetings([
             "webroot"
           ]);
         },
@@ -40,24 +41,26 @@
       this.refresh = EW.addActionButton({
         text: 'R',
         handler: function () {
-          component.loadAppsGeneralSettings(<?= json_encode(EWCore::read_registry("ew/ui/settings/general")) ?>);
+          handler.loadAppsGeneralSettings(<?= json_encode(EWCore::read_registry("ew/ui/settings/general")) ?>);
         },
         class: "btn-float priority-1 btn-primary icon-refresh",
         parent: System.UI.components.appMainActions
       });
 
-      if (!component.appsLoaded) {
-        component.loadAppsGeneralSettings(<?= json_encode(EWCore::read_registry("ew/ui/settings/general")) ?>);
+      if (!handler.appsLoaded) {
+        handler.loadAppsGeneralSettings(<?= json_encode(EWCore::read_registry("ew/ui/settings/general")) ?>);
       }
 
-      component.appsLoaded = true;
+      handler.appsLoaded = true;
 
       System.entity('ui/app-bar').tabs = [
         {
-          title: 'Tab 1'
+          title: 'Tab 1',
+          state: 'settings/general/tab-1'
         },
         {
-          title: 'Tab 2'
+          title: 'Tab 2',
+          state: 'settings/general/tab-2'
         }
       ];
     };
@@ -67,7 +70,6 @@
       settingsCard.empty();
 
       for (var app in apps) {
-        //console.log(apps[app]);
         if (!apps[app].url) {
           continue;
         }

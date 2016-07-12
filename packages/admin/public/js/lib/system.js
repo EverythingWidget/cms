@@ -480,7 +480,7 @@
       var imports = [];
       if (!System.utility.isHTML(raw)) {
         console.log('Resource is not a valid html file:', module.url);
-        
+
         return {
           html: [],
           imports: [],
@@ -591,7 +591,7 @@
     }
   };
 
-  System.utility = System.Util = {
+  System.utility = {
     clone: function (source) {
       if (null === source || "object" !== typeof source)
         return source;
@@ -650,6 +650,25 @@
           return true;
       }
       return false;
+    },
+    decorate: function (hostObject) {
+      return {
+        'with': function (behavior) {
+          Array.prototype.unshift.call(arguments, hostObject);
+          return behavior.apply(null, arguments);
+        }
+      }
+    },
+    withHost: function (hostObject) {
+      return {
+        behave: function (behavior) {
+          return function () {
+            Array.prototype.unshift.call(arguments, hostObject);
+            
+            return behavior.apply(null, arguments);
+          };
+        }
+      };
     }
   };
 

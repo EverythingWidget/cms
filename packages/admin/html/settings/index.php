@@ -10,27 +10,20 @@ function script() {
   <script>
     (function () {
       System.state('settings', function (state) {
-        state.type = 'app';
-        state.onInit = function (nav) {
-          var stateHandler = this;
-          stateHandler.data.sections = <?= EWCore::read_registry_as_json('ew/ui/apps/settings/navs') ?>;
-        };
+        var handler = this;
+        handler.data = {};
+        handler.state = state;
 
-        state.onStart = function () {
-          
-        };
-
-        state.on('app', function (p, section) {
-          if (!section) {
-            System.UI.components.sectionsMenuList[0].value = '0';
-            return;
-          }
-
-          this.data.tab = section;
-          System.services.app_service.load_section(section);
+        handler.state.type = 'app';
+        handler.state.bind('init', function () {
+          handler.state.data.sections = <?= EWCore::read_registry_as_json('ew/ui/apps/settings/navs') ?>;
         });
 
-        return this;
+        handler.state.bind('start', function () {
+          handler.state.data.tab = null;
+        });
+
+        handler.state.on('app', System.utility.withHost(handler.state).behave(System.ui.behaviors.selectAppSection));
       });
     })();
 

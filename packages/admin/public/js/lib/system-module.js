@@ -75,9 +75,9 @@
     },
     setNav: function (value, key) {
       var pathKey = key || 'app';
-      var pathValue = value === null || value === undefined ? '' : '/' + value;
+      var pathValue = value === null || value === undefined ? '' : value;
 
-      this.setParam(pathKey, this.id.replace('system/', '') + pathValue);
+      this.setParam(pathKey, (this.id + '/').replace('system/', '') + pathValue);
     },
     getParam: function (key) {
       return this.domain.getHashParam(key);

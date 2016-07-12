@@ -127,7 +127,7 @@
       };
       component.defineTabs(component.tabs);
       component.defineStateHandlers(component.states);
-      System.Util.installModuleStateHandlers(component.state, component.states);
+      System.utility.installModuleStateHandlers(component.state, component.states);
     }
 
     MediaStateHandler.prototype.defineTabs = function (tabs) {

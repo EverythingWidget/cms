@@ -80,7 +80,7 @@
 
       this.defineTabs(this.tabs);
       this.defineStateHandlers(this.states);
-      System.Util.installModuleStateHandlers(this.module, this.states);
+      System.utility.installModuleStateHandlers(this.module, this.states);
     }
 
     MediaComponent.prototype.defineTabs = function (tabs) {

@@ -47,8 +47,11 @@
           app = 'content-management';
         }
 
+        System.entity('ui/app-bar').selectedTab = path.join('/');
+
         if (app !== EW.oldApp) {
           EW.oldApp = app;
+
           System.services.app_service.on_load(EW.apps[app]);
 
           System.loadModule(EW.apps[app], function (stateHandler) {
@@ -89,7 +92,6 @@
               return;
             }
 
-//            System.ui.components.mainContent.css("opacity", 0);
             System.entity('ui/main-content').show = false;
             System.ui.components.mainContent.html(data);
             stateHandler.start();
@@ -109,14 +111,6 @@
               System.entity('ui/main-content').show = true;
             });
 
-//            anim = TweenLite.fromTo(System.ui.components.mainContent[0], .5, {
-//              className: '-=in'
-//            }, {
-//              className: '+=in',
-//              ease: "Power2.easeOut",
-//              onComplete: function () {
-//              }
-//            });
           });
         }
       }
@@ -141,8 +135,9 @@
         return;
       }
 
-      if (component.data.tab === section)
+      if (component.data.tab === section) {
         return;
+      }
 
       component.data.tab = section;
       System.services.app_service.load_section(section);
@@ -566,7 +561,8 @@
     var appBarVue = new Vue({
       el: '#app-bar',
       data: {
-        tabs: null
+        tabs: null,
+        selectedTab: null
       },
       computed: {
         styleClass: function () {
@@ -577,6 +573,14 @@
           }
 
           return classes.join(' ');
+        }
+      },
+      methods: {
+        goTo: function (tab, $event) {
+          $event.preventDefault();
+
+          System.app.setNav(tab.state);
+          this.selectedTab = tab.state;
         }
       }
     });
@@ -612,6 +616,8 @@
     System.init(installModules);
     System.app.on('app', System.services.app_service.load);
     System.start();
+
+    appBarVue.selectedTab = System.getHashParam('app');
 
     if (!System.getHashParam('app')) {
       System.setHashParameters({
