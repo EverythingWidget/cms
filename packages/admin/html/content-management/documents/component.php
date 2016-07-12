@@ -322,7 +322,7 @@
         component.currentItem = System.ui.behaviors.selectElementOnly(e.currentTarget, component.currentItem);
       });
 
-      component.ui.components.folders_list.off('dblclick').on('dblclick', '.folder', function (e) {
+      component.ui.components.folders_list.off('dblclick touchstart').on('dblclick touchstart', '.folder', function (e) {
         component.state.setParam("dir", e.currentTarget.getAttribute('data-content-id') + "/list");
       });
 
@@ -333,7 +333,7 @@
         component.currentItem = System.ui.behaviors.selectElementOnly(e.currentTarget, component.currentItem);
       });
 
-      component.ui.components.articles_list.off('dblclick').on('dblclick', '.article', function (e) {
+      component.ui.components.articles_list.off('dblclick touchstart').on('dblclick touchstart', '.article', function (e) {
         component.seeArticleActivity({
           article: e.currentTarget.getAttribute('data-content-id')
         });
@@ -442,7 +442,7 @@
           to: component.ui.components.folders_card[0],
           area: component.ui.components.folders_card.find(".card-content")[0],
           time: .5,
-          fade: .5,
+          fade: .4,
           color: '#eee',
           toColor: '#fff',
           onComplete: function () {

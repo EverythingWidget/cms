@@ -225,23 +225,34 @@
         this.xtag.indicator.className = "ew-float-menu-indicator";
         this.xtag.indicator.style.position = "absolute";
 
-        this.xtag.indicator.addEventListener("mouseenter", function () {
+        var expand = function (e) {
+          e.stopPropagation();
+          e.preventDefault();
+          
           if (!_this.expanded) {
             _this.expand();
+            window.addEventListener('touchstart', contract)
           }
-        });
+        };
 
-//        this.xtag.indicator.addEventListener("mouseleave", function () {
-//          if (!_this.expanded) {
-//            _this.contract();
-//          }
-//        });
+        var contract = function (e) {
+          e.stopPropagation();
+          e.preventDefault();
 
-        this.addEventListener("mouseleave", function () {
           if (_this.expanded) {
             _this.contract();
           }
-        });
+
+          window.removeEventListener('touchstart', contract);
+        };
+
+        _this.xtag.indicator.addEventListener('mouseenter', expand);
+        _this.xtag.indicator.addEventListener('touchstart', expand);
+  
+        _this.addEventListener('mouseleave', expand);
+        _this.addEventListener('touchstart', expand);
+
+        _this.addEventListener('mouseleave', contract);
 
         this.style.position = "absolute";
         this.xtag.originClassName = this.className;
@@ -924,12 +935,12 @@
             element.removeAttribute('focus');
           });
 
-          this.xtag._input.onchange= function (e) {
+          this.xtag._input.onchange = function (e) {
             if (this.value) {
               element.removeAttribute('empty');
             } else {
               element.setAttribute('empty', '');
-            }           
+            }
           };
 
           this.xtag._input.addEventListener('input', function (e) {
@@ -937,7 +948,7 @@
               element.removeAttribute('empty');
             } else {
               element.setAttribute('empty', '');
-            }           
+            }
           });
         }
       },

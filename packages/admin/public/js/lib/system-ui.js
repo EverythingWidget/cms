@@ -98,6 +98,29 @@
     return jsTree;
   };
 
+  SystemUI.prototype.utility.getContentHeight = function (element, withPaddings) {
+    var height = 0;
+    var logs = [];
+    var children = element.children;
+
+    for (var index = 0, length = children.length; index < length; index++) {
+      if (children[index].__ui_neutral) {
+        continue;
+      }
+
+      var dimension = children[index].getBoundingClientRect();
+      var marginBottom = parseInt(window.getComputedStyle(children[index], null).marginBottom);
+
+      height = dimension.bottom + marginBottom > height ? dimension.bottom + marginBottom : height;
+    }
+
+    if (withPaddings) {
+      height += parseInt(window.getComputedStyle(element).paddingBottom);
+    }
+
+    return height - element.getBoundingClientRect().top;
+  };
+
   SystemUI.prototype.behaviorProxy = function (component, behaviorId) {
     var ui = this;
     var proxied = function () {
@@ -390,7 +413,7 @@
       //var sourceStyle = window.getComputedStyle(conf.from, null);
       var ds = window.getComputedStyle(conf.area, null);
       var radius = distRect.width > distRect.height ? distRect.width : distRect.height;
-      radius = 100;
+      radius = 25;
       tween.set(wrapper, {
         position: 'absolute',
         overflow: 'hidden',
@@ -429,6 +452,7 @@
       }
 
       wrapper.appendChild(blast);
+      wrapper.__ui_neutral = true;
 
       //wrapper
       conf.area.style.position = "relative";
@@ -440,13 +464,14 @@
       }
 
       tween.to(wrapper, t / 2, {
-        backgroundColor: '#fff'
+        delay: t / 2,
+        backgroundColor: conf.toColor || null
       });
 
       tween.to(blast, t, {
         scale: 35,
-        //backgroundColor: conf.toColor || null,
-        opacity: 0,
+        backgroundColor: conf.toColor || null,
+        //opacity: 0,
         //transformOrigin: "50% 50%",
         //top: (sourceRect.top-radius)/2,
         //left: (sourceRect.left-radius)/2,
@@ -466,34 +491,26 @@
             wrapper.parentNode.removeChild(wrapper);
           }
 
-          conf.area.style.height = 'auto';
+          var oldHeight = System.ui.utility.getContentHeight(conf.area, true);
+          conf.area.style.height = oldHeight + 'px';
+
+          if (conf.onComplete) {
+            conf.onComplete();
+          }
 
           setTimeout(function () {
-            var oldHeight = conf.area.offsetHeight;
+            var newHeight = System.ui.utility.getContentHeight(conf.area, true);
 
-            if (conf.onComplete) {
-              conf.onComplete();
-            }
-
-            
-            setTimeout(function () {
-              conf.area.style.height = 'auto';
-
-              var newHeight = conf.area.scrollHeight;
-
-              //conf.area.style.height = oldHeight + 'px';
-
-              tween.fromTo(conf.area, .3, {
-                height: oldHeight
-              }, {
-                height: newHeight,
-                ease: 'Power1.easeInOut',
-                onComplete: function () {
-                  conf.area.style.height = 'auto';
-                }
-              });
-            }, 1);
-          }, 1);
+            tween.fromTo(conf.area, .3, {
+              height: oldHeight
+            }, {
+              height: newHeight,
+              ease: 'Power1.easeInOut',
+              onComplete: function () {
+                conf.area.style.height = 'auto';
+              }
+            });
+          });
         }
       });
     },

@@ -43,7 +43,7 @@ function EverythingWidgets() {
   ];
   //$("#components-pane").hide();
   var oldSize = "";
-  $(document).mousedown(function (event) {
+  $(document).on('mousedown touchstart', function (event) {
     //console.log("clicked: " + $(event.target).text());
     self.activeElement = $(event.target);
   });
