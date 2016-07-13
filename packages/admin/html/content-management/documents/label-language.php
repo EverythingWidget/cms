@@ -18,7 +18,7 @@
 
 <div class="col-xs-12">
   <ul id="{{comp_id}}_languages" class="list links">
-    <li v-for="item in items" track-by="id" v-bind:class="{ 'active': item.id === contentId }" transition="slide-vertical">
+    <li v-for="item in items" v-bind:class="{ 'active': item.id === contentId }" >
       <a href='#' class='link' v-on:click="select($event,item)">
         {{ languages[item.value] }}
         <p>
@@ -58,7 +58,8 @@
       $("#{{comp_id}}_value").val($("#{{comp_id}}_select").val());
     });
 
-    $("#{{form_id}}").on("refresh", function (e, response) {
+    $("#{{form_id}}").on('refresh.labels', function (e, response) {
+      console.log('refresh.labels')
       var documentId = response.id;
       languagesLabelVue.contentId = documentId;
 
@@ -79,7 +80,11 @@
       }, success);
 
       function success(data) {
+        // setTimeout(function() {
+
         languagesLabelVue.items = data['data'];
+        //},2000)
+
       }
     });
   })();

@@ -45,17 +45,19 @@
     formId: "#<?= $form_id ?>",
     allLabels: <?= json_encode(array_keys(EWCore::read_registry(EWCore::$EW_CONTENT_COMPONENT))) ?>,
     initLabels: function (labels) {
+      console.log(labels);
       var allLabels = this.allLabels.slice(0);
-      $.each(labels, function (i, el) {
+      labels.forEach(function (el) {
         var labelSwitch = $("#" + el.key + "_control_button");
-        labelSwitch.attr('active', true);
+        console.log('inja');
+        labelSwitch.attr('active', '');
 
         allLabels.splice(allLabels.indexOf(el.key), 1);
       });
-
+      console.log(allLabels);
       $.each(allLabels, function (i, el) {
-        var t = $("#" + el + "_control_button");
-        t[0].setAttribute('active', false);
+        var switchBtn = $("#" + el + "_control_button");
+        switchBtn[0].removeAttribute('active');
       });
     },
     /**
@@ -101,8 +103,10 @@
      */
     getLabel: function (key) {
       var value = null;
+      console.log(key);
       $.each(this.uiForm.find("#content-labels .content-label[data-activated='true']"), function (i, el) {
         el = $(el);
+
         if (el.find("input[name='key']:not(:disabled)").val() == key) {
           value = el.find("[name='value']").val();
           return;
@@ -154,10 +158,10 @@
   (function () {
     $.each($(ContentForm.formId + " .content-label"), function (i, e) {
       var $e = $(e);
+
       var lcb = $e.find(".label-control-button");
-      lcb.on("switched", function (e) {
-        //var label = lcb.next("span");
-        //var labelBox = lcb.parent();
+      lcb.bind("switched", function (e) {
+        console.log(e)
         if (e.originalEvent.detail.active) {
           $e.attr("data-activated", true);
           lcb.text("Turned On");
@@ -172,7 +176,6 @@
 
         } else {
           $e.attr("data-activated", false);
-          //alert("click: "+e.attr("data-activated"));
           lcb.text("Turned Off");
           lcb.removeClass("btn-success").addClass("btn-default");
           $e.stop().animate({
@@ -182,7 +185,10 @@
       });
     });
 
+//    setTimeout(function () {
     ContentForm.setData(<?= $content_data; ?>);
+//    }, 1000);
+
     $(ContentForm.formId).find("#title").focus();
   })();
 

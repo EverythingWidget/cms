@@ -228,7 +228,7 @@
         var expand = function (e) {
           e.stopPropagation();
           e.preventDefault();
-          
+
           if (!_this.expanded) {
             _this.expand();
             window.addEventListener('touchstart', contract)
@@ -248,7 +248,7 @@
 
         _this.xtag.indicator.addEventListener('mouseenter', expand);
         _this.xtag.indicator.addEventListener('touchstart', expand);
-  
+
         _this.addEventListener('mouseleave', expand);
         _this.addEventListener('touchstart', expand);
 
@@ -693,12 +693,24 @@
   var SwitchButton = {
     lifecycle: {
       created: function () {
+        this.xtag.active = false;
       },
       inserted: function () {
-
       },
       removed: function () {
-
+      },
+      attributeChanged: function (attrName, oldValue, newValue) {
+        console.log(attrName, oldValue, newValue)
+        alert();
+        if (attrName === 'active') {
+          xtag.fireEvent(this, 'switched', {
+            detail: {
+              active: newValue !== null ? true : false
+            },
+            bubbles: true,
+            cancelable: true
+          });
+        }
       }
     },
     accessors: {
@@ -709,25 +721,25 @@
         attribute: {}
       },
       active: {
-        attribute: {},
-        set: function (value) {
-          this.xtag.active = Boolean(value);
-          var event = new CustomEvent('switched', {
-            detail: {
-              active: this.xtag.active
-            }
-          });
-
-          this.dispatchEvent(event);
+        attribute: {
+          boolean: true
         },
-        get: function (value) {
-          return this.xtag.active || false;
+        set: function (value) {
+          console.log(value,typeof value)
+          this.xtag.active = value;
+        },
+        get: function () {
+          return this.xtag.active;
         }
       }
     },
     events: {
       click: function (event) {
-        event.currentTarget.setAttribute('active', !event.currentTarget.xtag.active);
+        if (this.xtag.active) {
+          event.currentTarget.removeAttribute('active');
+        } else {
+          event.currentTarget.setAttribute('active', '');
+        }
       }
     }
   };
@@ -964,4 +976,97 @@
   };
 
   xtag.register('system-field', SystemField);
+
+  var SystemSpirit = {
+    lifecycle: {
+      created: function () {
+        var element = this;
+      },
+      attributeChanged: function (attrName, oldValue, newValue) {
+        if (attrName === 'class') {
+          console.log('-> ' + oldValue, ' :: ' + newValue);
+        }
+      },
+      inserted: function () {
+      },
+      removed: function () {
+      }
+    },
+    accessors: {
+      enter: {
+        attribute: true,
+        set: function (value) {
+          this.xtag.enterAnimation = value;
+        },
+        get: function () {
+          return this.xtag.enterAnimation;
+        }
+      },
+      autoSize: {
+        attribute: {
+          boolean: true
+        },
+        set: function (value) {
+          var element = this;
+          this.xtag.autoSize = value;
+
+          if (value && !this.xtag.observer) {
+            this.xtag.height = this.getBoundingClientRect().height;
+            TweenLite.set(element, {height: this.xtag.height});
+
+            this.xtag.observer = new MutationObserver(function (mutations) {
+
+              mutations.forEach(function (item) {
+                //console.log(item);
+                if (item.addedNodes[0] && item.addedNodes[0].__ui_neutral) {
+                  return null;
+                }
+
+                if (item.removedNodes[0] && item.removedNodes[0].__ui_neutral) {
+                  return null;
+                }
+
+                clearTimeout(element.xtag.autoSizeAnimation);
+
+                element.xtag.autoSizeAnimation = setTimeout(function () {
+                  if (element.xtag.animation) {
+                    element.xtag.animation.pause();
+                    element.xtag.animation = null;
+                  }
+
+                  element.xtag.height = element.getBoundingClientRect().height;
+                  var newHeight = System.ui.utility.getContentHeight(element, true);
+                  element.xtag.animation = TweenLite.fromTo(element, .3, {
+                    height: element.xtag.height
+                  }, {
+                    height: newHeight,
+                    ease: 'Power1.easeInOut',
+                    onComplete: function () {
+                      element.xtag.height = newHeight;
+                    }
+                  });
+                }, 100);
+              });
+            });
+
+            this.xtag.observer.observe(this, {
+              attributes: false,
+              childList: true,
+              characterData: false,
+              subtree: true
+            });
+          } else if (this.xtag.observer) {
+            this.xtag.observer.disconnect();
+          }
+        },
+        get: function () {
+          return this.xtag.autoSize;
+        }
+      }
+    },
+    events: {
+    }
+  };
+
+  xtag.register('system-spirit', SystemSpirit);
 })(xtag);

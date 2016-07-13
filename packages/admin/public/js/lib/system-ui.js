@@ -487,26 +487,26 @@
             wrapper.parentNode.removeChild(wrapper);
           }
 
-          var oldHeight = System.ui.utility.getContentHeight(conf.area, true);
-          conf.area.style.height = oldHeight + 'px';
+          //var oldHeight = System.ui.utility.getContentHeight(conf.area, true);
+          //conf.area.style.height = oldHeight + 'px';
 
           if (conf.onComplete) {
             conf.onComplete();
           }
 
-          setTimeout(function () {
-            var newHeight = System.ui.utility.getContentHeight(conf.area, true);
-
-            tween.fromTo(conf.area, .3, {
-              height: oldHeight
-            }, {
-              height: newHeight,
-              ease: 'Power1.easeInOut',
-              onComplete: function () {
-                conf.area.style.height = 'auto';
-              }
-            });
-          });
+//          setTimeout(function () {
+//            var newHeight = System.ui.utility.getContentHeight(conf.area, true);
+//
+//            tween.fromTo(conf.area, .3, {
+//              height: oldHeight
+//            }, {
+//              height: newHeight,
+//              ease: 'Power1.easeInOut',
+//              onComplete: function () {
+//                conf.area.style.height = 'auto';
+//              }
+//            });
+//          });
         }
       });
     },

@@ -502,7 +502,6 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler) {
     });
 
     form.data("form-data", {}).trigger("refresh", [{}]);
-    return;
   }
 
   $.each(jsonData, function (key, val) {

@@ -669,76 +669,32 @@
       container: "body"
     });
 
-    document.addEventListener("DOMNodeInserted", function (event) {
-      if (event.target) {
-        initPlugins(event.target);
-      }
-
-      $(".nav.xs-nav-tabs").data("xs-nav-bar-active", function (e) {
-        if ($(e).hasClass("xs-nav-tabs-active") || $(e).data("nav-xs-btn")) {
-          return;
+    // select the target node
+//    var target = document.getElementById('some-id');
+//
+// create an observer instance
+    var observer = new MutationObserver(function (mutations) {
+      mutations.forEach(function (mutation) {
+        if (mutation.type === 'childList' && mutation.addedNodes.length) {
+          initPlugins(mutation.addedNodes[0]);          
         }
-
-        var nav = $(e);
-        // Show default nav style when the window is wide enough
-        $(window).one("ew.screen.sm ew.screen.md ew.screen.lg", function () {
-          if (nav && nav.hasClass("xs-nav-tabs-active")) {
-            nav.unbind('mouseenter mouseleave');
-            nav.data("button").after(nav.data("menu"));
-            nav.data("menu").show();
-            nav.data("button").remove();
-            nav.attr("class", nav.data("oldClass"));
-            nav.find(".dropdown").remove();
-            nav.css({
-              top: ""
-            });
-            nav.data("nav-xs-btn", null);
-          }
-        });
-
-        nav.data("oldClass", nav.attr("class"));
-        nav.data("nav-xs-btn", true);
-        nav.data("menu", nav);
-        nav.prop("class", "nav nav-pills xs-nav-tabs-active nav-stacked dropdown col-xs-10");
-        nav.data("element-id", nav.attr("id"));
-        var xsNavbar = $("<ul class='nav nav-pills'><li class='dropdown'><a id='tabs-btn' data-toggle='tab' href='#'></a></li></ul>");
-        xsNavbar.data("nav-xs-btn", true);
-        nav.before(xsNavbar);
-        nav.data("button", xsNavbar);
-        var dropdownNavBtn = $("<li class='dropdown'><a id='tabs-btn' data-toggle='tab' href='#'></a></li>");
-        nav.prepend(dropdownNavBtn);
-        var xsNavBarBtn = xsNavbar.find("li");
-        nav.css({
-          top: xsNavBarBtn.offset().top
-        });
-
-        nav.hide();
-        xsNavBarBtn.hover(function () {
-          nav.show();
-          nav = nav.detach();
-          $("body").append(nav);
-        });
-
-        nav.hover(function (e) {
-          nav.stop().animate({
-            className: "nav nav-pills xs-nav-tabs-active nav-stacked dropdown in"
-          },
-                  300, "Power3.easeOut");
-          e.preventDefault();
-        }, function () {
-          nav.stop().animate({
-            className: "nav nav-pills xs-nav-tabs-active nav-stacked dropdown"
-          },
-                  300, "Power3.easeOut", function () {
-                    nav = nav.detach();
-                  });
-        });
       });
-
-      if ($(window).width() < 768) {
-        $(window).trigger("ew.screen.xs");
-      }
     });
+
+
+// pass in the target node, as well as the observer options
+    observer.observe(document.body, {
+      attributes: false,
+      childList: true,
+      characterData: false
+    });
+
+//    document.addEventListener("DOMNodeInserted", function (event) {
+//    if(event.target){
+//      initPlugins(event.target);  
+//    }
+//    
+//    });
     //});
 
     $(window).on("ew.screen.xs", function () {

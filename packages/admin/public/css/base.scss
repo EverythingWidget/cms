@@ -119,7 +119,7 @@ root {
     transform-origin: 90% bottom;
 
     &.expand {
-      
+
     }
   }
 
@@ -3868,4 +3868,9 @@ system-input-json {
       }
     }
   }
+}
+
+system-spirit {
+  display: block;
+  position: relative;
 }

@@ -14,29 +14,31 @@
 
     <h1> {{ card_title }} </h1>
   </div>
-
-  <div class='card-content'>
-    <div id="folders-list" class="mt">
-      <div v-for="folder in folders" tabindex='1' class='content-item folder' data-content-id='{{ folder.id }}'
-           v-on:drop="moveItem"
-           v-on:dragover="isAllowed">
-        <span></span>
-        <p class='date'>{{ folder.round_date_created }}</p>
-        <p>{{ folder.title }}</p>          
+  
+  <system-spirit id="test-spirit" auto-size >
+    <div class='card-content'>
+      <div id="folders-list" class="mt">
+        <div v-for="folder in folders" tabindex='1' class='content-item folder' data-content-id='{{ folder.id }}'
+             v-on:drop="moveItem"
+             v-on:dragover="isAllowed">
+          <span></span>
+          <p class='date'>{{ folder.round_date_created }}</p>
+          <p>{{ folder.title }}</p>          
+        </div>
       </div>
-    </div>
 
-    <div id="articles-list" class="mt">
-      <div tabindex='1' draggable="true" class='content-item article' data-content-id='{{ article.id }}'
-           v-for="article in articles" 
-           v-on:dragstart="dragStart">
-        <span></span>
-        <p class='date'>{{ article.round_date_created }}</p>
-        <p>{{ article.title }}</p>          
-      </div>
-    </div>    
+      <div id="articles-list" class="mt">
+        <div tabindex='1' draggable="true" class='content-item article' data-content-id='{{ article.id }}'
+             v-for="article in articles" 
+             v-on:dragstart="dragStart">
+          <span></span>
+          <p class='date'>{{ article.round_date_created }}</p>
+          <p>{{ article.title }}</p>          
+        </div>
+      </div>    
+  </system-spirit>
 
-  </div>
+</div>
 </system-ui-view>
 
 <script>
