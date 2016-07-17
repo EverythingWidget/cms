@@ -3,67 +3,13 @@ $home_page = webroot\WidgetsManagement::get_path_uis("@HOME_PAGE");
 $user_home_page = webroot\WidgetsManagement::get_path_uis("@USER_HOME_PAGE");
 $default_page = webroot\WidgetsManagement::get_path_uis("@DEFAULT");
 ?>
-<div class="tabs-bar block-row">
-  <ul class="nav nav-pills nav-black-text">
-    <li class="active">
-      <a href="#uis_list" data-toggle="tab">All Layouts</a>
-    </li>
 
-    <li>
-      <a href="#pages-uis" data-toggle="tab">Contents Layouts</a>
-    </li>
-  </ul>
+<div id="uis_list" class="">
+
 </div>
-<div class="no-footer tab-content">
-  <div id="uis_list" class="tab-pane active static-block col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 col-sm-12 col-sm-offset-0 col-xs-12">
-  </div> 
 
-  <div class="tab-pane col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 col-sm-12 col-sm-offset-0 col-xs-12" id="pages-uis">
-    <form id="apps-page-uis" onsubmit="return false;">         
-      <div class="box box-white z-index-1">
-        <div class="col-xs-12">
-          <h2>Contents Layouts</h2>
-        </div>
-        <div class="col-xs-12">
-          <div class="row">
-            <system-field class="field col-xs-12">
-              <label>tr{Default Layout}</label>
-              <input type="hidden" name="@DEFAULTuisId" id="DEFAULT" value="<?= $default_page["uis_id"] ?>">
-              <input class="text-field app-page-uis" name="@DEFAULT" id="DEFAULT" value="<?= $default_page["uis_name"] ?>">
-            </system-field> 
-          </div>
-          <div class="row">
-            <div class="col-xs-12 mar-bot">
-              <input type="hidden" class=""  name="@HOME_PAGEuisId" id="HOME_PAGE" value="<?= $home_page["uis_id"] ?>">
-              <input class="text-field app-page-uis" data-label="Homepage Layout" name="@HOME_PAGE" id="HOME_PAGE" value="<?= $home_page["uis_name"] ?>">
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-xs-12 mar-bot">
-              <input type="hidden" class=""  name="@USER_HOME_PAGEuisId" id="USER_HOME_PAGE" value="<?= $user_home_page["uis_id"] ?>">
-              <input class="text-field app-page-uis" data-label="User's Homepage Layout" name="@USER_HOME_PAGE" id="USER_HOME_PAGE" value="<?= $user_home_page["uis_name"] ?>">
-            </div>
-          </div>
-          <?php
-          $widgets_types_list = webroot\WidgetsManagement::get_widget_feeders("page");
-          $pages = $widgets_types_list->data[0];
 
-          //Show list of pages and their layouts
-          if (isset($pages)) {
-            foreach ($pages as $page) {
-              $uis = webroot\WidgetsManagement::get_path_uis("/{$page->url}");
-              echo '<div class="row"><div class="col-xs-12 mar-bot">';
-              echo "<input type='hidden'  name='{$page->url}_uisId' id='{$page->url}_uisId' value='{$uis["uis_id"]}'>";
-              echo "<input class='text-field app-page-uis' data-label='{$page->title}' name='/{$page->url}' id='{/$page->url}' value='{$uis["uis_name"]}'>";
-              echo "</div></div>";
-            }
-          }
-          ?>
-        </div>      
-      </div>
-    </form>
-  </div>
-</div>
+
 <script  type="text/javascript">
   function PageUIS() {
     var self = this;
@@ -77,7 +23,7 @@ $default_page = webroot\WidgetsManagement::get_path_uis("@DEFAULT");
       }
     }).addClass("inited");
     //$(".app-page-uis").addClass("inited");
-
+    
     this.allUISList = EW.createTable({
       name: "pages-and-uis-list",
       columns: [
@@ -107,7 +53,7 @@ $default_page = webroot\WidgetsManagement::get_path_uis("@DEFAULT");
         });
         //uisList.deleteUIS(id);
       }
-
+      
     });
     //this.allUISList.container.css({margin: "5px 15px"});
     $("#uis_list").html(this.allUISList.container);
@@ -123,7 +69,7 @@ if ($path_uis_list) {
 }
 ?>
   }
-
+  
   PageUIS.prototype.uisListDialog = function (onSelect) {
     var dialog = EW.createModal({
       class: "center slim"
@@ -168,7 +114,7 @@ if ($path_uis_list) {
     dialog.append($("<div class='footer-pane actions-bar action-bar-items' ></div>").append(removeUISbtn));
     this.table.read();
   };
-
+  
   PageUIS.prototype.setHomePageUIS = function (uisId) {
     $("#homePageUisId").val(uisId.data("field-id"));
     $("#home-page-uis").text("Loading...");
@@ -181,7 +127,7 @@ if ($path_uis_list) {
               $("body").EW().notify(data).show();
             }, "json");
   };
-
+  
   PageUIS.prototype.setUserHomePageUIS = function (uisId) {
     $("#homeUserPageUisId").val(uisId.data("field-id"));
     $("#user-home-page-uis").text("Loading...");
@@ -194,7 +140,7 @@ if ($path_uis_list) {
               $("body").EW().notify(data).show();
             }, "json");
   };
-
+  
   PageUIS.prototype.setDefaultUIS = function (uisId) {
     $("#defaultUisId").val(uisId.data("field-id"));
     $("#default-uis").text("Loading...");
@@ -206,7 +152,7 @@ if ($path_uis_list) {
       $("body").EW().notify(data).show();
     }, "json");
   };
-
+  
   PageUIS.prototype.setPageUIS = function (uisId) {
     if (pageUIS.currentElement)
     {
@@ -223,28 +169,7 @@ if ($path_uis_list) {
       }, "json");
     }
   };
-
+  
   var pageUIS;
-
-  (function () {
-    System.entity('state-handlers/page-layouts', function (state) {
-      var handler = {
-        tab: 'all-layouts'
-      };
-//      state.type = "appSection";
-      
-      state.bind('init', function () {
-      });
-
-      state.bind('start', function () {
-        pageUIS = new PageUIS();
-        pageUIS.allUISList.read();
-      });
-    });
-
-    System.state("widgets-management/pages-uis", function (state) {
-      var pageLayoutsStateHandler = System.entity('state-handlers/page-layouts');
-      new pageLayoutsStateHandler(state);
-    });
-  })();
 </script>
+<?= ew\ResourceUtility::load_js_as_tag(__DIR__ . '/component.js', [], true) ?>

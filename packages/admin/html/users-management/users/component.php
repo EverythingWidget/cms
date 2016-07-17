@@ -6,13 +6,13 @@
       this.state = state;
       this.handlers = {};
 
-      this.state.onInit = function () {
+      this.state.bind('init', function () {
         component.init();
-      };
+      });
 
-      this.state.onStart = function () {
+      this.state.bind('start', function () {
         component.start();
-      };
+      });
     }
 
     UsersStateHandler.prototype.defineStates = function (handlers) {
@@ -95,7 +95,7 @@
                 System.UI.components.body.EW().notify(response).show();
               }
             });
-            
+
             return true;
           });
         },

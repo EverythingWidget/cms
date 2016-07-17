@@ -16,7 +16,7 @@
     init: function (navigations, params, html) {
       var _this = this;
       this.inited = true;
-      this.trigger("onInit");
+      this.trigger("$onInit");
       this.triggerEvent('init');
       //this.solo = this.stateKey !== 'app';
 
@@ -27,7 +27,7 @@
     start: function () {
       this.started = true;
       this.active = true;
-      this.trigger("onStart");
+      this.trigger("$onStart");
       this.triggerEvent('start');
       if (('system/' + this.domain.app.params[this.stateKey]).indexOf(this.id) <= -1) {
         console.log(this.domain.app.params[this.stateKey]);

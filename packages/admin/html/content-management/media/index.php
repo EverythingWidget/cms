@@ -118,13 +118,14 @@
       component.state = state;
       component.state.type = "app-section";
 
-      component.state.onInit = function (templates) {
+      component.state.bind('init', function (templates) {
         component.init(templates);
-      };
+      });
 
-      component.state.onStart = function () {
+      component.state.bind('start', function () {
         component.start();
-      };
+      });
+
       component.defineTabs(component.tabs);
       component.defineStateHandlers(component.states);
       System.utility.installModuleStateHandlers(component.state, component.states);

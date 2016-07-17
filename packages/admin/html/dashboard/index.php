@@ -38,8 +38,8 @@ if (!isset($_SESSION['login'])) {
       </div>
 
       <div id="app-bar" class="app-bar" v-bind:class="styleClass">
-        <div id="sections-menu-title" class="app-bar-title">
-          tr{Documents}
+        <div id="sections-menu-title" class="app-bar-title" v-bind:class="{ 'inline-loader' : isLoading }">
+          {{ sectionsMenuTitle }}
         </div>
         <div class="action-center">
           <?php
@@ -54,9 +54,9 @@ if (!isset($_SESSION['login'])) {
           </div>
         </div>
 
-        <div id="tabs-menu" class="tabs-bar" v-if="tabs && tabs.length">
+        <div id="tabs-menu" class="tabs-bar" v-if="subSections && subSections.length">
           <ul class="nav nav-pills nav-black-text">
-            <li v-for="tab in tabs" v-bind:class="{'active': tab.state === selectedTab}">
+            <li v-for="tab in subSections" v-bind:class="{'active': tab.state === currentSubSection}">
               <a v-bind:href="tab.state" rel="subsection" v-on:click="goTo(tab, $event)">{{ tab.title }}</a>
             </li>
           </ul>

@@ -109,13 +109,13 @@
       }
 
       var dimension = children[index].getBoundingClientRect();
-      var marginBottom = parseInt(window.getComputedStyle(children[index], null).marginBottom);
+      var marginBottom = parseInt(window.getComputedStyle(children[index], null).marginBottom || 0);
 
       height = dimension.bottom + marginBottom > height ? dimension.bottom + marginBottom : height;
     }
 
     if (withPaddings) {
-      height += parseInt(window.getComputedStyle(element).paddingBottom);
+      height += parseInt(window.getComputedStyle(element).paddingBottom || 0);
     }
 
     return height - element.getBoundingClientRect().top;
@@ -196,9 +196,9 @@
     var origin = ori || document.activeElement;
 
     var loadModal = setTimeout(function () {
-      lockPane = system.UI.lock(document.getElementsByClassName("app-pane")[0]);
+      lockPane = system.ui.lock(document.getElementsByClassName("app-pane")[0]);
       document.getElementsByTagName("body")[0].appendChild(modal.el);
-      system.UI.animation.transform({
+      system.ui.animation.transform({
         from: loader.el,
         to: modal.el,
         el: modal.el,
@@ -244,6 +244,7 @@
     var sourceRect = conf.element.getBoundingClientRect();
     var ss = window.getComputedStyle(conf.element);
     var lockPane = document.createElement("div");
+    lockPane.__ui_neutral = true;
     lockPane.className = "lock-pane";
     lockPane.style.position = "fixed";
     lockPane.style.left = sourceRect.left + 'px';
@@ -487,52 +488,29 @@
             wrapper.parentNode.removeChild(wrapper);
           }
 
-          //var oldHeight = System.ui.utility.getContentHeight(conf.area, true);
-          //conf.area.style.height = oldHeight + 'px';
-
           if (conf.onComplete) {
             conf.onComplete();
           }
-
-//          setTimeout(function () {
-//            var newHeight = System.ui.utility.getContentHeight(conf.area, true);
-//
-//            tween.fromTo(conf.area, .3, {
-//              height: oldHeight
-//            }, {
-//              height: newHeight,
-//              ease: 'Power1.easeInOut',
-//              onComplete: function () {
-//                conf.area.style.height = 'auto';
-//              }
-//            });
-//          });
         }
       });
     },
-    transform: function (conf) {
-      var duration = conf.time || system.UI.DEFAULTS.animationDuration;
-      var sourceRect = conf.from.getBoundingClientRect();
-      var distRect = conf.to.getBoundingClientRect();
-      var transformBox = document.createElement("div");
-      var sourceStyle = window.getComputedStyle(conf.from, null);
-      var ds = window.getComputedStyle(conf.to, null);
+    transform: function (options) {
+      var duration = options.time || system.UI.DEFAULTS.animationDuration;
+      var sourceRect = options.from.getBoundingClientRect();
+      var distRect = options.to.getBoundingClientRect();
+      var sourceStyle = window.getComputedStyle(options.from, null);
+      var ds = window.getComputedStyle(options.to, null);
+
+      var transformBox = document.createElement('div');
 
       tween.set(transformBox, {
         position: 'absolute',
         x: sourceRect.left,
         y: sourceRect.top,
-//        textAlign: 'center',
         backgroundColor: (sourceStyle.backgroundColor.indexOf("rgba") !== -1 ||
                 sourceStyle.backgroundColor === "transparent") ? "rgb(190,190,190)" : sourceStyle.backgroundColor,
         boxShadow: sourceStyle.boxShadow,
         borderRadius: sourceStyle.borderRadius,
-//        color: conf.textColor || sourceStyle.color,
-//        fontSize: sourceStyle.fontSize,
-//        fontWeight: sourceStyle.fontWeight,
-//        lineHeight: sourceRect.height + 'px',
-//        textTransform: sourceStyle.textTransform,
-//        whiteSpace: "nowrap",
         zIndex: (ds.zIndex === "0" || ds.zIndex === "auto") ? 1 : ds.zIndex,
         overflow: "hidden",
         transformOrigin: "top left",
@@ -542,24 +520,21 @@
         top: 0
       });
 
-//      if (conf.text) {
-//        transformBox.innerHTML = conf.text;
-//      }
-
-      if (!conf.hasOwnProperty('evolve') || conf.evolve) {
-        conf.to.style.visibility = "hidden";
+      if (!options.hasOwnProperty('evolve') || options.evolve) {
+        options.to.style.visibility = "hidden";
       }
 
-      if (conf.flow) {
-        conf.from.style.visibility = "hidden";
-        conf.from.style.transition = "none";
+      if (options.flow) {
+        options.from.style.visibility = "hidden";
+        options.from.style.transition = "none";
       }
 
-      system.UI.body.appendChild(transformBox);
+      transformBox.__ui_neutral = true;
+      system.ui.body.appendChild(transformBox);
 
       setTimeout(function () {
         animate();
-      }, 1);
+      });
 
       function animate() {
         tween.to(transformBox, duration, {
@@ -567,20 +542,17 @@
           height: distRect.height,
           x: distRect.left,
           y: distRect.top,
-          lineHeight: distRect.height + 'px',
-          fontSize: '3em',
           backgroundColor: (ds.backgroundColor.indexOf("rgba") !== -1 ||
                   ds.backgroundColor === "transparent") ? "rgb(190,190,190)" : ds.backgroundColor,
-          //boxShadow: ds.boxShadow,
           borderRadius: ds.borderRadius,
-          ease: conf.ease || "Power2.easeInOut",
-          delay: conf.delay || 0,
+          ease: options.ease || "Power2.easeInOut",
+          delay: options.delay || 0,
           onComplete: function () {
-            conf.from.style.transition = "";
-            conf.to.style.visibility = "";
+            options.from.style.transition = "";
+            options.to.style.visibility = "";
 
-            if (conf.fade > 0) {
-              tween.to(transformBox, conf.fade, {
+            if (options.fade > 0) {
+              tween.to(transformBox, options.fade, {
                 opacity: 0,
                 ease: "Power0.easeNone",
                 delay: .01,
@@ -592,8 +564,8 @@
               transformBox.parentNode.removeChild(transformBox);
             }
 
-            if (conf.onComplete) {
-              conf.onComplete();
+            if (options.onComplete) {
+              options.onComplete();
             }
           }
         });

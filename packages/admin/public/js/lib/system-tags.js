@@ -1,3 +1,5 @@
+/* global System, xtag */
+
 //  polyfill the CustomEvent() constructor functionality in Internet Explorer 9 and higher 
 (function () {
 
@@ -20,7 +22,7 @@
   window.CustomEvent = CustomEvent;
 })();
 
-(function (xtag) {
+(function (System, xtag) {
 
   var SystemList = {
   };
@@ -312,49 +314,15 @@
         if (this.expanded)
           return;
         this.expanded = true;
-        var originDim = this.getBoundingClientRect();
-        //this.className += " expand";
-        //this.style.width = "auto";
-        //this.style.height = "auto";
 
-        var distDim = this.getBoundingClientRect();
-        //this.className = this.xtag.originClassNaame;
-        /*TweenLite.fromTo(this, 1, {
-         width: originDim.width,
-         height: originDim.height
-         }, {
-         width: distDim.width,
-         height: distDim.height
-         });*/
 
         System.ui.utility.addClass(this, 'expand');
         System.ui.utility.addClass(this.xtag.indicator, 'active');
-
-//        TweenLite.to(this, .3, {
-//          className: this.xtag.originClassName + " expand",
-//          ease: "Power2.easeOut"
-//        });
-//
-//        TweenLite.to(this.xtag.indicator, .3, {
-//          className: "+=active",
-//          ease: "Power2.easeOut"
-//        });
       },
       contract: function () {
-        /*if (!this.expanded)
-         return;*/
         this.expanded = false;
         System.ui.utility.removeClass(this, 'expand');
         System.ui.utility.removeClass(this.xtag.indicator, 'active');
-//        TweenLite.to(this, .3, {
-//          className: this.xtag.originClassName,
-//          ease: "Power2.easeInOut"
-//        });
-//
-//        TweenLite.to(this.xtag.indicator, .3, {
-//          className: this.xtag.originClassName + "-indicator",
-//          ease: "Power2.easeInOut"
-//        });
       },
       on: function (flag) {
         if (this.xtag.indicator.parentNode) {
@@ -415,12 +383,6 @@
         }
 
         this.xtag.placeholder = document.createComment(' ' + this.module + '/' + this.name + ' ');
-
-//        if (!System.ui.templates["system/" + this.module]) {
-//          System.ui.templates["system/" + this.module] = {};
-//        }
-//
-//        System.ui.templates["system/" + this.module][this.name] = this;
       },
       inserted: function () {
         if (this.xtag.validate) {
@@ -700,17 +662,7 @@
       removed: function () {
       },
       attributeChanged: function (attrName, oldValue, newValue) {
-        console.log(attrName, oldValue, newValue)
-        alert();
-        if (attrName === 'active') {
-          xtag.fireEvent(this, 'switched', {
-            detail: {
-              active: newValue !== null ? true : false
-            },
-            bubbles: true,
-            cancelable: true
-          });
-        }
+
       }
     },
     accessors: {
@@ -722,11 +674,17 @@
       },
       active: {
         attribute: {
-          boolean: true
+          //boolean: true
         },
         set: function (value) {
-          console.log(value,typeof value)
-          this.xtag.active = value;
+          xtag.fireEvent(this, 'switched', {
+            detail: {
+              active: Boolean(value)
+            },
+            bubbles: true,
+            cancelable: true
+          });
+          this.xtag.active = Boolean(value);
         },
         get: function () {
           return this.xtag.active;
@@ -738,7 +696,7 @@
         if (this.xtag.active) {
           event.currentTarget.removeAttribute('active');
         } else {
-          event.currentTarget.setAttribute('active', '');
+          event.currentTarget.setAttribute('active', 'true');
         }
       }
     }
@@ -910,27 +868,12 @@
     lifecycle: {
       created: function () {
         var element = this;
-        this.xtag._input = this.querySelectorAll('input, textarea, select')[0];
+        var input = this.querySelectorAll('input, textarea, select');
+        if (input.length > 1) {
+          console.warn('Only one input field is allowed inside system-field', this);
+        }
 
-        var inputValue = null;
-        /*Object.defineProperty(this.xtag._input, 'value', {
-         configurable: true,
-         enumerable: true,
-         set: function (value) {
-         if (value) {
-         element.removeAttribute('empty');
-         } else {
-         element.setAttribute('empty', '');
-         }
-         
-         inputValue = value;
-         element.xtag._input.setAttribute('value', value);
-         console.log('o->', this.value);
-         },
-         get: function () {
-         return inputValue;
-         }
-         });*/
+        this.xtag._input = this.querySelectorAll('input, textarea, select')[0];
 
         if (this.xtag._input) {
           if (this.xtag._input.value) {
@@ -981,92 +924,73 @@
     lifecycle: {
       created: function () {
         var element = this;
+        element.xtag.animations = [];
+        element.xtag.registeredAnimations = [];
+        this.xtag.cachedAnimations = this.getAttribute('animations');
       },
       attributeChanged: function (attrName, oldValue, newValue) {
-        if (attrName === 'class') {
-          console.log('-> ' + oldValue, ' :: ' + newValue);
-        }
       },
       inserted: function () {
+        if (this.xtag.cachedAnimations && !this.xtag.animations.length) {
+          this.setAttribute('animations', this.xtag.cachedAnimations)
+          this.xtag.cachedAnimations = null;
+          this.prepare();
+        }
       },
       removed: function () {
+        this.xtag.cachedAnimations = xtag.clone(this.xtag.animations).join(',');
+        this.xtag.animations = [];
+        this.prepare();
       }
     },
     accessors: {
-      enter: {
-        attribute: true,
-        set: function (value) {
-          this.xtag.enterAnimation = value;
-        },
-        get: function () {
-          return this.xtag.enterAnimation;
-        }
-      },
-      autoSize: {
+      animations: {
         attribute: {
-          boolean: true
         },
         set: function (value) {
           var element = this;
-          this.xtag.autoSize = value;
-
-          if (value && !this.xtag.observer) {
-            this.xtag.height = this.getBoundingClientRect().height;
-            TweenLite.set(element, {height: this.xtag.height});
-
-            this.xtag.observer = new MutationObserver(function (mutations) {
-
-              mutations.forEach(function (item) {
-                //console.log(item);
-                if (item.addedNodes[0] && item.addedNodes[0].__ui_neutral) {
-                  return null;
-                }
-
-                if (item.removedNodes[0] && item.removedNodes[0].__ui_neutral) {
-                  return null;
-                }
-
-                clearTimeout(element.xtag.autoSizeAnimation);
-
-                element.xtag.autoSizeAnimation = setTimeout(function () {
-                  if (element.xtag.animation) {
-                    element.xtag.animation.pause();
-                    element.xtag.animation = null;
-                  }
-
-                  element.xtag.height = element.getBoundingClientRect().height;
-                  var newHeight = System.ui.utility.getContentHeight(element, true);
-                  element.xtag.animation = TweenLite.fromTo(element, .3, {
-                    height: element.xtag.height
-                  }, {
-                    height: newHeight,
-                    ease: 'Power1.easeInOut',
-                    onComplete: function () {
-                      element.xtag.height = newHeight;
-                    }
-                  });
-                }, 100);
-              });
-            });
-
-            this.xtag.observer.observe(this, {
-              attributes: false,
-              childList: true,
-              characterData: false,
-              subtree: true
-            });
-          } else if (this.xtag.observer) {
-            this.xtag.observer.disconnect();
+          if (typeof value === 'string') {
+            this.xtag.animations = value.split(/[\s,]+/).filter(Boolean);
+          } else {
+            this.xtag.animations = [];
           }
+
+          element.prepare();
         },
         get: function () {
-          return this.xtag.autoSize;
+          return this.xtag.animations;
         }
       }
     },
     events: {
+    },
+    methods: {
+      prepare: function () {
+        var element = this;
+        this.xtag.animations.forEach(function (item) {
+          if (element.xtag.registeredAnimations.indexOf(item) !== -1) {
+            return null;
+          }
+
+          if (!System.spiritAnimations[item]) {
+            return console.warn('spirit animation not found:', item);
+          }
+
+          System.spiritAnimations[item].register(element);
+          element.xtag.registeredAnimations.push(item);
+        });
+
+        this.xtag.registeredAnimations = this.xtag.registeredAnimations.filter(function (item) {
+          if (element.xtag.animations.indexOf(item) === -1) {
+            System.spiritAnimations[item].deregister(element);
+            return false;
+          }
+
+          return true;
+        });
+      }
     }
   };
 
   xtag.register('system-spirit', SystemSpirit);
-})(xtag);
+})(System, xtag);

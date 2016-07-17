@@ -70,13 +70,13 @@
       component.module = module;
       component.module.type = "app-section";
 
-      component.module.onInit = function () {
+      component.module.bind('init', function () {
         component.init();
-      };
+      });
 
-      component.module.onStart = function () {
+      component.module.bind('start', function () {
         component.start();
-      };
+      });
 
       this.defineTabs(this.tabs);
       this.defineStateHandlers(this.states);

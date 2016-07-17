@@ -214,11 +214,11 @@ var uisList;
 
   System.state("widgets-management/uis-list", function (state) {
     state.type = "appSection";
-    state.onInit = function () { };
+    state.bind('init', function () { });
 
-    state.onStart = function () {
+    state.bind('start', function () {
       uisList = new UIStructureList();
       uisList.table.read();
-    };
+    });
   });
 })();

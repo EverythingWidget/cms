@@ -11,13 +11,13 @@
       this.state.type = "app-section";
       this.state.component = this;
 
-      this.state.onInit = function () {
+      this.state.bind('init', function () {
         component.init();
-      };
+      });
 
-      this.state.onStart = function () {
+      this.state.bind('start', function () {
         component.start();
-      };
+      });
     }
 
     SettingsStateHandler.prototype.init = function () {
@@ -52,17 +52,6 @@
       }
 
       handler.appsLoaded = true;
-
-      System.entity('ui/app-bar').tabs = [
-        {
-          title: 'Tab 1',
-          state: 'settings/general/tab-1'
-        },
-        {
-          title: 'Tab 2',
-          state: 'settings/general/tab-2'
-        }
-      ];
     };
 
     SettingsStateHandler.prototype.loadAppsGeneralSettings = function (apps) {

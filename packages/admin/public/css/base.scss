@@ -249,6 +249,9 @@ root {
     float: none;
     display: block;
     width: 60%;
+
+    &.pull-right, &.pull-left {
+    }
   }
 
   .actions-bar > .btn-group {
@@ -345,7 +348,7 @@ root {
   }
 
   .navigation-menu.expand {
-    width: 350px;
+    width: 374px;
   }
 
   .navigation-menu.expand .apps-menu{
@@ -2751,7 +2754,7 @@ textarea.text-field {
 }
 
 .report .controls label {
-  margin-top: 8px;
+  margin: 3px 0;
 }
 
 .data.header {
@@ -3868,6 +3871,10 @@ system-input-json {
       }
     }
   }
+}
+
+system-ui-view {
+  display: block;
 }
 
 system-spirit {

@@ -43,20 +43,20 @@
 <script src="~rm/public/js/jquery/build.js"></script>     
 
 <script src="public/rm/js/vue/vue.js"></script>
-<script src="~admin/public/js/lib/vue-animations.js"></script>
+<script src="~rm/public/js/x-tag/webcomponents-lite.js"></script>
+<script src="~rm/public/js/x-tag/x-tag-core.min.js"></script>
 <script src="~rm/public/js/gsap/TweenLite.min.js"></script>
 <script src="~rm/public/js/gsap/TimelineLite.min.js"></script>
 <script src="~admin/public/js/lib/system.js"></script>  
 <script src="~admin/public/js/lib/system-ui.js" ></script>   
 <script src="~admin/public/js/lib/system-module.js"></script>  
 <script src="~admin/public/js/lib/system-domain.js"></script>  
+<script src="~admin/public/js/lib/system-animations.js"></script>
+<script src="~admin/public/js/lib/system-tags.js" defer></script>
 
 <script src="~rm/public/js/gsap/plugins/CSSPlugin.min.js" defer></script>
 <script src="~rm/public/js/gsap/easing/EasePack.min.js" defer></script>
 <script src="~rm/public/js/gsap/jquery.gsap.min.js" defer></script>
-
-<script src="~rm/public/js/x-tag/x-tag-core.min.js"></script>
-<script src="~admin/public/js/lib/system-tags.js" defer></script>
 
 <script src="~admin/public/js/lib/sortable.js" defer></script>      
 <script src="~admin/public/js/lib/bootstrap-datepicker.js" defer></script>

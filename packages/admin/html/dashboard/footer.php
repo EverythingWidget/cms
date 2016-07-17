@@ -15,19 +15,16 @@
 
         EW.selectedApp = $(".apps-menu-link[data-app='" + app.id + "']").addClass("selected")[0];
 
-        System.ui.components.sectionsMenuTitle.addClass("inline-loader");
+        System.entity('ui/app-bar').isLoading = true;
         if (EW.selectedSection) {
           System.ui.utility.addClass(EW.selectedSection, "inline-loader");
         }
 
         $("#action-bar-items").empty();
         System.entity('ui/main-content').show = false;
-        //$("#main-content").remove();
       },
       on_loaded: function (app, html) {
         $("#app-content").append(html);
-        //System.ui.components.mainContent = $("#main-content");
-
 
         if (app.type === "app"/* && app.id === "system/" + System.getHashParam("app")*/) {
           EW.currentAppSections = System.modules[app.id].data.sections;
@@ -39,62 +36,66 @@
         }
 
         states.loading_app = false;
-
-        //return html;
       },
       load: function (path, app) {
         if (!app || app === "Home") {
           app = 'content-management';
         }
 
-        System.entity('ui/app-bar').selectedTab = path.join('/');
+        System.entity('ui/app-bar').currentState = path.join('/');
+        System.entity('ui/app-bar').currentApp = path[0];
+        System.entity('ui/app-bar').currentSection = path[1];
+        System.entity('ui/app-bar').currentSubSection = path[2];
 
         if (app !== EW.oldApp) {
           EW.oldApp = app;
 
           System.services.app_service.on_load(EW.apps[app]);
 
-          System.loadModule(EW.apps[app], function (stateHandler) {
-            System.services.app_service.on_loaded(stateHandler, stateHandler.html);
+          System.loadModule(EW.apps[app], function (module) {
+            System.services.app_service.on_loaded(module, module.html);
           });
           return;
         }
       },
-      load_section: function (sectionId) {
-        var element = System.ui.components.sectionsMenuList[0].links[EW.oldApp + "/" + sectionId];
+      load_section: function (moduleId) {
+        var element = System.ui.components.sectionsMenuList[0].links[EW.oldApp + "/" + moduleId];
         System.ui.behaviors.highlightAppSection(element.dataset.index, element);
         //System.UI.components.sectionsMenuList[0].value = element.dataset.index;
 
         if (element) {
-          var sectionData = System.ui.components.sectionsMenuList[0].data[element.dataset.index];
-          if (!sectionData/* || sectionData.id === EW.oldSectionId*/)
+          var moduleConfig = System.ui.components.sectionsMenuList[0].data[element.dataset.index];
+          if (!moduleConfig/* || sectionData.id === EW.oldSectionId*/) {
             return;
+          }
 
-          EW.oldSectionId = sectionData.id;
-          System.ui.components.sectionsMenuTitle.text(sectionData.title);
-          System.ui.components.sectionsMenuTitle.addClass("inline-loader");
+          EW.oldSectionId = moduleConfig.id;
+          System.entity('ui/app-bar').sectionsMenuTitle = moduleConfig.title;
+          System.entity('ui/app-bar').isLoading = true;
           System.ui.utility.addClass(element, "inline-loader");
 
-          System.entity('ui/app-bar').tabs = null;
+          System.entity('ui/app-bar').subSections = [];
 
           $("#action-bar-items").find("button,div").remove();
           System.ui.components.appMainActions.empty();
           System.ui.components.mainFloatMenu[0].clean();
-          //System.UI.components.mainFloatMenu[0].contract();
 
           System.ui.components.mainContent.empty();
           System.abortAllRequests();
 
-          System.loadModule(sectionData, function (stateHandler, data) {
+          System.loadModule(moduleConfig, function (module, html) {
             $("#action-bar-items").find("button,div").remove();
 
             if (!System.getHashNav("app")[0]) {
               return;
             }
 
+            System.entity('ui/app-bar').subSections = module.data.subSections || [];
+
             System.entity('ui/main-content').show = false;
-            System.ui.components.mainContent.html(data);
-            stateHandler.start();
+            System.ui.components.mainContent.html(html);
+            module.start();
+
             if (anim) {
               anim.pause();
             }
@@ -105,12 +106,42 @@
               System.ui.components.mainFloatMenu[0].off();
             }
 
-            System.ui.components.sectionsMenuTitle.removeClass("inline-loader");
+            System.entity('ui/app-bar').isLoading = false;
             System.ui.utility.removeClass(element, "inline-loader");
             Vue.nextTick(function () {
               System.entity('ui/main-content').show = true;
             });
+          });
+        }
+      },
+      load_tab: function (module) {
+        System.entity('ui/app-bar').isLoading = true;
+        $("#action-bar-items").find("button,div").remove();
+        System.ui.components.appMainActions.empty();
+        System.ui.components.mainFloatMenu[0].clean();
 
+        System.ui.components.mainContent.empty();
+        System.abortAllRequests();
+
+        System.loadModule(module, tabLoaded);
+
+        function tabLoaded(module, html) {
+          $("#action-bar-items").find("button,div").remove();
+
+          if (!System.getHashNav('app')[0]) {
+            return;
+          }
+
+          System.entity('ui/main-content').show = false;
+          System.ui.components.mainContent.html(html);
+
+          if (typeof module.start === 'function') {
+            module.start();
+          }
+
+          System.entity('ui/app-bar').isLoading = false;
+          Vue.nextTick(function () {
+            System.entity('ui/main-content').show = true;
           });
         }
       }
@@ -141,6 +172,26 @@
 
       component.data.tab = section;
       System.services.app_service.load_section(section);
+    };
+
+    System.ui.behaviors.selectSubSection = function (component, full, tab) {
+      if (!tab) {
+        if (component.data.activeSubSection) {
+          var appBar = System.entity('ui/app-bar');
+          appBar.goToState(appBar.currentApp + '/' + appBar.currentSection + '/' + component.data.activeSubSection);
+        }
+
+        return;
+      }
+
+      component.data.activeSubSection = tab;
+      System.entity('ui/app-bar').currentSubSection = tab;
+
+      var subSectionConfig = System.entity('ui/app-bar').subSections.filter(function (item) {
+        return item.state === tab;
+      })[0];
+
+      System.services.app_service.load_tab(subSectionConfig);
     };
 
     var anim = false;
@@ -465,9 +516,13 @@
       }
     };
 
-    System.ui.components.sectionsMenuList[0].addEventListener('item-selected', function (e) {
+    System.ui.components.sectionsMenuList[0].addEventListener('item-selected', function (event) {
+      if (event.detail.data.id === appBarVue.currentApp + '/' + appBarVue.currentSection) {
+        return;
+      }
+
       System.setHashParameters({
-        app: e.detail.data.id
+        app: event.detail.data.id
       });
     });
 
@@ -479,8 +534,9 @@
       System.ui.components.navigationMenu.addClass("expand");
 
       if (System.ui.components.sectionsMenuList[0].data.length) {
-        if (!enterOnLink)
+        if (!enterOnLink) {
           System.ui.components.sectionsMenu[0].style.top = System.ui.components.appsMenu.find(".apps-menu-link.selected")[0].getBoundingClientRect().top + "px";
+        }
 
         TweenLite.to(System.ui.components.sectionsMenu[0], .3, {
           className: "sections-menu in",
@@ -501,7 +557,7 @@
         System.ui.components.sectionsMenuList[0].data = sections;
       }
 
-      if (EW.oldApp === app) {
+      if (EW.oldApp === app) {           
         System.ui.behaviors.highlightAppSection(currentSectionIndex, System.ui.components.sectionsMenuList[0].links[currentSectionIndex]);
       }
 
@@ -516,12 +572,28 @@
       });
     });
 
+    System.ui.components.navigationMenu.on('click', function (event) {
+      if (event.target === System.ui.components.navigationMenu[0]) {
+        System.ui.components.navigationMenu.removeClass("expand");
+        TweenLite.to(System.ui.components.sectionsMenu[0], .2, {
+          className: "sections-menu",
+          marginTop: 0,
+          ease: "Power2.easeInOut",
+          onComplete: function () {
+            if (!states.loading_app && currentSectionIndex !== System.ui.components.sectionsMenuList[0].value) {
+              System.ui.components.sectionsMenuList[0].data = EW.currentAppSections;
+              System.ui.behaviors.highlightAppSection(currentSectionIndex, EW.selectedSection);
+            }
+          }
+        });
+      }
+    });
+
     System.ui.components.navigationMenu.on('mouseleave', function () {
       mouseInNavMenu = false;
       enterOnLink = false;
 
       System.ui.components.navigationMenu.removeClass("expand");
-
       TweenLite.to(System.ui.components.sectionsMenu[0], .2, {
         className: "sections-menu",
         marginTop: 0,
@@ -561,14 +633,19 @@
     var appBarVue = new Vue({
       el: '#app-bar',
       data: {
-        tabs: null,
-        selectedTab: null
+        sectionsMenuTitle: '',
+        isLoading: false,
+        subSections: null,
+        currentState: null,
+        currentApp: null,
+        currentSection: null,
+        currentSubSection: null
       },
       computed: {
         styleClass: function () {
           var classes = [];
 
-          if (this.tabs && this.tabs.length) {
+          if (this.subSections && this.subSections.length) {
             classes.push('tabs-bar-on');
           }
 
@@ -579,8 +656,10 @@
         goTo: function (tab, $event) {
           $event.preventDefault();
 
-          System.app.setNav(tab.state);
-          this.selectedTab = tab.state;
+          System.app.setNav(this.currentApp + '/' + this.currentSection + '/' + tab.state);
+        },
+        goToState: function (state) {
+          System.app.setNav(state);
         }
       }
     });
@@ -596,7 +675,7 @@
         styleClass: function () {
           var classes = [];
 
-          if (appBarVue.tabs && appBarVue.tabs.length) {
+          if (appBarVue.subSections && appBarVue.subSections.length) {
             classes.push('tabs-bar-on');
           }
 
@@ -676,11 +755,10 @@
     var observer = new MutationObserver(function (mutations) {
       mutations.forEach(function (mutation) {
         if (mutation.type === 'childList' && mutation.addedNodes.length) {
-          initPlugins(mutation.addedNodes[0]);          
+          initPlugins(mutation.addedNodes[0]);
         }
       });
     });
-
 
 // pass in the target node, as well as the observer options
     observer.observe(document.body, {
@@ -697,11 +775,10 @@
 //    });
     //});
 
-    $(window).on("ew.screen.xs", function () {
-      $(".nav.xs-nav-tabs:not(.xs-nav-tabs-active)").each(function (i) {
-        $(this).data("xs-nav-bar-active")(this);
-      });
-    });
-
+//    $(window).on("ew.screen.xs", function () {
+//      $(".nav.xs-nav-tabs:not(.xs-nav-tabs-active)").each(function (i) {
+//        $(this).data("xs-nav-bar-active")(this);
+//      });
+//    });
   });
 </script>

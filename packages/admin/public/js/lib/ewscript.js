@@ -512,9 +512,11 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler) {
     }
   });
 
-  form.data("form-data", jsonData).trigger("refresh", [
-    jsonData
-  ]);
+  setTimeout(function () {
+    form.data("form-data", jsonData).trigger("refresh", [
+      jsonData
+    ]);
+  });
 };
 
 EverythingWidgets.prototype.getParentDialog = function (element) {
@@ -1388,8 +1390,7 @@ EWTable.prototype.createRow = function (columnValues, rowCounter) {
     var del = $(document.createElement("button"));
     del.attr("type", "button");
     del.addClass("btn btn-text delete");
-    del.click(function () {
-
+    del[0].addEventListener('click', function () {
       tableRow.confirm = function (text, delFunction) {
         var messageRow = $(document.createElement("div"));
         tableRow._messageRow = messageRow;
@@ -1411,7 +1412,7 @@ EWTable.prototype.createRow = function (columnValues, rowCounter) {
         });
         deleteBtn.text("Delete");
         messageRow.append(deleteBtn);
-        deleteBtn.on("click", function () {
+        deleteBtn[0].addEventListener('click', function () {
           if (delFunction.apply(tableRow, [fieldId])) {
             cancelBtn.trigger("click");
             ewTable.removeRow(fieldId);
@@ -1420,7 +1421,7 @@ EWTable.prototype.createRow = function (columnValues, rowCounter) {
 
         var cancelBtn = $("<button type=button class='btn btn-text' style='float:right'>Cancel</button>");
         messageRow.append(cancelBtn);
-        cancelBtn.on("click", function () {
+        cancelBtn[0].addEventListener('click', function () {
           messageRow.animate({
             transform: "scale(0,1)"
           }, 400, "Power3.easeInOut", function () {
@@ -1456,11 +1457,11 @@ EWTable.prototype.createRow = function (columnValues, rowCounter) {
       action.addClass("btn btn-text btn-primary");
       action.text(v.title || k);
 
-      action.click(function () {
+      action[0].addEventListener('click', function () {
         btnAction.apply(ewTable, [tableRow]);
       });
-      actionsCellBtns.push(action);
-      //actionsCell.append(action);
+      
+      actionsCellBtns.push(action);      
     });
   }
   //delete val.id;

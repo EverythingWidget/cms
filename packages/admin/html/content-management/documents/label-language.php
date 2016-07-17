@@ -17,16 +17,18 @@
 </system-field>
 
 <div class="col-xs-12">
-  <ul id="{{comp_id}}_languages" class="list links">
-    <li v-for="item in items" v-bind:class="{ 'active': item.id === contentId }" >
-      <a href='#' class='link' v-on:click="select($event,item)">
-        {{ languages[item.value] }}
-        <p>
-          {{ item.title }}
-        </p>
-      </a>
-    </li>
-  </ul>
+  <system-spirit animations="liveHeight">
+    <ul id="{{comp_id}}_languages" class="list links">
+      <li v-for="item in items" class="zoom-item" v-bind:class="{ 'active': item.id === contentId }" >
+        <a href='#' class='link' v-on:click="select($event,item)">
+          {{ languages[item.value] }}
+          <p>
+            {{ item.title }}
+          </p>
+        </a>
+      </li>
+    </ul>
+  </system-spirit>
 </div>
 <script>
   (function () {
@@ -58,8 +60,7 @@
       $("#{{comp_id}}_value").val($("#{{comp_id}}_select").val());
     });
 
-    $("#{{form_id}}").on('refresh.labels', function (e, response) {
-      console.log('refresh.labels')
+    $("#{{form_id}}").on('refresh', function (e, response) {
       var documentId = response.id;
       languagesLabelVue.contentId = documentId;
 

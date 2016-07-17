@@ -7,13 +7,15 @@
 </system-field>
 
 <div class="col-xs-12">
-  <ul id="{{comp_id}}_attached" class="list">
-    <div v-for="item in items" track-by="id" class="list-item" transition="slide-vertical">
-      <a v-bind:class="{'link': true,'active' : item.id === contentId}" href="#" v-on:click="select($event, item)">
-        {{item.title}}
-      </a>
-    </div>
-  </ul>
+  <system-spirit animations="liveHeight">
+    <ul id="{{comp_id}}_attached" class="list">
+      <li v-for="item in items" track-by="id" class="list-item">
+        <a v-bind:class="{'link': true,'active' : item.id === contentId}" href="#" v-on:click="select($event, item)">
+          {{item.title}}
+        </a>
+      </li>
+    </ul>
+  </system-spirit>
 </div>
 
 <script>

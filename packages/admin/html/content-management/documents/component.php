@@ -14,15 +14,14 @@
 
     <h1> {{ card_title }} </h1>
   </div>
-  
-  <system-spirit id="test-spirit" auto-size >
+
+  <system-spirit animations="liveHeight,zoom" zoom="content-item">
+
     <div class='card-content'>
       <div id="folders-list" class="mt">
-        <div v-for="folder in folders" tabindex='1' class='content-item folder' data-content-id='{{ folder.id }}'
-             v-on:drop="moveItem"
-             v-on:dragover="isAllowed">
+        <div v-for="folder in folders" track-by="id" tabindex='1' class='content-item folder' data-content-id='{{ folder.id }}' v-on:drop="moveItem" v-on:dragover="isAllowed">
           <span></span>
-          <p class='date'>{{ folder.round_date_created }}</p>
+          <p class="date">{{ folder.round_date_created }}</p>
           <p>{{ folder.title }}</p>          
         </div>
       </div>
@@ -36,9 +35,10 @@
           <p>{{ article.title }}</p>          
         </div>
       </div>    
+    </div>
+    
   </system-spirit>
 
-</div>
 </system-ui-view>
 
 <script>
@@ -437,7 +437,7 @@
 
         var startPoint = (component.currentItem) ?
                 component.currentItem.getBoundingClientRect() :
-                component.ui.components.folders_card[0].getBoundingClientRect();
+                component.ui.components.folders_card.find('.card-header')[0].getBoundingClientRect();
 
         System.ui.animations.blastTo({
           fromPoint: startPoint,

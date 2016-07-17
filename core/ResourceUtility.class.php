@@ -25,8 +25,8 @@ class ResourceUtility {
     }, $view_html);
   }
 
-  public static function load_js_as_tag($path, $data = []) {
-    return '<script>' . static::get_view($path, $data) . '</script>';
+  public static function load_js_as_tag($path, $data = [], $absolute_path = false) {
+    return '<script>' . static::get_view($path, $data,$absolute_path) . '</script>';
   }
 
 }

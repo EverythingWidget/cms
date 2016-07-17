@@ -45,19 +45,17 @@
     formId: "#<?= $form_id ?>",
     allLabels: <?= json_encode(array_keys(EWCore::read_registry(EWCore::$EW_CONTENT_COMPONENT))) ?>,
     initLabels: function (labels) {
-      console.log(labels);
       var allLabels = this.allLabels.slice(0);
       labels.forEach(function (el) {
         var labelSwitch = $("#" + el.key + "_control_button");
-        console.log('inja');
-        labelSwitch.attr('active', '');
+        labelSwitch.attr('active', 'true');
 
         allLabels.splice(allLabels.indexOf(el.key), 1);
       });
-      console.log(allLabels);
+
       $.each(allLabels, function (i, el) {
         var switchBtn = $("#" + el + "_control_button");
-        switchBtn[0].removeAttribute('active');
+        switchBtn.removeAttr('active');
       });
     },
     /**
@@ -103,7 +101,6 @@
      */
     getLabel: function (key) {
       var value = null;
-      console.log(key);
       $.each(this.uiForm.find("#content-labels .content-label[data-activated='true']"), function (i, el) {
         el = $(el);
 
@@ -161,7 +158,6 @@
 
       var lcb = $e.find(".label-control-button");
       lcb.bind("switched", function (e) {
-        console.log(e)
         if (e.originalEvent.detail.active) {
           $e.attr("data-activated", true);
           lcb.text("Turned On");
@@ -185,10 +181,7 @@
       });
     });
 
-//    setTimeout(function () {
     ContentForm.setData(<?= $content_data; ?>);
-//    }, 1000);
-
     $(ContentForm.formId).find("#title").focus();
   })();
 

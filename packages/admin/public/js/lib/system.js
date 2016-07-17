@@ -310,6 +310,8 @@
      * @returns {void}
      */
     loadModule: function (module, onDone) {
+      module.id = module.id || (new Date()).valueOf() + '-' + performance.now();
+
       System.onModuleLoaded["system/" + module.id] = onDone;
       var moduleExist = System.modules["system/" + module.id];
 
@@ -323,7 +325,6 @@
         invokers = module.invokers;
         invokers.push(module.url);
       }
-      //console.log(invokers);
 
       if (moduleExist) {
         if ("function" === typeof (System.onModuleLoaded["system/" + module.id])) {
@@ -341,11 +342,6 @@
       System.onLoadQueue["system/" + module.id] = true;
 
       $.get(module.url, module.params | {}, function (response) {
-//        if (System.modules["system/" + module.id]) {
-//          $("#system_" + module.id.replace(/[\/-]/g, "_")).remove();
-//          //return;
-//        }
-
         var parsedContent = System.parseContent(response, module);
 
         setTimeout(function () {
@@ -459,16 +455,16 @@
           delete scope.export;
         }
 
-        if (!System.modules["system/" + module.id]) {
-          System.modules["system/" + module.id] = {};
+        var currentModule = System.modules['system/' + module.id];
+        if (!currentModule) {
+          currentModule = System.modules['system/' + module.id] = {};
         }
 
-        System.modules["system/" + module.id].html = filtered ? filtered.html : '';
-        System.modules["system/" + module.id].scope = scope;
-
+        currentModule.html = filtered ? filtered.html : '';
+        currentModule.scope = scope;
 
         if ('function' === typeof (System.onModuleLoaded['system/' + module.id])) {
-          System.onModuleLoaded['system/' + module.id].call(this, System.modules['system/' + module.id], filtered.html);
+          System.onModuleLoaded['system/' + module.id].call(this, currentModule, filtered.html);
           System.onModuleLoaded['system/' + module.id] = null;
         }
 
@@ -664,7 +660,7 @@
         behave: function (behavior) {
           return function () {
             Array.prototype.unshift.call(arguments, hostObject);
-            
+
             return behavior.apply(null, arguments);
           };
         }
