@@ -769,7 +769,7 @@ UISForm.prototype.updateTemplateBody = function () {
     head.find("#template-script").remove();
     head.find("#widget-data").remove();
     if ($('#template').val()) {
-      body.find("#template-css").attr("href", "~rm/public/" + $('#template').val() + "/template.css");
+      body.find("#template-css").attr("href", "public/rm/" + $('#template').val() + "/template.css");
     }
 
     body.find("#base-content-pane").remove();

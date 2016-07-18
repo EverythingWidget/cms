@@ -112,13 +112,13 @@ class ContentManagement extends \ew\Module {
     EWCore::register_form('ew/ui/apps/contents/navs', "documents", [
         'id'    => 'content-management/documents',
         'title' => 'Documents',
-        'url'   => '~admin/html/content-management/documents/component.php'
+        'url'   => 'html/admin/content-management/documents/component.php'
     ]);
 
     EWCore::register_form('ew/ui/apps/contents/navs', "media", [
         'id'    => 'content-management/media',
         'title' => 'Media',
-        'url'   => '~admin/html/content-management/media/index.php'
+        'url'   => 'html/admin/content-management/media/index.php'
     ]);
   }
 
@@ -1274,11 +1274,11 @@ class ContentManagement extends \ew\Module {
             size          => round(filesize($file_path) / 1024),
             ext           => $file_info["extension"],
             url           => 'media' . $path . $file,
-            absURL        => EW_ROOT_URL . "~rm/public/media/$file",
-            originalUrl   => EW_ROOT_URL . "~rm/public/media/$file",
+            absURL        => EW_ROOT_URL . "public/rm/media/$file",
+            originalUrl   => EW_ROOT_URL . "public/rm/media/$file",
             filename      => $file_info["filename"],
             fileExtension => $file_info["extension"],
-            thumbURL      => EW_ROOT_URL . '~rm/public/media/' . $tumbnailURL,
+            thumbURL      => EW_ROOT_URL . 'public/rm/media/' . $tumbnailURL,
             path          => $file_path
         ];
       }

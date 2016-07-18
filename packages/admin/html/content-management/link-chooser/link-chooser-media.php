@@ -447,7 +447,7 @@
       div.append(caption);
       div.attr("data-item-id", id);
 
-      var divTree = UIUtility.toTreeObject(div[0]);
+      var divTree = System.ui.utility.toTreeObject(div[0]);
       divTree.div.button._.addEventListener('click', function () {
         component.selectedItemId = id;
         component.deleteImageActivity();
@@ -492,6 +492,7 @@
 
     MediaComponent.prototype.selectMedia = function (image) {
       var _this = this;
+
       var mediaChooserDialog = EW.getParentDialog(LinkChooserDomain.ui.components.mainFloatMenu);
       var loader = System.UI.lock({
         element: mediaChooserDialog[0],
@@ -501,13 +502,17 @@
       var img = new Image();
       img.onerror = function (e) {
         alert('Image is invalid');
+        loader.dispose();
       };
+
       img.onload = function () {
         _this.selectedImage.width = img.width;
         _this.selectedImage.height = img.height;
         loader.dispose();
+
         mediaChooserDialog[0].selectMedia(_this.selectedImage);
       };
+
       img.src = image.src;
     };
 

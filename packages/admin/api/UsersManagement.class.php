@@ -20,13 +20,13 @@ class UsersManagement extends \ew\Module {
     EWCore::register_form("ew/ui/apps/users/navs", "users", [
         'id'    => 'users-management/users',
         'title' => 'Users',
-        'url'   => '~admin/html/users-management/users/component.php'
+        'url'   => 'html/admin/users-management/users/component.php'
     ]);
 
     EWCore::register_form("ew/ui/apps/users/navs", "groups", [
         'id'    => 'users-management/users-groups',
         'title' => 'Groups',
-        'url'   => '~admin/html/users-management/groups/component.php'
+        'url'   => 'html/admin/users-management/groups/component.php'
     ]);
   }
 

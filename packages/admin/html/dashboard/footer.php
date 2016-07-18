@@ -311,7 +311,7 @@
             linkChooserDialog = EW.createModal({
               class: "center slim"
             });
-            $.post("<?php echo EW_DIR ?>~admin/html/content-management/link-chooser/component.php", {
+            $.post('html/admin/content-management/link-chooser/component.php', {
               callback: settings.callbackName,
               data: $element.val(),
               contentType: $element.data("content-type") || "all"
@@ -403,9 +403,9 @@
           });
 
           System.loadModule({
-            //$.post("~admin/html/content-management/link-chooser-media.php", {
+            //$.post("html/admin/content-management/link-chooser-media.php", {
             id: "forms/media-chooser",
-            url: "~admin/html/content-management/link-chooser/link-chooser-media.php",
+            url: "html/admin/content-management/link-chooser/link-chooser-media.php",
             params: {
               callback: settings.callbackName
             }

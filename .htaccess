@@ -19,8 +19,8 @@ RewriteRule (.*) http://%1/$1 [R=302,L]
 RewriteCond %{REQUEST_URI} public/ [NC]
 RewriteRule ^public/([^/]*)/(.*) packages/$1/public/$2 [L]
 
-RewriteCond %{REQUEST_URI} ~(.*)/public/ [NC]
-RewriteRule ~(.*)/public/(.*) packages/$1/public/$2 [L]
+RewriteCond %{REQUEST_URI} -(.*)/public/ [NC]
+RewriteRule -(.*)/public/(.*) packages/$1/public/$2 [L]
 
 RewriteCond %{REQUEST_METHOD} GET
 RewriteCond %{REQUEST_URI} !(/$|\.) 

@@ -10789,9 +10789,9 @@
         class: "center"
       });
       //imageChooserDialog.append("<div class='form-content grid tabs-bar no-footer'></div>");
-      $.post("~admin/html/content-management/link-chooser-media.php", {
-        callback: ""
-      }, function (data) {
+      System.loadModule({
+        url: "html/admin/content-management/link-chooser/link-chooser-media.php"
+      }, function (module, data) {
         imageChooserDialog.html(data);
         //imageChooserDialog.prepend("<div class='header-pane tabs-bar row'><h1 class='form-title'>Media</h1></div>");
         var ref = ContentField._insertAt(element), node = ref[0], index = ref[1];
@@ -10821,10 +10821,13 @@
 
             case 'image':
               var image = new ContentEdit.Image({
-                src: selectedItem,
+                src: selectedItem.src,
                 width: selectedItem.width,
                 hight: selectedItem.height
               });
+              
+              node.parent().detach(element);
+              
               if (node.parent()) {
                 node.parent().attach(image, index);
               } else {
@@ -10891,6 +10894,7 @@
 
       img.addEventListener('click', function (e) {
         setImage(element);
+        console.log(element);
       });
 
       input.addEventListener("keydown", function (e) {
@@ -11034,7 +11038,7 @@
       //$.post("~admin/html/content-management/link-chooser-media.php", {
       System.loadModule({
         id: "forms/media-chooser",
-        url: "~admin/html/content-management/link-chooser/link-chooser-media.php",
+        url: "html/admin/content-management/link-chooser/link-chooser-media.php",
         params: {
           callback: ""
         }
