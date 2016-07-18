@@ -44,7 +44,7 @@ if (!isset($_SESSION['login'])) {
         <div class="action-center">
           <?php
           if ($_SESSION['login']) {
-            echo '<a class="ExitBtn" href="~admin/api/users-management/logout?url=' . EW_DIR_URL . '~admin/" ></a>';
+            echo '<a class="ExitBtn" href="api/admin/users-management/logout?url=' . EW_DIR_URL . 'html/admin/" ></a>';
           }
           ?>
         </div>  
