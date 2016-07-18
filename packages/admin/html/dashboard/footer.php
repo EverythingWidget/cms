@@ -78,7 +78,7 @@
 
           $("#action-bar-items").find("button,div").remove();
           System.ui.components.appMainActions.empty();
-          System.ui.components.mainFloatMenu[0].clean();
+          
 
           System.ui.components.mainContent.empty();
           System.abortAllRequests();
@@ -89,6 +89,8 @@
             if (!System.getHashNav("app")[0]) {
               return;
             }
+            
+            System.ui.components.mainFloatMenu[0].clean();
 
             System.entity('ui/app-bar').subSections = module.data.subSections || [];
 

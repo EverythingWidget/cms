@@ -20,28 +20,8 @@ function GroupsStateHandler(state) {
 GroupsStateHandler.prototype.init = function () {
   var handler = this;
 
-  handler.bNewGroup = EW.addActivity({
-    title: "tr{New Group}",
-    parent: System.UI.components.mainFloatMenu,
-    parameters: function () {
-      return {
-        groupId: null
-      };
-    },
-    activity: 'admin/html/users-management/groups/group-form/component.php'
-  });
-
   $(document).off('users-groups-list.refresh').on('users-groups-list.refresh', function () {
     handler.table.refresh();
-  });
-
-  handler.editGroupActivity = EW.getActivity({
-    activity: 'admin/html/users-management/groups/group-form/component.php_edit',
-    onDone: function () {
-      System.setHashParameters({
-        groupId: null
-      });
-    }
   });
 
   handler.table = EW.createTable({
@@ -61,7 +41,7 @@ GroupsStateHandler.prototype.init = function () {
       }
     },
     rowCount: true,
-    url: "<?php echo EW_ROOT_URL; ?>~admin/api/users-management/groups/",
+    url: "api/admin/users-management/groups/",
     pageSize: 30,
     onDelete: function (id) {
       this.confirm("tr{Are you sure of deleting of this group?}", function () {
@@ -94,6 +74,28 @@ GroupsStateHandler.prototype.init = function () {
 };
 
 GroupsStateHandler.prototype.start = function () {
+  var handler = this;
+
+  handler.bNewGroup = EW.addActivity({
+    title: "tr{New Group}",
+    parent: System.UI.components.mainFloatMenu,
+    parameters: function () {
+      return {
+        groupId: null
+      };
+    },
+    activity: 'admin/html/users-management/groups/group-form/component.php'
+  });
+
+  handler.editGroupActivity = EW.getActivity({
+    activity: 'admin/html/users-management/groups/group-form/component.php_edit',
+    onDone: function () {
+      System.setHashParameters({
+        groupId: null
+      });
+    }
+  });
+
   if (this.table) {
     this.table.refresh();
     return;
