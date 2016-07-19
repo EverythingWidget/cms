@@ -34,7 +34,7 @@ function UISForm() {
   if (EW.getActivity({
     activity: "webroot/api/widgets-management/export-uis"
   })) {
-    $("#layout-form-actions").append("<a class='btn btn-text btn-primary pull-right export-btn' href=~webroot/api/widgets-management/export-uis?uis_id=" + this.uisId + ">Export Layout</a>");
+    $("#layout-form-actions").append("<a class='btn btn-text btn-primary pull-right export-btn' href=api/webroot/widgets-management/export-uis?uis_id=" + this.uisId + ">Export Layout</a>");
     this.bExportLayout = $("#layout-form-actions a.export-btn");
     this.bExportLayout.hide();
   }
@@ -203,7 +203,7 @@ function UISForm() {
     if (data.id) {
       $('#form-title').html('<span>tr{Edit}</span>' + data.name);
       _this.uisId = data.id;
-      $("#layout-form-actions .export-btn").attr("href", "~webroot/api/widgets-management/export-uis?uis_id=" + _this.uisId);
+      $("#layout-form-actions .export-btn").attr("href", "api/webroot/widgets-management/export-uis?uis_id=" + _this.uisId);
       _this.uisTemplate = data.template;
 
       if (data.template_settings) {
@@ -648,7 +648,7 @@ UISForm.prototype.templateChanged = function () {
   var _this = this;
   var template = $("#template").val();
   if (template) {
-    $.post("<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/get-template-settings-form", {
+    $.post('api/webroot/widgets-management/get-template-settings-form', {
       path: template
     }, function (response) {
       _this.frameLoader.dispose();
@@ -680,7 +680,7 @@ UISForm.prototype.addUIStructure = function () {
   self.templateSettings = self.templateSettingsForm.serializeJSON();
   self.templateSettingsForm.trigger("getData");
 
-  $.post('<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/add-uis', {
+  $.post('api/webroot/widgets-management/add-uis', {
     name: $('#name').val(),
     template: $('#template').val(),
     template_settings: JSON.stringify(self.templateSettings),
@@ -720,7 +720,7 @@ UISForm.prototype.updateUIS = function (reload) {
   self.templateSettings = self.templateSettingsForm.serializeJSON();
   self.templateSettingsForm.trigger("getData");
 
-  $.post('<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/update-uis', {
+  $.post('api/webroot/widgets-management/update-uis', {
     name: $('#name').val(),
     template: $('#template').val(),
     template_settings: JSON.stringify(self.templateSettings),
@@ -756,7 +756,7 @@ UISForm.prototype.updateTemplateBody = function () {
   // Read template settings from template settings form
   _this.templateSettingsForm.trigger("getData");
 
-  $.get('~webroot/api/widgets-management/get-layout/', {
+  $.get('api/webroot/widgets-management/get-layout/', {
     uisId: _this.uisId,
     template: _this.uisTemplate,
     template_settings: JSON.stringify(_this.templateSettings)
@@ -918,7 +918,7 @@ UISForm.prototype.showWidgetsList = function (parentId) {
     left: "0px"
   }, 300);
 
-  $.post('~webroot/api/widgets-management/widgets-types', {
+  $.post('api/webroot/widgets-management/widgets-types', {
     template: _this.uisTemplate,
     uisId: _this.uisId
   }, function (response) {
@@ -947,7 +947,7 @@ UISForm.prototype.blockForm = function (id, name) {
   });
 
   self.currentDialog = d;
-  $.post('~webroot/widgets-management/block-form.php', {
+  $.post('html/webroot/widgets-management/block-form.php', {
     template: self.uisTemplate,
     uisId: self.uisId,
     id: id

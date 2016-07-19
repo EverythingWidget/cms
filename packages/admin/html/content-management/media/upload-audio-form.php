@@ -109,7 +109,7 @@
 
     // Make the ajax call
     $.ajax({
-      url: '~admin/api/content-management/upload-audio',
+      url: 'api/admin/content-management/upload-audio',
       type: 'POST',
       dataType: "json",
       xhr: function () {

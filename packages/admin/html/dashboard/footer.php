@@ -198,43 +198,6 @@
 
     var anim = false;
 
-    EverythingWidgets.prototype.readApps = function () {
-      var _this = this;
-      this.apps = {};
-
-      $.get('~admin/api/EWCore/read_apps_sections', {
-        appDir: "admin"
-      }, function (data) {
-
-        var items = [
-          '<ul class="apps-menu-list">'
-        ];
-        $.each(data, function (key, val) {
-
-          items.push('<li class=""><a class="apps-menu-link" data-app="'
-                  + val['id'] + '"><span class="">'
-                  + val['title'] + '</span></a></li>');
-          val.file = "index.php";
-          val.id = val['id'];
-          _this.apps[val['id']] = val;
-
-        });
-
-        items.push('</ul>');
-
-        $(items.join('')).appendTo("#apps-menu");
-
-        System.start();
-
-        $.each(_this.apps, function (e, v) {
-          if (v.id !== EW.oldApp) {
-            System.loadModule(v, function () {
-            });
-          }
-        });
-      }, "json");
-    };
-
     $.fn.textWidth = function () {
       var html_org = $(this).html();
       var html_calc = '<span style="white-space:nowrap">' + html_org + '</span>';

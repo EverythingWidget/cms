@@ -97,7 +97,7 @@ class ContentManagement extends \ew\Module {
         "title"       => "Document",
         "description" => "Main document",
         "explorer"    => "admin/html/content-management/documents/explorer-document.php",
-        "explorerUrl" => "~admin/content-management/documents/explorer-document.php",
+        "explorerUrl" => "html/admin/content-management/documents/explorer-document.php",
         "form"        => "admin/html/content-management/documents/label-document.php"
     ]);
 
@@ -105,7 +105,7 @@ class ContentManagement extends \ew\Module {
         "title"       => "Language",
         "description" => "Language of the content",
         "explorer"    => "admin/html/content-management/documents/explorer-language.php",
-        "explorerUrl" => "~admin/content-management/documents/explorer-language.php",
+        "explorerUrl" => "html/admin/content-management/documents/explorer-language.php",
         "form"        => "admin/html/content-management/documents/label-language.php"
     ]);
 
@@ -178,6 +178,7 @@ class ContentManagement extends \ew\Module {
         "api/upload_audio",
         "api/register-audio",
         "api/media-audios",
+        'api/images-create',
         // ------ html resources ------ //
         'html/index.php',
         "html/documents/article-form/component.php",
@@ -1432,7 +1433,7 @@ class ContentManagement extends \ew\Module {
     }
   }
 
-  public function upload_file($path, $parent_id) {
+  public function upload_file($_response, $path, $parent_id) {
     $db = \EWCore::get_db_connection();
     require_once EW_ROOT_DIR . "core/upload.class.php";
     ini_set("memory_limit", "100M");
@@ -1468,10 +1469,11 @@ class ContentManagement extends \ew\Module {
         // save uploaded image with no changes
         $foo->Process($root);
         if ($foo->processed) {
+
           $result = $this->add_content("image", $foo->file_dst_name_body, $parent_id, "", "", "", "", "");
 
-          if ($result["data"]["id"]) {
-            $content_id = $result["data"]["id"];
+          if ($result["id"]) {
+            $content_id = $result["id"];
             $stm = $db->prepare("INSERT INTO ew_images (content_id, source , alt_text) 
             VALUES (? , ? , ?)") or die($db->error);
             $image_path = 'album-' . $parent_id . '/' . $foo->file_dst_name;
@@ -1481,10 +1483,14 @@ class ContentManagement extends \ew\Module {
                   "status" => "success",
                   "id"     => $stm->insert_id];
             }
-          }
 
-          $this->create_image_thumb($foo->file_dst_pathname, 200);
-          $succeed++;
+            $this->create_image_thumb($foo->file_dst_pathname, 200);
+            $succeed++;
+          }
+          else {
+            $this->delete_content($result["id"]);
+            $error++;
+          }
         }
         else {
           $error++;
@@ -1495,9 +1501,82 @@ class ContentManagement extends \ew\Module {
       }
     }
 
-    return json_encode([
+    return [
         status  => "success",
-        message => "Uploaded: " . $succeed . " Error: " . $error . ' ' . $foo->error]);
+        message => "Uploaded: " . $succeed . " Error: " . $error . ' ' . $foo->error
+    ];
+  }
+
+  public function images_create($_response, $_input) {
+    ini_set("memory_limit", "100M");
+
+    $uploaded_file = [];
+
+    if (isset($_FILES['images'])) {
+      $uploaded_file = $_FILES['images'];
+    }
+
+    $root = EW_MEDIA_DIR . '/album-' . $_input->parent_id;
+    $succeed = 0;
+    $error = 0;
+    $files = [];
+    foreach ($uploaded_file as $k => $l) {
+      foreach ($l as $i => $v) {
+        if (!array_key_exists($i, $files))
+          $files[$i] = [];
+        $files[$i][$k] = $v;
+      }
+    }
+
+    $contents_repository = new ContentsRepository;
+    $images_repository = new ImagesRepository();
+
+    foreach ($files as $file) {
+      $foo = new \upload($file);
+      if ($foo->uploaded) {
+
+        // save uploaded image with no changes
+        $foo->Process($root);
+        if ($foo->processed) {
+          $content_details = new \stdClass();
+          $content_details->type = 'image';
+          $content_details->title = $foo->file_dst_name_body;
+          $content_details->parent_id = $_input->parent_id;
+
+
+          $result = $contents_repository->create($content_details);
+
+          if ($result->data->id) {
+            $image_details = new \stdClass();
+            $image_details->content_id = $result->data->id;
+            $image_details->source = 'album-' . $result->data->parent_id . '/' . $foo->file_dst_name;
+            $image_details->alt_text = '';
+
+            $image = $images_repository->create($image_details);
+
+            $this->create_image_thumb($foo->file_dst_pathname, 200);
+
+            if (!isset($image->error)) {
+              $succeed++;
+            }
+          }
+          else {
+            $this->delete_content($result->data->id);
+            $error++;
+          }
+        }
+        else {
+          $error++;
+        }
+      }
+      else {
+        $error+=2;
+      }
+    }
+
+    $_response->properties['message'] = "Uploaded: " . $succeed . " Error: " . $error . ' ' . $foo->error;
+
+    return [];
   }
 
   public function register_audio($path) {
@@ -1616,12 +1695,6 @@ class ContentManagement extends \ew\Module {
     return \ew\APIResponse::standard_response($_response, $result);
   }
 
-  /**
-   * @permissionId see-content
-   * @param type $_input
-   * @param type $_response
-   * @return type
-   */
   public function contents_delete($_input, $_response) {
     $result = (new ContentsRepository())->delete($_input);
 

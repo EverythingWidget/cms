@@ -876,7 +876,7 @@
         this.xtag._input = this.querySelectorAll('input, textarea, select')[0];
 
         if (this.xtag._input) {
-          if (this.xtag._input.value) {
+          if (this.xtag._input.value || this.xtag._input.type === 'file') {
             element.removeAttribute('empty');
           } else {
             element.setAttribute('empty', '');

@@ -39,7 +39,7 @@ function UIStructureList() {
 
       // Make the ajax call
       $.ajax({
-        url: '<?php echo EW_ROOT_URL ?>~webroot/api/widgets-management/import-uis',
+        url: 'api/webroot/widgets-management/import-uis',
         type: 'POST',
         dataType: "json",
         success: function (res) {
@@ -60,7 +60,7 @@ function UIStructureList() {
   var exportAction = null;
   if (this.exportUISActivity) {
     exportAction = function (row) {
-      window.open("~webroot/api/widgets-management/export-uis?uis_id=" + row.data("field-id"));
+      window.open("api/webroot/widgets-management/export-uis?uis_id=" + row.data("field-id"));
     };
   }
 
@@ -87,7 +87,7 @@ function UIStructureList() {
     onDelete: function (id) {
       this.confirm("Are you sure of deleting this UIS?", function () {
         var _this = this;
-        $.post('<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/delete-uis', {
+        $.post('api/webroot/widgets-management/delete-uis', {
           uisId: id
         }, function (data) {
           EW.setHashParameter("categoryId", null);
@@ -113,15 +113,13 @@ function UIStructureList() {
     } : null),
     buttons: {
       "tr{Clone}": function (row) {
-        if (confirm("Are you sure you want to clone UIS:" + row.data("field-name") + "?"))
-        {
+        if (confirm("Are you sure you want to clone UIS:" + row.data("field-name") + "?")) {
           $.get('api/webroot/widgets-management/clone-uis', {
             uisId: row.data("field-id")
-          },
-                  function (data) {
-                    self.table.refresh();
-                    $("body").EW().notify(data).show();
-                  }, "json");
+          }, function (data) {
+            self.table.refresh();
+            $("body").EW().notify(data).show();
+          }, "json");
         }
       }
       ,
@@ -155,9 +153,8 @@ UIStructureList.prototype.loadNewUISForm = function () {
   self.currentTopPane = tp;
   EW.lock(tp);
 
-  $.post('<?php echo EW_ROOT_URL; ?>~webroot/widgets-management/ne-uis.php', function (data) {
+  $.post('html/webroot/widgets-management/ne-uis.php', function (data) {
     tp.html(data);
-    //neuis.newUISForm();
   });
 };
 
@@ -179,7 +176,7 @@ UIStructureList.prototype.loadEditUISForm = function () {
   });
   self.currentTopPane = tp;
 
-  $.post('<?php echo EW_ROOT_URL; ?>~webroot/widgets-management/ne-uis.php', {
+  $.post('html/webroot/widgets-management/ne-uis.php', {
     uisId: EW.getHashParameter("uis-id")
   }, function (data) {
     tp.html(data);
@@ -188,15 +185,15 @@ UIStructureList.prototype.loadEditUISForm = function () {
 
 UIStructureList.prototype.deleteUIS = function (id) {
   var self = this;
-  $.post('<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/delete-uis', {
+  $.post('api/webroot/widgets-management/delete-uis', {
     uisId: id
   }, function (data) {
     EW.setHashParameter("categoryId", null);
     $("body").EW().notify(data).show();
     self.table.removeRow(id);
+    
     return true;
-
-  }, "json");
+  });
 };
 
 

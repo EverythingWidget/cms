@@ -18,9 +18,11 @@ class Settings extends \ew\Module {
   protected $resource = "api";
 
   protected function install_assets() {
-    \EWCore::register_form("ew/ui/settings/general", "webroot-settings", ["title"   => "Webroot",
+    \EWCore::register_form("ew/ui/settings/general", "webroot-settings", [
+        "title"   => "Webroot",
         "content" => "",
-        "url"     => "~webroot/html/settings/index.php"]);
+        "url"     => "html/webroot/settings/index.php"
+    ]);
 
     //$this->add_listener("admin/api/settings/save-settings", "testy");
   }

@@ -8,7 +8,7 @@
          this.table = EW.createTable({name: "uis-list", rowLabel: "{name}",
             columns: ["name", "template"],
             headers: {Name: {}, Template: {}},
-            rowCount: true, url: "<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/get-uis-list",
+            rowCount: true, url: 'api/webroot/widgets-management/get-uis-list',
             pageSize: 30,
             buttons: {
                "Select": function (row) {

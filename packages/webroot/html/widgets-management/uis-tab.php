@@ -27,13 +27,14 @@
 
   UisTab.prototype.uisListDialog = function (onSelect) {
     var dp = EW.createModal();
-    this.table = EW.createTable({name: "uis-list",
+    this.table = EW.createTable({
+      name: "uis-list",
       headers: {Name: {}, Template: {}},
       columns: ["name", "template"],
       rowCount: true,
-      url: "~webroot/api/widgets-management/get-uis-list",
-      pageSize: 30
-      , buttons: {
+      url: 'api/webroot/widgets-management/get-uis-list',
+      pageSize: 30,
+      buttons: {
         "Select": function (row) {
           if (onSelect)
             onSelect.apply(null, new Array(row));

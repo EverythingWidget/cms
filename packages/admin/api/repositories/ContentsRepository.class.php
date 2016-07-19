@@ -14,6 +14,11 @@ class ContentsRepository implements \ew\CRUDRepository {
     require_once EW_PACKAGES_DIR . '/admin/api/models/ew_contents_labels.php';
   }
 
+  /**
+   * 
+   * @param \stdClass $input
+   * @return \ew\Result
+   */
   public function create($input) {
     $result = new \ew\Result();
     $validator = new \Valitron\Validator((array) $input);

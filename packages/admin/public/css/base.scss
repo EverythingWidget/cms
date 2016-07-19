@@ -1,6 +1,4 @@
 @import url(https://fonts.googleapis.com/css?family=Exo+2:400,500,300,700,900);
-/*@import url(https://fonts.googleapis.com/css?family=Poppins:400,500,600,700,300);*/
-/*@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800);*/
 /*@font-face{ 
   font-family: 'geomanist';
   src: url('fonts/geomanist-bold-webfont.ttf');
@@ -3751,9 +3749,10 @@ inline-dialog{
 
     &.image {
       min-width: 150px;
-      background-color: transparent;
+      background-color: #ddd;
 
       &:hover {
+        background-color: transparent;
         outline: 2px solid rgba(0,0,0,.2);
       }
 

@@ -153,11 +153,11 @@
     if (this.observer) {
       this.observer.disconnect();
       this.observer = null;
-      
+
       window.removeEventListener('resize', this.resizeHandler);
       TweenLite.set(this.element, {
         height: ''
-      });      
+      });
     }
   };
 
@@ -279,12 +279,8 @@
       scale: 1,
       opacity: 1,
       ease: 'Power3.easeOut',
-      onComplete: function () {
-        TweenLite.set(node, {
-          transition: '',
-          scale: ''
-        });
-      }
+      clearProps: 'transition,opacity,scale',
+      onComplete: function () { }
     }, '-=.28');
 
     clearTimeout(_this.animationThrottle);

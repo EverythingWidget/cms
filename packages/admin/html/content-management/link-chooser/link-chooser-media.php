@@ -143,7 +143,7 @@
           Path: {}
         },
         rowCount: true,
-        url: "~admin/api/content-management/media-audios",
+        url: 'api/admin/content-management/media-audios',
         pageSize: 30,
         buttons: {
           select: function (e) {

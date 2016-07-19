@@ -120,7 +120,7 @@ $panelId = $_REQUEST['panelId'];
     var styleClass = $("#used-classes").text();
     var widgetStyleClass = $("#style_class").val();
 
-    $.post('<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/create-widget', {
+    $.post('api/webroot/widgets-management/create-widget', {
       widget_type: uisWidget.widgetType,
       style_class: styleClass,
       widget_style_class: widgetStyleClass,
@@ -159,7 +159,7 @@ $panelId = $_REQUEST['panelId'];
     var styleClass = $("#used-classes").text();
     var widgetStyleClass = $("#style_class").val();
 
-    $.post('<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/create-widget', {
+    $.post('api/webroot/widgets-management/create-widget', {
       widget_id: this.widgetId,
       widget_type: uisWidget.widgetType,
       style_class: styleClass,
@@ -202,7 +202,7 @@ $panelId = $_REQUEST['panelId'];
     this.uisWidgetForm.html("").show();
     $("#widgets-list-form").hide();
     EW.lock(this.uisWidgetForm);
-    $.post('~webroot/html/widgets-management/layouts/widget-form/form.php', {
+    $.post('html/webroot/widgets-management/layouts/widget-form/form.php', {
       widgetType: widgetType,
       template: self.template,
       widgetParameters: JSON.stringify(self.widgetParameters)

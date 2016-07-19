@@ -21,7 +21,7 @@ class LanguageComponent implements \ContentComponent
       $form = [
           "title" => "Language",
           "description" => "Language of the content",
-          "url" => "~admin/content-management/explorer-language.php"
+          "url" => "html/admin/content-management/explorer-language.php"
       ];
       return $form;
    }
@@ -63,8 +63,8 @@ class LanguageComponent implements \ContentComponent
       $config = [
           "title" => "Language",
           "description" => "Language of the content",
-          "explorer" => "~admin/content-management/explorer-language.php",
-          "form" => "~admin/content-management/label-language.php"
+          "explorer" => "html/admin/content-management/explorer-language.php",
+          "form" => "html/admin/content-management/label-language.php"
       ];
       return $config;
    }

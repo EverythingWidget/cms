@@ -74,7 +74,7 @@
     SettingsStateHandler.prototype.saveAppSetings = function (apps) {
       var data = $("#settings-cards").serializeJSON();
 
-      $.post("~admin/api/settings/save-settings", {
+      $.post("api/admin/settings/save-settings", {
         params: data
       }, function (response) {
         System.UI.components.body.EW().notify(response).show();

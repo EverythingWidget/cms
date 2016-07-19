@@ -23,7 +23,7 @@ $default_page = webroot\WidgetsManagement::get_path_uis("@DEFAULT");
       }
     }).addClass("inited");
     //$(".app-page-uis").addClass("inited");
-    
+
     this.allUISList = EW.createTable({
       name: "pages-and-uis-list",
       columns: [
@@ -53,7 +53,7 @@ $default_page = webroot\WidgetsManagement::get_path_uis("@DEFAULT");
         });
         //uisList.deleteUIS(id);
       }
-      
+
     });
     //this.allUISList.container.css({margin: "5px 15px"});
     $("#uis_list").html(this.allUISList.container);
@@ -69,7 +69,7 @@ if ($path_uis_list) {
 }
 ?>
   }
-  
+
   PageUIS.prototype.uisListDialog = function (onSelect) {
     var dialog = EW.createModal({
       class: "center slim"
@@ -114,12 +114,12 @@ if ($path_uis_list) {
     dialog.append($("<div class='footer-pane actions-bar action-bar-items' ></div>").append(removeUISbtn));
     this.table.read();
   };
-  
+
   PageUIS.prototype.setHomePageUIS = function (uisId) {
     $("#homePageUisId").val(uisId.data("field-id"));
     $("#home-page-uis").text("Loading...");
     $("#home-page-uis").text(uisId.data("field-name"));
-    $.post("<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/set-uis", {
+    $.post('api/webroot/widgets-management/set-uis', {
       path: "@HOME_PAGE",
       uisId: uisId.data("field-id")
     },
@@ -127,39 +127,38 @@ if ($path_uis_list) {
               $("body").EW().notify(data).show();
             }, "json");
   };
-  
+
   PageUIS.prototype.setUserHomePageUIS = function (uisId) {
     $("#homeUserPageUisId").val(uisId.data("field-id"));
     $("#user-home-page-uis").text("Loading...");
     $("#user-home-page-uis").text(uisId.data("field-name"));
-    $.post("/webroot/api/WidgetsManagement/set_uis", {
+    $.post("api/webroot/WidgetsManagement/set_uis", {
       path: "@USER_HOME_PAGE",
       uisId: uisId.data("field-id")
-    },
-            function (data) {
-              $("body").EW().notify(data).show();
-            }, "json");
+    }, function (data) {
+      $("body").EW().notify(data).show();
+    }, "json");
   };
-  
+
   PageUIS.prototype.setDefaultUIS = function (uisId) {
     $("#defaultUisId").val(uisId.data("field-id"));
     $("#default-uis").text("Loading...");
     $("#default-uis").text(uisId.data("field-name"));
-    $.post("<?php echo EW_ROOT_URL; ?>~webroot/api/widgets-management/set-uis", {
+    $.post('api/webroot/widgets-management/set-uis', {
       path: "@DEFAULT",
       uisId: uisId.data("field-id")
     }, function (data) {
       $("body").EW().notify(data).show();
     }, "json");
   };
-  
+
   PageUIS.prototype.setPageUIS = function (uisId) {
     if (pageUIS.currentElement)
     {
       $("#apps-page-uis [name='" + pageUIS.currentElement.prop("name") + "_uisId']").val(uisId.data("field-id"));
       pageUIS.currentElement.val("Loading...").change();
       var uisName = uisId.data("field-name");
-      $.post("~webroot/api/widgets-management/set-uis", {
+      $.post('api/webroot/widgets-management/set-uis', {
         path: pageUIS.currentElement.prop("name"),
         uisId: uisId.data("field-id")
       }, function (data) {
@@ -169,7 +168,7 @@ if ($path_uis_list) {
       }, "json");
     }
   };
-  
+
   var pageUIS;
 </script>
 <?= ew\ResourceUtility::load_js_as_tag(__DIR__ . '/component.js', [], true) ?>

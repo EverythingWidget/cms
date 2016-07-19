@@ -12,15 +12,17 @@
 
 <div class="no-footer tab-content">
   <div id="media-photos" class="tab-pane active">
-    <system-ui-view module="content-management/media" name="albums-list" class="block-row">  
-      <div tabindex="1" v-for="album in albums" class="content-item album" 
-           v-if="albumId === 0"
-           v-on:focus="selectItem(album.id)" 
-           v-on:dblclick="openAlbum(album.id)">
-        <span></span>
-        <p>{{ album.title }}</p>
-      </div>
-    </system-ui-view>
+    <system-spirit animations="zoom" zoom="album">
+      <system-ui-view module="content-management/media" name="albums-list" class="block-row">  
+        <div tabindex="1" v-for="album in albums" track-by="id" class="content-item album" 
+             v-if="albumId === 0"
+             v-on:focus="selectItem(album.id)" 
+             v-on:dblclick="openAlbum(album.id)">
+          <span></span>
+          <p>{{ album.title }}</p>
+        </div>      
+      </system-ui-view>
+    </system-spirit>
 
     <system-ui-view module="content-management/media" name="album-card" class="grid">
       <div class="grid-header">
@@ -30,18 +32,19 @@
           tr{Media}
         </h1>
       </div>
-
-      <div class="album-images-list grid-content block-row">
-        <div tabindex="1" class="grid-cell image"
-             v-for="image in images" 
-             v-on:focus="selectItem(image.id)">
-          <img alt="{{image.title}}" v-bind:src="image.thumbURL" />
-          <div class="grid-cell-caption">
-            <p class="title date">{{ image.size }} KB</p>
-            <button class='pull-right btn-text btn-circle btn-danger icon-delete' v-on:click="deleteImage(image.id)"></button>
+      <system-spirit animations="zoom" zoom="grid-cell">
+        <div class="album-images-list grid-content block-row">
+          <div tabindex="1" class="grid-cell image"
+               v-for="image in images" 
+               v-on:focus="selectItem(image.id)" >
+            <img alt="{{image.title}}" v-bind:src="image.thumbURL" />
+            <div class="grid-cell-caption">
+              <p class="title date">{{ image.size }} KB</p>
+              <button class='pull-right btn-text btn-circle btn-danger icon-delete' v-on:click="deleteImage(image.id)"></button>
+            </div>
           </div>
         </div>
-      </div>
+      </system-spirit>
     </system-ui-view>
   </div> 
 
@@ -432,53 +435,6 @@
             $("div[data-item-id='" + stateHandler.selectedItemId + "']").focus();
           }
         });
-
-        /*$.each(response.data, function (index, element) {
-         var temp;
-         if (component.albumId === 0) {
-         temp = component.createAlbumElement(element.title, element.type, element.ext, element.size, element.thumbURL, element.id);
-         } else {
-         temp = component.createImageElement(element.title, element.type, element.ext, element.size, element.thumbURL, element.id);
-         }
-         
-         if (element.type === "album") {
-         temp.on('keydown', function (e) {
-         if (e.which === 13) {
-         System.setHashParameters({
-         album: element.id + "/images"
-         });
-         }
-         });
-         
-         temp[0].addEventListener('dblclick', function () {
-         System.setHashParameters({
-         album: element.id + "/images"
-         });
-         });
-         
-         temp[0].addEventListener("focus", function (e) {
-         component.module.setParam("select", element.id);
-         });
-         
-         component.itemsList.append(temp);
-         } else {
-         temp.attr("data-url", element.url);
-         temp[0].addEventListener('dblclick', function () {
-         EW.setHashParameter("cmd", "preview", "media");
-         });
-         
-         temp[0].addEventListener("focus", function () {
-         component.module.setParam("select", element.id);
-         });
-         
-         //component.itemsList.append(temp);
-         }
-         });*/
-
-        //component.itemsList.addClass("in");
-
-        // Select current item            
-
       }
     };
 
