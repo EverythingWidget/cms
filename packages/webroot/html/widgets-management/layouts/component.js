@@ -1,21 +1,25 @@
+/* global EW, System */
+
 function UIStructureList() {
   var self = this;
   this.currentTopPane;
   this.oldRow;
-  this.bNewUIS = EW.addActivity({
-    title: "tr{New Layout}",
-    activity: "webroot/html/widgets-management/layouts/layout-form/component.php",
-    parent: System.UI.components.mainFloatMenu,
-    parameters: {
-      uisId: null
-    },
-    modal: {
-      class: "full"
-    },
-    onDone: function (hash) {
-      hash.uisId = null;
-    }
-  }).hide();
+
+  System.entity('ui/primary-actions').actions = [{
+      title: "tr{New Layout}",
+      activity: 'webroot/html/widgets-management/layouts/layout-form/component.php',
+//      parent: System.UI.components.mainFloatMenu,
+      parameters: {
+        uisId: null
+      },
+      modal: {
+        class: "full"
+      },
+      onDone: function (hash) {
+        hash.uisId = null;
+      }
+    }];
+//  this.bNewUIS = EW.addActivity().hide();
 
   this.importUISActivity = EW.getActivity({
     activity: "webroot/api/widgets-management/import-uis"
@@ -25,10 +29,11 @@ function UIStructureList() {
   });
 
   if (this.importUISActivity) {
-    var fileInput = $("<input type=file id=uis_file name=uis_file accept='.json'/>");
+    /*var fileInput = $("<input type=file id=uis_file name=uis_file accept='.json'/>");
     var button = $("<div class='btn btn-file btn-primary' >tr{Import Layout}</div>").hide();
     parent: System.UI.components.mainFloatMenu.append(button.append(fileInput));
     button.comeIn();
+    
     fileInput.change(function (e) {
       var form = new FormData();
       // HTML file input user's choice...
@@ -54,7 +59,7 @@ function UIStructureList() {
         contentType: false,
         processData: false
       });
-    });
+    });*/
   }
 
   var exportAction = null;
@@ -68,7 +73,7 @@ function UIStructureList() {
   $(document).on("uis-list.refresh", function () {
     self.table.refresh();
   });
-  this.bNewUIS.comeIn();
+
   var editActivity;
   this.table = EW.createTable({
     name: "uis-list",
@@ -191,7 +196,7 @@ UIStructureList.prototype.deleteUIS = function (id) {
     EW.setHashParameter("categoryId", null);
     $("body").EW().notify(data).show();
     self.table.removeRow(id);
-    
+
     return true;
   });
 };

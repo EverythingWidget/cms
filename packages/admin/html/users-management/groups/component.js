@@ -76,25 +76,36 @@ GroupsStateHandler.prototype.init = function () {
 GroupsStateHandler.prototype.start = function () {
   var handler = this;
 
-  handler.bNewGroup = EW.addActivity({
-    title: "tr{New Group}",
-    parent: System.UI.components.mainFloatMenu,
-    parameters: function () {
-      return {
-        groupId: null
-      };
-    },
-    activity: 'admin/html/users-management/groups/group-form/component.php'
-  });
-
-  handler.editGroupActivity = EW.getActivity({
-    activity: 'admin/html/users-management/groups/group-form/component.php_edit',
-    onDone: function () {
-      System.setHashParameters({
-        groupId: null
-      });
+  System.entity('ui/primary-actions').actions = [
+    {
+      title: "tr{New Group}",
+      parameters: function () {
+        return {
+          groupId: null
+        };
+      },
+      activity: 'admin/html/users-management/groups/group-form/component.php'
     }
-  });
+  ];
+//  handler.bNewGroup = EW.addActivity({
+//    title: "tr{New Group}",
+//    parent: System.UI.components.mainFloatMenu,
+//    parameters: function () {
+//      return {
+//        groupId: null
+//      };
+//    },
+//    activity: 'admin/html/users-management/groups/group-form/component.php'
+//  });
+//
+//  handler.editGroupActivity = EW.getActivity({
+//    activity: 'admin/html/users-management/groups/group-form/component.php_edit',
+//    onDone: function () {
+//      System.setHashParameters({
+//        groupId: null
+//      });
+//    }
+//  });
 
   if (this.table) {
     this.table.refresh();

@@ -36,7 +36,7 @@
         </div>
       </div>    
     </div>
-    
+
   </system-spirit>
 
 </system-ui-view>
@@ -82,8 +82,6 @@
       states.dir = function (full, id, list) {
         if (!id) {
           id = 0;
-        } else {
-          component.bNewFolder.comeIn();
         }
 
         if (list) {
@@ -256,40 +254,44 @@
       this.articleId = 0;
       this.currentItem = null;
 
-      this.bNewFolder = EW.addActivity({
-        title: "tr{New Folder}",
-        activity: "admin/html/content-management/documents/folder-form/component.php",
-        parent: System.UI.components.mainFloatMenu,
-        parameters: function (hash) {
-          hash.parent = component.parentId;
-        },
-        onDone: function (hash) {
-          hash.parent = null;
-          hash.folderId = null;
+      System.entity('ui/primary-actions').actions = [
+        {
+          title: "tr{New Folder}",
+          activity: "admin/html/content-management/documents/folder-form/component.php",
+          //parent: System.UI.components.mainFloatMenu,
+          parameters: function (hash) {
+            hash.parent = component.parentId;
+          },
+          onDone: function (hash) {
+            hash.parent = null;
+            hash.folderId = null;
+          }
+        }, {
+          title: "tr{New Article}",
+          activity: "admin/html/content-management/documents/article-form/component.php_new",
+          //parent: System.UI.components.mainFloatMenu,
+          parameters: function (hash) {
+            hash.parent = component.parentId;
+            hash.article = null;
+          },
+          onDone: function (hash) {
+            hash.article = null;
+            hash.parent = null;
+          }
         }
-      }).hide();
+      ];
 
-      this.bNewFile = EW.addActivity({
-        title: "tr{New Article}",
-        activity: "admin/html/content-management/documents/article-form/component.php_new",
-        parent: System.UI.components.mainFloatMenu,
-        parameters: function (hash) {
-          hash.parent = component.parentId;
-          hash.article = null;
-        },
-        onDone: function (hash) {
-          hash.article = null;
-          hash.parent = null;
-        }
-      }).hide();
+//      this.bNewFolder = EW.addActivity().hide();
 
-      this.testBtn = EW.addActionButton({
-        text: "tr{test form}",
-        parent: System.UI.components.mainFloatMenu,
-        handler: function () {
-          component.state.setParam('component', 'forms/test-form');
-        }
-      });
+//      this.bNewFile = EW.addActivity().hide();
+
+//      this.testBtn = EW.addActionButton({
+//        text: "tr{test form}",
+//        parent: System.UI.components.mainFloatMenu,
+//        handler: function () {
+//          component.state.setParam('component', 'forms/test-form');
+//        }
+//      });
 
       $(document).off("article-list.refresh").on("article-list.refresh", function (e, eventData) {
         component.listDocuments();
@@ -310,8 +312,8 @@
         }
       });
 
-      this.bNewFile.comeIn();
-      this.bNewFolder.comeIn();
+      //this.bNewFile.comeIn();
+      //this.bNewFolder.comeIn();
 
       this.state.setParamIfNull("dir", "0/list");
 

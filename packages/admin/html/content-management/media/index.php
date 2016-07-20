@@ -62,16 +62,14 @@
       var mediaStateHandler = System.entity('objects/media-state-handler');
 
       state.bind('start', function () {
-        mediaStateHandler.uploadAudioActivity.hide();
+        //mediaStateHandler.uploadAudioActivity.hide();
       });
 
       state.on('album', function (e, id, images) {
         if (id > 0) {
-          mediaStateHandler.newAlbumActivity.hide();
-          mediaStateHandler.uploadImageActivity.comeIn();
+          mediaStateHandler.uploadImageActivity.hide = false;
         } else {
-          mediaStateHandler.newAlbumActivity.comeIn();
-          mediaStateHandler.uploadImageActivity.hide();
+          mediaStateHandler.uploadImageActivity.hide = true;
         }
 
         if (!id) {
@@ -101,8 +99,7 @@
       var mediaStateHandler = System.entity('objects/media-state-handler');
 
       state.bind('start', function () {
-        mediaStateHandler.uploadAudioActivity.comeIn();
-        mediaStateHandler.newAlbumActivity.hide();
+        //mediaStateHandler.uploadAudioActivity.comeIn();
         mediaStateHandler.uploadImageActivity.hide();
       });
     };
@@ -313,19 +310,26 @@
       this.bDel = $();
       this.listInited = false;
 
-      this.newAlbumActivity = EW.addActivity({
-        title: "tr{New Album}",
-        activity: "admin/html/content-management/media/album-form.php",
-        parent: System.UI.components.mainFloatMenu,
-        parameters: function (params) {
-          params.albumId = null;
-          return params;
-        }});
+      System.entity('ui/primary-actions').actions = [
+        {
+          title: "tr{New Album}",
+          activity: "admin/html/content-management/media/album-form.php",
+          //parent: System.UI.components.mainFloatMenu,
+          parameters: function (params) {
+            params.albumId = null;
+            return params;
+          }
+        }
 
-      this.uploadImageActivity = EW.addActivity({
+      ];
+
+//      this.newAlbumActivity = EW.addActivity();
+
+      this.uploadImageActivity = {
         title: "tr{Upload Photo}",
         activity: "admin/html/content-management/media/upload-form.php",
-        parent: System.UI.components.mainFloatMenu,
+        hide: true,
+        //parent: System.UI.components.mainFloatMenu,
         parameters: function () {
           return {
             parentId: System.getHashNav("album")[0]
@@ -334,23 +338,36 @@
         onDone: function () {
           EW.setHashParameter("parentId", null);
         }
-      });
+      };
 
-      this.uploadAudioActivity = EW.addActivity({
-        title: "tr{Upload Audio}",
-        activity: "admin/html/content-management/media/upload-audio-form.php",
-        parent: System.UI.components.mainFloatMenu,
-        parameters: function () {
-          return {
-            parentId: System.getHashNav("album")[0]
-          };
+      System.entity('ui/primary-actions').actions = [
+        {
+          title: "tr{New Album}",
+          activity: "admin/html/content-management/media/album-form.php",
+          //parent: System.UI.components.mainFloatMenu,
+          parameters: function (params) {
+            params.albumId = null;
+            return params;
+          }
         },
-        onDone: function () {
-          System.setHashParameters({
-            parentId: null
-          });
-        }
-      });
+        this.uploadImageActivity
+      ];
+
+//      this.uploadAudioActivity = EW.addActivity({
+//        title: "tr{Upload Audio}",
+//        activity: "admin/html/content-management/media/upload-audio-form.php",
+//        parent: System.UI.components.mainFloatMenu,
+//        parameters: function () {
+//          return {
+//            parentId: System.getHashNav("album")[0]
+//          };
+//        },
+//        onDone: function () {
+//          System.setHashParameters({
+//            parentId: null
+//          });
+//        }
+//      });
 
       this.albumCard[0].show();
       this.albumsList[0].show();

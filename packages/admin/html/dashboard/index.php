@@ -65,7 +65,13 @@ if (!isset($_SESSION['login'])) {
 
       <div id="app-main-actions"></div>
 
-      <system-float-menu id="main-float-menu" class="ew-float-menu">          
+      <system-float-menu id="main-float-menu" class="ew-float-menu">
+        <button type="button"
+                class="btn btn-primary"
+                v-if="!action.hide"
+                v-for="action in actions" v-on:click="callActivity(action)">
+          {{ action.title }}
+        </button>
       </system-float-menu>
 
       <!--<div id="home-pane" class="home-pane"></div>-->

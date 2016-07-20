@@ -43,17 +43,21 @@
 
     UsersStateHandler.prototype.start = function () {
       this.table = null;
-      this.bAddUser = EW.addActivity({
-        title: "tr{New User}",
-        parent: System.UI.components.mainFloatMenu,
-        modal: {
-          class: "center"
-        },
-        activity: "admin/html/users-management/users/user-form/component.php",
-        paramters: {
-          userId: null
+      //this.bAddUser = EW.addActivity().hide().comeIn(300);
+
+      System.entity('ui/primary-actions').actions = [
+        {
+          title: "tr{New User}",
+          parent: System.UI.components.mainFloatMenu,
+          modal: {
+            class: "center"
+          },
+          activity: "admin/html/users-management/users/user-form/component.php",
+          paramters: {
+            userId: null
+          }
         }
-      }).hide().comeIn(300);
+      ];
 
       this.usersList();
     };

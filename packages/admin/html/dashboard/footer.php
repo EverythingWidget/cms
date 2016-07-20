@@ -78,7 +78,7 @@
 
           $("#action-bar-items").find("button,div").remove();
           System.ui.components.appMainActions.empty();
-          
+
 
           System.ui.components.mainContent.empty();
           System.abortAllRequests();
@@ -89,8 +89,9 @@
             if (!System.getHashNav("app")[0]) {
               return;
             }
-            
-            System.ui.components.mainFloatMenu[0].clean();
+
+//            System.ui.components.mainFloatMenu[0].clean();
+            System.entity('ui/primary-actions').actions = [];
 
             System.entity('ui/app-bar').subSections = module.data.subSections || [];
 
@@ -103,9 +104,9 @@
             }
 
             if (System.ui.components.mainFloatMenu.children().length > 0) {
-              System.ui.components.mainFloatMenu[0].on();
+              //System.ui.components.mainFloatMenu[0].on();
             } else {
-              System.ui.components.mainFloatMenu[0].off();
+              //System.ui.components.mainFloatMenu[0].off();
             }
 
             System.entity('ui/app-bar').isLoading = false;
@@ -522,7 +523,7 @@
         System.ui.components.sectionsMenuList[0].data = sections;
       }
 
-      if (EW.oldApp === app) {           
+      if (EW.oldApp === app) {
         System.ui.behaviors.highlightAppSection(currentSectionIndex, System.ui.components.sectionsMenuList[0].links[currentSectionIndex]);
       }
 
@@ -651,6 +652,21 @@
 
     System.entity('ui/main-content', mainContentVue);
 
+    var primaryActionsVue = new Vue({
+      el: '#main-float-menu',
+      data: {
+        actions: []
+      },
+      methods: {
+        callActivity: function (action) {
+          var activityCaller = EW.getActivity(action);
+          activityCaller(action.hash);
+        }
+      }
+    });
+
+    System.entity('ui/primary-actions', primaryActionsVue);
+
     $.each(installModules, function (key, val) {
       val.file = "index.php";
       val.id = val['id'];
@@ -719,8 +735,10 @@
 // create an observer instance
     var observer = new MutationObserver(function (mutations) {
       mutations.forEach(function (mutation) {
-        if (mutation.type === 'childList' && mutation.addedNodes.length) {
-          initPlugins(mutation.addedNodes[0]);
+        if (mutation.type === 'childList' &&
+                mutation.addedNodes.length &&
+                mutation.addedNodes[0].nodeType === Node.ELEMENT_NODE) {
+          initPlugins(mutation.target);
         }
       });
     });
@@ -729,7 +747,8 @@
     observer.observe(document.body, {
       attributes: false,
       childList: true,
-      characterData: false
+      characterData: false,
+      subtree: true
     });
 
 //    document.addEventListener("DOMNodeInserted", function (event) {

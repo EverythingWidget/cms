@@ -233,7 +233,7 @@
 
           if (!_this.expanded) {
             _this.expand();
-            window.addEventListener('touchstart', contract)
+            window.addEventListener('touchstart', contract);
           }
         };
 
@@ -256,20 +256,37 @@
 
         _this.addEventListener('mouseleave', contract);
 
-        this.style.position = "absolute";
+        this.style.position = 'absolute';
         this.xtag.originClassName = this.className;
+
+        this.xtag.observer = new MutationObserver(function (mutations) {
+          if (_this.children.length) {
+            _this.on();
+          } else {
+            _this.off();
+          }
+        });
 
         this.render();
       },
       inserted: function () {
+        var _this = this;
         this.className = this.xtag.originClassName;
         this.xtag.indicator.className = "ew-float-menu-indicator";
         this.parentNode.insertBefore(this.xtag.indicator, this);
-      },
-      attributeChanged: function (attrName, oldValue, newValue) {
+        
+//        window.requestAnimationFrame(function () {
+          _this.xtag.observer.observe(_this, {
+            attributes: false,
+            childList: true,
+            characterData: false
+          });
+//        });
       },
       removed: function () {
+        //this.xtag.observer.disconnect();
         this.off(true);
+        
       }
     },
     accessors: {
