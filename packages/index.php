@@ -65,7 +65,7 @@ if ($default_language) {
   $language = $default_language;
 }
 
-if (preg_match("/^([^~]{2})$/", $elements[$parameter_index], $match)) {
+if (preg_match("/^([^-]{2})$/", $elements[$parameter_index], $match)) {
   $language = $match[0];
   $_REQUEST["_url_language"] = $language;
   array_shift($elements);
@@ -103,8 +103,8 @@ $resource_types = [
 $resource_type = "html";
 $app_name = "webroot";
 //var_dump($elements[$parameter_index + 1]);
-if (strpos($elements[$parameter_index], '~') === 0) {
-  $app_name = str_replace('~', '', $elements[$parameter_index]);
+if (strpos($elements[$parameter_index], '-') === 0) {
+  $app_name = str_replace('-', '', $elements[$parameter_index]);
   $parameter_index++;
 
   if (count($elements) > 3 && $elements[$parameter_index]) {
@@ -114,7 +114,7 @@ if (strpos($elements[$parameter_index], '~') === 0) {
 }
 else if (in_array($elements[$parameter_index], $resource_types)) {
   if (isset($elements[$parameter_index + 1])) {
-    $app_name = str_replace('~', '', $elements[$parameter_index + 1]);
+    $app_name = str_replace('-', '', $elements[$parameter_index + 1]);
     $resource_type = $elements[$parameter_index];
     $parameter_index += 2;
   }
