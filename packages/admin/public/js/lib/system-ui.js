@@ -107,18 +107,25 @@
       if (children[index].__ui_neutral) {
         continue;
       }
+      
+      var cs = window.getComputedStyle(children[index], null);
+      
+      if (cs.position === 'absolute') {
+        continue;
+      }
 
-      var dimension = children[index].getBoundingClientRect();
-      var marginBottom = parseInt(window.getComputedStyle(children[index], null).marginBottom || 0);
+      //var dimension = children[index].getBoundingClientRect();
+      var dimension = children[index].offsetTop  + children[index].offsetHeight;
+      var marginBottom = parseInt(cs.marginBottom || 0);
 
-      height = dimension.bottom + marginBottom > height ? dimension.bottom + marginBottom : height;
+      height = dimension + marginBottom > height ? dimension + marginBottom : height;
     }
 
     if (withPaddings) {
       height += parseInt(window.getComputedStyle(element).paddingBottom || 0);
     }
 
-    return height - element.getBoundingClientRect().top;
+    return height;
   };
 
   SystemUI.prototype.behaviorProxy = function (component, behaviorId) {
