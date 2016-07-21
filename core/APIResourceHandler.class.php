@@ -80,6 +80,7 @@ class APIResourceHandler extends ResourceHandler {
       $permission_id = \EWCore::does_need_permission($app_name, $module_name, $resource_name . '/' . $api_command_name);
 
       if (!method_exists($app_section_object, $api_method_name)) {
+        
         return \EWCore::log_error(404, "$app_name-$resource_name: Method not found: `$api_method_name`");
       }
 

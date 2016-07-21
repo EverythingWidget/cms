@@ -114,7 +114,7 @@ if (strpos($elements[$parameter_index], '-') === 0) {
 }
 else if (in_array($elements[$parameter_index], $resource_types)) {
   if (isset($elements[$parameter_index + 1])) {
-    $app_name = str_replace('-', '', $elements[$parameter_index + 1]);
+    $app_name = $elements[$parameter_index + 1];
     $resource_type = $elements[$parameter_index];
     $parameter_index += 2;
   }

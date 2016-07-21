@@ -208,7 +208,6 @@
 
     if (!this.observer) {
       _this.observer = new MutationObserver(function (mutations) {
-
         _this.stagger = 0;
 
         mutations.forEach(function (item) {
@@ -229,8 +228,6 @@
 
           _this.animate(node);
         });
-
-
       });
 
       _this.observer.observe(_this.element, {

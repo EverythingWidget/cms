@@ -119,9 +119,9 @@ class EWCore {
 
   private static $CACHED_API_CALL_RESULTS = [];
 
-  public static function call_cached_api($url, $parameters = []) {
+  public static function call_cached_api($url, $parameters = [], $verb = 'GET') {
     $parts = explode('/', $url);
-    $params = array_merge($_REQUEST, [
+    $params = array_merge(/* $_REQUEST, */ [
         '_file' => implode('/', array_slice($parts, 3))
             ], $parameters);
 
@@ -134,6 +134,7 @@ class EWCore {
     }
 
     $params["_APIResourceHandler_output_array"] = true;
+    $params["_APIResourceHandler_verb"] = $verb;
 
     static::$CACHED_API_CALL_RESULTS[$cached_resource_id] = static::process_request_command($parts[0], $parts[1], $parts[2], $parts[3], $params);
     return static::$CACHED_API_CALL_RESULTS[$cached_resource_id];

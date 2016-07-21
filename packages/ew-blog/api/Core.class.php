@@ -277,6 +277,10 @@ class Core extends \ew\Module {
                 'id' => $id
     ]);
 
+    if ($folder_info['status_code'] !== 200) {
+      return $folder_info;
+    }
+
     $_response->properties['total'] = $collection_size;
     $_response->properties['page_size'] = $query_result->count();
     $_response->properties['parent'] = [
@@ -346,11 +350,11 @@ class Core extends \ew\Module {
     ];
   }
 
-  public function call_on_article_get($_response,$id) {
-    if(isset($_response->properties['total'])) {
+  public function call_on_article_get($_response, $id) {
+    if (isset($_response->properties['total'])) {
       return [];
     }
-    
+
     $post = $this->get_post($id);
     $date = $post['date_published'];
 
