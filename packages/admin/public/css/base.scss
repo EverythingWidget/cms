@@ -2942,7 +2942,6 @@ table.contents td {
   min-height: 50px;
   cursor: pointer;
   overflow: hidden;
-  -webkit-transition: all .3s;
   transition: all .3s;
   position: relative;
 
@@ -3879,4 +3878,9 @@ system-ui-view {
 system-spirit {
   display: block;
   position: relative;
+}
+
+.zoom-out {
+  /*opacity: 0.01;*/
+  transform: scale(0);
 }

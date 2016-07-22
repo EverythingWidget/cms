@@ -209,6 +209,7 @@
     if (!this.observer) {
       _this.observer = new MutationObserver(function (mutations) {
         _this.stagger = 0;
+        var nodes = [];
 
         mutations.forEach(function (item) {
           var node = null;
@@ -226,8 +227,10 @@
             return null;
           }
 
-          _this.animate(node);
+          node && nodes.push(node);
         });
+
+        _this.animate(nodes);
       });
 
       _this.observer.observe(_this.element, {
@@ -247,42 +250,174 @@
     }
   };
 
-  ZoomInAnimation.prototype.animate = function (node) {
+  ZoomInAnimation.prototype.animate = function (nodes, style) {
     var _this = this;
 
-    if (!node) {
+    if (!nodes.length) {
       return;
     }
 
-    if (!_this.timeline) {
-      _this.timeline = new TimelineLite({
-        paused: true,
-        smoothChildTiming: true,
-        onComplete: function () {
-          _this.timeline = null;
+    var timelineItems = [];
+    var timeline = new TimelineLite({
+      paused: true,
+      smoothChildTiming: true,
+      onComplete: function () {
+      }
+    });
+
+    nodes.forEach(function (element) {
+      TweenLite.set(element, {
+        transition: 'none',
+        scale: 0.01,
+        opacity: 0
+      });
+
+      timelineItems.push(TweenLite.to(element, .3, {
+        scale: 0.01,
+        opacity: 0,
+        clearProps: 'transition,scale,opacity',
+        ease: 'Power3.easeOut',
+        onComplete: function () { }
+      }));
+    });
+
+    timeline.add(timelineItems, null, null, 0.05);
+
+    timeline.play(0);
+  };
+
+  // ------ //
+
+  System.spiritAnimations.inOut = {};
+
+  System.spiritAnimations.inOut.register = function (element) {
+    new InOutAnimation(element);
+  };
+
+  System.spiritAnimations.inOut.deregister = function (element) {
+    if (element.xtag.InOutAnimation) {
+      element.xtag.InOutAnimation.off();
+    }
+  };
+
+  function InOutAnimation(element) {
+    var _this = this;
+    _this.element = element;
+    _this.item = element.getAttribute('in-out-item');
+    _this.class = element.getAttribute('in-out-class');
+
+    if (!this.observer) {
+      _this.observer = new MutationObserver(function (mutations) {
+        _this.stagger = 0;
+        var nodesIn = [];
+        var nodesOut = [];
+
+        mutations.forEach(function (item) {
+          var node = null;
+
+          if (item.addedNodes[0]) {
+            if (item.addedNodes[0].__ui_neutral || item.addedNodes[0].__in_out ||
+                    item.addedNodes[0].nodeType !== Node.ELEMENT_NODE ||
+                    !item.addedNodes[0].classList.contains(_this.item))
+              return null;
+
+            node = item.addedNodes[0];
+            nodesIn.push(node);
+          }
+
+          if (item.removedNodes[0] && (item.removedNodes[0].__ui_neutral || item.removedNodes[0].__in_out)) {
+            //item.removedNodes[0].__in_out = false;
+            return null;
+          }
+
+          if (item.removedNodes[0] &&
+                  item.removedNodes[0].nodeType === Node.ELEMENT_NODE &&
+                  item.removedNodes[0].classList.contains(_this.item)) {
+            node = item.removedNodes[0];
+            node.__in_out = true;
+            item.target.insertBefore(node, item.previousSibling.nextSibling);
+
+            nodesOut.push(node);
+          }
+        });
+
+        if (nodesOut.length) {
+          _this.animate(nodesOut, 'out');
         }
+
+        if (nodesIn.length) {
+          _this.animate(nodesIn, 'in');
+        }
+      });
+
+      _this.observer.observe(_this.element, {
+        attributes: false,
+        childList: true,
+        characterData: false,
+        subtree: true
       });
     }
 
-    TweenLite.set(node, {
-      transition: 'none',
-      scale: .1,
-      opacity: 0
+    _this.element.xtag.PopInAnimation = this;
+  }
+
+  InOutAnimation.prototype.off = function () {
+    if (this.observer) {
+      this.observer.disconnect();
+    }
+  };
+
+  InOutAnimation.prototype.animate = function (nodes, style) {
+    var _this = this;
+
+    if (!nodes.length || !_this.class) {
+      return;
+    }
+
+    _this.timelineItems = [];
+    var timeline = new TimelineLite({
+      paused: true,
+      smoothChildTiming: true,
+      onComplete: function () {
+        _this.timeline = null;
+      }
     });
 
-    _this.timeline.fromTo(node, .3, {
-      scale: .1
-    }, {
-      scale: 1,
-      opacity: 1,
-      ease: 'Power3.easeOut',
-      clearProps: 'transition,opacity,scale',
-      onComplete: function () { }
-    }, '-=.28');
+    if (style === 'in') {
+      TweenLite.set(nodes, {
+        transition: '',
+        className: '+=' + _this.class,
+        immediateRender: true
+      });
 
-    clearTimeout(_this.animationThrottle);
-    _this.animationThrottle = setTimeout(function () {
-      _this.timeline.play(0);
-    }, 100);
+      nodes.forEach(function (element) {
+        _this.timelineItems.push(TweenLite.to(element, .4, {
+          className: '-=' + _this.class,
+          ease: 'Power3.easeOut',
+          onComplete: function () { }
+        }));
+      });
+
+      timeline.add(_this.timelineItems, null, null, 0.2);
+    } else {
+      TweenLite.set(nodes, {
+        className: '-=' + _this.class
+      });
+
+      nodes.forEach(function (element) {
+        _this.timelineItems.push(TweenLite.to(element, .4, {
+          className: '+=' + _this.class,
+          ease: 'Power3.easeOut',
+          onComplete: function () {
+            element.parentNode && element.parentNode.removeChild(element);
+          }
+        }));
+      });
+
+      timeline.add(_this.timelineItems, null, null);
+    }
+
+    timeline.play(0);
   };
+
 })(System, TweenLite);
