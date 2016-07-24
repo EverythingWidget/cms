@@ -251,7 +251,7 @@ class Core extends \ew\Module {
 
     $query_result_array = $query_result->toArray();
 
-    $posts = [];
+    $posts = new \Illuminate\Database\Eloquent\Collection;
     if (is_array($query_result_array)) {
       foreach ($query_result_array as $post) {
         $content_fields = $post["content_fields"];
@@ -265,11 +265,11 @@ class Core extends \ew\Module {
             'content' => \DateTime::createFromFormat('Y-m-d H:i:s', $post['date_published'])->format('Y-m-d')
         ];
 
-        $posts[] = [
+        $posts->add([
             "id"             => $post["id"],
             "html"           => $post["content"],
             "content_fields" => $content_fields
-        ];
+        ]);
       }
     }
 
@@ -280,9 +280,13 @@ class Core extends \ew\Module {
     if ($folder_info['status_code'] !== 200) {
       return $folder_info;
     }
+    
+    $result = new \ew\Result;
+    $result->data = $posts;
 
-    $_response->properties['total'] = $collection_size;
-    $_response->properties['page_size'] = $query_result->count();
+    $result->total = $collection_size;
+    $result->page_size = $query_result->count();
+    
     $_response->properties['parent'] = [
         'title'          => $folder_info['data']['title'],
         'keywords'       => $folder_info['data']['keywords'],
@@ -290,7 +294,8 @@ class Core extends \ew\Module {
         'content_fields' => $folder_info['data']['content_fields'],
     ];
 
-    return $posts;
+    //return $posts; 
+   return \ew\APIResponse::standard_response($_response, $result);
   }
 
   public function ew_page_feeder_post($id, $params = [], $_language = 'en') {
@@ -318,6 +323,7 @@ class Core extends \ew\Module {
       $result["publish_date"] = $post_data["publish_date"];
       return \ew\APIResourceHandler::to_api_response($result, ["type" => "object"]);
     }
+
     return \ew\APIResourceHandler::to_api_response([], ["type" => "object"]);
   }
 
