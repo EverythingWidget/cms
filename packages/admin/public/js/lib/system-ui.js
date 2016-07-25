@@ -250,25 +250,26 @@
     t = t || system.UI.DEFAULTS.animationDuration;
     var sourceRect = conf.element.getBoundingClientRect();
     var ss = window.getComputedStyle(conf.element);
-    var lockPane = document.createElement("div");
+    var lockPane = document.createElement('div');
     lockPane.__ui_neutral = true;
-    lockPane.className = "lock-pane";
-    lockPane.style.position = "fixed";
+    lockPane.className = 'lock-pane';
+    lockPane.style.position = 'fixed';
     lockPane.style.left = sourceRect.left + 'px';
     lockPane.style.top = sourceRect.top + 'px';
     lockPane.style.width = sourceRect.width + "px";
     lockPane.style.height = sourceRect.height + "px";
+    
     lockPane.style.zIndex = (ss.zIndex === "0" || ss.zIndex === "auto") ? 1 : ss.zIndex;
     //conf.element.style.opacity = .5;
     //lockPane.style.transition = "opacity " + t + "s";
 
     if (conf.akcent) {
-      var akcent = document.createElement("div");
+      var akcent = document.createElement('div');
       akcent.className = conf.akcent;
-      akcent.style.transform = "scale(0)";
+      akcent.style.transform = 'scale(0)';
       lockPane.appendChild(akcent);
       tween.to(akcent, t, {
-        transform: "scale(1)",
+        transform: 'scale(1)',
         ease: Back.easeOut.config(2),
         y: 0
       });
@@ -276,16 +277,16 @@
 
     conf.element.parentNode.insertBefore(lockPane, conf.element.nextSibling);
     tween.to(lockPane, t, {
-      className: "lock-pane show"
+      className: 'lock-pane show'
     });
 
 
     lockPane.dispose = function (fast) {
       if (conf.akcent) {
         tween.to(akcent, fast ? 0 : t, {
-          transform: "scale(.5)",
+          transform: 'scale(.5)',
           opacity: 0,
-          ease: "Power2.easeInOut"
+          ease: 'Power2.easeInOut'
         });
       }
 
