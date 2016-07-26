@@ -23,7 +23,7 @@ function script() {
           handler.state.data.tab = null;
         });
 
-        handler.state.on('app', System.utility.withHost(handler.state).behave(System.ui.behaviors.selectAppSection));
+        handler.state.on('app', System.utility.withHost(handler.state).behave(System.services.app_service.select_app_section));
       });
     })();
 

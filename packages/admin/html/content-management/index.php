@@ -49,7 +49,7 @@ echo admin\AppsManagement::create_section_main_form();
        });*/
 
       // Simplified version of above snippet
-      this.state.on('app', System.ui.behave(System.ui.behaviors.selectAppSection, component));
+      this.state.on('app', System.ui.behave(System.services.app_service.select_app_section, component));
     };
 
     ContentManagementStateHandler.prototype.start = function () {

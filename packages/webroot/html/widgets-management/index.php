@@ -7,36 +7,36 @@ function script() {
   <script>
     (function () {
 
-      function WidgetsManagementComponent(module) {
+      function WidgetsManagementStateHandler(state) {
         var component = this;
-        this.module = module;
-        this.module.type = "app";
+        this.state = state;
+        this.state.type = "app";
         this.data = {};
 
-        this.module.bind('init', function () {
+        this.state.bind('init', function () {
           component.init();
         });
 
-        this.module.bind('start', function () {
+        this.state.bind('start', function () {
           component.start();
         });
       }
 
 
-      WidgetsManagementComponent.prototype.init = function () {
-        this.module.data.sections = <?= EWCore::read_registry_as_json('ew/ui/apps/widgets/navs') ?>;        
+      WidgetsManagementStateHandler.prototype.init = function () {
+        this.state.data.sections = <?= EWCore::read_registry_as_json('ew/ui/apps/widgets/navs') ?>;
 
-        this.module.data.installModules = this.module.data.sections;
+        this.state.data.installModules = this.state.data.sections;
 
-        this.module.on('app', System.ui.behaviorProxy(this, 'selectAppSection'));
+        this.state.on('app', System.utility.withHost(this).behave(System.services.app_service.select_app_section));
       };
 
-      WidgetsManagementComponent.prototype.start = function () {
+      WidgetsManagementStateHandler.prototype.start = function () {
         this.data.tab = null;
       };
 
       System.state("widgets-management", function (state) {
-        new WidgetsManagementComponent(state);
+        new WidgetsManagementStateHandler(state);
       });
 
     })();

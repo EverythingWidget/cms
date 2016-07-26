@@ -23,7 +23,7 @@ function PageLayoutsStateHandler(state) {
 }
 
 PageLayoutsStateHandler.prototype.init = function () {
-  this.state.on('app',System.ui.behaviorProxy(this.state, 'selectSubSection'));
+  this.state.on('app', System.utility.withHost(this.state).behave(System.services.app_service.select_sub_section));
 };
 
 PageLayoutsStateHandler.prototype.start = function () {

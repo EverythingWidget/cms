@@ -32,7 +32,7 @@ echo admin\AppsManagement::create_section_main_form();
 
       this.module.installModules = this.module.data.sections;
 
-      this.module.on('app', System.ui.behave(System.ui.behaviors.selectAppSection, component));
+      this.module.on('app', System.ui.behave(System.services.app_service.select_app_section, component));
     };
 
     UsersManagementComponent.prototype.start = function () {

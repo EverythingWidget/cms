@@ -658,6 +658,10 @@
     withHost: function (hostObject) {
       return {
         behave: function (behavior) {
+          if (typeof behavior !== 'function') {
+            throw 'Behavior is not a function: ' + behavior;
+          }
+
           return function () {
             Array.prototype.unshift.call(arguments, hostObject);
 
