@@ -18,20 +18,6 @@ class Core extends \ew\Module {
   }
 
   protected function install_assets() {
-
-//    $table_install = EWCore::create_table('ew_blog_subscribers', [
-//                'id' => 'BIGINT(20) AUTO_INCREMENT PRIMARY KEY',
-//                'email' => 'VARCHAR(200) NOT NULL',
-//                'options' => 'TEXT NOT NULL',
-//                'date_created' => 'DATETIME NOT NULL'
-//    ]);
-//
-//    $pdo = EWCore::get_db_PDO();
-//    $stm = $pdo->prepare($table_install);
-//    if (!$stm->execute()) {
-//      echo json_encode(EWCore::log_error(500, '', $stm->errorInfo()));
-//    }
-
     $table_install = EWCore::create_table('ew_blog_posts', [
                 'id'             => 'BIGINT AUTO_INCREMENT PRIMARY KEY',
                 'content_id'     => 'VARCHAR(200) NOT NULL',
@@ -237,7 +223,8 @@ class Core extends \ew\Module {
         break;
     }
 
-    if (isset($params['show_drafts']) && !boolval($params['show_drafts'])) {
+    // By default show all including drafts, unless otherwise is requested
+    if (isset($params['show_drafts']) && !filter_var($params['show_drafts'], FILTER_VALIDATE_BOOLEAN)) {
       $query->where('posts.draft', '!=', '1');
     }
 

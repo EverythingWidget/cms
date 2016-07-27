@@ -81,10 +81,7 @@
       System.ui.utility.addClass(element, "inline-loader");
 
       System.entity('ui/app-bar').subSections = [];
-
-      $("#action-bar-items").find("button,div").remove();
-      System.ui.components.appMainActions.empty();
-
+      System.entity('ui/primary-actions').actions = [];
 
       System.ui.components.mainContent.empty();
       System.abortAllRequests();
@@ -96,20 +93,12 @@
           return;
         }
 
-//            System.ui.components.mainFloatMenu[0].clean();
-        System.entity('ui/primary-actions').actions = [];
-
         System.entity('ui/app-bar').subSections = module.data.subSections || [];
 
         System.entity('ui/main-content').show = false;
         System.ui.components.mainContent.html(html);
+        
         module.start();
-
-//        if (System.ui.components.mainFloatMenu.children().length > 0) {
-//          //System.ui.components.mainFloatMenu[0].on();
-//        } else {
-//          //System.ui.components.mainFloatMenu[0].off();
-//        }
 
         System.entity('ui/app-bar').isLoading = false;
         System.ui.utility.removeClass(element, "inline-loader");
@@ -122,9 +111,7 @@
 
   System.services.app_service.load_tab = function (module) {
     System.entity('ui/app-bar').isLoading = true;
-    $("#action-bar-items").find("button,div").remove();
-    System.ui.components.appMainActions.empty();
-//    System.ui.components.mainFloatMenu[0].clean();
+    System.entity('ui/primary-actions').actions = [];
 
     System.ui.components.mainContent.empty();
     System.abortAllRequests();
@@ -132,8 +119,6 @@
     System.loadModule(module, tabLoaded);
 
     function tabLoaded(module, html) {
-      $("#action-bar-items").find("button,div").remove();
-
       if (!System.getHashNav('app')[0]) {
         return;
       }

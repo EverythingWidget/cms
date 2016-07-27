@@ -47,7 +47,7 @@ class APIResourceHandler extends ResourceHandler {
     $verb = $api_verb ? $this->verbs[strtoupper($api_verb)] : $this->verbs[strtoupper($_SERVER['REQUEST_METHOD'])];
 
     if (!$verb) {
-      return \EWCore::log_error(400, 'Request verb is unknown: $verb');
+      return \EWCore::log_error(400, 'Request verb is unknown: server: ' . $_SERVER['REQUEST_METHOD'] . ', internal: ' . $api_verb);
     }
 
     // Set the verb as command name if command is empty
@@ -80,7 +80,7 @@ class APIResourceHandler extends ResourceHandler {
       $permission_id = \EWCore::does_need_permission($app_name, $module_name, $resource_name . '/' . $api_command_name);
 
       if (!method_exists($app_section_object, $api_method_name)) {
-        
+
         return \EWCore::log_error(404, "$app_name-$resource_name: Method not found: `$api_method_name`");
       }
 
