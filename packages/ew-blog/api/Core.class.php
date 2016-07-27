@@ -237,8 +237,8 @@ class Core extends \ew\Module {
         break;
     }
 
-    if (!boolval($params['show_drafts'])) {
-      $query->where('posts.draft', '0');
+    if (isset($params['show_drafts']) && !boolval($params['show_drafts'])) {
+      $query->where('posts.draft', '!=', '1');
     }
 
     $collection_size = $query->get()->count();
@@ -280,13 +280,13 @@ class Core extends \ew\Module {
     if ($folder_info['status_code'] !== 200) {
       return $folder_info;
     }
-    
+
     $result = new \ew\Result;
     $result->data = $posts;
 
     $result->total = $collection_size;
     $result->page_size = $query_result->count();
-    
+
     $_response->properties['parent'] = [
         'title'          => $folder_info['data']['title'],
         'keywords'       => $folder_info['data']['keywords'],
@@ -295,7 +295,7 @@ class Core extends \ew\Module {
     ];
 
     //return $posts; 
-   return \ew\APIResponse::standard_response($_response, $result);
+    return \ew\APIResponse::standard_response($_response, $result);
   }
 
   public function ew_page_feeder_post($id, $params = [], $_language = 'en') {
@@ -335,7 +335,7 @@ class Core extends \ew\Module {
     }
 
     $publish_date = $ew_blog['date_published'];
-    $draft = $ew_blog['draft'];
+    $draft = isset($ew_blog['draft']) ? $ew_blog['draft'] : 0;
     $table_name = 'ew_contents';
     $post_id = \ew\DBUtility::row_exist($pdo, 'ew_blog_posts', $id, 'content_id');
     if ($post_id) {
@@ -398,7 +398,7 @@ class Core extends \ew\Module {
     return $stmt->execute([
                 $content_id,
                 $publish_date,
-                $draft,
+                isset($draft) ? $draft : 0,
                 $_SESSION['EW.USER_ID']
     ]);
   }

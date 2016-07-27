@@ -262,7 +262,7 @@ class ContentsRepository implements \ew\CRUDRepository {
   }
 
   private function get_content_fields($html) {
-    $content_fields = new \ew\Result();
+    $content_fields = new \stdClass;
     if (!isset($html) || $html === "") {
       return $content_fields;
     }
