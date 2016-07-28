@@ -672,4 +672,8 @@
     }
   };
 
+//  window.System = System;
+
+  exports.System = System;
 }());
+

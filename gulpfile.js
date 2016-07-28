@@ -87,10 +87,10 @@ gulp.task('watch-webroot-templates', [
 });
 
 gulp.task('watch-admin-styles', [
-  'admin:compile:scss','admin:compile:base:scss'
+  'admin:compile:scss', 'admin:compile:base:scss'
 ], function () {
   gulp.watch('packages/admin/**/*.scss', [
-    'admin:compile:scss','admin:compile:base:scss'
+    'admin:compile:scss', 'admin:compile:base:scss'
   ]).on('change', function () {
     browserSync.reload();
   });
@@ -116,4 +116,16 @@ gulp.task('ser-dev-backend', [
   gulp.watch('**/*.php').on('change', function () {
     browserSync.reload();
   });
+});
+
+var mocha = require('gulp-mocha');
+
+gulp.task('test-mochas', function () {
+  return gulp.src('packages/*/html/**/*.mocha.js', {read: false})
+          // gulp-mocha needs filepaths so you can't have any plugins before it 
+          .pipe(mocha());
+});
+
+gulp.task('watch-and-test', ['test-mochas'], function () {
+  gulp.watch('packages/*/html/**/*.js', ['test-mochas']);
 });

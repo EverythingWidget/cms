@@ -135,7 +135,8 @@ class APIResourceHandler extends ResourceHandler {
               $response_data = (array) $response_data;
             }
             else if ($response_data !== null && !is_a($response_data, 'stdClass') && !is_array($response_data)) {
-              die(\EWCore::log_error(500, 'Module can not return object. Only array or stdClass is allowed ' . get_class($response_data), [
+              $type = is_object($response_data) ? get_class($response_data) : gettype($response_data);
+              die(\EWCore::log_error(500, 'Module can not return object. Only array or stdClass is allowed ' . $type, [
                           $real_class_name . '->' . $api_method_name . ' returns object.'
               ]));
             }
@@ -181,8 +182,9 @@ class APIResourceHandler extends ResourceHandler {
             $listener_result = (array) $listener_result;
           }
           else if ($listener_result !== null && !is_a($listener_result, 'stdClass') && !is_array($listener_result)) {
+            $type = is_object($listener['object']) ? get_class($listener['object']) : gettype($listener['object']);
             die(\EWCore::log_error(500, 'Module can not return object. Only array or stdClass is allowed', [
-                        get_class($listener['object']) . '->' . $listener['method'] . ' returns object.'
+                        $type . '->' . $listener['method'] . ' returns object.'
             ]));
           }
 
