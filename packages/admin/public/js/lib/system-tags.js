@@ -253,7 +253,7 @@
 
         _this.addEventListener('mouseleave', expand);
         _this.addEventListener('touchstart', expand);
-
+//
         _this.addEventListener('mouseleave', contract);
 
         this.style.position = 'absolute';
@@ -266,27 +266,28 @@
             _this.off();
           }
         });
-
-        this.render();
       },
       inserted: function () {
         var _this = this;
         this.className = this.xtag.originClassName;
         this.xtag.indicator.className = "ew-float-menu-indicator";
         this.parentNode.insertBefore(this.xtag.indicator, this);
-        
-//        window.requestAnimationFrame(function () {
-          _this.xtag.observer.observe(_this, {
-            attributes: false,
-            childList: true,
-            characterData: false
-          });
-//        });
+
+        _this.xtag.observer.observe(_this, {
+          attributes: false,
+          childList: true,
+          characterData: false
+        });
+
+        if (_this.children.length) {
+          _this.on();
+        } else {
+          _this.off();
+        }
       },
       removed: function () {
         //this.xtag.observer.disconnect();
         this.off(true);
-        
       }
     },
     accessors: {
@@ -307,32 +308,11 @@
       }
     },
     methods: {
-      render: function () {
-        switch (this.position || "css") {
-          case "css":
-            this.xtag.indicator.style.right = this.style.right = "";
-            this.xtag.indicator.style.top = this.style.bottom = "";
-            this.xtag.indicator.style.position = "";
-            this.style.position = "";
-            break;
-            /*case "ne":
-             this.xtag.indicator.style.right = this.style.right = "5%";
-             this.xtag.indicator.style.top = this.style.bottom = "5%";*/
-            break;
-          case "se":
-          default:
-            //this.xtag.indicator.style.right = this.style.right = "5%";
-            //this.xtag.indicator.style.bottom = this.style.bottom = "5%";
-            this.xtag.indicator.setAttribute("position", "se");
-            break;
-        }
-      },
       expand: function () {
         if (this.expanded)
           return;
+
         this.expanded = true;
-
-
         System.ui.utility.addClass(this, 'expand');
         System.ui.utility.addClass(this.xtag.indicator, 'active');
       },
@@ -343,13 +323,6 @@
       },
       on: function (flag) {
         if (this.xtag.indicator.parentNode) {
-          //this.xtag.indicator.className = this.xtag.originClassName + "-indicator";
-          TweenLite.to(this.xtag.indicator, .3, {
-            className: "-=destroy",
-            onComplete: function () {
-            }
-          });
-
           TweenLite.to(this.xtag.indicator, .3, {
             className: "-=destroy",
             ease: "Power2.easeInOut"

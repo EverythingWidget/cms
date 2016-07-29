@@ -674,6 +674,6 @@
 
 //  window.System = System;
 
-  exports.System = System;
+  //exports.System = System;
 }());
 
