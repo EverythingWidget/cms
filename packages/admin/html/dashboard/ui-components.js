@@ -13,6 +13,11 @@
         currentApp: null,
         currentSection: null,
         currentSubSection: null
+      },
+      methods: {
+        goToState: function (state) {
+          System.app.setNav(state);
+        }
       }
     });
 

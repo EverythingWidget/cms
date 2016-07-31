@@ -149,7 +149,7 @@
   System.services.app_service.select_sub_section = function (component, full, tab) {
     if (!tab) {
       if (component.data.activeSubSection) {
-        var appBar = System.entity('ui/app-bar');
+        var appBar = System.entity('ui/apps');
         appBar.goToState(appBar.currentApp + '/' + appBar.currentSection + '/' + component.data.activeSubSection);
       }
 

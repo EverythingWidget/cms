@@ -27,7 +27,6 @@ class ew_blog_comments extends \Illuminate\Database\Eloquent\Model {
 
   const CREATED_AT = 'date_created';
   const UPDATED_AT = 'date_updated';
-  const DELETED_AT = 'date_deleted';
 
   public static $RULES = [];
 

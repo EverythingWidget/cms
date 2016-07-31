@@ -29,8 +29,7 @@ class Comments extends \ew\Module {
                 'content'      => 'TEXT NULL',
                 'visibility'   => 'VARCHAR(300)',
                 'date_created' => 'DATETIME NULL',
-                'date_updated' => 'DATETIME NULL',
-                'date_deleted' => 'DATETIME NULL'
+                'date_updated' => 'DATETIME NULL'
     ]);
 
     $PDO = \EWCore::get_db_PDO();
