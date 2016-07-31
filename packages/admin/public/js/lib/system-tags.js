@@ -219,13 +219,14 @@
 
   // EW Actions Container
 
-  var ewFloatMenu = {
+  var FloatMenu = {
     lifecycle: {
       created: function () {
         var _this = this;
         this.xtag.indicator = document.createElement("div");
         this.xtag.indicator.className = "ew-float-menu-indicator";
         this.xtag.indicator.style.position = "absolute";
+        _this.xtag.actionsContainer = _this.querySelector('[actions]');
 
         var expand = function (e) {
           e.stopPropagation();
@@ -240,7 +241,7 @@
         var contract = function (e) {
           e.stopPropagation();
           e.preventDefault();
-
+          
           if (_this.expanded) {
             _this.contract();
           }
@@ -248,19 +249,19 @@
           window.removeEventListener('touchstart', contract);
         };
 
-        _this.xtag.indicator.addEventListener('mouseenter', expand);
-        _this.xtag.indicator.addEventListener('touchstart', expand);
+        //_this.xtag.indicator.addEventListener('mouseenter', expand);
+        //_this.xtag.indicator.addEventListener('touchstart', expand);
 
-        _this.addEventListener('mouseleave', expand);
+        _this.addEventListener('mouseenter', expand);
         _this.addEventListener('touchstart', expand);
-//
+
         _this.addEventListener('mouseleave', contract);
 
         this.style.position = 'absolute';
         this.xtag.originClassName = this.className;
 
         this.xtag.observer = new MutationObserver(function (mutations) {
-          if (_this.children.length) {
+          if (_this.xtag.actionsContainer.children.length) {
             _this.on();
           } else {
             _this.off();
@@ -268,12 +269,9 @@
         });
       },
       inserted: function () {
-        var _this = this;
-        this.className = this.xtag.originClassName;
-        this.xtag.indicator.className = "ew-float-menu-indicator";
-        this.parentNode.insertBefore(this.xtag.indicator, this);
+        var _this = this;                    
 
-        _this.xtag.observer.observe(_this, {
+        _this.xtag.observer.observe(_this.xtag.actionsContainer, {
           attributes: false,
           childList: true,
           characterData: false
@@ -314,24 +312,27 @@
 
         this.expanded = true;
         System.ui.utility.addClass(this, 'expand');
-        System.ui.utility.addClass(this.xtag.indicator, 'active');
+        //System.ui.utility.addClass(this.xtag.indicator, 'active');
       },
       contract: function () {
         this.expanded = false;
         System.ui.utility.removeClass(this, 'expand');
-        System.ui.utility.removeClass(this.xtag.indicator, 'active');
+        //System.ui.utility.removeClass(this.xtag.indicator, 'active');
       },
       on: function (flag) {
-        if (this.xtag.indicator.parentNode) {
-          TweenLite.to(this.xtag.indicator, .3, {
-            className: "-=destroy",
-            ease: "Power2.easeInOut"
-          });
-        }
+        System.ui.utility.removeClass(this,'off');
+        
+//        if (this.xtag.indicator.parentNode) {
+//          TweenLite.to(this.xtag.indicator, .3, {
+//            className: "-=destroy",
+//            ease: "Power2.easeInOut"
+//          });
+//        }
       },
       off: function (flag) {
         var _this = this;
-        if (_this.xtag.indicator.parentNode) {
+        System.ui.utility.addClass(this,'off');
+        /*if (_this.xtag.indicator.parentNode) {
           this.xtag.indicator.className = "ew-float-menu-indicator";
           this.expanded = false;
           TweenLite.to(this.xtag.indicator, .3, {
@@ -346,7 +347,7 @@
             className: "-=expand",
             ease: "Power2.easeInOut"
           });
-        }
+        }*/
       },
       clean: function () {
         this.innerHTML = "";
@@ -360,7 +361,7 @@
     }
   };
 
-  xtag.register("system-float-menu", ewFloatMenu);
+  xtag.register("system-float-menu", FloatMenu);
 
   var SystemUITemplate = {
     lifecycle: {

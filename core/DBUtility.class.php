@@ -41,8 +41,90 @@ class DBUtility {
         }
       }
     }
-    
+
     return $query;
+  }
+
+  public static function create_table($table, $fields) {
+
+    $sql = "CREATE TABLE IF NOT EXISTS `$table` (";
+    $pk = '';
+
+    foreach ($fields as $field => $type) {
+      $sql .= "`$field` $type,";
+
+      if (preg_match('/AUTO_INCREMENT/i', $type)) {
+        $pk = $field;
+      }
+    }
+
+    $sql = rtrim($sql, ',') /* . ', PRIMARY KEY (`' . $pk . '`)' */;
+
+    $sql .= ") CHARACTER SET utf8 COLLATE utf8_general_ci";
+    return $sql;
+  }
+
+  private static $TYPES = [
+      'BIGINT'  => 'BIGINT(20)',
+      'BOOLEAN' => 'TINYINT(1)'
+  ];
+
+  public static function alter_table($table, $fields, $current_stucture) {
+    $new_fields = [];
+
+    $sql = "ALTER TABLE `$table` ";
+
+    foreach ($fields as $field => $type) {
+
+      $status = 'new';
+
+      foreach ($current_stucture as $old_field) {
+        $new_type = strtoupper($old_field['Type']) . ' ';
+        $is_null = $old_field['Null'] === 'YES' ? 'NULL ' : 'NOT NULL ';
+        $extra = $old_field['Extra'] ? strtoupper($old_field['Extra']) . ' ' : '';
+        $primary_key = $old_field['Key'] === 'PRI' ? 'PRIMARY KEY ' : '';
+        $default = !is_null($old_field['Default']) ? 'DEFAULT ' . $old_field['Default'] : '';
+        $old_type = $new_type . $is_null . $extra . $primary_key . $default;
+        $old_type = trim($old_type);
+
+        if ($old_field['Field'] === $field) {
+          if ($old_type === $type) {
+            $status = 'same';
+            $new_fields[] = $field;
+          }
+          elseif ($old_field['Field'] === $field && $old_type !== $type) {
+            $sql .= "MODIFY COLUMN `$field` $type,";
+            $status = 'modify';
+            $new_fields[] = $field;
+          }
+        }
+      }
+
+      if ($status === 'new') {
+        $sql .= "ADD COLUMN `$field` $type, ";
+      }
+    }
+
+
+
+    $sql = rtrim($sql, ',');
+
+    return $sql;
+  }
+
+  public static function get_table_structre($table) {
+    $PDO = \EWCore::get_db_PDO();
+
+    $statement = $PDO->prepare("DESCRIBE $table");
+
+    if (!$statement->execute()) {
+//      return $statement->errorInfo();
+      return false;
+    }
+
+    $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
+
+    return $result;
   }
 
 }

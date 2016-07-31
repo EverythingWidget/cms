@@ -22,7 +22,7 @@ if (!isset($_SESSION['login'])) {
           <span id="app-title" class="apps-menu-title"></span>
           <ul class="apps-menu-list">
             <li v-for="app in apps">
-              <a class="apps-menu-link" data-app="{{app.id}}">
+              <a class="apps-menu-link" data-app="{{app.id}}" v-bind:class="{ 'selected' : currentApp === app.id}">
                 <span>{{app.title}}</span>
               </a>
             </li>
@@ -65,13 +65,16 @@ if (!isset($_SESSION['login'])) {
 
       <div id="app-main-actions"></div>
 
-      <system-float-menu id="main-float-menu" class="ew-float-menu">
-        <button type="button"
-                class="btn btn-primary"
-                v-if="!action.hide"
-                v-for="action in actions" v-on:click="callActivity(action)">
-          {{ action.title }}
-        </button>
+      <system-float-menu id="main-float-menu" class="system-float-menu">
+        <div class="float-menu-indicator"></div>
+        <div class="float-menu-actions" actions>
+          <button type="button"
+                  class="btn btn-primary"
+                  v-if="!action.hide"
+                  v-for="action in actions" v-on:click="callActivity(action)">
+            {{ action.title }}
+          </button>
+        </div>
       </system-float-menu>
 
       <!--<div id="home-pane" class="home-pane"></div>-->

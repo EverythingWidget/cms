@@ -291,6 +291,10 @@ class EWCore {
     return self::$db_connection;
   }
 
+  /**
+   * 
+   * @return \PDO
+   */
   public static function get_db_PDO() {
     $database_config = include('../config/database.php');
     // default database connection
@@ -315,6 +319,7 @@ class EWCore {
       print_r($e);
       die();
     }
+
     return $pdo;
   }
 
@@ -1846,17 +1851,31 @@ class EWCore {
     $pk = '';
 
     foreach ($fields as $field => $type) {
-      $sql.= "`$field` $type,";
-
-      if (preg_match('/AUTO_INCREMENT/i', $type)) {
-        $pk = $field;
-      }
+      $sql .= "`$field` $type,";
     }
 
     $sql = rtrim($sql, ',') /* . ', PRIMARY KEY (`' . $pk . '`)' */;
 
     $sql .= ") CHARACTER SET utf8 COLLATE utf8_general_ci";
     return $sql;
+  }
+  
+
+  public static function prepare_database_model($table, $fields) {
+    $table_structure = ew\DBUtility::get_table_structre($table);
+    if ($table_structure === false) {
+//      $PDO = static::get_db_PDO();
+//      $table_statement = ew\DBUtility::create_table($table, $fields);
+//
+//      $create_table_statement = $PDO->prepare($table_statement);
+//      if (!$create_table_statement->execute()) {
+//        return EWCore::log_error(500, '', $create_table_statement->errorInfo());
+//      }
+    }
+    else {
+//      return $table_structure;
+      return ew\DBUtility::alter_table($table, $fields, $table_structure);
+    }
   }
 
   public static function is_list($array) {

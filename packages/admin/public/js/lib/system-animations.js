@@ -87,19 +87,23 @@
 })();
 
 (function (System, TweenLite) {
-  System.spiritAnimations = {};
+  System.spiritAnimations = {
+    CONFIG: {
+      baseDuration: 0.4,
+      staggerDuration: 0.05
+    }
+  };
 
   // spirit animations should follow the service pattern, so the animation is a singleton object which is
   // responsible for registering elements and managing their animations
-  System.spiritAnimations.liveHeight = {};
-
-  System.spiritAnimations.liveHeight.register = function (element) {
-    new LiveHeightAnimation(element);
-  };
-
-  System.spiritAnimations.liveHeight.deregister = function (element) {
-    if (element.xtag.liveHeightAnimation) {
-      element.xtag.liveHeightAnimation.off();
+  System.spiritAnimations.liveHeight = {
+    register: function (element) {
+      new LiveHeightAnimation(element);
+    },
+    deregister: function (element) {
+      if (element.xtag.liveHeightAnimation) {
+        element.xtag.liveHeightAnimation.off();
+      }
     }
   };
 
@@ -174,7 +178,7 @@
       var newHeight = System.ui.utility.getContentHeight(_this.element, true);
 
       if (_this.height !== newHeight) {
-        _this.animation = TweenLite.fromTo(_this.element, .3, {
+        _this.animation = TweenLite.fromTo(_this.element, System.spiritAnimations.CONFIG.baseDuration, {
           height: _this.height
         }, {
           height: newHeight,
@@ -189,15 +193,14 @@
 
   // ------ //
 
-  System.spiritAnimations.zoom = {};
-
-  System.spiritAnimations.zoom.register = function (element) {
-    new ZoomInAnimation(element);
-  };
-
-  System.spiritAnimations.zoom.deregister = function (element) {
-    if (element.xtag.PopInAnimation) {
-      element.xtag.PopInAnimation.off();
+  System.spiritAnimations.zoom = {
+    register: function (element) {
+      new ZoomInAnimation(element);
+    },
+    deregister: function (element) {
+      if (element.xtag.PopInAnimation) {
+        element.xtag.PopInAnimation.off();
+      }
     }
   };
 
@@ -251,8 +254,6 @@
   };
 
   ZoomInAnimation.prototype.animate = function (nodes, style) {
-    var _this = this;
-
     if (!nodes.length) {
       return;
     }
@@ -272,31 +273,30 @@
         opacity: 0
       });
 
-      timelineItems.push(TweenLite.to(element, .3, {
-        scale: 0.01,
-        opacity: 0,
+      timelineItems.push(TweenLite.to(element, System.spiritAnimations.CONFIG.baseDuration, {
+        scale: 1,
+        opacity: 1,
         clearProps: 'transition,scale,opacity',
         ease: 'Power3.easeOut',
         onComplete: function () { }
       }));
     });
 
-    timeline.add(timelineItems, null, null, 0.05);
+    timeline.add(timelineItems, null, null, System.spiritAnimations.CONFIG.staggerDuration);
 
     timeline.play(0);
   };
 
   // ------ //
 
-  System.spiritAnimations.inOut = {};
-
-  System.spiritAnimations.inOut.register = function (element) {
-    new InOutAnimation(element);
-  };
-
-  System.spiritAnimations.inOut.deregister = function (element) {
-    if (element.xtag.InOutAnimation) {
-      element.xtag.InOutAnimation.off();
+  System.spiritAnimations.inOut = {
+    register: function (element) {
+      new InOutAnimation(element);
+    },
+    deregister: function (element) {
+      if (element.xtag.InOutAnimation) {
+        element.xtag.InOutAnimation.off();
+      }
     }
   };
 
@@ -419,5 +419,5 @@
 
     timeline.play(0);
   };
-
+  
 })(System, TweenLite);

@@ -295,11 +295,11 @@
 
       this.initAudiosTab();
 
-      System.UI.components.document.off("media-list.refresh").on("media-list.refresh", function () {
+      $(document).off("media-list.refresh").on("media-list.refresh", function () {
         handler.listMedia();
       });
 
-      System.UI.components.document.off('media.audios.list.refresh').on('media.audios.list.refresh', function (e, eventData) {
+      $(document).off('media.audios.list.refresh').on('media.audios.list.refresh', function (e, eventData) {
         handler.audiosListTable.refresh();
       });
     };

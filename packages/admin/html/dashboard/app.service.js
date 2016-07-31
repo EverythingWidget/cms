@@ -11,19 +11,12 @@
       return;
 
     this.loading_app = true;
-//        System.ui.components.appTitle.text(app.title);
-    if (EW.selectedApp) {
-      System.ui.utility.removeClass(EW.selectedApp, "selected");
-    }
-
-    EW.selectedApp = $(".apps-menu-link[data-app='" + app.id + "']").addClass("selected")[0];
 
     System.entity('ui/app-bar').isLoading = true;
     if (EW.selectedSection) {
       System.ui.utility.addClass(EW.selectedSection, "inline-loader");
     }
 
-    $("#action-bar-items").empty();
     System.entity('ui/main-content').show = false;
   };
 
@@ -47,10 +40,10 @@
       app = 'content-management';
     }
 
-    System.entity('ui/app-bar').currentState = path.join('/');
-    System.entity('ui/app-bar').currentApp = path[0];
-    System.entity('ui/app-bar').currentSection = path[1];
-    System.entity('ui/app-bar').currentSubSection = path[2];
+    System.entity('ui/apps').currentState = path.join('/');
+    System.entity('ui/apps').currentApp = path[0];
+    System.entity('ui/apps').currentSection = path[1];
+    System.entity('ui/apps').currentSubSection = path[2];
 
     if (app !== EW.oldApp) {
       EW.oldApp = app;
@@ -82,6 +75,7 @@
 
       System.entity('ui/app-bar').subSections = [];
       System.entity('ui/primary-actions').actions = [];
+      $("#app-main-actions").empty();
 
       System.ui.components.mainContent.empty();
       System.abortAllRequests();
@@ -97,7 +91,7 @@
 
         System.entity('ui/main-content').show = false;
         System.ui.components.mainContent.html(html);
-        
+
         module.start();
 
         System.entity('ui/app-bar').isLoading = false;
@@ -112,6 +106,7 @@
   System.services.app_service.load_tab = function (module) {
     System.entity('ui/app-bar').isLoading = true;
     System.entity('ui/primary-actions').actions = [];
+    $("#app-main-actions").empty();
 
     System.ui.components.mainContent.empty();
     System.abortAllRequests();

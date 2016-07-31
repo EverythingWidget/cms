@@ -42,7 +42,7 @@ PageLayoutsStateHandler.prototype.start = function () {
     }
   ];
 
-  if (!System.entity('ui/app-bar').currentSubSection) {
+  if (!System.entity('ui/apps').currentSubSection) {
     System.entity('ui/app-bar').goToState('widgets-management/pages-uis/all');
   }
 };

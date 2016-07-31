@@ -5,25 +5,30 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 namespace ew_blog;
+
 /**
  * Description of ew_blog_posts
  *
  * @author Eeliya
  */
-class ew_blog_posts extends \Illuminate\Database\Eloquent\Model {
+class ew_blog_comments extends \Illuminate\Database\Eloquent\Model {
 
-  protected $table = 'ew_blog_posts';
+  protected $table = 'ew_blog_comments';
   protected $fillable = [
       'content_id',
-      'visibility',
-      'post_status',
-      'draft',
-      'date_published',
-      'post_order',
-      'user_id'
+      'parent_id',
+      'content',
+      'visibility'
   ];
   public static $rules = [];
   protected $casts = [];
+
+  const CREATED_AT = 'date_created';
+  const UPDATED_AT = 'date_updated';
+  const DELETED_AT = 'date_deleted';
+
+  public static $RULES = [];
 
 }

@@ -39,7 +39,10 @@
   </div>
 </div>
 
-<system-float-menu id='media-chooser-main-actions' class="ew-float-menu" position="se">  
+<system-float-menu id='media-chooser-main-actions' class="system-float-menu" position="se">  
+  <div class="float-menu-indicator"></div>
+  <div class="float-menu-actions" actions>    
+  </div>
 </system-float-menu>
 
 <system-ui-view name="main-actions"></system-ui-view>
@@ -52,7 +55,7 @@
   LinkChooserDomain.ui.components = {
     document: $(document)
   };
-  LinkChooserDomain.ui.components.mainFloatMenu = Scope.ui.filter("#media-chooser-main-actions");
+  LinkChooserDomain.ui.components.mainFloatMenu = Scope.ui.filter("#media-chooser-main-actions").find('float-menu-actions');
   LinkChooserDomain.ui.components.mainActions = Scope.uiViews['main-actions'];
   LinkChooserDomain.start();
 

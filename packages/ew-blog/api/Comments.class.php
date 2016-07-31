@@ -22,7 +22,22 @@ class Comments extends \ew\Module {
   }
 
   protected function install_assets() {
-    
+    $table_install = \EWCore::create_table('ew_blog_comments', [
+                'id'           => 'BIGINT AUTO_INCREMENT PRIMARY KEY',
+                'content_id'   => 'BIGINT NOT NULL',
+                'parent_id'    => 'BIGINT NOT NULL',
+                'content'      => 'TEXT NULL',
+                'visibility'   => 'VARCHAR(300)',
+                'date_created' => 'DATETIME NULL',
+                'date_updated' => 'DATETIME NULL',
+                'date_deleted' => 'DATETIME NULL'
+    ]);
+
+    $PDO = \EWCore::get_db_PDO();
+    $create_table_statement = $PDO->prepare($table_install);
+    if (!$create_table_statement->execute()) {
+      echo \EWCore::log_error(500, '', $create_table_statement->errorInfo());
+    }
   }
 
   protected function install_permissions() {
@@ -34,23 +49,28 @@ class Comments extends \ew\Module {
     ]);
   }
 
-  public function create() {
-    return ['create: not implemented'];
+  public function create(\ew\APIResponse $_response, $_input) {
+    $result = (new CommentsRepository())->create($_input);
+
+    return \ew\APIResponse::standard_response($_response, $result);
   }
 
-  public function read($_input) {
-    return [
-        'message' => 'read: not implemented',
-        'inputs'  => $_input
-    ];
+  public function read(\ew\APIResponse $_response, $_input) {
+    $result = (new CommentsRepository())->read($_input);
+
+    return \ew\APIResponse::standard_response($_response, $result);
   }
 
-  public function update() {
-    return ['update: not implemented'];
+  public function update(\ew\APIResponse $_response, $_input) {
+    $result = (new CommentsRepository())->update($_input);
+
+    return \ew\APIResponse::standard_response($_response, $result);
   }
 
-  public function delete() {
-    return ['delete: not implemented'];
+  public function delete(\ew\APIResponse $_response, $_input) {
+    $result = (new CommentsRepository())->delete($_input);
+
+    return \ew\APIResponse::standard_response($_response, $result);
   }
 
 }

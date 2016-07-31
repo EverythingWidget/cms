@@ -1,7 +1,13 @@
 <?= ew\ResourceUtility::load_js_as_tag('admin/html/dashboard/app.service.js', [], TRUE) ?>
 <?= ew\ResourceUtility::load_js_as_tag('admin/html/dashboard/app.behaviors.js', [], TRUE) ?>
+<?= ew\ResourceUtility::load_js_as_tag('admin/html/dashboard/ui-components.js', [], TRUE) ?>
 <script>
-  window.addEventListener('load', function () {    
+  window.addEventListener('load', function () {
+    System.entity('stage/init-ui-components').call();
+
+    var appBarComponent = System.entity('ui/app-bar');
+    var appsComponent = System.entity('ui/apps');
+
     $.fn.textWidth = function () {
       var html_org = $(this).html();
       var html_calc = '<span style="white-space:nowrap">' + html_org + '</span>';
@@ -220,19 +226,12 @@
       });
     }
 
-    // Plugins which initilize when document is ready
-    //var EW = null;
-    //$(document).ready(function () {
     var mouseInNavMenu = false,
             enterOnLink = false,
             currentSectionIndex = null;
 
     System.ui.body = $("body")[0];
     System.ui.components = {
-      homeButton: $("#apps"),
-      appTitle: $("#app-title"),
-      appBar: $("#app-bar"),
-      homePane: $("#home-pane"),
       appMainActions: $("#app-main-actions"),
       mainContent: $("#main-content"),
       body: $("body"),
@@ -240,9 +239,7 @@
       navigationMenu: $("#navigation-menu"),
       appsMenu: $("#apps-menu"),
       sectionsMenu: $("#sections-menu"),
-      sectionsMenuList: $("#sections-menu-list"),
-      sectionsMenuTitle: $("#sections-menu-title"),
-      mainFloatMenu: $("#main-float-menu")
+      sectionsMenuList: $("#sections-menu-list")
     };
 
     System.ui.behaviors.highlightAppSection = function (index, section) {
@@ -283,7 +280,7 @@
     };
 
     System.ui.components.sectionsMenuList[0].addEventListener('item-selected', function (event) {
-      if (event.detail.data.id === appBarVue.currentApp + '/' + appBarVue.currentSection) {
+      if (event.detail.data.id === appBarComponent.currentApp + '/' + appBarComponent.currentSection) {
         return;
       }
 
@@ -373,9 +370,9 @@
       });
     });
 
+    // Hash handler for activities
+    new hashHandler();
 
-
-    var hashDetection = new hashHandler();
     EW.activities = <?php echo EWCore::read_activities(); ?>;
     EW.oldApp = null;
     EW.apps = {};
@@ -384,100 +381,18 @@
     initPlugins(document);
 
     var installModules = <?= EWCore::read_apps_sections(); ?>;
-    //console.log(installModules);
-    installModules.forEach(function (e) {
-      EW.apps[e.id] = e;
-    });
 
-    var appsVue = new Vue({
-      el: '#apps-menu',
-      data: {
-        apps: installModules
-      }
-    });
-
-    var appBarVue = new Vue({
-      el: '#app-bar',
-      data: {
-        sectionsMenuTitle: '',
-        isLoading: false,
-        subSections: null,
-        currentState: null,
-        currentApp: null,
-        currentSection: null,
-        currentSubSection: null
-      },
-      computed: {
-        styleClass: function () {
-          var classes = [];
-
-          if (this.subSections && this.subSections.length) {
-            classes.push('tabs-bar-on');
-          }
-
-          return classes.join(' ');
-        }
-      },
-      methods: {
-        goTo: function (tab, $event) {
-          $event.preventDefault();
-
-          System.app.setNav(this.currentApp + '/' + this.currentSection + '/' + tab.state);
-        },
-        goToState: function (state) {
-          System.app.setNav(state);
-        }
-      }
-    });
-
-    System.entity('ui/app-bar', appBarVue);
-
-    var mainContentVue = new Vue({
-      el: '#main-content',
-      data: {
-        show: false
-      },
-      computed: {
-        styleClass: function () {
-          var classes = [];
-
-          if (appBarVue.subSections && appBarVue.subSections.length) {
-            classes.push('tabs-bar-on');
-          }
-
-          return classes.join(' ');
-        }
-      }
-    });
-
-    System.entity('ui/main-content', mainContentVue);
-
-    var primaryActionsVue = new Vue({
-      el: '#main-float-menu',
-      data: {
-        actions: []
-      },
-      methods: {
-        callActivity: function (action) {
-          var activityCaller = EW.getActivity(action);
-          activityCaller(action.hash);
-        }
-      }
-    });
-
-    System.entity('ui/primary-actions', primaryActionsVue);
-
-    $.each(installModules, function (key, val) {
-      val.file = "index.php";
-      val.id = val['id'];
-      EW.apps[val['id']] = val;
+    installModules.forEach(function (item) {
+      item.file = 'index.php';
+      EW.apps[item.id] = item;
     });
 
     System.init(installModules);
     System.app.on('app', System.services.app_service.load);
     System.start();
 
-    appBarVue.selectedTab = System.getHashParam('app');
+    appsComponent.apps = installModules;
+    appBarComponent.selectedTab = System.getHashParam('app');
 
     if (!System.getHashParam('app')) {
       System.setHashParameters({
@@ -485,15 +400,17 @@
       }, true);
     }
 
-    $(document).ajaxStart(function (event, data) {
+    var $document = $(document);
+
+    $document.ajaxStart(function (event, data) {
       if (event.target.activeElement) {
       }
     });
 
-    $(document).ajaxComplete(function (event, data) {
-    });
+    $document.ajaxComplete(function (event, data) { });
+
     // Notify error if an ajax request fail
-    $(document).ajaxError(function (event, data, status) {
+    $document.ajaxError(function (event, data, status) {
       // Added to ignore aborted request and don't show them as a error
       if (data && data.statusText === "abort")
         return;
@@ -550,19 +467,5 @@
       characterData: false,
       subtree: true
     });
-
-//    document.addEventListener("DOMNodeInserted", function (event) {
-//    if(event.target){
-//      initPlugins(event.target);  
-//    }
-//    
-//    });
-    //});
-
-//    $(window).on("ew.screen.xs", function () {
-//      $(".nav.xs-nav-tabs:not(.xs-nav-tabs-active)").each(function (i) {
-//        $(this).data("xs-nav-bar-active")(this);
-//      });
-//    });
   });
 </script>
