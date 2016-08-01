@@ -201,29 +201,12 @@
     };
 
     function initPlugins(element) {
-
-      if (!element.innerHTML && element.nodeName.toLowerCase() !== 'input' && element.nodeName.toLowerCase() !== 'textarea') {
+      if (!element.innerHTML && element.nodeName.toLowerCase() !== 'input' &&
+              element.nodeName.toLowerCase() !== 'textarea') {
         return;
       }
 
-      var $element = $(element);
-      EW.initPlugins($element);
-
-      $element.find("a[rel='ajax']").each(function () {
-        var a = $(this);
-        if (a.attr("rel") === "ajax") {
-          a.click(function (event) {
-            event.preventDefault();
-            var params = a.attr("href").split(",");
-            $.each(params, function (k, v) {
-              if (v) {
-                var kv = v.split("=");
-                EW.setHashParameter(kv[0], kv[1]);
-              }
-            });
-          });
-        }
-      });
+      EW.initPlugins($(element));
     }
 
     var mouseInNavMenu = false,
@@ -251,10 +234,6 @@
 
       EW.selectedSection = section;
       System.ui.utility.addClass(EW.selectedSection, "selected");
-    };
-
-    System.ui.behaviors.selectTab = function (tabHref, tabsContainer) {
-      tabsContainer.find('a[href="' + tabHref + '"]').tab('show');
     };
 
     System.ui.components.sectionsMenuList[0].onSetData = function (data) {
@@ -396,31 +375,25 @@
 
     if (!System.getHashParam('app')) {
       System.setHashParameters({
-        app: "content-management"
+        app: 'content-management'
       }, true);
     }
 
     var $document = $(document);
 
-    $document.ajaxStart(function (event, data) {
-      if (event.target.activeElement) {
-      }
-    });
-
-    $document.ajaxComplete(function (event, data) { });
-
     // Notify error if an ajax request fail
     $document.ajaxError(function (event, data, status) {
       // Added to ignore aborted request and don't show them as a error
-      if (data && data.statusText === "abort")
+      if (data && data.statusText === 'abort') {
         return;
+      }
+
       if (EW.customAjaxErrorHandler) {
         EW.customAjaxErrorHandler = false;
         return;
       }
 
-      try
-      {
+      try {
         var errorsList = '<ul>';
         $.each(data.responseJSON.reason, function (current, i) {
           errorsList += '<li><h4>' + current + '</h4><p>' + i.join() + '</p></li>';
@@ -432,8 +405,8 @@
         console.log(e.stack);
       }
 
-      $("body").EW().notify({
-        "message": {
+      System.ui.components.body.EW().notify({
+        message: {
           html: (!data.responseJSON) ? "---ERROR---" : data.responseJSON.message + errorsList
         },
         status: "error",
