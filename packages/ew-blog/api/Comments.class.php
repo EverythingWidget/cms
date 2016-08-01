@@ -44,7 +44,8 @@ class Comments extends \ew\Module {
         'api/create',
         'api/read',
         'api/update',
-        'api/delete'
+        'api/delete',
+        'api/options'
     ]);
   }
 
@@ -54,22 +55,36 @@ class Comments extends \ew\Module {
     return \ew\APIResponse::standard_response($_response, $result);
   }
 
-  public function read(\ew\APIResponse $_response, $_input) {
+  public function read(\ew\APIResponse $_response, $_input, $_identifier) {
+    $_input->id = $_identifier;
+
     $result = (new CommentsRepository())->read($_input);
 
     return \ew\APIResponse::standard_response($_response, $result);
   }
 
-  public function update(\ew\APIResponse $_response, $_input) {
+  public function update(\ew\APIResponse $_response, $_input, $_identifier) {
+    $_input->id = $_identifier;
+
     $result = (new CommentsRepository())->update($_input);
 
     return \ew\APIResponse::standard_response($_response, $result);
   }
 
-  public function delete(\ew\APIResponse $_response, $_input) {
+  public function delete(\ew\APIResponse $_response, $_input, $_identifier) {
+    $_input->id = $_identifier;
+
     $result = (new CommentsRepository())->delete($_input);
 
     return \ew\APIResponse::standard_response($_response, $result);
+  }
+
+  public function options() {
+    return [
+        'name'        => 'EW Blog - Comments',
+        'description' => 'Add comments feature to the contents',
+        'version'     => '0.5.0'
+    ];
   }
 
 }

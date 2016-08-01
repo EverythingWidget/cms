@@ -16,16 +16,18 @@ namespace ew;
 class APIResourceHandler extends ResourceHandler {
 
   private $verbs = [
-      'GET'    => 'read',
-      'POST'   => 'create',
-      'PUT'    => 'update',
-      'DELETE' => 'delete'
+      'GET'     => 'read',
+      'POST'    => 'create',
+      'PUT'     => 'update',
+      'DELETE'  => 'delete',
+      'OPTIONS' => 'options'
   ];
   public static $VERBS = [
-      'read'   => 'GET',
-      'create' => 'POST',
-      'update' => 'PUT',
-      'delete' => 'DELETE'
+      'read'    => 'GET',
+      'create'  => 'POST',
+      'update'  => 'PUT',
+      'delete'  => 'DELETE',
+      'options' => 'OPTIONS'
   ];
 
   protected function handle($app, $package, $resource_type, $module_name, $command, $parameters = null) {
@@ -72,9 +74,23 @@ class APIResourceHandler extends ResourceHandler {
       $app_section_object = new $real_class_name($app);
       $api_method_name = $method_name . '_' . $verb;
       $api_command_name = $method_name . '-' . $verb;
-      if (method_exists($app_section_object, $method_name)) {
+
+      // if method_verb() does not exist
+      if (!method_exists($app_section_object, $api_method_name)) {
         $api_method_name = $method_name;
         $api_command_name = $command_name;
+      }
+
+      // if method() does not exist
+      if (!method_exists($app_section_object, $api_method_name)) {
+        $api_method_name = $verb;
+        $api_command_name = $verb;
+        $parameters['_identifier'] = is_numeric($method_name) ? $method_name : null;
+      }
+
+      // if verb() does not exist
+      if (!method_exists($app_section_object, $api_method_name)) {
+        return \EWCore::log_error(404, "$app_name-$resource_name: Method not found: `$api_method_name`");
       }
 
       $permission_id = \EWCore::does_need_permission($app_name, $module_name, $resource_name . '/' . $api_command_name);

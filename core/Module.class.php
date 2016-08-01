@@ -189,6 +189,7 @@ class Module {
       if (isset($parameters[$param_name])) {
         $temp = $parameters[$param_name];
       }
+      
       $functions_arguments[] = $temp;
       $this->current_method_args[$param->getName()] = $temp;
     }       
