@@ -651,10 +651,11 @@ UISForm.prototype.templateChanged = function () {
     $.post('api/webroot/widgets-management/get-template-settings-form', {
       path: template
     }, function (response) {
+      console.log(response);
       _this.frameLoader.dispose();
       _this.uisTemplate = template;
       _this.templateSettingsForm.off("getData");
-      _this.templateSettingsForm.html(response['html']);
+      _this.templateSettingsForm.html(response.data['html']);
       EW.setFormData("#template_settings_form", _this.templateSettings);
       _this.updateTemplateBody();
     });

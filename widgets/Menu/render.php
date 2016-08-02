@@ -39,6 +39,7 @@ if ($feeder) {
     $titles = $menu_item["content"];
     $links = $menu_item["link"];
     $icons = $menu_item["src"];
+    $class = $menu_item['class'];
   }
 }
 
@@ -92,13 +93,13 @@ $result_html = "";
       $active = ($match) ? "active" : "";
 
       // Menu
-      $result_html .= "<li class='$active'><a href='{$link_url}'>$titles[$i]</a>";
+      $result_html .= "<li class='$active'><a class='{$class[$i]}' href='{$link_url}'>$titles[$i]</a>";
 
       // Sub menu if exist
       if ($sub_menus) {
         $result_html .= "<ul>";
         foreach ($sub_menus as $sub_menu) {
-          $result_html .= "<li class='$active'><a href='" . EW_DIR_URL . $url_language . "{$sub_menu["link"]}'>{$sub_menu["title"]}</a></li>";
+          $result_html .= "<li class='$active'><a class='{$class[$i]}' href='" . EW_DIR_URL . $url_language . "{$sub_menu["link"]}'>{$sub_menu["title"]}</a></li>";
         }
         $result_html .= "</ul>";
       }

@@ -28,6 +28,10 @@ class ew_blog_comments extends \Illuminate\Database\Eloquent\Model {
   const CREATED_AT = 'date_created';
   const UPDATED_AT = 'date_updated';
 
-  public static $RULES = [];
+  public static $RULES = [
+      'content_id' => [
+          'required'
+          ]
+  ];
 
 }
