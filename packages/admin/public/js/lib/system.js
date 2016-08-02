@@ -371,21 +371,21 @@
 //        console.log(parsedContent.imports);
         var imports = Array.prototype.slice.call(parsedContent.imports, 0);
         //var importsOfScope = {};
-//        var scriptContent = parsedContent.script || '';
+        var scriptContent = parsedContent.script || '';
 
         // extract imports from the source code
-//        scriptContent = scriptContent.replace(/\/\*[\s\S]*?\*\/|([^:]|^)\/\/.*$/gm, '');
-//        parsedContent.script = scriptContent.replace(/Scope\.import\(['|"](.*)['|"]\)\;/gm, function (match, path) {
-//          var query = path.match(/([\S]+)/gm);
-//          imports.push({
-//            url: query[query.length - 1],
-//            fresh: query.indexOf('new') !== -1
-//          });
-//
-//          return "Scope.imports['" + query[query.length - 1] + "']";
-//        });
+        scriptContent = scriptContent.replace(/\/\*[\s\S]*?\*\/|([^:]|^)\/\/.*$/gm, '');
+        parsedContent.script = scriptContent.replace(/Scope\.import\(['|"](.*)['|"]\)\;/gm, function (match, path) {
+          var query = path.match(/([\S]+)/gm);
+          imports.push({
+            url: query[query.length - 1],
+            fresh: query.indexOf('new') !== -1
+          });
 
-        //console.log('Libraries to be imported: ', imports);
+          return "Scope.imports['" + query[query.length - 1] + "']";
+        });
+
+//       console.log('Libraries to be imported: ', JSON.stringify(imports));
 
         if (imports.length) {
           imports.forEach(function (item) {
@@ -396,7 +396,7 @@
               System.loadModule({
                 id: (new Date()).valueOf() + '-' + performance.now(),
                 name: item.name,
-                url: item.from,
+                url: item.url,
                 fresh: item.fresh,
                 scope: scope,
                 invokers: invokers
@@ -606,11 +606,11 @@
         if (hasProp.call(parent, key))
           child[key] = parent[key];
       }
-//      function ctor() {
-//        this.constructor = child;
-//      }
-//      ctor.prototype = parent.prototype;
-      //child.prototype = new ctor();
+      function ctor() {
+        this.constructor = child;
+      }
+      ctor.prototype = parent.prototype;
+      child.prototype = new ctor();
       child.__super__ = parent.prototype;
       return child;
     },

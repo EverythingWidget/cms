@@ -16,13 +16,13 @@ echo "<p>this is the test file</p>";
     System.state('forms/test-form', function (state) {
       state.stateKey = 'component';
 
-      state.bind('init', function () {
+      state.onInit = function () {
         console.log('init', this.id);
-      });
+      };
 
-      state.bind('start', function () {
+      state.onStart = function () {
         console.log('start', this.id);
-      });
+      };
     });
 
 //    Scope.export = {

@@ -1,0 +1,13 @@
+<script>
+  function MediaAudios() {}
+
+  MediaAudios.prototype.create = function (state) {
+    var mediaStateHandler = System.entity('objects/media-state-handler');
+
+    state.bind('start', function () {
+      mediaStateHandler.uploadImageActivity.hide();
+    });
+  };
+
+  Scope.export = MediaAudios;
+</script>

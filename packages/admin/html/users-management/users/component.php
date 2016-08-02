@@ -6,13 +6,13 @@
       this.state = state;
       this.handlers = {};
 
-      this.state.bind('init', function () {
+      this.state.onInit = function () {
         component.init();
-      });
+      };
 
-      this.state.bind('start', function () {
+      this.state.onStart = function () {
         component.start();
-      });
+      };
     }
 
     UsersStateHandler.prototype.defineStates = function (handlers) {

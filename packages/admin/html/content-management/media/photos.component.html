@@ -1,0 +1,41 @@
+<script>
+  /* global System */
+
+  function MediaPhotos() {}
+
+  MediaPhotos.prototype.create = function (state) {
+    var mediaStateHandler = System.entity('objects/media-state-handler');
+
+    state.onStart = function () {
+      //mediaStateHandler.uploadAudioActivity.hide();
+    };
+
+    state.on('album', function (e, id, images) {
+      if (id > 0) {
+        mediaStateHandler.uploadImageActivity.hide = false;
+      } else {
+        mediaStateHandler.uploadImageActivity.hide = true;
+      }
+
+      if (!id) {
+        id = 0;
+      }
+
+      if (images) {
+        if (id !== null && mediaStateHandler.albumId !== id) {
+          mediaStateHandler.albumId = parseInt(id);
+          if (mediaStateHandler.listInited) {
+            mediaStateHandler.state.setParam("select", null, true);
+          }
+
+          mediaStateHandler.listMedia();
+        }
+      }
+    });
+
+    state.on('select', mediaStateHandler.states.select);
+  };
+
+  Scope.export = MediaPhotos;
+
+</script>

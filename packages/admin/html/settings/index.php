@@ -15,13 +15,13 @@ function script() {
         handler.state = state;
 
         handler.state.type = 'app';
-        handler.state.bind('init', function () {
+        handler.state.onInit = function () {
           handler.state.data.sections = <?= EWCore::read_registry_as_json('ew/ui/apps/settings/navs') ?>;
-        });
+        };
 
-        handler.state.bind('start', function () {
+        handler.state.onStart = function () {
           handler.state.data.tab = null;
-        });
+        };
 
         handler.state.on('app', System.utility.withHost(handler.state).behave(System.services.app_service.select_app_section));
       });

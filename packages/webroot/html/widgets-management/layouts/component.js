@@ -30,36 +30,36 @@ function UIStructureList() {
 
   if (this.importUISActivity) {
     /*var fileInput = $("<input type=file id=uis_file name=uis_file accept='.json'/>");
-    var button = $("<div class='btn btn-file btn-primary' >tr{Import Layout}</div>").hide();
-    parent: System.UI.components.mainFloatMenu.append(button.append(fileInput));
-    button.comeIn();
-    
-    fileInput.change(function (e) {
-      var form = new FormData();
-      // HTML file input user's choice...
-      form.append("uis_file", fileInput[0].files[0]);
-      //EW.lock($("#main-content"));
-      if (!fileInput[0].files[0])
-        return;
-
-      // Make the ajax call
-      $.ajax({
-        url: 'api/webroot/widgets-management/import-uis',
-        type: 'POST',
-        dataType: "json",
-        success: function (res) {
-          $("body").EW().notify(res).show();
-          self.table.refresh();
-        },
-        //add error handler for when a error occurs if you want!
-        //error: errorfunction,
-        data: form,
-        // this is the important stuf you need to overide the usual post behavior
-        cache: false,
-        contentType: false,
-        processData: false
-      });
-    });*/
+     var button = $("<div class='btn btn-file btn-primary' >tr{Import Layout}</div>").hide();
+     parent: System.UI.components.mainFloatMenu.append(button.append(fileInput));
+     button.comeIn();
+     
+     fileInput.change(function (e) {
+     var form = new FormData();
+     // HTML file input user's choice...
+     form.append("uis_file", fileInput[0].files[0]);
+     //EW.lock($("#main-content"));
+     if (!fileInput[0].files[0])
+     return;
+     
+     // Make the ajax call
+     $.ajax({
+     url: 'api/webroot/widgets-management/import-uis',
+     type: 'POST',
+     dataType: "json",
+     success: function (res) {
+     $("body").EW().notify(res).show();
+     self.table.refresh();
+     },
+     //add error handler for when a error occurs if you want!
+     //error: errorfunction,
+     data: form,
+     // this is the important stuf you need to overide the usual post behavior
+     cache: false,
+     contentType: false,
+     processData: false
+     });
+     });*/
   }
 
   var exportAction = null;
@@ -216,11 +216,11 @@ var uisList;
 
   System.state("widgets-management/uis-list", function (state) {
     state.type = "appSection";
-    state.bind('init', function () { });
+    state.onInit = function () { };
 
-    state.bind('start', function () {
+    state.onStart = function () {
       uisList = new UIStructureList();
       uisList.table.read();
-    });
+    };
   });
 })();

@@ -13,11 +13,11 @@ function PageLayoutsStateHandler(state) {
   handler.state = state;
   handler.states = {};
 
-  handler.state.$onInit = function () {
+  handler.state.onInit = function () {
     handler.init();
   };
 
-  handler.state.$onStart = function () {
+  handler.state.onStart = function () {
     handler.start();
   };
 }

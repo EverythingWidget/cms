@@ -27,13 +27,13 @@ echo admin\AppsManagement::create_section_main_form();
       this.state.type = "app";
       this.data = {};
 
-      this.state.bind('init', function () {
+      this.state.onInit = function () {
         component.init();
-      });
+      };
 
-      this.state.bind('start', function () {
+      this.state.onStart = function () {
         component.start();
-      });
+      };
     }
 
     ContentManagementStateHandler.prototype.init = function () {

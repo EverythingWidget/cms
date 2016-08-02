@@ -17,13 +17,13 @@ echo admin\AppsManagement::create_section_main_form();
       this.module.type = "app";
       this.data = {};
 
-      this.module.bind('init', function () {
+      this.module.onInit = function () {
         component.init();
-      });
+      };
 
-      this.module.bind('start', function () {
+      this.module.onStart = function () {
         component.start();
-      });
+      };
     }
 
     UsersManagementComponent.prototype.init = function () {

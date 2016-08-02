@@ -13,11 +13,14 @@
     installModulesOnInit: function (modules) {
       this.installModules = modules;
     },
+    onInit: null,
+    onStart: null,
+    onStop: null,
     init: function (navigations, params, html) {
       var _this = this;
       this.inited = true;
-      this.trigger("$onInit");
-      this.triggerEvent('init');
+      this.trigger('onInit');
+      //this.triggerEvent('init');
       //this.solo = this.stateKey !== 'app';
 
       this.installModules.forEach(function (lib) {
@@ -27,8 +30,8 @@
     start: function () {
       this.started = true;
       this.active = true;
-      this.trigger("$onStart");
-      this.triggerEvent('start');
+      this.trigger('onStart');
+      //this.triggerEvent('start');
       if (('system/' + this.domain.app.params[this.stateKey]).indexOf(this.id) <= -1) {
         console.log(this.domain.app.params[this.stateKey]);
         throw new Error('Could not find module `' + this.id + '` by state key `' + this.stateKey + '`');
@@ -136,11 +139,11 @@
         this[event].apply(this, args);
       }
     },
-    triggerEvent: function (event, args) {
-      if (typeof (this.binds[event]) === "function") {
-        this.binds[event].apply(this, args);
-      }
-    },
+//    triggerEvent: function (event, args) {
+//      if (typeof (this.binds[event]) === "function") {
+//        this.binds[event].apply(this, args);
+//      }
+//    },
     hashChanged: function (navigation, params, hashValue, fullNav) {
       var _this = this;
       var moduleNavigation = navigation;
@@ -152,7 +155,7 @@
         this.domain.app.activeModule.active = true;
       } else if (!this.solo) {
         if (this.domain.app.activeModule && this.domain.app.activeModule.active) {
-          this.domain.app.activeModule.triggerEvent('stop');
+          this.domain.app.activeModule.trigger('onStop');
         }
         this.domain.app.activeModule = null;
         this.active = false;

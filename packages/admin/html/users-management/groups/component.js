@@ -8,11 +8,11 @@ function GroupsStateHandler(state) {
   var handler = this;
   handler.state = state;
 
-  handler.state.$onInit = function () {
+  handler.state.onInit = function () {
     handler.init();
   };
 
-  handler.state.$onStart = function () {
+  handler.state.onStart = function () {
     handler.start();
   };
 }

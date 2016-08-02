@@ -73,13 +73,13 @@
       component.module = module;
       component.module.type = "app-section";
 
-      component.module.bind('init', function () {
+      component.module.onInit = function () {
         component.init();
-      });
+      };
 
-      component.module.bind('start', function () {
+      component.module.onStart = function () {
         component.start();
-      });
+      };
 
       this.defineTabs(this.tabs);
       this.defineStateHandlers(this.states);
@@ -582,5 +582,4 @@
 
   //LinkChooserDomain.state("media-chooser").start();
   System.state('forms/media-chooser', function () { });
-System.state('content-management/media').start();
 </script>
