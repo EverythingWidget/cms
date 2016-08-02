@@ -174,12 +174,13 @@
 
           System.loadModule({
             //$.post("html/admin/content-management/link-chooser-media.php", {
-            id: "forms/media-chooser",
-            url: "html/admin/content-management/link-chooser/link-chooser-media.php",
+            id: "content-management/media",
+            url: "html/admin/content-management/media/index.php",
             params: {
               callback: settings.callbackName
             }
           }, function (module) {
+            console.log(module)
             //imageChooserDialog.find(".form-content:first").append(data);
             //imageChooserDialog.prepend("<div class='header-pane row'><h1 class='form-title'>Media</h1></div>");
             imageChooserDialog.html(module.html);

@@ -455,15 +455,15 @@
       }
     };
 
-    System.state("content-management/media", function (state) {
+    System.state('content-management/media', function (state) {
       System.entity('objects/media-state-handler', new MediaStateHandler(state));
     });
 
-    System.state("content-management/media/photos", function (state) {
+    System.state('content-management/media/photos', function (state) {
       System.entity('components/media/photos').create(state);
     });
 
-    System.state("content-management/media/audios", function (state) {
+    System.state('content-management/media/audios', function (state) {
       System.entity('components/media/audios').create(state);
     });
   })();

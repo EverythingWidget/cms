@@ -55,7 +55,7 @@
   LinkChooserDomain.ui.components = {
     document: $(document)
   };
-  LinkChooserDomain.ui.components.mainFloatMenu = Scope.ui.filter("#media-chooser-main-actions").find('float-menu-actions');
+  LinkChooserDomain.ui.components.mainFloatMenu = Scope.ui.filter("#media-chooser-main-actions").find('.float-menu-actions');
   LinkChooserDomain.ui.components.mainActions = Scope.uiViews['main-actions'];
   LinkChooserDomain.start();
 
@@ -580,7 +580,7 @@
 
   }(LinkChooserDomain));
 
-  LinkChooserDomain.state("media-chooser").start();
+  //LinkChooserDomain.state("media-chooser").start();
   System.state('forms/media-chooser', function () { });
-
+System.state('content-management/media').start();
 </script>
