@@ -79,12 +79,14 @@
         module = $.extend(true, {}, System.MODULE_ABSTRACT);
         module.domain = domain;
         module.id = id;
+        module.stateId = id.replace('system/', '');
 
         handlaer.call(null, module);
       } else {
         module = $.extend(true, {}, System.MODULE_ABSTRACT, handlaer || {});
         module.domain = domain;
         module.id = id;
+        module.stateId = id.replace('system/', '');
       }
 
       modulePath = domain.app.navigation[module.stateKey] ? domain.app.navigation[module.stateKey] : [];
@@ -329,7 +331,7 @@
       }
 
       if (moduleExist) {
-        if ("function" === typeof (System.onModuleLoaded["system/" + module.id])) {
+        if ('function' === typeof (System.onModuleLoaded["system/" + module.id])) {
           System.onModuleLoaded["system/" + module.id].call(this, moduleExist, moduleExist.html);
           System.onModuleLoaded["system/" + module.id] = null;
         }
@@ -363,7 +365,8 @@
         });
 
         var scope = {
-          __moduleId: "system/" + module.id,
+          _moduleId: 'system/' + module.id,
+          _stateId: module.id,
           parentScope: module.scope || null,
           uiViews: scopeUIViews,
           ui: parsedContent.html,
@@ -391,7 +394,7 @@
 
         if (imports.length) {
           imports.forEach(function (item) {
-            if (importedLibraries[item.from] && !item.fresh) {
+            if (importedLibraries[item.url] && !item.fresh) {
 //              scope.imports[item.name] = importedLibraries[item.from].module;
               doneImporting(module, scope, imports, parsedContent);
             } else {
@@ -430,43 +433,45 @@
 //          return false;
 //        }
 
-        if (importedLibraries[module.url] && !module.fresh) {
-          scope.imports[module.name] = importedLibraries[module.url].module;
-        } else {
+        /*if (importedLibraries[module.url] && !module.fresh) {
+         scope.imports[module.name] = importedLibraries[module.url].module;
+         
+         } else {*/
 
-          for (var item in importedLibraries) {
-            if (importedLibraries.hasOwnProperty(item)) {
-              var asset = importedLibraries[item];
-              scope.imports[asset.name] = asset.module;
-            }
+        for (var item in importedLibraries) {
+          if (importedLibraries.hasOwnProperty(item)) {
+            var asset = importedLibraries[item];
+            scope.imports[asset.name] = asset.module;
           }
-
-          (new Function('Scope', filtered.script)).call(null, scope);
-
-          if (!importedLibraries[module.url]) {
-            importedLibraries[module.url] = {
-              name: module.name || module.url,
-              module: scope.export
-            };
-          } else if (module.fresh) {
-            importedLibraries[module.url].module = scope.export;
-          } else {
-            scope.imports[module.name] = importedLibraries[module.url].module;
-          }
-
-          delete scope.export;
         }
+
+        (new Function('Scope', filtered.script)).call(null, scope);
+
+        if (!importedLibraries[module.url]) {
+          importedLibraries[module.url] = {
+            name: module.name || module.url,
+            module: scope.export
+          };
+        } else if (module.fresh) {
+          importedLibraries[module.url].module = scope.export;
+        } else {
+          scope.imports[module.name] = importedLibraries[module.url].module;
+        }
+
+        delete scope.export;
+        //}
 
         var currentModule = System.modules['system/' + module.id];
         if (!currentModule) {
-          currentModule = System.modules['system/' + module.id] = {};
+          System.modules['system/' + module.id] = {};
+          currentModule = System.modules['system/' + module.id];
         }
 
-        currentModule.html = filtered ? filtered.html : '';
+        currentModule.html = filtered.html;
         currentModule.scope = scope;
 
         if ('function' === typeof (System.onModuleLoaded['system/' + module.id])) {
-          System.onModuleLoaded['system/' + module.id].call(this, currentModule, filtered.html);
+          System.onModuleLoaded['system/' + module.id].call(this, currentModule, currentModule.html);
           System.onModuleLoaded['system/' + module.id] = null;
         }
 
@@ -513,7 +518,7 @@
       var templates = {};
       var temp = document.createElement('div');
       for (var i = 0, len = html.length; i < len; i++) {
-        temp.appendChild(html[i]);
+        html[i] = temp.appendChild(html[i]);
       }
       document.getElementsByTagName('body')[0].appendChild(temp);
       var uiView = temp.querySelectorAll('system-ui-view');
@@ -671,6 +676,9 @@
           };
         }
       };
+    },
+    isNumber: function (o) {
+      return !isNaN(o - 0) && o !== null && o !== "" && o !== false;
     }
   };
 

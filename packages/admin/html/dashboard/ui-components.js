@@ -129,15 +129,16 @@
         //imageChooserDialog.append("<div class='form-content grid tabs-bar no-footer'></div>");
         //$.post("~admin/html/content-management/link-chooser-media.php", {
         System.loadModule({
-          id: "forms/media-chooser",
+          id: "media-chooser",
           url: "html/admin/content-management/link-chooser/link-chooser-media.php",
           params: {
             callback: ""
           }
-        }, function (module) {
+        }, function (module,html) {
+//          console.log(module, html);
           //imageChooserDialog.find(".form-content:first").append(data);
           //imageChooserDialog.prepend("<div class='header-pane tabs-bar row'><h1 class='form-title'>Media</h1></div>");
-          imageChooserDialog.html(module.html);
+          imageChooserDialog.html(html);
           var ref = _this._insertAt(element), node = ref[0], index = ref[1];
           imageChooserDialog[0].selectMedia = function (item) {
             var element = System.entity('services/media_chooser').selectItem(item);

@@ -111,13 +111,13 @@
     System.ui.components.mainContent.empty();
     System.abortAllRequests();
 
-    System.loadModule(module, tabLoaded);
+    System.loadModule(module, tab_loaded);
 
-    function tabLoaded(module, html) {
+    function tab_loaded(module, html) {
       if (!System.getHashNav('app')[0]) {
         return;
       }
-console.log(module);
+
       System.entity('ui/main-content').show = false;
       System.ui.components.mainContent.html(html);
 

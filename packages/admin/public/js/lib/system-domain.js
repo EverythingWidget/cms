@@ -178,12 +178,14 @@
       module = $.extend(true, {}, System.MODULE_ABSTRACT);
       module.domain = domain;
       module.id = id;
+      module.stateId = id.replace('system/','');
       
       decorator.call(null, module);
     } else {
       module = $.extend(true, {}, System.MODULE_ABSTRACT, decorator || {});
       module.domain = domain;
       module.id = id;
+      module.stateId = id.replace('system/','');
     }
 
     modulePath = domain.app.navigation[module.stateKey] ? domain.app.navigation[module.stateKey] : [];

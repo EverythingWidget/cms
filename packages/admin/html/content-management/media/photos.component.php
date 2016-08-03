@@ -1,6 +1,7 @@
-<div id="media-photos" class="">
-  <system-spirit animations="zoom" zoom="album">
-    <system-ui-view module="content-management/media" name="albums-list" class="block-row">  
+<system-ui-view name="photos-component" >
+  <system-ui-view  name="albums-list" class="block-row" v-show="showAlbumList">  
+    <system-spirit animations="zoom" zoom="album">
+
       <div tabindex="1" v-for="album in albums" track-by="id" class="content-item album" 
            v-if="albumId === 0"
            v-on:focus="selectItem(album.id)" 
@@ -8,19 +9,20 @@
         <span></span>
         <p>{{ album.title }}</p>
       </div>      
-    </system-ui-view>
-  </system-spirit>
 
-  <system-ui-view module="content-management/media" name="album-card" class="grid">
+    </system-spirit>
+  </system-ui-view>
+
+  <system-ui-view name="album-card" class="grid" v-show="!showAlbumList">
     <div class="grid-header">
       <div class="card-title-action"></div>
       <div class="card-title-action-right"></div>
       <h1>
-        tr{Media}
+        {{ albumTitle }}
       </h1>
     </div>
     <system-spirit animations="zoom" zoom="grid-cell">
-      <div class="album-images-list grid-content block-row">
+      <div class="album-images-list grid-content block-row" >
         <div tabindex="1" class="grid-cell image"
              v-for="image in images" 
              v-on:focus="selectItem(image.id)" >
@@ -33,16 +35,23 @@
       </div>
     </system-spirit>
   </system-ui-view>
-</div> 
+</system-ui-view> 
 
 <script>
   /* global System */
+
+  Scope.export = MediaPhotos;
 
   function MediaPhotos(scope, state) {
     var component = this;
     component.scope = scope;
     component.state = state;
-    component.data = {};
+    component.data = {
+      albumTitle: 'Media',
+      albumId: null,
+      albums: [],
+      images: []
+    };
 
     component.state.onInit = function () {
       component.init();
@@ -55,14 +64,34 @@
 
   MediaPhotos.prototype.init = function () {
     var component = this;
-    this.albumId = null;
-    this.albumCard = $(component.scope.uiViews.album_card).hide();
-    this.albumCardTitleAction = this.albumCard.find(".card-title-action");
-    this.albumCardTitleActionRight = this.albumCard.find(".card-title-action-right");
-    this.albumsList = $(component.scope.uiViews.albums_list);
-    this.audiosList = $(component.scope.uiViews.audios_list);
-    this.currentItem = null;
-    
+
+    component.albumCard = $(component.scope.uiViews.album_card);
+    component.albumCardTitleAction = this.albumCard.find(".card-title-action");
+    component.albumCardTitleActionRight = this.albumCard.find(".card-title-action-right");
+
+    component.photosVue = new Vue({
+      el: component.scope.uiViews.photos_component,
+      data: component.data,
+      computed: {
+        showAlbumList: function () {
+          return component.data.albumId === 0 ? true : false;
+        }
+      },
+      methods: {
+        openAlbum: function (albumId) {
+          component.state.setParam('album', albumId + '/images');
+        },
+        selectItem: function (id) {
+          component.selectedItemId = id;
+          component.state.setParam('select', id);
+        },
+        deleteImage: function (id) {
+          component.selectedItemId = id;
+          component.deleteImageActivity();
+        }
+      }
+    });
+
     component.state.on('album', function (e, id, images) {
       if (id > 0) {
         component.data.uploadImage = false;
@@ -74,9 +103,9 @@
         id = 0;
       }
 
-    if (images) {
-        if (id !== null && component.albumId !== id) {
-          component.albumId = parseInt(id);
+      if (images) {
+        if (id !== null && component.data.albumId + '' !== id) {
+          component.data.albumId = parseInt(id);
           if (component.listInited) {
             component.state.setParam("select", null, true);
           }
@@ -96,6 +125,7 @@
       class: "btn btn-text btn-default btn-circle icon-edit",
       parent: this.albumCardTitleActionRight
     });
+
     this.deleteAlbumActivity = EW.addActivity({
       activity: "admin/api/content-management/delete-album",
       text: "tr{}",
@@ -106,14 +136,12 @@
           return false;
         }
         return {
-          id: component.albumId
+          id: component.data.albumId
         };
       },
       onDone: function (response) {
         $("body").EW().notify(response).show();
-        System.setHashParameters({
-          album: "0/images"
-        });
+        component.state.setParam('album', '0/images');
       }
     });
 
@@ -136,9 +164,7 @@
     this.bBack = EW.addActionButton({
       text: "", class: "btn-text btn-default btn-circle icon-back",
       handler: function () {
-        System.setHashParameters({
-          album: "0/images"
-        });
+        component.state.setParam('album', '0/images');
       },
       parent: this.albumCardTitleAction
     });
@@ -148,28 +174,6 @@
       parent: "action-bar-items",
       modal: {
         class: "center properties"
-      }
-    });
-console.log(component.scope)
-    component.media_photos_vue = new Vue({
-      el: component.scope.ui.filter('#media-photos')[0],
-      data: {
-        albumId: 0,
-        albums: [],
-        images: []
-      },
-      methods: {
-        openAlbum: function (albumId) {
-          component.state.setParam('album', albumId + '/images');
-        },
-        selectItem: function (id) {
-          component.selectedItemId = id;
-          component.state.setParam("select", id);
-        },
-        deleteImage: function (id) {
-          component.selectedItemId = id;
-          component.deleteImageActivity();
-        }
       }
     });
 
@@ -192,7 +196,6 @@ console.log(component.scope)
       {
         title: "tr{New Album}",
         activity: "admin/html/content-management/media/album-form.php",
-        //parent: System.UI.components.mainFloatMenu,
         parameters: function (params) {
           params.albumId = null;
           return params;
@@ -231,44 +234,10 @@ console.log(component.scope)
       this.uploadImageActivity
     ];
 
-//      this.uploadAudioActivity = EW.addActivity({
-//        title: "tr{Upload Audio}",
-//        activity: "admin/html/content-management/media/upload-audio-form.php",
-//        parent: System.UI.components.mainFloatMenu,
-//        parameters: function () {
-//          return {
-//            parentId: System.getHashNav("album")[0]
-//          };
-//        },
-//        onDone: function () {
-//          System.setHashParameters({
-//            parentId: null
-//          });
-//        }
-//      });
+//    this.albumCard[0].show();
+//    this.albumsList[0].show();
 
-    this.albumCard[0].show();
-    this.albumsList[0].show();
-//    this.audiosList[0].show();
-//    this.ui.components.tabs_pills = $('#content-media-tabs');
-
-    // Select photos tab if no tab is selected
-//      component.module.data.tab = component.module.data.tab || component.module.getNav('app')[2];
-//      if (!component.module.data.tab) {
-//        component.module.setParam('app', 'content-management/media/photos');
-//      }
-
-
-  };
-
-  MediaPhotos.prototype.seeItemDetails = function () {
-    var albumId = this.selectedItemId;
-    EW.activeElement = this.currentItem;
-    if (albumId) {
-      this.albumId = albumId;
-      this.seeAlbumActivity({albumId: albumId
-      });
-    }
+    component.state.setParamIfNull("album", "0/images");
   };
 
   MediaPhotos.prototype.seeImageActivity = function (id) {
@@ -276,60 +245,41 @@ console.log(component.scope)
   };
 
   MediaPhotos.prototype.listMedia = function () {
-    var stateHandler = this;
-    //var albums = $("<div class='row box-content'></div>");
-    //this.itemsList = $("<div class='box-content anim-fade-in'></div>");
-    var elementsList = $("#files-list");
-    elementsList.html("<h2>Loading...</h2><div class='loader center'></div>");
+    var component = this;
+
     this.listInited = false;
-    //var listContainer = component.albumCard.find(".card-content");
-    //component.itemsList = component.albumCard.find(".album-images-list").empty();
-    var albumsList = this.albumsList.children().eq(0);
-    if (stateHandler.albumId === 0) {
-      //this.albumPropertiesBtn.comeOut();
-      //this.deleteAlbumBtn.comeOut();
-    } else {
-      //this.albumPropertiesBtn.comeIn();
-      //this.deleteAlbumBtn.comeIn();
-    }
+    component.data.albums = [];
+    component.data.images = [];
 
     $.get('api/admin/content-management/get-media-list/', {
-      parent_id: stateHandler.albumId
+      parent_id: component.data.albumId
     }, done);
 
     function done(response) {
-      if (stateHandler.albumId === 0) {
-        stateHandler.albumCard.hide();
-        albumsList.show();
-        stateHandler.itemsList = albumsList;
-        albumsList.empty();
+      //component.data.albumId = component.albumId;
+
+      if (component.data.albumId === 0) {
+        component.data.albums = response.data;
       } else {
-        stateHandler.albumCard.show();
-        albumsList.hide();
-        stateHandler.albumCard.find("h1").text(response.included.album.title);
+        component.data.images = response.data;
       }
 
-      stateHandler.media_photos_vue.albumId = stateHandler.albumId;
-
-      if (stateHandler.albumId === 0) {
-        stateHandler.media_photos_vue.albums = response.data;
-      } else {
-        stateHandler.media_photos_vue.images = response.data;
-      }
-
-      stateHandler.listInited = true;
-      stateHandler.media_photos_vue.$nextTick(function () {
-        if (stateHandler.selectedItemId) {
-          $("div[data-item-id='" + stateHandler.selectedItemId + "']").focus();
+      component.listInited = true;
+      component.photosVue.$nextTick(function () {
+        if (component.selectedItemId) {
+          $("div[data-item-id='" + component.selectedItemId + "']").focus();
         }
       });
     }
   };
 
-  Scope.export = MediaPhotos;
+  // ------ Registring the state handler ------ //
 
-  System.state('content-management/media/photos', function (state) {
-    new MediaPhotos(Scope, state);
-  });
+  if (Scope._stateId === 'content-management/media/photos') {
+    console.log(Scope);
+    System.state('content-management/media/photos', function (state) {
+      new MediaPhotos(Scope, state);
+    });
+  }
 
 </script>

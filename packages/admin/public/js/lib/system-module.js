@@ -33,8 +33,8 @@
       this.trigger('onStart');
       //this.triggerEvent('start');
       if (('system/' + this.domain.app.params[this.stateKey]).indexOf(this.id) <= -1) {
-//        console.log(this.domain.app.params[this.stateKey]);
-//        throw new Error('Could not find module `' + this.id + '` by state key `' + this.stateKey + '`');
+        console.log(this.domain.app.params[this.stateKey]);
+        throw new Error('Could not find module `' + this.id + '` by state key `' + this.stateKey + '`');
       }
       var newNav = $.extend(true, {}, this.domain.app.navigation);
       var st = "system/" + this.domain.app.params[this.stateKey];
@@ -184,10 +184,12 @@
 
               var stateParams = [];
               stateParams.push(null);
-              if (navigation[key]) {
-                stateParams[0] = navigation[key].join('/');
-                for (var i = 0; i < navigation[key].length; i++) {
-                  stateParams.push(navigation[key][i]);
+              var navigationKey = navigation[key];
+              if (navigationKey) {
+                stateParams[0] = navigationKey.join('/');
+                for (var i = 0; i < navigationKey.length; i++) {
+                  var arg = System.utility.isNumber(navigationKey[i]) ? parseFloat(navigationKey[i]) : navigationKey[i];
+                  stateParams.push(arg);
                 }
               }
               stateHandler.apply(_this, stateParams);
