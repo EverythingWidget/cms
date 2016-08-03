@@ -1,9 +1,7 @@
 <script>
   function MediaAudios() {}
 
-  MediaAudios.prototype.create = function (state) {
-    var mediaStateHandler = System.entity('objects/media-state-handler');
-
+  MediaAudios.prototype.create = function (mediaStateHandler, state) {
     state.bind('start', function () {
       mediaStateHandler.uploadImageActivity.hide();
     });

@@ -175,7 +175,7 @@
           System.loadModule({
             //$.post("html/admin/content-management/link-chooser-media.php", {
             id: "content-management/media",
-            url: "html/admin/content-management/media/index.php",
+            url: "html/admin/content-management/link-chooser/link-chooser-media.php",
             params: {
               callback: settings.callbackName
             }

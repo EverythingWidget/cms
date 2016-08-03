@@ -117,7 +117,7 @@
       if (!System.getHashNav('app')[0]) {
         return;
       }
-
+console.log(module);
       System.entity('ui/main-content').show = false;
       System.ui.components.mainContent.html(html);
 

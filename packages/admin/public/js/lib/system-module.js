@@ -33,8 +33,8 @@
       this.trigger('onStart');
       //this.triggerEvent('start');
       if (('system/' + this.domain.app.params[this.stateKey]).indexOf(this.id) <= -1) {
-        console.log(this.domain.app.params[this.stateKey]);
-        throw new Error('Could not find module `' + this.id + '` by state key `' + this.stateKey + '`');
+//        console.log(this.domain.app.params[this.stateKey]);
+//        throw new Error('Could not find module `' + this.id + '` by state key `' + this.stateKey + '`');
       }
       var newNav = $.extend(true, {}, this.domain.app.navigation);
       var st = "system/" + this.domain.app.params[this.stateKey];

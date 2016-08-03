@@ -176,13 +176,15 @@
 
     if (typeof (decorator) === "function") {
       module = $.extend(true, {}, System.MODULE_ABSTRACT);
-      decorator.call(module);
+      module.domain = domain;
+      module.id = id;
+      
+      decorator.call(null, module);
     } else {
       module = $.extend(true, {}, System.MODULE_ABSTRACT, decorator || {});
+      module.domain = domain;
+      module.id = id;
     }
-
-    module.domain = domain;
-    module.id = id;
 
     modulePath = domain.app.navigation[module.stateKey] ? domain.app.navigation[module.stateKey] : [];
     moduleNavigation = $.extend(true, {}, domain.app.navigation);

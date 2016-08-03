@@ -77,13 +77,15 @@
 
       if (typeof (handlaer) === "function") {
         module = $.extend(true, {}, System.MODULE_ABSTRACT);
+        module.domain = domain;
+        module.id = id;
+
         handlaer.call(null, module);
       } else {
         module = $.extend(true, {}, System.MODULE_ABSTRACT, handlaer || {});
+        module.domain = domain;
+        module.id = id;
       }
-
-      module.domain = domain;
-      module.id = id;
 
       modulePath = domain.app.navigation[module.stateKey] ? domain.app.navigation[module.stateKey] : [];
       moduleNavigation = $.extend(true, {}, domain.app.navigation);
