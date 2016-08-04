@@ -333,7 +333,7 @@
       if (moduleExist) {
         if ('function' === typeof (System.onModuleLoaded["system/" + module.id])) {
           System.onModuleLoaded["system/" + module.id].call(this, moduleExist, moduleExist.html);
-          System.onModuleLoaded["system/" + module.id] = null;
+          delete System.onModuleLoaded["system/" + module.id];
         }
 
         return;
@@ -395,7 +395,6 @@
         if (imports.length) {
           imports.forEach(function (item) {
             if (importedLibraries[item.url] && !item.fresh) {
-//              scope.imports[item.name] = importedLibraries[item.from].module;
               doneImporting(module, scope, imports, parsedContent);
             } else {
               System.loadModule({
@@ -404,7 +403,8 @@
                 url: item.url,
                 fresh: item.fresh,
                 scope: scope,
-                invokers: invokers
+                invokers: invokers,
+                temprory: true
               }, function (loaded) {
                 doneImporting(module, scope, imports, parsedContent);
               });
@@ -462,9 +462,11 @@
         //}
 
         var currentModule = System.modules['system/' + module.id];
-        if (!currentModule) {
-          System.modules['system/' + module.id] = {};
-          currentModule = System.modules['system/' + module.id];
+
+        if (module.temprory) {
+          currentModule = {};
+        } else if (!currentModule) {
+          currentModule = System.modules['system/' + module.id] = {};
         }
 
         currentModule.html = filtered.html;
@@ -472,10 +474,10 @@
 
         if ('function' === typeof (System.onModuleLoaded['system/' + module.id])) {
           System.onModuleLoaded['system/' + module.id].call(this, currentModule, currentModule.html);
-          System.onModuleLoaded['system/' + module.id] = null;
+          delete System.onModuleLoaded['system/' + module.id];
         }
 
-        delete System.onLoadQueue["system/" + module.id];
+        delete System.onLoadQueue['system/' + module.id];
       }
     },
     parseContent: function (raw, module) {

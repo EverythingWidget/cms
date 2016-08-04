@@ -1,8 +1,4 @@
 <script>
-
-//  var Photos = Scope.import('html/admin/content-management/media/photos.component.html');
-//  var Audios = Scope.import('html/admin/content-management/media/audios.component.html');
-
   function MediaStateHandler(scope, state) {
     var handler = this;
     handler.scope = scope;

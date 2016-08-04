@@ -1293,17 +1293,17 @@ class ContentManagement extends \ew\Module {
     return $files;
   }
 
-  public function albums($_parts__id) {
+  public function albums($_input) {
     $db = \EWCore::get_db_connection();
 
-
-    $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents WHERE id = '$_parts__id'") or die($db->error);
+    $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents WHERE id = '$_input->albumId'") or die($db->error);
 
     if ($rows = $result->fetch_assoc()) {
       $db->close();
 
       return $rows;
     }
+
     return [];
   }
 
@@ -1508,7 +1508,9 @@ class ContentManagement extends \ew\Module {
   }
 
   public function images_create($_response, $_input) {
-    ini_set("memory_limit", "100M");
+    ini_set('memory_limit', '100M');
+    ini_set('post_max_size', '64M');
+    ini_set('upload_max_filesize', '64M');
 
     $uploaded_file = [];
 
@@ -1532,15 +1534,15 @@ class ContentManagement extends \ew\Module {
     $images_repository = new ImagesRepository();
 
     foreach ($files as $file) {
-      $foo = new \upload($file);
-      if ($foo->uploaded) {
+      $uploader = new \upload($file);
+      if ($uploader->uploaded) {
 
         // save uploaded image with no changes
-        $foo->Process($root);
-        if ($foo->processed) {
+        $uploader->Process($root);
+        if ($uploader->processed) {
           $content_details = new \stdClass();
           $content_details->type = 'image';
-          $content_details->title = $foo->file_dst_name_body;
+          $content_details->title = $uploader->file_dst_name_body;
           $content_details->parent_id = $_input->parent_id;
 
 
@@ -1549,12 +1551,12 @@ class ContentManagement extends \ew\Module {
           if ($result->data->id) {
             $image_details = new \stdClass();
             $image_details->content_id = $result->data->id;
-            $image_details->source = 'album-' . $result->data->parent_id . '/' . $foo->file_dst_name;
+            $image_details->source = 'album-' . $result->data->parent_id . '/' . $uploader->file_dst_name;
             $image_details->alt_text = '';
 
             $image = $images_repository->create($image_details);
 
-            $this->create_image_thumb($foo->file_dst_pathname, 200);
+            $this->create_image_thumb($uploader->file_dst_pathname, 200);
 
             if (!isset($image->error)) {
               $succeed++;
@@ -1570,11 +1572,11 @@ class ContentManagement extends \ew\Module {
         }
       }
       else {
-        $error+=2;
+        $error += 1;
       }
     }
 
-    $_response->properties['message'] = "Uploaded: " . $succeed . " Error: " . $error . ' ' . $foo->error;
+    $_response->properties['message'] = "Uploaded: " . $succeed . " Error: " . $error . ' ' . $uploader->error;
 
     return [];
   }

@@ -38,7 +38,7 @@
       }
     });
 
-    System.entity('ui/primary-actions', primaryActionsVue);
+    System.entity('ui/primary-menu', primaryActionsVue);
 
     // ------ //
 
@@ -119,33 +119,33 @@
         return true;
       };
 
-      EWMedia.apply = function (element, selection, callback) {
+      EWMedia.apply = function (item, selection, callback) {
         var app, forceAdd, paragraph, region, _this = this;
         app = ContentTools.EditorApp.get();
         var imageChooserDialog = EW.createModal({
           autoOpen: false,
           class: "center"
         });
-        //imageChooserDialog.append("<div class='form-content grid tabs-bar no-footer'></div>");
-        //$.post("~admin/html/content-management/link-chooser-media.php", {
+
         System.loadModule({
           id: "media-chooser",
           url: "html/admin/content-management/link-chooser/link-chooser-media.php",
           params: {
             callback: ""
           }
-        }, function (module,html) {
-//          console.log(module, html);
-          //imageChooserDialog.find(".form-content:first").append(data);
-          //imageChooserDialog.prepend("<div class='header-pane tabs-bar row'><h1 class='form-title'>Media</h1></div>");
+        }, function (module, html) {
           imageChooserDialog.html(html);
-          var ref = _this._insertAt(element), node = ref[0], index = ref[1];
-          imageChooserDialog[0].selectMedia = function (item) {
-            var element = System.entity('services/media_chooser').selectItem(item);
 
-            switch (element.type) {
+          var ref = _this._insertAt(item), node = ref[0], index = ref[1];
+          module.scope.selectMedia = function (item) {
+            if (item === false) {
+              imageChooserDialog.dispose();
+              return;
+            }
+
+            switch (item.type) {
               case 'text':
-                var text = new ContentEdit.Text('p', {}, element.text);
+                var text = new ContentEdit.Text('p', {}, item.text);
                 if (node.parent()) {
                   node.parent().attach(text, index);
                 } else {
@@ -158,9 +158,9 @@
 
               case 'image':
                 var image = new ContentEdit.Image({
-                  src: element.src,
-                  width: element.width,
-                  height: element.height
+                  src: item.src,
+                  width: item.width,
+                  height: item.height
                 });
                 if (node.parent()) {
                   node.parent().attach(image, index);

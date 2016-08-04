@@ -1,7 +1,9 @@
 <?php
 
 //session_start();
-$albumInfo = EWCore::call("admin/api/content-management/albums/{$_REQUEST["albumId"]}");
+$albumInfo = EWCore::call_api("admin/api/content-management/albums", [
+            'albumId' => $_REQUEST["albumId"]
+        ])['data'];
 
 function inputs() {
   ob_start();
@@ -24,5 +26,5 @@ echo admin\ContentManagement::create_content_form([
     'formTitle'      => 'Album',
     "contentType"    => "album",
     "include_script" => scripts(),
-    "data"           => $albumInfo
+    "data"           => json_encode($albumInfo)
 ]);

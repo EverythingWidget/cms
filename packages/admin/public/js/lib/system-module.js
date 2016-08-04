@@ -62,7 +62,7 @@
     },
     dispose: function () {
     },
-    hashListeners: {},
+    hashListeners: [],
     data: {},
     /**
      * 
@@ -71,7 +71,7 @@
      * @returns {undefined}
      */
     on: function (id, handler) {
-      this.hashListeners[id] = handler;
+      this.hashListeners.push({id: id, handler: handler});
     },
     getNav: function (key) {
       return this.domain.getHashNav(key);
@@ -171,9 +171,11 @@
       if (this.domain.app.activeModule && this.active && this.domain.app.activeModule.id === _this.id) {
         for (var key in allNavigations) {
           if (allNavigations.hasOwnProperty(key)) {
-            var stateHandler = _this.hashListeners[key];
+            var stateHandlers = _this.hashListeners.filter(function (item) {
+              return item.id === key;
+            });
 
-            if (stateHandler) {
+            if (stateHandlers.length) {
               if (tempNav[key]) {
                 var currentKeyValue = tempNav[key].join("/");
                 if (navigation[key] && currentKeyValue === navigation[key].join("/")) {
@@ -189,18 +191,24 @@
                 stateParams[0] = navigationKey.join('/');
                 for (var i = 0; i < navigationKey.length; i++) {
                   var arg = System.utility.isNumber(navigationKey[i]) ? parseFloat(navigationKey[i]) : navigationKey[i];
+
                   stateParams.push(arg);
                 }
               }
-              stateHandler.apply(_this, stateParams);
+
+              stateHandlers.forEach(function (item) {
+                item.handler.apply(_this, stateParams);
+              });
             }
           }
         }
       } else if (!this.active) {
-        var navHandler = _this.hashListeners[_this.stateKey];
+        var navHandlers = _this.hashListeners.filter(function (item) {
+          return item.id === _this.stateKey;
+        });
 
         //if navHandler is null call sub module navHandler
-        if (navHandler && navigation[_this.stateKey]) {
+        if (navHandlers.length && navigation[_this.stateKey]) {
           var currentKeyValue = tempNav[_this.stateKey] ? tempNav[_this.stateKey].join("/") : [];
 
           if (currentKeyValue !== navigation[_this.stateKey].join("/")) {
@@ -212,7 +220,9 @@
               args.push(navigation[_this.stateKey][i]);
             }
 
-            navHandler.apply(_this, args);
+            navHandlers.forEach(function (item) {
+              item.handler.apply(_this, args);
+            });
           }
         }
       }

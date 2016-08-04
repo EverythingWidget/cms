@@ -1,5 +1,5 @@
-<div class='header-pane'>
-  <h1 class='form-title'>Media</h1>
+<div class='header-pane thin'>
+  <h1 class='form-title'>Media Chooser</h1>
 </div>
 
 <div class='form-content grid tabs-bar no-footer'>
@@ -29,7 +29,7 @@
         <div class="album-images-list grid-content block-row">
           <div tabindex="1" class="grid-cell image"
                v-for="image in images" 
-               v-on:focus="selectItem(image.id)" >
+               v-on:focus="selectImage(image)" >
             <img alt="{{image.title}}" v-bind:src="image.thumbURL" />
             <div class="grid-cell-caption">
               <p class="title date">{{ image.size }} KB</p>
@@ -44,29 +44,83 @@
 
 <system-float-menu id='media-chooser-main-actions' class="system-float-menu" position="se">  
   <div class="float-menu-indicator"></div>
-  <div class="float-menu-actions" actions>    
+  <div class="float-menu-actions" actions>
+    <button type="button"
+            class="btn btn-primary"
+            v-if="!action.hide"
+            v-for="action in actions" v-on:click="callActivity(action)">
+      {{ action.title }}
+    </button>
   </div>
 </system-float-menu>
 
 <system-ui-view name="main-actions"></system-ui-view>
 
 <script>
-  var LinkChooserDomain = new System.Domain();
-  LinkChooserDomain.init([]);
+  var LinkChooserDomain = new System.Domain('#app=media-chooser');
 
-  LinkChooserDomain.domainHashString = "#app=media-chooser";
-  LinkChooserDomain.ui.components = {
-    document: $(document)
-  };
-  LinkChooserDomain.ui.components.mainFloatMenu = Scope.ui.filter("#media-chooser-main-actions").find('.float-menu-actions');
-  LinkChooserDomain.ui.components.mainActions = Scope.uiViews['main-actions'];
+  LinkChooserDomain.init();
   LinkChooserDomain.start();
 
   var Photos = Scope.import('html/admin/content-management/media/photos.component.php');
 
-  LinkChooserDomain.state('media-chooser', function (state) {
-    new Photos(Scope, state);
+  Scope.primaryMenu = new Vue({
+    el: Scope.ui.filter("#media-chooser-main-actions")[0],
+    data: {
+      actions: []
+    },
+    methods: {
+      callActivity: System.entity('ui/primary-menu').callActivity
+    }
   });
 
-  LinkChooserDomain.state("media-chooser").start();
+  LinkChooserDomain.state('media-chooser', function (state) {
+    var photos = new Photos(Scope, state);
+
+    var selectMediaAction = EW.addActionButton({
+      text: "",
+      handler: function () {
+        photos.selectMedia(photos.data.activeImage);
+      },
+      class: "btn-float btn-success icon-ok pos-se",
+      parent: $(Scope.uiViews.main_actions)
+    }).hide();
+
+    state.on('select', function (full, imageId) {
+      if (photos.data.albumId && imageId) {
+        selectMediaAction.comeIn();
+      } else {
+        selectMediaAction.comeOut();
+      }
+    });
+
+    photos.selectMedia = function (image) {
+      var _this = this;
+
+      var loader = System.UI.lock({
+        element: Scope.uiViews.photos_component,
+        akcent: "loader center"
+      }, .5);
+
+      var img = new Image();
+      img.onerror = function (e) {
+        alert('Image is invalid');
+        loader.dispose();
+
+        Scope.selectMedia(false);
+      };
+
+      img.onload = function () {
+        _this.data.activeImage.width = img.width;
+        _this.data.activeImage.height = img.height;
+        loader.dispose();
+
+        Scope.selectMedia(_this.data.activeImage);
+      };
+
+      img.src = image.src;
+    };
+  });
+
+  LinkChooserDomain.state('media-chooser').start();
 </script>

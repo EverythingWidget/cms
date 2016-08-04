@@ -137,7 +137,7 @@ root {
     }
 
     &.off {
-      
+
       .float-menu-actions {
         visibility: hidden;
       }
@@ -921,6 +921,11 @@ body.Admin {
 
     &.thin {
       padding-top: 0;
+      height: 32px;  
+
+      + .form-content {
+        top: 32px;
+      }
 
       &.tabs-bar {
         height: 88px;  

@@ -114,7 +114,7 @@ $HTML_CSS = webroot\WidgetsManagement::get_html_links_concatinated();
       <?php
     }
     ?>      
-    <script src="https://code.jquery.com/jquery-2.1.4.min.js" defer></script>    
+    <script src="public/rm/js/jquery/build.js" ></script>    
 
     <script id="widget-data">
       (function () {

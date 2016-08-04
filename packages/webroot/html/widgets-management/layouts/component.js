@@ -5,7 +5,7 @@ function UIStructureList() {
   this.currentTopPane;
   this.oldRow;
 
-  System.entity('ui/primary-actions').actions = [{
+  System.entity('ui/primary-menu').actions = [{
       title: "tr{New Layout}",
       activity: 'webroot/html/widgets-management/layouts/layout-form/component.php',
 //      parent: System.UI.components.mainFloatMenu,

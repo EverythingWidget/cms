@@ -1,8 +1,8 @@
 (function (System) {
-  function Domain() {
+  function Domain(hashString) {
     this.ui = {};
     this.app = null;
-    this.domainHashString = "";
+    this.domainHashString = hashString || '';
     this.stateKey = "app";
     this.modules = {};
     this.modulesHashes = {};
@@ -48,7 +48,7 @@
     this.app.domain = this;
     this.app.stateKey = this.stateKey;
     this.app.id = "system";
-    this.app.installModules = mods;
+    this.app.installModules = mods || [];
     this.app.init({}, {}, "");
   };
 
@@ -178,14 +178,14 @@
       module = $.extend(true, {}, System.MODULE_ABSTRACT);
       module.domain = domain;
       module.id = id;
-      module.stateId = id.replace('system/','');
-      
+      module.stateId = id.replace('system/', '');
+
       decorator.call(null, module);
     } else {
       module = $.extend(true, {}, System.MODULE_ABSTRACT, decorator || {});
       module.domain = domain;
       module.id = id;
-      module.stateId = id.replace('system/','');
+      module.stateId = id.replace('system/', '');
     }
 
     modulePath = domain.app.navigation[module.stateKey] ? domain.app.navigation[module.stateKey] : [];

@@ -253,7 +253,7 @@
     this.articleId = 0;
     this.currentItem = null;
 
-    System.entity('ui/primary-actions').actions = [
+    System.entity('ui/primary-menu').actions = [
       {
         title: "tr{New Folder}",
         activity: "admin/html/content-management/documents/folder-form/component.php",

@@ -76,7 +76,7 @@ GroupsStateHandler.prototype.init = function () {
 GroupsStateHandler.prototype.start = function () {
   var handler = this;
 
-  System.entity('ui/primary-actions').actions = [
+  System.entity('ui/primary-menu').actions = [
     {
       title: "tr{New Group}",
       parameters: function () {

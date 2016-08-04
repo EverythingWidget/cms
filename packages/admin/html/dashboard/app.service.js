@@ -74,7 +74,7 @@
       System.ui.utility.addClass(element, "inline-loader");
 
       System.entity('ui/app-bar').subSections = [];
-      System.entity('ui/primary-actions').actions = [];
+      System.entity('ui/primary-menu').actions = [];
       $("#app-main-actions").empty();
 
       System.ui.components.mainContent.empty();
@@ -105,7 +105,7 @@
 
   System.services.app_service.load_tab = function (module) {
     System.entity('ui/app-bar').isLoading = true;
-    System.entity('ui/primary-actions').actions = [];
+    System.entity('ui/primary-menu').actions = [];
     $("#app-main-actions").empty();
 
     System.ui.components.mainContent.empty();
