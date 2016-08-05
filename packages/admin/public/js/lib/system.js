@@ -370,6 +370,8 @@
           parentScope: module.scope || null,
           uiViews: scopeUIViews,
           ui: parsedContent.html,
+          html: parsedContent.html,
+          views: scopeUIViews,
           imports: {}
         };
 

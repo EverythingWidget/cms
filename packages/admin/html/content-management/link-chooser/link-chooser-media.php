@@ -57,10 +57,10 @@
 <system-ui-view name="main-actions"></system-ui-view>
 
 <script>
-  var LinkChooserDomain = new System.Domain('#app=media-chooser');
+  var mediaChooserDomain = new System.Domain('#app=media-chooser');
 
-  LinkChooserDomain.init();
-  LinkChooserDomain.start();
+  mediaChooserDomain.init();
+  mediaChooserDomain.start();
 
   var Photos = Scope.import('html/admin/content-management/media/photos.component.php');
 
@@ -74,7 +74,7 @@
     }
   });
 
-  LinkChooserDomain.state('media-chooser', function (state) {
+  mediaChooserDomain.state('media-chooser', function (state) {
     var photos = new Photos(Scope, state);
 
     var selectMediaAction = EW.addActionButton({
@@ -122,5 +122,5 @@
     };
   });
 
-  LinkChooserDomain.state('media-chooser').start();
+  mediaChooserDomain.state('media-chooser').start();
 </script>
