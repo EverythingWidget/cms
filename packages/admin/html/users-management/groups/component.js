@@ -1,4 +1,4 @@
-/* global System, EW */
+/* global System, EW, Scope */
 
 'use restrict';
 
@@ -19,6 +19,13 @@ function GroupsStateHandler(state) {
 
 GroupsStateHandler.prototype.init = function () {
   var handler = this;
+
+  handler.editGroupActivity = EW.getActivity({
+    activity: 'admin/html/users-management/groups/group-form/component.php_edit',
+    onDone: function () {
+      handler.state.setParam('groupId', null);
+    }
+  });
 
   $(document).off('users-groups-list.refresh').on('users-groups-list.refresh', function () {
     handler.table.refresh();
@@ -69,8 +76,7 @@ GroupsStateHandler.prototype.init = function () {
     }
   });
 
-  Scope.uiViews.users_groups_list.appendChild(handler.table.container[0]);
-
+  Scope.views.users_groups_list.appendChild(handler.table.container[0]);
 };
 
 GroupsStateHandler.prototype.start = function () {
@@ -98,14 +104,6 @@ GroupsStateHandler.prototype.start = function () {
 //    activity: 'admin/html/users-management/groups/group-form/component.php'
 //  });
 //
-//  handler.editGroupActivity = EW.getActivity({
-//    activity: 'admin/html/users-management/groups/group-form/component.php_edit',
-//    onDone: function () {
-//      System.setHashParameters({
-//        groupId: null
-//      });
-//    }
-//  });
 
   if (this.table) {
     this.table.refresh();

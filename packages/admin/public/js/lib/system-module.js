@@ -1,10 +1,12 @@
+/* global System */
+
 (function (System) {
   System.MODULE_ABSTRACT = {
     domain: null,
     inited: false,
     started: false,
     active: false,
-    stateKey: "app",
+    stateKey: 'app',
     navigation: {},
     params: {},
     html: "",
@@ -37,8 +39,8 @@
         throw new Error('Could not find module `' + this.id + '` by state key `' + this.stateKey + '`');
       }
       var newNav = $.extend(true, {}, this.domain.app.navigation);
-      var st = "system/" + this.domain.app.params[this.stateKey];
-      var napPath = st.indexOf(this.id) === 0 ? st.substr(this.id.length).split("/").filter(Boolean) : [];
+      var st = 'system/' + this.domain.app.params[this.stateKey];
+      var napPath = st.indexOf(this.id) === 0 ? st.substr(this.id.length).split('/').filter(Boolean) : [];
 
       newNav[this.stateKey] = napPath;
       var nav = newNav;
@@ -63,6 +65,7 @@
     dispose: function () {
     },
     hashListeners: [],
+    globalHashListeners: [],
     data: {},
     /**
      * 
@@ -72,6 +75,9 @@
      */
     on: function (id, handler) {
       this.hashListeners.push({id: id, handler: handler});
+    },
+    onGlobal: function (id, handler) {
+      this.globalHashListeners.push({id: id, handler: handler});
     },
     getNav: function (key) {
       return this.domain.getHashNav(key);
@@ -135,22 +141,17 @@
      * @returns {undefined}
      */
     trigger: function (event, args) {
-      if (typeof (this[event]) === "function") {
+      if (typeof (this[event]) === 'function') {
         this[event].apply(this, args);
       }
     },
-//    triggerEvent: function (event, args) {
-//      if (typeof (this.binds[event]) === "function") {
-//        this.binds[event].apply(this, args);
-//      }
-//    },
     hashChanged: function (navigation, params, hashValue, fullNav) {
       var _this = this;
       var moduleNavigation = navigation;
 
       var fullNavPath = params[_this.stateKey];
 
-      if (this.id === "system/" + fullNavPath/* && System.app.activeModule !== this*/) {
+      if (this.id === 'system/' + fullNavPath/* && System.app.activeModule !== this*/) {
         this.domain.app.activeModule = this;
         this.domain.app.activeModule.active = true;
       } else if (!this.solo) {
@@ -168,6 +169,7 @@
 
       _this.navigation = navigation;
       _this.params = params;
+
       if (this.domain.app.activeModule && this.active && this.domain.app.activeModule.id === _this.id) {
         for (var key in allNavigations) {
           if (allNavigations.hasOwnProperty(key)) {
@@ -177,51 +179,86 @@
 
             if (stateHandlers.length) {
               if (tempNav[key]) {
-                var currentKeyValue = tempNav[key].join("/");
-                if (navigation[key] && currentKeyValue === navigation[key].join("/")) {
-                  //console.log("Same, ignore: " + key/*, navigation[key], value.join("/")*/);
+                var currentKeyValue = tempNav[key].join('/');
+                if (navigation[key] && currentKeyValue === navigation[key].join('/')) {
                   continue;
                 }
               }
 
-              var stateParams = [];
-              stateParams.push(null);
-              var navigationKey = navigation[key];
-              if (navigationKey) {
-                stateParams[0] = navigationKey.join('/');
-                for (var i = 0; i < navigationKey.length; i++) {
-                  var arg = System.utility.isNumber(navigationKey[i]) ? parseFloat(navigationKey[i]) : navigationKey[i];
+              var parameters = [];
+              parameters.push(null);
+              var navigationValue = navigation[key];
+              if (navigationValue) {
+                parameters[0] = navigationValue.join('/');
+                for (var i = 0; i < navigationValue.length; i++) {
+                  var arg = System.utility.isNumber(navigationValue[i]) ? parseFloat(navigationValue[i]) : navigationValue[i];
 
-                  stateParams.push(arg);
+                  parameters.push(arg);
                 }
               }
 
               stateHandlers.forEach(function (item) {
-                item.handler.apply(_this, stateParams);
+                item.handler.apply(_this, parameters);
               });
             }
           }
         }
       } else if (!this.active) {
-        var navHandlers = _this.hashListeners.filter(function (item) {
+        var keyStateHandlers = _this.hashListeners.filter(function (item) {
           return item.id === _this.stateKey;
         });
+        
+        var stateKeyNavigationValue = navigation[_this.stateKey];
 
         //if navHandler is null call sub module navHandler
-        if (navHandlers.length && navigation[_this.stateKey]) {
-          var currentKeyValue = tempNav[_this.stateKey] ? tempNav[_this.stateKey].join("/") : [];
+        if (keyStateHandlers.length && stateKeyNavigationValue) {
+          var currentKeyValue = tempNav[_this.stateKey] ? tempNav[_this.stateKey].join('/') : [];
 
-          if (currentKeyValue !== navigation[_this.stateKey].join("/")) {
+          if (currentKeyValue !== stateKeyNavigationValue.join('/')) {
             var args = [];
-            args.push(navigation[_this.stateKey]);
+            args.push(stateKeyNavigationValue);
 
-            for (var i = 0, len = navigation[_this.stateKey].length; i < len; ++i) {
+            for (var i = 0, len = stateKeyNavigationValue.length; i < len; ++i) {
               //i is always valid index in the arguments object
-              args.push(navigation[_this.stateKey][i]);
+              args.push(stateKeyNavigationValue[i]);
             }
 
-            navHandlers.forEach(function (item) {
+            keyStateHandlers.forEach(function (item) {
               item.handler.apply(_this, args);
+            });
+          }
+        }
+      }
+
+      for (var key in allNavigations) {
+        if (allNavigations.hasOwnProperty(key)) {
+          var globalStateHandlers = _this.globalHashListeners.filter(function (item) {
+            return item.id === key;
+          });
+
+          if (globalStateHandlers.length) {
+            if (tempNav[key]) {
+              var currentKeyValue = tempNav[key].join('/');
+              if (navigation[key] && currentKeyValue === navigation[key].join('/')) {
+                continue;
+              }
+            }
+
+            parameters = [];
+            parameters.push(null);
+
+            navigationValue = navigation[key];
+            if (navigationValue) {
+              parameters[0] = navigationValue.join('/');
+              for (var i = 0; i < navigationValue.length; i++) {
+                var arg = System.utility.isNumber(navigationValue[i]) ? parseFloat(navigationValue[i]) : navigationValue[i];
+
+                parameters.push(arg);
+              }
+            }
+
+            globalStateHandlers.forEach(function (item) {
+              item.handler.apply(_this, parameters);
             });
           }
         }
@@ -230,18 +267,18 @@
       //if (this.stateKey && navigation[this.stateKey] && navigation[this.stateKey][0])
       //{
       // Set the app.activeModule according to the current navigation path
-      if (navigation[this.stateKey] && this.domain.modules[this.id + "/" + navigation[this.stateKey][0]]) {
-        this.activeModule = this.domain.modules[this.id + "/" + navigation[this.stateKey][0]];
+      if (navigation[this.stateKey] && this.domain.modules[this.id + '/' + navigation[this.stateKey][0]]) {
+        this.activeModule = this.domain.modules[this.id + '/' + navigation[this.stateKey][0]];
       }
       //} else if (!this.solo) {
       //this.activeModule = null;
       //}
 
-      if (this.activeModule && this.activeModule.id === this.id + "/" + navigation[this.stateKey][0])
+      if (this.activeModule && this.activeModule.id === this.id + '/' + navigation[this.stateKey][0])
       {
         // Remove first part of navigation in order to force activeModule to only react to events at its level and higher 
         moduleNavigation = $.extend(true, {}, navigation);
-        moduleNavigation[this.stateKey] = fullNav.slice(this.activeModule.id.split("/").length - 1);
+        moduleNavigation[this.stateKey] = fullNav.slice(this.activeModule.id.split('/').length - 1);
         // Call module level events handlers
         this.activeModule.hashChanged(moduleNavigation, this.params, hashValue, fullNav);
       }
@@ -249,7 +286,7 @@
     loadModule: function (module, onDone) {
       System.loadModule(module, onDone, this.scope);
     },
-    hashHandler: function (nav, params) {
-    }
-  }
+    hashHandler: function (nav, params) {}
+  };
+
 })(System);

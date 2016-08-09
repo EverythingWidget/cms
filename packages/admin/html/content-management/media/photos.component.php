@@ -166,7 +166,8 @@
     });
 
     this.deleteAlbumActivity = EW.addActivity({
-      activity: "admin/api/content-management/delete-album",
+      activity: 'admin/api/content-management/contents',
+      verb: 'delete',
       text: "tr{}",
       class: "btn btn-text btn-circle btn-danger icon-delete",
       parent: this.albumCardTitleActionRight,
@@ -185,7 +186,8 @@
     });
 
     this.deleteImageActivity = EW.getActivity({
-      activity: "admin/api/content-management/delete-image",
+      activity: "admin/api/content-management/contents",
+      verb: 'delete',
       parameters: function () {
         if (!confirm("tr{Are you sure of deleting this image?} ")) {
           return false;
