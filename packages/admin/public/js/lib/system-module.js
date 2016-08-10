@@ -67,15 +67,20 @@
     hashListeners: [],
     globalHashListeners: [],
     data: {},
-    /**
+    /** Register an state hanlder with the specified id
      * 
      * @param {String} id
      * @param {Function} handler
-     * @returns {undefined}
      */
     on: function (id, handler) {
       this.hashListeners.push({id: id, handler: handler});
     },
+    /** Register an state handler globaly with the specified id.
+     * Global state handlers will be called even if the mudole is not active
+     * 
+     * @param {String} id
+     * @param {Function} handler
+     */
     onGlobal: function (id, handler) {
       this.globalHashListeners.push({id: id, handler: handler});
     },
@@ -96,7 +101,6 @@
      * @param {string} key Name of the parameter
      * @param {string} value Value of the parameter
      * @param {boolean} replace
-     * @returns {undefined}
      */
     setParam: function (key, value, replace) {
       var paramObject = {};

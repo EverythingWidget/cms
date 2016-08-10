@@ -1,20 +1,22 @@
-<script >
-
-  function UsersStateHandler(state) {
+<script>
+  function UsersComponent(scope, state) {
     var component = this;
-    this.state = state;
-    this.handlers = {};
 
-    this.state.onInit = function () {
+    component.scope = scope;
+    component.state = state;
+
+    component.handlers = {};
+
+    component.state.onInit = function () {
       component.init();
     };
 
-    this.state.onStart = function () {
+    component.state.onStart = function () {
       component.start();
     };
   }
 
-  UsersStateHandler.prototype.defineStates = function (handlers) {
+  UsersComponent.prototype.defineStates = function (handlers) {
     var component = this;
 
     handlers.app = function (full, value) {
@@ -24,10 +26,10 @@
     };
   };
 
-  UsersStateHandler.prototype.init = function () {
+  UsersComponent.prototype.init = function () {
     var component = this;
     this.editActivity = EW.getActivity({
-      activity: "admin/html/users-management/users/user-form/component.php_edit",
+      activity: 'admin/html/users-management/users/user-form/component.php_edit',
       modal: {
         class: "center"
       },
@@ -40,37 +42,39 @@
     System.utility.installModuleStateHandlers(this.state, this.handlers);
   };
 
-  UsersStateHandler.prototype.start = function () {
+  UsersComponent.prototype.start = function () {
+    var component = this;
+
     this.table = null;
     //this.bAddUser = EW.addActivity().hide().comeIn(300);
 
-    System.entity('ui/primary-menu').actions = [
+    component.scope.primaryMenu.actions = [
       {
-        title: "tr{New User}",
+        title: 'tr{New User}',
         parent: System.UI.components.mainFloatMenu,
         modal: {
           class: "center"
         },
-        activity: "admin/html/users-management/users/user-form/component.php",
+        activity: 'admin/html/users-management/users/user-form/component.php',
         paramters: {
           userId: null
         }
       }
     ];
 
-    this.usersList();
+    component.scope.usersList();
   };
 
-  UsersStateHandler.prototype.usersList = function () {
+  UsersComponent.prototype.usersList = function () {
     var component = this,
             editActivity;
 
-    if (this.table) {
-      this.table.refresh();
+    if (component.table) {
+      component.table.refresh();
       return;
     }
 
-    this.table = EW.createTable({
+    component.table = EW.createTable({
       name: "users-list",
       rowLabel: "{first_name} {last_name}",
       columns: ["email", "first_name", "last_name", "group.title"],
@@ -116,8 +120,14 @@
     });
   };
 
-  System.state('users-management/users', function (state) {
-    new UsersStateHandler(state);
-  });
+  // ------ Registring the state handler ------ //
 
+  var stateId = 'users-management/users';
+
+  if (Scope._stateId === stateId) {
+    System.state(stateId, function (state) {
+      Scope.primaryMenu = System.entity('ui/primary-menu');
+      new UsersComponent(Scope, state);
+    });
+  }
 </script>

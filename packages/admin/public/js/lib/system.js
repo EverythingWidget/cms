@@ -3,8 +3,76 @@
   var entities = {};
   var importedLibraries = {};
   System = {
-    stateKey: "app",
+    stateKey: 'app',
     modules: {},
+    activities: {},
+    getActivity: function (conf) {
+      var _this = this, settings, url, activityId, activityController;
+      settings = {
+        title: "",
+        defaultClass: "btn-primary",
+        activity: null
+      };
+
+      System.utility.extend(settings, conf);
+
+      url = settings.activity.substr(0, settings.activity.lastIndexOf("_")) || settings.activity;
+
+      if (settings.verb) {
+        url += '-' + this.verbs[settings.verb.toLowerCase()];
+      }
+
+      if (!_this.activities[url]) {
+        console.log("activity does not exist: " + url + "!");
+        console.log(_this.activities);
+        return null;
+      }
+
+      if (url !== settings.activity) {
+        _this.activities[settings.activity] = System.utility.extend({}, _this.activities[url]);
+      }
+
+      activityId = settings.activity;
+      activityController = _this.activities[activityId];
+
+      if (activityController.modalObject) {
+        if (settings.modal && settings.modal.class) {
+          activityController.modalObject.css("left", "");
+          activityController.modalObject.attr("class", "top-pane " + settings.modal.class);
+          activityController.modalObject.methods.setCloseButton();
+        }
+
+        activityController = System.utility.extend({}, activityController, conf);
+        _this.activitySource = activityController;
+      }
+
+      activityController = System.utility.extend({}, activityController, conf);
+      _this.activities[activityId] = activityController;
+
+      var activityCaller = function (hash, privateParams) {
+        var hashParameters = {
+          ew_activity: activityId
+        };
+
+        // if the activity contains a form then set a main hash parameter
+        if (activityController.form) {
+          _this.activitySource = activityController;
+          activityController.newParams = hash;
+          activityController.privateParams = privateParams;
+
+          // 2016-06-12: the `true` can cause issue 
+          System.setHashParameters(hashParameters, true);
+        }
+        // if the activity does not contains any form then set a formless hash parameter
+        else {
+          //console.log(activityController);
+          _this.activitySource = activityController;
+          _this.setHashParameters(hashParameters, "FORMLESS_ACTIVITY");
+        }
+      };
+
+      return activityCaller;
+    },
     uiTemplates: {},
     appPathfiledName: null,
     activityTree: [
@@ -44,18 +112,13 @@
 
       entities[entity_id] = entityObject;
     },
-    // Apps Management
-    /* registerApp: function (id, object)
-     {
-     this.modules[id] = $.extend(true, {}, System.MODULE_ABSTRACT, object);
-     },*/
     /**
      * 
      * @param {String} id
-     * @param {Object} object
-     * @returns {sys.ABSTRACT_MODULE}
+     * @param {Function|Object} handler
+     * @returns {System.MODULE_ABSTRACT}
      */
-    state: function (id, handlaer) {
+    state: function (id, handler) {
       //return this.app.module(id, object, false);
       var module, modulePath, moduleNavigation;
       var domain = this;
@@ -65,7 +128,7 @@
       id = this.app.id + '/' + id;
 
       //if forceReload is true, then init the module again
-      if (!handlaer/* && this.modules[id]*/) {
+      if (!handler/* && this.modules[id]*/) {
         // Add the module to notYetStarted list so it can be started by startLastLoadedModule method
         domain.notYetStarted.push(id);
         return domain.modules[id];
@@ -75,22 +138,22 @@
         return domain.modules[id];
       }
 
-      if (typeof (handlaer) === "function") {
-        module = $.extend(true, {}, System.MODULE_ABSTRACT);
+      if (typeof (handler) === "function") {
+        module = System.utility.extend(true, {}, System.MODULE_ABSTRACT);
         module.domain = domain;
         module.id = id;
         module.stateId = id.replace('system/', '');
 
-        handlaer.call(null, module);
+        handler.call(null, module);
       } else {
-        module = $.extend(true, {}, System.MODULE_ABSTRACT, handlaer || {});
+        module = System.utility.extend(true, {}, System.MODULE_ABSTRACT, handler || {});
         module.domain = domain;
         module.id = id;
         module.stateId = id.replace('system/', '');
       }
 
       modulePath = domain.app.navigation[module.stateKey] ? domain.app.navigation[module.stateKey] : [];
-      moduleNavigation = $.extend(true, {}, domain.app.navigation);
+      moduleNavigation = System.utility.extend(true, {}, domain.app.navigation);
       moduleNavigation[module.stateKey] = modulePath.slice(id.split("/").length - 1);
 
       domain.modules[id] = module;
@@ -282,12 +345,15 @@
         }
       });
       // New keys
-      $.each(newParams, function (key, value) {
-        if (key && value) {
-          newHash += key + "=" + value + "&";
-          and = true;
+      for (var key in newParams) {
+        if (newParams.hasOwnProperty(key)) {
+          var value = newParams[key];
+
+          if (key && value) {
+            newHash += key + "=" + value + "&";
+          }
         }
-      });
+      }
 
       newHash = newHash.replace(/\&$/, '');
 
@@ -589,7 +655,7 @@
       }
     },
     init: function (mods) {
-      this.app = $.extend(true, {}, System.MODULE_ABSTRACT);
+      this.app = System.utility.extend(true, {}, System.MODULE_ABSTRACT);
       this.app.domain = this;
       this.app.stateKey = this.stateKey;
       this.app.id = "system";
@@ -611,19 +677,37 @@
 
       return copy;
     },
-    extend: function (child, parent) {
-      var hasProp = {}.hasOwnProperty;
-      for (var key in parent) {
-        if (hasProp.call(parent, key))
-          child[key] = parent[key];
+    extend: function (out) {
+      var isDeep = false;
+      //out = out || {};
+
+      if (out === true) {
+        isDeep = true;
+        out = {};
       }
-      function ctor() {
-        this.constructor = child;
+
+      for (var i = 1; i < arguments.length; i++) {
+        var obj = arguments[i];
+
+        if (!obj)
+          continue;
+
+        for (var key in obj) {
+          if (obj.hasOwnProperty(key)) {
+            if (typeof obj[key] === 'object' && isDeep) {
+              if (Array.isArray(obj[key])) {
+                out[key] = System.utility.extend([], obj[key]);
+              } else {
+                out[key] = System.utility.extend({}, obj[key]);
+              }
+            } else {
+              out[key] = obj[key];
+            }
+          }
+        }
       }
-      ctor.prototype = parent.prototype;
-      child.prototype = new ctor();
-      child.__super__ = parent.prototype;
-      return child;
+
+      return out;
     },
     installModuleStateHandlers: function (module, states) {
       for (var state in states) {

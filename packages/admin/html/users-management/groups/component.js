@@ -2,22 +2,24 @@
 
 'use restrict';
 
-System.entity('state-handlers/users-management/groups', GroupsStateHandler);
+System.entity('state-handlers/users-management/groups', GroupsComponent);
 
-function GroupsStateHandler(state) {
-  var handler = this;
-  handler.state = state;
+function GroupsComponent(scope, state) {
+  var component = this;
 
-  handler.state.onInit = function () {
-    handler.init();
+  component.scope = scope;
+  component.state = state;
+
+  component.state.onInit = function () {
+    component.init();
   };
 
-  handler.state.onStart = function () {
-    handler.start();
+  component.state.onStart = function () {
+    component.start();
   };
 }
 
-GroupsStateHandler.prototype.init = function () {
+GroupsComponent.prototype.init = function () {
   var handler = this;
 
   handler.editGroupActivity = EW.getActivity({
@@ -48,7 +50,7 @@ GroupsStateHandler.prototype.init = function () {
       }
     },
     rowCount: true,
-    url: "api/admin/users-management/groups/",
+    url: 'api/admin/users-management/groups/',
     pageSize: 30,
     onDelete: function (id) {
       this.confirm("tr{Are you sure of deleting of this group?}", function () {
@@ -79,10 +81,10 @@ GroupsStateHandler.prototype.init = function () {
   Scope.views.users_groups_list.appendChild(handler.table.container[0]);
 };
 
-GroupsStateHandler.prototype.start = function () {
-  var handler = this;
+GroupsComponent.prototype.start = function () {
+  var component = this;
 
-  System.entity('ui/primary-menu').actions = [
+  component.scope.primaryMenu.actions = [
     {
       title: "tr{New Group}",
       parameters: function () {
@@ -93,17 +95,6 @@ GroupsStateHandler.prototype.start = function () {
       activity: 'admin/html/users-management/groups/group-form/component.php'
     }
   ];
-//  handler.bNewGroup = EW.addActivity({
-//    title: "tr{New Group}",
-//    parent: System.UI.components.mainFloatMenu,
-//    parameters: function () {
-//      return {
-//        groupId: null
-//      };
-//    },
-//    activity: 'admin/html/users-management/groups/group-form/component.php'
-//  });
-//
 
   if (this.table) {
     this.table.refresh();
@@ -114,7 +105,11 @@ GroupsStateHandler.prototype.start = function () {
 };
 
 // ------ Registring the state handler ------ //
+var stateId = 'users-management/users-groups';
 
-System.state('users-management/users-groups', function (state) {
-  new GroupsStateHandler(state);
-});
+if (Scope._stateId === stateId) {
+  System.state(stateId, function (state) {
+    Scope.primaryMenu = System.entity('ui/primary-menu');
+    new GroupsComponent(Scope, state);
+  });
+}

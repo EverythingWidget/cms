@@ -367,6 +367,7 @@
       EW.apps[item.id] = item;
     });
 
+    System.activities = <?php echo EWCore::read_activities(); ?>;
     System.init(installModules);
     System.app.on('app', System.services.app_service.load);
     System.app.onGlobal('ew_activity', System.services.app_service.load_activity);
