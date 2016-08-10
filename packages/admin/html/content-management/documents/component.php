@@ -19,7 +19,10 @@
 
     <div class='card-content'>
       <div id="folders-list" class="mt">
-        <div v-for="folder in folders" track-by="id" tabindex='1' class='content-item folder' data-content-id='{{ folder.id }}' v-on:drop="moveItem" v-on:dragover="isAllowed">
+        <div v-for="folder in folders" track-by="id" tabindex='1' class='content-item folder' 
+             v-bind:class="getClass(folder)" 
+             data-content-id='{{ folder.id }}' 
+             v-on:drop="moveItem" v-on:dragover="isAllowed">
           <span></span>
           <p class="date">{{ folder.round_date_created }}</p>
           <p>{{ folder.title }}</p>          
@@ -27,7 +30,9 @@
       </div>
 
       <div id="articles-list" class="mt">
-        <div tabindex='1' draggable="true" class='content-item article' data-content-id='{{ article.id }}'
+        <div tabindex='1' draggable="true" class='content-item article' 
+             v-bind:class="getClass(article)" 
+             data-content-id='{{ article.id }}'
              v-for="article in articles" 
              v-on:dragstart="dragStart">
           <span></span>
@@ -67,15 +72,11 @@
 
     // you can use either states.<state> or states['<state>']
     states.article = function (full, id) {
-      if (!id) {
-        System.ui.utility.removeClass(component.currentItem, 'selected');
-      }
+      component.ui.folders_card_vue.selectedId = id;
     };
 
     states.folder = function (full, id, command) {
-      if (!id) {
-        System.ui.utility.removeClass(component.currentItem, 'selected');
-      }
+      component.ui.folders_card_vue.selectedId = id;
     };
 
     states.dir = function (full, id, list) {
@@ -162,6 +163,7 @@
         upParentId: 0,
         parentId: 0,
         card_title: 'tr{Contents}',
+        selectedId: 0,
         folders: [],
         articles: []
       },
@@ -180,6 +182,9 @@
         },
         goUp: function () {
           handler.preCategory.call(handler);
+        },
+        getClass: function (item) {
+          return item.id === handler.ui.folders_card_vue.selectedId ? 'selected' : '';
         }
       }
     });
@@ -322,7 +327,7 @@
         folder: e.currentTarget.getAttribute('data-content-id')
       });
 
-      component.currentItem = System.ui.behaviors.selectElementOnly(e.currentTarget, component.currentItem);
+//      component.currentItem = System.ui.behaviors.selectElementOnly(e.currentTarget, component.currentItem);
     });
 
     component.ui.components.folders_list.off('dblclick touchstart').on('dblclick touchstart', '.folder', function (e) {
@@ -333,7 +338,7 @@
     component.ui.components.articles_list.off('click').on('click', '.article', function (e) {
       component.state.setParam('folder', null);
       component.state.setParam('article', e.currentTarget.getAttribute('data-content-id'));
-      component.currentItem = System.ui.behaviors.selectElementOnly(e.currentTarget, component.currentItem);
+//      component.currentItem = System.ui.behaviors.selectElementOnly(e.currentTarget, component.currentItem);
     });
 
     component.ui.components.articles_list.off('dblclick touchstart').on('dblclick touchstart', '.article', function (e) {
@@ -451,13 +456,13 @@
         onComplete: function () {
           component.ui.folders_card_vue.folders = foldersElements;
           component.ui.folders_card_vue.articles = articlesElements;
-
-          component.ui.folders_card_vue.$nextTick(function () {
-            var item = document.querySelector('[data-content-id="' + currentSelected + '"]');
-            if (item) {
-              component.currentItem = System.ui.behaviors.selectElementOnly(item, component.currentItem);
-            }
-          });
+          component.ui.folders_card_vue.selectedId = currentSelected;
+//          component.ui.folders_card_vue.$nextTick(function () {
+//            var item = document.querySelector('[data-content-id="' + currentSelected + '"]');
+//            if (item) {
+//              component.currentItem = System.ui.behaviors.selectElementOnly(item, component.currentItem);
+//            }
+//          });
 
           loader.remove();
         }

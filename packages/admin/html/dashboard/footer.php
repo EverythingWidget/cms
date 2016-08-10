@@ -1,6 +1,5 @@
 <?= ew\ResourceUtility::load_js_as_tag('admin/html/dashboard/app.service.js', [], TRUE) ?>
-<?= ew\ResourceUtility::load_js_as_tag('admin/html/dashboard/app.behaviors.js', [], TRUE) ?>
-<?= ew\ResourceUtility::load_js_as_tag('admin/html/dashboard/ui-components.js', [], TRUE) ?>
+<?= ew\ResourceUtility::load_js_as_tag('admin/html/dashboard/app.entities.js', [], TRUE) ?>
 <script>
   window.addEventListener('load', function () {
     System.entity('stage/init-ui-components').call();

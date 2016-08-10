@@ -7,6 +7,13 @@
     Draft
     <input type="checkbox" name="ew_blog/draft" value="1"/><i></i>
   </label>
+
+  <system-field class="field">
+    <label>tr{Show comments}</label>
+    <select class="text-field" id="ew_blog/comments" name="ew_blog/comments" value="">
+      <option v-for="option in options" v-bind:value="option.value" >{{ option.title }}</option>
+    </select>
+  </system-field> 
 </div>
 
 <script>
@@ -16,6 +23,25 @@
       value.datepicker({
         format: 'yyyy-mm-dd'
       });
+    });
+    new Vue({
+      el: '#ew_blog\\/comments',
+      data: {
+        options: [
+          {
+            value: 0,
+            title: 'None, disable commenting'
+          },
+          {
+            value: 1,
+            title: 'Only confirmed comments'
+          },
+          {
+            value: 2,
+            title: 'All'
+          }
+        ]
+      }
     });
   }());
 </script>

@@ -260,7 +260,8 @@
 
     },
     getHashParam: function (key, hashName) {
-      return this.app.params[key] || null;
+      var asNumber = parseFloat(this.app.params[key]);
+      return asNumber || this.app.params[key] || null;
     },
     getHashNav: function (key, hashName) {
       return this.app.navigation[key] || [

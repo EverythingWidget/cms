@@ -24,6 +24,7 @@ class Core extends \ew\Module {
                 'visibility'     => 'VARCHAR(300) NOT NULL',
                 'post_status'    => 'TINYINT(1) NULL',
                 'draft'          => 'BOOLEAN',
+                'comments'       => 'TINYINT(1) NOT NULL DEFAULT 0',
                 'date_published' => 'DATETIME NULL',
                 'post_order'     => 'SMALLINT DEFAULT 0',
                 'user_id'        => 'BIGINT(20) NOT NULL'
@@ -43,21 +44,21 @@ class Core extends \ew\Module {
         "form"        => "ew-blog/html/core/label-event.php"
     ]);
 
-    $events_feeder = new \ew\WidgetFeeder("events", $this, "list", "ew_list_feeder_events");
-    $events_feeder->title = "events";
+    $events_feeder = new \ew\WidgetFeeder('events', $this, 'list', 'ew_list_feeder_events');
+    $events_feeder->title = 'events';
     \webroot\WidgetsManagement::register_widget_feeder($events_feeder);
 
-    $posts_feeder = new \ew\WidgetFeeder("posts", $this, "list", "ew_list_feeder_posts");
-    $posts_feeder->title = "posts";
+    $posts_feeder = new \ew\WidgetFeeder('posts', $this, 'list', 'ew_list_feeder_posts');
+    $posts_feeder->title = 'posts';
     \webroot\WidgetsManagement::register_widget_feeder($posts_feeder);
 
-    $post_feeder = new \ew\WidgetFeeder("post", $this, "page", "ew_page_feeder_post");
-    $post_feeder->title = "post";
+    $post_feeder = new \ew\WidgetFeeder('post', $this, 'page', 'ew_page_feeder_post');
+    $post_feeder->title = 'post';
     \webroot\WidgetsManagement::register_widget_feeder($post_feeder);
 
-    EWCore::register_form("ew/ui/forms/content/tabs", "post-publish", [
-        'title' => 'Publish',
-        "form"  => EWCore::get_view('ew-blog/html/core/tab-post-publish.php')
+    EWCore::register_form('ew/ui/forms/content/tabs', 'post-publish', [
+        'title' => 'Post',
+        'form'  => EWCore::get_view('ew-blog/html/core/tab-post-publish.php')
     ]);
 
     $this->add_listener('admin/api/content-management/contents-create', 'on_contents_update');
