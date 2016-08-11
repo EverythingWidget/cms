@@ -20,7 +20,6 @@
     <div class='card-content'>
       <div id="folders-list" class="mt">
         <div v-for="folder in folders" track-by="id" tabindex='1' class='content-item folder' 
-             v-bind:class="getClass(folder)" 
              data-content-id='{{ folder.id }}' 
              v-on:drop="moveItem" v-on:dragover="isAllowed">
           <span></span>
@@ -31,7 +30,6 @@
 
       <div id="articles-list" class="mt">
         <div tabindex='1' draggable="true" class='content-item article' 
-             v-bind:class="getClass(article)" 
              data-content-id='{{ article.id }}'
              v-for="article in articles" 
              v-on:dragstart="dragStart">
@@ -163,9 +161,27 @@
         upParentId: 0,
         parentId: 0,
         card_title: 'tr{Contents}',
-        selectedId: 0,
         folders: [],
         articles: []
+      },
+      computed: {
+        selectedId: {
+          set: function (value) {
+            var _this = this;
+            if (value) {             
+              handler.ui.folders_card_vue.$nextTick(function () {
+                var item = document.querySelector('[data-content-id="' + value + '"]');
+                item ? item.classList.add('selected') : '';
+                _this._selectedItem ? _this._selectedItem.classList.remove('selected') : '';
+                _this._selectedItem = item;
+              });
+            }
+
+            this._selectedId = value;
+          }, get: function () {
+            return this._selectedId;
+          }
+        }
       },
       methods: {
         dragStart: function (event) {
@@ -182,19 +198,9 @@
         },
         goUp: function () {
           handler.preCategory.call(handler);
-        },
-        getClass: function (item) {
-          return item.id === handler.ui.folders_card_vue.selectedId ? 'selected' : '';
         }
       }
     });
-
-//      this.upAction = EW.addActionButton({
-//        text: "",
-//        class: "btn-text icon-back btn-circle",
-//        handler: $.proxy(this.preCategory, this),
-//        parent: this.ui.components.folders_card.find(".card-title-action")
-//      });
 
     this.seeFolderActivity = EW.getActivity({
       activity: "admin/html/content-management/documents/folder-form/component.php_see",
