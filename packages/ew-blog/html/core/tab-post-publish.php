@@ -24,6 +24,7 @@
         format: 'yyyy-mm-dd'
       });
     });
+    
     new Vue({
       el: '#ew_blog\\/comments',
       data: {

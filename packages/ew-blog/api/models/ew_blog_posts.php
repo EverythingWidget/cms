@@ -5,7 +5,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 namespace ew_blog;
+
 /**
  * Description of ew_blog_posts
  *
@@ -19,11 +21,22 @@ class ew_blog_posts extends \Illuminate\Database\Eloquent\Model {
       'visibility',
       'post_status',
       'draft',
+      'comments',
       'date_published',
       'post_order',
       'user_id'
   ];
   public static $rules = [];
+  public static $RULES = [
+      'content_id' => [
+          'required'
+      ]
+  ];
   protected $casts = [];
+  
+  public function __construct(array $attributes = []) {
+    parent::__construct($attributes);
+    $this->timestamps = false;
+  }
 
 }

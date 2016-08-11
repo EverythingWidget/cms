@@ -185,13 +185,19 @@ class EWCore {
 
     if (is_array($parameters)) {
       foreach ($parameters as $par => $value) {
-        if (preg_match('/(.*)\/(.*)/', $par, $m)) {
-          if (!$parameters[$m[1]])
-            $parameters[$m[1]] = [];
-          $parameters[$m[1]][$m[2]] = $value;
+        $matches = [];
+        if (preg_match('/(.*)\/(.*)/', $par, $matches)) {
+          if (!$parameters[$matches[1]]) {
+            $parameters[$matches[1]] = [];
+          }
+
+          $parameters[$matches[1]][$matches[2]] = $value;
+          unset($parameters[$par]);
         }
       }
     }
+    
+    $parameters['_input'] = (object) $parameters;
 
     foreach ($arguments as $arg) {
       $temp = null;
@@ -199,12 +205,7 @@ class EWCore {
       if ($arg->getName() === "__response_data") {
         $method_arguments[] = $response->to_array();
         continue;
-      }
-
-      if ($arg->getName() === '_input') {
-        $method_arguments[] = $parameters;
-        continue;
-      }
+      }      
 
       if (isset($parameters[$arg->getName()])) {
         $temp = $parameters[$arg->getName()];
@@ -1859,7 +1860,6 @@ class EWCore {
     $sql .= ") CHARACTER SET utf8 COLLATE utf8_general_ci";
     return $sql;
   }
-  
 
   public static function prepare_database_model($table, $fields) {
     $table_structure = ew\DBUtility::get_table_structre($table);

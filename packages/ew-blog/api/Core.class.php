@@ -315,23 +315,27 @@ class Core extends \ew\Module {
     return \ew\APIResourceHandler::to_api_response([], ["type" => "object"]);
   }
 
-  public function on_contents_update($id, $_response, $ew_blog) {
+  public function on_contents_update($id, $_response, $_input) {
     $pdo = EWCore::get_db_PDO();
 
     if ($_response->data['type'] !== 'article') {
       return [];
     }
 
+    $ew_blog = $_input->ew_blog;
+
     $publish_date = $ew_blog['date_published'];
     $draft = isset($ew_blog['draft']) ? $ew_blog['draft'] : 0;
-    $table_name = 'ew_contents';
+    $comments = isset($ew_blog['comments']) ? $ew_blog['comments'] : 0;
+
     $post_id = \ew\DBUtility::row_exist($pdo, 'ew_blog_posts', $id, 'content_id');
     if ($post_id) {
-      $this->update_post($post_id['id'], $publish_date, $draft);
+      $this->update_post($post_id['id'], $publish_date, $draft, $comments);
     }
     else {
-      $this->add_post($_response->data['id'], $publish_date);
+      $this->add_post($_response->data['id'], $publish_date, $draft, $comments);
     }
+
 
     return [
         'date_published' => $publish_date,
@@ -364,7 +368,8 @@ class Core extends \ew\Module {
     if ($post) {
       $result = [
           'ew_blog/date_published' => $date,
-          'ew_blog/draft'          => $post['draft']
+          'ew_blog/draft'          => $post['draft'],
+          'ew_blog/comments'       => $post['comments']
       ];
     }
 
@@ -380,22 +385,23 @@ class Core extends \ew\Module {
     return $stmt->fetch(\PDO::FETCH_ASSOC);
   }
 
-  public function add_post($content_id, $publish_date, $draft = 0) {
+  public function add_post($content_id, $publish_date, $draft = 0, $comments = 0) {
     $pdo = EWCore::get_db_PDO();
-    $stmt = $pdo->prepare("INSERT INTO ew_blog_posts(content_id, date_published, draft, user_id) VALUES (?, ?, ?, ?)");
+    $stmt = $pdo->prepare("INSERT INTO ew_blog_posts(content_id, date_published, draft, comments, user_id) VALUES (?, ?, ?, ?)");
     return $stmt->execute([
                 $content_id,
                 $publish_date,
                 isset($draft) ? $draft : 0,
+                isset($comments) ? $comments : 0,
                 $_SESSION['EW.USER_ID']
     ]);
   }
 
-  public function update_post($id, $publish_date, $draft) {
+  public function update_post($id, $publish_date, $draft = 0, $comments = 0) {
     $pdo = EWCore::get_db_PDO();
-    $stmt = $pdo->prepare("UPDATE ew_blog_posts SET date_published = ?, draft = ? WHERE id = ?");
+    $stmt = $pdo->prepare("UPDATE ew_blog_posts SET date_published = ?, draft = ?, comments = ? WHERE id = ?");
 
-    return $stmt->execute([$publish_date, $draft, $id]);
+    return $stmt->execute([$publish_date, $draft, $comments, $id]);
     //return $stmt->queryString;
   }
 
