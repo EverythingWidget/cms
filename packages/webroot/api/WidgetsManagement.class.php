@@ -643,11 +643,11 @@ class WidgetsManagement extends \ew\Module {
 
   public function create_widget($widget_type, $style_class, $widget_style_class, $style_id, $widget_parameters) {
     $timestamp = time();
-    if ($_SESSION["_ew_gw_ts"] == $timestamp) {
+    if ($_SESSION['_ew_gw_ts'] == $timestamp) {
       self::$ui_index++;
     }
     else {
-      $_SESSION["_ew_gw_ts"] = $timestamp;
+      $_SESSION['_ew_gw_ts'] = $timestamp;
     }
     self::$current_timestamp = strval($timestamp);
     $widget_id = "widget-" . self::$current_timestamp . '-' . self::$ui_index . '-' . self::$widget_index;
@@ -659,11 +659,14 @@ class WidgetsManagement extends \ew\Module {
       $widget_data = reset(self::get_widget_data_object());
       } */
     $widget_script = self::get_html_scripts($widget_id);
-    return ["widget_html"   => $widget_html,
-        "widget_data"   => $widget_parameters,
-        "widget_id"     => $widget_id,
-        "widget_script" => $widget_script,
-        "widget_style"  => ""];
+
+    return [
+        'widget_html'   => $widget_html,
+        'widget_data'   => $widget_parameters,
+        'widget_id'     => $widget_id,
+        'widget_script' => $widget_script,
+        'widget_style'  => ""
+    ];
   }
 
   function get_template_settings_form($path) {

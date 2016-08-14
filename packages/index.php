@@ -148,8 +148,9 @@ if (isset($elements[$parameter_index])) {
 }
 // Create instance of EWCore class 
 
-if (!ob_start("ob_gzhandler"))
-  ob_start();
+//if (!ob_start("ob_gzhandler")) {
+//  ob_start();
+//}
 
 // set default user group if no user group has been spacified
 if (!isset($_SESSION["EW.USER_GROUP_ID"])) {
@@ -177,7 +178,7 @@ if ($RESULT_CONTENT) {
   //$RESULT_CONTENT = preg_replace_callback("/\{\{([^\|]*)\|?([^\|]*)\}\}/", $callback, $RESULT_CONTENT);
   // Show translated result  
 
-  echo preg_replace_callback("/tr(\:\w*)?\{(.*?)\}/", "translate", $RESULT_CONTENT);
+  echo preg_replace_callback("/tr(\:\w*)?\{(.*?)\}/", 'translate', $RESULT_CONTENT);
   //$time_end = microtime(true);
   //$time = $time_end - $time_start;
   //echo  round($time,2) . " s";

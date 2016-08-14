@@ -62,12 +62,11 @@
       }
     ];
 
-    component.scope.usersList();
+    component.usersList();
   };
 
   UsersComponent.prototype.usersList = function () {
-    var component = this,
-            editActivity;
+    var component = this;
 
     if (component.table) {
       component.table.refresh();
