@@ -878,6 +878,36 @@
   }
 
   @include list-footer();
+
+  &.comments {
+    input, textarea {
+      width: 80%;
+      border: 2px solid $akcent-background-color;
+      border-radius: 2px;
+      outline: none;
+      padding: 5px 10px;
+      color: $font-color;
+
+      &:focus {
+        border-color: $font-akcent-color;
+      }
+    }
+
+    .title {
+      font-weight: 300;
+    }
+
+    .field {
+      display: block;
+      margin: 15px 0;
+    }
+
+    .field-label {
+      float: left;
+      width: 20%;
+    }
+  }
+
 }
 
 .title h1 {

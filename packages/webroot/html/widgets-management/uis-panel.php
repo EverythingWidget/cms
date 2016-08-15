@@ -66,7 +66,7 @@ $container_id = $_REQUEST["containerId"];
     </div>-->
 
     <div class="tab-pane" id="size-layout">
-      <?php include 'uis-widget-size-layout.php'; ?>
+      <?php include 'layouts/widget-form/uis-widget-size-layout.php'; ?>
     </div>
   </div>
 </div>
@@ -119,8 +119,9 @@ $container_id = $_REQUEST["containerId"];
     var self = this;
     var $sizeAndLayout = $("#size-layout");
     var classes = $("#used-classes").text();
+    console.log(classes);
     classes = classes.replace('panel', '');
-    classes = classes.split(' ');
+    classes = classes.split(' ').filter(Boolean);
 
     $.each($("#available-classes").find("label"), function (k, classBtn) {
       var flag = $("<input type='checkbox'>");
@@ -150,14 +151,14 @@ $container_id = $_REQUEST["containerId"];
           classBtn.removeClass("btn-default").addClass("btn-success active");
           flag.prop('checked', true);
           $("#panel-classes").append(classBtn);
-          classes.splice(i, 1);
+          classes.splice(i, 0);
         }
       });
     });
 
     $.each($sizeAndLayout.find("input:radio, input:checkbox"), function (k, v) {
       var $v = $(v), value = $v.val();
-
+console.log($v,value,classes);
 
       $.each(classes, function (i, c) {
         if (value === c /*&& !$v.is(":checked")*/) {

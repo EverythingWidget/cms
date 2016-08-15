@@ -983,7 +983,7 @@ UISForm.prototype.editPanel = function (pid, containerId) {
     class: "left"
   });
 
-  $.post('html/webroot/widgets-management/uis-panel.php', {
+  $.get('html/webroot/widgets-management/uis-panel.php', {
     template: self.uisTemplate,
     uisId: self.uisId,
     panelId: pid,
