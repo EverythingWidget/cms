@@ -196,7 +196,7 @@ class EWCore {
         }
       }
     }
-    
+
     $parameters['_input'] = (object) $parameters;
 
     foreach ($arguments as $arg) {
@@ -205,7 +205,7 @@ class EWCore {
       if ($arg->getName() === "__response_data") {
         $method_arguments[] = $response->to_array();
         continue;
-      }      
+      }
 
       if (isset($parameters[$arg->getName()])) {
         $temp = $parameters[$arg->getName()];
@@ -1571,6 +1571,37 @@ class EWCore {
     //Show the results
     asort($selectors[0]);
     return json_encode(array_unique($selectors[0]));
+  }
+
+  public static function parse_css_clean($path, $className = "panel") {
+    if (isset($_REQUEST["path"])) {
+      $path = $_REQUEST["path"];
+    }
+
+    //Grab contents of css file
+    $file = file_get_contents($path);
+
+    //Strip out everything between { and }
+    //$pattern_one = '/(?<=\{)(.*?)(?=\})/';
+    //Match any and all selectors (and pseudos)
+    $pattern_two = '/(div)?(\.' . $className . '\.)+[\w-]+/';
+
+    //Run the first regex pattern on the input
+    //Variable to hold results
+    $selectors = array();
+
+    //Run the second regex pattern on $stripped input
+    $matches = preg_match_all($pattern_two, $file, $selectors);
+    //Show the results
+    asort($selectors[0]);
+
+    $unique_selectors = array_values(array_unique($selectors[0]));
+
+    foreach ($unique_selectors as &$class) {
+      $class = str_replace(".$className.", '', $class);
+    }
+
+    return $unique_selectors;
   }
 
   //put your code here
