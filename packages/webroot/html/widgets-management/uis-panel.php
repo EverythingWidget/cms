@@ -24,7 +24,7 @@ $container_id = $_REQUEST["containerId"];
           <input type="hidden" name="cmd" id="cmd" >
           <system-field class="field col-xs-12">
             <label>tr{ID}</label>
-            <input id="style_id" name="style_id" class="text-field" value="<?= $row['style_id'] ?>">
+            <input id="style_id" name="style_id" class="text-field" v-model="styleIdText">
           </system-field> 
         </div>
         <div class="block-row">
@@ -76,12 +76,12 @@ $container_id = $_REQUEST["containerId"];
 
   (function () {
     var panel = $("#fr").contents().find("body #base-content-pane div[data-panel-id='<?= $panel_id ?>']");
-    var usedClasses = panel.prop('class').split(' ');
 
     var panelVue = new Vue({
       el: '#uis-panel',
       data: {
         panelId: <?= $panel_id ?>,
+        styleIdText: '<?= $row['style_id'] ?>',
         styleClassesText: '',
         allClasses: [],
         layoutClasses: [],
@@ -124,7 +124,7 @@ $container_id = $_REQUEST["containerId"];
                 if (value === className) {
                   $v.click();
                   $v.prop("checked", true);
-                  layoutClasses.push(classes.splice(i, 1));
+                  layoutClasses.push(classes.splice(i, 1)[0]);
                 }
               });
             });
@@ -137,7 +137,7 @@ $container_id = $_REQUEST["containerId"];
                 var sub = c.match(/(\D+)(\d*)/);
                 if (sub && $(field).attr("name") === sub[1]) {
                   $(field).val(sub[2]).change();
-                  layoutClasses.push(classes.splice(i, 1));
+                  layoutClasses.push(classes.splice(i, 1)[0]);
                 }
               });
             });
@@ -244,44 +244,45 @@ $container_id = $_REQUEST["containerId"];
       //EW.lock(neuis.currentDialog, "...");
       var params = $("#appearance-conf").serializeJSON();
       var div = $("<div data-panel='true'></div>");
-      div.prop("id", $("#style_id").val());
-      div.attr("data-panel-parameters", params);
-      div.prop("class", "panel " + $("#used-classes").text());
-      //if (uisPanel.containerId != 0)
-      var containerElement = $("#fr").contents().find("body #base-content-pane div[data-panel-id='" + this.containerId + "']");
-      if (containerElement.hasClass("block"))
-      {
+
+      var attrs = {
+        id: panelVue.styleIdText,
+        'data-panel-parameters': params,
+        class: 'panel ' + panelVue.usedClasses.join(' ')
+      };
+
+      div.attr(attrs);
+
+      var containerElement = $('#fr').contents().find("body #base-content-pane div[data-panel-id='" + this.containerId + "']");
+
+      if (containerElement.hasClass("block")) {
         containerElement.append(div);
-      } else if (!self.containerId)
-      {
+      } else if (!self.containerId) {
         var block = $("<div></div>");
         block.prop("id", $("#style_id").val());
         block.attr("data-panel-parameters", params);
         block.prop("class", "panel row " + $("#used-classes").text());
-        $("#fr").contents().find("body #base-content-pane").append(block);
-      } else
-      {
+        $('#fr').contents().find('body #base-content-pane').append(block);
+      } else {
         containerElement.children(".row").append(div);
-      }
-      //else*/
-      //$("#fr").contents().find("body #base-content-pane").append(div);
-      $("#inspector-editor").trigger("refresh");
-      $.EW("getParentDialog", $("#uis-panel")).trigger("close");
+      }      
+
+      $('#inspector-editor').trigger('refresh');
+      $.EW('getParentDialog', $('#uis-panel')).trigger('close');
     };
 
     UISPanel.prototype.updatePanel = function (pId) {
-      var params = $("#appearance-conf").serializeJSON();
-      var panel = $("#fr").contents().find("body #base-content-pane div[data-panel-id='" + this.panelId + "']");
-      var oldParameters = panel.attr("data-panel-parameters");
-      panel.prop("id", $("#style_id").val());
-      panel.attr("data-panel-parameters", params);
-      panel.prop("class", "panel " + panelVue.usedClasses.join(' '));
-      /*if (oldParameters != params)
-       {
-       neuis.updateUIS(true);
-       }*/
+      var params = $('#appearance-conf').serializeJSON();
+      var panel = $('#fr').contents().find("body #base-content-pane div[data-panel-id='" + this.panelId + "']");
 
-      //$("#inspector-editor").trigger("refresh");
+      var attrs = {
+        id: panelVue.styleIdText,
+        'data-panel-parameters': params,
+        class: 'panel ' + panelVue.usedClasses.join(' ')
+      };
+
+      panel.attr(attrs);
+
       $.EW("getParentDialog", $("#uis-panel")).trigger("close");
     };
 

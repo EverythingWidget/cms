@@ -303,8 +303,6 @@ class EWCore {
     $user = $database_config['username'];
     $password = $database_config['password'];
 
-
-
     try {
       $pdo = new \PDO($dsn, $user, $password);
 
@@ -317,8 +315,8 @@ class EWCore {
       }
     }
     catch (Exception $e) {
-      print_r($e);
-      die();
+      $error = EWCore::log_error(503, $e->getMessage());
+      die($error);
     }
 
     return $pdo;
