@@ -88,8 +88,13 @@ $container_id = $_REQUEST["containerId"];
         templateClasses: <?= json_encode(EWCore::parse_css_clean(EW_PACKAGES_DIR . "/rm/public/{$_REQUEST['template']}/template.css", 'panel')); ?>
       },
       computed: {
-        styleClasses: function () {
-          return this.styleClassesText.split(' ').filter(Boolean);
+        styleClasses: {
+          set: function (value) {
+            this.styleClassesText = value.join(' ');
+          },
+          get: function () {
+            return this.styleClassesText.split(' ').filter(Boolean);
+          }
         },
         panelClasses: function () {
           var _this = this;
@@ -100,15 +105,58 @@ $container_id = $_REQUEST["containerId"];
         },
         usedClasses: {
           set: function (value) {
+            var _this = this;
+            value = value.filter(function (item) {
+              return item !== 'panel';
+            });
+
             this.allClasses = value;
+            var panelClasses = this.panelClasses;
+
+            var $sizeAndLayout = $("#size-layout");
+            var classes = value;
+            var layoutClasses = [];
+
+            $.each($sizeAndLayout.find('input:radio, input:checkbox'), function (k, field) {
+              var $v = $(field), value = $v.val();
+
+              $.each(classes, function (i, className) {
+                if (value === className) {
+                  $v.click();
+                  $v.prop("checked", true);
+                  layoutClasses.push(classes.splice(i, 1));
+                }
+              });
+            });
+
+            $.each($sizeAndLayout.find('input[data-slider]'), function (k, field) {
+              $.each(classes, function (i, c) {
+                if (!c)
+                  return;
+
+                var sub = c.match(/(\D+)(\d*)/);
+                if (sub && $(field).attr("name") === sub[1]) {
+                  $(field).val(sub[2]).change();
+                  layoutClasses.push(classes.splice(i, 1));
+                }
+              });
+            });
+
+            this.layoutClasses = layoutClasses;
+            this.styleClasses = classes.filter(function (item) {
+              return panelClasses.indexOf(item) === -1;
+            });
           },
           get: function () {
-            var a = this.panelClasses;
-            var b = this.styleClasses;
-            var all = this.allClasses.concat(a).concat(b);
-            return  all.filter(function (item, pos) {
+            var styleClasses = this.styleClasses;
+            var panelClasses = this.panelClasses;
+
+            var all = this.layoutClasses.concat(panelClasses).concat(styleClasses);
+            this.allClasses = all.filter(function (item, pos) {
               return all.indexOf(item) === pos;
             });
+
+            return this.allClasses;
           }
         }
       },
@@ -123,11 +171,6 @@ $container_id = $_REQUEST["containerId"];
           } else {
             this.allClasses.push(className);
           }
-        },
-        refreshStyleText: function() {
-          var left = this.usedClasses.filter(function(item) {
-            return 
-          })
         }
       }
     });
@@ -169,74 +212,30 @@ $container_id = $_REQUEST["containerId"];
         this.bEdit.comeOut(200);
       }
 
-
-
-      $("#size-layout input:radio,#size-layout input:checkbox,input[data-slider]").change(function (event) {
+      $("#size-layout").find("input:radio,#size-layout input:checkbox,input[data-slider]").change(function (event) {
         _this.setClasses();
       });
-
-      _this.readClasses();
     }
 
-    UISPanel.prototype.readClasses = function () {
-      var $sizeAndLayout = $("#size-layout");
-      var classes = panelVue.usedClasses;
+    UISPanel.prototype.setClasses = function () {
       var layoutClasses = [];
 
-      $.each($sizeAndLayout.find('input:radio, input:checkbox'), function (k, field) {
-        var $v = $(field), value = $v.val();
-
-        $.each(classes, function (i, className) {
-          if (value === className) {
-            $v.click();
-            $v.prop("checked", true);
-            layoutClasses.push(classes.splice(i, 1));
-          }
-        });
-      });
-
-      $.each($sizeAndLayout.find('input[data-slider]'), function (k, field) {
-        $.each(classes, function (i, c) {
-          if (!c)
-            return;
-
-          var sub = c.match(/(\D+)(\d*)/);
-          if (sub && $(field).attr("name") === sub[1]) {
-            $(field).val(sub[2]).change();
-            layoutClasses.push(classes.splice(i, 1));
-          }
-        });
-      });
-
-      panelVue.layoutClasses = layoutClasses;
-      //panelVue.styleClassesText = classes.join(' ');
-    };
-
-    UISPanel.prototype.setClasses = function () {
-      var otherClasses = panelVue.panelClasses;
-
       $.each($("#panel-classes").find("input"), function (k, field) {
-        otherClasses.push($(field).val());
+        layoutClasses.push($(field).val());
       });
 
       $.each($("#size-layout input[data-slider]:not(:disabled)"), function (k, field) {
         if (parseInt(field.value)) {
 
-          otherClasses.push(field.name + field.value);
+          layoutClasses.push(field.name + field.value);
         }
       });
 
       $.each($("#size-layout input:radio:checked:not(:disabled),#size-layout input:checkbox:checked:not(:disabled)"), function (k, field) {
-        otherClasses.push($(field).val());
+        layoutClasses.push($(field).val());
       });
 
-      var usedClasses = otherClasses.concat(panelVue.styleClasses);
-
-      panelVue.usedClasses = usedClasses.filter(function (item, pos) {
-        return usedClasses.indexOf(item) === pos;
-      });
-
-      console.log(usedClasses)
+      panelVue.layoutClasses = layoutClasses;
     };
 
     // Create and add new div to the page

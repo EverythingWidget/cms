@@ -71,10 +71,11 @@
     height: 100vh;
     position: relative;
 
-    .item {
-      padding-top: 200px;
+    .item {      
       overflow: hidden;
       direction: rtl;
+      width: 100%;
+      height: 100%;
 
       h2 {
         font-size: 3em;

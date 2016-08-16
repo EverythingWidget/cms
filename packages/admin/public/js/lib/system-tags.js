@@ -241,7 +241,7 @@
         var contract = function (e) {
           e.stopPropagation();
           e.preventDefault();
-          
+
           if (_this.expanded) {
             _this.contract();
           }
@@ -269,7 +269,7 @@
         });
       },
       inserted: function () {
-        var _this = this;                    
+        var _this = this;
 
         _this.xtag.observer.observe(_this.xtag.actionsContainer, {
           attributes: false,
@@ -320,8 +320,8 @@
         //System.ui.utility.removeClass(this.xtag.indicator, 'active');
       },
       on: function (flag) {
-        System.ui.utility.removeClass(this,'off');
-        
+        System.ui.utility.removeClass(this, 'off');
+
 //        if (this.xtag.indicator.parentNode) {
 //          TweenLite.to(this.xtag.indicator, .3, {
 //            className: "-=destroy",
@@ -331,23 +331,23 @@
       },
       off: function (flag) {
         var _this = this;
-        System.ui.utility.addClass(this,'off');
+        System.ui.utility.addClass(this, 'off');
         /*if (_this.xtag.indicator.parentNode) {
-          this.xtag.indicator.className = "ew-float-menu-indicator";
-          this.expanded = false;
-          TweenLite.to(this.xtag.indicator, .3, {
-            className: "+=destroy",
-            onComplete: function () {
-              if (flag)
-                _this.xtag.indicator.parentNode.removeChild(_this.xtag.indicator);
-            }
-          });
-
-          TweenLite.to(_this, .3, {
-            className: "-=expand",
-            ease: "Power2.easeInOut"
-          });
-        }*/
+         this.xtag.indicator.className = "ew-float-menu-indicator";
+         this.expanded = false;
+         TweenLite.to(this.xtag.indicator, .3, {
+         className: "+=destroy",
+         onComplete: function () {
+         if (flag)
+         _this.xtag.indicator.parentNode.removeChild(_this.xtag.indicator);
+         }
+         });
+         
+         TweenLite.to(_this, .3, {
+         className: "-=expand",
+         ease: "Power2.easeInOut"
+         });
+         }*/
       },
       clean: function () {
         this.innerHTML = "";
@@ -851,7 +851,7 @@
         }
       }
     }
-  }
+  };
 
   xtag.register('system-input-json', SystemInputJson);
 
@@ -866,15 +866,20 @@
 
         this.xtag._input = this.querySelectorAll('input, textarea, select')[0];
 
-        if (this.xtag._input) {
-          if (this.xtag._input.value || this.xtag._input.type === 'file') {
+        var setEmptiness = function () {
+          if (element.xtag._input.value || element.xtag._input.type === 'file') {
             element.removeAttribute('empty');
           } else {
             element.setAttribute('empty', '');
           }
+        };
+
+        if (this.xtag._input) {
+          setEmptiness();
 
           this.xtag._input.addEventListener('focus', function () {
             element.setAttribute('focus', '');
+            setEmptiness();
           });
 
           this.xtag._input.addEventListener('blur', function () {
@@ -890,11 +895,7 @@
           };
 
           this.xtag._input.addEventListener('input', function (e) {
-            if (this.value) {
-              element.removeAttribute('empty');
-            } else {
-              element.setAttribute('empty', '');
-            }
+            setEmptiness();
           });
         }
       },
