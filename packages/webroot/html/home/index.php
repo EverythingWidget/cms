@@ -113,15 +113,18 @@ $HTML_CSS = webroot\WidgetsManagement::get_html_links_concatinated();
       </script>
       <?php
     }
-    ?>      
-    <script src="public/rm/js/jquery/build.js" ></script>    
-
+    ?>
     <script id="widget-data">
       (function () {
         window.ew_widget_data = {};
 <?= $WIDGET_DATA; ?>
       })();
     </script>
+
+    <script src="public/rm/js/jquery/build.js"></script>
+    <script src="public/rm/js/vue/vue.min.js"></script>       
+
+
     <?= $HTML_SCRIPTS; ?>
     <?= $TEMPLATE_SCRIPT; ?>      
 

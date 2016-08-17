@@ -19,6 +19,9 @@ class ew_blog_comments extends \Illuminate\Database\Eloquent\Model {
   protected $fillable = [
       'content_id',
       'parent_id',
+      'name',
+      'email',
+      'commenter_id',
       'content',
       'visibility'
   ];
@@ -31,7 +34,7 @@ class ew_blog_comments extends \Illuminate\Database\Eloquent\Model {
   public static $RULES = [
       'content_id' => [
           'required'
-          ]
+      ]
   ];
 
 }
