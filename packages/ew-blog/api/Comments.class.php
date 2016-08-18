@@ -60,6 +60,7 @@ class Comments extends \ew\Module {
   }
 
   public function create(\ew\APIResponse $_response, $_input) {
+    // check if content_id is commentable
     $result = (new CommentsRepository())->create($_input);
 
     return \ew\APIResponse::standard_response($_response, $result);
@@ -97,7 +98,7 @@ class Comments extends \ew\Module {
     ];
   }
 
-  public function comments_feeder($_response, $id, $params = [], $token = 0, $page_size = 30, $order_by = 'DESC', $_language = 'en') {
+  public function comments_feeder($_response, $id, $token = 0, $page_size = 30, $order_by = 'DESC') {
     $query = ew_blog_comments::select([
                 'id',
                 'name',
