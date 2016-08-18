@@ -165,3 +165,9 @@
     }
   }
 }
+
+.panel {
+  &.video {
+    min-height: 600px;
+  }
+}

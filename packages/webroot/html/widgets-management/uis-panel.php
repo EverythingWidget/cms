@@ -34,7 +34,7 @@ $container_id = $_REQUEST["containerId"];
           </system-field>  
 
           <div class="col-xs-12">
-            <label class="small" id="used-classes">
+            <label class="small block-row" id="used-classes">
               <span class='tag label label-info'
                     v-for="class in usedClasses">
                 {{ class }}
@@ -80,7 +80,7 @@ $container_id = $_REQUEST["containerId"];
     var panelVue = new Vue({
       el: '#uis-panel',
       data: {
-        panelId: <?= $panel_id ?>,
+        panelId: '<?= $panel_id ?>',
         styleIdText: '<?= $row['style_id'] ?>',
         styleClassesText: '',
         allClasses: [],
@@ -175,7 +175,7 @@ $container_id = $_REQUEST["containerId"];
       }
     });
 
-    panelVue.usedClasses = panel.prop('class').split(' ');
+    panelVue.usedClasses = panel.prop('class') ? panel.prop('class').split(' ') : [];
 
     function UISPanel() {
       var _this = this;
@@ -265,7 +265,7 @@ $container_id = $_REQUEST["containerId"];
         $('#fr').contents().find('body #base-content-pane').append(block);
       } else {
         containerElement.children(".row").append(div);
-      }      
+      }
 
       $('#inspector-editor').trigger('refresh');
       $.EW('getParentDialog', $('#uis-panel')).trigger('close');
