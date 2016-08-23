@@ -21,7 +21,7 @@ class SimpleRepository implements \ew\CRUDRepository {
 
   public function __construct() {
     //require_once EW_PACKAGES_DIR . '/ew-blog/api/models/ew_blog_posts.php';
-    
+
     require_once EW_PACKAGES_DIR . $this->path_to_model;
   }
 
@@ -83,13 +83,13 @@ class SimpleRepository implements \ew\CRUDRepository {
       return $this->find_by_id($input->id);
     }
 
-    return $this->all($input->page, $input->page_size);
+    return $this->all($input->page, $input->page_size, $input->filter);
   }
 
   public function update($input) {
     $result = new \ew\Result();
     $class_name = $this->model_name;
-    
+
     $validation_result = \SimpleValidator\Validator::validate((array) $input, $class_name::$RULES);
 
     if (!$validation_result->isSuccess()) {
@@ -117,7 +117,7 @@ class SimpleRepository implements \ew\CRUDRepository {
     return $result;
   }
 
-  public function all($page = 0, $page_size = 100) {
+  public function all($page = 0, $page_size = 100, $filter = null) {
     if (is_null($page)) {
       $page = 0;
     }
@@ -126,13 +126,17 @@ class SimpleRepository implements \ew\CRUDRepository {
       $page_size = 100;
     }
 
-    $result = new \ew\Result();
     $class_name = $this->model_name;
-    
+
+    $query = $class_name::select();
+
+    \ew\DBUtility::filter($query, $filter);
+
+    $result = new \ew\Result();
 
     $result->total = $class_name::count();
     $result->page_size = $page_size;
-    $result->data = $class_name::take($page_size)->skip($page * $page_size)->get();
+    $result->data = $query->take($page_size)->skip($page * $page_size)->get();
 
     return $result;
   }

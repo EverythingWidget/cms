@@ -1808,6 +1808,22 @@ class EWCore {
       } */
   }
 
+  public static function log_api_error($header_code = 400, $message, $reason = NULL, $send_header = TRUE) {
+    if ($send_header) {
+      http_response_code($header_code);
+      header('Content-Type: application/json');
+    }
+    $error_content = [
+        "status_code" => $header_code,
+        //"url" => $_REQUEST["_app_name"] . "/" . $_REQUEST["_section_name"] . "/" . $_REQUEST["_function_name"],
+        "url"         => $_SERVER["REQUEST_URI"],
+        "message"     => $message,
+        "reason"      => $reason
+    ];
+
+    return $error_content;
+  }
+
   public static function process_content_component($action, $id, $content_id, $content_data, $label_data) {
 //      if(class_exists($class_name))
   }

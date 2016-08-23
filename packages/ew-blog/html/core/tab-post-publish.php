@@ -31,7 +31,7 @@
         options: [
           {
             value: 0,
-            title: 'None, disable commenting'
+            title: 'Inherit'
           },
           {
             value: 1,
@@ -40,6 +40,10 @@
           {
             value: 2,
             title: 'All'
+          },
+          {
+            value: -1,
+            title: 'None, disable comments'
           }
         ]
       }

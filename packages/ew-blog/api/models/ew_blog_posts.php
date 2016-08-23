@@ -33,10 +33,16 @@ class ew_blog_posts extends \Illuminate\Database\Eloquent\Model {
       ]
   ];
   protected $casts = [];
-  
+
   public function __construct(array $attributes = []) {
+    require_once EW_PACKAGES_DIR . '/admin/api/models/ew_contents.php';
+
     parent::__construct($attributes);
     $this->timestamps = false;
+  }
+
+  public function content() {
+    return $this->belongsTo('admin\ew_contents', 'content_id');
   }
 
 }

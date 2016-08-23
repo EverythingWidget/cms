@@ -47,7 +47,8 @@ class Posts extends \ew\Module {
     ]);
 
     $this->register_public_access([
-        'api/options'
+        'api/options',
+        'api/read'
     ]);
   }
 

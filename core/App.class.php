@@ -59,8 +59,8 @@ class App {
       $this->loaded_modules[$in]->init();
     }
   }
-  
-  private function load_dependecies($dir){
+
+  private function load_dependecies($dir) {
     $app_root = $this->get_root();
     $app_root_path = str_replace('_', '-', $app_root);
     $path = EW_PACKAGES_DIR . '/' . $app_root_path . '/' . $dir;
@@ -89,13 +89,13 @@ class App {
 //        $dependencies [] = new $real_class_name($this);
 //      }
     }
-    
+
     return $dependencies;
   }
 
   public function load_modules() {
     $apis = $this->load_dependecies('api');
-    
+
     $this->loaded_modules = [];
 
     foreach ($apis as $api) {
@@ -120,7 +120,6 @@ class App {
       return $this->resources[$resource_type]->process($this, $package, $resource_type, $module_name, $method_name, $parameters);
     }
     else {
-
       $error = \EWCore::log_error(404, "Resource not found: `$resource_type/$module_name/$method_name`", [
                   "package"  => $package,
                   "resource" => $resource_type,
@@ -128,23 +127,11 @@ class App {
                   "method"   => $method_name
       ]);
 
-      if ($parameters["_APIResourceHandler_output_array"])
+      if ($parameters["_APIResourceHandler_output_array"]) {
         return $error;
-      return json_encode($error);
-    }
-//         }
-//         else
-//         {
-//            return \EWCore::log_error(403, "tr{You do not have permission for this resource}", array(
-//                        "Access Denied" => "$app_name/$module_name/$method_name"));
-//         }
-//      }
+      }
 
-    if ($this->resources[$package[1]]) {
-      return $this->resources[$package[1]]->process($this, $package, $module_name, $method_name, $parameters);
-    }
-    else {
-      return \EWCore::log_error(404, "<h4>Resource not found</h4><p>Resource `$package[1]/$module_name/$method_name`, not found</p>");
+      return json_encode($error);
     }
   }
 

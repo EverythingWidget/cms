@@ -141,25 +141,9 @@ class APIResourceHandler extends ResourceHandler {
 
       try {
         // Call the listeners with the same data as the command data
+        $this->add_response_data($response, $response_data, $parameters, $real_class_name, $api_method_name, $output_as_array);
+
         if (isset($api_listeners)) {
-          if ($response_data instanceof APIResponse && $response_data !== $response) {
-            $response = $response_data;
-            $parameters['_response'] = $response;
-          }
-          else if (!($response_data instanceof APIResponse)) {
-            if ($response_data instanceof \stdClass) {
-              $response_data = (array) $response_data;
-            }
-            else if ($response_data !== null && !is_a($response_data, 'stdClass') && !is_array($response_data)) {
-              $type = is_object($response_data) ? get_class($response_data) : gettype($response_data);
-              die(\EWCore::log_error(500, 'Module can not return object. Only array or stdClass is allowed ' . $type, [
-                          $real_class_name . '->' . $api_method_name . ' returns object.'
-              ]));
-            }
-
-            $response->set_data($response_data);
-          }
-
           $this->execute_api_listeners($api_listeners, $parameters, $response);
         }
       }
@@ -178,7 +162,40 @@ class APIResourceHandler extends ResourceHandler {
       return $response->to_json();
     }
     else {
+      if (isset($output_as_array)) {
+        return \EWCore::log_api_error(404, "Section not found: `$module_class_name`", [
+                    "$app_name/$module_class_name/$method_name"
+        ]);
+      }
+
       return \EWCore::log_error(404, "Section not found: `$module_class_name`");
+    }
+  }
+
+  private function add_response_data($response, $response_data, $parameters, $real_class_name, $api_method_name, $output_as_array) {
+    if ($response_data instanceof APIResponse && $response_data !== $response) {
+      $response = $response_data;
+      $parameters['_response'] = $response;
+    }
+    else if (!($response_data instanceof APIResponse)) {
+      if ($response_data instanceof \stdClass) {
+        $response_data = (array) $response_data;
+      }
+      else if ($response_data !== null && !is_a($response_data, 'stdClass') && !is_array($response_data)) {
+        $type = is_object($response_data) ? get_class($response_data) : gettype($response_data);
+
+        if ($output_as_array) {
+          return \EWCore::log_api_error(500, "Module can not return `$type`. Only array or stdClass is allowed", [
+                      $real_class_name . '->' . $api_method_name . " returns `$type`."
+          ]);
+        }
+
+        die(\EWCore::log_error(500, "Module can not return `$type`. Only array or stdClass is allowed", [
+                    $real_class_name . '->' . $api_method_name . " returns `$type`."
+        ]));
+      }
+
+      $response->set_data($response_data);
     }
   }
 

@@ -46,6 +46,7 @@ class Comments extends \ew\Module {
     \webroot\WidgetsManagement::register_widget_feeder($commnets_feeder);
 
     require_once EW_PACKAGES_DIR . '/ew-blog/api/models/ew_blog_comments.php';
+    require_once EW_PACKAGES_DIR . '/ew-blog/api/models/ew_blog_posts.php';
   }
 
   protected function install_permissions() {
@@ -61,9 +62,48 @@ class Comments extends \ew\Module {
 
   public function create(\ew\APIResponse $_response, $_input) {
     // check if content_id is commentable
-    $result = (new CommentsRepository())->create($_input);
+    $result = new \ew\Result();
+    if (!is_numeric($_input->content_id)) {
+      $result->error = 400;
+      $result->message = 'content_id must be an integer';
 
-    return \ew\APIResponse::standard_response($_response, $result);
+      return \ew\APIResponse::standard_response($_response, $result);
+    }
+
+    $comments = 0;
+    $repository = new PostsRepository();
+    $content_id = $_input->content_id;
+
+    //$original_post = $post = $repository->find_with_content_id($content_id);
+
+    while ($comments === 0) {
+      $post = $repository->find_with_content_id($content_id);
+
+      // if parent content is not a post, then ignore it and assume commenting is disabled
+      if (!$post->data) {
+        $post->error = 400;
+        $post->message = 'commenting is disabled on this post, no parent post';
+
+        return \ew\APIResponse::standard_response($_response, $post);
+      }
+
+      if ($post->data->content->parent_id === 0) {
+        break;
+      }
+
+      $content_id = $post->data->content->parent_id;
+      $comments = $post->data->comments;
+    }
+
+    if ($post->data->comments === -1) {
+      $post->error = 400;
+      $post->message = 'commenting is disabled on this post';
+
+      return \ew\APIResponse::standard_response($_response, $post);
+    }
+
+    $comment = (new CommentsRepository())->create($_input);
+    return \ew\APIResponse::standard_response($_response, $comment);
   }
 
   public function read(\ew\APIResponse $_response, $_input, $_identifier) {
