@@ -26,7 +26,7 @@
 <script>
 
   (function () {
-    var postForm = new Vue({
+    var postCommentForm = new Vue({
       el: '[data-widget-id="{$widget_id}"]',
       data: {
         name: '',

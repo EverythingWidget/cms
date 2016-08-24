@@ -1,0 +1,96 @@
+.card {
+  background-color: #fefefe;
+  margin: 15px auto;
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+
+  @media (min-width:320px) {
+    border-radius:0;
+  }
+
+  @media (min-width:768px) {
+    border-radius: 6px;
+  }
+
+  @media (min-width:992px) {
+  }
+
+  &-big {
+    @media (min-width:320px) {
+      width: 100%;
+    }
+
+    @media (min-width:768px) {
+      width: auto;
+      margin-right:15px;
+      margin-left:15px;
+    }
+
+    @media (min-width:992px) {
+      width: 84%;
+      min-width: 868px;
+      margin-right: auto;
+      margin-left: auto;
+    }
+
+    @media (min-width:1360px) {
+      width: 84%;
+      max-width: 1280px;
+    }
+  }
+
+  &-medium {
+    @media (min-width:320px) {
+      width: 100%;
+    }
+
+    @media (min-width:768px) {
+      width: 70%;
+    }
+
+    @media (min-width:992px) {
+      width: 70%;
+    }
+
+    @media (min-width:1360px) {
+      width: 70%;
+      max-width: 1280px;
+    }
+  }
+
+  &-small {
+    @media (min-width:320px) {
+      width: 100%;
+    }
+
+    @media (min-width:768px) {
+      width: 50%;
+    }
+
+    @media (min-width:992px) {
+      width: 50%;
+    }
+
+    @media (min-width:1360px) {
+      width: 50%;
+      max-width: 1280px;
+    }
+  }
+
+
+  p {
+    padding: 0;
+    margin: 0;
+  }
+
+  &-header {
+    padding: 30px 25px 0px;
+
+    h1 {
+      margin: 0;
+      font-size: 2.2em;
+    }
+  }
+}
