@@ -359,20 +359,20 @@
     // Init EW plugins
     initPlugins(document);
 
-    var installModules = <?= EWCore::read_apps_sections(); ?>;
+    var allApps = <?= EWCore::read_apps(); ?>;
 
-    installModules.forEach(function (item) {
-      item.file = 'index.php';
+    allApps.forEach(function (item) {
+//      item.file = 'index.php';
       EW.apps[item.id] = item;
     });
 
     System.activities = <?php echo EWCore::read_activities(); ?>;
-    System.init(installModules);
+    System.init(allApps);
     System.app.on('app', System.services.app_service.load);
     System.app.onGlobal('ew_activity', System.services.app_service.load_activity);
     System.start();
 
-    appsComponent.apps = installModules;
+    appsComponent.apps = allApps;
     appBarComponent.selectedTab = System.getHashParam('app');
 
     if (!System.getHashParam('app')) {

@@ -28,7 +28,7 @@ class WidgetsManagement extends \ew\Module {
   private $link_chooser_form = null;
 
   protected function install_assets() {
-    EWCore::register_app("widgets-management", $this);
+    EWCore::register_app_ui_element("widgets-management", $this);
     ob_start();
     include EW_PACKAGES_DIR . '/webroot/html/widgets-management/link-chooser-uis.php';
     $this->link_chooser_form = ob_get_clean();

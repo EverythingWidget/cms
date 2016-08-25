@@ -76,9 +76,7 @@ class ContentManagement extends \ew\Module {
       echo EWCore::log_error(500, '', $stm->errorInfo());
     }
 
-    EWCore::register_app("content-management", $this);
-
-
+    EWCore::register_app_ui_element('content-management', $this);
 
     /* ob_start();
       include EW_PACKAGES_DIR . '/admin/html/content-management/link-chooser-document.php';

@@ -7,7 +7,7 @@ namespace ew;
  *
  * @author Eeliya Rashidi
  */
-class Module {
+class  Module {
 
   var $sectionName;
   protected $resource = null;

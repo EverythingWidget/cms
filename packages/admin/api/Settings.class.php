@@ -14,7 +14,7 @@ class Settings extends \ew\Module {
   protected $resource = "api";
 
   protected function install_assets() {
-    \EWCore::register_app("settings", $this);
+    \EWCore::register_app_ui_element("settings", $this);
     include_once 'models/ew_settings.php';
 
     \EWCore::register_form('ew/ui/settings/general', 'ew-admin-settings', [

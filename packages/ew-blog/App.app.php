@@ -19,8 +19,13 @@ class App extends \ew\App {
   protected $description = "EverythingWidget administration panel";
   protected $version = "0.8";
 
-  public function init() {
-    
+  protected function init() {
+    \EWCore::register_ui_element('apps', 'ew-blog', [
+        "title"       => $this->name,
+        "id"          => 'ew-blog',
+        "url"         => 'html/ew-blog/core/index.php',
+        "description" => $this->description
+    ]);
   }
 
 }

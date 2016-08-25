@@ -45,6 +45,13 @@ class Comments extends \ew\Module {
     $commnets_feeder->title = 'Comments list';
     \webroot\WidgetsManagement::register_widget_feeder($commnets_feeder);
 
+
+    \EWCore::register_ui_element('apps/ew-blog/navs', 'comments', [
+        'id'    => 'ew-blog/comments',
+        'title' => 'Comments',
+        'url'   => 'html/ew-blog/comments/component.php'
+    ]);
+
     require_once EW_PACKAGES_DIR . '/ew-blog/api/models/ew_blog_comments.php';
     require_once EW_PACKAGES_DIR . '/ew-blog/api/models/ew_blog_posts.php';
   }

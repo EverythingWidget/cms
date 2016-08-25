@@ -67,7 +67,7 @@ class HTMLResourceHandler extends ResourceHandler {
 
     $this->set_uis($module_name, $file);
     //return $_REQUEST["_uis"];
-    if (\webroot\WidgetsManagement::get_widget_feeder_by_url($module_name)) {
+    if ($package === 'webroot' && \webroot\WidgetsManagement::get_widget_feeder_by_url($module_name)) {
       // Show index if the URL contains a page feeder
       $app_index = $app->index();
       $path = $package . '/' . $resource_type . '/' . $app_index['module'] . '/' . $app_index['file'];

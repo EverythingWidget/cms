@@ -36,25 +36,12 @@ class App {
     $this->install_resource_handlers();
   }
 
-  protected function load_assets() {
-    $app_root = $this->get_root();
-    $path = EW_PACKAGES_DIR . '/' . $app_root . '/' . $dir;
-
-    try {
-      $this->load_modules();
-      $this->load_dependecies('api/repositories');
-    }
-    catch (\Exception $e) {
-      return $e->getMessage();
-    }
-  }
-
-  protected function install_resource_handlers() {
-    $this->register_resource_handler("api", new APIResourceHandler($this));
-    $this->register_resource_handler($this->default_resource, new HTMLResourceHandler($this));
+  protected function init() {
+    
   }
 
   public function init_app() {
+    $this->init();
     for ($in = 0, $len = count($this->loaded_modules); $in < $len; $in++) {
       $this->loaded_modules[$in]->init();
     }
@@ -93,7 +80,25 @@ class App {
     return $dependencies;
   }
 
-  public function load_modules() {
+  protected function load_assets() {
+    $app_root = $this->get_root();
+    $path = EW_PACKAGES_DIR . '/' . $app_root . '/' . $dir;
+
+    try {
+      $this->load_dependecies('api/repositories');
+      $this->load_and_populate_modules();
+    }
+    catch (\Exception $e) {
+      return $e->getMessage();
+    }
+  }
+
+  protected function install_resource_handlers() {
+    $this->register_resource_handler("api", new APIResourceHandler($this));
+    $this->register_resource_handler($this->default_resource, new HTMLResourceHandler($this));
+  }
+
+  public function load_and_populate_modules() {
     $apis = $this->load_dependecies('api');
 
     $this->loaded_modules = [];

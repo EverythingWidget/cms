@@ -15,7 +15,7 @@ class UsersManagement extends \ew\Module {
   }
 
   protected function install_assets() {
-    EWCore::register_app("users-management", $this);
+    EWCore::register_app_ui_element("users-management", $this);
 
     EWCore::register_form("ew/ui/apps/users/navs", "users", [
         'id'    => 'users-management/users',

@@ -1170,6 +1170,16 @@ class EWCore {
     return ($numHits > 0) ? ($slug . '-' . $numHits) : $slug;
   }
 
+  /** Add a ui element to the specified place holder
+   * 
+   * @param String $name place holder id 
+   * @param String $id  
+   * @param Array $conf can vary depends on the place holder
+   */
+  public static function register_ui_element($name, $id, $conf) {
+    EWCore::register_object("ew/ui/$name", $id, $conf);
+  }
+
   /** Add a ui component to the specified place holder
    * 
    * @param String $name place holder id 
@@ -1496,24 +1506,21 @@ class EWCore {
     return FALSE;
   }
 
-  public static function register_app($id, $object) {
-    return static::register_object(static::$EW_APP, $id, $object);
+  public static function register_app_ui_element($id, $object) {
+    return static::register_ui_element('apps', $id, [
+                "title"       => "tr:{$object->get_app()->get_root()}" . "{" . $object->get_title() . "}",
+                "id"          => EWCore::camelToHyphen($object->get_section_name()),
+                "url"         => 'html/' . $object->get_app()->get_root() . '/' . EWCore::camelToHyphen($object->get_section_name()) . '/index.php',
+                "description" => "tr:{$object->get_app()->get_root()}" . "{" . $object->get_description() . "}"
+    ]);
   }
 
-  public static function read_apps_sections() {
-    $apps_list = static::read_registry(static::$EW_APP);
-    $apps = [];
-    foreach ($apps_list as $app) {
-      $apps[] = array(
-          "title"       => "tr:{$app->get_app()->get_root()}" . "{" . $app->get_title() . "}",
-          "package"     => '-' . $app->get_app()->get_root(),
-          "module"      => EWCore::camelToHyphen($app->get_section_name()),
-          "file"        => "index.php",
-          "className"   => $app->get_section_name(),
-          "id"          => EWCore::camelToHyphen($app->get_section_name()),
-          "url"         => 'html/' . $app->get_app()->get_root() . '/' . EWCore::camelToHyphen($app->get_section_name()) . '/index.php',
-          "description" => "tr:{$app->get_app()->get_root()}" . "{" . $app->get_description() . "}");
-    }
+  public static function read_apps() {
+    $apps = EWCore::read_registry('ew/ui/apps');
+
+    usort($apps, function($a, $b) {
+      return strcmp($a['title'], $b['title']);
+    });
 
     return json_encode($apps);
   }
