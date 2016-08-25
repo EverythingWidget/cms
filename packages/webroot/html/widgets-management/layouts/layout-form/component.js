@@ -1,6 +1,7 @@
 function UISForm() {
   clearTimeout(repTimeout);
-  System.UI.forms.uis_form = this;
+  System.ui.forms.uis_form = this;
+  
   var _this = this;
   this.currentDialog;
   this.dpPreference = null;
@@ -710,7 +711,7 @@ UISForm.prototype.updateUIS = function (reload) {
     return;
   }
 
-  var lock = System.UI.lock({
+  var lock = System.ui.lock({
     element: $.EW("getParentDialog", $("#ew-uis-editor"))[0],
     akcent: "loader center"
   }, .5);
@@ -747,7 +748,7 @@ UISForm.prototype.updateUIS = function (reload) {
 UISForm.prototype.updateTemplateBody = function () {
   // Update template body with current template settings
   var _this = this;
-  var lock = System.UI.lock({
+  var lock = System.ui.lock({
     element: this.editorWindow[0]
     ,
     akcent: "loader center"
@@ -895,7 +896,7 @@ UISForm.prototype.dispose = function () {
 
 UISForm.prototype.reloadFrame = function (t) {
   var url = !($("#perview_url").val) ? "index.php" : $("#perview_url").val();
-  this.frameLoader = System.UI.lock({
+  this.frameLoader = System.ui.lock({
     element: $.EW("getParentDialog", $("#ew-uis-editor"))[0],
     akcent: "loader center"
   }, .5);

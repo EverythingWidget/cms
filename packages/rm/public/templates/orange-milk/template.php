@@ -75,7 +75,7 @@ class template extends TemplateControl {
             $("#spw-cp").hide();
           }
 
-          widgets = System.UI.forms.uis_form.getLayoutWidgets();
+          widgets = System.ui.forms.uis_form.getLayoutWidgets();
 
           initSelect("#menu-id", data["menu-id"]);
           initSelect("#page-slider", data["page-slider"]);
@@ -89,7 +89,7 @@ class template extends TemplateControl {
               }, 400, "Power2.easeOut");
 
               //System.UI.forms.uis_form.updateTemplateBody();
-              widgets = System.UI.forms.uis_form.getLayoutWidgets();
+              widgets = System.ui.forms.uis_form.getLayoutWidgets();
               initSelect("#menu-id", data["menu-id"]);
               initSelect("#page-slider", data["page-slider"]);
             } else {
@@ -105,7 +105,7 @@ class template extends TemplateControl {
 
         template_settings_form.on("getData", function (e) {
           var data = $.parseJSON($("#template_settings_form").serializeJSON());
-          System.UI.forms.uis_form.setTemplateSettings(data);
+          System.ui.forms.uis_form.setTemplateSettings(data);
         });
       })();
     </script>

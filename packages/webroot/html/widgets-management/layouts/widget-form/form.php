@@ -52,21 +52,21 @@ function get_properties_form() {
 
 function get_size_layout_form() {
   ob_start();
-  include 'uis-widget-size-layout.php';
+  include 'size-layout.php';
   return ob_get_clean();
 }
 
-EWCore::register_form("ew/ui/widget-form", "widget-cp", [
+EWCore::register_form('ew/ui/widget-form', 'widget-cp', [
     "title"   => "Widget CP",
     "content" => webroot\WidgetsManagement::get_widget_cp($widget_type)
 ]);
 
-EWCore::register_form("ew/ui/widget-form", "size-layout", [
+EWCore::register_form('ew/ui/widget-form', 'size-layout', [
     "title"   => "Size & Layout",
     "content" => get_size_layout_form()
 ]);
 
-EWCore::register_form("ew/ui/widget-form", "properties", [
+EWCore::register_form('ew/ui/widget-form', 'properties', [
     "title"   => "Properties",
     "content" => get_properties_form()
 ]);

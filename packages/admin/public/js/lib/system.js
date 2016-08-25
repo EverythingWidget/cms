@@ -4,6 +4,7 @@
   var importedLibraries = {};
   System = {
     stateKey: 'app',
+    registry: {},
     modules: {},
     activities: {},
     getActivity: function (conf) {
@@ -111,6 +112,28 @@
       }
 
       entities[entity_id] = entityObject;
+      this.addToRegistery(entity_id, entityObject);
+    },
+    addToRegistery: function (id, item) {
+      var groups = id.split('/');
+      var registery = System.registry;
+
+      groups.forEach(function (group, index) {
+        var groupName = group.replace(/\.?([A-Z]+|[\-]+)/g, function (x, y) {
+          return '_' + y.toLowerCase();
+        }).replace(/^_|\-/g, '');
+
+        if (!registery[groupName]) {
+          registery[groupName] = {};
+        }
+
+        if (index === groups.length - 1) {
+          registery[groupName] = item;
+          return;
+        }
+
+        registery = registery[groupName];
+      });
     },
     /**
      * 

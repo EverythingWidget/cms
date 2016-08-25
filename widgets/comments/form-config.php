@@ -8,3 +8,13 @@
     <input type="checkbox" name="default_post" value="1"/><i></i>
   </label>
 </div>
+<script>
+  (function () {
+
+    var commentConfigForm = new Vue({
+      el: '#uis-widget',
+      data: {}
+    });
+
+  })();
+</script>
