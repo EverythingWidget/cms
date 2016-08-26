@@ -76,20 +76,12 @@ class ContentManagement extends \ew\Module {
       echo EWCore::log_error(500, '', $stm->errorInfo());
     }
 
-    EWCore::register_app_ui_element('content-management', $this);
-
-    /* ob_start();
-      include EW_PACKAGES_DIR . '/admin/html/content-management/link-chooser-document.php';
-      $link_chooser_media = ob_get_clean(); */
-
-
-    /* EWCore::register_form("ew/ui/components/link-chooser", "media-chooser", ["title"   => "Media",
-      "content" => $link_chooser_media]); */
-
-//    EWCore::register_resource("images", [
-//        $this,
-//        "image_loader"
-//    ]);
+    EWCore::register_ui_element('apps', 'content-management', [
+        "title"       => $this->get_title(),
+        "id"          => 'content-management',
+        "url"         => 'html/admin/content-management/index.php',
+        "description" => $this->get_description()
+    ]);
 
     $this->register_content_component("document", [
         "title"       => "Document",
@@ -107,13 +99,13 @@ class ContentManagement extends \ew\Module {
         "form"        => "admin/html/content-management/documents/label-language.php"
     ]);
 
-    EWCore::register_form('ew/ui/apps/contents/navs', "documents", [
+    EWCore::register_ui_element('apps/contents/navs', "documents", [
         'id'    => 'content-management/documents',
         'title' => 'Documents',
         'url'   => 'html/admin/content-management/documents/component.php'
     ]);
 
-    EWCore::register_form('ew/ui/apps/contents/navs', "media", [
+    EWCore::register_ui_element('apps/contents/navs', "media", [
         'id'    => 'content-management/media',
         'title' => 'Media',
         'url'   => 'html/admin/content-management/media/index.php'
@@ -140,21 +132,21 @@ class ContentManagement extends \ew\Module {
   protected function install_permissions() {
     $this->register_permission("see-content", "User can see the contents", [
         'api/index',
-        "api/content_fields",
-        "api/contents-labels",
-        "api/get_category",
-        "api/get_article",
-        "api/albums",
-        "api/contents_folders",
-        "api/contents_articles",
-        "api/get_media_list",
-        "api/media-audios",
+        'api/content_fields',
+        'api/contents-labels',
+        'api/get_category',
+        'api/get_article',
+        'api/albums',
+        'api/contents_folders',
+        'api/contents_articles',
+        'api/get_media_list',
+        'api/media-audios',
         'api/get-content-by-slug',
         // ------ html resources ------ //
         'html/index.php',
-        "html/documents/article-form/component.php",
-        "html/documents/folder-form/component.php",
-        "html/media/album-form.php"
+        'html/documents/article-form/component.php',
+        'html/documents/folder-form/component.php',
+        'html/media/album-form.php'
     ]);
 
     $this->register_permission("manipulate-content", "User can add new, edit, delete contents", [

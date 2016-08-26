@@ -120,6 +120,7 @@ class Settings extends \ew\Module {
       $db->close();
       return $r;
     }
+    $db->close();
     //$out = array("totalRows" => $setting->num_rows, "result" => $rows);
     return FALSE;
   }

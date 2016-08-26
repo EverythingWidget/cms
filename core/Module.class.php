@@ -7,7 +7,7 @@ namespace ew;
  *
  * @author Eeliya Rashidi
  */
-class  Module {
+class Module {
 
   var $sectionName;
   protected $resource = null;
@@ -20,6 +20,7 @@ class  Module {
   private $current_method_args;
   protected $pre_processors = [];
   protected $unauthorized_method_invoke = false;
+  private $permissions = [];
 
   /**
    * 
@@ -122,6 +123,7 @@ class  Module {
     if (!$verb) {
       return \EWCore::log_error(400, "Wrong command: Request method is not defined");
     }
+    
     $parameters['_verb'] = $verb;
 
     if (!$method_name) {
@@ -166,7 +168,7 @@ class  Module {
     $method_parameters = $method_object->getParameters();
 
     $parameters['_input'] = (object) $parameters;
-    
+
     ksort($method_parameters);
 
     $functions_arguments = array();
@@ -189,10 +191,10 @@ class  Module {
       if (isset($parameters[$param_name])) {
         $temp = $parameters[$param_name];
       }
-      
+
       $functions_arguments[] = $temp;
       $this->current_method_args[$param->getName()] = $temp;
-    }       
+    }
 
     $method_object->setAccessible(true);
     $command_result = $method_object->invokeArgs($this, $functions_arguments);
@@ -320,6 +322,12 @@ class  Module {
 
   public function register_permission($id, $description, $permissions) {
     \EWCore::register_permission($this->app->get_root(), \EWCore::camelToHyphen($this->current_class->getShortName()), \EWCore::camelToHyphen($id), $this->app->get_name(), $this->get_title(), $description, $permissions);
+
+//    $this->permissions[\EWCore::camelToHyphen($id)] = $permissions;
+  }
+
+  public function get_permissions() {
+    return $this->permissions;
   }
 
   public function register_public_access($methods) {

@@ -508,9 +508,11 @@ class EWCore {
     if (self::$plugins_initialized) {
       return;
     }
+    
+    self::$plugins_initialized = true;
 
     $apps_dirs = opendir(EW_PACKAGES_DIR);
-    $apps = array();
+
     while ($app_dir = readdir($apps_dirs)) {
       if (strpos($app_dir, '.') === 0)
         continue;
@@ -541,7 +543,6 @@ class EWCore {
       $app->init_app();
     }
     // Optimization tip
-    self::$plugins_initialized = true;
   }
 
   public static function is_url_exist($url) {
@@ -1172,12 +1173,12 @@ class EWCore {
 
   /** Add a ui element to the specified place holder
    * 
-   * @param String $name place holder id 
+   * @param String $placeholder_name place holder id 
    * @param String $id  
    * @param Array $conf can vary depends on the place holder
    */
-  public static function register_ui_element($name, $id, $conf) {
-    EWCore::register_object("ew/ui/$name", $id, $conf);
+  public static function register_ui_element($placeholder_name, $id, $conf) {
+    EWCore::register_object("ew/ui/$placeholder_name", $id, $conf);
   }
 
   /** Add a ui component to the specified place holder

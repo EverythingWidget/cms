@@ -159,5 +159,10 @@ class SimpleRepository implements \ew\CRUDRepository {
     return $result;
   }
 
+  public function new_select($params) {
+    $class_name = $this->model_name;
+    return $class_name::select($params);
+  }
+
 //put your code here
 }

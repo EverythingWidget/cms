@@ -59,6 +59,7 @@ class HTMLResourceHandler extends ResourceHandler {
   }
 
   protected function handle($app, $package_original, $resource_type, $module_name, $method_name, $parameters = null) {
+
     $package = str_replace('_', '-', $package_original);
     $matches = [];
     preg_match('/(.*\.[^-@]{2,4})/', $parameters["_file"], $matches);
@@ -95,8 +96,10 @@ class HTMLResourceHandler extends ResourceHandler {
         return file_get_contents(EW_PACKAGES_DIR . '/' . $path, NULL);
         } */
       if (\admin\UsersManagement::user_has_permission($app->get_root(), 'html', $module_name, $method_name)) {
+//        return '';
         $res = $this->load_file(EW_PACKAGES_DIR . '/' . $path, $type, $parameters);
         header("Content-Type: text/html");
+        return '';
         return $res;
       }
       else {
@@ -198,7 +201,7 @@ class HTMLResourceHandler extends ResourceHandler {
               . "WHERE ew_ui_structures.id = ew_pages_ui_structures.ui_structure_id "
               . "AND path = '@DEFAULT' ");
       $statement->execute();
-      $row = $statement->fetch(\PDO::FETCH_ASSOC);
+      $row = $statement->fetch(\PDO::FETCH_ASSOC);     
     }
 
     return [
@@ -210,10 +213,11 @@ class HTMLResourceHandler extends ResourceHandler {
 
   private function load_file($file_path, $type, $parameters) {
     header("Content-Type: " . $type);
-    ob_start();
-    //var_dump($parameters);
+
+    ob_start(null, 0, PHP_OUTPUT_HANDLER_STDFLAGS ^
+            PHP_OUTPUT_HANDLER_REMOVABLE);
     include $file_path;
-    return ob_get_clean();
+    return ob_get_flush();
   }
 
 }

@@ -41,19 +41,19 @@ class Comments extends \ew\Module {
       echo \EWCore::log_error(500, '', $create_table_statement->errorInfo());
     }
 
-    $commnets_feeder = new \ew\WidgetFeeder('comments', $this, 'list', 'comments_feeder');
-    $commnets_feeder->title = 'Comments list';
-    \webroot\WidgetsManagement::register_widget_feeder($commnets_feeder);
-
-
     \EWCore::register_ui_element('apps/ew-blog/navs', 'comments', [
         'id'    => 'ew-blog/comments',
         'title' => 'Comments',
         'url'   => 'html/ew-blog/comments/component.php'
     ]);
 
-    require_once EW_PACKAGES_DIR . '/ew-blog/api/models/ew_blog_comments.php';
     require_once EW_PACKAGES_DIR . '/ew-blog/api/models/ew_blog_posts.php';
+  }
+
+  protected function install_feeders() {
+    $commnets_feeder = new \ew\WidgetFeeder('comments', $this, 'list', 'comments_feeder');
+    $commnets_feeder->title = 'Comments list';
+    \webroot\WidgetsManagement::register_widget_feeder($commnets_feeder);
   }
 
   protected function install_permissions() {
@@ -146,7 +146,7 @@ class Comments extends \ew\Module {
   }
 
   public function comments_feeder($_response, $id, $token = 0, $page_size = 30, $order_by = 'DESC') {
-    $query = ew_blog_comments::select([
+    $query = (new CommentsRepository())->new_select([
                 'id',
                 'name',
                 'email',

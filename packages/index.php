@@ -20,8 +20,9 @@ require '../config/app.php';
 require '../core/EWCore.class.php';
 /* require '../core/modules/Valitron/Validator.php'; */
 ob_end_clean();
-if (ob_get_level())
+if (ob_get_level()) {
   ob_end_clean();
+}
 
 $_file = null;
 error_reporting(E_WARNING | E_ERROR);
@@ -147,11 +148,9 @@ if (isset($elements[$parameter_index])) {
   $parameter_index++;
 }
 // Create instance of EWCore class 
-
 //if (!ob_start("ob_gzhandler")) {
 //  ob_start();
 //}
-
 // set default user group if no user group has been spacified
 if (!isset($_SESSION["EW.USER_GROUP_ID"])) {
   $_SESSION['EW.USER_GROUP_ID'] = /* json_decode(EWCore::get_default_users_group(), true)["id"] */ 1;
