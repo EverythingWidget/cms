@@ -1,27 +1,48 @@
+/* global Scope, System */
+
 Scope.export = CommentsComponent;
 
-function CommentsComponent(state) {
+function CommentsComponent(scope, state) {
   var component = this;
-  this.state = state;
-  this.state.type = "app";
-  this.data = {};
-
-  this.state.onInit = function () {
-    component.init();
+  component.scope = scope;
+  component.state = state;
+  component.state.type = "app";
+  component.data = {
+    tab: null,
+    card_title: 'Comments',
+    comments: [
+    ]
   };
 
-  this.state.onStart = function () {
-    component.start();
-  };
+  component.state.onInit = component.init.bind(component);
+
+  component.state.onStart = component.start.bind(component);
 }
 
 CommentsComponent.prototype.init = function () {
   var component = this;
+  component.vue = new Vue({
+    el: Scope.views.comments_card,
+    data: component.data
+  });
 
 };
 
 CommentsComponent.prototype.start = function () {
-  this.data.tab = null;
+  var component = this;
+  component.data.tab = null;
+
+  component.readComments();
+};
+
+CommentsComponent.prototype.readComments = function () {
+  var component = this;
+  $.get('api/ew-blog/comments/', {
+    page_size: 30
+  }, function (response) {
+    console.log(response);
+    component.data.comments = response.data;
+  });
 };
 
 

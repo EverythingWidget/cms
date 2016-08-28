@@ -907,6 +907,11 @@
       float: left;
       width: 20%;
     }
+
+    g-recaptcha {
+      display: flex;
+      justify-content: center;
+    }
   }
 
   &.video {

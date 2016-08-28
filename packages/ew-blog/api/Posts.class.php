@@ -31,8 +31,14 @@ class Posts extends \ew\Module {
     $pdo = \EWCore::get_db_PDO();
     $stm = $pdo->prepare($table_install);
     if (!$stm->execute()) {
-      echo \EWCore::log_error(500, '', $stm->errorInfo());
+      echo \EWCore::log_error(500, '', $stm->errorInfo());      
     }
+    
+    \EWCore::register_ui_element('apps/ew-blog/navs', 'posts', [
+          'id'    => 'ew-blog/posts',
+          'title' => 'Posts',
+          'url'   => 'html/ew-blog/posts/component.php'
+      ]);
   }
 
   protected function install_permissions() {

@@ -90,17 +90,10 @@ class HTMLResourceHandler extends ResourceHandler {
       //$ext = $this->get_extension($path);
       $type = $this->get_mime_type($path);
 
-      /* if (in_array($ext, $this->directly_accessible))
-        {
-        header("content-type: " . $type);
-        return file_get_contents(EW_PACKAGES_DIR . '/' . $path, NULL);
-        } */
       if (\admin\UsersManagement::user_has_permission($app->get_root(), 'html', $module_name, $method_name)) {
-//        return '';
-        $res = $this->load_file(EW_PACKAGES_DIR . '/' . $path, $type, $parameters);
-        header("Content-Type: text/html");
-        return '';
-        return $res;
+        $result = $this->load_file(EW_PACKAGES_DIR . '/' . $path, $type, $parameters);
+
+        return $result;
       }
       else {
         return \EWCore::log_error(403, "You do not have corresponding permission to access this file", array(
@@ -201,7 +194,7 @@ class HTMLResourceHandler extends ResourceHandler {
               . "WHERE ew_ui_structures.id = ew_pages_ui_structures.ui_structure_id "
               . "AND path = '@DEFAULT' ");
       $statement->execute();
-      $row = $statement->fetch(\PDO::FETCH_ASSOC);     
+      $row = $statement->fetch(\PDO::FETCH_ASSOC);
     }
 
     return [
@@ -211,13 +204,12 @@ class HTMLResourceHandler extends ResourceHandler {
     ];
   }
 
-  private function load_file($file_path, $type, $parameters) {
-    header("Content-Type: " . $type);
+  private function load_file($file_path, $type, $parameters = []) {
+    header("Content-Type: $type");
 
-    ob_start(null, 0, PHP_OUTPUT_HANDLER_STDFLAGS ^
-            PHP_OUTPUT_HANDLER_REMOVABLE);
+    ob_start();
     include $file_path;
-    return ob_get_flush();
+    return ob_get_clean();
   }
 
 }

@@ -4,6 +4,7 @@
 @import "components/form";
 @import "components/card";
 @import "components/grid";
+@import "components/list";
 /*@font-face{ 
   font-family: 'geomanist';
   src: url('fonts/geomanist-bold-webfont.ttf');
@@ -1150,65 +1151,6 @@ h2.actions-bar span {
   border-top: 1px solid rgba(0,0,0,.1);
 }
 
-.card-header h1:last-child {
-  padding-bottom: 25px;
-}
-
-.card-title-action {
-  float: left;
-}
-
-.card-title-action-right {
-  float: right;
-}
-
-.card-title-action-right > .btn {
-  margin-left: 5px;
-}
-
-.card-header .btn {
-  float: left;
-}
-
-.card-action-bar {
-  display: block;
-  padding: 5px 0;
-  margin: 0 -10px 0px;
-  height: 20px;
-  transition: height .2s;
-  overflow: hidden;
-  opacity: 0;
-}
-
-.card-action-bar .btn {
-  margin-left: 10px;
-}
-
-.card-action-bar .btn.btn-text {
-  margin-right: 5px;
-  margin-left: 5px;
-}
-
-.card-action-bar .btn.pull-right {
-  margin-right: 0;
-  margin-left: 10px;
-}
-
-.card-content-title {
-  font-weight: 400;
-  font-size: 1.7em;
-  display: block;
-  margin-bottom: 15px;
-  color: #000;
-}
-
-.card-content {
-  padding: 30px 25px 25px;
-  position: relative;
-  min-height: 98px;
-  z-index: 1;
-}
-
 .btn-circle {
   width: 44px;
   height: 44px;
@@ -1686,7 +1628,7 @@ ul.actions-bar li label {
   background-image: url(images/squre-texture.png);
 }
 
-ul.items {
+ul.layout-components {
   margin: 0;
   padding: 0 5px;
   font-size: 16px;
@@ -1738,12 +1680,12 @@ ul.items {
   }
 }
 
-ul.items li.block.highlight,ul.items li.highlight {
+ul.layout-components li.block.highlight,ul.layout-components li.highlight {
   box-shadow: 0 1px 2px rgba(0,0,0,.2) ,0 3px 6px rgba(0,0,0,.14);
   border: 1px solid rgba(0,0,0,.5);
 }
 
-ul.items li.block {
+ul.layout-components li.block {
   padding: 0;
   margin: 10px 0;
   display: block;
@@ -1753,12 +1695,12 @@ ul.items li.block {
   border-radius: 0;
 }
 
-ul.items li.block li.block {
+ul.layout-components li.block li.block {
   margin-left: -7px;
   margin-bottom: 0;
 }
 
-ul.items li.panel {
+ul.layout-components li.panel {
   border-radius: 0;
   margin-right: 0;
   > ul {
@@ -1767,14 +1709,14 @@ ul.items li.panel {
   }
 }
 
-ul.items li.widget {
+ul.layout-components li.widget {
   border: none;
   padding: 0 6px;
   /*overflow: hidden;*/
   background-color: transparent;
 }
 
-ul.items li.widget > .item-label {
+ul.layout-components li.widget > .item-label {
   background-color: #0097A7;
   padding: 6px;
   border-radius: 16px;
@@ -1786,15 +1728,15 @@ ul.items li.widget > .item-label {
   transition: all .2s;
 }
 
-ul.items li.widget > .item-label:hover, ul.items li.widget > .item-label.hover {
+ul.layout-components li.widget > .item-label:hover, ul.layout-components li.widget > .item-label.hover {
   background-color: #09B0C1;
 }
 
-ul.items li.widget .close-icon {
+ul.layout-components li.widget .close-icon {
   right: 11px;
 }
 
-ul.items li .handle {
+ul.layout-components li .handle {
   width: 32px;
   height: 32px;
   float: left;
@@ -1818,7 +1760,7 @@ ul.items li .handle {
   background-image: url('images/widget-icon.png');
 }
 
-ul.items .button {
+ul.layout-components .button {
   font-size: 16px;
   line-height: 20px;
   padding: 0 5px;
@@ -1827,13 +1769,13 @@ ul.items .button {
   margin-right: 0;
 }
 
-ul.items li > div {
+ul.layout-components li > div {
   top: 0;
   display: block;
   position: relative;
 }
 
-ul.items li > .title {
+ul.layout-components li > .title {
   overflow: hidden;
   top: 0;
   display: block;
@@ -1842,7 +1784,7 @@ ul.items li > .title {
   padding-left: 10px;
 }
 
-ul.items li a.btn {
+ul.layout-components li a.btn {
   padding: 0 5px;
   line-height: 18px;
   margin: 6px 10px;
@@ -1850,7 +1792,7 @@ ul.items li a.btn {
   float: left;
 }
 
-ul.items li .close-icon {
+ul.layout-components li .close-icon {
   position: absolute;
   background-color: transparent;
   right: 10px;
@@ -1858,7 +1800,7 @@ ul.items li .close-icon {
   float: right;
 }
 
-ul.items li .close-icon:hover {
+ul.layout-components li .close-icon:hover {
   background-color: transparent;
 }
 
@@ -1875,7 +1817,7 @@ ul.active {
   transition-duration: .3s;   
 }
 
-ul.items li.placeholder {
+ul.layout-components li.placeholder {
   min-height: 34px;
   background-color: transparent;
   border-radius: 2px;
@@ -1885,7 +1827,7 @@ ul.items li.placeholder {
   background-color: rgba(0,0,0,.5)
 }
 
-ul.items li.placeholder:before {
+ul.layout-components li.placeholder:before {
   position: absolute;
 }
 

@@ -1,3 +1,5 @@
+/* global System */
+
 function UISForm() {
   clearTimeout(repTimeout);
   System.ui.forms.uis_form = this;
@@ -65,15 +67,15 @@ function UISForm() {
   this.inspectorEditor[0].isValidParent = function (item, parent) {
     //UIUtil.hasCSSClass(item, "block")
     var $parent = $(parent);
-    if (System.ui.utility.hasClass(item, "block") && !$parent.is(".items")) {
+    if (System.ui.utility.hasClass(item, "block") && !$parent.is(".layout-components")) {
       return false;
     }
 
-    if (System.ui.utility.hasClass(item, "widget") && $parent.is(".items")) {
+    if (System.ui.utility.hasClass(item, "widget") && $parent.is(".layout-components")) {
       return false;
     }
 
-    if (System.ui.utility.hasClass(item, "panel") && $parent.is(".items")) {
+    if (System.ui.utility.hasClass(item, "panel") && $parent.is(".layout-components")) {
       return false;
     }
 
@@ -476,7 +478,7 @@ UISForm.prototype.loadInspectorEditor = function () {
     });
   }
 
-  var inspectorEditorList = this.inspectorEditor.children(".items");
+  var inspectorEditorList = this.inspectorEditor.children(".layout-components");
   inspectorEditorList.empty();
 
   // Add div to create glass effect to make the iframe content unselectable
@@ -901,7 +903,7 @@ UISForm.prototype.reloadFrame = function (t) {
     akcent: "loader center"
   }, .5);
 
-  $("#inspector-editor > .items").empty();
+  $("#inspector-editor > .layout-components").empty();
   $('#fr').attr({
     src: '<?= EW_ROOT_URL ?>' + url + '?_uis=' + this.uisId + '&editMode=true'
   });

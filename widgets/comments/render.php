@@ -18,11 +18,15 @@
     <span class="field-label">Comment</span>
   </label>
 
+  <div class="field">
+    <div class="g-recaptcha" data-sitekey="6LdgtigTAAAAADXq74JY8m5RIY7jDm9iidCbl7PM"></div>
+  </div>
   <div>
     <button type="submit">Post</button>
   </div>
 </form>
 
+<script src='https://www.google.com/recaptcha/api.js'></script>
 <script>
 
   (function () {
@@ -33,12 +37,14 @@
         email: '',
         commenter_id: '',
         content: '',
-        content_id: '<?= $_REQUEST['_method_name'] ?>'
+        content_id: '<?= $_REQUEST['_method_name'] ?>',
+        recaptcha: null
       },
       methods: {
         postComment: function (event) {
           event.preventDefault();
           var _this = this;
+          _this.$data.recaptcha = grecaptcha.getResponse();
 
           $.ajax({
             type: 'POST',
@@ -48,12 +54,12 @@
           });
 
           function success(response) {
-            if(response.status_code === 200) {
-              _this.$data.name ='';
-              _this.$data.email ='';
-              _this.$data.content ='';
+            if (response.status_code === 200) {
+              _this.$data.name = '';
+              _this.$data.email = '';
+              _this.$data.content = '';
             }
-//            console.log(response,_this);
+//            console.log(response, postCommentForm);
           }
           //console.log(<?= json_encode($_REQUEST) ?>,_this)
         }

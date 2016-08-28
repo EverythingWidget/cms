@@ -7,13 +7,33 @@
     Default post
     <input type="checkbox" name="default_post" value="1"/><i></i>
   </label>
+  <system-field class="field">
+    <label>For widget</label>
+    <select>      
+      <option value=""></option>
+      <option v-for="item in widgets" v-bind:value="item.id">{{ item.title }}</li>  
+    </select>    
+  </system-field>
 </div>
 <script>
   (function () {
 
     var commentConfigForm = new Vue({
       el: '#uis-widget',
-      data: {}
+      data: {},
+      computed: {
+        widgets: function () {
+          var widgets = [];
+          System.ui.forms.uis_form.getLayoutWidgets().each(function (i, item) {
+            widgets.push({
+              title: item.dataset.widgetTitle,
+              id: item.dataset.widgetId
+            });
+          });
+
+          return widgets;
+        }
+      }
     });
 
   })();

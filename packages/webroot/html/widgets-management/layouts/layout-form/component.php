@@ -27,7 +27,7 @@
       <div class="tab-pane active" id="inspector">
         <system-sortable-list name="inspector-editor" id="inspector-editor">
 
-          <ul class="items" >
+          <ul class="layout-components" >
           </ul>
 
         </system-sortable-list>
