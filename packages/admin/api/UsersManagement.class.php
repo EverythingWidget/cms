@@ -195,12 +195,12 @@ class UsersManagement extends \ew\Module {
     $permissions = $db_con->query("SELECT ew_users_groups.permission, ew_users_groups.type FROM ew_users_groups WHERE id = '$user_group_id' LIMIT 1") or die($db_con->error);
     $user_info = $permissions->fetch_assoc();
 
-    if ($user_info["type"] === "superuser") {
+    if ($user_info['type'] === 'superuser') {
       return true;
     }
 
     if (isset($user_info)) {
-      $user_permissions = explode(",", $user_info["permission"]);
+      $user_permissions = explode(",", $user_info['permission']);
       foreach ($user_permissions as $permission) {
         foreach ($permission_id as $item) {
           //echo "$app_name.$class_name.$item === $permission<br>";
@@ -293,8 +293,8 @@ class UsersManagement extends \ew\Module {
     if (!$page_size) {
       $page_size = 100;
     }
-    $totalRows = $db->query("SELECT COUNT(*) FROM ew_users_groups") or die(error_reporting());
-    $totalRows = $totalRows->fetch_assoc();
+    $total_rows = $db->query("SELECT COUNT(*) FROM ew_users_groups") or die(error_reporting());
+    $total_rows_data = $total_rows->fetch_assoc();
 
     $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_users_groups ORDER BY id LIMIT $page, $page_size") or die($db->error);
 
@@ -304,7 +304,7 @@ class UsersManagement extends \ew\Module {
     }
     $db->close();
 
-    $_response->properties['size'] = intval($totalRows['COUNT(*)']);
+    $_response->properties['size'] = intval($total_rows_data['COUNT(*)']);
     $_response->properties['page_size'] = $page_size;
 
     return $rows;
@@ -330,7 +330,7 @@ class UsersManagement extends \ew\Module {
   public static function get_users_group_by_type($type) {
     $db = \EWCore::get_db_connection();
     if (!$type)
-      $type = $db->real_escape_string($_REQUEST["type"]);
+      $type = $db->real_escape_string($_REQUEST['type']);
 
     $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_users_groups WHERE type = '$type'") or die($db->error);
 
@@ -356,8 +356,9 @@ class UsersManagement extends \ew\Module {
 
   public static function get_user($userId = null) {
     $db = \EWCore::get_db_connection();
-    if (!$userId)
+    if (!$userId) {
       $userId = $db->real_escape_string($_REQUEST["userId"]);
+    }
 
     $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_users WHERE id = '$userId'") or $db->error;
 
@@ -369,8 +370,9 @@ class UsersManagement extends \ew\Module {
 
   public static function get_user_by_email($email = null) {
     $db = \EWCore::get_db_connection();
-    if (!$email)
-      $email = $db->real_escape_string($_REQUEST["email"]);
+    if (!$email) {
+      $email = $db->real_escape_string($_REQUEST['email']);
+    }
 
     $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_users WHERE email = '$email'") or $db->error;
 

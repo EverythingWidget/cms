@@ -31,14 +31,14 @@ class Posts extends \ew\Module {
     $pdo = \EWCore::get_db_PDO();
     $stm = $pdo->prepare($table_install);
     if (!$stm->execute()) {
-      echo \EWCore::log_error(500, '', $stm->errorInfo());      
+      echo \EWCore::log_error(500, '', $stm->errorInfo());
     }
-    
+
     \EWCore::register_ui_element('apps/ew-blog/navs', 'posts', [
-          'id'    => 'ew-blog/posts',
-          'title' => 'Posts',
-          'url'   => 'html/ew-blog/posts/component.php'
-      ]);
+        'id'    => 'ew-blog/posts',
+        'title' => 'Posts',
+        'url'   => 'html/ew-blog/posts/component.php'
+    ]);
   }
 
   protected function install_permissions() {
@@ -54,7 +54,8 @@ class Posts extends \ew\Module {
 
     $this->register_public_access([
         'api/options',
-        'api/read'
+        'api/read',
+        'api/included-contents-read'
     ]);
   }
 
@@ -84,6 +85,17 @@ class Posts extends \ew\Module {
     $_input->id = $_identifier;
 
     $result = (new PostsRepository())->delete($_input);
+
+    return \ew\APIResponse::standard_response($_response, $result);
+  }
+
+  public function included_contents_read(\ew\APIResponse $_response, $_input, $_identifier) {
+    $_input->id = $_identifier;
+    $_input->filter = [
+        'include' => [ 'content']
+    ];
+
+    $result = (new PostsRepository())->read($_input);
 
     return \ew\APIResponse::standard_response($_response, $result);
   }

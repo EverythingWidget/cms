@@ -68,15 +68,15 @@ PostsComponent.prototype.start = function () {
   component.data.tab = null;
 
   $(document).off('article-list.refresh').on('article-list.refresh', function (e, eventData) {
-    component.readComments();
+    component.readPosts();
   });
   
-  component.readComments();
+  component.readPosts();
 };
 
-PostsComponent.prototype.readComments = function () {
+PostsComponent.prototype.readPosts = function () {
   var component = this;
-  $.get('api/ew-blog/posts/', {
+  $.get('api/ew-blog/posts/included-contents', {
     page_size: 12
   }, function (response) {
     component.data.posts = response.data;

@@ -21,6 +21,12 @@ class DBUtility {
   }
 
   public static function filter(\Illuminate\Database\Eloquent\Builder $query, $filter) {
+    if (is_array($filter['include'])) {
+      foreach ($filter['include'] as $value) {
+        $query->with($value);
+      }
+    }
+    
     if (is_array($filter['where'])) {
       foreach ($filter['where'] as $key => $value) {
         if (is_array($value)) {

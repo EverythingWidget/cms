@@ -176,27 +176,35 @@ class App {
     return $this->get_root() . '/' . $path;
   }
 
-  public function load_view($path, $view_data) {
-    if ($view_data)
-      extract($view_data);
-    $path = EW_PACKAGES_DIR . '/' . $this->get_root() . '/' . $path;
+//  public function load_view($path, $view_data) {
+//    if ($view_data) {
+//      extract($view_data);
+//    }
+//    
+//    $path = EW_PACKAGES_DIR . '/' . $this->get_root() . '/' . $path;
+//
+//    include $path;
+//  }
 
-    include $path;
-  }
-
-  public function get_view($path, $view_data) {
+  public function get_view($path, $view_data, $auto_populate = true) {
     $full_path = EW_PACKAGES_DIR . '/' . $this->get_root() . '/' . $path;
 
     if (!file_exists($full_path)) {
       return \EWCore::log_error(404, "<h4>View: File not found</h4><p>File `$full_path`, not found</p>");
     }
+
     ob_start();
     include $full_path;
-    $res = ob_get_clean();
+    $view_content = ob_get_clean();
 
-    return preg_replace_callback("/\{\{([\w]*)\}\}/", function($match) use ($view_data) {
-      return $view_data[$match[1]];
-    }, $res);
+    if ($auto_populate) {
+      return preg_replace_callback("/\{\{([\w]*)\}\}/", function($match) use ($view_data) {
+        return $view_data[$match[1]];
+      }, $view_content);
+    }
+    else {
+      return $view_content;
+    }
   }
 
   public function index() {

@@ -31,7 +31,7 @@ class APIResourceHandler extends ResourceHandler {
   ];
 
   protected function handle($app, $package, $resource_type, $module_name, $command, $parameters = null) {
-    
+
     $output_as_array = $this->get_parameter('output_array');
     $api_verb = $this->get_parameter('verb');
 
@@ -74,7 +74,7 @@ class APIResourceHandler extends ResourceHandler {
       //echo "$app_name, $module_name, $resource_name / $command_name";
       $app_section_object = new $real_class_name($app);
       $api_method_name = $method_name . '_' . $verb;
-      $api_command_name = $method_name . '-' . $verb;
+      $api_command_name = $command_name . '-' . $verb;
 
       // if method_verb() does not exist
       if (!method_exists($app_section_object, $api_method_name)) {
@@ -100,11 +100,11 @@ class APIResourceHandler extends ResourceHandler {
         return \EWCore::log_error(404, "$app_name-$resource_name: Method not found: `$api_method_name`");
       }
 
-      $parameters["_parts"] = array_slice(explode('/', $parameters["_file"]), 1);
+      $parameters['_parts'] = array_slice(explode('/', $parameters["_file"]), 1);
       $response = new APIResponse();
       $parameters['_response'] = $response;
 
-      if ($permission_id === "public-access") {
+      if ($permission_id === 'public-access') {
         $response_data = $app_section_object->process_request($verb, $api_method_name, $parameters);
         $call = true;
       }
@@ -150,10 +150,6 @@ class APIResourceHandler extends ResourceHandler {
       catch (Exception $e) {
         echo $e->getTraceAsString();
       }
-
-//      if (is_null($result)) {
-//        $result = $this->to_api_response(null);
-//      }
 
       if (isset($output_as_array)) {
         return $response->to_array();
@@ -201,12 +197,14 @@ class APIResourceHandler extends ResourceHandler {
 
   private function execute_api_listeners($api_listeners, $parameters, $response) {
     foreach ($api_listeners as $id => $listener) {
-      if (method_exists($listener["object"], $listener["method"])) {
+      $object = $listener['object'];
+      $listener = $listener['method'];
+      if (method_exists($object, $listener)) {
         //$response_data = $response->to_array();
-        $listener_method_object = new \ReflectionMethod($listener["object"], $listener["method"]);
+        $listener_method_object = new \ReflectionMethod($object, $listener);
         $arguments = \EWCore::create_arguments($listener_method_object, $parameters, $response);
 
-        $listener_result = $listener_method_object->invokeArgs($listener["object"], $arguments);
+        $listener_result = $listener_method_object->invokeArgs($object, $arguments);
 
         if (isset($listener_result)) {
           $response_data = $response->data;
@@ -215,9 +213,9 @@ class APIResourceHandler extends ResourceHandler {
             $listener_result = (array) $listener_result;
           }
           else if ($listener_result !== null && !is_a($listener_result, 'stdClass') && !is_array($listener_result)) {
-            $type = is_object($listener['object']) ? get_class($listener['object']) : gettype($listener['object']);
+            $type = is_object($object) ? get_class($object) : gettype($object);
             die(\EWCore::log_error(500, 'Module can not return object. Only array or stdClass is allowed', [
-                        $type . '->' . $listener['method'] . ' returns object.'
+                        $type . '->' . $listener . ' returns object.'
             ]));
           }
 

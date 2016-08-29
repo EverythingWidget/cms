@@ -97,7 +97,7 @@ class HTMLResourceHandler extends ResourceHandler {
       }
       else {
         return \EWCore::log_error(403, "You do not have corresponding permission to access this file", array(
-                    "Access Denied" => "$app_name/$module_name/$method_name"));
+                    "Access Denied" => "$package/$module_name/$method_name"));
       }
     }
     else {
@@ -164,11 +164,9 @@ class HTMLResourceHandler extends ResourceHandler {
             . "WHERE ew_ui_structures.id = ew_pages_ui_structures.ui_structure_id "
             . "AND path LIKE ?") or die($pdo->error);
     $statement->execute([$url . '%']);
+    $row = $statement->fetch(\PDO::FETCH_ASSOC);
 
-    if ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
-      
-    }
-    else {
+    if (!$row) {
       $page_uis_handlers = \EWCore::read_registry_as_array(self::PAGE_UIS_HANDLER);
 
       foreach ($page_uis_handlers as $handler) {

@@ -2,7 +2,6 @@
 
 namespace webroot;
 
-use Module;
 use EWCore;
 
 /**
@@ -28,36 +27,34 @@ class WidgetsManagement extends \ew\Module {
   private $link_chooser_form = null;
 
   protected function install_assets() {
-    EWCore::register_app_ui_element("widgets-management", $this);
-    ob_start();
-    include EW_PACKAGES_DIR . '/webroot/html/widgets-management/link-chooser-uis.php';
-    $this->link_chooser_form = ob_get_clean();
+    EWCore::register_app_ui_element('widgets-management', $this);
 
-    ob_start();
-    include EW_PACKAGES_DIR . '/webroot/html/widgets-management/uis-tab.php';
-    $uis_content_tab = ob_get_clean();
-
-    EWCore::register_form("ew/ui/forms/content/tabs", "uis-tab", [
-        "title" => "UI",
-        "form"  => $uis_content_tab
+    EWCore::register_ui_element('forms/content/tabs', 'uis-tab', [
+        'title' => 'UI',
+        'form'  => $this->get_app()->get_view('html/widgets-management/uis-tab.php', [], false)
     ]);
 
-    EWCore::register_form('ew/ui/apps/widgets/navs', 'layouts', [
+    EWCore::register_ui_element('apps/widgets/navs', 'layouts', [
         'id'    => 'widgets-management/uis-list',
         'title' => 'tr{Layouts}',
         'url'   => 'html/webroot/widgets-management/layouts/component.php'
     ]);
 
-    EWCore::register_form('ew/ui/apps/widgets/navs', 'page-layouts', [
+    EWCore::register_ui_element('apps/widgets/navs', 'page-layouts', [
         'id'    => 'widgets-management/pages-uis',
         'title' => 'tr{Page layouts}',
         'url'   => 'html/webroot/widgets-management/page-layouts/component.php'
     ]);
 
-    EWCore::register_form('ew/ui/apps/widgets/navs', 'feeders', [
+    EWCore::register_ui_element('apps/widgets/navs', 'feeders', [
         'id'    => 'widgets-management/feeders',
         'title' => 'tr{Feeders}',
         'url'   => 'html/webroot/widgets-management/feeders/component.php'
+    ]);
+
+    EWCore::register_ui_element('components/link-chooser', 'uis-chooser', [
+        'title'   => 'UI Structures',
+        'content' => $this->get_app()->get_view('html/widgets-management/link-chooser-uis.php', [], false)
     ]);
 
     $this->add_listener('admin/api/content-management/contents-update', 'on_contents_update');
@@ -66,11 +63,6 @@ class WidgetsManagement extends \ew\Module {
   }
 
   protected function install_permissions() {
-    EWCore::register_form("ew/ui/components/link-chooser", "uis-chooser", [
-        "title"   => "UI Structures",
-        "content" => $this->link_chooser_form
-    ]);
-
     $this->register_permission("view", "User can view the widgets section", [
         'api/layouts-read',
         "api/get_uis",
@@ -114,6 +106,7 @@ class WidgetsManagement extends \ew\Module {
     $this->register_permission("export-uis", "User can export UIS", array(
         "api/export_uis",
         "html/ne-uis.php"));
+
     $this->register_permission("import-uis", "User can import UIS", array(
         "api/import_uis",
         "html/ne-uis.php"));
@@ -131,7 +124,7 @@ class WidgetsManagement extends \ew\Module {
     }
   }
 
-  public function on_contents_read($_response, $_input) {
+  public function on_contents_read($_response) {
     if (isset($_response->properties['total'])) {
       return null;
     }
@@ -162,24 +155,26 @@ class WidgetsManagement extends \ew\Module {
     $apps = array();
 
     while ($template_dir = readdir($apps_dirs)) {
-      if (strpos($template_dir, '.') === 0)
+      if (strpos($template_dir, '.') === 0) {
         continue;
+      }
 
-      if (!is_dir($path . $template_dir))
+      if (!is_dir($path . $template_dir)) {
         continue;
+      }
 
       $template_dir_content = opendir($path . $template_dir);
 
       while ($file = readdir($template_dir_content)) {
-
-        if (strpos($file, '.') === 0)
+        if (strpos($file, '.') === 0) {
           continue;
-        //$i = strpos($file, 'template.css');
+        }
 
-        if ($file == 'template.css') {
-          $apps[] = array(
+        if ($file === 'template.css') {
+          $apps[] = [
               "templateName" => $template_dir,
-              "templatePath" => "templates/" . $template_dir);
+              "templatePath" => "templates/" . $template_dir
+          ];
         }
       }
     }
@@ -453,23 +448,26 @@ class WidgetsManagement extends \ew\Module {
   public static function get_uis($uisId = null) {
     $db = \EWCore::get_db_PDO();
 
-    if (!$uisId)
+    if (!$uisId) {
       return;
+    }
 
     $stm = $db->prepare("SELECT id, name, template, template_settings, perview_url, structure FROM ew_ui_structures WHERE id = ?");
     $stm->execute([$uisId]);
 
     $default_uis = WidgetsManagement::get_path_uis("@DEFAULT");
     $home_uis = WidgetsManagement::get_path_uis("@HOME_PAGE");
+    $row = $stm->fetch(\PDO::FETCH_ASSOC);
 
-
-    if ($row = $stm->fetch(\PDO::FETCH_ASSOC)) {
+    if ($row) {
       $row['template_settings'] = json_decode($row['template_settings'], true);
 
-      if ($default_uis["id"] == $uisId)
+      if ($default_uis["id"] == $uisId) {
         $row["uis-default"] = "true";
-      if ($home_uis["id"] == $uisId)
+      }
+      if ($home_uis["id"] == $uisId) {
         $row["uis-home-page"] = "true";
+      }
       return $row;
     }
     else {
@@ -492,7 +490,7 @@ class WidgetsManagement extends \ew\Module {
     }
   }
 
-  public static function create_panel_content($panel = array(), $container_id, $no_data = null) {
+  public static function create_panel_content($panel, $container_id, $no_data = null) {
     $result_html = '';
     if (isset($panel)) {
       foreach ($panel as $key => $value) {
@@ -605,7 +603,7 @@ class WidgetsManagement extends \ew\Module {
       $widget_class_instance = (new $widget_class_name());
       $widget_title = $widget_class_instance->get_title();
       $widget_content_raw = $widget_class_instance->render($widget_parameters, $widget_id, $style_id, $style_class);
-      $widget_content = preg_replace('/\{\$widget_id\}/', $widget_id, $widget_content_raw);
+      $widget_content = str_replace('{$widget_id}', $widget_id, $widget_content_raw);
     }
     else {
 
@@ -615,7 +613,7 @@ class WidgetsManagement extends \ew\Module {
         ob_start();
         include EW_WIDGETS_DIR . '/' . $widget_type . '/index.php';
         $widget_content_raw = ob_get_clean();
-        $widget_content = preg_replace('/\{\$widget_id\}/', $widget_id, $widget_content_raw);
+        $widget_content = str_replace('{$widget_id}', $widget_id, $widget_content_raw);
       }
     }
     // Add widget style class which specified with UIS editor to the widget

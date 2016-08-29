@@ -5,7 +5,7 @@ namespace ew;
 /**
  * Section main files must inherit this class
  *
- * @author Eeliya Rashidi
+ * @author Eeliya
  */
 class Module {
 
@@ -44,8 +44,10 @@ class Module {
   }
 
   public function get_resource() {
-    if (!isset($this->resource))
+    if (!isset($this->resource)) {
       throw new \Exception("Resource can't be NULL");
+    }
+    
     return $this->resource;
   }
 
@@ -143,7 +145,6 @@ class Module {
     $this->current_method_args = NULL;
     if ($path && file_exists($path)) {
       ob_start();
-
       include $path;
       return ob_get_clean();
     }
@@ -182,10 +183,10 @@ class Module {
 
       $param_name = $param->getName();
 
-      if (strpos($param_name, "_parts__") === 0) {
-        $temp = $parameters[str_replace("_parts__", "", $param_name)];
+      if (strpos($param_name, '_parts__') === 0) {
+        $temp = $parameters[str_replace('_parts__', '', $param_name)];
         if (!isset($temp)) {
-          $temp = $parameters["_parts"][$part_index++];
+          $temp = $parameters['_parts'][$part_index++];
         }
       }
       if (isset($parameters[$param_name])) {

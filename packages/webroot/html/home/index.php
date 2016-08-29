@@ -28,7 +28,6 @@ webroot\WidgetsManagement::add_html_script(["include" => "rm/public/js/gsap/easi
 webroot\WidgetsManagement::add_html_script(["include" => "rm/public/js/gsap/jquery.gsap.min.js"]);
 webroot\WidgetsManagement::add_html_script(["include" => "rm/public/js/gsap/plugins/CSSPlugin.min.js"]);
 
-$VIEW = [];
 $VIEW = webroot\WidgetsManagement::generate_view($_REQUEST["_uis"]);
 $HTML_BODY = $VIEW["body_html"];
 $WIDGET_DATA = $VIEW["widget_data"];
@@ -42,14 +41,11 @@ if (file_exists($template_php)) {
   require_once $template_php;
   $template = new \template();
   //$uis_data = json_decode(admin\WidgetsManagement::get_uis($_REQUEST["_uis"]), true);
-  $template_settings = $_REQUEST["_uis_template_settings"];
-
-
+  $template_settings = $_REQUEST['_uis_template_settings'];
 
   if (!isset($template_settings) || $template_settings === 'null') {
     $template_settings = '{}';
   }
-
 
   $TEMPLATE_SCRIPT = "";
   $template_script_dom = $template->get_template_script(json_decode($_REQUEST["_uis_template_settings"], true));
