@@ -98,7 +98,6 @@ class Settings extends \ew\Module {
   }
 
   private function read_settings($app_name = '') {
-
     $app_name .= "%";
     $settings = ew_settings::where('key', "LIKE", $app_name)->get();
     $rows = [];

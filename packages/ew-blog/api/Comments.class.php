@@ -63,6 +63,7 @@ class Comments extends \ew\Module {
         'api/update',
         'api/delete',
         'api/options',
+        'api/confirm-capcha',
         'api/comments-feeder'
     ]);
   }
@@ -145,13 +146,25 @@ class Comments extends \ew\Module {
     ];
   }
 
+  public function confirm_capcha($_input) {
+    $url = 'https://www.google.com/recaptcha/api/siteverify';
+
+    $secret = \EWCore::call_api('admin/api/settings/read-settings', [
+                'app_name' => 'ew-blog/secret-key'
+            ])['data']['ew-blog/secret-key'];
+
+    $response = file_get_contents("$url?secret=" . $secret . "&response=" . $_input->response . "&remoteip=" . $_SERVER['REMOTE_ADDR']);
+
+    return json_decode($response, true);
+  }
+
   public function comments_feeder($_response, $id, $token = 0, $page_size = 30, $order_by = 'DESC') {
     $query = (new CommentsRepository())->new_select([
-                'id',
-                'name',
-                'email',
-                'content',
-                'date_updated'
+        'id',
+        'name',
+        'email',
+        'content',
+        'date_updated'
     ]);
 
     $query->where('content_id', '=', $id);

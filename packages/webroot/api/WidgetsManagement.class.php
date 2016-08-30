@@ -603,7 +603,7 @@ class WidgetsManagement extends \ew\Module {
       $widget_class_instance = (new $widget_class_name());
       $widget_title = $widget_class_instance->get_title();
       $widget_content_raw = $widget_class_instance->render($widget_parameters, $widget_id, $style_id, $style_class);
-      $widget_content = str_replace('{$widget_id}', $widget_id, $widget_content_raw);
+      $widget_content = str_replace(['{$widget_id}', '$widget_id_js'], [$widget_id, str_replace('-', '_', $widget_id)], $widget_content_raw);
     }
     else {
 
@@ -613,7 +613,7 @@ class WidgetsManagement extends \ew\Module {
         ob_start();
         include EW_WIDGETS_DIR . '/' . $widget_type . '/index.php';
         $widget_content_raw = ob_get_clean();
-        $widget_content = str_replace('{$widget_id}', $widget_id, $widget_content_raw);
+        $widget_content = str_replace(['{$widget_id}', '$widget_id_js'], [$widget_id, str_replace('-', '_', $widget_id)], $widget_content_raw);
       }
     }
     // Add widget style class which specified with UIS editor to the widget

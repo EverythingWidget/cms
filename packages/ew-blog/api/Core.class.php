@@ -36,6 +36,12 @@ class Core extends \ew\Module {
       echo EWCore::log_error(500, '', $stm->errorInfo());
     }
 
+    \EWCore::register_ui_element('settings/general', 'ew-blog-settings', [
+        'title'   => 'EW Blog',
+        'content' => '',
+        'url'     => 'html/ew-blog/settings/index.php'
+    ]);
+
     $this->register_content_component("event", [
         "title"       => "Event",
         "description" => "Event information",

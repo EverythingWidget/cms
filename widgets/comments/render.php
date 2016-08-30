@@ -19,17 +19,33 @@
   </label>
 
   <div class="field">
-    <div class="g-recaptcha" data-sitekey="6LdgtigTAAAAADXq74JY8m5RIY7jDm9iidCbl7PM"></div>
+    <div id="g-recaptcha-{$widget_id}" class="g-recaptcha"></div>
   </div>
   <div>
-    <button type="submit">Post</button>
+    <button type="submit" v-bind:disabled="disablePosting">Post</button>
   </div>
 </form>
 
-<script src='https://www.google.com/recaptcha/api.js'></script>
-<script>
 
+<script >
   (function () {
+    var siteKey = '<?=
+EWCore::call_api('admin/api/settings/read-settings', [
+    'app_name' => 'ew-blog/site-key'
+])['data']['ew-blog/site-key'];
+?>'
+
+    post_comment_$widget_id_js = function () {
+      grecaptcha.render('g-recaptcha-{$widget_id}', {
+        sitekey: siteKey,
+        callback: postCommentForm.verifyCapcha,
+        'expired-callback': function () {
+          postCommentForm.disablePosting = true;
+        }
+      });
+    };
+
+
     var postCommentForm = new Vue({
       el: '[data-widget-id="{$widget_id}"]',
       data: {
@@ -38,9 +54,29 @@
         commenter_id: '',
         content: '',
         content_id: '<?= $_REQUEST['_method_name'] ?>',
-        recaptcha: null
+        recaptcha: null,
+        canPost: true
       },
       methods: {
+        verifyCapcha: function (captcha) {
+          $.ajax({
+            type: 'POST',
+            url: 'api/ew-blog/comments/confirm-capcha',
+            data: {
+              response: captcha
+            },
+            success: success
+          });
+
+          function success(response) {
+            if (response.data.success) {
+              postCommentForm.disablePosting = false;
+            } else {
+              grecaptcha.reset();
+              alert('Error: ' + response.data['error-codes'].join(', '));
+            }
+          }
+        },
         postComment: function (event) {
           event.preventDefault();
           var _this = this;
@@ -59,12 +95,12 @@
               _this.$data.email = '';
               _this.$data.content = '';
             }
-//            console.log(response, postCommentForm);
           }
-          //console.log(<?= json_encode($_REQUEST) ?>,_this)
         }
       }
     });
   })();
-
 </script>
+
+<script src='https://www.google.com/recaptcha/api.js?onload=post_comment_$widget_id_js&render=explicit'></script>
+

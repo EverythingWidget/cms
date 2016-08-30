@@ -113,6 +113,7 @@ $HTML_CSS = webroot\WidgetsManagement::get_html_links_concatinated();
     <script id="widget-data">
       (function () {
         window.ew_widget_data = {};
+        window.ew_widget_actions = {};
 <?= $WIDGET_DATA; ?>
       })();
     </script>
