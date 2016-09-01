@@ -1,0 +1,13 @@
+<div class="ew-pagination">
+  <button class="btn btn-circle" v-bind:disabled="current_page === 1" v-on:click="previous">
+    <i class="icon-left-open-big"></i>
+  </button>
+  <p>
+    <span class="from-till">{{ from }} - {{ till }}</span>
+    <span class="of"> <i class="icon-menu"></i> </span>
+    <strong>{{ total }}</strong>
+  </p>
+  <button class="btn btn-circle" v-bind:disabled="current_page >= total_pages" v-on:click="next">
+    <i class="icon-right-open-big"></i>
+  </button>
+</div>

@@ -10,8 +10,8 @@ function CommentsComponent(scope, state) {
   component.data = {
     tab: null,
     card_title: 'Comments',
-    comments: [
-    ]
+    url: 'api/ew-blog/comments/',
+    comments: {}
   };
 
   component.state.onInit = component.init.bind(component);
@@ -38,10 +38,9 @@ CommentsComponent.prototype.start = function () {
 CommentsComponent.prototype.readComments = function () {
   var component = this;
   $.get('api/ew-blog/comments/', {
-    page_size: 30
+    page_size: 15
   }, function (response) {
-    console.log(response);
-    component.data.comments = response.data;
+    component.data.comments = response;
   });
 };
 

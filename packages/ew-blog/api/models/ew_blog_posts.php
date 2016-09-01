@@ -42,7 +42,7 @@ class ew_blog_posts extends \Illuminate\Database\Eloquent\Model {
   }
 
   public function content() {
-    return $this->belongsTo('admin\ew_contents', 'content_id');
+    return $this->belongsTo('admin\ew_contents', 'content_id', 'id');
   }
 
 }

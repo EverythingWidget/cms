@@ -77,9 +77,9 @@ PostsComponent.prototype.start = function () {
 PostsComponent.prototype.readPosts = function () {
   var component = this;
   $.get('api/ew-blog/posts/included-contents', {
-    page_size: 12
+    page_size: 10
   }, function (response) {
-    component.data.posts = response.data;
+    component.data.posts = response;
   });
 };
 

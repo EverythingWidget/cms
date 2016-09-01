@@ -134,8 +134,10 @@ class SimpleRepository implements \ew\CRUDRepository {
 
     $result = new \ew\Result();
 
-    $result->total = $class_name::count();
+    $result->total = $query->get()->count();
+    $result->page = intval($page);
     $result->page_size = intval($page_size);
+    
     $result->data = $query->take($page_size)->skip($page * $page_size)->get();
 
     return $result;

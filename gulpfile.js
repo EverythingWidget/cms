@@ -16,6 +16,7 @@ var connect = require('gulp-connect-php'),
 var minify = require('gulp-minify');
 var pump = require('pump');
 var concat = require('gulp-concat');
+var include = require('gulp-inject-stringified-html');
 
 gulp.task('default', function () {
   // place code for your default task here
@@ -89,7 +90,7 @@ gulp.task('watch-webroot-templates', [
   });
 });
 
-gulp.task('watch-admin-styles', [
+gulp.task('style:admin', [
   'admin:compile:scss', 'admin:compile:base:scss'
 ], function () {
   gulp.watch('packages/admin/**/*.scss', [
@@ -142,28 +143,29 @@ gulp.task('script:system.js', function (cb) {
       'packages/admin/public/js/system/system-ui.js',
       'packages/admin/public/js/system/system-module.js',
       'packages/admin/public/js/system/system-domain.js',
+      'packages/admin/public/js/system/system-tags.js',
       'packages/admin/public/js/system/system-animations.js',
-      'packages/admin/public/js/system/system-tags.js'
     ]),
-    concat('system.build.js'),
+    concat('build.js'),
     minify({
       mangle: false
     }),
-    gulp.dest('packages/admin/public/js/system/')
-  ]);
+    gulp.dest('packages/admin/public/js/system/build/')
+  ], cb);
 });
 
 gulp.task('script:ew-elements.js', function (cb) {
   return pump([
     gulp.src(['packages/admin/public/js/ew-elements/*.js']),
-    concat('ew-elements.build.js'),
+    include(),
+    concat('build.js'),
     minify({
       mangle: false
     }),
-    gulp.dest('packages/admin/public/js/ew-elements/')
+    gulp.dest('packages/admin/public/js/ew-elements/build/')
   ]);
 });
 
-gulp.task('Start Developing Admin', ['script:system.js', 'script:ew-elements.js'], function () {
-  gulp.watch('packages/admin/public/js/**/*.js', ['task:admin-js-minification', 'script:ew-elements.js']);
+gulp.task('Start Developing Admin', ['script:system.js', 'script:ew-elements.js','style:admin'], function () {
+  gulp.watch(['packages/admin/public/js/**/*.*'], ['script:system.js', 'script:ew-elements.js']);
 });

@@ -3,9 +3,9 @@
     <h1> {{ card_title }} </h1>
   </div>
   <div class="card-content list">
-    <ew-pagination>aha</ew-pagination>
+    <ew-pagination v-bind:list.sync="comments"></ew-pagination>
     <ul class="list items">
-      <li class="list-item" v-for="comment in comments">
+      <li class="list-item" v-for="comment in comments.data">
         <h3>
           {{ comment.email }}
         </h3>

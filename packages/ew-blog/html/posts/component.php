@@ -3,9 +3,10 @@
     <h1> {{ card_title }} </h1>
   </div>
   <div class="card-content list">
-    <system-spirit animations="liveHeight" zoom="list-item">
+    <ew-pagination v-bind:list.sync="posts"></ew-pagination>
+    <system-spirit animations="liveHeight,verticalShift" vertical-shift="list-item">
       <ul class="list items">
-        <li class="list-item action" v-for="post in posts" v-on:click="showPost(post)">
+        <li class="list-item action" v-for="post in posts.data" v-on:click="showPost(post)">
           <h3>
             {{ post.content.title }}
             <span>

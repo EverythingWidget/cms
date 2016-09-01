@@ -22,9 +22,10 @@ class APIResponse implements \JsonSerializable {
   public $properties = [];
   private $links = [];
 
-  public function __construct() {
+  public function __construct($url) {
     $this->properties = [
-        'status_code' => 200
+        'status_code' => 200,
+        'url'         => $url
     ];
   }
 
@@ -57,6 +58,10 @@ class APIResponse implements \JsonSerializable {
     return json_encode($this->to_array());
   }
 
+  function result_filter($var) {
+    return ($var !== NULL && $var !== FALSE && $var !== '');
+  }
+
   public function to_array() {
     $type = null;
 //    if (!is_null($this->data)) {
@@ -67,7 +72,7 @@ class APIResponse implements \JsonSerializable {
 //      $type = $this->type;
 //    }
 
-    return array_merge(array_filter($this->properties), [
+    return array_merge(array_filter($this->properties, [$this, 'result_filter']), [
         'data' => $this->data
     ]);
   }
@@ -84,7 +89,7 @@ class APIResponse implements \JsonSerializable {
    * @param Result $result The repository result
    * @return array
    */
-  public static function standard_response($_response, $result) {
+  public static function standard_response(APIResponse $_response, $result) {
     $_response->properties['message'] = $result->message;
 
     if ($result->error) {
@@ -94,8 +99,17 @@ class APIResponse implements \JsonSerializable {
       return null;
     }
 
-    $_response->properties['total'] = $result->total;
-    $_response->properties['page_size'] = $result->page_size;
+    foreach ($result as $key => $value) {
+//           print "$key => $value\n";
+      if ($key === 'data') {
+        continue;
+      }
+
+      $_response->properties[$key] = $value;
+    }
+
+//    $_response->properties['total'] = $result->total;
+//    $_response->properties['page_size'] = $result->page_size;
 
     return $result->data->toArray();
   }

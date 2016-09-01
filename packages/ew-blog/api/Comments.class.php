@@ -158,7 +158,7 @@ class Comments extends \ew\Module {
     return json_decode($response, true);
   }
 
-  public function comments_feeder($_response, $id, $token = 0, $page_size = 30, $order_by = 'DESC') {
+  public function comments_feeder($_response, $id, $page = 0, $page_size = 30, $order_by = 'DESC') {
     $query = (new CommentsRepository())->new_select([
         'id',
         'name',
@@ -173,14 +173,15 @@ class Comments extends \ew\Module {
 
     $query->orderBy('date_updated', $order_by)
             ->take($page_size)
-            ->skip($token);
+            ->skip($page);
 
     $comments = $query->get();
 
     $result = new \ew\Result;
 
     $result->total = $collection_size;
-    $result->page_size = $comments->count();
+    $result->page = intval($page);
+    $result->page_size = $comments->count();       
 
     $comments_list = new \Illuminate\Database\Eloquent\Collection;
 

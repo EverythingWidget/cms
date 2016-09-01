@@ -1,0 +1,34 @@
+
+.ew-pagination {
+  line-height: 38px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding: 5px 25px;  
+  font-size: 1.33em;
+
+  p {
+    line-height: 44px;
+    min-width: 220px;
+    text-align: center;    
+  }
+
+  .btn {
+    flex: 0 0 auto;
+    margin: 0;
+    transition: all 0.2s;
+
+    &[disabled] {
+      opacity: 0;
+    }
+
+    i {
+      font-size: 1.5em;
+    }
+  }
+
+  .of {
+    padding: 0 5px;
+    color: #ccc;
+  }
+}

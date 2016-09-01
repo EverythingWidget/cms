@@ -101,7 +101,7 @@ class APIResourceHandler extends ResourceHandler {
       }
 
       $parameters['_parts'] = array_slice(explode('/', $parameters["_file"]), 1);
-      $response = new APIResponse();
+      $response = new APIResponse("$resource_name/$app_name/$module_name/$api_command_name");
       $parameters['_response'] = $response;
 
       if ($permission_id === 'public-access') {

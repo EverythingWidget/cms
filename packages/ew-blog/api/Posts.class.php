@@ -92,7 +92,7 @@ class Posts extends \ew\Module {
   public function included_contents_read(\ew\APIResponse $_response, $_input, $_identifier) {
     $_input->id = $_identifier;
     $_input->filter = [
-        'include' => [ 'content']
+        'include' => ['content']
     ];
 
     $result = (new PostsRepository())->read($_input);
