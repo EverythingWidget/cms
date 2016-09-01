@@ -3,6 +3,7 @@
     <h1> {{ card_title }} </h1>
   </div>
   <div class="card-content list">
+    <ew-pagination>aha</ew-pagination>
     <ul class="list items">
       <li class="list-item" v-for="comment in comments">
         <h3>

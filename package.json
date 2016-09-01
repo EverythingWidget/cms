@@ -8,6 +8,10 @@
   "author": "Eeliya",
   "contributors": [],
   "dependencies": {
+    "gulp-concat": "^2.6.0",
+    "gulp-minify": "0.0.14",
+    "gulp-uglify": "^2.0.0",
+    "pump": "^1.0.1"
   },
   "devDependencies": {
     "browser-sync": "2.11.1",

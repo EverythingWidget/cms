@@ -36,6 +36,9 @@ EWCore::call_api('admin/api/settings/read-settings', [
 ?>'
 
     post_comment_$widget_id_js = function () {
+      if(siteKey === '') {
+        return postCommentForm.disablePosting = false;
+      }
       grecaptcha.render('g-recaptcha-{$widget_id}', {
         sitekey: siteKey,
         callback: postCommentForm.verifyCapcha,

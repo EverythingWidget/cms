@@ -60,6 +60,7 @@ $nav-bar-bg: rgba(255,255,255,.9);
       padding-bottom: 20px;
       background-clip: padding-box; 
       overflow: hidden;      
+      font-size: 0.9em;
       box-shadow: 0 3px 5px rgba(0,0,0,.1), 0 8px 14px rgba(0,0,0,.14); 
 
       .widget-container, .widget {
@@ -137,6 +138,7 @@ $nav-bar-bg: rgba(255,255,255,.9);
       padding-bottom: 30px;
       border-width: 0px;
       border-radius: 5px;
+      font-size: 1em;
 
       .widget {
         padding: 0;

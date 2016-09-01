@@ -4,3 +4,7 @@
 /vendor/
 /node_modules/
 /packages/webroot/html/_cache/
+/packages/admin/public/js/system/system.build.js
+/packages/admin/public/js/ew-elements/ew-elements.build.js
+/packages/admin/public/js/ew-elements/ew-elements.build-min.js
+/packages/admin/public/js/system/system.build-min.js

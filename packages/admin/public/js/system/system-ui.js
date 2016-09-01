@@ -1,3 +1,5 @@
+/* global System, TweenLite */
+
 (function (system, tween) {
   system.UI = system.ui = new SystemUI();
 

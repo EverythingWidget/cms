@@ -13,6 +13,9 @@ var connect = require('gulp-connect-php'),
         sourcemaps = require('gulp-sourcemaps'),
         uncss = require('gulp-uncss'),
         browserSync = require('browser-sync').create();
+var minify = require('gulp-minify');
+var pump = require('pump');
+var concat = require('gulp-concat');
 
 gulp.task('default', function () {
   // place code for your default task here
@@ -128,4 +131,39 @@ gulp.task('test-mochas', function () {
 
 gulp.task('watch-and-test', ['test-mochas'], function () {
   gulp.watch('packages/*/html/**/*.js', ['test-mochas']);
+});
+
+// ------ Sart Developing ------ //
+
+gulp.task('script:system.js', function (cb) {
+  return pump([
+    gulp.src([
+      'packages/admin/public/js/system/system.js',
+      'packages/admin/public/js/system/system-ui.js',
+      'packages/admin/public/js/system/system-module.js',
+      'packages/admin/public/js/system/system-domain.js',
+      'packages/admin/public/js/system/system-animations.js',
+      'packages/admin/public/js/system/system-tags.js'
+    ]),
+    concat('system.build.js'),
+    minify({
+      mangle: false
+    }),
+    gulp.dest('packages/admin/public/js/system/')
+  ]);
+});
+
+gulp.task('script:ew-elements.js', function (cb) {
+  return pump([
+    gulp.src(['packages/admin/public/js/ew-elements/*.js']),
+    concat('ew-elements.build.js'),
+    minify({
+      mangle: false
+    }),
+    gulp.dest('packages/admin/public/js/ew-elements/')
+  ]);
+});
+
+gulp.task('Start Developing Admin', ['script:system.js', 'script:ew-elements.js'], function () {
+  gulp.watch('packages/admin/public/js/**/*.js', ['task:admin-js-minification', 'script:ew-elements.js']);
 });
