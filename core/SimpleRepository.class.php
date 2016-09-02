@@ -83,7 +83,7 @@ class SimpleRepository implements \ew\CRUDRepository {
       return $this->find_by_id($input->id);
     }
 
-    return $this->all($input->page, $input->page_size, $input->filter);
+    return $this->all($input->page, $input->start, $input->page_size, $input->filter);
   }
 
   public function update($input) {
@@ -117,7 +117,7 @@ class SimpleRepository implements \ew\CRUDRepository {
     return $result;
   }
 
-  public function all($page = 0, $page_size = 100, $filter = null) {
+  public function all($page = 0, $start = 0, $page_size = 100, $filter = null) {
     if (is_null($page)) {
       $page = 0;
     }
@@ -136,9 +136,15 @@ class SimpleRepository implements \ew\CRUDRepository {
 
     $result->total = $query->get()->count();
     $result->page = intval($page);
+    $result->start = intval($start);
     $result->page_size = intval($page_size);
-    
-    $result->data = $query->take($page_size)->skip($page * $page_size)->get();
+
+    if ($start) {
+      $result->data = $query->take($page_size)->skip($start)->get();
+    }
+    else {
+      $result->data = $query->take($page_size)->skip($page * $page_size)->get();
+    }
 
     return $result;
   }

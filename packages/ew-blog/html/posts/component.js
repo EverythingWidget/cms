@@ -10,8 +10,11 @@ function PostsComponent(scope, state) {
   component.data = {
     tab: null,
     card_title: 'Posts',
-    posts: [
-    ],
+    compact_view: false,
+    posts: {
+      url: 'api/ew-blog/posts/included-contents',
+      page_size: 9
+    },
     comment_status: [
       {
         value: 0,
@@ -60,6 +63,14 @@ PostsComponent.prototype.init = function () {
       showPost: component.showPost.bind(component)
     }
   });
+  
+  component.vue.$watch('compact_view',function(value){
+    if(value) {
+      component.data.posts.page_size = 15;
+    } else {
+      component.data.posts.page_size = 9;
+    }
+  });
 
 };
 
@@ -70,8 +81,8 @@ PostsComponent.prototype.start = function () {
   $(document).off('article-list.refresh').on('article-list.refresh', function (e, eventData) {
     component.readPosts();
   });
-  
-  component.readPosts();
+
+//  component.readPosts();
 };
 
 PostsComponent.prototype.readPosts = function () {

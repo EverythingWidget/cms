@@ -11,7 +11,10 @@ function CommentsComponent(scope, state) {
     tab: null,
     card_title: 'Comments',
     url: 'api/ew-blog/comments/',
-    comments: {}
+    comments: {
+      url: 'api/ew-blog/comments/',
+      page_size: 15
+    }
   };
 
   component.state.onInit = component.init.bind(component);
@@ -32,16 +35,16 @@ CommentsComponent.prototype.start = function () {
   var component = this;
   component.data.tab = null;
 
-  component.readComments();
+//  component.readComments();
 };
 
 CommentsComponent.prototype.readComments = function () {
   var component = this;
-  $.get('api/ew-blog/comments/', {
-    page_size: 15
-  }, function (response) {
-    component.data.comments = response;
-  });
+//  $.get('api/ew-blog/comments/', {
+//    page_size: 15
+//  }, function (response) {
+//    component.data.comments = response;
+//  });
 };
 
 

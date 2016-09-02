@@ -144,14 +144,14 @@ gulp.task('script:system.js', function (cb) {
       'packages/admin/public/js/system/system-module.js',
       'packages/admin/public/js/system/system-domain.js',
       'packages/admin/public/js/system/system-tags.js',
-      'packages/admin/public/js/system/system-animations.js',
+      'packages/admin/public/js/system/system-animations.js'
     ]),
     concat('build.js'),
     minify({
       mangle: false
     }),
     gulp.dest('packages/admin/public/js/system/build/')
-  ], cb);
+  ]);
 });
 
 gulp.task('script:ew-elements.js', function (cb) {
@@ -166,6 +166,6 @@ gulp.task('script:ew-elements.js', function (cb) {
   ]);
 });
 
-gulp.task('Start Developing Admin', ['script:system.js', 'script:ew-elements.js','style:admin'], function () {
-  gulp.watch(['packages/admin/public/js/**/*.*'], ['script:system.js', 'script:ew-elements.js']);
+gulp.task('Start Developing Admin', ['script:system.js', 'script:ew-elements.js', 'style:admin'], function () {
+  gulp.watch(['packages/admin/public/js/**/*.*', '!packages/admin/public/js/**/build/*.*'], ['script:system.js', 'script:ew-elements.js']);
 });

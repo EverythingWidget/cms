@@ -3,10 +3,18 @@
     <h1> {{ card_title }} </h1>
   </div>
   <div class="card-content list">
-    <ew-pagination v-bind:list.sync="posts"></ew-pagination>
+    <div class="card-control-bar">
+<!--      <label class="checkbox">
+        Compact view
+        <input type="checkbox" v-model="compact_view" /><i></i>
+      </label>-->
+
+      <ew-pagination v-bind:list.sync="posts"></ew-pagination>      
+    </div>
+
     <system-spirit animations="liveHeight,verticalShift" vertical-shift="list-item">
-      <ul class="list items">
-        <li class="list-item action" v-for="post in posts.data" v-on:click="showPost(post)">
+      <ul class="list items" v-bind:class="{'compact' : compact_view}">
+        <li class="list-item action" v-for="post in posts.data" track-by='id' v-on:click="showPost(post)">
           <h3>
             {{ post.content.title }}
             <span>

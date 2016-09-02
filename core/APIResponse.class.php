@@ -59,7 +59,7 @@ class APIResponse implements \JsonSerializable {
   }
 
   function result_filter($var) {
-    return ($var !== NULL && $var !== FALSE && $var !== '');
+    return ($var !== NULL && $var !== FALSE && $var !== '' && $var !== []);
   }
 
   public function to_array() {
