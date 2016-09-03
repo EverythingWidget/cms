@@ -5,13 +5,16 @@
   overflow: hidden;
   position: relative;
   z-index: 1;
+  font-size: 16px;
 
   @media (min-width:320px) {
+    width: 100%;
     border-radius:0;
   }
 
   @media (min-width:768px) {
     border-radius: 6px;
+    width: calc(100% - 30px);
   }
 
   @media (min-width:992px) {
@@ -19,63 +22,51 @@
 
   &-big {
     @media (min-width:320px) {
-      width: 100%;
+      max-width: 1024px;
     }
 
     @media (min-width:768px) {
-      width: auto;
-      margin-right:15px;
-      margin-left:15px;
+
     }
 
     @media (min-width:992px) {
-      width: 84%;
-      min-width: 868px;
-      margin-right: auto;
-      margin-left: auto;
+
     }
 
     @media (min-width:1360px) {
-      width: 84%;
-      max-width: 1280px;
     }
   }
 
   &-medium {
     @media (min-width:320px) {
-      width: 100%;
+      max-width: 768px;
+      font-size: 15pxem;
     }
 
     @media (min-width:768px) {
-      width: 70%;
     }
 
     @media (min-width:992px) {
-      width: 70%;
     }
 
-    @media (min-width:1360px) {
-      width: 70%;
-      max-width: 1280px;
+    @media (min-width:1360px) {      
     }
   }
 
   &-small {
     @media (min-width:320px) {
-      width: 100%;
+      max-width: 420px;
+      font-size: 14px;
     }
 
     @media (min-width:768px) {
-      width: 50%;
     }
 
     @media (min-width:992px) {
-      width: 50%;
     }
 
     @media (min-width:1360px) {
-      width: 50%;
-      max-width: 1280px;
+
     }
   }
 
@@ -90,6 +81,7 @@
 
     &-right {
       float: right;
+      display: flex;
 
       > .btn {
         margin-left: 5px;

@@ -23,7 +23,7 @@ class DBUtility {
   public static function filter(\Illuminate\Database\Eloquent\Builder $query, $filter) {
     if (is_array($filter['include'])) {
       foreach ($filter['include'] as $value) {
-        $query->with($value)->has($value);
+        $query->with($value);
       }
     }
 
@@ -48,7 +48,25 @@ class DBUtility {
       }
     }
 
+    if (is_array($filter['order'])) {
+      foreach ($filter['order'] as $value) {
+        $query->orderBy($value);
+      }
+    }
+
     return $query;
+  }
+
+  public static function paginate($query, &$start, &$page_size) {
+    if (is_null($start)) {
+      $start = 0;
+    }
+
+    if (is_null($page_size)) {
+      $page_size = 100;
+    }
+    
+    $query->take($page_size)->skip($start)->get();
   }
 
   public static function create_table($table, $fields) {

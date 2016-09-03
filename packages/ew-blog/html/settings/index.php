@@ -1,4 +1,4 @@
-<div id="folders-card" class="card z-index-1 center-block col-lg-9 col-md-10 col-xs-12">
+<div class="card z-index-1 center-block col-lg-9 col-md-10 col-xs-12">
   <div  class='card-header'>
     <h1>Google reCAPTCHA</h1>
   </div>

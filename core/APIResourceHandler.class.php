@@ -71,12 +71,17 @@ class APIResourceHandler extends ResourceHandler {
     }
 
     if (class_exists($real_class_name)) {
-      //echo "$app_name, $module_name, $resource_name / $command_name";
       $app_section_object = new $real_class_name($app);
-      $api_method_name = $method_name . '_' . $verb;
-      $api_command_name = $command_name . '-' . $verb;
 
-      // if method_verb() does not exist
+      // if command is null then fallback to the $verb
+      if (!$command || is_numeric($method_name)) {
+        $api_command_name = $api_method_name = $verb;
+      }
+      else {
+        $api_method_name = $method_name . '_' . $verb;
+        $api_command_name = $command_name . '-' . $verb;
+      }
+      
       if (!method_exists($app_section_object, $api_method_name)) {
         $api_method_name = $method_name;
         $api_command_name = $command_name;
@@ -84,15 +89,17 @@ class APIResourceHandler extends ResourceHandler {
 
       // if method() does not exist
       if (!method_exists($app_section_object, $api_method_name)) {
-        $api_method_name = $verb;
-        $api_command_name = $verb;
-        $parameters['_identifier'] = is_numeric($method_name) ? $method_name : null;
+        return \EWCore::log_error(404, 'api command not found: ' . $api_command_name, [
+                    'api call' => "$app_name/$module_name/$api_command_name"
+        ]);       
       }
+      
+      $parameters['_identifier'] = is_numeric($method_name) ? $method_name : null;
 
       // if verb() does not exist
-      if (!method_exists($app_section_object, $api_method_name)) {
-        return \EWCore::log_error(404, "$app_name-$resource_name: Method not found: `$api_method_name`");
-      }
+//      if (!method_exists($app_section_object, $api_method_name)) {
+//        return \EWCore::log_error(404, "$app_name-$resource_name: Method not found: `$api_method_name`");
+//      }
 
       $permission_id = \EWCore::does_need_permission($app_name, $module_name, $resource_name . '/' . $api_command_name);
 

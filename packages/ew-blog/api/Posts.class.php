@@ -55,7 +55,8 @@ class Posts extends \ew\Module {
     $this->register_public_access([
         'api/options',
         'api/read',
-        'api/included-contents-read'
+        'api/included-contents-read',
+        'api/included-contents-2-read'
     ]);
   }
 
@@ -89,13 +90,38 @@ class Posts extends \ew\Module {
     return \ew\APIResponse::standard_response($_response, $result);
   }
 
+//  public function included_contents_read(\ew\APIResponse $_response, $_input, $_identifier) {
+//    $_input->id = $_identifier;
+//    $_input->filter = [
+//        'include' => ['content'],
+//        'order'   => ['ew_contents.date_modified']
+//    ];
+//
+//    $result = (new PostsRepository())->read($_input);
+//
+//    return \ew\APIResponse::standard_response($_response, $result);
+//  }
+
   public function included_contents_read(\ew\APIResponse $_response, $_input, $_identifier) {
     $_input->id = $_identifier;
     $_input->filter = [
         'include' => ['content']
     ];
 
-    $result = (new PostsRepository())->read($_input);
+    $query = (new PostsRepository())->new_select(['ew_blog_posts.*']);
+
+    $query->with('content')->join('ew_contents', 'ew_blog_posts.content_id', '=', 'ew_contents.id');
+    $query->orderBy('ew_contents.date_modified', 'desc');
+
+    $result = New \ew\Result;
+    
+    $result->total = $query->get()->count();
+    
+    \ew\DBUtility::paginate($query, $_input->start, $_input->page_size);
+
+    $result->data = $query->get();        
+    $result->start = intval($_input->start);
+    $result->page_size = intval($_input->page_size);
 
     return \ew\APIResponse::standard_response($_response, $result);
   }

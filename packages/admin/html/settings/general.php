@@ -1,6 +1,8 @@
-<form id="settings-cards">
+<system-spirit animations="verticalShift" vertical-shift="card">
+  <form id="settings-cards">
 
-</form>
+  </form>
+</system-spirit>
 
 <script  type="text/javascript">
 
@@ -39,7 +41,7 @@
       });
 
       this.refresh = EW.addActionButton({
-        text: 'R',
+        text: '<i class="icon-cw"></i>',
         handler: function () {
           handler.loadAppsGeneralSettings(<?= json_encode(EWCore::read_registry("ew/ui/settings/general")) ?>);
         },

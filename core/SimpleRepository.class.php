@@ -133,7 +133,7 @@ class SimpleRepository implements \ew\CRUDRepository {
     \ew\DBUtility::filter($query, $filter);
 
     $result = new \ew\Result();
-
+//die($query->toSql());
     $result->total = $query->get()->count();
     $result->page = intval($page);
     $result->start = intval($start);
@@ -167,6 +167,11 @@ class SimpleRepository implements \ew\CRUDRepository {
     return $result;
   }
 
+  /**
+   * 
+   * @param type $params
+   * @return \Illuminate\Database\Query\Builder
+   */
   public function new_select($params) {
     $class_name = $this->model_name;
     return $class_name::select($params);

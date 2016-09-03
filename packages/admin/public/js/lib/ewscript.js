@@ -200,7 +200,7 @@ EverythingWidgets.prototype.addActionButton = function (config) {
   var action = $(document.createElement("button"));
   action.html(settings.text);
   action.attr({
-    "data-label": settings.text,
+    //"data-label": settings.text,
     type: "button",
     class: "btn"
   });
