@@ -30,7 +30,7 @@ class Comments extends \ew\Module {
                 'email'        => 'VARCHAR(300) NULL',
                 'commenter_id' => 'BIGINT NULL',
                 'content'      => 'TEXT NULL',
-                'visibility'   => 'VARCHAR(300)',
+                'visibility'   => 'VARCHAR(300) DEFAULT "not confirmed"',
                 'date_created' => 'DATETIME NULL',
                 'date_updated' => 'DATETIME NULL'
     ]);
@@ -51,7 +51,7 @@ class Comments extends \ew\Module {
   }
 
   protected function install_feeders() {
-    $commnets_feeder = new \ew\WidgetFeeder('comments', $this, 'list', 'comments_feeder');
+    $commnets_feeder = new \ew\WidgetFeeder('comments', $this, 'list', 'feeder');
     $commnets_feeder->title = 'Comments list';
     \webroot\WidgetsManagement::register_widget_feeder($commnets_feeder);
   }
@@ -62,9 +62,10 @@ class Comments extends \ew\Module {
         'api/read',
         'api/update',
         'api/delete',
+        'api/confirm-update',
         'api/options',
         'api/confirm-capcha',
-        'api/comments-feeder'
+        'api/feeder'
     ]);
   }
 
@@ -110,6 +111,10 @@ class Comments extends \ew\Module {
       return \ew\APIResponse::standard_response($_response, $post);
     }
 
+    if (!$_input->visibility) {
+      $_input->visibility = 'not confirmed';
+    }
+
     $comment = (new CommentsRepository())->create($_input);
     return \ew\APIResponse::standard_response($_response, $comment);
   }
@@ -138,6 +143,12 @@ class Comments extends \ew\Module {
     return \ew\APIResponse::standard_response($_response, $result);
   }
 
+  public function confirm_update($_response, $_identifier) {
+    $result = (new CommentsRepository())->confirm($_identifier);
+
+    return \ew\APIResponse::standard_response($_response, $result);
+  }
+
   public function options() {
     return [
         'name'        => 'EW Blog - Comments',
@@ -158,8 +169,32 @@ class Comments extends \ew\Module {
     return json_decode($response, true);
   }
 
-  public function comments_feeder($_response, $id, $page = 0, $page_size = 30, $order_by = 'DESC') {
-    $query = (new CommentsRepository())->new_select([
+  public function feeder($_response, $id, $page = 0, $page_size = 30, $order_by = 'DESC') {
+    $comment_status = 0;
+    $visibility = null;
+    $repository = new CommentsRepository();
+    $posts_repository = new PostsRepository();
+
+    while ($comment_status === 0) {
+      $post = $posts_repository->find_with_content_id($id);
+
+      if (!$post->data) {
+        break;
+      }
+
+      if ($post->data->content->parent_id === 0) {
+        break;
+      }
+
+      $id = $post->data->content->parent_id;
+      $comment_status = $post->data->comments;
+    }
+
+    if ($post->data->comments === 1) {
+      $visibility = 'confirmed';
+    }
+
+    $query = $repository->new_select([
         'id',
         'name',
         'email',
@@ -168,6 +203,10 @@ class Comments extends \ew\Module {
     ]);
 
     $query->where('content_id', '=', $id);
+
+    if ($visibility) {
+      $query->where('visibility', $visibility);
+    }
 
     $collection_size = $query->get()->count();
 
@@ -181,7 +220,7 @@ class Comments extends \ew\Module {
 
     $result->total = $collection_size;
     $result->page = intval($page);
-    $result->page_size = $comments->count();       
+    $result->page_size = $comments->count();
 
     $comments_list = new \Illuminate\Database\Eloquent\Collection;
 

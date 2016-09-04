@@ -81,7 +81,7 @@ class APIResourceHandler extends ResourceHandler {
         $api_method_name = $method_name . '_' . $verb;
         $api_command_name = $command_name . '-' . $verb;
       }
-      
+
       if (!method_exists($app_section_object, $api_method_name)) {
         $api_method_name = $method_name;
         $api_command_name = $command_name;
@@ -89,17 +89,21 @@ class APIResourceHandler extends ResourceHandler {
 
       // if method() does not exist
       if (!method_exists($app_section_object, $api_method_name)) {
+        if (isset($output_as_array)) {
+          return \EWCore::log_api_error(404, "api command not found: `$api_command_name`", [
+                      "$app_name/$module_name/$api_command_name"
+          ]);
+        }
+
         return \EWCore::log_error(404, 'api command not found: ' . $api_command_name, [
                     'api call' => "$app_name/$module_name/$api_command_name"
-        ]);       
+        ]);
       }
-      
-      $parameters['_identifier'] = is_numeric($method_name) ? $method_name : null;
 
-      // if verb() does not exist
-//      if (!method_exists($app_section_object, $api_method_name)) {
-//        return \EWCore::log_error(404, "$app_name-$resource_name: Method not found: `$api_method_name`");
-//      }
+      $parameters['_parts'] = array_slice(explode('/', $parameters["_file"]), 1);
+
+      $parameters['_identifier'] = is_numeric($parameters['_parts'][0]) ? intval($parameters['_parts'][0]) : null;
+      $parameters['_identifier'] = is_numeric($method_name) ? intval($method_name) : $parameters['_identifier'];
 
       $permission_id = \EWCore::does_need_permission($app_name, $module_name, $resource_name . '/' . $api_command_name);
 
@@ -107,7 +111,6 @@ class APIResourceHandler extends ResourceHandler {
         return \EWCore::log_error(404, "$app_name-$resource_name: Method not found: `$api_method_name`");
       }
 
-      $parameters['_parts'] = array_slice(explode('/', $parameters["_file"]), 1);
       $response = new APIResponse("$resource_name/$app_name/$module_name/$api_command_name");
       $parameters['_response'] = $response;
 

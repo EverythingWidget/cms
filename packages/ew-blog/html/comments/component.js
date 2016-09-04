@@ -1,4 +1,4 @@
-/* global Scope, System */
+/* global Scope, System, system */
 
 Scope.export = CommentsComponent;
 
@@ -11,6 +11,13 @@ function CommentsComponent(scope, state) {
     tab: null,
     card_title: 'Comments',
     url: 'api/ew-blog/comments/',
+    filter: {
+      where: {
+        visibility: {
+          not: 'confirmed'
+        }
+      }
+    },
     comments: {
       url: 'api/ew-blog/comments/',
       page_size: 15
@@ -26,7 +33,11 @@ CommentsComponent.prototype.init = function () {
   var component = this;
   component.vue = new Vue({
     el: Scope.views.comments_card,
-    data: component.data
+    data: component.data,
+    methods: {
+      confirmComment: component.confirmComment.bind(component),
+      deleteComment: component.deleteComment.bind(component)
+    }
   });
 
 };
@@ -34,19 +45,45 @@ CommentsComponent.prototype.init = function () {
 CommentsComponent.prototype.start = function () {
   var component = this;
   component.data.tab = null;
-
-//  component.readComments();
 };
 
-CommentsComponent.prototype.readComments = function () {
+CommentsComponent.prototype.confirmComment = function (id) {
   var component = this;
-//  $.get('api/ew-blog/comments/', {
-//    page_size: 15
-//  }, function (response) {
-//    component.data.comments = response;
-//  });
+  var lock = System.ui.lock({
+    element: Scope.views.comments_card,
+    akcent: 'loader center'
+  });
+
+  $.ajax({
+    type: 'PUT',
+    url: 'api/ew-blog/comments/confirm/' + id,
+    success: function () {
+      component.vue.$broadcast('refresh');
+    },
+    complete: function () {
+      lock.dispose();
+    }
+  });
 };
 
+CommentsComponent.prototype.deleteComment = function (id) {
+  var component = this;
+  var lock = System.ui.lock({
+    element: Scope.views.comments_card,
+    akcent: 'loader center'
+  });
+
+  $.ajax({
+    type: 'DELETE',
+    url: 'api/ew-blog/comments/' + id,
+    success: function () {
+      component.vue.$broadcast('refresh');
+    },
+    complete: function () {
+      lock.dispose();
+    }
+  });
+};
 
 // ------ Registring the state handler ------ //
 var stateId = 'ew-blog/comments';

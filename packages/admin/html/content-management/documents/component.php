@@ -90,7 +90,7 @@
           component.listDocuments();
         }
 
-        if (id === "0") {
+        if (id === 0) {
           component.bSee.comeOut();
           component.deleteFolderActivity.comeOut();
         }

@@ -324,9 +324,9 @@ class Core extends \ew\Module {
   public function on_contents_update($id, $_response, $_input) {
     $pdo = EWCore::get_db_PDO();
 
-    if ($_response->data['type'] !== 'article') {
-      return [];
-    }
+//    if ($_response->data['type'] !== 'article') {
+//      return [];
+//    }
 
     $ew_blog = $_input->ew_blog;
 

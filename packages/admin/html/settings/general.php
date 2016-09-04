@@ -30,22 +30,22 @@
       var handler = this;
 
       this.saveSettings = EW.addActionButton({
-        text: "",
+        text: '<i class="icon-check"></i>',
         handler: function () {
           handler.saveAppSetings([
             "webroot"
           ]);
         },
-        class: "btn-float btn-success icon-ok",
+        class: "btn-float btn-success",
         parent: System.UI.components.appMainActions
       });
 
       this.refresh = EW.addActionButton({
-        text: '<i class="icon-cw"></i>',
+        text: '<i class="icon-cw-1"></i>',
         handler: function () {
           handler.loadAppsGeneralSettings(<?= json_encode(EWCore::read_registry("ew/ui/settings/general")) ?>);
         },
-        class: "btn-float priority-1 btn-primary icon-refresh",
+        class: "btn-float priority-1 btn-primary",
         parent: System.UI.components.appMainActions
       });
 

@@ -78,6 +78,11 @@ class SimpleRepository implements \ew\CRUDRepository {
     return $result;
   }
 
+  /**
+   * 
+   * @param \stdClass $input
+   * @return \ew\Result
+   */
   public function read($input) {
     if (isset($input->id)) {
       return $this->find_by_id($input->id);
@@ -86,6 +91,11 @@ class SimpleRepository implements \ew\CRUDRepository {
     return $this->all($input->page, $input->start, $input->page_size, $input->filter);
   }
 
+  /**
+   * 
+   * @param \stdClass $input
+   * @return \ew\Result
+   */
   public function update($input) {
     $result = new \ew\Result();
     $class_name = $this->model_name;
@@ -139,12 +149,13 @@ class SimpleRepository implements \ew\CRUDRepository {
     $result->start = intval($start);
     $result->page_size = intval($page_size);
 
-    if ($start) {
-      $result->data = $query->take($page_size)->skip($start)->get();
-    }
-    else {
-      $result->data = $query->take($page_size)->skip($page * $page_size)->get();
-    }
+    //if ($start) {
+    $result->data = $query->take($page_size)->skip($start)->get();
+//      die($query->toSql());
+    //}
+    //else {
+    //  $result->data = $query->take($page_size)->skip($page * $page_size)->get();
+    //}
 
     return $result;
   }

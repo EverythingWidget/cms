@@ -8,7 +8,8 @@
     var component = this;
     $.get(this.list.url, {
       page_size: component.list.page_size,
-      start: component.list.start || 0
+      start: component.list.start || 0,
+      filter: this.filter
     }, function (response) {
       component.list = response;
     });
@@ -48,6 +49,11 @@
           page_size: 10,
           page: 0
         }
+      },
+      filter: {
+        default: function () {
+          return {};
+        }
       }
     },
     compiled: onReady,
@@ -84,6 +90,9 @@
           this.refresh();
         }
       }
+    },
+    events: {
+      'refresh': refresh
     }
   });
 

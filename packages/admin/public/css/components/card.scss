@@ -78,10 +78,15 @@
 
   &-title-action {
     float: left;
+    display: flex;
+    height: 50px;
+    align-items: center;
 
     &-right {
       float: right;
       display: flex;
+      height: 50px;
+      align-items: center;
 
       > .btn {
         margin-left: 5px;

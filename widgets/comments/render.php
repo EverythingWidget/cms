@@ -33,16 +33,21 @@
 EWCore::call_api('admin/api/settings/read-settings', [
     'app_name' => 'ew-blog/site-key'
 ])['data']['ew-blog/site-key'];
-?>'
+?>';
+    
 
     post_comment_$widget_id_js = function () {
-      if(siteKey === '') {
+      if (siteKey === '') {
         return postCommentForm.disablePosting = false;
+      } else {
+        postCommentForm.disablePosting = true;
       }
+
       grecaptcha.render('g-recaptcha-{$widget_id}', {
         sitekey: siteKey,
         callback: postCommentForm.verifyCapcha,
         'expired-callback': function () {
+          grecaptcha.reset();
           postCommentForm.disablePosting = true;
         }
       });
@@ -58,7 +63,7 @@ EWCore::call_api('admin/api/settings/read-settings', [
         content: '',
         content_id: '<?= $_REQUEST['_method_name'] ?>',
         recaptcha: null,
-        canPost: true
+        disablePosting: true
       },
       methods: {
         verifyCapcha: function (captcha) {

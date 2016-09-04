@@ -63,16 +63,17 @@
       var timeline = new TimelineLite({});
       timeline.fromTo(element, .6, {
         opacity: 0,
-        y: 0,
-        z: -550,
-        rotationX: -22,
-        transformOrigin: 'center center'
+        y: 50
+//        z: -550,
+//        rotationX: -22,
+//        transformOrigin: 'center center'
       }, {
         opacity: 1,
         y: 0,
-        rotationX: 0,
-        z: 0,
-        ease: 'Power1.easeInOut',
+//        rotationX: 0,
+//        z: 0,
+        ease: 'Power3.easeOut',
+        clearProps:'y',
         onComplete: function () {
           done();
         }

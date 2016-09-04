@@ -31,12 +31,16 @@ class DBUtility {
       foreach ($filter['where'] as $key => $value) {
         if (is_array($value)) {
           $type = array_keys($value)[0];
+
           switch ($type) {
             case 'in':
               $query->whereIn($key, $value[$type]);
               break;
             case 'nin':
               $query->whereNotIn($key, $value[$type]);
+              break;
+            case 'not':
+              $query->where($key, '<>', $value[$type])->orWhereNull($key);
               break;
             default :
               $query->where($key, $type, $value[$type]);
@@ -65,7 +69,7 @@ class DBUtility {
     if (is_null($page_size)) {
       $page_size = 100;
     }
-    
+
     $query->take($page_size)->skip($start)->get();
   }
 

@@ -1818,8 +1818,8 @@ class EWCore {
 
   public static function log_api_error($header_code = 400, $message, $reason = NULL, $send_header = TRUE) {
     if ($send_header) {
-      http_response_code($header_code);
-      header('Content-Type: application/json');
+//      http_response_code($header_code);
+      //header('Content-Type: application/json');
     }
     $error_content = [
         "status_code" => $header_code,
