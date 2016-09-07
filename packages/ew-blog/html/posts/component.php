@@ -8,8 +8,6 @@
         Compact view
         <input type="checkbox" v-model="compact_view" /><i></i>
       </label>-->
-
-      <ew-pagination v-bind:list.sync="posts"></ew-pagination>      
     </div>
 
     <system-spirit animations="liveHeight,verticalShift" vertical-shift="list-item">
@@ -31,6 +29,10 @@
         </li>
       </ul>
     </system-spirit>
+    
+    <div class="card-control-bar">
+      <ew-pagination v-bind:list.sync="posts"></ew-pagination>      
+    </div>
   </div>
 </system-ui-view>
 <?= ew\ResourceUtility::load_js_as_tag('ew-blog/html/posts/component.js') ?>
