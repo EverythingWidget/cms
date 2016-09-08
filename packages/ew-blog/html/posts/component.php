@@ -4,17 +4,18 @@
   </div>
   <div class="card-content list">
     <div class="card-control-bar">
-<!--      <label class="checkbox">
-        Compact view
-        <input type="checkbox" v-model="compact_view" /><i></i>
-      </label>-->
+      <!--      <label class="checkbox">
+              Compact view
+              <input type="checkbox" v-model="compact_view" /><i></i>
+            </label>-->
+      <ew-pagination v-bind:list.sync="posts"></ew-pagination>
     </div>
 
     <system-spirit animations="liveHeight,verticalShift" vertical-shift="list-item">
       <ul class="list items" v-bind:class="{'compact' : compact_view}">
         <li class="list-item action" v-for="post in posts.data" track-by='id' v-on:click="showPost(post)">
           <h3>
-            {{ post.content.title }}
+            {{ post.id + '. ' +post.content.title }}
             <span>
               {{ post.date_published }}
             </span>
@@ -29,10 +30,7 @@
         </li>
       </ul>
     </system-spirit>
-    
-    <div class="card-control-bar">
-      <ew-pagination v-bind:list.sync="posts"></ew-pagination>      
-    </div>
+
   </div>
 </system-ui-view>
 <?= ew\ResourceUtility::load_js_as_tag('ew-blog/html/posts/component.js') ?>

@@ -7,7 +7,7 @@
     <span class="of"> <i class="icon-menu"></i> </span>
     <strong>{{ total }}</strong>
   </p>
-  <button class="btn btn-circle" v-bind:disabled="till >= total" v-on:click="next">
+  <button class="btn btn-circle" v-bind:disabled="disableNext" v-on:click="next">
     <i class="icon-right-open-1"></i>
   </button>
 </div>

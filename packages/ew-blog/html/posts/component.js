@@ -43,7 +43,7 @@ function PostsComponent(scope, state) {
 PostsComponent.prototype.init = function () {
   var component = this;
   component.seeArticleActivity = EW.getActivity({
-    activity: "admin/html/content-management/documents/article-form/component.php_see",
+    activity: 'admin/html/content-management/documents/article-form/component.php_see',
     onDone: function () {
       System.setHashParameters({
         folderId: null
@@ -63,9 +63,9 @@ PostsComponent.prototype.init = function () {
       showPost: component.showPost.bind(component)
     }
   });
-  
-  component.vue.$watch('compact_view',function(value){
-    if(value) {
+
+  component.vue.$watch('compact_view', function (value) {
+    if (value) {
       component.data.posts.page_size = 15;
     } else {
       component.data.posts.page_size = 9;
@@ -79,10 +79,8 @@ PostsComponent.prototype.start = function () {
   component.data.tab = null;
 
   $(document).off('article-list.refresh').on('article-list.refresh', function (e, eventData) {
-    component.readPosts();
+    component.vue.$broadcast('refresh');
   });
-
-//  component.readPosts();
 };
 
 PostsComponent.prototype.readPosts = function () {
