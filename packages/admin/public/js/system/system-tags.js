@@ -25,199 +25,164 @@
 (function (System, xtag) {
 
   var SystemList = {
-  };
-
-  SystemList.lifecycle = {
-    created: function () {
-      this.template = this.innerHTML;
-      this.xtag.selectedStyle = 'selected';
-      this.xtag.action = '[item]';
-      this.innerHTML = "";
-      this.links = {};
-      this.data = [];
-      this.value = -1;
-    },
-    inserted: function () {
-    },
-    attributeChanged: function (attrName, oldValue, newValue) {
-    }
-  };
-
-  SystemList.methods = {
-    render: function (data, action) {
-      //var data = this.data;
-      this.innerHTML = "";
-      var selectableItem = null;
-      for (var i = 0, len = data.length; i < len; i++) {
-        //data[i]._itemIndex = i;
-        var item = xtag.createFragment(System.ui.utility.populate(this.template, data[i]));
-        if (action) {
-          selectableItem = xtag.query(item, action)[0];
-
-          if (selectableItem) {
-            selectableItem.dataset.index = i;
-            selectableItem.setAttribute('item', '');
-
-            if (data[i].id) {
-              this.links[data[i].id] = selectableItem;
-            }
-
-            this.links[i] = selectableItem;
-          }
-        }
-
-        this.appendChild(item);
-      }
-    },
-    selectItem: function (i, element) {
-      var oldItem = this.links[this.xtag.value];
-      if (oldItem) {
-        System.ui.utility.removeClass(oldItem, this.xtag.selectedStyle);
-      }
-
-      var newItem = this.links[i];
-      if (this.data[i].id) {
-        newItem = this.links[this.data[i].id];
-      }
-
-      System.ui.utility.addClass(newItem, this.xtag.selectedStyle);
-
-      var event = new CustomEvent('item-selected', {
-        detail: {
-          index: i,
-          data: this.xtag.data[i],
-          element: element
-        }
-      });
-
-      this.dispatchEvent(event);
-    }
-  };
-
-  SystemList.accessors = {
-    data: {
-      /*attribute: {
-       validate: function (value) {
-       
-       
-       return  '[ object data ]';
-       }
-       },*/
-      /**
-       * 
-       * @param {object|Syste.Property} value
-       * @returns {undefined}
-       */
-      set: function (value) {
-        var element = this;
-
+    lifecycle: {
+      created: function () {
+        this.template = this.innerHTML;
+        this.xtag.selectedStyle = 'selected';
+        this.xtag.action = '[item]';
+        this.innerHTML = "";
+        this.links = {};
+        this.data = [];
         this.value = -1;
-        if ("object" !== typeof value) {
-          this.xtag.data = [];
-          value = [];
-        }
-
-        var toRender = value;
-
-//        if (value instanceof System.Property) {
-//          value.registerConsumer(element);
-//          toRender = value.data;
-//        }
-
-        this.xtag.data = value;
-
-        if (this.onSetData) {
-          this.onSetData(toRender);
-        }
-
-        this.render(toRender, this.xtag.action);
-//        var oldVal = JSON.stringify(value);
-//
-//        function watch() {
-//          if (oldVal !== JSON.stringify(value)) {
-//            clearTimeout(element.xtag.watcher);
-//            element.xtag.watcher = null;
-//            oldVal = JSON.stringify(value);
-//            element.data = value;
-//            return true;
-//          }
-//          element.xtag.watcher = setTimeout(watch, 100);
-//        }
-//
-//        watch();
       },
-      get: function () {
-        return this.xtag.data;
+      inserted: function () {
+      },
+      attributeChanged: function (attrName, oldValue, newValue) {
       }
     },
-    onSetData: {
-      attribute: {
-        validate: function (value) {
-          this.xtag.onSetData = value;
-          return '[ function ]';
+    methods: {
+      render: function (data, action) {
+        //var data = this.data;
+        this.innerHTML = "";
+        var selectableItem = null;
+        for (var i = 0, len = data.length; i < len; i++) {
+          //data[i]._itemIndex = i;
+          var item = xtag.createFragment(System.ui.utility.populate(this.template, data[i]));
+          if (action) {
+            selectableItem = xtag.query(item, action)[0];
+
+            if (selectableItem) {
+              selectableItem.dataset.index = i;
+              selectableItem.setAttribute('item', '');
+
+              if (data[i].id) {
+                this.links[data[i].id] = selectableItem;
+              }
+
+              this.links[i] = selectableItem;
+            }
+          }
+
+          this.appendChild(item);
         }
       },
-      set: function (value) {
-      },
-      get: function (value) {
-        return this.xtag.onSetData;
-      }
-    },
-    selectedStyle: {
-      attribute: {},
-      set: function (value) {
-        this.xtag.selectedStyle = value;
-      },
-      get: function () {
-        return this.xtag.selectedStyle;
-      }
-    },
-    value: {
-      attribute: {},
-      set: function (value, oldValue) {
-        if (value === oldValue) {
-          return;
+      selectItem: function (i, element) {
+        var oldItem = this.links[this.xtag.value];
+        if (oldItem) {
+          System.ui.utility.removeClass(oldItem, this.xtag.selectedStyle);
         }
 
-        value = parseInt(value);
-
-        if (value > -1 && /*value !== this.xtag.value && */this.xtag.data.length) {
-          this.selectItem(value, this.links[value]);
+        var newItem = this.links[i];
+        if (this.data[i].id) {
+          newItem = this.links[this.data[i].id];
         }
 
-        this.xtag.value = value;
+        System.ui.utility.addClass(newItem, this.xtag.selectedStyle);
 
+        var event = new CustomEvent('item-selected', {
+          detail: {
+            index: i,
+            data: this.xtag.data[i],
+            element: element
+          }
+        });
 
-      },
-      get: function () {
-        return this.xtag.value;
+        this.dispatchEvent(event);
       }
     },
-    action: {
-      attribute: {},
-      set: function (value) {
-        this.xtag.action = value;
-      },
-      get: function () {
-        return this.xtag.action;
-      }
-    }
-  };
+    accessors: {
+      data: {
+        set: function (value) {
+          var element = this;
 
-  SystemList.events = {
-    "click:delegate([item])": function (e) {
-      e.preventDefault();
-      e.currentTarget.value = this.dataset.index;
+          this.value = -1;
+          if ("object" !== typeof value) {
+            this.xtag.data = [];
+            value = [];
+          }
+
+          var toRender = value;
+
+          this.xtag.data = value;
+
+          if (this.onSetData) {
+            this.onSetData(toRender);
+          }
+
+          this.render(toRender, this.xtag.action);
+        },
+        get: function () {
+          return this.xtag.data;
+        }
+      },
+      onSetData: {
+        attribute: {
+          validate: function (value) {
+            this.xtag.onSetData = value;
+            return '[ function ]';
+          }
+        },
+        set: function (value) {
+        },
+        get: function (value) {
+          return this.xtag.onSetData;
+        }
+      },
+      selectedStyle: {
+        attribute: {},
+        set: function (value) {
+          this.xtag.selectedStyle = value;
+        },
+        get: function () {
+          return this.xtag.selectedStyle;
+        }
+      },
+      value: {
+        attribute: {},
+        set: function (value, oldValue) {
+          if (value === oldValue) {
+            return;
+          }
+
+          value = parseInt(value);
+
+          if (value > -1 && /*value !== this.xtag.value && */this.xtag.data.length) {
+            this.selectItem(value, this.links[value]);
+          }
+
+          this.xtag.value = value;
+
+
+        },
+        get: function () {
+          return this.xtag.value;
+        }
+      },
+      action: {
+        attribute: {},
+        set: function (value) {
+          this.xtag.action = value;
+        },
+        get: function () {
+          return this.xtag.action;
+        }
+      }
     },
-    "tap:delegate([item])": function (e) {
-      e.preventDefault();
-      e.currentTarget.value = this.dataset.index;
+    events: {
+      "click:delegate([item])": function (e) {
+        e.preventDefault();
+        e.currentTarget.value = this.dataset.index;
+      },
+      "tap:delegate([item])": function (e) {
+        e.preventDefault();
+        e.currentTarget.value = this.dataset.index;
+      }
     }
   };
 
   xtag.register("system-list", SystemList);
 
-  // EW Actions Container
+  // ------ //
 
   var FloatMenu = {
     lifecycle: {
@@ -284,7 +249,6 @@
         }
       },
       removed: function () {
-        //this.xtag.observer.disconnect();
         this.off(true);
       }
     },
@@ -312,56 +276,27 @@
 
         this.expanded = true;
         System.ui.utility.addClass(this, 'expand');
-        //System.ui.utility.addClass(this.xtag.indicator, 'active');
       },
       contract: function () {
         this.expanded = false;
         System.ui.utility.removeClass(this, 'expand');
-        //System.ui.utility.removeClass(this.xtag.indicator, 'active');
       },
       on: function (flag) {
         System.ui.utility.removeClass(this, 'off');
-
-//        if (this.xtag.indicator.parentNode) {
-//          TweenLite.to(this.xtag.indicator, .3, {
-//            className: "-=destroy",
-//            ease: "Power2.easeInOut"
-//          });
-//        }
       },
       off: function (flag) {
-        var _this = this;
         System.ui.utility.addClass(this, 'off');
-        /*if (_this.xtag.indicator.parentNode) {
-         this.xtag.indicator.className = "ew-float-menu-indicator";
-         this.expanded = false;
-         TweenLite.to(this.xtag.indicator, .3, {
-         className: "+=destroy",
-         onComplete: function () {
-         if (flag)
-         _this.xtag.indicator.parentNode.removeChild(_this.xtag.indicator);
-         }
-         });
-         
-         TweenLite.to(_this, .3, {
-         className: "-=expand",
-         ease: "Power2.easeInOut"
-         });
-         }*/
       },
       clean: function () {
         this.innerHTML = "";
-        //this.appendChild(this.xtag.indicator);
       }
     },
-    events: {
-      "mouseleave": function () {
-        //this.contract();
-      }
-    }
+    events: {}
   };
 
   xtag.register("system-float-menu", FloatMenu);
+
+  // ------ //
 
   var SystemUITemplate = {
     lifecycle: {
@@ -430,7 +365,9 @@
 
   xtag.register("system-ui-view", SystemUITemplate);
 
-  var sortableList = {
+  // ------ //
+
+  var SortableList = {
     lifecycle: {
       created: function () {
         this.xtag.placeHolder = document.createElement("li");
@@ -600,48 +537,9 @@
     }
   };
 
-  xtag.register("system-sortable-list", sortableList);
+  xtag.register("system-sortable-list", SortableList);
 
-
-  var inputNumber = {
-    lifecycle: {
-      created: function () {
-        this.xtag.input = document.createElement("input");
-        this.xtag.input.value = this.getAttribute("value");
-        this.tabIndex = 1;
-      },
-      inserted: function () {
-        this.appendChild(this.xtag.input);
-      },
-      removed: function () {
-
-      }
-    },
-    accessors: {
-      value: {
-        attribute: {},
-        set: function (value) {
-          this.xtag.value = value;
-        },
-        get: function () {
-          return this.xtag.value;
-        }
-      }
-    },
-    methods: {
-      increase: function () {
-
-      }
-    },
-    events: {
-      "focus:delegate(input)": function (event) {
-        event.currentTarget.focus();
-      }
-    }
-  };
-
-  xtag.register("system-input-number", inputNumber);
-
+  // ------ //
 
   var SwitchButton = {
     lifecycle: {
@@ -694,6 +592,8 @@
   };
 
   xtag.register("system-button-switch", SwitchButton);
+
+  // ------ //
 
   var SystemInputJson = {
     lifecycle: {
@@ -855,6 +755,8 @@
 
   xtag.register('system-input-json', SystemInputJson);
 
+  // ------ //
+
   var SystemField = {
     lifecycle: {
       created: function () {
@@ -911,6 +813,8 @@
   };
 
   xtag.register('system-field', SystemField);
+
+  // ------ //
 
   var SystemSpirit = {
     lifecycle: {

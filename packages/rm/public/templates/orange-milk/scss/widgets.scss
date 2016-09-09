@@ -100,7 +100,26 @@
       }
     }
 
+    .owl-controls {
+      margin-top: -60px;
+    }
+
     .owl-dot {
+      span {
+        transition: all 0.2s;
+        background-color: #fff;
+        box-shadow: 0 2px 3px rgba(0,0,0,.16), 0 3px 8px rgba(0,0,0,.1);
+        width: 20px;
+        height: 20px;
+      }
+
+      &:hover {
+        span {
+          background-color: #eee;
+          box-shadow: 0 5px 4px rgba(0,0,0,.2), 0 6px 12px rgba(0,0,0,.2);
+        }
+      }
+
       &.active {
         span {
           background-color: $font-akcent-color;
@@ -112,9 +131,10 @@
   &.important-event {
     height: 475px;
     background-color: #fff;
-    box-shadow: 0 3px 7px rgba(0,0,0,0.18),0 9px 15px rgba(0,0,0,0.18);
+    box-shadow: 0 1px 5px rgba(0,0,0,0.16),0 4px 11px rgba(0,0,0,.26);
     overflow: hidden;
-    border-radius: 5px;
+    background-clip: padding-box;
+    border-radius: 6px;
 
     .list-content, .list-item, .list-item-cell {     
       height: 100%;
@@ -641,8 +661,8 @@
     }
   }
 
-  &.list-col-3 {
-    margin: 0;
+  &.articles-wall {
+    margin: 0 15px;
 
     .list-item {
       &:not(:last-child) {
@@ -951,15 +971,24 @@
   }
 
   &.video {
-    width: 800px;
-    height: 600px;
-    margin: 0 auto;
+    padding: 0 30px 30px;
     display: block;
+    height: 600px;
+
+    iframe {
+      display: block;
+      width: 100%;      
+      margin: 0 auto;
+    }
+  }
+
+  &.divider {
+    border-bottom: 1px solid #ddd;
   }
 }
 
 .title h1 {
-  margin: -15px auto 45px;
+  margin: 0 auto 45px;
 }
 
 .rtl {

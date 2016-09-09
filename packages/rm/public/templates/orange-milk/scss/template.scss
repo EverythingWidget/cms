@@ -37,6 +37,7 @@ $font-akcent-color-dark: #04C160;
 $nav-bar-bg: rgba(255,255,255,.9);
 
 @import 'blocks.scss';
+@import 'panels.scss';
 @import 'widgets.scss';
 
 @media (min-width: 320px) {
@@ -51,9 +52,6 @@ $nav-bar-bg: rgba(255,255,255,.9);
   }
 
   .panel {
-    &.section {
-    }
-
     &.article {
       background-color: #fff;
       padding: 0;      
@@ -128,10 +126,6 @@ $nav-bar-bg: rgba(255,255,255,.9);
   }
 
   .panel {
-    &.section {
-      width: 720px;  
-    }
-
     &.article {
       width: 720px;
       padding: 0;
@@ -186,10 +180,7 @@ $nav-bar-bg: rgba(255,255,255,.9);
 @media (min-width: 992px) {
 
   .panel{
-    &.section {
-      width: 940px;  
-    }
-
+   
     &.article {
       width: 860px;
       padding: 0;
@@ -216,12 +207,6 @@ $nav-bar-bg: rgba(255,255,255,.9);
 @media (min-width: 1360px) {
 
   .panel {
-    &.section {
-      width: 1200px; 
-
-
-    }
-
     &.article {
       width: 860px;  
 
@@ -264,13 +249,8 @@ body {
   }
 }
 
-
-
 .panel.clearfix {
   margin: 0 auto;
-}
-
-.panel.section {
 }
 
 .slider .owl-controls {
