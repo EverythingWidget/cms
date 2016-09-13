@@ -32,6 +32,4 @@
       value: data
     });
   });
-
-
 </script>

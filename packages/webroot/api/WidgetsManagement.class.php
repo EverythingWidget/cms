@@ -630,7 +630,7 @@ class WidgetsManagement extends \ew\Module {
     $__widget_html_output .= "data-widget='true'>";
     $__widget_html_output .= $widget_content;
     self::$widget_style_class = "";
-    self::add_widget_data($widget_id, $params);
+    self::add_widget_data($widget_id, $widget_parameters);
 
     return $__widget_html_output;
   }
@@ -804,8 +804,8 @@ class WidgetsManagement extends \ew\Module {
 
   private static function get_widget_data() {
     foreach (self::$widget_data as $wi => $data) {
-      $data = ($data) ? $data : "{}";
-      $data_string.="ew_widget_data['$wi'] = $data;\n";
+      $data = ($data) ? json_encode($data, JSON_UNESCAPED_SLASHES) : "{}";
+      $data_string.="ew_widget_data['$wi'] = $data;\n\n";
     }
     return $data_string;
   }

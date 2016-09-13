@@ -718,7 +718,7 @@ UISForm.prototype.updateUIS = function (reload) {
     akcent: "loader center"
   }, .5);
 
-  var structure = JSON.stringify(self.createContentHeirarchy());
+  var structure = (self.createContentHeirarchy());
   var defaultUIS = $("#uis-default").is(":checked");
   var homeUIS = $("#uis-home-page").is(":checked");
   self.templateSettings = self.templateSettingsForm.serializeJSON();
