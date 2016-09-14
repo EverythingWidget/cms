@@ -22,7 +22,7 @@ class App {
   protected $type = "app";
   protected $namespace = "";
   protected $default_resource = "html";
-  private $resources = [];
+  private $resource_handlers = [];
   private $loaded_modules = [];
   private $loaded = false;
 
@@ -51,8 +51,10 @@ class App {
     $app_root = $this->get_root();
     $app_root_path = str_replace('_', '-', $app_root);
     $path = EW_PACKAGES_DIR . '/' . $app_root_path . '/' . $dir;
-    if (!file_exists($path))
+    if (!file_exists($path)) {
       return [];
+    }
+
     $sections = scandir($path);
 
     $dependencies = [];
@@ -81,8 +83,8 @@ class App {
   }
 
   protected function load_assets() {
-    $app_root = $this->get_root();
-    $path = EW_PACKAGES_DIR . '/' . $app_root . '/' . $dir;
+//    $app_root = $this->get_root();
+//    $path = EW_PACKAGES_DIR . '/' . $app_root . '/' . $dir;
 
     try {
       $this->load_dependecies('api/repositories');
@@ -94,8 +96,11 @@ class App {
   }
 
   protected function install_resource_handlers() {
-    $this->register_resource_handler("api", new APIResourceHandler($this));
-    $this->register_resource_handler($this->default_resource, new HTMLResourceHandler($this));
+//    $this->register_resource_handler('api', new APIResourceHandler($this));
+//    $this->register_resource_handler($this->default_resource, new HTMLResourceHandler($this));
+
+    $this->register_resource_handler('api', 'ew\\APIResourceHandler');
+    $this->register_resource_handler($this->default_resource, 'ew\\HTMLResourceHandler');
   }
 
   public function load_and_populate_modules() {
@@ -121,8 +126,9 @@ class App {
 //         if (\admin\UsersManagement::user_has_permission_for_resource($app_name, $app_resource_path[1], $_SESSION['EW.USER_GROUP_ID']))
 //         {
 
-    if ($this->resources[$resource_type]) {
-      return $this->resources[$resource_type]->process($this, $package, $resource_type, $module_name, $method_name, $parameters);
+    if ($this->resource_handlers[$resource_type]) {
+//      return $this->resource_handlers[$resource_type]->process($this, $package, $resource_type, $module_name, $method_name, $parameters);
+      return $this->getResourceHandler($resource_type)->process($this, $package, $resource_type, $module_name, $method_name, $parameters);
     }
     else {
       $error = \EWCore::log_error(404, "Resource not found: `$resource_type/$module_name/$method_name`", [
@@ -215,7 +221,13 @@ class App {
   }
 
   public function register_resource_handler($name, $func) {
-    $this->resources[$name] = $func;
+    $this->resource_handlers[$name] = $func;
+  }
+
+  private function getResourceHandler($resource_type) {
+    $resource_handler_name = $this->resource_handlers[$resource_type];
+
+    return new $resource_handler_name($this);
   }
 
   public function get_app_api_modules() {

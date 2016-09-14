@@ -508,7 +508,7 @@ class EWCore {
     if (self::$plugins_initialized) {
       return;
     }
-    
+
     self::$plugins_initialized = true;
 
     $apps_dirs = opendir(EW_PACKAGES_DIR);
@@ -576,8 +576,9 @@ class EWCore {
   public function get_page_from_url($app_name, $section_name, $page_name) {
     // Search in the app's root's directory
     $path = EW_PACKAGES_DIR . '/' . $app_name . '/' . $section_name . '/' . $page_name;
-    if (!file_exists($path))
+    if (!file_exists($path)) {
       $path = EW_PACKAGES_DIR . '/' . $app_name . '/sections/' . $section_name . '/' . $page_name;
+    }
     //echo $path;
     include_once $path;
   }
@@ -1470,8 +1471,9 @@ class EWCore {
   public static function does_need_permission($app_name, $module_name = null, $method_name = null) {
     EWCore::init_packages();
 
-    if (isset(self::$no_permission_needed["$app_name/$module_name"]) && in_array($method_name, self::$no_permission_needed["$app_name/$module_name"]))
+    if (isset(self::$no_permission_needed["$app_name/$module_name"]) && in_array($method_name, self::$no_permission_needed["$app_name/$module_name"])) {
       return "public-access";
+    }
 
     $pers = isset(self::$permissions_groups[$app_name]) ? self::$permissions_groups[$app_name]["section"] : false;
 
@@ -1479,8 +1481,9 @@ class EWCore {
       return $pers ? true : false;
     }
 
-    if ($pers)
+    if ($pers) {
       $pers = $pers[$module_name]["permission"];
+    }
     //$permissions_titles = array();
 
     $result = array();

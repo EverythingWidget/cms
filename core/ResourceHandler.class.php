@@ -29,7 +29,6 @@ class ResourceHandler {
     return $this->handle($app, $package, $resource_type, $section_name, $method_name, $parameters);
   }
 
-  //put your code here
   protected function handle($parent, $package, $resource_type, $section_name, $method_name, $parameters) {
     
   }
