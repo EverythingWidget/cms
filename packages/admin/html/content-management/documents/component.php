@@ -17,6 +17,7 @@
 
   <system-spirit animations="liveHeight,zoom" zoom="content-item">
 
+
     <div class='card-content'>
       <div id="folders-list" class="mt">
         <div v-for="folder in folders" track-by="id" tabindex='1' class='content-item folder' 
@@ -28,10 +29,14 @@
         </div>
       </div>
 
+      <div class="card-control-bar">
+        <ew-pagination id="articles-pagination" v-bind:list.sync="articles" v-bind:on-load="onArticleLoad"></ew-pagination>
+      </div>
+
       <div id="articles-list" class="mt">
         <div tabindex='1' draggable="true" class='content-item article' 
              data-content-id='{{ article.id }}'
-             v-for="article in articles" 
+             v-for="article in articles.data" 
              v-on:dragstart="dragStart">
           <span></span>
           <p class='date'>{{ article.round_date_created }}</p>
@@ -128,11 +133,11 @@
   };
 
   DocumentsStateHandler.prototype.init = function () {
-    var handler = this;
+    var component = this;
 
     Object.defineProperty(this, 'parentId', {
       set: function (value) {
-        handler.ui.folders_card_vue.parentId = value;
+        component.ui.folders_card_vue.parentId = value;
         this.$parentId = value;
       },
       get: function () {
@@ -142,7 +147,7 @@
 
     Object.defineProperty(this, 'upParentId', {
       set: function (value) {
-        handler.ui.folders_card_vue.upParentId = value;
+        component.ui.folders_card_vue.upParentId = value;
         this.$upParentId = value;
       },
       get: function () {
@@ -150,26 +155,32 @@
       }
     });
 
-    handler.ui.components.folders_card = $(Scope.uiViews.folders_card);
-    handler.ui.components.folders_card_title_action_right = handler.ui.components.folders_card.find(".card-title-action-right");
-    handler.ui.components.folders_list = handler.ui.components.folders_card.find("#folders-list");
-    handler.ui.components.articles_list = handler.ui.components.folders_card.find("#articles-list");
+    component.ui.components.folders_card = $(Scope.uiViews.folders_card);
+    component.ui.components.folders_card_title_action_right = component.ui.components.folders_card.find(".card-title-action-right");
+    component.ui.components.folders_list = component.ui.components.folders_card.find("#folders-list");
+    component.ui.components.articles_list = component.ui.components.folders_card.find("#articles-list");
 
-    handler.ui.folders_card_vue = new Vue({
+    component.ui.folders_card_vue = new Vue({
       el: Scope.uiViews.folders_card,
       data: {
         upParentId: 0,
         parentId: 0,
         card_title: 'tr{Contents}',
         folders: [],
-        articles: []
+        articles: {
+          url: 'api/admin/content-management/contents-articles/',
+          page_size: 10,
+          urlParams: {
+            parent_id: 0
+          }
+        }
       },
       computed: {
         selectedId: {
           set: function (value) {
             var _this = this;
-            if (value) {             
-              handler.ui.folders_card_vue.$nextTick(function () {
+            if (value) {
+              component.ui.folders_card_vue.$nextTick(function () {
                 var item = document.querySelector('[data-content-id="' + value + '"]');
                 item ? item.classList.add('selected') : '';
                 _this._selectedItem ? _this._selectedItem.classList.remove('selected') : '';
@@ -190,14 +201,25 @@
         moveItem: function (event) {
           event.preventDefault();
           if (parseInt(event.currentTarget.getAttribute('data-content-id')) !== this.parentId) {
-            handler.moveItem(event.dataTransfer.getData('item'), event.currentTarget.getAttribute('data-content-id'));
+            component.moveItem(event.dataTransfer.getData('item'), event.currentTarget.getAttribute('data-content-id'));
           }
         },
         isAllowed: function (event) {
           event.preventDefault();
         },
         goUp: function () {
-          handler.preCategory.call(handler);
+          component.preCategory.call(component);
+        },
+        onArticleLoad: function (response) {
+
+          //component.ui.folders_card_vue.articles = articlesList;
+        }
+      },
+      events: {
+        'articles-pagination/data': function (response) {
+          if (response.parent) {
+            component.upParentId = response.parent.parent_id;
+          }
         }
       }
     });
@@ -245,12 +267,12 @@
         }
 
         return {
-          id: handler.parentId
+          id: component.parentId
         };
       },
       onDone: function (response) {
         $("body").EW().notify(response).show();
-        handler.preCategory();
+        component.preCategory();
       }
     }).hide();
 
@@ -411,36 +433,40 @@
             currentSelected = System.getHashParam("article") || System.getHashParam("folder");
 
     var loader = $("<div class='loader top'></div>");
-    this.ui.components.folders_card.find(".card-content").append(loader);
+//    this.ui.components.folders_card.find(".card-content").append(loader);
     var foldersElements = [];
-    System.addActiveRequest($.get('api/admin/content-management/contents-folders/', {
-      parent_id: component.parentId
-    }, function (response) {
-      component.ui.folders_card_vue.card_title = response.parent ? response.parent.title : "tr{Contents}";
+//    System.addActiveRequest($.get('api/admin/content-management/contents-folders/', {
+//      parent_id: component.parentId
+//    }, function (response) {
+//      component.ui.folders_card_vue.card_title = response.parent ? response.parent.title : "tr{Contents}";
+//
+//      if (response.parent) {
+//        component.upParentId = response.parent.parent_id;
+//      }
+//
+//      foldersElements = response.data;
+//
+//      foldersLoaded = true;
+//      done();
+//    }, "json"));
 
-      if (response.parent) {
-        component.upParentId = response.parent.parent_id;
-      }
+    var articlesList = {};
 
-      foldersElements = response.data;
+//    System.addActiveRequest($.get('api/admin/content-management/contents-articles/', {
+//      parent_id: component.parentId
+//    }, function (response) {
+//      if (response.parent) {
+//        component.upParentId = response.parent.parent_id;
+//      }
+//
+//      articlesList = response;
+//
+//      articlesLoaded = true;
+//      done();
+//    }, "json"));
 
-      foldersLoaded = true;
-      done();
-    }, "json"));
-
-    var articlesElements = [];
-    System.addActiveRequest($.get('api/admin/content-management/contents-articles/', {
-      parent_id: component.parentId
-    }, function (response) {
-      if (response.parent) {
-        component.upParentId = response.parent.parent_id;
-      }
-
-      articlesElements = response.data;
-
-      articlesLoaded = true;
-      done();
-    }, "json"));
+    component.ui.folders_card_vue.articles.urlParams.parent_id = component.parentId;
+    component.ui.folders_card_vue.$broadcast('refresh');
 
     var done = function () {
       if (!articlesLoaded || !foldersLoaded) {
@@ -461,7 +487,7 @@
         toColor: '#fff',
         onComplete: function () {
           component.ui.folders_card_vue.folders = foldersElements;
-          component.ui.folders_card_vue.articles = articlesElements;
+          component.ui.folders_card_vue.articles = articlesList;
           component.ui.folders_card_vue.selectedId = currentSelected;
 //          component.ui.folders_card_vue.$nextTick(function () {
 //            var item = document.querySelector('[data-content-id="' + currentSelected + '"]');

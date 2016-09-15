@@ -203,6 +203,10 @@ class Core extends \ew\Module {
                 'content',
                 'posts.date_published'
     ]);
+    
+    if(isset($params['id'])) {
+      $id = $params['id'];
+    }
 
     $query->where('parent_id', '=', $id)
             ->join('ew_contents_labels as langs', 'ew_contents.id', '=', 'langs.content_id')

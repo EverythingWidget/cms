@@ -745,9 +745,9 @@ class ContentManagement extends \ew\Module {
     return $rows;
   }
 
-  public function contents_articles($_response, $parent_id = null, $token, $page_size, $order_by = null, $_language = 'en') {
-    if (!isset($token)) {
-      $token = 0;
+  public function contents_articles($_response, $parent_id = null, $start, $page_size, $order_by = null, $_language = 'en') {
+    if (!isset($start)) {
+      $start = 0;
     }
     if (!$page_size) {
       $page_size = '18446744073709551610';
@@ -773,7 +773,7 @@ class ContentManagement extends \ew\Module {
                 ->where('ew_contents_labels.key', 'admin_ContentManagement_language')
                 ->where('ew_contents_labels.value', $_language)
                 ->take($page_size)
-                ->skip($token)
+                ->skip($start)
                 ->orderBy("date_modified", $order_by)
                 ->get(['*',
             'ew_contents.id',
@@ -786,7 +786,7 @@ class ContentManagement extends \ew\Module {
                 ->where('ew_contents_labels.key', 'admin_ContentManagement_language')
                 ->where('ew_contents_labels.value', $_language)
                 ->take($page_size)
-                ->skip($token)
+                ->skip($start)
                 ->get([
             '*',
             'ew_contents.id',
@@ -800,6 +800,8 @@ class ContentManagement extends \ew\Module {
       }, $articles->toArray());
 
       $_response->properties['total'] = $articles->count();
+      $_response->properties['start'] = intval($start);
+      $_response->properties['page_size'] = intval($page_size);
       $_response->properties['parent'] = isset($container_id) ? $container_id->toArray() : null;
 
       return $data;

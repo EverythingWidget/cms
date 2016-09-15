@@ -624,6 +624,7 @@
         value.value = valueValue;
         value.className = 'value';
         value.placeholder = 'value';
+        value.elementType = '';
 
         var field = document.createElement('p');
 
@@ -666,7 +667,7 @@
         var newFields = [];
         this.xtag.fields = [];
         this.xtag.allFields.forEach(function (item) {
-          if (!item.name.value && !item.value.value && item.field.parentNode && item.field !== jsonInput.xtag.lastField.field) {
+          if (!item.name.value && (!item.value.value || Object.keys(item.value.value).length === 0) && item.field.parentNode && item.field !== jsonInput.xtag.lastField.field) {
             item.field.parentNode.removeChild(item.field);
             return;
           }
@@ -723,20 +724,28 @@
             return;
           }
 
-          for (var key in data) {
-            if (data.hasOwnProperty(key)) {
-              jsonInput.xtag.lastField = jsonInput.createField(key, data[key]);
-              jsonInput.xtag.allFields.push(jsonInput.xtag.lastField);
+          if (Object.keys(data).length === 0) {
+            jsonInput.xtag.lastField = jsonInput.createField('', '');
+            jsonInput.xtag.allFields.push(jsonInput.xtag.lastField);
+          } else {
+            for (var key in data) {
+              if (data.hasOwnProperty(key)) {
+                jsonInput.xtag.lastField = jsonInput.createField(key, data[key]);
+                jsonInput.xtag.allFields.push(jsonInput.xtag.lastField);
+              }
             }
+
+            jsonInput.xtag.lastField = {};
           }
 
-          jsonInput.xtag.lastField = {};
           jsonInput.updateFieldsCount();
         },
         get: function () {
           var value = {};
           this.xtag.fields.forEach(function (item) {
-            value[item.name.value] = item.value.value;
+            if (item.name.value !== '') {
+              value[item.name.value] = item.value.value;
+            }
           });
 
           return value;
@@ -745,6 +754,7 @@
       elementType: {
         attribute: {},
         set: function (value) {
+          this.xtag.elementType = value;
         },
         get: function () {
           return this.xtag.elementType;

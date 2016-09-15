@@ -647,10 +647,15 @@ class WidgetsManagement extends \ew\Module {
     else {
       $_SESSION['_ew_gw_ts'] = $timestamp;
     }
+
+    if (!is_array($widget_parameters)) {
+      $widget_parameters = json_decode($widget_parameters, true);
+    }
+
     self::$current_timestamp = strval($timestamp);
     $widget_id = "widget-" . self::$current_timestamp . '-' . self::$ui_index . '-' . self::$widget_index;
     $widget_html = '';
-    $widget_html .=self::open_widget($widget_id, $widget_type, $style_class, $widget_style_class, $style_id, ($widget_parameters));
+    $widget_html .=self::open_widget($widget_id, $widget_type, $style_class, $widget_style_class, $style_id, $widget_parameters);
     $widget_html .=self::close_widget();
     /* if (self::get_widget_data_object())
       {

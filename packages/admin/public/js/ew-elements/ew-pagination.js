@@ -1,6 +1,7 @@
 /* global Vue, System */
 (function () {
   var properties = {
+    id: String,
     list: {
       twoWay: true,
       default: {
@@ -19,7 +20,8 @@
     maxPageSize: {
       type: Number,
       default: 30
-    }
+    },
+    onLoad: Function
   };
 
   var computeds = {
@@ -49,6 +51,15 @@
     },
     total: function () {
       return this.list.total || 0;
+    },
+    params: function () {
+      var component = this;
+
+      return System.utility.extend({
+        start: component.list.start,
+        page_size: component.list.page_size,
+        filter: component.filter
+      }, component.list.urlParams || {});
     }
   };
 
@@ -58,11 +69,12 @@
     },
     refresh: function () {
       var component = this;
-      $.get(this.list.url, {
-        page_size: component.list.page_size,
-        start: component.list.start || 0,
-        filter: this.filter
-      }, function (response) {
+      var params = component.params;
+      params.start = component.list.start || 0;
+
+      $.get(this.list.url, params, function (response) {
+
+        component.$dispatch(component.id + '/data', response);
         component.list = response;
       });
     },
@@ -71,10 +83,10 @@
       var start = component.till;
       component.loading = true;
 
-      $.get(this.list.url, {
-        page_size: component.list.page_size,
-        start: start > component.total ? component.total : start
-      }, function (response) {
+      var params = component.params;
+      params.start = start > component.total ? component.total : start;
+
+      $.get(this.list.url, params, function (response) {
         component.list = response;
         component.loading = false;
       });
@@ -88,10 +100,10 @@
         start = component.list.start - this.maxPageSize;
       }
 
-      $.get(this.list.url, {
-        page_size: component.list.page_size,
-        start: start < 0 ? 0 : start
-      }, function (response) {
+      var params = component.params;
+      params.start = start < 0 ? 0 : start;
+
+      $.get(this.list.url, params, function (response) {
         component.list = response;
         component.loading = false;
       });
