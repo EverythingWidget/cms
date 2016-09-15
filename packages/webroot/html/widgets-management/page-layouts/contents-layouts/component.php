@@ -6,7 +6,7 @@
 
       <h1> Contents Layouts </h1>
     </div>
-    <div class="col-xs-12">
+    <div class="card-content">
       <div class="row">
         <input type="hidden" name="@DEFAULTuisId" value="<?= $default_page["uis_id"] ?>">
         <system-field class="field col-xs-12">
@@ -28,9 +28,18 @@
           <input class="text-field app-page-uis" name="@USER_HOME_PAGE"  value="<?= $user_home_page["uis_name"] ?>">
         </system-field>
       </div>
+    </div>
+    
+    <div  class="card-header top-divider">
+      <h1> App's pages </h1>
+    </div>
+    <div class="card-content">
       <?php
-      $widgets_types_list = webroot\WidgetsManagement::get_widget_feeders("page");
-      $pages = $widgets_types_list->data[0];
+      $widgets_types_list = EWCore::call_api('webroot/api/widgets-management/get-widget-feeders', [
+                  'type' => 'page'
+      ]);
+
+      $pages = $widgets_types_list['data'];
 
       //Show list of pages and their layouts
       if (isset($pages)) {

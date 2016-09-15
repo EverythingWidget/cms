@@ -15,12 +15,19 @@
     <h1> {{ card_title }} </h1>
   </div>
 
-  <system-spirit animations="liveHeight,zoom" zoom="content-item">
+  <system-spirit animations="liveHeight,verticalShift" vertical-shift="content-item">
 
 
     <div class='card-content'>
+      <div class="card-control-bar">
+        <ew-pagination id="folders-pagination" 
+                       v-bind:auto-init="false"
+                       v-bind:list.sync="folders" 
+                       v-bind:api-params="contentsAPIParams"></ew-pagination>
+      </div>
+
       <div id="folders-list" class="mt">
-        <div v-for="folder in folders" track-by="id" tabindex='1' class='content-item folder' 
+        <div v-for="folder in folders.data" track-by="id" tabindex='1' class='content-item folder' 
              data-content-id='{{ folder.id }}' 
              v-on:drop="moveItem" v-on:dragover="isAllowed">
           <span></span>
@@ -30,7 +37,10 @@
       </div>
 
       <div class="card-control-bar">
-        <ew-pagination id="articles-pagination" v-bind:list.sync="articles" v-bind:on-load="onArticleLoad"></ew-pagination>
+        <ew-pagination id="articles-pagination" 
+                       v-bind:auto-init="false"
+                       v-bind:list.sync="articles" 
+                       v-bind:api-params="contentsAPIParams"></ew-pagination>
       </div>
 
       <div id="articles-list" class="mt">
@@ -166,13 +176,16 @@
         upParentId: 0,
         parentId: 0,
         card_title: 'tr{Contents}',
-        folders: [],
+        folders: {
+          url: 'api/admin/content-management/contents-folders/',
+          page_size: 12
+        },
         articles: {
           url: 'api/admin/content-management/contents-articles/',
-          page_size: 10,
-          urlParams: {
-            parent_id: 0
-          }
+          page_size: 30
+        },
+        contentsAPIParams: {
+          parent_id: 0
         }
       },
       computed: {
@@ -209,18 +222,35 @@
         },
         goUp: function () {
           component.preCategory.call(component);
-        },
-        onArticleLoad: function (response) {
-
-          //component.ui.folders_card_vue.articles = articlesList;
         }
       },
       events: {
-        'articles-pagination/data': function (response) {
-          if (response.parent) {
-            component.upParentId = response.parent.parent_id;
-          }
-        }
+//        'articles-pagination/load': function (pagination) {
+//          this.loadingArticles = false;
+//        },
+//        'articles-pagination/loaded': function (pagination, response) {
+//          if (response.parent) {
+//            component.upParentId = response.parent.parent_id;
+//          }
+//
+//          this.articlesResponse = response;
+//          this.articlesLoaded = true;
+//
+//          this.contentsLoaded();
+//        },
+//        'folders-pagination/load': function (pagination) {
+//          this.foldersLoaded = false;
+//        },
+//        'folders-pagination/loaded': function (pagination, response) {
+//          if (response.parent) {
+//            component.upParentId = response.parent.parent_id;
+//          }
+//
+//          this.foldersResponse = response;
+//          this.foldersLoaded = true;
+//          
+//          this.contentsLoaded();
+//        }
       }
     });
 
@@ -355,7 +385,7 @@
         folder: e.currentTarget.getAttribute('data-content-id')
       });
 
-//      component.currentItem = System.ui.behaviors.selectElementOnly(e.currentTarget, component.currentItem);
+      component.currentItem = e.currentTarget;
     });
 
     component.ui.components.folders_list.off('dblclick touchstart').on('dblclick touchstart', '.folder', function (e) {
@@ -366,7 +396,7 @@
     component.ui.components.articles_list.off('click').on('click', '.article', function (e) {
       component.state.setParam('folder', null);
       component.state.setParam('article', e.currentTarget.getAttribute('data-content-id'));
-//      component.currentItem = System.ui.behaviors.selectElementOnly(e.currentTarget, component.currentItem);
+      component.currentItem = e.currentTarget;
     });
 
     component.ui.components.articles_list.off('dblclick touchstart').on('dblclick touchstart', '.article', function (e) {
@@ -433,40 +463,40 @@
             currentSelected = System.getHashParam("article") || System.getHashParam("folder");
 
     var loader = $("<div class='loader top'></div>");
+    component.ui.folders_card_vue.contentsAPIParams.parent_id = component.parentId;
 //    this.ui.components.folders_card.find(".card-content").append(loader);
     var foldersElements = [];
-//    System.addActiveRequest($.get('api/admin/content-management/contents-folders/', {
-//      parent_id: component.parentId
-//    }, function (response) {
-//      component.ui.folders_card_vue.card_title = response.parent ? response.parent.title : "tr{Contents}";
-//
-//      if (response.parent) {
-//        component.upParentId = response.parent.parent_id;
-//      }
-//
-//      foldersElements = response.data;
-//
-//      foldersLoaded = true;
-//      done();
-//    }, "json"));
+    System.addActiveRequest($.get('api/admin/content-management/contents-folders/', {
+      parent_id: component.parentId,
+      page_size: component.ui.folders_card_vue.folders.page_size
+    }, function (response) {
+      component.ui.folders_card_vue.card_title = response.parent ? response.parent.title : "tr{Contents}";
+
+      if (response.parent) {
+        component.upParentId = response.parent.parent_id;
+      }
+
+      foldersElements = response;
+
+      foldersLoaded = true;
+      done();
+    }));
 
     var articlesList = {};
 
-//    System.addActiveRequest($.get('api/admin/content-management/contents-articles/', {
-//      parent_id: component.parentId
-//    }, function (response) {
-//      if (response.parent) {
-//        component.upParentId = response.parent.parent_id;
-//      }
-//
-//      articlesList = response;
-//
-//      articlesLoaded = true;
-//      done();
-//    }, "json"));
+    System.addActiveRequest($.get('api/admin/content-management/contents-articles/', {
+      parent_id: component.parentId,
+      page_size: component.ui.folders_card_vue.articles.page_size
+    }, function (response) {
+      if (response.parent) {
+        component.upParentId = response.parent.parent_id;
+      }
 
-    component.ui.folders_card_vue.articles.urlParams.parent_id = component.parentId;
-    component.ui.folders_card_vue.$broadcast('refresh');
+      articlesList = response;
+
+      articlesLoaded = true;
+      done();
+    }));
 
     var done = function () {
       if (!articlesLoaded || !foldersLoaded) {

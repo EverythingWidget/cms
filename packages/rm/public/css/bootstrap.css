@@ -752,9 +752,9 @@ pre code {
   background-image: none;
   border: 2px solid transparent;
   white-space: nowrap;
-  padding: 6px 16px;
+  padding: 2px 10px;
   font-size: 14px;
-  line-height: 22px;
+  line-height: 30px;
   border-radius: 3px;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -813,7 +813,7 @@ fieldset[disabled] .btn {
   background-color:transparent;
   font-weight:500;
   font-size:1.15em;
-  padding:9px;
+  padding:2px 9px;
   border-color:transparent;
   box-shadow:none;
 }

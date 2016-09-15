@@ -160,7 +160,7 @@ EverythingWidgets.prototype.addAction = function (text, handler, css, parent) {
   var li = $(document.createElement("li"));
   var action = $(document.createElement("button"));
   action.html(text);
-  action.attr("data-label", text);
+  //action.attr("data-label", text);
   action.addClass("btn btn-primary");
   if (typeof css === "string")
   {
@@ -351,7 +351,7 @@ EverythingWidgets.prototype.addActivity = function (conf) {
   //var li = $(document.createElement("li"));
   var action = $(document.createElement("button"));
   action.html(settings.title);
-  action.attr("data-label", settings.title).addClass("btn " + settings.defaultClass + " " + ((settings.class) ? settings.class : ""));
+  action.addClass("btn " + settings.defaultClass + " " + ((settings.class) ? settings.class : ""));
 
   action.attr("type", "button");
   var handler = function () {

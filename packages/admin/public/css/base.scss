@@ -1148,7 +1148,7 @@ h2.actions-bar span {
   box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,.1);
 }
 
-.top-devider {
+.top-devider, .top-divider {
   border-top: 1px solid rgba(0,0,0,.1);
 }
 
@@ -1711,14 +1711,18 @@ ul.layout-components li.widget {
 
 ul.layout-components li.widget > .item-label {
   background-color: #0097A7;
-  padding: 6px;
+  padding: 5px;
   border-radius: 16px;
   color: #fff;
   float: none;
   display: block;
   margin-right: 0;
-  box-shadow: 0 1px 2px rgba(0,0,0,.2);
+  box-shadow: 0 2px 3px rgba(0,0,0,.2);
   transition: all .2s;
+  
+  + .close-icon {
+    top: 6px;
+  }
 }
 
 ul.layout-components li.widget > .item-label:hover, ul.layout-components li.widget > .item-label.hover {
@@ -3156,20 +3160,6 @@ li h3.icon-header {
 
 .priority-2 {
   right: 245px;
-}
-
-.grid-list {
-  padding: 0;
-  margin: 0;
-  list-style: none;
-  display: -webkit-box;
-  display: -moz-box;
-  display: -ms-flexbox;
-  display: -webkit-flex;
-  display: flex;
-  -webkit-flex-flow: row wrap;
-  justify-content: space-around;
-  align-items: flex-start;
 }
 
 system-list, dis-block {

@@ -110,6 +110,10 @@ class WidgetsManagement extends \ew\Module {
     $this->register_permission("import-uis", "User can import UIS", array(
         "api/import_uis",
         "html/ne-uis.php"));
+    
+    $this->register_public_access([
+        'api/get-widget-feeders'
+    ]);
   }
 
   public function on_contents_update($_response, $id, $webroot) {
@@ -1273,7 +1277,7 @@ class WidgetsManagement extends \ew\Module {
    * @type string type of widget feeder
    * @return mixed
    */
-  public static function get_widget_feeders($type = "all") {
+  public static function get_widget_feeders($_response, $type = "all") {
     $feeders = [];
     foreach (static::$widgets_feeders as $feeder_id => $feeder_config) {
       if ($feeder_config->feeder_type === $type || $type === "all") {
@@ -1281,7 +1285,10 @@ class WidgetsManagement extends \ew\Module {
       }
     }
 
-    return \ew\APIResourceHandler::to_api_response($feeders, ["totalRows" => count($feeders)]);
+    $result = new \ew\Result();
+    $result->data = new \Illuminate\Database\Eloquent\Collection($feeders);
+    
+    return \ew\APIResponse::standard_response($_response, $result);
   }
 
   public static function parse_html_to_parts($html_string) {

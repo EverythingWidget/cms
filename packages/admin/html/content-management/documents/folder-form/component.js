@@ -46,8 +46,8 @@
   }).hide();
 
   var bDelete = EW.addActivity({
-    title: "tr{Delete}",
-    defaultClass: "btn-danger",
+    title: "<i class='icon-trash-empty'></i>",
+    defaultClass: "btn-danger btn-text",
     verb: 'DELETE',
     activity: "admin/api/content-management/contents",
     parameters: function () {

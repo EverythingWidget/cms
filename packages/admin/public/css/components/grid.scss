@@ -76,4 +76,21 @@
       }
     }
   }
+
+  &-list {
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    
+    
+
+    .content-item {
+      &:last-child {
+        
+      }
+    }
+  }
 }

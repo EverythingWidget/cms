@@ -724,12 +724,24 @@ class ContentManagement extends \ew\Module {
     }
   }
 
-  public function contents_folders($_response, $parent_id, $token, $page_size) {
+  public function contents_folders($_response, $parent_id, $start, $page_size) {
     $container_id = ew_contents::find($parent_id);
     $up_parent_id = $container_id['parent_id'] ? $container_id['parent_id'] : 0;
 
-    $folders = ew_contents::where('parent_id', '=', $parent_id)->where('type', 'folder')->get(['*',
-        \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
+    $query = ew_contents::select(['*',
+                \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
+
+    $query->where('parent_id', '=', $parent_id)->where('type', 'folder');
+
+    $_response->properties['total'] = $query->get()->count();
+
+    if (isset($page_size)) {
+      $folders = $query->take($page_size)
+                      ->skip($start)->get();
+    }
+    else {
+      $folders = $query->get();
+    }
 
     $rows = [];
     $folders_ar = $folders->toArray();
@@ -739,7 +751,9 @@ class ContentManagement extends \ew\Module {
       $rows[] = $i;
     }
 
-    $_response->properties['total'] = $folders->count();
+
+    $_response->properties['start'] = intval($start);
+    $_response->properties['page_size'] = intval($page_size);
     $_response->properties['parent'] = isset($container_id) ? $container_id->toArray() : null;
 
     return $rows;
@@ -767,31 +781,37 @@ class ContentManagement extends \ew\Module {
       $container_id = ew_contents::find($parent_id);
       $up_parent_id = isset($container_id['parent_id']) ? $container_id['parent_id'] : 0;
       if (isset($order_by)) {
-        $articles = ew_contents::where('parent_id', '=', $parent_id)
+        $query = ew_contents::select(['*',
+                    'ew_contents.id',
+                    \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
+        $query->where('parent_id', '=', $parent_id)
                 ->join('ew_contents_labels', 'ew_contents.id', '=', 'ew_contents_labels.content_id')
                 ->where('type', 'article')
                 ->where('ew_contents_labels.key', 'admin_ContentManagement_language')
-                ->where('ew_contents_labels.value', $_language)
-                ->take($page_size)
+                ->where('ew_contents_labels.value', $_language);
+
+        $_response->properties['total'] = $query->get()->count();
+
+        $articles = $query->take($page_size)
                 ->skip($start)
                 ->orderBy("date_modified", $order_by)
-                ->get(['*',
-            'ew_contents.id',
-            \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
+                ->get();
       }
       else {
-        $articles = ew_contents::where('parent_id', '=', $parent_id)->where('type', 'article')
+        $query = ew_contents::select(['*',
+                    'ew_contents.id',
+                    \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
+        $query->where('parent_id', '=', $parent_id)->where('type', 'article')
                 ->join('ew_contents_labels', 'ew_contents.id', '=', 'ew_contents_labels.content_id')
                 ->where('type', 'article')
                 ->where('ew_contents_labels.key', 'admin_ContentManagement_language')
-                ->where('ew_contents_labels.value', $_language)
-                ->take($page_size)
+                ->where('ew_contents_labels.value', $_language);
+
+        $_response->properties['total'] = $query->get()->count();
+
+        $articles = $query->take($page_size)
                 ->skip($start)
-                ->get([
-            '*',
-            'ew_contents.id',
-            \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")
-        ]);
+                ->get();
       }
 
       $data = array_map(function($e) use ($up_parent_id) {
@@ -799,7 +819,6 @@ class ContentManagement extends \ew\Module {
         return $e;
       }, $articles->toArray());
 
-      $_response->properties['total'] = $articles->count();
       $_response->properties['start'] = intval($start);
       $_response->properties['page_size'] = intval($page_size);
       $_response->properties['parent'] = isset($container_id) ? $container_id->toArray() : null;

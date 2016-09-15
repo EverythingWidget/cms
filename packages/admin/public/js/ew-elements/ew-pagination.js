@@ -2,6 +2,10 @@
 (function () {
   var properties = {
     id: String,
+    autoInit: {
+      type: Boolean,
+      default: true
+    },
     list: {
       twoWay: true,
       default: {
@@ -13,6 +17,9 @@
       default: function () {
         return {};
       }
+    },
+    apiParams: {
+      type: Object
     },
     lazyLoad: {
       type: Boolean
@@ -59,23 +66,30 @@
         start: component.list.start,
         page_size: component.list.page_size,
         filter: component.filter
-      }, component.list.urlParams || {});
+      }, component.apiParams || {});
     }
   };
 
   var methods = {
     onReady: function () {
-      this.refresh();
+      if (this.autoInit) {
+        this.refresh();
+      }
     },
     refresh: function () {
       var component = this;
       var params = component.params;
       params.start = component.list.start || 0;
+      component.loading = true;
+
+      component.$dispatch(component.id + '/load', component);
 
       $.get(this.list.url, params, function (response) {
 
-        component.$dispatch(component.id + '/data', response);
+        component.$dispatch(component.id + '/loaded', component, response);
+
         component.list = response;
+        component.loading = false;
       });
     },
     next: function () {
@@ -86,7 +100,11 @@
       var params = component.params;
       params.start = start > component.total ? component.total : start;
 
+      component.$dispatch(component.id + '/load', component);
+
       $.get(this.list.url, params, function (response) {
+        component.$dispatch(component.id + '/loaded', component, response);
+
         component.list = response;
         component.loading = false;
       });
@@ -103,7 +121,11 @@
       var params = component.params;
       params.start = start < 0 ? 0 : start;
 
+      component.$dispatch(component.id + '/load', component);
+
       $.get(this.list.url, params, function (response) {
+        component.$dispatch(component.id + '/loaded', component, response);
+
         component.list = response;
         component.loading = false;
       });
