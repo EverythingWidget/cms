@@ -161,7 +161,7 @@ class ContentManagement extends \ew\Module {
         "api/update_album",
         "api/delete_content",
         "api/delete_content_by_id",
-        "api/delete_folder",
+        "api/folder-delete",
         "api/delete-album",
         "api/delete-image",
         "api/upload-file",
@@ -1606,6 +1606,12 @@ class ContentManagement extends \ew\Module {
 
   public function contents_delete($_input, $_response) {
     $result = (new ContentsRepository())->delete($_input);
+
+    return \ew\APIResponse::standard_response($_response, $result);
+  }
+  
+  public function folder_delete($_input, $_response) {
+    $result = (new ContentsRepository())->delete_folder($_input);
 
     return \ew\APIResponse::standard_response($_response, $result);
   }

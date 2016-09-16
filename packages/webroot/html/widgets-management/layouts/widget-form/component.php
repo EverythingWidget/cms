@@ -38,8 +38,11 @@ $panelId = $_REQUEST['panelId'];
         </p>
       </div>
       <?php
-      $widget_feeders = webroot\WidgetsManagement::get_widget_feeders($feeder_type);
-      $widgets_types_list = $widget_feeders->data;
+      $widget_feeders = EWCore::call_api('webroot/api/widgets-management/get-widget-feeders', [
+                  'type' => $feeder_type
+      ]);
+      
+      $widgets_types_list = $widget_feeders['data'];
       $rowNum = 0;
       $oldApp = "";
       foreach ($widgets_types_list as $row) {

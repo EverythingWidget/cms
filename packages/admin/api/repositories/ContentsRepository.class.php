@@ -87,6 +87,29 @@ class ContentsRepository implements \ew\CRUDRepository {
     return $result;
   }
 
+  public function delete_folder($input) {
+    $result = new \ew\Result();
+    //$result->error = 503;
+
+    $items = ew_contents::where('parent_id', $input->id)->get();
+    if ($items->count() > 0) {
+      $result->error = 400;
+      $result->message = 'in order to delete this folder, you must delete content of this folder first';
+
+      return $result;
+    }
+
+    $result->message = 'item has been deleted successfully';
+
+    $content = ew_contents::find($input->id);
+
+    $content->delete();
+
+    $result->data = $content;
+
+    return $result;
+  }
+
   /**
    * 
    * @param type $input

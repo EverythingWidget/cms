@@ -1287,9 +1287,27 @@ class EWCore {
                   $verb = [];
                   preg_match('/(.*)\-(\w*)$/i', $method_name, $verb);
 
-                  $request_url = $is_form ?
-                          EW_ROOT_URL . "$resource_name/$app/$module_name/$method_name" :
-                          EW_ROOT_URL . "$resource_name/$app/$module_name/$verb[1]";
+
+                  if ($is_form) {
+                    $request_url = EW_ROOT_URL . "$resource_name/$app/$module_name/$method_name";
+                  }
+                  else {
+                    if (ew\APIResourceHandler::$VERBS[$verb[2]]) {
+                      $request_url = EW_ROOT_URL . "$resource_name/$app/$module_name/$verb[1]";
+                    }
+                    else {
+                      if (!$verb[2]) {
+                        $verb[2] = $method_name;
+                        $request_url = EW_ROOT_URL . "$resource_name/$app/$module_name";
+                      }
+                      else {
+                        $verb[2] = 'read';
+                        $request_url = EW_ROOT_URL . "$resource_name/$app/$module_name/$method_name";
+                      }                                     
+                    }
+                  }
+
+
 
                   $allowed_activities["$app/$resource_name/$module_name/$method_name"] = [
 //                      "activityTitle" => $title,

@@ -289,7 +289,8 @@
     this.deleteFolderActivity = EW.addActivity({
       title: "",
       defaultClass: "btn-text btn-circle icon-delete btn-danger",
-      activity: "admin/api/content-management/delete-folder",
+      verb: 'DELETE',
+      activity: "admin/api/content-management/folder",
       parent: this.ui.components.folders_card_title_action_right,
       parameters: function () {
         if (!confirm("tr{Are you sure of deleting this folder?}")) {

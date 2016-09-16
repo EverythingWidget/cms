@@ -49,7 +49,7 @@
     title: "<i class='icon-trash-empty'></i>",
     defaultClass: "btn-danger btn-text",
     verb: 'DELETE',
-    activity: "admin/api/content-management/contents",
+    activity: "admin/api/content-management/folder",
     parameters: function () {
       if (!confirm("tr{Are you sure of deleting this folder?}")) {
         return false;

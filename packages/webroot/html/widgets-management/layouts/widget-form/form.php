@@ -73,7 +73,7 @@ EWCore::register_form('ew/ui/widget-form', 'properties', [
 
 $tabs = EWCore::read_registry("ew/ui/widget-form");
 ?>
-<div class="header-pane tabs-bar">
+<div class="header-pane tabs-bar thin">
   <h1 id="uis-widget-title" class="col-xs-12">
     <span>tr{Widget}</span> <?php echo $widget_type; ?>
   </h1>
