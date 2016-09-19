@@ -7,7 +7,7 @@ $app = "webroot";
 
 $currentAppConf = EWCore::call_api("admin/api/settings/read-settings", [
             "app_name" => "webroot"
-        ]);
+        ])['data'];
 
 $website_title = $currentAppConf["webroot/title"];
 $page_description = ($current_path === '/' || !$current_path) ? $currentAppConf["webroot/description"] : null;
