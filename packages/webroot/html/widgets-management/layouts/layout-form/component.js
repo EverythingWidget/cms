@@ -3,7 +3,7 @@
 function UISForm() {
   clearTimeout(repTimeout);
   System.ui.forms.uis_form = this;
-  
+
   var _this = this;
   this.currentDialog;
   this.dpPreference = null;
@@ -650,11 +650,13 @@ UISForm.prototype.init = function () {
 UISForm.prototype.templateChanged = function () {
   var _this = this;
   var template = $("#template").val();
+  _this.templateSettingsForm.empty();
+
   if (template) {
     $.post('api/webroot/widgets-management/get-template-settings-form', {
       path: template
     }, function (response) {
-      console.log(response);
+//      console.log(response);
       _this.frameLoader.dispose();
       _this.uisTemplate = template;
       _this.templateSettingsForm.off("getData");
@@ -727,7 +729,7 @@ UISForm.prototype.updateUIS = function (reload) {
   $.post('api/webroot/widgets-management/update-uis', {
     name: $('#name').val(),
     template: $('#template').val(),
-    template_settings: JSON.stringify(self.templateSettings),
+    template_settings: self.templateSettings,
     perview_url: $("#perview_url").val(),
     structure: structure,
     uisId: self.uisId,

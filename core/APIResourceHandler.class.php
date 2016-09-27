@@ -236,7 +236,7 @@ class APIResourceHandler extends ResourceHandler {
   }
 
   public static function to_api_response($data, $meta = []) {
-    $response = new APIResponse();
+    $response = new APIResponse($_SERVER['REQUEST_URI']);
     //$response['status_code'] = 200;
     $response->set_status_code(200);
 

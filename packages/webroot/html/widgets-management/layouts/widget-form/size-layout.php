@@ -130,6 +130,8 @@
       $("#size-layout input").prop("disabled", "").parent().removeClass("disabled");
       $("#bootstrap-row").prop("disabled", "disabled").parent().addClass("disabled");
     }
+    
+    
     //$("#cutom-template").prop("disabled", "").parent().removeClass("disabled");
   });
 </script>

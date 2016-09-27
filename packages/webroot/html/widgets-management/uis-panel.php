@@ -76,6 +76,13 @@ $container_id = $_REQUEST["containerId"];
 
   (function () {
     var panel = $("#fr").contents().find("body #base-content-pane div[data-panel-id='<?= $panel_id ?>']");
+    $("#custom-template").on('change', function () {
+
+      panelVue.$nextTick(function () {
+        panelVue.usedClasses;
+      });
+
+    });
 
     var panelVue = new Vue({
       el: '#uis-panel',
@@ -84,10 +91,30 @@ $container_id = $_REQUEST["containerId"];
         styleIdText: '<?= $row['style_id'] ?>',
         styleClassesText: '',
         allClasses: [],
-        layoutClasses: [],
+        temp: [],
         templateClasses: <?= json_encode(EWCore::parse_css_clean(EW_PACKAGES_DIR . "/rm/public/{$_REQUEST['template']}/template.css", 'panel')); ?>
       },
       computed: {
+        layoutClasses: {
+          cache: false,
+          set: function (value) { },
+          get: function () {
+            var layoutClasses = [];
+
+            var $sizeAndLayout = $("#size-layout");
+
+            $.each($sizeAndLayout.find("input[data-slider]:not(:disabled)"), function (k, v) {
+              if (parseInt(v.value))
+                layoutClasses.push(v.name + v.value);
+            });
+
+            $.each($sizeAndLayout.find("input:radio:checked:not(:disabled),input:checkbox:checked:not(:disabled)"), function (k, v) {
+              layoutClasses.push($(v).val());
+            });
+
+            return layoutClasses;
+          }
+        },
         styleClasses: {
           set: function (value) {
             this.styleClassesText = value.join(' ');
@@ -104,8 +131,10 @@ $container_id = $_REQUEST["containerId"];
           });
         },
         usedClasses: {
+          cache: false,
           set: function (value) {
             var _this = this;
+
             value = value.filter(function (item) {
               return item !== 'panel';
             });
@@ -142,7 +171,6 @@ $container_id = $_REQUEST["containerId"];
               });
             });
 
-            this.layoutClasses = layoutClasses;
             this.styleClasses = classes.filter(function (item) {
               return panelClasses.indexOf(item) === -1;
             });

@@ -110,7 +110,7 @@ class WidgetsManagement extends \ew\Module {
     $this->register_permission("import-uis", "User can import UIS", array(
         "api/import_uis",
         "html/ne-uis.php"));
-    
+
     $this->register_public_access([
         'api/get-widget-feeders'
     ]);
@@ -388,6 +388,7 @@ class WidgetsManagement extends \ew\Module {
     $template = $original_record["template"];
     $template_settings = $original_record["template_settings"];
     $structure = ($original_record["structure"]);
+
     //$this->add_uis($name);
     // insert the new record and get the new auto_increment id
     /* $db->query("INSERT INTO {$table} (`{$id_field}`) VALUES (NULL)");
@@ -485,12 +486,12 @@ class WidgetsManagement extends \ew\Module {
     $statement = $db->prepare("DELETE FROM ew_ui_structures WHERE id = ?");
     $statement->bind_param("s", $uisId);
     if ($statement->execute()) {
-      return json_encode(array(
-          status => "success"));
+      return array(
+          status => "success");
     }
     else {
-      return json_encode(array(
-          status => "unsuccess"));
+      return array(
+          status => "unsuccess");
     }
   }
 
@@ -713,7 +714,7 @@ class WidgetsManagement extends \ew\Module {
         "result"    => $apps
     ];
 
-    return json_encode($out);
+    return $out;
   }
 
   public function widgets_types() {
@@ -1287,7 +1288,7 @@ class WidgetsManagement extends \ew\Module {
 
     $result = new \ew\Result();
     $result->data = new \Illuminate\Database\Eloquent\Collection($feeders);
-    
+
     return \ew\APIResponse::standard_response($_response, $result);
   }
 
