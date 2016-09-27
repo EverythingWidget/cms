@@ -77,11 +77,7 @@ $container_id = $_REQUEST["containerId"];
   (function () {
     var panel = $("#fr").contents().find("body #base-content-pane div[data-panel-id='<?= $panel_id ?>']");
     $("#custom-template").on('change', function () {
-
-      panelVue.$nextTick(function () {
-        panelVue.usedClasses;
-      });
-
+      uisPanel.setClasses();
     });
 
     var panelVue = new Vue({
@@ -246,24 +242,7 @@ $container_id = $_REQUEST["containerId"];
     }
 
     UISPanel.prototype.setClasses = function () {
-      var layoutClasses = [];
-
-      $.each($("#panel-classes").find("input"), function (k, field) {
-        layoutClasses.push($(field).val());
-      });
-
-      $.each($("#size-layout input[data-slider]:not(:disabled)"), function (k, field) {
-        if (parseInt(field.value)) {
-
-          layoutClasses.push(field.name + field.value);
-        }
-      });
-
-      $.each($("#size-layout input:radio:checked:not(:disabled),#size-layout input:checkbox:checked:not(:disabled)"), function (k, field) {
-        layoutClasses.push($(field).val());
-      });
-
-      panelVue.layoutClasses = layoutClasses;
+      panelVue.usedClasses;
     };
 
     // Create and add new div to the page
