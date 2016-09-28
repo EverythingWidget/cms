@@ -1719,7 +1719,7 @@ ul.layout-components li.widget > .item-label {
   margin-right: 0;
   box-shadow: 0 2px 3px rgba(0,0,0,.2);
   transition: all .2s;
-  
+
   + .close-icon {
     top: 6px;
   }
@@ -1937,7 +1937,11 @@ label {
   cursor: default;
   overflow: hidden;
   color: #777;
-  /* float: left; */
+
+  > span {
+    font-weight: 300;
+    color: inherit;
+  }
 }
 
 label.value {

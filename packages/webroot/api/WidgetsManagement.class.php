@@ -748,7 +748,7 @@ class WidgetsManagement extends \ew\Module {
       }
     }
 
-    return \ew\APIResourceHandler::to_api_response($apps, ["totalRows" => $count]);
+    return $apps;
   }
 
   public static function get_widget_details($widget_type) {

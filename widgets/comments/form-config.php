@@ -8,11 +8,16 @@
     <input type="checkbox" name="default_post" value="1"/><i></i>
   </label>
   <system-field class="field">
-    <label>For widget</label>
-    <select>      
+    <label for="for_widget">
+      For widget
+      <span>- only widgets with id are shown</span>
+    </label> 
+    <select name="for_widget" id="for_widget">      
       <option value=""></option>
       <option v-for="item in widgets" v-bind:value="item.id">{{ item.title }}</li>  
-    </select>    
+    </select>
+    
+    
   </system-field>
 </div>
 <script>
@@ -25,10 +30,12 @@
         widgets: function () {
           var widgets = [];
           System.ui.forms.uis_form.getLayoutWidgets().each(function (i, item) {
-            widgets.push({
-              title: item.dataset.widgetTitle,
-              id: item.dataset.widgetId
-            });
+            if (item.id) {
+              widgets.push({
+                title: item.dataset.widgetTitle,
+                id: item.dataset.widgetId
+              });
+            }
           });
 
           return widgets;
