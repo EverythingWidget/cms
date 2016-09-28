@@ -4,7 +4,7 @@ $data = $_REQUEST["data"];
 $tabs = EWCore::read_registry("ew/ui/components/link-chooser");
 ?>
 
-<div class="header-pane tabs-bar">
+<div class="header-pane tabs-bar thin">
   <h1 id="form-title">
     tr{Link Chooser}
   </h1>  
@@ -22,20 +22,18 @@ $tabs = EWCore::read_registry("ew/ui/components/link-chooser");
     ?>
   </ul>
 </div>
-<form id="link-chooser"  action="#" method="POST">
-  <div class="form-content tabs-bar no-footer">
-    <div class="tab-content">
-      <?php
-      foreach ($tabs as $id => $tab) {
-        if ($id == "content-chooser") {
-          echo "<div class='tab-pane active' id='{$id}'>{$tab["content"]}</div>";
-        }
-        else {
-          echo "<div class='tab-pane' id='{$id}'>{$tab["content"]}</div>";
-        }
+<form id="link-chooser" class="form-content tabs-bar no-footer"  action="#" method="POST">
+  <div class="tab-content">
+    <?php
+    foreach ($tabs as $id => $tab) {
+      if ($id == "content-chooser") {
+        echo "<div class='tab-pane active' id='{$id}'>{$tab["content"]}</div>";
       }
-      ?>
-    </div>
+      else {
+        echo "<div class='tab-pane' id='{$id}'>{$tab["content"]}</div>";
+      }
+    }
+    ?>
   </div>
 </form>
 

@@ -33,12 +33,27 @@
   </div>
 
   <div  class='card-header top-devider'>
-    <h1>Google Analytics</h1>
+    <h1>Google Services</h1>
   </div>
   <div class='card-content'>
+    <h2>Analytics</h2>
     <system-field class="field">
       <label>tr{Google analytics ID}</label>
       <input class="text-field" name="webroot/google-analytics-id" />
     </system-field>    
+  </div>
+  
+  <div class='card-content'>
+    <h2>reCAPTCHA</h2>
+
+    <system-field class="field">
+      <label>tr{Site key}</label>
+      <input class="text-field" name="webroot/recaptcha/site-key" />
+    </system-field>   
+
+    <system-field class="field">
+      <label>tr{Secret key}</label>
+      <input class="text-field" name="webroot/recaptcha/secret-key" />
+    </system-field>   
   </div>
 </div>

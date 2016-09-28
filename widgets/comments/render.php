@@ -1,8 +1,4 @@
 <form v-on:submit="postComment">
-  <h2 class="title">
-    Post Comment
-  </h2>
-
   <label class="field field-name">
     <input name="name" v-model="name"/>
     <span class="field-label">Name</span>
@@ -18,11 +14,12 @@
     <span class="field-label">Comment</span>
   </label>
 
-  <div class="field">
+  <div class="field recaptcha">
     <div id="g-recaptcha-{$widget_id}" class="g-recaptcha"></div>
   </div>
-  <div>
-    <button type="submit" v-bind:disabled="disablePosting">Post</button>
+  
+  <div class="field actions">
+    <button class="btn btn-submit" type="submit" v-bind:disabled="disablePosting">Post</button>
   </div>
 </form>
 
@@ -34,7 +31,7 @@ EWCore::call_api('admin/api/settings/read-settings', [
     'app_name' => 'ew-blog/site-key'
 ])['data']['ew-blog/site-key'];
 ?>';
-    
+
 
     post_comment_$widget_id_js = function () {
       if (siteKey === '') {
@@ -102,11 +99,16 @@ EWCore::call_api('admin/api/settings/read-settings', [
               _this.$data.name = '';
               _this.$data.email = '';
               _this.$data.content = '';
+              window.location.reload();
             }
           }
         }
       }
     });
+    var forWidget = document.querySelector('#<?= $widget_parameters['for_widget'] ?>');
+    var forWidgetData = window.ew_widget_data[forWidget.getAttribute('data-widget-id')];
+
+    console.log('<?= $widget_parameters['for_widget'] ?>',forWidgetData);
   })();
 </script>
 

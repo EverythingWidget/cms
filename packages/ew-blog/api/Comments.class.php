@@ -174,6 +174,8 @@ class Comments extends \ew\Module {
     $visibility = null;
     $repository = new CommentsRepository();
     $posts_repository = new PostsRepository();
+    
+    $original_id = $id;
 
     while ($comment_status === 0) {
       $post = $posts_repository->find_with_content_id($id);
@@ -202,11 +204,13 @@ class Comments extends \ew\Module {
         'date_updated'
     ]);
 
-    $query->where('content_id', '=', $id);
+    $query->where('content_id', '=', $original_id);
 
     if ($visibility) {
       $query->where('visibility', $visibility);
-    }
+    }    
+    
+    $query->orderBy('date_created','DESC');
 
     $collection_size = $query->get()->count();
 
@@ -239,7 +243,7 @@ class Comments extends \ew\Module {
               ],
               'content' => [
                   'tag'     => 'p',
-                  'content' => $comment->content
+                  'content' => nl2br($comment->content)
               ],
               'date'    => [
                   'tag'     => 'p',
@@ -250,7 +254,7 @@ class Comments extends \ew\Module {
     }
 
     $result->data = $comments_list;
-
+    
     return \ew\APIResponse::standard_response($_response, $result);
   }
 

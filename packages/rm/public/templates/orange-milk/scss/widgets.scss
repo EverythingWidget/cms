@@ -864,7 +864,7 @@
     .list-item {
       .list-item-cell {
         position: relative;
-        background-color: #B4BFB9;
+        background-color: $item-background-color;
         overflow: hidden;      
         height: 400px;
         max-width: 245px;        
@@ -873,11 +873,14 @@
         padding: 0;
         text-align: center;
         margin: 0 auto 30px;
-        box-shadow: 0 3px 3px rgba(0,0,0,.04), 0 6px 9px rgba(0,0,0,.1);
+        box-shadow:  0 1px 16px rgba(0,0,0,0.15),0 14px 16px rgba(0,0,0,0.12);
         color: #fff;
+        justify-content: space-between;
+        flex-direction: column;
+        display: flex;
 
         .date {           
-          background-color: $item-background-color;
+          /*background-color: rgba(255,255,255,.33);*/
           color: #fff;
           height: 160px;
           margin: 0;
@@ -916,13 +919,17 @@
         .item-link {
           line-height: 16px;
           padding: 8px 18px;
-          border: 1px solid rgba(0,0,0,.4);
-          border-radius: 3px;
-          white-space: nowrap;
-          max-width: 200px;
+          border: 2px solid #fff;
+          color: #fff;
+          border-radius: 18px;
+          white-space: nowrap;      
           overflow: hidden;
           display: inline-block;
-          margin: 0 auto;
+          margin: 0 20px 20px;
+          
+          &:hover {
+            background-color: rgba(255,255,255,.1);
+          }
         }
       }
     }
@@ -936,13 +943,13 @@
 
   @include list-footer();
 
-  &.comments {
+  &.post-comment {
     input, textarea {
       width: 80%;
       border: 2px solid $akcent-background-color;
       border-radius: 2px;
       outline: none;
-      padding: 5px 10px;
+      padding: 4px 8px;
       color: $font-color;
 
       &:focus {
@@ -957,6 +964,14 @@
     .field {
       display: block;
       margin: 15px 0;
+
+      &.recaptcha {
+        float: left;
+      }
+
+      &.actions {
+        float: right;
+      }
     }
 
     .field-label {
@@ -967,6 +982,69 @@
     .g-recaptcha {
       display: flex;
       justify-content: center;
+    }
+
+    .btn-submit {
+      margin: 0 auto;
+      float: none;
+      display: block;
+    }
+  }
+
+  &.comments-list {
+
+    @media (min-width: 320px) {
+      margin: 0 50px 15px !important;
+    }
+
+    @media (min-width: 768px) {
+      margin: 0 60px 20px !important;
+    }
+
+    @media (min-width: 992px) {
+      margin: 0 80px 30px !important;
+    }
+
+    padding: 0 !important;
+    font-size: .76em;
+
+    .list-content {
+      margin: 0;
+    }
+
+    .list-item {
+      padding: 15px 18px;
+      margin: 0 0 20px;
+      width: auto;
+      border-radius: 6px;
+      background-color: #fff;
+      /*box-shadow: 0 1px 16px rgba(0,0,0,0.08),0 14px 16px rgba(0,0,0,0.05);*/ 
+      border: 2px solid #eee;
+
+      p {
+        margin: 0;
+      }
+
+      .name {
+        margin: 0;
+        font-size: 1.2em;
+        color: $font-akcent-color;
+      }
+
+      .date {
+        margin: 5px 0;
+        font-size: .8em;
+        color: $font-color-light;
+      }
+    }
+
+    .list-footer {
+      margin: 0 -15px;
+      padding: 10px 5px 0;     
+      border-top: 2px solid #ccc;
+      border-radius: 0;
+      height: auto;
+      background-color: transparent;
     }
   }
 

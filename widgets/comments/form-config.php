@@ -33,7 +33,7 @@
             if (item.id) {
               widgets.push({
                 title: item.dataset.widgetTitle,
-                id: item.dataset.widgetId
+                id: item.id
               });
             }
           });

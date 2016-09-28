@@ -25,12 +25,11 @@
       //$("#documents-up-btn").click($.proxy(this.preCategory, this));
       this.bUp = EW.addAction("tr{Up}", $.proxy(this.preCategory, this), {
         float: "right"
-      },
-              "content-chooser-actions-bar").hide();
+      }, "content-chooser-actions-bar").hide();
 
       this.bSelect = EW.addActionButton({
-        text: "",
-        class: "btn-float btn-success icon-ok pos-se",
+        text: "<i class='icon-ok'></i>",
+        class: "btn-float btn-success pos-se",
         parent: parentDialog,
         handler: function () {
           _this.selectContent(null);
