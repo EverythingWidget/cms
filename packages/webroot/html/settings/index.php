@@ -36,7 +36,7 @@
     <h1>Google Services</h1>
   </div>
   <div class='card-content'>
-    <h2>Analytics</h2>
+    <h3>Analytics</h3>
     <system-field class="field">
       <label>tr{Google analytics ID}</label>
       <input class="text-field" name="webroot/google-analytics-id" />
@@ -44,7 +44,7 @@
   </div>
   
   <div class='card-content'>
-    <h2>reCAPTCHA</h2>
+    <h3>reCAPTCHA</h3>
 
     <system-field class="field">
       <label>tr{Site key}</label>

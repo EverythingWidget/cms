@@ -4,7 +4,7 @@
   </div>
 
   <div class='card-content'>
-    <h2>Google reCAPTCHA</h2>
+    <h3>Google reCAPTCHA</h3>
 
     <system-field class="field">
       <label>tr{Site key}</label>
@@ -18,7 +18,7 @@
   </div>
 
   <div class='card-content'>
-    <h2>Comments Feature</h2>
+    <h3>Comments Feature</h3>
 
     <system-field class="field">
       <label>tr{Default comments feature status}</label>
