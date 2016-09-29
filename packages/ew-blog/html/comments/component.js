@@ -12,6 +12,7 @@ function CommentsComponent(scope, state) {
     card_title: 'Comments',
     url: 'api/ew-blog/comments/',
     filter: {
+      include: ['ewContent'],
       where: {
         visibility: {
           not: 'confirmed'
@@ -36,10 +37,12 @@ CommentsComponent.prototype.init = function () {
     data: component.data,
     methods: {
       confirmComment: component.confirmComment.bind(component),
-      deleteComment: component.deleteComment.bind(component)
+      deleteComment: component.deleteComment.bind(component),
+      reloadComments: function () {
+        component.vue.$broadcast('refresh');
+      }
     }
   });
-
 };
 
 CommentsComponent.prototype.start = function () {

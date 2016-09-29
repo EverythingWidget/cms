@@ -37,4 +37,8 @@ class ew_blog_comments extends \Illuminate\Database\Eloquent\Model {
       ]
   ];
 
+  public function ewContent() {
+    return $this->belongsTo('admin\ew_contents', 'content_id', 'id');
+  }
+
 }

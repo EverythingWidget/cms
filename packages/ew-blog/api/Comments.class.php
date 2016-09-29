@@ -87,7 +87,6 @@ class Comments extends \ew\Module {
 
     while ($comments === 0) {
       $post = $repository->find_with_content_id($content_id);
-
       // if parent content is not a post, then ignore it and assume commenting is disabled
       if (!$post->data) {
         $post->error = 400;
@@ -96,7 +95,22 @@ class Comments extends \ew\Module {
         return \ew\APIResponse::standard_response($_response, $post);
       }
 
+      if (isset($post->data->comments) && $post->data->comments !== 0) {
+        break;
+      }
+
       if ($post->data->content->parent_id === 0) {
+        $default_comments_feature = \EWCore::call_api('admin/api/settings/read-settings', [
+                    'app_name' => 'ew-blog/comments-feature'
+                ])['data']['ew-blog/comments-feature'];
+
+        if (isset($default_comments_feature)) {
+          $post->data->comments = intval($default_comments_feature);
+        }
+        else {
+          $post->data->comments = 1;
+        }
+
         break;
       }
 
@@ -161,8 +175,8 @@ class Comments extends \ew\Module {
     $url = 'https://www.google.com/recaptcha/api/siteverify';
 
     $secret = \EWCore::call_api('admin/api/settings/read-settings', [
-                'app_name' => 'ew-blog/secret-key'
-            ])['data']['ew-blog/secret-key'];
+                'app_name' => 'webroot/google/recaptcha/secret-key'
+            ])['data']['webroot/google/recaptcha/secret-key'];
 
     $response = file_get_contents("$url?secret=" . $secret . "&response=" . $_input->response . "&remoteip=" . $_SERVER['REMOTE_ADDR']);
 
@@ -174,7 +188,7 @@ class Comments extends \ew\Module {
     $visibility = null;
     $repository = new CommentsRepository();
     $posts_repository = new PostsRepository();
-    
+
     $original_id = $id;
 
     while ($comment_status === 0) {
@@ -183,8 +197,23 @@ class Comments extends \ew\Module {
       if (!$post->data) {
         break;
       }
+      
+      if (isset($post->data->comments) && $post->data->comments !== 0) {
+        break;
+      }
 
       if ($post->data->content->parent_id === 0) {
+        $default_comments_feature = \EWCore::call_api('admin/api/settings/read-settings', [
+                    'app_name' => 'ew-blog/comments-feature'
+                ])['data']['ew-blog/comments-feature'];
+
+        if (isset($default_comments_feature)) {
+          $post->data->comments = intval($default_comments_feature);
+        }
+        else {
+          $post->data->comments = 1;
+        }
+
         break;
       }
 
@@ -208,9 +237,9 @@ class Comments extends \ew\Module {
 
     if ($visibility) {
       $query->where('visibility', $visibility);
-    }    
-    
-    $query->orderBy('date_created','DESC');
+    }
+
+    $query->orderBy('date_created', 'DESC');
 
     $collection_size = $query->get()->count();
 
@@ -254,7 +283,7 @@ class Comments extends \ew\Module {
     }
 
     $result->data = $comments_list;
-    
+
     return \ew\APIResponse::standard_response($_response, $result);
   }
 

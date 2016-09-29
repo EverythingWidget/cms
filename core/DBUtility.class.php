@@ -54,7 +54,7 @@ class DBUtility {
 
     if (is_array($filter['order'])) {
       foreach ($filter['order'] as $value) {
-        $query->orderBy($value);
+        $query->orderBy($value,'desc');
       }
     }
 

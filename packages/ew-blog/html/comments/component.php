@@ -1,9 +1,16 @@
 <system-ui-view name="comments-card" class="card card-medium z-index-1">
   <div class="card-header">
     <h1> {{ card_title }} </h1>
+
+    <div class="card-title-action-right">
+      <button class="btn btn-circle" v-on:click="reloadComments()"><i class="icon-cw-1"></i></button>
+    </div>
+
   </div>
   <div class="card-content list">
-    <ew-pagination v-bind:list.sync="comments" v-bind:filter="filter"></ew-pagination>
+    <div class="card-control-bar">
+      <ew-pagination v-bind:list.sync="comments" v-bind:filter="filter"></ew-pagination>
+    </div>
 
     <system-spirit animations="liveHeight,verticalShift" vertical-shift="list-item">
       <ul class="list items">
@@ -14,6 +21,9 @@
           <p>
             <strong>{{ comment.name }}</strong> - 
             {{ comment.content }}
+          </p>
+          <p class="subheading">
+            {{ comment.ew_content.title }}
           </p>
           <p class="actions">
             <button class="btn btn-text btn-circle btn-success" type="button" v-on:click="confirmComment(comment.id)">

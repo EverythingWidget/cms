@@ -111,7 +111,8 @@ class Posts extends \ew\Module {
     $query = (new PostsRepository())->new_select(['ew_blog_posts.*']);
 
     $query->with('content')->join('ew_contents', 'ew_blog_posts.content_id', '=', 'ew_contents.id');
-    $query->orderBy('ew_contents.date_modified', 'desc');
+    $query->orderBy('date_published', 'desc');
+//    $query->orderBy('ew_contents.date_modified', 'desc');
 
     $result = New \ew\Result;
     

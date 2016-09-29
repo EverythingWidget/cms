@@ -4,25 +4,11 @@
   </div>
 
   <div class='card-content'>
-    <h3>Google reCAPTCHA</h3>
-
-    <system-field class="field">
-      <label>tr{Site key}</label>
-      <input class="text-field" name="ew-blog/site-key" />
-    </system-field>   
-
-    <system-field class="field">
-      <label>tr{Secret key}</label>
-      <input class="text-field" name="ew-blog/secret-key" />
-    </system-field>   
-  </div>
-
-  <div class='card-content'>
     <h3>Comments Feature</h3>
 
     <system-field class="field">
       <label>tr{Default comments feature status}</label>
-      <select class="text-field" id="ew-blog/comments" name="ew-blog/comments" value="">
+      <select class="text-field" id="ew-blog/comments-feature" name="ew-blog/comments-feature" value="">
         <option v-for="option in options" v-bind:value="option.value" >{{ option.title }}</option>
       </select>
     </system-field> 
@@ -35,10 +21,6 @@
       el: '#ew-blog-settings',
       data: {
         options: [
-          {
-            value: 0,
-            title: 'Inherit'
-          },
           {
             value: 1,
             title: 'Only confirmed comments'

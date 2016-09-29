@@ -11,6 +11,7 @@ function PostsComponent(scope, state) {
     tab: null,
     card_title: 'Posts',
     compact_view: false,
+    filter: {},
     posts: {
       url: 'api/ew-blog/posts/included-contents',
       page_size: 9
@@ -60,7 +61,10 @@ PostsComponent.prototype.init = function () {
           return item.value === post.comments;
         })[0];
       },
-      showPost: component.showPost.bind(component)
+      showPost: component.showPost.bind(component),
+      reload: function () {
+        component.vue.$broadcast('refresh');
+      }
     }
   });
 

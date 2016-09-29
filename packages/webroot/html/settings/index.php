@@ -48,12 +48,12 @@
 
     <system-field class="field">
       <label>tr{Site key}</label>
-      <input class="text-field" name="webroot/recaptcha/site-key" />
+      <input class="text-field" name="webroot/google/recaptcha/site-key" />
     </system-field>   
 
     <system-field class="field">
       <label>tr{Secret key}</label>
-      <input class="text-field" name="webroot/recaptcha/secret-key" />
+      <input class="text-field" name="webroot/google/recaptcha/secret-key" />
     </system-field>   
   </div>
 </div>

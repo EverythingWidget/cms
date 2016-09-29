@@ -28,8 +28,8 @@
   (function () {
     var siteKey = '<?=
 EWCore::call_api('admin/api/settings/read-settings', [
-    'app_name' => 'ew-blog/site-key'
-])['data']['ew-blog/site-key'];
+    'app_name' => 'webroot/google/recaptcha/site-key'
+])['data']['webroot/google/recaptcha/site-key'];
 ?>';
 
 

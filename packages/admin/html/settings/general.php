@@ -59,17 +59,21 @@
     SettingsStateHandler.prototype.loadAppsGeneralSettings = function (apps) {
       var settingsCard = $("#settings-cards");
       settingsCard.empty();
+      $.get('api/admin/settings/read-settings', function (response) {
+        success(response.data);
+      });
 
-      for (var app in apps) {
-        if (!apps[app].url) {
-          continue;
+      function success(data) {
+        for (var app in apps) {
+          if (!apps[app].url) {
+            continue;
+          }
+
+          $.get(apps[app].url, function (response) {
+            settingsCard.append(response);
+            EW.setFormData('#settings-cards', data);
+          });
         }
-
-        $.get(apps[app].url, function (response) {
-          settingsCard.append(response);
-
-          EW.setFormData("#settings-cards",<?= json_encode(EWCore::call_api("admin/api/settings/read-settings")['data']) ?>);
-        });
       }
     };
 
