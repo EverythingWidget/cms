@@ -1,3 +1,14 @@
+<?php
+$is_allowed = EWCore::call_api('ew-blog/api/comments/is-commenting-allowed', [
+            'id' => $_REQUEST['_method_name']
+        ])['data']['is_allowed'];
+
+if (!$is_allowed) {
+  echo '<p> Commenting is disabled </p>';
+  return;
+}
+?>
+
 <form v-on:submit="postComment">
   <label class="field field-name">
     <input name="name" v-model="name"/>
@@ -17,7 +28,7 @@
   <div class="field recaptcha">
     <div id="g-recaptcha-{$widget_id}" class="g-recaptcha"></div>
   </div>
-  
+
   <div class="field actions">
     <button class="btn btn-submit" type="submit" v-bind:disabled="disablePosting">Post</button>
   </div>
@@ -105,10 +116,10 @@ EWCore::call_api('admin/api/settings/read-settings', [
         }
       }
     });
-    var forWidget = document.querySelector('#<?= $widget_parameters['for_widget'] ?>');
-    var forWidgetData = window.ew_widget_data[forWidget.getAttribute('data-widget-id')];
-
-    console.log('<?= $widget_parameters['for_widget'] ?>',forWidgetData);
+    /*var forWidget = document.querySelector('#<?= $widget_parameters['for_widget'] ?>');
+     var forWidgetData = window.ew_widget_data[forWidget.getAttribute('data-widget-id')];
+     
+     console.log('<?= $widget_parameters['for_widget'] ?>',forWidgetData);*/
   })();
 </script>
 

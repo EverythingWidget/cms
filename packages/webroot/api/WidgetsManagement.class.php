@@ -824,6 +824,10 @@ class WidgetsManagement extends \ew\Module {
     return self::$widget_data;
   }
 
+  private static function get_widget_data_by_id($id) {
+    return self::$widget_data[$id];
+  }
+
   public static function generate_view($uisId, $index = 0, $no_data = false) {
     $RESULT_HTML = '';
     $db = \EWCore::get_db_PDO();

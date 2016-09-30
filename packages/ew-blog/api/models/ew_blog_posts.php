@@ -32,7 +32,9 @@ class ew_blog_posts extends \Illuminate\Database\Eloquent\Model {
           'required'
       ]
   ];
-  protected $casts = [];
+  protected $casts = [
+      'comments' => 'integer'
+  ];
 
   public function __construct(array $attributes = []) {
     require_once EW_PACKAGES_DIR . '/admin/api/models/ew_contents.php';

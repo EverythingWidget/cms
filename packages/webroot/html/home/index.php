@@ -62,7 +62,7 @@ if (file_exists($template_php)) {
   'src' => 'public/rm/' . $_REQUEST["_uis_template"] . '/template.js'
   ]);
   } */
-
+//die(webroot\WidgetsManagement::get_html_title());
 $html_keywords_string = webroot\WidgetsManagement::get_html_title();
 $HTML_TITLE = ($current_path === '/' || !$current_path) ? $website_title : $html_keywords_string;
 $HTML_KEYWORDS = webroot\WidgetsManagement::get_html_keywords();

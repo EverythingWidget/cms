@@ -36,6 +36,7 @@ class ew_contents extends \Illuminate\Database\Eloquent\Model {
   ]];
   protected $casts = [
       'content_fields' => 'array',
+      'parent_id'      => 'integer'
   ];
 
   public function __construct(array $attributes = []) {

@@ -26,7 +26,10 @@ class ew_blog_comments extends \Illuminate\Database\Eloquent\Model {
       'visibility'
   ];
   public static $rules = [];
-  protected $casts = [];
+  protected $casts = [
+      'parent_id'    => 'integer',
+      'commenter_id' => 'integer'
+  ];
 
   const CREATED_AT = 'date_created';
   const UPDATED_AT = 'date_updated';

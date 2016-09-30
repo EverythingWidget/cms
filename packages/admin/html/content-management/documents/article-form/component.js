@@ -30,8 +30,9 @@ function Article() {
       });
     }}).hide();
 
-  this.bEditAndClose = EW.addActivity({title: "tr{Save and Close}",
-    defaultClass: "btn-success pull-right",
+  this.bEditAndClose = EW.addActivity({
+    title: "<i class='icon-check'></i>",
+    defaultClass: "btn-text btn-success pull-right",
     verb: 'PUT',
     activity: 'admin/api/content-management/contents',
     parameters: function () {
@@ -79,8 +80,8 @@ function Article() {
       loader.dispose();
     }}).hide();
 
-  this.bDelete = EW.addActivity({title: "tr{Delete}",
-    defaultClass: "btn-danger",
+  this.bDelete = EW.addActivity({title: "<i class='icon-trash-empty'></i>",
+    defaultClass: "btn-danger btn-text",
     verb: 'DELETE',
     activity: "admin/api/content-management/contents",
     parameters: function () {

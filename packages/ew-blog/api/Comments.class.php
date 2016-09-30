@@ -65,7 +65,8 @@ class Comments extends \ew\Module {
         'api/confirm-update',
         'api/options',
         'api/confirm-capcha',
-        'api/feeder'
+        'api/feeder',
+        'api/is-commenting-allowed'
     ]);
   }
 
@@ -183,6 +184,45 @@ class Comments extends \ew\Module {
     return json_decode($response, true);
   }
 
+  public function is_commenting_allowed($_response, $id) {
+    $comment_status = 0;
+    $posts_repository = new PostsRepository();
+
+    while ($comment_status === 0) {
+      $post = $posts_repository->find_with_content_id($id);
+
+      if (isset($post->data->comments) && $post->data->comments !== 0) {
+        $comment_status = $post->data->comments;
+        break;
+      }
+
+      if (!$post->data || $post->data->content->parent_id === 0) {
+        $default_comments_feature = \EWCore::call_api('admin/api/settings/read-settings', [
+                    'app_name' => 'ew-blog/comments-feature'
+                ])['data']['ew-blog/comments-feature'];
+
+        if (isset($default_comments_feature)) {
+          $comment_status = intval($default_comments_feature);
+        }
+        else {
+          $comment_status = 1;
+        }
+
+        break;
+      }
+
+      $id = $post->data->content->parent_id;
+      $comment_status = $post->data->comments;
+    }
+
+    if ($comment_status === -1) {
+      return ['is_allowed' => false];
+    }
+    else {
+      return ['is_allowed' => true];
+    }
+  }
+
   public function feeder($_response, $id, $page = 0, $page_size = 30, $order_by = 'DESC') {
     $comment_status = 0;
     $visibility = null;
@@ -197,8 +237,9 @@ class Comments extends \ew\Module {
       if (!$post->data) {
         break;
       }
-      
+
       if (isset($post->data->comments) && $post->data->comments !== 0) {
+        $comment_status = $post->data->comments;
         break;
       }
 
@@ -208,10 +249,10 @@ class Comments extends \ew\Module {
                 ])['data']['ew-blog/comments-feature'];
 
         if (isset($default_comments_feature)) {
-          $post->data->comments = intval($default_comments_feature);
+          $comment_status = intval($default_comments_feature);
         }
         else {
-          $post->data->comments = 1;
+          $comment_status = 1;
         }
 
         break;
@@ -221,7 +262,7 @@ class Comments extends \ew\Module {
       $comment_status = $post->data->comments;
     }
 
-    if ($post->data->comments === 1) {
+    if ($comment_status === 1 || $comment_status === -1) {
       $visibility = 'confirmed';
     }
 
