@@ -1,8 +1,4 @@
 <?php
-$is_allowed = EWCore::call_api('ew-blog/api/comments/is-commenting-allowed', [
-            'id' => $_REQUEST['_method_name']
-        ])['data']['is_allowed'];
-
 if (!$is_allowed) {
   echo '<p> Commenting is disabled </p>';
   return;
@@ -69,7 +65,7 @@ EWCore::call_api('admin/api/settings/read-settings', [
         email: '',
         commenter_id: '',
         content: '',
-        content_id: '<?= $_REQUEST['_method_name'] ?>',
+        content_id: '<?= $content_id ?>',
         recaptcha: null,
         disablePosting: true
       },
@@ -96,6 +92,11 @@ EWCore::call_api('admin/api/settings/read-settings', [
         postComment: function (event) {
           event.preventDefault();
           var _this = this;
+          
+          if(!_this.$data.content_id) {
+            return console.error('No `content_id` is specified for this comment widget');
+          }
+          
           _this.$data.recaptcha = grecaptcha.getResponse();
 
           $.ajax({

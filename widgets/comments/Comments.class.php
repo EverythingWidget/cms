@@ -30,6 +30,16 @@ class Comments implements Widget {
   }
 
   public function render($widget_parameters, $widget_id, $style_id, $style_class) {
+    $content_id = $_REQUEST['_method_name'];
+    
+    if (boolval($widget_parameters['default_post'])) {
+      $content_id = $_REQUEST['_method_name'];
+    }
+
+    $is_allowed = \EWCore::call_api('ew-blog/api/comments/is-commenting-allowed', [
+                'id' => $_REQUEST['_method_name']
+            ])['data']['is_allowed'];
+
     ob_start();
     include 'render.php';
     return ob_get_clean();

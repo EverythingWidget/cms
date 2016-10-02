@@ -1939,7 +1939,8 @@ label {
   color: #777;
 
   > span {
-    font-weight: 300;
+    /*font-weight: 300;*/
+    line-height: inherit;
     color: inherit;
   }
 }
@@ -2390,7 +2391,7 @@ textarea.text-field {
   }
 
   tr {
-    color: #000;
+    color: #444;
     outline: none;
 
     &:hover td {
@@ -2422,8 +2423,7 @@ textarea.text-field {
 .data td {
   min-height: 32px;
   line-height: 32px;
-  padding: 4px 10px;
-  color: #3a3a3a;
+  padding: 4px 10px;  
   border: 0 solid transparent;
   border-width: 1px 0;
   font-weight: 500;
@@ -3229,51 +3229,6 @@ system-input-json {
 .options-panel {
   overflow: hidden;
   min-height: 50px;
-}
-
-.checkbox {
-  overflow:hidden;
-  display:block;
-  text-align: right;
-
-  input {
-    position: absolute;
-    visibility: hidden;
-
-    & + i {
-      background-color: #ccc;
-      position: relative;
-      width: 52px;
-      height: 30px;
-      border-radius: 15px;
-      margin-left: 15px;
-      transition: all .2s;
-      float: right;
-
-      &:after {
-        transition: all .2s;
-        position: absolute;
-        left: 0;
-        content: ' ';
-        margin: 2px;
-        width: 26px;
-        height: 26px;
-        background-color: #fff;
-        border-radius: 100%;
-      }
-    }
-
-    &:checked {
-      & + i {
-        background-color: #00BBEE;
-
-        &:after {
-          background-color: #fff;
-          left: calc(50% - 4px);
-        }
-      }
-    }
-  }
 }
 
 system-ui-view {

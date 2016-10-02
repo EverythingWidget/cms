@@ -11,6 +11,7 @@ function CommentsComponent(scope, state) {
     tab: null,
     card_title: 'Comments',
     url: 'api/ew-blog/comments/',
+    show: 'new',
     filter: {
       include: ['ewContent'],
       where: {
@@ -40,6 +41,20 @@ CommentsComponent.prototype.init = function () {
       deleteComment: component.deleteComment.bind(component),
       reloadComments: function () {
         component.vue.$broadcast('refresh');
+      }
+    },
+    watch: {
+      show: function (value, oldValue) {
+        switch (value) {
+          case 'confirmed':
+            component.data.filter.where.visibility = 'confirmed';
+            break;
+          case 'new':
+            component.data.filter.where.visibility = {not: 'confirmed'};
+            break;
+        }
+
+        this.reloadComments();
       }
     }
   });

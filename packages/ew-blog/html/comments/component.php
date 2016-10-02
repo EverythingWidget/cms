@@ -8,7 +8,19 @@
 
   </div>
   <div class="card-content list">
-    <div class="card-control-bar">
+    <div class="card-control-bar" >
+      <div class="radio-groups">
+        <label class="radio">          
+          <input type="radio" v-model="show" value="new"/><i></i>
+          <span>New</span>
+        </label>
+
+        <label class="radio">          
+          <input type="radio" v-model="show" value="confirmed"/><i></i>
+          <span>Confirmed</span>
+        </label>
+      </div>
+
       <ew-pagination v-bind:list.sync="comments" v-bind:filter="filter"></ew-pagination>
     </div>
 
@@ -26,7 +38,7 @@
             {{ comment.ew_content.title }}
           </p>
           <p class="actions">
-            <button class="btn btn-text btn-circle btn-success" type="button" v-on:click="confirmComment(comment.id)">
+            <button class="btn btn-text btn-circle btn-success" type="button" v-if="show === 'new'" v-on:click="confirmComment(comment.id)">
               <i class="icon-check" ></i>
             </button>
             <button class="btn btn-text btn-circle btn-danger" type="button" v-on:click="deleteComment(comment.id)">

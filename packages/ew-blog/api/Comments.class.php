@@ -80,14 +80,16 @@ class Comments extends \ew\Module {
       return \ew\APIResponse::standard_response($_response, $result);
     }
 
-    $comments = 0;
+    $comments_status = 0;
     $repository = new PostsRepository();
     $content_id = $_input->content_id;
 
     //$original_post = $post = $repository->find_with_content_id($content_id);
 
-    while ($comments === 0) {
+    while ($comments_status === 0) {
       $post = $repository->find_with_content_id($content_id);
+      $comments = intval($post->data->comments);
+      
       // if parent content is not a post, then ignore it and assume commenting is disabled
       if (!$post->data) {
         $post->error = 400;
@@ -96,7 +98,7 @@ class Comments extends \ew\Module {
         return \ew\APIResponse::standard_response($_response, $post);
       }
 
-      if (isset($post->data->comments) && $post->data->comments !== 0) {
+      if (isset($comments) && $comments !== 0) {
         break;
       }
 
@@ -116,10 +118,10 @@ class Comments extends \ew\Module {
       }
 
       $content_id = $post->data->content->parent_id;
-      $comments = $post->data->comments;
+      $comments_status = $comments;
     }
 
-    if ($post->data->comments === -1) {
+    if ($comments_status === -1) {
       $post->error = 400;
       $post->message = 'commenting is disabled on this post';
 
@@ -190,8 +192,9 @@ class Comments extends \ew\Module {
 
     while ($comment_status === 0) {
       $post = $posts_repository->find_with_content_id($id);
+      $comments = intval($post->data->comments);
 
-      if (isset($post->data->comments) && $post->data->comments !== 0) {
+      if (isset($comments) && $comments !== 0) {
         $comment_status = $post->data->comments;
         break;
       }
@@ -212,7 +215,7 @@ class Comments extends \ew\Module {
       }
 
       $id = $post->data->content->parent_id;
-      $comment_status = $post->data->comments;
+      $comment_status = $comments;
     }
 
     if ($comment_status === -1) {
@@ -233,13 +236,14 @@ class Comments extends \ew\Module {
 
     while ($comment_status === 0) {
       $post = $posts_repository->find_with_content_id($id);
+      $comments = intval($post->data->comments);
 
       if (!$post->data) {
         break;
       }
 
-      if (isset($post->data->comments) && $post->data->comments !== 0) {
-        $comment_status = $post->data->comments;
+      if (isset($comments) && $comments !== 0) {
+        $comment_status = $comments;
         break;
       }
 
@@ -259,7 +263,7 @@ class Comments extends \ew\Module {
       }
 
       $id = $post->data->content->parent_id;
-      $comment_status = $post->data->comments;
+      $comment_status = $comments;
     }
 
     if ($comment_status === 1 || $comment_status === -1) {
