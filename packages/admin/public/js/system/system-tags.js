@@ -2,8 +2,7 @@
 
 //  polyfill the CustomEvent() constructor functionality in Internet Explorer 9 and higher 
 (function () {
-
-  if (typeof window.CustomEvent === "function")
+  if (typeof window.CustomEvent === 'function')
     return false;
 
   function CustomEvent(event, params) {
@@ -180,7 +179,7 @@
     }
   };
 
-  xtag.register("system-list", SystemList);
+  xtag.register('system-list', SystemList);
 
   // ------ //
 
@@ -294,7 +293,7 @@
     events: {}
   };
 
-  xtag.register("system-float-menu", FloatMenu);
+  xtag.register('system-float-menu', FloatMenu);
 
   // ------ //
 
@@ -363,7 +362,7 @@
     }
   };
 
-  xtag.register("system-ui-view", SystemUITemplate);
+  xtag.register('system-ui-view', SystemUITemplate);
 
   // ------ //
 
@@ -537,7 +536,7 @@
     }
   };
 
-  xtag.register("system-sortable-list", SortableList);
+  xtag.register('system-sortable-list', SortableList);
 
   // ------ //
 
@@ -591,7 +590,7 @@
     }
   };
 
-  xtag.register("system-button-switch", SwitchButton);
+  xtag.register('system-button-switch', SwitchButton);
 
   // ------ //
 

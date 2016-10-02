@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="public/admin/css/simple-slider.css"  >  
 <link rel="stylesheet" href="public/admin/css/base.css"  type="text/css">
 <link rel="stylesheet" href="public/admin/css/theme/ew/theme.css"  type="text/css">
-<link rel="stylesheet" href="public/admin/js/ContentStrike/content-tools.min.css">
+<link rel="stylesheet" href="public/admin/js/content-strike/content-tools.min.css">
 
 <script>
 
@@ -60,7 +60,7 @@
 <script src="public/admin/js/lib/floatlabels.min.js" defer></script>
 
 <script src="public/admin/js/lib/bootstrap.js" defer></script>
-<script src="public/admin/js/ContentStrike/content-tools.js" defer></script>
+<script src="public/admin/js/content-strike/content-tools.js" defer></script>
 
 <script src="public/admin/js/lib/ewscript.js"></script>      
 <script src="public/admin/js/lib/simple-slider.js"></script>
