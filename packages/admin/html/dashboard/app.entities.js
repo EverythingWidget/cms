@@ -186,4 +186,4 @@
     })(ContentTools.Tool);
   }
 
-})(System, EW);
+})(EW);

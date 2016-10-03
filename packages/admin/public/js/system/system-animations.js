@@ -1,4 +1,4 @@
-/* global TweenLite, System */
+/* global TweenLite */
 
 (function () {
   Vue.transition('slide', {
@@ -73,7 +73,7 @@
 //        rotationX: 0,
 //        z: 0,
         ease: 'Power3.easeOut',
-        clearProps:'y',
+        clearProps: 'y',
         onComplete: function () {
           done();
         }
@@ -87,7 +87,7 @@
 
 })();
 
-(function (System, TweenLite) {
+(function (TweenLite) {
   System.spiritAnimations = {
     CONFIG: {
       baseDuration: 0.4,
@@ -518,4 +518,4 @@
     timeline.play(0);
   };
 
-})(System, TweenLite);
+})(TweenLite);

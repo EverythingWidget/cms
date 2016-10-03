@@ -1,6 +1,6 @@
 /* global System, Vue, EW */
 
-(function (System) {
+(function () {
   System.services.app_service = {
     loading_app: false
   };
@@ -275,4 +275,4 @@
     }
   };
 
-})(System);
+})();

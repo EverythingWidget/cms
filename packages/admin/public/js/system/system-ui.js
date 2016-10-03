@@ -1,7 +1,7 @@
 /* global System, TweenLite */
 
-(function (system, tween) {
-  system.UI = system.ui = new SystemUI();
+(function (tween) {
+  System.UI = System.ui = new SystemUI();
 
   /**
    * System ui
@@ -184,7 +184,7 @@
 
   SystemUI.prototype.createModal = function (ori, text) {
     var lockPane;
-    var modal = system.UI.clone(system.UI.COMPONENT_STRUCTURE);
+    var modal = System.UI.clone(System.UI.COMPONENT_STRUCTURE);
     modal.close = function () {
 
     };
@@ -203,9 +203,9 @@
     var origin = ori || document.activeElement;
 
     var loadModal = setTimeout(function () {
-      lockPane = system.ui.lock(document.getElementsByClassName("app-pane")[0]);
+      lockPane = System.ui.lock(document.getElementsByClassName("app-pane")[0]);
       document.getElementsByTagName("body")[0].appendChild(modal.el);
-      system.ui.animation.transform({
+      System.ui.animation.transform({
         from: loader.el,
         to: modal.el,
         el: modal.el,
@@ -220,7 +220,7 @@
 
     }, 1000);
 
-    var loader = system.UI.animation.toLoader(origin, "btn-loader");
+    var loader = System.UI.animation.toLoader(origin, "btn-loader");
     loader.on("cancel", function () {
       clearTimeout(loadModal);
     });
@@ -228,7 +228,7 @@
     //origin.style.opacity = "0";
     modal.el.addEventListener("click", function () {
       lockPane.dispose();
-      system.UI.animation.scaleTransform({
+      System.UI.animation.scaleTransform({
         from: modal.el,
         to: origin,
         time: .6,
@@ -247,10 +247,11 @@
    */
   SystemUI.prototype.lock = function (conf, t) {
     var _this = this;
-    t = t || system.UI.DEFAULTS.animationDuration;
+    t = t || System.UI.DEFAULTS.animationDuration;
     var sourceRect = conf.element.getBoundingClientRect();
     var ss = window.getComputedStyle(conf.element);
     var lockPane = document.createElement('div');
+    lockPane.__ui_disposed = false;
     lockPane.__ui_neutral = true;
     lockPane.className = 'lock-pane';
     lockPane.style.position = 'fixed';
@@ -282,6 +283,10 @@
 
 
     lockPane.dispose = function (fast) {
+      if (lockPane.__ui_disposed) {
+        return;
+      }
+
       if (conf.akcent) {
         tween.to(akcent, fast ? 0 : t, {
           transform: 'scale(.5)',
@@ -294,6 +299,7 @@
         opacity: "0",
         onComplete: function () {
           lockPane.parentNode.removeChild(lockPane);
+          lockPane.__ui_disposed = true;
         }
       });
 
@@ -304,7 +310,7 @@
 
   SystemUI.prototype.animations = SystemUI.prototype.Animation = {
     transformBetween: function (conf) {
-      var time = conf.time || system.UI.DEFAULTS.animationDuration;
+      var time = conf.time || System.UI.DEFAULTS.animationDuration;
       var sourceRect = conf.from.getBoundingClientRect();
       var distRect = conf.to.getBoundingClientRect();
       var ss = window.getComputedStyle(conf.from);
@@ -335,7 +341,7 @@
       });
     },
     slideOut: function (conf) {
-      var t = conf.time || system.UI.DEFAULTS.animationDuration,
+      var t = conf.time || System.UI.DEFAULTS.animationDuration,
               sourceRect = conf.element.getBoundingClientRect(),
               direction = conf.to;
 
@@ -352,7 +358,7 @@
       });
     },
     slideIn: function (conf) {
-      var t = conf.time || system.UI.DEFAULTS.animationDuration,
+      var t = conf.time || System.UI.DEFAULTS.animationDuration,
               sourceRect = conf.element.getBoundingClientRect(),
               direction = conf.from,
               transformBox = document.createElement("div"),
@@ -378,7 +384,7 @@
 
       conf.element.style.visibility = "hidden";
 
-      system.UI.body.appendChild(transformBox);
+      System.UI.body.appendChild(transformBox);
 
       tween.fromTo(transformBox, t, {
         width: sourceRect.width,
@@ -411,7 +417,7 @@
       });
     },
     blastTo: function (conf) {
-      var t = conf.time || system.UI.DEFAULTS.animationDuration;
+      var t = conf.time || System.UI.DEFAULTS.animationDuration;
       //var sourceRect = conf.from.getBoundingClientRect();
       //var sourceRect = conf.fromPoint;
       var sourceRect = conf.fromPoint;
@@ -503,7 +509,7 @@
       });
     },
     transform: function (options) {
-      var duration = options.time || system.UI.DEFAULTS.animationDuration;
+      var duration = options.time || System.UI.DEFAULTS.animationDuration;
       var sourceRect = options.from.getBoundingClientRect();
       var distRect = options.to.getBoundingClientRect();
       var sourceStyle = window.getComputedStyle(options.from, null);
@@ -538,7 +544,7 @@
       }
 
       transformBox.__ui_neutral = true;
-      system.ui.body.appendChild(transformBox);
+      System.ui.body.appendChild(transformBox);
 
       setTimeout(function () {
         animate();
@@ -585,7 +591,7 @@
      * @returns {undefined}
      */
     sizeTransform: function (conf) {
-      var t = conf.time || system.UI.DEFAULTS.animationDuration;
+      var t = conf.time || System.UI.DEFAULTS.animationDuration;
       var sourceRect = conf.from.getBoundingClientRect();
       var distRect = conf.to.getBoundingClientRect();
       var transformBox = document.createElement("div");
@@ -604,7 +610,7 @@
       if (conf.to.parentNode) {
         conf.to.parentNode.appendChild(transformBox);
       } else {
-        system.UI.body.appendChild(transformBox);
+        System.UI.body.appendChild(transformBox);
       }
 
       tween.fromTo(transformBox, t, {
@@ -645,7 +651,7 @@
      * @returns {undefined}
      */
     rippleOut: function (conf) {
-      var t = conf.time || system.UI.DEFAULTS.animationDuration;
+      var t = conf.time || System.UI.DEFAULTS.animationDuration;
       var sourceRect = conf.from.getBoundingClientRect();
       var distRect = conf.to.getBoundingClientRect();
       var transformBox = document.createElement("div");
@@ -665,7 +671,7 @@
       if (conf.to.parentNode) {
         conf.to.parentNode.appendChild(transformBox);
       } else {
-        system.UI.body.appendChild(transformBox);
+        System.UI.body.appendChild(transformBox);
       }
       var width = distRect.width > distRect.height ? distRect.width : distRect.height,
               halfWidth = distRect.width / 2,
@@ -703,7 +709,7 @@
       });
     },
     scaleTransform: function (conf) {
-      var time = conf.time || system.UI.DEFAULTS.animationDuration;
+      var time = conf.time || System.UI.DEFAULTS.animationDuration;
       var ease = conf.ease || "Power2.easeInOut";
       var sourceRect = conf.from.getBoundingClientRect();
       var distRect = conf.to.getBoundingClientRect();
@@ -723,7 +729,7 @@
       distBoxStyle.fontWeight = distStyle.fontWeight;
       distBoxStyle.textAlign = distStyle.textAlign;
       distBoxStyle.textTransform = distStyle.textTransform;
-      distBoxStyle.zIndex = (system.UI.body.style.zIndex === "0" || system.UI.body.style.zIndex === "auto") ? 1 : system.UI.body.style.zIndex || 1;
+      distBoxStyle.zIndex = (System.UI.body.style.zIndex === "0" || System.UI.body.style.zIndex === "auto") ? 1 : System.UI.body.style.zIndex || 1;
       distBoxStyle.width = distRect.width + "px";
       distBoxStyle.height = distRect.height + "px";
       distBoxStyle.lineHeight = distStyle.lineHeight;
@@ -746,7 +752,7 @@
       originBox.style.fontWeight = sourceStyle.fontWeight;
       originBox.style.textAlign = sourceStyle.textAlign;
       originBox.style.textDecoration = sourceStyle.textDecoration;
-      originBox.style.zIndex = (system.UI.body.style.zIndex === "0" || system.UI.body.style.zIndex === "auto") ? 2 : parseInt(system.UI.body.style.zIndex || 1) + 1;
+      originBox.style.zIndex = (System.UI.body.style.zIndex === "0" || System.UI.body.style.zIndex === "auto") ? 2 : parseInt(System.UI.body.style.zIndex || 1) + 1;
       //alert((Anim.body.zIndex === "0" || Anim.body.zIndex === "auto") ? 2 : parseInt(Anim.body.zIndex) +1)
       originBox.style.margin = "0px";
       originBox.style.width = sourceRect.width + "px";
@@ -763,8 +769,8 @@
         conf.from.style.transition = "none";
       }
 
-      system.UI.body.appendChild(distBox);
-      system.UI.body.appendChild(originBox);
+      System.UI.body.appendChild(distBox);
+      System.UI.body.appendChild(originBox);
 
       tween.fromTo(originBox, time, {
         left: sourceRect.left,
@@ -806,7 +812,7 @@
       });
     },
     toLoader: function (el, loaderClass) {
-      var loader = system.UI.clone(system.UI.COMPONENT_STRUCTURE);
+      var loader = System.UI.clone(System.UI.COMPONENT_STRUCTURE);
 
       loader.el = document.createElement("div");
       loader.cancel = function () {
@@ -829,20 +835,20 @@
 
       var elemStyle = window.getComputedStyle(el);
       var elemRect = el.getBoundingClientRect();
-      var elemCent = system.UI.getCenterPoint(elemRect);
+      var elemCent = System.UI.getCenterPoint(elemRect);
       loader.el.className = loaderClass;
-      system.UI.body.appendChild(loader.el);
+      System.UI.body.appendChild(loader.el);
 
       var loaderStyle = window.getComputedStyle(loader.el);
       var loaderRect = loader.el.getBoundingClientRect();
-      var loaderElStyle =  loader.el.style;
+      var loaderElStyle = loader.el.style;
 
-     loaderElStyle.position = "absolute";
-     loaderElStyle.width = elemRect.width + "px";
-     loaderElStyle.height = elemRect.height + "px";
-     loaderElStyle.top = elemRect.top + 'px';
-     loaderElStyle.left = elemRect.left + 'px';
-     loaderElStyle.zIndex = (elemStyle.zIndex === "0" || elemStyle.zIndex === "auto") ? 1 : elemStyle.zIndex;
+      loaderElStyle.position = "absolute";
+      loaderElStyle.width = elemRect.width + "px";
+      loaderElStyle.height = elemRect.height + "px";
+      loaderElStyle.top = elemRect.top + 'px';
+      loaderElStyle.left = elemRect.left + 'px';
+      loaderElStyle.zIndex = (elemStyle.zIndex === "0" || elemStyle.zIndex === "auto") ? 1 : elemStyle.zIndex;
 
       var animProperties = (loaderClass) ? {
         top: elemCent.top - loaderRect.width / 2,
@@ -862,12 +868,12 @@
         ease: "Power2.easeOut"
       };
 
-     loaderElStyle.visibility = "hidden";
+      loaderElStyle.visibility = "hidden";
       setTimeout(function () {
         loader.el.className = "";
-       loaderElStyle.visibility = "";
-       loaderElStyle.borderRadius = elemStyle.borderRadius;
-       loaderElStyle.backgroundColor = (elemStyle.backgroundColor.indexOf("rgba") !== -1 ||
+        loaderElStyle.visibility = "";
+        loaderElStyle.borderRadius = elemStyle.borderRadius;
+        loaderElStyle.backgroundColor = (elemStyle.backgroundColor.indexOf("rgba") !== -1 ||
                 elemStyle.backgroundColor === "transparent" || elemStyle.backgroundColor === "rgb(255, 255, 255)") ? elemStyle.color : elemStyle.backgroundColor;
         el.style.visibility = "hidden";
         tween.to(loader.el, 5,
@@ -892,4 +898,4 @@
       return loader;
     }
   };
-}(System, TweenLite));
+}(TweenLite));

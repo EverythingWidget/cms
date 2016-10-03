@@ -1,6 +1,6 @@
 /* global System */
 
-(function (System) {
+(function () {
   System.MODULE_ABSTRACT = {
     domain: null,
     inited: false,
@@ -293,4 +293,4 @@
     hashHandler: function (nav, params) {}
   };
 
-})(System);
+})();

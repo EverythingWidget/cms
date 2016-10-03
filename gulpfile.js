@@ -140,11 +140,8 @@ gulp.task('script:system.js', function (cb) {
   return pump([
     gulp.src([
       'packages/admin/public/js/system/system.js',
-      'packages/admin/public/js/system/system-ui.js',
-      'packages/admin/public/js/system/system-module.js',
-      'packages/admin/public/js/system/system-domain.js',
-      'packages/admin/public/js/system/system-tags.js',
-      'packages/admin/public/js/system/system-animations.js'
+      'packages/admin/public/js/system/**/*.js',
+      '!packages/admin/public/js/system/**/build/*.js'
     ]),
     concat('build.js'),
     minify({
@@ -156,7 +153,10 @@ gulp.task('script:system.js', function (cb) {
 
 gulp.task('script:ew-elements.js', function (cb) {
   return pump([
-    gulp.src(['packages/admin/public/js/ew-elements/*.js']),
+    gulp.src([
+      'packages/admin/public/js/ew-elements/**/*.js',
+      '!packages/admin/public/js/ew-elements/**/build/*.js'
+    ]),
     include(),
     concat('build.js'),
     minify({

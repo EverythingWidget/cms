@@ -36,7 +36,7 @@ class Comments implements Widget {
       $content_id = $_REQUEST['_method_name'];
     }
 
-    $is_allowed = \EWCore::call_api('ew-blog/api/comments/is-commenting-allowed', [
+    $is_allowed = \EWCore::call_api('ew-blog/api/comments/is-allowed', [
                 'id' => $_REQUEST['_method_name']
             ])['data']['is_allowed'];
 

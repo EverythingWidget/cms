@@ -66,7 +66,7 @@ class Comments extends \ew\Module {
         'api/options',
         'api/confirm-capcha',
         'api/feeder',
-        'api/is-commenting-allowed'
+        'api/is-allowed'
     ]);
   }
 
@@ -186,7 +186,7 @@ class Comments extends \ew\Module {
     return json_decode($response, true);
   }
 
-  public function is_commenting_allowed($_response, $id) {
+  public function is_allowed($_response, $id) {
     $comment_status = 0;
     $posts_repository = new PostsRepository();
 

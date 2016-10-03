@@ -193,7 +193,10 @@ function UISForm() {
       _this.dpPreference.trigger("destroy");
   });
 
-  parentDialog.on("beforeClose", function () {
+  parentDialog.on('beforeClose', function () {
+    if (_this.frameLoader) {
+      _this.frameLoader.dispose();
+    }
     //console.log(self.oldStructure, self.createContentHeirarchy(), self.createContentHeirarchy());
     if (_this.defaultStructure !== null && JSON.stringify(_this.defaultStructure) !== JSON.stringify(_this.createContentHeirarchy())) {
       return confirm("tr{You have unsaved changes. Are you sure you want to close?}");

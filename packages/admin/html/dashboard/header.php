@@ -47,7 +47,7 @@
 <script src="public/rm/js/x-tag/x-tag-core.min.js"></script>
 <script src="public/rm/js/gsap/TweenLite.min.js"></script>
 <script src="public/rm/js/gsap/TimelineLite.min.js"></script>
-<script src="public/admin/js/system/build/build-min.js"></script>
+<script src="public/admin/js/system/build/build.js"></script>
 <script src="public/admin/js/ew-elements/build/build-min.js"></script>
 
 <script src="public/rm/js/gsap/plugins/CSSPlugin.min.js" defer></script>

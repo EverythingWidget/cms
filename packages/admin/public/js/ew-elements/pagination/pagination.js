@@ -145,7 +145,7 @@
   };
 
   var EWPagination = Vue.extend({
-    template: {gulp_inject: './ew-pagination.html'},
+    template: {gulp_inject: './pagination.html'},
     props: properties,
     compiled: methods.onReady,
     methods: methods,

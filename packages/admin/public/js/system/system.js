@@ -1,5 +1,4 @@
 (function () {
-
   var entities = {};
   var importedLibraries = {};
   System = {
