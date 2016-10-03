@@ -24,14 +24,14 @@ gulp.task('default', function () {
 
 gulp.task('compile:scss', function (a) {
   return gulp.src("packages/rm/public/templates/**/scss/template.scss")
-          .pipe(sourcemaps.init())
+          //.pipe(sourcemaps.init())
           .pipe(sass({
             outputStyle: 'compressed'
           }).on('error', sass.logError))
           .pipe(rename(function (path) {
             path.dirname += "/..";
           }))
-          .pipe(sourcemaps.write('./'))
+          //.pipe(sourcemaps.write('./'))
           .pipe(gulp.dest('packages/rm/public/templates/'))
           .pipe(browserSync.stream({
             match: "**/*.css"
@@ -136,6 +136,20 @@ gulp.task('watch-and-test', ['test-mochas'], function () {
 
 // ------ Sart Developing ------ //
 
+gulp.task('script:app.js', function (cb) {
+  return pump([
+    gulp.src([
+      'packages/admin/public/js/app/*.js',
+      '!packages/admin/public/js/app/**/build/*.js'
+    ]),
+    concat('build.js'),
+    minify({
+      mangle: false
+    }),
+    gulp.dest('packages/admin/public/js/app/build/')
+  ]);
+});
+
 gulp.task('script:system.js', function (cb) {
   return pump([
     gulp.src([
@@ -166,6 +180,11 @@ gulp.task('script:ew-elements.js', function (cb) {
   ]);
 });
 
-gulp.task('Start Developing Admin', ['script:system.js', 'script:ew-elements.js', 'style:admin'], function () {
-  gulp.watch(['packages/admin/public/js/**/*.*', '!packages/admin/public/js/**/build/*.*'], ['script:system.js', 'script:ew-elements.js']);
+var developmentDependencies = ['script:system.js', 'script:ew-elements.js', 'style:admin', 'script:app.js'];
+
+gulp.task('Start Developing Admin', developmentDependencies, function () {
+  gulp.watch([
+    'packages/admin/public/js/**/*.*',
+    '!packages/admin/public/js/**/build/*.*'
+  ], developmentDependencies);
 });

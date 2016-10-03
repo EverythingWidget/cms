@@ -37,6 +37,11 @@
       window.location = "http://www.whatbrowser.org/";
     }
   })();
+  
+  // ------ //
+  
+  EW_APPS = <?= EWCore::read_apps(); ?>;
+  EW_ACTIVITIES = <?= EWCore::read_activities() ?>;
 
 </script>
 
