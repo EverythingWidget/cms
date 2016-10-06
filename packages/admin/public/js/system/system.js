@@ -549,7 +549,7 @@
           scope.imports[module.name] = importedLibraries[module.url].module;
         }
 
-        delete scope.export;
+//        delete scope.export;
         //}
 
         var currentModule = System.modules['system/' + module.id];
@@ -564,6 +564,7 @@
         currentModule.scope = scope;
 
         if ('function' === typeof (System.onModuleLoaded['system/' + module.id])) {
+          console.log(currentModule);
           System.onModuleLoaded['system/' + module.id].call(this, currentModule, currentModule.html);
           delete System.onModuleLoaded['system/' + module.id];
         }

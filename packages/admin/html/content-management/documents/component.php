@@ -1,6 +1,6 @@
 <system-ui-view module="content-management/documents" name="folders-card" class="card card-big center-block z-index-1">
   <div  class='card-header'
-        data-content-id='{{ upParentId }}'
+        v-bind:data-content-id="upParentId"
         v-on:drop="moveItem"
         v-on:dragover="isAllowed">
     <div class="card-title-action">
@@ -28,7 +28,7 @@
 
       <div id="folders-list" class="mt">
         <div v-for="folder in folders.data" track-by="id" tabindex='1' class='content-item folder' 
-             data-content-id='{{ folder.id }}' 
+             v-bind:data-content-id="folder.id" 
              v-on:drop="moveItem" v-on:dragover="isAllowed">
           <span></span>
           <p class="date">{{ folder.round_date_created }}</p>
@@ -45,7 +45,7 @@
 
       <div id="articles-list" class="mt">
         <div tabindex='1' draggable="true" class='content-item article' 
-             data-content-id='{{ article.id }}'
+             v-bind:data-content-id="article.id"
              v-for="article in articles.data" 
              v-on:dragstart="dragStart">
           <span></span>
@@ -60,8 +60,11 @@
 </system-ui-view>
 
 <script>
-  function DocumentsStateHandler(state) {
+  Scope.export = DocumentsStateHandler;
+
+  function DocumentsStateHandler(scope, state) {
     var component = this;
+    this.scope = scope;
     this.state = state;
     this.states = {};
     this.ui = {
@@ -165,13 +168,13 @@
       }
     });
 
-    component.ui.components.folders_card = $(Scope.uiViews.folders_card);
+    component.ui.components.folders_card = $(component.scope.uiViews.folders_card);
     component.ui.components.folders_card_title_action_right = component.ui.components.folders_card.find(".card-title-action-right");
     component.ui.components.folders_list = component.ui.components.folders_card.find("#folders-list");
     component.ui.components.articles_list = component.ui.components.folders_card.find("#articles-list");
 
     component.ui.folders_card_vue = new Vue({
-      el: Scope.uiViews.folders_card,
+      el: component.scope.uiViews.folders_card,
       data: {
         upParentId: 0,
         parentId: 0,
@@ -537,7 +540,7 @@
 
   if (Scope._stateId === 'content-management/documents') {
     System.state('content-management/documents', function (state) {
-      new DocumentsStateHandler(state);
+      new DocumentsStateHandler(Scope, state);
     });
   }
 

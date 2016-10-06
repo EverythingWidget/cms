@@ -1,0 +1,10 @@
+/*.in-enter {
+  opacity: 0
+}
+
+.in-enter-active, .in-leave-active {
+  transition: opacity .5s
+}
+.in-enter, .in-leave-active {
+  opacity: 1
+}*/
