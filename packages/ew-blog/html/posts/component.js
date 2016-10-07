@@ -2,6 +2,8 @@
 
 Scope.export = PostsComponent;
 
+var blogService = Scope.import('html/ew-blog/core/service.html');
+
 function PostsComponent(scope, state) {
   var component = this;
   component.scope = scope;
@@ -43,14 +45,6 @@ function PostsComponent(scope, state) {
 
 PostsComponent.prototype.init = function () {
   var component = this;
-  component.seeArticleActivity = EW.getActivity({
-    activity: 'admin/html/content-management/documents/article-form/component.php_see',
-    onDone: function () {
-      System.setHashParameters({
-        folderId: null
-      });
-    }
-  });
 
   component.vue = new Vue({
     el: Scope.views.comments_card,
@@ -61,7 +55,7 @@ PostsComponent.prototype.init = function () {
           return item.value === post.comments;
         })[0];
       },
-      showPost: component.showPost.bind(component),
+      showPost: blogService.showArticle,
       reload: function () {
         component.vue.$broadcast('refresh');
       }
@@ -94,10 +88,6 @@ PostsComponent.prototype.readPosts = function () {
   }, function (response) {
     component.data.posts = response;
   });
-};
-
-PostsComponent.prototype.showPost = function (post) {
-  this.seeArticleActivity({article: post.content.id});
 };
 
 

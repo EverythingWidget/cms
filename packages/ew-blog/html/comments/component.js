@@ -2,6 +2,8 @@
 
 Scope.export = CommentsComponent;
 
+var blogService = Scope.import('html/ew-blog/core/service.html');
+
 function CommentsComponent(scope, state) {
   var component = this;
   component.scope = scope;
@@ -33,12 +35,14 @@ function CommentsComponent(scope, state) {
 
 CommentsComponent.prototype.init = function () {
   var component = this;
+  
   component.vue = new Vue({
     el: Scope.views.comments_card,
     data: component.data,
     methods: {
       confirmComment: component.confirmComment.bind(component),
       deleteComment: component.deleteComment.bind(component),
+      showPost: blogService.showArticle,
       reloadComments: function () {
         component.vue.$broadcast('refresh');
       }
@@ -102,6 +106,7 @@ CommentsComponent.prototype.deleteComment = function (id) {
     }
   });
 };
+
 
 // ------ Registring the state handler ------ //
 var stateId = 'ew-blog/comments';

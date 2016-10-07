@@ -1,12 +1,12 @@
 <system-ui-view name="comments-card" class="card card-medium z-index-1">
   <div class="card-header">
     <h1> {{ card_title }} </h1>
-    
+
     <div class="card-title-action-right">
       <button class="btn btn-circle" v-on:click="reload()"><i class="icon-cw-1"></i></button>
     </div>
   </div>
-  
+
   <div class="card-content list">
     <div class="card-control-bar">
       <!--      <label class="checkbox">
@@ -18,7 +18,7 @@
 
     <system-spirit animations="liveHeight,verticalShift" vertical-shift="list-item">
       <ul class="list items" v-bind:class="{'compact' : compact_view}">
-        <li class="list-item action" v-for="post in posts.data" v-on:click="showPost(post)">
+        <li class="list-item action" v-for="post in posts.data" v-on:click="showPost(post.content.id)">
           <h3>
             {{ post.id + '. ' +post.content.title }}
             <span>

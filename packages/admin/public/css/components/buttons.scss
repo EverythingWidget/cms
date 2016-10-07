@@ -126,7 +126,7 @@
           background-color: #00BBEE;
         }
       }
-      
+
       & + i + span {
         color: #00BBEE;
       }
@@ -181,5 +181,26 @@
 
   > span {
     margin-left: 15px;
+  }
+}
+
+.text-link {
+  line-height: 22px;
+  font-weight: bold;
+  color: #00BBEE;
+  padding: 5px 6px;
+  margin: 5px -6px 0;
+  display: inline-block;
+  cursor: pointer;  
+  border-radius: 4px;
+
+  &:hover {
+    color: #00BBEE;
+    background-color: #daf2fd;
+  }
+  
+  &:active {
+    color: #fff;
+    background-color: #00BBEE;
   }
 }

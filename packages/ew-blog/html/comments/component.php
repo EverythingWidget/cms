@@ -34,9 +34,9 @@
             <strong>{{ comment.name }}</strong> - 
             {{ comment.content }}
           </p>
-          <p class="subheading">
+          <a class="text-link" v-on:click="showPost(comment.ew_content.id)">
             {{ comment.ew_content.title }}
-          </p>
+          </a>
           <p class="actions">
             <button class="btn btn-text btn-circle btn-success" type="button" v-if="show === 'new'" v-on:click="confirmComment(comment.id)">
               <i class="icon-check" ></i>

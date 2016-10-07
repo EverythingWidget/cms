@@ -518,17 +518,6 @@
       }
 
       function moduleLoaded(module, scope, filtered) {
-//        if (!module.isDependency && !System.modules["system/" + module.id]) {
-//          //alert("Invalid module: " + mod.id);
-//          throw new Error('Could not find module: system/' + module.id + ', url: ' + module.url);
-//          return false;
-//        }
-
-        /*if (importedLibraries[module.url] && !module.fresh) {
-         scope.imports[module.name] = importedLibraries[module.url].module;
-         
-         } else {*/
-
         for (var item in importedLibraries) {
           if (importedLibraries.hasOwnProperty(item)) {
             var asset = importedLibraries[item];
@@ -564,7 +553,7 @@
         currentModule.scope = scope;
 
         if ('function' === typeof (System.onModuleLoaded['system/' + module.id])) {
-          console.log(currentModule);
+          //console.log(currentModule);
           System.onModuleLoaded['system/' + module.id].call(this, currentModule, currentModule.html);
           delete System.onModuleLoaded['system/' + module.id];
         }

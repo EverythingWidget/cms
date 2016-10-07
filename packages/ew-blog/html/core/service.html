@@ -1,0 +1,20 @@
+<script>
+
+  var service = {};
+
+  service.seeArticleActivity = EW.getActivity({
+    activity: 'admin/html/content-management/documents/article-form/component.php_see',
+    onDone: function () {
+      System.setHashParameters({
+        folderId: null
+      });
+    }
+  });
+
+  service.showArticle = function (id) {
+    service.seeArticleActivity({article: id});
+  };
+
+  Scope.export = service;
+
+</script>
