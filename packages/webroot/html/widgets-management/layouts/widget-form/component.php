@@ -229,7 +229,7 @@ $panelId = $_REQUEST['panelId'];
         if (self.setData === true) {
           //widgetParams = (widget.attr("data-widget-parameters")) ? $.parseJSON(widget.attr("data-widget-parameters")) : {};
           // EW.setFormData("#uis-widget", widgetParams);
-          $("#style_class").keyup(this.setClasses);
+          $("#style_class").on('keyup',self.setClasses.bind(self));
         }
       }
       // If widgetId is empty show add button
@@ -331,7 +331,7 @@ $panelId = $_REQUEST['panelId'];
 
   UISWidget.prototype.setClasses = function () {
     $("#used-classes").text("");
-    $("#style_class").text("");
+    //$("#style_class").text("");
     var styleClass = "";
 
     $.each($("#widget-classes").find("input"), function (k, v) {

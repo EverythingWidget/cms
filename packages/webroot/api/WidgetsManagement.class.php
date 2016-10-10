@@ -423,9 +423,15 @@ class WidgetsManagement extends \ew\Module {
       $db->close();
       return json_encode($res);
     }
+
     if (is_array($structure)) {
       $structure = json_encode($structure);
     }
+
+    if (is_array($template_settings)) {
+      $template_settings = json_encode($template_settings);
+    }
+
     $stm = $db->prepare("UPDATE ew_ui_structures SET name = ?, template= ?, template_settings= ?, perview_url = ?, structure = ? WHERE id = ?") or die($db->error);
     $stm->bind_param("ssssss", $name, $template, $template_settings, $perview_url, $structure, $uisId);
     $error = $db->errno;

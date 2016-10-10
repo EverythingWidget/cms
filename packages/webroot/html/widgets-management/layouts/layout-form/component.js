@@ -741,7 +741,7 @@ UISForm.prototype.updateUIS = function (reload) {
   }, function (data) {
     $("body").EW().notify(data).show();
     $(document).trigger("uis-list.refresh");
-    $('#form-title').html("<span>Edit</span> " + data.data.title);
+    $('#form-title').html("<span>Edit</span> " + data.data.data.title);
     self.defaultStructure = structure;
     if (reload === true) {
       self.reloadFrame();

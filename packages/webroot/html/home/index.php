@@ -42,6 +42,10 @@ if (file_exists($template_php)) {
   $template = new \template();
   //$uis_data = json_decode(admin\WidgetsManagement::get_uis($_REQUEST["_uis"]), true);
   $template_settings = $_REQUEST['_uis_template_settings'];
+  
+  if(is_array($template_settings)) {
+    $template_settings = json_encode($template_settings);
+  }
 
   if (!isset($template_settings) || $template_settings === 'null') {
     $template_settings = '{}';
