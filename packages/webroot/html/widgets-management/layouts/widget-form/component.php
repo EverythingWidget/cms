@@ -1,25 +1,11 @@
 <?php
 session_start();
 
-//include($_SESSION['ROOT_DIR'] . '/config.php');
-//include_once 'WidgetsManagementCore.php';
-
 $uiStructureId = $_REQUEST['uisId'];
 $widgetId = $_REQUEST['widgetId'];
 $widget_type = $_REQUEST['widgetType'];
 $feeder_type = $_REQUEST['feederType'];
 $panelId = $_REQUEST['panelId'];
-/* $position = mysql_real_escape_string($_POST['position']);
-  $order = mysql_real_escape_string($_POST['order']);
-  $class = mysql_real_escape_string($_POST['class']);
-  $parameters = mysql_real_escape_string($_POST['parameters']); */
-//$WM = new admin\WidgetsManagement();
-/* if ($_REQUEST["widgetId"])
-  {
-  //echo $_REQUEST["widgetId"];
-  $widget_info = json_decode($WM->get_widget($_REQUEST["widgetId"]), TRUE);
-  $widget_type = $widget_info["widget_type"];
-  } */
 ?>
 <div id="widgets-list-form">
   <div class="header-pane">
@@ -41,7 +27,7 @@ $panelId = $_REQUEST['panelId'];
       $widget_feeders = EWCore::call_api('webroot/api/widgets-management/get-widget-feeders', [
                   'type' => $feeder_type
       ]);
-      
+
       $widgets_types_list = $widget_feeders['data'];
       $rowNum = 0;
       $oldApp = "";
@@ -90,20 +76,16 @@ $panelId = $_REQUEST['panelId'];
     this.getWidgetData;
     this.widgetParameters = {};
     this.uisWidgetForm = $('#uis-widget-form');
-
-    if (this.widgetId)
-    {
+    if (this.widgetId) {
       $("#cmd").val("edit");
       $("#uis-widget-title").html("Edit Widget");
       $("#widget-control-panel").fadeIn(300);
       $("#widgets-list-form").hide();
       this.bAdd.hide();
       this.bApply.show();
-
       var widget = uisForm.getEditorItem(this.widgetId);
       this.showWidgetControlPanel(widget.attr("data-widget-type"));
-    } else if (!this.feederType)
-    {
+    } else if (!this.feederType) {
       this.showWidgetControlPanel(this.widgetType);
     }
   }
@@ -111,16 +93,17 @@ $panelId = $_REQUEST['panelId'];
   UISWidget.prototype.autoSetData = function (flag) {
     this.setData = flag;
   };
-
   UISWidget.prototype.addWidgetToPanel = function () {
     var self = this;
     $.EW("lock", $.EW("getParentDialog", this.uisWidgetForm));
+
     var wp = $("#uis-widget").serializeJSON(true);
-    if (self.getWidgetData)
+    if (self.getWidgetData) {
       wp = $.extend($.parseJSON(wp), self.getWidgetData.apply(null, null));
-    //var param = $("#parameters").val();
+    }
+
     var styleId = $("#style_id").val();
-    var styleClass = $("#used-classes").text();
+    var styleClass = this.vue.containerClasses.join(' ');
     var widgetStyleClass = $("#style_class").val();
 
     $.post('api/webroot/widgets-management/create-widget', {
@@ -131,11 +114,9 @@ $panelId = $_REQUEST['panelId'];
       widget_parameters: wp
     }, function (response) {
       EW.lock($.EW("getParentDialog", self.uisWidgetForm));
-
       // Add widget data to the widget-data script tag
       if (response.data["widget_data"])
         uisForm.setWidgetData(response.data["widget_id"], response.data["widget_data"]);
-
       var containerElement = $("#fr").contents().find("body #base-content-pane div[data-panel-id='<?php echo $panelId ?>']");
       if (containerElement.hasClass("block")) {
         uisForm.addWidget(response.data["widget_html"], containerElement[0]);
@@ -147,12 +128,11 @@ $panelId = $_REQUEST['panelId'];
       $.EW("getParentDialog", self.uisWidgetForm).trigger("close");
     }, "json");
   };
-
   UISWidget.prototype.applyToWidget = function () {
     var self = this;
     $.EW("lock", $.EW("getParentDialog", this.uisWidgetForm));
     var widget = uisForm.getEditorItem(this.widgetId);
-    console.log($("#uis-widget").serializeJSON());
+    //console.log($("#uis-widget").serializeJSON());
     var wp = JSON.parse($("#uis-widget").serializeJSON());
     if (self.getWidgetData) {
       wp = $.extend($.parseJSON(wp), self.getWidgetData.apply(null, null));
@@ -160,10 +140,9 @@ $panelId = $_REQUEST['panelId'];
     //console.log(wp);
     //alert(wp);
     var styleId = $("#style_id").val();
-    var styleClass = $("#used-classes").text();
+    var styleClass = this.vue.containerClasses.join(' ');
     var widgetStyleClass = $("#style_class").val();
     console.log('widget parameters:', wp);
-
     $.ajax({
       type: 'POST',
       url: 'api/webroot/widgets-management/create-widget',
@@ -179,24 +158,20 @@ $panelId = $_REQUEST['panelId'];
         EW.lock($.EW("getParentDialog", self.uisWidgetForm));
         // Remove the old widget script
         uisForm.getEditor().find("head #" + self.widgetId).remove();
-
         // Add widget data to the widget-data script tag
         if (response.data["widget_data"]) {
           uisForm.setWidgetData(response.data["widget_id"], response.data["widget_data"]);
         }
 
         uisForm.replaceWidget(response.data["widget_html"], widget.parent()[0]);
-
         $.EW("getParentDialog", self.uisWidgetForm).trigger("close");
         $("#inspector-editor").trigger("refresh");
       }
     });
   };
-
-
   UISWidget.prototype.showWidgetControlPanel = function (widgetType, widgetParams) {
     var self = this;
-    var widget;
+    var widget = $();
     self.widgetType = widgetType;
     // if widgetId exist, get the corresponding widget
     if (self.widgetId != "") {
@@ -207,8 +182,6 @@ $panelId = $_REQUEST['panelId'];
     }
 
     self.bCC.comeOut(200);
-
-    //$this.bCW.comeIn(300);
     this.uisWidgetForm.html("").show();
     $("#widgets-list-form").hide();
     EW.lock(this.uisWidgetForm);
@@ -221,20 +194,21 @@ $panelId = $_REQUEST['panelId'];
       self.uisWidgetForm.html(data);
       self.usedClassElement = $("#used-classes");
       // If widgetId exist, set data for widget control panel
+
+      var containerClasses = widget.data("container").prop("class").replace('widget-container', '').split(' ').filter(Boolean);
+      var styleClasses = widget.prop("class").replace('widget', '').split(' ').filter(Boolean);
+      $("#style_id").val(widget.prop("id")).change();
       if (self.widgetId != "") {
-        $("#used-classes").text(widget.data("container").prop("class"));
-        $("#style_class").val(widget.prop("class"));
-        $("#style_id").val(widget.prop("id")).change();
+
         // If true, set values for the fields of widget control panel form
         if (self.setData === true) {
-          //widgetParams = (widget.attr("data-widget-parameters")) ? $.parseJSON(widget.attr("data-widget-parameters")) : {};
-          // EW.setFormData("#uis-widget", widgetParams);
-          $("#style_class").on('keyup',self.setClasses.bind(self));
+
         }
       }
       // If widgetId is empty show add button
-      else
+      else {
         self.bAdd.comeIn(300);
+      }
 
       if (widgetParams) {
         setTimeout(function () {
@@ -242,9 +216,69 @@ $panelId = $_REQUEST['panelId'];
         });
       }
 
-      self.uisWidgetForm.fadeIn(300);
+      $("#size-layout").find("input").change(function (event) {
+        containerClasses = [];
+        $.each($("#size-layout input[data-slider]:not(:disabled)"), function (k, v) {
+          containerClasses.push(v.name + v.value);
+        });
+        $.each($("#size-layout input:radio:checked:not(:disabled),#size-layout input:checkbox:checked:not(:disabled)"), function (k, v) {
+          containerClasses.push($(v).val());
+        });
 
-      self.readClasses();
+        self.vue.containerClasses = containerClasses.filter(Boolean);
+      });
+
+      self.vue = new Vue({
+        el: '#widget-control-panel',
+        data: {
+          styleClasses: styleClasses,
+          availableClasses: <?= json_encode(EWCore::parse_css_clean(EW_PACKAGES_DIR . '/rm/public/' . $_REQUEST["template"] . '/template.css', 'widget')) ?>,
+          containerClasses: containerClasses,
+          widgetClasses: [],
+          tempClasses: []
+        },
+        computed: {
+          appliedClasses: function () {
+            return this.styleClasses.concat(this.widgetClasses);
+          },
+          styleClassesText: {
+            set: function (value) {
+              this.tempClasses = value;
+            },
+            get: function () {
+              var all = this.appliedClasses.filter(function (item, pos, source) {
+                return item && source.indexOf(item) === pos;
+              });
+
+              return all.length ? all.join(' ') + ' ' : '';
+            }
+          }
+        },
+        methods: {
+          updateStyleClasses: function () {
+            this.styleClasses = this.tempClasses.split(' ');
+          },
+          isSelected: function (item) {
+            return this.appliedClasses.indexOf(item) !== -1;
+          },
+          toggleClass: function (item) {
+            var index = this.appliedClasses.indexOf(item);
+
+            if (index !== -1) {
+              this.styleClasses.splice(index, 1);
+            } else {
+              this.styleClasses.push(item);
+            }
+
+            this.$nextTick(function () {
+              $("#style_class").change();
+            });
+          }
+        }
+      });
+
+      self.uisWidgetForm.fadeIn(300);
+      $("#style_class").change();
     });
   };
 
@@ -262,103 +296,9 @@ $panelId = $_REQUEST['panelId'];
     uisWidget.bCC.comeIn(300);
     this.uisWidgetForm.hide();
     $("#widgets-list-form").fadeIn(300);
-
-  };
-
-  UISWidget.prototype.readClasses = function () {
-    var widgetClasses = ($("#style_class").val()) ? $("#style_class").val() : "";
-    widgetClasses = widgetClasses.replace('widget', '');
-    widgetClasses = widgetClasses.split(" ");
-
-    var classes = $("#used-classes").text();
-    classes = classes.split(" ");
-
-    $.each($("#available-classes").find("label"), function (k, classBtn) {
-      var a = $("<input type='checkbox'>");
-      classBtn = $(classBtn);
-      a.val(classBtn.text().substring(8));
-      classBtn.text(classBtn.text().substring(8));
-
-      a.change(function (event) {
-        if ($(this).is(":checked")) {
-          classBtn.removeClass("btn-default").addClass("btn-success");
-          $("#widget-classes").append(classBtn);
-        } else {
-          classBtn.removeClass("btn-success").addClass("btn-default");
-          $("#available-classes").append(classBtn);
-        }
-        uisWidget.setClasses();
-      });
-
-      classBtn.prepend(a);
-      classBtn.addClass("btn btn-default");
-      $.each(widgetClasses, function (i, c) {
-        if (a.val() === (c)) {
-          classBtn.removeClass("btn-default");
-          classBtn.addClass("btn-success active");
-          a.prop('checked', true);
-          $("#widget-classes").append(classBtn);
-        }
-      });
-    });
-
-    $.each($("#size-layout").find("input:radio,input:checkbox"), function (k, v) {
-      $.each(classes, function (i, c) {
-        if ($(v).val() === c && !$(v).is(":checked"))
-        {
-          $(v).click();
-          $(v).prop("checked", true);
-        }
-      });
-    });
-
-    $.each($("#size-layout").find("input[data-slider]"), function (k, v) {
-      $.each(classes, function (i, c) {
-        var sub = c.match(/(\D+)(\d*)/);
-        if (sub && $(v).attr("name") === sub[1]) {
-          $(v).val(sub[2]).change();
-        }
-      });
-    });
-
-    $("#size-layout input:radio,#size-layout input:checkbox,input[data-slider]").change(function (event) {
-      uisWidget.setClasses();
-    });
-
-    $("#style_class").val(widgetClasses.join(' ').trim()).change();
-    uisWidget.setClasses();
-  };
-
-  UISWidget.prototype.setClasses = function () {
-    $("#used-classes").text("");
-    //$("#style_class").text("");
-    var styleClass = "";
-
-    $.each($("#widget-classes").find("input"), function (k, v) {
-      styleClass += ($(v).val() + " ");
-    });
-
-    $("#style_class").val(styleClass).change();
-    $.each($("#size-layout input[data-slider]:not(:disabled)"), function (k, v) {
-      $("#used-classes").append(v.name + v.value + " ");
-    });
-
-    $.each($("#size-layout input:radio:checked:not(:disabled),#size-layout input:checkbox:checked:not(:disabled)"), function (k, v) {
-      $("#used-classes").append($(v).val() + " ");
-    });
-
-    var classes = this.usedClassElement.text().split(" ");
-    var html = "";
-    $.each(classes, function (i, v) {
-      if (v)
-        html += "<span class='tag label label-default'>" + v + " </span>";
-    });
-    this.usedClassElement.html(html);
   };
 
   var uisWidget = new UISWidget();
-
-
 
 </script>
 <?php

@@ -12,36 +12,31 @@ function get_properties_form() {
   <div class="block-row">
     <system-field class="field col-xs-12">
       <label>tr{ID}</label>
-      <input class="text-field" value="<?php echo $widget_info["style_id"] ?>" name="style_id" id="style_id" >
+      <input class="text-field" value="" name="style_id" id="style_id" >
     </system-field>
 
     <system-field class="field col-xs-12">
       <label>tr{Class}</label>
-      <input id="style_class" name="style_class" class="text-field" >
-      <label class="block-row small" id="used-classes"></label>
+      <input id="style_class" name="style_class" class="text-field" v-on:keyup.space="updateStyleClasses()" v-on:blur="updateStyleClasses()" v-model="styleClassesText">
+      <label class="block-row small" id="used-classes">
+        <span class='tag label label-info'
+              v-for="class in containerClasses">
+          {{ class }}
+        </span>
+      </label>
     </system-field>    
   </div>
 
-  <div class="col-xs-12">
-    <h3 class="line-header">Applied classes</h3>
-    <div class=" block-row options-panel" id="widget-classes" data-toggle="buttons">
-    </div>
-  </div>
-
-
   <div class="block-row">
     <div class="col-xs-12"  >
-      <h3 class="line-header">Available classes</h3>
-      <div class="block-row options-panel" id="available-classes" data-toggle="buttons">
-        <?php
-        if ($_REQUEST["template"]) {
-          $templates = json_decode(EWCore::parse_css(EW_PACKAGES_DIR . '/rm/public/' . $_REQUEST["template"] . '/template.css', "widget"), true);
-
-          foreach ($templates as $t) {
-            echo "<label>$t</label>";
-          }
-        }
-        ?>
+      <h3 class="line-header">Classes</h3>
+      <div class="block-row options-panel" id="available-classes">
+        <label class="btn btn-default" 
+               v-bind:class=" { 'active' : isSelected(class) } "
+               v-for="class in availableClasses" 
+               v-on:click="toggleClass(class)">                
+          {{ class }}
+        </label>  
       </div>
     </div>
   </div>

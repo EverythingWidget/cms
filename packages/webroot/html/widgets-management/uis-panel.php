@@ -30,13 +30,13 @@ $container_id = $_REQUEST["containerId"];
         <div class="block-row">
           <system-field class="field col-xs-12">
             <label>tr{Class}</label>
-            <input id="style_class" name="style_class" class="text-field" v-model="styleClassesText">            
+            <input id="style_class" name="style_class" class="text-field" v-on:keyup.space="updateStyleClasses()" v-on:blur="updateStyleClasses()"| v-model="styleClassesText">            
           </system-field>  
 
           <div class="col-xs-12">
             <label class="small block-row" id="used-classes">
               <span class='tag label label-info'
-                    v-for="class in usedClasses">
+                    v-for="class in layoutClasses">
                 {{ class }}
               </span>
             </label>
@@ -76,133 +76,123 @@ $container_id = $_REQUEST["containerId"];
 
   (function () {
     var panel = $("#fr").contents().find("body #base-content-pane div[data-panel-id='<?= $panel_id ?>']");
-    $("#custom-template").on('change', function () {
-      uisPanel.setClasses();
-    });
 
     var panelVue = new Vue({
       el: '#uis-panel',
       data: {
         panelId: '<?= $panel_id ?>',
         styleIdText: '<?= $row['style_id'] ?>',
-        styleClassesText: '',
-        allClasses: [],
-        temp: [],
+        selectedClasses: [],
+        layoutClasses: [],
+        tempClasses: [],
         templateClasses: <?= json_encode(EWCore::parse_css_clean(EW_PACKAGES_DIR . "/rm/public/{$_REQUEST['template']}/template.css", 'panel')); ?>
       },
       computed: {
-        layoutClasses: {
-          cache: false,
-          set: function (value) { },
-          get: function () {
-            var layoutClasses = [];
-
-            var $sizeAndLayout = $("#size-layout");
-
-            $.each($sizeAndLayout.find("input[data-slider]:not(:disabled)"), function (k, v) {
-              if (parseInt(v.value))
-                layoutClasses.push(v.name + v.value);
-            });
-
-            $.each($sizeAndLayout.find("input:radio:checked:not(:disabled),input:checkbox:checked:not(:disabled)"), function (k, v) {
-              layoutClasses.push($(v).val());
-            });
-
-            return layoutClasses;
-          }
-        },
-        styleClasses: {
+        styleClassesText: {
           set: function (value) {
-            this.styleClassesText = value.join(' ');
+            this.tempClasses = value;
           },
           get: function () {
-            return this.styleClassesText.split(' ').filter(Boolean);
-          }
-        },
-        panelClasses: function () {
-          var _this = this;
-
-          return _this.templateClasses.filter(function (item) {
-            return _this.allClasses.indexOf(item) > -1;
-          });
-        },
-        usedClasses: {
-          cache: false,
-          set: function (value) {
             var _this = this;
 
-            value = value.filter(function (item) {
-              return item !== 'panel';
+            var all = _this.selectedClasses.filter(function (item, pos, source) {
+              return item && source.indexOf(item) === pos && _this.layoutClasses.indexOf(item) === -1;
             });
 
-            this.allClasses = value;
-            var panelClasses = this.panelClasses;
-
-            var $sizeAndLayout = $("#size-layout");
-            var classes = value;
-            var layoutClasses = [];
-
-            $.each($sizeAndLayout.find('input:radio, input:checkbox'), function (k, field) {
-              var $v = $(field), value = $v.val();
-
-              $.each(classes, function (i, className) {
-                if (value === className) {
-                  $v.click();
-                  $v.prop("checked", true);
-                  layoutClasses.push(classes.splice(i, 1)[0]);
-                }
-              });
-            });
-
-            $.each($sizeAndLayout.find('input[data-slider]'), function (k, field) {
-              $.each(classes, function (i, c) {
-                if (!c)
-                  return;
-
-                var sub = c.match(/(\D+)(\d*)/);
-                if (sub && $(field).attr("name") === sub[1]) {
-                  $(field).val(sub[2]).change();
-                  layoutClasses.push(classes.splice(i, 1)[0]);
-                }
-              });
-            });
-
-            this.styleClasses = classes.filter(function (item) {
-              return panelClasses.indexOf(item) === -1;
-            });
-          },
-          get: function () {
-            var styleClasses = this.styleClasses;
-            var panelClasses = this.panelClasses;
-
-            var all = this.layoutClasses.concat(panelClasses).concat(styleClasses);
-            this.allClasses = all.filter(function (item, pos) {
-              return all.indexOf(item) === pos;
-            });
-
-            return this.allClasses;
+            return all.length ? all.join(' ') + ' ' : '';
           }
+        },
+        usedClasses: function () {
+          var all = this.layoutClasses.concat(this.selectedClasses);
+
+          return all.filter(function (item, pos, source) {
+            return item && source.indexOf(item) === pos;
+          });
         }
       },
       methods: {
         isSelected: function (className) {
-          return this.allClasses.indexOf(className) > -1;
+          return this.selectedClasses.indexOf(className) !== -1 || this.layoutClasses.indexOf(className) !== -1;
         },
         toggleClass: function (className) {
-          var index = this.allClasses.indexOf(className);
+          var index = this.selectedClasses.indexOf(className);
           if (index !== -1) {
-            this.allClasses.splice(index, 1);
+            this.selectedClasses.splice(index, 1);
           } else {
-            this.allClasses.push(className);
+            this.selectedClasses.push(className);
           }
+
+          this.$nextTick(function () {
+            $("#style_class").change();
+          });
+        },
+        updateStyleClasses: function () {
+          this.selectedClasses = this.tempClasses.split(' ');
         }
       }
     });
 
-    panelVue.usedClasses = panel.prop('class') ? panel.prop('class').split(' ') : [];
+    var classes = panel.prop('class') ? panel.prop('class').replace('panel', '').split(' ').filter(Boolean) : [];
+
+    panelVue.layoutClasses = populateLayout(classes);
+    panelVue.selectedClasses = classes;
+
+    var $sizeAndLayout = $("#size-layout");
+    $sizeAndLayout.find("input").change(function (event) {
+      panelVue.layoutClasses = readLayoutClasses();
+    });
+
+    panelVue.$nextTick(function () {
+      $("#style_class").change();
+      panelVue.layoutClasses = readLayoutClasses();
+    });
+
+    function populateLayout(classes) {
+      var layoutClasses = [];
+
+      var $sizeAndLayout = $("#size-layout");
+      $.each($sizeAndLayout.find('input:radio, input:checkbox'), function (k, field) {
+        var $v = $(field), value = $v.val();
+        $.each(classes, function (i, className) {
+          if (value === className) {
+            $v.click();
+            $v.prop("checked", true);
+            layoutClasses.push(classes.splice(i, 1)[0]);
+          }
+        });
+      });
+
+      $.each($sizeAndLayout.find('input[data-slider]'), function (k, field) {
+        $.each(classes, function (i, className) {
+          if (!className)
+            return;
+
+          var sub = className.match(/(\D+)(\d*)/);
+          if (sub && $(field).attr("name") === sub[1]) {
+            $(field).val(sub[2]).change();
+            layoutClasses.push(classes.splice(i, 1)[0]);
+          }
+        });
+      });
+
+      return layoutClasses.filter(Boolean);
+    }
+
+    function readLayoutClasses() {
+      var layoutClasses = [];
+
+      $.each($sizeAndLayout.find("input[data-slider]:not(:disabled)"), function (k, v) {
+        layoutClasses.push(v.name + v.value);
+      });
+
+      $.each($sizeAndLayout.find("input:radio:checked:not(:disabled), input:checkbox:checked:not(:disabled)"), function (k, v) {
+        layoutClasses.push($(v).val());
+      });
+
+      return layoutClasses.filter(Boolean);
+    }
 
     function UISPanel() {
-      var _this = this;
       this.bAdd = EW.addAction("tr{Add}", $.proxy(this.addPanel, this), {
         display: "none"
       }, 'uis-panel-actions');
@@ -235,15 +225,7 @@ $container_id = $_REQUEST["containerId"];
         this.bAdd.comeIn(300);
         this.bEdit.comeOut(200);
       }
-
-      $("#size-layout").find("input:radio,#size-layout input:checkbox,input[data-slider]").change(function (event) {
-        _this.setClasses();
-      });
     }
-
-    UISPanel.prototype.setClasses = function () {
-      panelVue.usedClasses;
-    };
 
     // Create and add new div to the page
     UISPanel.prototype.addPanel = function (pId) {
