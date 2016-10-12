@@ -13,52 +13,11 @@ namespace webroot;
  *
  * @author Eeliya
  */
-class LayoutsRepository implements \ew\CRUDRepository {
+class LayoutsRepository extends \ew\SimpleRepository {
 
-  public function __construct() {
-    require_once EW_PACKAGES_DIR . '/webroot/api/models/ew_ui_structures.php';
-  }
-
-  public function create($input) {
-    
-  }
-
-  public function delete($input) {
-    
-  }
-
-  public function read($input) {
-    if (isset($input->id)) {
-      return $this->find_by_id($input->id);
-    }
-
-    return $this->all();
-  }
-
-  public function update($input) {
-    
-  }
-
-  // ------ //
-
-  public function all($page = 0, $page_size = 100) {
-    if (is_null($page)) {
-      $page = 0;
-    }
-    if (is_null($page_size)) {
-      $page_size = 100;
-    }
-
-    $data = ew_ui_structures::take($page_size)->skip($page * $page_size)->get();
-
-    $result = new \ew\Result();
-
-    $result->total = ew_ui_structures::all()->count();
-    $result->size = $page_size;
-    $result->data = $data;
-
-    return $result;
-  }
+  protected $path_to_model = '/webroot/api/models/ew_ui_structures.php';
+  protected $model_name = 'webroot\ew_ui_structures';
+  protected $name = 'ew_ui_structures';
 
   public function find_by_id($id) {
     $result = new \ew\Result();

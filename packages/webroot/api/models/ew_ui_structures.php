@@ -16,9 +16,21 @@ namespace webroot;
 class ew_ui_structures extends \Illuminate\Database\Eloquent\Model {
 
   protected $table = 'ew_ui_structures';
+  protected $fillable = [
+      'name',
+      'template',
+      'template_settings',
+      'preview_url',
+      'structure'
+  ];
   protected $casts = [
       'template_settings' => 'object',
       'structure'         => 'array'
+  ];
+  public static $RULES = [
+      'name' => [
+          'required'
+      ]
   ];
 
   public function __construct(array $attributes = []) {

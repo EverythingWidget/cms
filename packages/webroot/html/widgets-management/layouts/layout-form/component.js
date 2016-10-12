@@ -729,27 +729,35 @@ UISForm.prototype.updateUIS = function (reload) {
   self.templateSettings = self.templateSettingsForm.serializeJSON();
   self.templateSettingsForm.trigger("getData");
 
-  $.post('api/webroot/widgets-management/update-uis', {
-    name: $('#name').val(),
-    template: $('#template').val(),
-    template_settings: self.templateSettings,
-    perview_url: $("#perview_url").val(),
-    structure: structure,
-    uisId: self.uisId,
-    defaultUIS: defaultUIS,
-    homeUIS: homeUIS
-  }, function (data) {
-    $("body").EW().notify(data).show();
-    $(document).trigger("uis-list.refresh");
-    $('#form-title').html("<span>Edit</span> " + data.data.data.title);
-    self.defaultStructure = structure;
-    if (reload === true) {
-      self.reloadFrame();
-    } else {
-      self.defaultStructure = self.createContentHeirarchy();
+  $.ajax({
+    method: 'put',
+    url: 'api/webroot/widgets-management/layouts/' + self.uisId,
+    data: {
+      name: $('#name').val(),
+      template: $('#template').val(),
+      template_settings: self.templateSettings,
+      perview_url: $("#perview_url").val(),
+      structure: structure,
+//      id: self.uisId,
+      defaultUIS: defaultUIS,
+      homeUIS: homeUIS
+    },
+    success: function (response) {
+      $("body").EW().notify(response).show();
+      $(document).trigger("uis-list.refresh");
+      $('#form-title').html("<span>Edit</span> " + response.data.name);
+      self.defaultStructure = structure;
+      if (reload === true) {
+        self.reloadFrame();
+      } else {
+        self.defaultStructure = self.createContentHeirarchy();
+      }
+      lock.dispose();
+    },
+    error: function () {
+      lock.dispose();
     }
-    lock.dispose();
-  }, "json");
+  });
 };
 
 UISForm.prototype.updateTemplateBody = function () {

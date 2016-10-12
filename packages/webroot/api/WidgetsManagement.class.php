@@ -97,6 +97,10 @@ class WidgetsManagement extends \ew\Module {
         "api/ew_form_uis_tab",
         "api/delete_uis",
         "api/clone_uis",
+        'api/layouts-create',
+        'api/layouts-read',
+        'api/layouts-update',
+        'api/layouts-delete',
         "html/ne-uis.php",
         'html/layouts/layout-form/component.php',
         'html/' . $this->get_index()
@@ -1327,15 +1331,19 @@ class WidgetsManagement extends \ew\Module {
     
   }
 
-  public function layouts_read($_input, $_response, $_parts__id) {
-    $_input->id = $_parts__id;
+  public function layouts_read($_input, $_response, $_identifier) {
+    $_input->id = $_identifier;
     $result = (new LayoutsRepository())->read($_input);
 
     return \ew\APIResponse::standard_response($_response, $result);
   }
 
-  public function layouts_update($_input, $_response) {
-    
+  public function layouts_update($_input, $_response, $_identifier) {
+    $_input->id = $_identifier;
+
+    $result = (new LayoutsRepository())->update($_input);
+
+    return \ew\APIResponse::standard_response($_response, $result);
   }
 
   public function layouts_delete($_input, $_response) {
