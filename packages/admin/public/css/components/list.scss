@@ -5,14 +5,14 @@
     margin: 0;
 
     li, .list-item {    
-      margin: 0;
+      margin: 0 0 -1px;
       padding: 15px 25px 0;
       border: none;
       position: relative;
 
       &:after {
         content: ' ';
-        border-bottom: 1px solid #ddd;
+        border-bottom: 1px solid #eee;
         display: block;
         margin: 15px 0 0;
       }
@@ -29,7 +29,8 @@
         cursor: pointer;
 
         &:hover {
-          background-color: rgba(0,0,0,.05);
+          z-index: 1;
+          background-color: #eee;
         }
       }
 
@@ -44,21 +45,37 @@
         }
       }
 
-      .actions {
+      > .actions {
+        background-color: #fff;
         opacity: 0;
+        transform: scale(.9);
         position: absolute;
         display: flex;
         justify-content: flex-end;
         align-items: center;
-        top: 0;
+        top: 15px;
         right: 25px;
-        height: 100%;
-        transition: opacity 0.2s;        
+        min-width: 54px;
+        height: 54px;
+        padding: 5px;
+        border-radius: 27px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,.1);
+        transition-property: opacity,transform;
+        transition-duration: 0.2s;
+
+        > .btn {          
+          margin-right: 10px;
+
+          &:last-child {
+            margin: 0;
+          }
+        } 
       }
 
       &:hover {
         .actions {
           opacity: 1;
+          transform: scale(1);
         }
       }
     }
@@ -81,14 +98,19 @@
 
   &.no-divider {
     li, .list-item {
+      margin: 0;
       border-bottom: none;
+
+      > .actions {
+        bottom: 0;    
+      }
     }
   }
 
   .secondary {
     color: #888;
   }
-  
+
   .subheading {
     color: #888;
     margin: 10px 0;

@@ -1,5 +1,6 @@
-@import url(https://fonts.googleapis.com/css?family=Roboto:400,500,300,700,900);
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,500,600,300,700,900);
 
+@import "components/typography";
 @import "components/media-xs";
 @import "components/form";
 @import "components/card";
@@ -2876,9 +2877,17 @@ body.dragging,body.dragging * {
 
 label.small .tag {
   float: left;
-  margin: 2px;
+  margin: 4px 5px 1px 0;
   font-size: 13px;
-  font-weight: 400;
+  font-weight: 600;
+  border-radius: 12px;
+  padding: 3px 10px;
+  background-color: #e0e9ef;
+  color: rgba(#000,.85);
+  
+  &:last-child {
+    margin-right: 0; 
+  }
 }
 
 a.link {

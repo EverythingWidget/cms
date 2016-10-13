@@ -19,7 +19,7 @@ function get_properties_form() {
       <label>tr{Class}</label>
       <input id="style_class" name="style_class" class="text-field" v-on:keyup.space="updateStyleClasses()" v-on:blur="updateStyleClasses()" v-model="styleClassesText">
       <label class="block-row small" id="used-classes">
-        <span class='tag label label-info'
+        <span class='tag label'
               v-for="class in containerClasses">
           {{ class }}
         </span>
