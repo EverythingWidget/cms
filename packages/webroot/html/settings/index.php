@@ -56,4 +56,16 @@
       <input class="text-field" name="webroot/google/recaptcha/secret-key" />
     </system-field>   
   </div>
+  
+  <div  class='card-header top-devider'>
+    <h1>Facebook Services</h1>
+  </div>
+  <div class='card-content'>
+    <h3>Social Plugins</h3>
+    <system-field class="field">
+      <label>tr{App ID}</label>
+      <input class="text-field" name="webroot/facebook/app-id" />
+    </system-field>    
+  </div>
+  
 </div>

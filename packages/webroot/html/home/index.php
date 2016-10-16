@@ -5,20 +5,8 @@ global $rootAddress, $pageAddress;
 $current_path = str_replace(EW_DIR, '', $_SERVER['REQUEST_URI']);
 $app = "webroot";
 
-$currentAppConf = EWCore::call_api("admin/api/settings/read-settings", [
-            "app_name" => "webroot"
-        ])['data'];
-
-$website_title = $currentAppConf["webroot/title"];
-$page_description = ($current_path === '/' || !$current_path) ? $currentAppConf["webroot/description"] : null;
-$website_keywords = $currentAppConf["webroot/keywords"];
-$favicon = $currentAppConf["webroot/favicon"];
-$google_analytics_id = $currentAppConf["webroot/google-analytics-id"];
-
 $_SESSION['ROOT_DIR'] = EW_ROOT_DIR;
 $_REQUEST['cmdResult'] = '';
-
-\webroot\WidgetsManagement::set_html_keywords($website_title . ',' . $website_keywords);
 
 webroot\WidgetsManagement::include_html_link(["rm/public/css/bootstrap.css"]);
 
@@ -42,8 +30,8 @@ if (file_exists($template_php)) {
   $template = new \template();
   //$uis_data = json_decode(admin\WidgetsManagement::get_uis($_REQUEST["_uis"]), true);
   $template_settings = $_REQUEST['_uis_template_settings'];
-  
-  if(is_array($template_settings)) {
+
+  if (is_array($template_settings)) {
     $template_settings = json_encode($template_settings);
   }
 
@@ -59,20 +47,27 @@ if (file_exists($template_php)) {
   }
 }
 
-// if template.js exist, then include it in HTML_SCRIPTS
-/* $template_js = EW_PACKAGES_DIR . '/rm/public/' . $_REQUEST["_uis_template"] . '/template.js';
-  if (file_exists($template_js)) {
-  \webroot\WidgetsManagement::add_html_script([
-  'src' => 'public/rm/' . $_REQUEST["_uis_template"] . '/template.js'
+$currentAppConf = webroot\WidgetsManagement::get_page_info();
+
+$website_title = $currentAppConf["title"];
+$page_description = $currentAppConf["description"];
+$website_keywords = $currentAppConf["keywords"];
+$favicon = $currentAppConf["favicon"];
+$google_analytics_id = $currentAppConf["google-analytics-id"];
+
+if ($page_description) {
+  \webroot\WidgetsManagement::set_meta_tag([
+      'name'    => 'description',
+      'content' => $page_description
   ]);
-  } */
-//die(webroot\WidgetsManagement::get_html_title());
-$html_keywords_string = webroot\WidgetsManagement::get_html_title();
-$HTML_TITLE = ($current_path === '/' || !$current_path) ? $website_title : $html_keywords_string;
+}
+
+$HTML_TITLE = $website_title;
 $HTML_KEYWORDS = webroot\WidgetsManagement::get_html_keywords();
 $HTML_SCRIPTS = webroot\WidgetsManagement::get_html_scripts();
 $HTML_LINKS = webroot\WidgetsManagement::get_html_links();
 $HTML_CSS = webroot\WidgetsManagement::get_html_links_concatinated();
+$HTML_META_TAGS = webroot\WidgetsManagement::get_meta_tags();
 ?>
 <!DOCTYPE html> 
 <html>
@@ -82,10 +77,8 @@ $HTML_CSS = webroot\WidgetsManagement::get_html_links_concatinated();
     <meta name="viewport" content="width=device-width, initial-scale=1" />  
 
     <?php
+    echo $HTML_META_TAGS;
     echo "<title>$HTML_TITLE</title>";
-    if ($page_description) {
-      echo "<meta name='description' content='$pageDescription'/>";
-    }
     echo "<meta name='keywords' content='$HTML_KEYWORDS'/>";
     echo "<link rel='shortcut icon' href='$favicon'>";
     echo "<link rel='apple-touch-icon-precomposed' href='$favicon'>";

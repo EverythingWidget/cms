@@ -1,0 +1,43 @@
+
+.panel {
+  
+  &.clearfix {
+    content: '';
+  }
+  
+  &.box {
+    /*@include box-shadow();*/
+    background-color: #fff;   
+  }
+
+  &.header {   
+    @include box-shadow();
+    background-color: #263238;
+    padding: 15px;
+    min-height:70px;
+    position: relative;
+    z-index: 10;
+    margin: 25px auto;
+    overflow: hidden;    
+  }
+
+  &.section {
+    background-color: #fff;
+    border:0px solid rgba(0,0,0,.35);
+    border-width:0px 0px;
+    margin: 0 auto;
+    padding: 0;
+    float: none;
+    display: block;
+    box-shadow:0px 1px 3px rgba(0,0,0,.14), 0 2px 5px rgba(0,0,0,.1);
+    border-radius: 8px;
+  }
+
+  &.section:last-child {
+  }
+
+  &.margin-top {
+    margin-top: 30px;
+  }
+
+}

@@ -37,6 +37,7 @@ $font-akcent-color: #00a651;
 $font-akcent-color-dark: #04C160;
 $nav-bar-bg: rgba(255,255,255,.9);
 
+@import 'icons.scss';
 @import 'blocks.scss';
 @import 'panels.scss';
 @import 'widgets.scss';

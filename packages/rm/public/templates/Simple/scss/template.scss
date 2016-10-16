@@ -7,17 +7,20 @@ and open the template in the editor.
     Created on : Mar 14, 2015, 12:56:29 PM
     Author     : Eeliya
 */
-@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,700);
+@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,500,700);
+@import "mixins.scss";
 @import "widgets.scss";
+@import "panels.scss";
 
 @media (min-width: 1px) and (max-width: 991px) {
   .panel.width-960 {
     width: 600px;
-    margin: 0 auto;
+    margin-left: auto;
+    margin-right: auto;
+    /*margin: 0 auto;*/
   }
 
   .panel.header {
-    width: 580px;
   }
 
   .timer .days-wrapper,
@@ -44,12 +47,13 @@ and open the template in the editor.
 @media (min-width: 992px) {
   .panel.width-960 {
     width: 960px;
-    margin: 0 auto;
+    margin-left: auto;
+    margin-right: auto;
+    /*margin: 0 auto;*/
 
   }
 
   .panel.header {
-    width: 900px;
   }
 
   .timer .days-wrapper,
@@ -73,7 +77,7 @@ and open the template in the editor.
 
 @media (min-width: 1360px) {
   .panel.header {
-    width: 1080px;
+    /*width: 1080px;*/
   }
 
   .timer .days-wrapper,
@@ -101,7 +105,8 @@ html {
   position: relative;
 } 
 
-html,body{
+html,body {
+  background-color: #F5F5F5;
   font-family: 'Source Sans Pro', sans-serif, Tahoma;
   padding:0px;
   font-size:1.2em;
@@ -109,41 +114,32 @@ html,body{
 }
 
 body {
-  background-color: #ddd;
   overflow-x: hidden;
   overflow-y: auto;
-}
-
-.panel.header {
-  background-color: #fff;
-  padding:15px;
-  border-bottom:0px solid rgba(0,0,0,.35);
-  min-height:70px;
-  box-shadow:0px 5px 7px rgba(0,0,0,.03), 0 5px 15px rgba(0,0,0,.1);
-  position: relative;
-  z-index: 10;
-  margin: 0 auto;
-
-  border-bottom-left-radius: 16px;
-  border-bottom-right-radius: 16px;
-  overflow: hidden;
 }
 
 .container {
   width:100%;
   padding-bottom: 100px;
 }
+
+.block.float {
+  position: fixed;
+  width: 100%;
+  
+  + .block {
+    margin-top: 140px;
+  }
+}
+
 .block.section {
-  background-color: #f7f7f7;
   padding:0px;
   z-index: 2;
   position: relative;
 }
 
-.block.middle {
-  background-color: #f7f7f7;
-  padding-bottom: 75px;
-  box-shadow:0px 3px 7px rgba(0,0,0,.14), 0 8px 18px rgba(0,0,0,.1);
+.block.middle {  
+  padding-bottom: 60px;
   z-index: 1;
 }
 
@@ -173,53 +169,10 @@ body {
   margin: 5px 0;
 }
 
-.section.box, .panel.box, .widget.box {
-  background-color: #fff;
-  border:2px solid #222;
-  padding:15px;
-  box-shadow:0px 2px 3px rgba(0,0,0,.2);
+.section.box, .widget.box {
+  @include box-shadow();
+  padding: 15px;
 }
-
-.panel.section {
-  background-color: #fff;
-  border:0px solid rgba(0,0,0,.35);
-  border-width:0px 0px;
-  margin: 0 auto;
-  padding: 0;
-  float: none;
-  display: block;
-  box-shadow:0px 1px 3px rgba(0,0,0,.14), 0 2px 5px rgba(0,0,0,.1);
-  border-radius: 8px;
-}
-
-.panel.section:last-child {
-}
-
-.panel.margin-top {
-  margin-top: 30px;
-}
-
-.widget.menu-bar {
-  display: block; 
-} 
-
-.menu-bar ul{list-style:none;margin:0px;overflow:hidden;padding:0;}
-.menu-bar li{float:left;margin-right:10px;}
-.menu-bar li.active a,.menu-bar a.active {
-  background-color: #222;
-  color: #fff;  
-}
-
-.menu-bar a {
-  display:block;
-  padding:3px 15px;
-  line-height:30px;
-  border-radius:18px;
-  color:#222;
-  text-transform: uppercase;
-}
-
-.menu-bar a:hover{background-color:#ddd;}
 
 .timer .days-wrapper,
 .timer .hours-wrapper,

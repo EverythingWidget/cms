@@ -1626,8 +1626,8 @@ ul.actions-bar li label {
 ul.layout-components {
   margin: 0;
   padding: 0 5px;
-  font-size: 16px;
-  font-weight: 300;
+  font-size: 15px;
+  font-weight: 400;
   list-style: none;
   overflow: hidden;
   display: block;
@@ -1647,7 +1647,7 @@ ul.layout-components {
       margin-bottom: 6px;
     }
 
-    .item-label {
+    .item-label {      
       text-decoration: none;
       color: #888;
       padding: 6px 15px;
@@ -1698,6 +1698,12 @@ ul.layout-components li.block li.block {
 ul.layout-components li.panel {
   border-radius: 0;
   margin-right: 0;
+  
+  > .item-label {
+    border-top-left-radius: 16px;
+    border-bottom-left-radius: 16px;
+  }
+  
   > ul {
     min-height: 40px;
     padding-bottom: 20px;
@@ -1719,8 +1725,12 @@ ul.layout-components li.widget > .item-label {
   float: none;
   display: block;
   margin-right: 0;
+  text-transform: none;
+  font-size: 13px;
+  font-weight: 500;
   box-shadow: 0 2px 3px rgba(0,0,0,.2);
   transition: all .2s;
+
 
   + .close-icon {
     top: 6px;
@@ -2884,7 +2894,7 @@ label.small .tag {
   padding: 3px 10px;
   background-color: #e0e9ef;
   color: rgba(#000,.85);
-  
+
   &:last-child {
     margin-right: 0; 
   }

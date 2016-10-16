@@ -26,5 +26,9 @@ class Result extends \stdClass {
   public function __construct() {
     $this->data = null;
   }
+  
+  public function has_error() {
+    return isset($this->error) || $this->error !== null;
+  }
 
 }

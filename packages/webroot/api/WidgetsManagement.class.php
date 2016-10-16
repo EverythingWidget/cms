@@ -16,9 +16,11 @@ class WidgetsManagement extends \ew\Module {
   private static $ui_index = 0;
   private static $current_timestamp = 0;
   private static $title = "";
+  private static $html_description = '';
+  private static $html_meta_tags = [];
   private static $html_scripts = array();
   private static $html_included_links = [];
-  private static $html_links = array();
+  private static $html_links = [];
   private static $html_keywords = [];
   private static $widgets_feeders = array();
   protected $resource = "api";
@@ -719,6 +721,7 @@ class WidgetsManagement extends \ew\Module {
       $count++;
       $apps[] = WidgetsManagement::get_widget_details($widget_dir);
     }
+    
     $out = [
         "totalRows" => $count,
         "result"    => $apps
@@ -757,6 +760,8 @@ class WidgetsManagement extends \ew\Module {
         $apps[] = WidgetsManagement::get_widget_details($widget_dir);
       }
     }
+    
+    ksort($apps);
 
     return $apps;
   }
@@ -881,11 +886,6 @@ class WidgetsManagement extends \ew\Module {
     ];
   }
 
-  /* private static function cache_file($file)
-    {
-
-    } */
-
   public static function add_html_script($src, $script = "") {
     if (is_array($src)) {
       self::$html_scripts[] = $src;
@@ -984,6 +984,50 @@ class WidgetsManagement extends \ew\Module {
     self::$html_links[] = $href;
   }
 
+  public static function set_meta_tag($tag) {
+    self::$html_meta_tags[] = $tag;
+  }
+
+  public static function get_meta_tags() {
+    $meta_tags = '';
+
+    foreach (self::$html_meta_tags as $tag) {
+      $meta_tags .= '<meta ' .
+              ($tag['property'] ? "property=\"{$tag['property']}\" " : '') .
+              ($tag['name'] ? "name=\"{$tag['name']}\" " : '') .
+              "content=\"" . ($tag['content']) . "\" />";
+    }
+
+    return $meta_tags;
+  }
+
+  public static function get_page_info() {
+    $current_path = str_replace(EW_DIR, '', $_SERVER['REQUEST_URI']);
+
+    $currentAppConf = EWCore::call_api('admin/api/settings/read-settings', [
+                'app_name' => 'webroot'
+            ])['data'];
+
+
+    static::set_html_keywords($currentAppConf["webroot/title"] . ',' . $currentAppConf["webroot/keywords"]);
+
+    $html_keywords_string = static::get_html_title();
+    $description = static::get_html_description();
+
+    return [
+        'url'                 => CURRENT_URL,
+        'title'               => ($current_path === '/' || !$current_path) ? $currentAppConf["webroot/title"] : $html_keywords_string,
+        'description'         => ($current_path === '/' || !$current_path) ? $currentAppConf["webroot/description"] : $description,
+        'keywords'            => $currentAppConf["webroot/keywords"],
+        'favicon'             => $currentAppConf["webroot/favicon"],
+        'google-analytics-id' => $currentAppConf["webroot/google-analytics-id"]
+    ];
+  }
+
+  public static function set_html_description($description) {
+    self::$html_description = $description;
+  }
+
   public static function include_html_link($href) {
     self::$html_included_links = array_unique(array_merge(self::$html_included_links, $href));
   }
@@ -1044,6 +1088,10 @@ class WidgetsManagement extends \ew\Module {
 
   public static function get_html_title() {
     return self::$title;
+  }
+
+  public static function get_html_description() {
+    return self::$html_description;
   }
 
   public static function set_html_keywords($value) {
@@ -1328,7 +1376,21 @@ class WidgetsManagement extends \ew\Module {
   }
 
   public function layouts_create($_input, $_response) {
-    
+    $_input->id = $_identifier;
+
+    $result = (new LayoutsRepository())->create($_input);
+
+    if (!$result->has_error()) {
+      if (boolval($_input->defaultUIS) === true) {
+        $this->set_uis("@DEFAULT", $_input->id);
+      }
+
+      if (boolval($_input->homeUIS) === true) {
+        $this->set_uis("@HOME_PAGE", $_input->id);
+      }
+    }
+
+    return \ew\APIResponse::standard_response($_response, $result);
   }
 
   public function layouts_read($_input, $_response, $_identifier) {
@@ -1342,6 +1404,16 @@ class WidgetsManagement extends \ew\Module {
     $_input->id = $_identifier;
 
     $result = (new LayoutsRepository())->update($_input);
+
+    if (!$result->has_error()) {
+      if (filter_var($_input->defaultUIS, FILTER_VALIDATE_BOOLEAN) === true) {
+        $this->set_uis("@DEFAULT", $_input->id);
+      }
+
+      if (filter_var($_input->homeUIS, FILTER_VALIDATE_BOOLEAN) === true) {
+        $this->set_uis("@HOME_PAGE", $_input->id);
+      }
+    }
 
     return \ew\APIResponse::standard_response($_response, $result);
   }

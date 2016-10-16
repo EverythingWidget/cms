@@ -82,13 +82,17 @@ $protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') ||
 
 // Set the language for the root url
 if ($_SERVER['SERVER_PORT'] !== "80" && $_SERVER['SERVER_PORT'] !== "443") {
+  $host_url = $protocol . $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'];
   $u = $protocol . $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'] . EW_DIR_URL . $url_language;
 }
 else {
+  $host_url = $protocol . $_SERVER['SERVER_NAME'];
   $u = $protocol . $_SERVER['SERVER_NAME'] . EW_DIR_URL . $url_language;
 }
 
+define('HOST_URL', $host_url);
 define('EW_ROOT_URL', $u);
+define('CURRENT_URL', $host_url . $_SERVER['REQUEST_URI']);
 
 
 

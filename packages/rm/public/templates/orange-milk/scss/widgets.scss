@@ -926,7 +926,7 @@
           overflow: hidden;
           display: inline-block;
           margin: 0 20px 20px;
-          
+
           &:hover {
             background-color: rgba(255,255,255,.1);
           }
@@ -945,7 +945,7 @@
 
   &.post-comment {
     overflow: hidden;
-    
+
     input, textarea {
       width: 80%;
       border: 2px solid $akcent-background-color;
@@ -1064,6 +1064,50 @@
 
   &.divider {
     border-bottom: 1px solid #ddd;
+  }
+}
+
+.widget.social-links {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+
+  .link {
+    width: 64px;
+    height: 64px;
+
+
+    > .icon {
+      font-family: 'si';
+      display: block;
+      width: 64px;
+      height: 64px;
+      line-height: 64px;
+      text-align: center;
+      border-radius: 6px;
+      font-size: 35px;
+      color:#fff;
+      background-color: #3e5b98;
+
+      &::before {
+        font-style: normal;
+        font-family: 'si';
+        display: block;
+        height: 100%;
+      }
+      
+      &:hover {
+        background-color: lighten(#3e5b98,10%);
+      }
+    }
+
+    > .icon-facebook {
+
+      &::before {
+        content:'\e041';  
+      }
+
+    }
   }
 }
 

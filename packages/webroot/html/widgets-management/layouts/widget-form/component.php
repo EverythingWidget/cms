@@ -195,11 +195,12 @@ $panelId = $_REQUEST['panelId'];
       self.usedClassElement = $("#used-classes");
       // If widgetId exist, set data for widget control panel
 
-      var containerClasses = widget.data("container").prop("class").replace('widget-container', '').split(' ').filter(Boolean);
-      var styleClasses = widget.prop("class").replace('widget', '').split(' ').filter(Boolean);
+      var containerClasses = [];
+      var styleClasses = [];
       $("#style_id").val(widget.prop("id")).change();
       if (self.widgetId != "") {
-
+        containerClasses = widget.data("container").prop("class").replace('widget-container', '').split(' ').filter(Boolean);
+        styleClasses = widget.prop("class").replace('widget', '').split(' ').filter(Boolean);
         // If true, set values for the fields of widget control panel form
         if (self.setData === true) {
 
@@ -216,24 +217,12 @@ $panelId = $_REQUEST['panelId'];
         });
       }
 
-      $("#size-layout").find("input").change(function (event) {
-        containerClasses = [];
-        $.each($("#size-layout input[data-slider]:not(:disabled)"), function (k, v) {
-          containerClasses.push(v.name + v.value);
-        });
-        $.each($("#size-layout input:radio:checked:not(:disabled),#size-layout input:checkbox:checked:not(:disabled)"), function (k, v) {
-          containerClasses.push($(v).val());
-        });
-
-        self.vue.containerClasses = containerClasses.filter(Boolean);
-      });
-
       self.vue = new Vue({
         el: '#widget-control-panel',
         data: {
           styleClasses: styleClasses,
           availableClasses: <?= json_encode(EWCore::parse_css_clean(EW_PACKAGES_DIR . '/rm/public/' . $_REQUEST["template"] . '/template.css', 'widget')) ?>,
-          containerClasses: containerClasses,
+          containerClasses: populateLayout(containerClasses),
           widgetClasses: [],
           tempClasses: []
         },
@@ -277,10 +266,62 @@ $panelId = $_REQUEST['panelId'];
         }
       });
 
+      $("#size-layout").find("input").change(function (event) {
+        self.vue.containerClasses = readLayoutClasses();
+      });
+
+      self.vue.containerClasses = readLayoutClasses();
+
       self.uisWidgetForm.fadeIn(300);
       $("#style_class").change();
     });
   };
+
+  function populateLayout(classes) {
+    var layoutClasses = [];
+
+    var $sizeAndLayout = $("#size-layout");
+    $.each($sizeAndLayout.find('input:radio, input:checkbox'), function (k, field) {
+      var $v = $(field), value = $v.val();
+      $.each(classes, function (i, className) {
+        if (value === className) {
+          $v.click();
+          $v.prop("checked", true);
+          layoutClasses.push(classes.splice(i, 1)[0]);
+        }
+      });
+    });
+
+    $.each($sizeAndLayout.find('input[data-slider]'), function (k, field) {
+      $.each(classes, function (i, className) {
+        if (!className)
+          return;
+
+        var sub = className.match(/(\D+)(\d*)/);
+        if (sub && $(field).attr("name") === sub[1]) {
+          $(field).val(sub[2]).change();
+          layoutClasses.push(classes.splice(i, 1)[0]);
+        }
+      });
+    });
+
+    return layoutClasses.filter(Boolean);
+  }
+
+  function readLayoutClasses() {
+    var layoutClasses = [];
+
+    var $sizeAndLayout = $("#size-layout");
+    $.each($sizeAndLayout.find("input[data-slider]:not(:disabled)"), function (k, v) {
+      layoutClasses.push(v.name + v.value);
+    });
+
+    $.each($sizeAndLayout.find("input:radio:checked:not(:disabled), input:checkbox:checked:not(:disabled)"), function (k, v) {
+      layoutClasses.push($(v).val());
+    });
+
+    return layoutClasses.filter(Boolean);
+  }
 
   UISWidget.prototype.cancel = function () {
     this.uisWidgetForm.stop().fadeIn(300);
