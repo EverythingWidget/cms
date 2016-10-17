@@ -38,10 +38,11 @@ $default_page = webroot\WidgetsManagement::get_path_uis("@DEFAULT");
       url: "api/webroot/widgets-management/get-all-pages-uis-list/",
       pageSize: 30,
       onDelete: function (id) {
+        alert()
         this.confirm("Are you sure?", function () {
           //EW.lock(pageUIS.allUISList.table, "");
           var row = this;
-          $.post("api/webroot/api/widgets-management/set-uis", {
+          $.post("api/webroot/widgets-management/set-uis", {
             path: row.data("field-path")
           }, function (data) {
             $("input[name='" + row.data("field-path") + "']").val("").change();
@@ -122,10 +123,9 @@ if ($path_uis_list) {
     $.post('api/webroot/widgets-management/set-uis', {
       path: "@HOME_PAGE",
       uisId: uisId.data("field-id")
-    },
-            function (data) {
-              $("body").EW().notify(data).show();
-            }, "json");
+    }, function (data) {
+      $("body").EW().notify(data).show();
+    });
   };
 
   PageUIS.prototype.setUserHomePageUIS = function (uisId) {

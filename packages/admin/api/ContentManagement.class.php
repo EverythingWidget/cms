@@ -570,6 +570,10 @@ class ContentManagement extends \ew\Module {
   }
 
   public function ew_page_feeder_articles($_response, $id, $language = "en") {
+    if(!is_numeric($id)) {
+      $id = EWCore::slug_to_id($id, 'ew_contents');
+    }
+    
     $articles = $this->contents_labels($_response, $id, "admin_ContentManagement_language", $language);
     $article = [];
 

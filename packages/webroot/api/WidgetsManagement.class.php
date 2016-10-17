@@ -1167,7 +1167,7 @@ class WidgetsManagement extends \ew\Module {
 
     $stm->close();
     $db->close();
-    return json_encode($res);
+    return $res;
   }
 
   public static function get_path_uis($path = null) {

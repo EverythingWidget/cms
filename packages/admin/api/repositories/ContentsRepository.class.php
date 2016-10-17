@@ -30,6 +30,10 @@ class ContentsRepository implements \ew\CRUDRepository {
         "integer"  => "parent_id"
     ]);
 
+    if (!isset($input->parent_id)) {
+      $input->parent_id = 0;
+    }
+
     if (!$validator->validate()) {
       $result->error = 503;
       $result->message = 'ContentsRepository: REST create functionality is not implemented';
@@ -37,7 +41,6 @@ class ContentsRepository implements \ew\CRUDRepository {
 
       return $result;
     }
-
 
     $content = new ew_contents;
     $content->author_id = $_SESSION['EW.USER_ID'];
@@ -131,6 +134,10 @@ class ContentsRepository implements \ew\CRUDRepository {
       $result->message = 'content title can not be empty';
 
       return $result;
+    }
+
+    if (!isset($input->parent_id)) {
+      $input->parent_id = 0;
     }
 
     $content = ew_contents::find($input->id);

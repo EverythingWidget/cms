@@ -1,0 +1,52 @@
+.widget.main-menu {
+  height: 100%;
+
+  > ul {
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: flex-end;
+    height: 100%;
+    list-style: none;
+    font-size: 1.1em;
+
+    > li {
+      margin: 0 15px;
+
+      > a {
+        font-weight: 300;
+        display: block;
+        color: #fff;
+        text-align: center;
+        line-height: 22px;
+        padding: 17px 6px 15px;
+        border-bottom: 2px solid transparent;
+      }
+
+      &:hover {
+        > a {
+          background-color: rgba(#fff, .1);
+        }
+      }
+
+      &.active {
+        > a {
+          border-color: #fff;
+        }
+      }
+    }
+  }
+}
+
+.widget.logo {
+  float: left;
+  height: 100%;
+  flex-direction: column;
+  justify-content: center;
+
+  > img {
+    display:block;
+    height: 50px;
+    margin: 3px;
+  }
+}

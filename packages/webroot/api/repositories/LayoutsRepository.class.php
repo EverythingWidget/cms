@@ -33,12 +33,12 @@ class LayoutsRepository extends \ew\SimpleRepository {
       return $result;
     }
 
-    if ($default_uis["id"] == $id) {
-      $layout["uis-default"] = true;
+    if ($default_uis['uis_id'] == $id) {
+      $layout['uis-default'] = true;
     }
 
-    if ($home_uis["id"] == $id) {
-      $layout["uis-home-page"] = true;
+    if ($home_uis['uis_id'] == $id) {
+      $layout['uis-home-page'] = true;
     }
 
     $result->data = $layout;

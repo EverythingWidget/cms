@@ -1172,6 +1172,19 @@ class EWCore {
     return ($numHits > 0) ? ($slug . '-' . $numHits) : $slug;
   }
 
+  public static function slug_to_id($slug, $table_name, $field_name = "slug") {
+    $pdo = static::get_db_PDO();
+    $query = "SELECT id FROM {$table_name} WHERE {$field_name} LIKE :value";
+    $statement = $pdo->prepare($query);
+    $statement->bindParam(':value', $slug, PDO::PARAM_STR);
+
+    if ($statement->execute()) {
+      return intval($statement->fetch(PDO::FETCH_ASSOC)['id']);
+    }
+
+    return null;
+  }
+
   /** Add a ui element to the specified place holder
    * 
    * @param String $placeholder_name place holder id 
@@ -1303,7 +1316,7 @@ class EWCore {
                       else {
                         $verb[2] = 'read';
                         $request_url = EW_ROOT_URL . "$resource_name/$app/$module_name/$method_name";
-                      }                                     
+                      }
                     }
                   }
 

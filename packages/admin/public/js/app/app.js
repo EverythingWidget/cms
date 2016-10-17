@@ -177,13 +177,14 @@ window.addEventListener('load', function () {
           url: "html/admin/content-management/link-chooser/link-chooser-media.php",
           params: {
             callback: settings.callbackName
-          }
+          },
+          fresh: true
         }, function (module) {
-          console.log(module)
+          console.log(module);
           //imageChooserDialog.find(".form-content:first").append(data);
           //imageChooserDialog.prepend("<div class='header-pane row'><h1 class='form-title'>Media</h1></div>");
           imageChooserDialog.html(module.html);
-          imageChooserDialog[0].selectMedia = function (image) {
+          module.scope.selectMedia = function (image) {
             $element.val(image.src).change();
             imageChooserDialog.dispose();
           };

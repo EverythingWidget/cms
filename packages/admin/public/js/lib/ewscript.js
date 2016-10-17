@@ -452,7 +452,7 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler) {
       }
 
       if (element.is(":radio") || element.is(":checkbox")) {
-        if (element.val() === value && !element.is(":checked")) {
+        if (element.val() === (value + '') && !element.is(":checked")) {
           element.click();
           element.prop("checked", true).change();
         }
@@ -502,7 +502,7 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler) {
     });
 
     form.data("form-data", {}).trigger("refresh", [{}]);
-    
+
     return;
   }
 
@@ -1462,8 +1462,8 @@ EWTable.prototype.createRow = function (columnValues, rowCounter) {
       action[0].addEventListener('click', function () {
         btnAction.apply(ewTable, [tableRow]);
       });
-      
-      actionsCellBtns.push(action);      
+
+      actionsCellBtns.push(action);
     });
   }
   //delete val.id;

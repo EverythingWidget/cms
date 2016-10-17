@@ -78,11 +78,11 @@
     var photos = new Photos(Scope, state);
 
     var selectMediaAction = EW.addActionButton({
-      text: "",
+      text: "<i class='icon-ok'></i>",
       handler: function () {
         photos.selectMedia(photos.data.activeImage);
       },
-      class: "btn-float btn-success icon-ok pos-se",
+      class: "btn-float btn-success pos-se",
       parent: $(Scope.uiViews.main_actions)
     }).hide();
 

@@ -313,7 +313,9 @@ $panelId = $_REQUEST['panelId'];
 
     var $sizeAndLayout = $("#size-layout");
     $.each($sizeAndLayout.find("input[data-slider]:not(:disabled)"), function (k, v) {
-      layoutClasses.push(v.name + v.value);
+      if (v.value) {
+        layoutClasses.push(v.name + v.value);
+      }
     });
 
     $.each($sizeAndLayout.find("input:radio:checked:not(:disabled), input:checkbox:checked:not(:disabled)"), function (k, v) {

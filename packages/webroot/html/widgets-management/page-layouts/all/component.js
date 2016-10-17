@@ -36,7 +36,7 @@ AllLayoutsStateHandler.prototype.init = function () {
     onDelete: function (id) {
       this.confirm("Are you sure?", function () {
         var row = this;
-        $.post("api/webroot/api/widgets-management/set-uis", {
+        $.post("api/webroot/widgets-management/set-uis", {
           path: row.data("field-path")
         }, function (data) {
           $("input[name='" + row.data("field-path") + "']").val("").change();
