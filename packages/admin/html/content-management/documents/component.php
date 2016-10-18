@@ -4,10 +4,10 @@
         v-on:drop="moveItem"
         v-on:dragover="isAllowed">
     <div class="card-title-action">
-      <button type="button" class="btn btn-text icon-back btn-circle"
+      <button type="button" class="btn btn-circle"
               transition="slide"              
               v-if="parentId"
-              v-on:click="goUp()"></button>
+              v-on:click="goUp()"><i class="icon-left-open-1"></i></button>
     </div>
 
     <div class="card-title-action-right"></div>

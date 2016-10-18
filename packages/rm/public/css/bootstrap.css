@@ -761,7 +761,7 @@ pre code {
   -ms-user-select: none;
   -o-user-select: none;
   user-select: none;
-  box-shadow: 0px 1px 3px 0px rgba(0,0,0,.24);
+  transition: all .2s;
   text-transform: uppercase;
   letter-spacing: .5px;
   font-weight: 600;
@@ -776,7 +776,7 @@ pre code {
 }
 .btn:hover{
   /*color: #333333;*/
-  background-color: #E0E0E0;
+  box-shadow: 0px 1px 3px 0px rgba(0,0,0,.24);
   text-decoration: none;  
 }
 .btn:active
