@@ -721,7 +721,7 @@ class WidgetsManagement extends \ew\Module {
       $count++;
       $apps[] = WidgetsManagement::get_widget_details($widget_dir);
     }
-    
+
     $out = [
         "totalRows" => $count,
         "result"    => $apps
@@ -760,7 +760,7 @@ class WidgetsManagement extends \ew\Module {
         $apps[] = WidgetsManagement::get_widget_details($widget_dir);
       }
     }
-    
+
     ksort($apps);
 
     return $apps;
@@ -1189,6 +1189,15 @@ class WidgetsManagement extends \ew\Module {
     else {
       return null;
     }
+  }
+
+  public static function path_layouts() {
+    $db = \EWCore::get_db_PDO();
+    $result = $db->prepare("SELECT path, ew_ui_structures.id AS id,name,template, template_settings,path FROM ew_pages_ui_structures,ew_ui_structures"
+            . " WHERE ew_pages_ui_structures.ui_structure_id = ew_ui_structures.id") or die($db->error);
+    $result->execute([$path]);
+
+    return $result->fetchAll(\PDO::FETCH_ASSOC);
   }
 
   public static function get_layout($uisId, $template = null, $template_settings = null) {

@@ -190,6 +190,14 @@
 
       return module;
     },
+    newStateHandler: function (scope, handler) {
+      var app = this.getHashParam('app');
+
+//      console.log('new state', app, scope._stateId);
+      if (app === scope._stateId) {
+        this.state(app, handler);
+      }
+    },
     /** This method will be called whenever System attempts to load an app
      * 
      * @param {Object} app
@@ -446,7 +454,8 @@
         //if (filtered.script) {
         var scopeUIViews = {};
         Array.prototype.forEach.call(parsedContent.uiView, function (item) {
-          var key = item.getAttribute('name').replace(/([A-Z])|(\-)|(\s)/g, function ($1) {
+          var uiViewName = item.getAttribute('system-ui-view') || item.getAttribute('name');
+          var key = uiViewName.replace(/([A-Z])|(\-)|(\s)/g, function ($1) {
             return "_" + (/[A-Z]/.test($1) ? $1.toLowerCase() : '');
           });
 
@@ -604,7 +613,7 @@
         html[i] = temp.appendChild(html[i]);
       }
       document.getElementsByTagName('body')[0].appendChild(temp);
-      var uiView = temp.querySelectorAll('system-ui-view');
+      var uiView = temp.querySelectorAll('system-ui-view,[system-ui-view]');
       temp.parentNode.removeChild(temp);
 
       return {

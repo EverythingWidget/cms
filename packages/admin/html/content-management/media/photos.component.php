@@ -277,12 +277,17 @@
 
   // ------ Registring the state handler ------ //
 
-  if (Scope._stateId === 'content-management/media/photos') {
-    Scope.primaryMenu = System.entity('ui/primary-menu');
+  Scope.primaryMenu = System.entity('ui/primary-menu');
+  System.newStateHandler(Scope, function (state) {
+    new MediaPhotos(Scope, state);
+  });
 
-    System.state('content-management/media/photos', function (state) {
-      new MediaPhotos(Scope, state);
-    });
-  }
+//  if (Scope._stateId === 'content-management/media/photos') {
+//    Scope.primaryMenu = System.entity('ui/primary-menu');
+//
+//    System.state('content-management/media/photos', function (state) {
+//      new MediaPhotos(Scope, state);
+//    });
+//  }
 
 </script>

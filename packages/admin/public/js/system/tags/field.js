@@ -1,3 +1,5 @@
+/* global xtag */
+
 (function () {
   var Field = {
     lifecycle: {
@@ -44,6 +46,7 @@
         }
       },
       inserted: function () {
+        xtag.fireEvent(this.xtag._input,'change');
       },
       removed: function () {
       }

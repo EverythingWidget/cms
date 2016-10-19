@@ -1,7 +1,37 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+/* global Scope, System, $php */
+
+System.newStateHandler(Scope, Handler);
+
+function Handler(state, scope) {
+  scope = scope || Scope;
+  console.log($php.url_layouts, $php.page_feeders);
+  var vue = new Vue({
+    el: scope.views.main,
+    data: {
+      pageFeeders: $php.page_feeders['data'] || [],
+      pathLayouts: $php.url_layouts || []
+    },
+    methods: {
+      getFeederLayout: function (feederURL,$input) {
+        console.log($input)
+        return this.pathLayouts.filter(function (item) {
+          return item.path === '/' + feederURL;
+        })[0] || {};
+      }
+    }
+  });
 
 
+  state.onInit = function () {
+    console.log('init');
+  };
+
+  state.onStart = function () {
+    console.log('start');
+  };
+
+  state.onStop = function () {
+    console.log('stop');
+  };
+
+}

@@ -1,4 +1,4 @@
-<form id="apps-page-uis" onsubmit="return false;">         
+<form id="apps-page-uis" onsubmit="return false;" system-ui-view="main">         
   <div class="card card-big center-block z-index-1">
     <div  class="card-header">
       <div class="card-title-action"></div>
@@ -29,33 +29,28 @@
         </system-field>
       </div>
     </div>
-    
+
     <div  class="card-header top-divider">
       <h1> App's pages </h1>
     </div>
     <div class="card-content">
-      <?php
-      $widgets_types_list = EWCore::call_api('webroot/api/widgets-management/get-widget-feeders', [
-                  'type' => 'page'
-      ]);
-
-      $pages = $widgets_types_list['data'];
-
-      //Show list of pages and their layouts
-      if (isset($pages)) {
-        foreach ($pages as $page) {
-          $uis = webroot\WidgetsManagement::get_path_uis("/{$page->url}");
-          echo '<div class="row">'
-          . "<input type='hidden'  name='{$page->url}_uisId' id='{$page->url}_uisId' value='{$uis["uis_id"]}'>"
-          . '<system-field class="field col-xs-12">'
-          . "<label>{$page->title} : optional</label>";
-          echo "<input class='text-field app-page-uis' name='/{$page->url}' id='{/$page->url}' value='{$uis["uis_name"]}'>";
-          echo "</system-field></div>";
-        }
-      }
-      ?>
+      <div class="row" v-for="feeder in pageFeeders">
+        <input type='hidden'  name='{{ feeder.url }}_uisId' id='{{ feeder.url }}_uisId' v-bind:value='feeder.uis_id'>
+        <system-field class="field">
+          <label>{{ feeder.url }}</label>
+          <input class='text-field app-page-uis' name='/{{ feeder.url }}' v-bind:value='getFeederLayout(feeder.url, this).name'>
+        </system-field>
+      </div>
     </div>      
   </div>
 </form>
+<?php
+$page_feeders = json_encode(EWCore::call_api('webroot/api/widgets-management/get-widget-feeders', [
+            'type' => 'page'
+        ]));
 
-<?= \ew\ResourceUtility::load_js_as_tag(__DIR__ . '/component.js', [], true) ?>
+echo \ew\ResourceUtility::load_js_as_tag(__DIR__ . '/component.js', [
+    'page_feeders' => $page_feeders,
+    'url_layouts'  => json_encode(webroot\WidgetsManagement::path_layouts())
+        ], true);
+?>
