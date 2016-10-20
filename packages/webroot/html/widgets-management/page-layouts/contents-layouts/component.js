@@ -12,8 +12,7 @@ function Handler(state, scope) {
       pathLayouts: $php.url_layouts || []
     },
     methods: {
-      getFeederLayout: function (feederURL,$input) {
-        console.log($input)
+      getFeederLayout: function (feederURL) {
         return this.pathLayouts.filter(function (item) {
           return item.path === '/' + feederURL;
         })[0] || {};

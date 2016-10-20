@@ -38,7 +38,7 @@
         <input type='hidden'  name='{{ feeder.url }}_uisId' id='{{ feeder.url }}_uisId' v-bind:value='feeder.uis_id'>
         <system-field class="field">
           <label>{{ feeder.url }}</label>
-          <input class='text-field app-page-uis' name='/{{ feeder.url }}' v-bind:value='getFeederLayout(feeder.url, this).name'>
+          <input class='text-field app-page-uis' name='/{{ feeder.url }}' v-bind:value='getFeederLayout(feeder.url).name'>
         </system-field>
       </div>
     </div>      
