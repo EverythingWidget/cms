@@ -41,26 +41,35 @@ if (!isset($_SESSION['login'])) {
         <div id="sections-menu-title" class="app-bar-title" v-bind:class="{ 'inline-loader' : isLoading }">
           {{ sectionsMenuTitle }}
         </div>
-        <div class="action-center">
-          <?php
-          if ($_SESSION['login']) {
-            echo '<a class="ExitBtn" href="api/admin/users-management/logout?url=' . EW_DIR_URL . 'html/admin/" ></a>';
-          }
-          ?>
-        </div>  
+        
+        <div class="app-bar-middle-section">
+          <system-field class="field action-item search-field">
+            <label>Search</label>
+            <input class="text-field" type="text" />
+          </system-field>
 
-        <div class="action-pane" >
-          <div id="action-bar-items" class="actions-bar action-bar-items" style="display:block;float:none;">
+          <div id="tabs-menu" class="tabs-bar" >
+            <ul class="nav nav-pills nav-black-text">
+              <li v-for="tab in subSections" v-bind:class="{'active': tab.state === currentSubSection}">
+                <a v-bind:href="tab.state" rel="subsection" v-on:click="goTo(tab, $event)">{{ tab.title }}</a>
+              </li>
+            </ul>
           </div>
         </div>
 
-        <div id="tabs-menu" class="tabs-bar" v-if="subSections && subSections.length">
-          <ul class="nav nav-pills nav-black-text">
-            <li v-for="tab in subSections" v-bind:class="{'active': tab.state === currentSubSection}">
-              <a v-bind:href="tab.state" rel="subsection" v-on:click="goTo(tab, $event)">{{ tab.title }}</a>
-            </li>
-          </ul>
-        </div>
+        <div class="action-center">
+          <?php
+          if ($_SESSION['login']) {
+            echo '<a class="ExitBtn action-item" href="api/admin/users-management/logout?url=' . EW_DIR_URL . 'html/admin/" ></a>';
+          }
+          ?>
+          
+        </div>  
+
+        <!--        <div class="action-pane" >
+                  <div id="action-bar-items" class="actions-bar action-bar-items" style="display:block;float:none;">
+                  </div>
+                </div>        -->
       </div>
 
       <div id="app-main-actions"></div>

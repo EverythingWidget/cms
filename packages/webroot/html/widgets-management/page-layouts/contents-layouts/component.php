@@ -34,7 +34,7 @@
       <h1> App's pages </h1>
     </div>
     <div class="card-content">
-      <div class="row" v-for="feeder in pageFeeders">
+      <div class="block-row" v-for="feeder in pageFeeders">
         <input type='hidden'  name='{{ feeder.url }}_uisId' id='{{ feeder.url }}_uisId' v-bind:value='feeder.uis_id'>
         <system-field class="field">
           <label>{{ feeder.url }}</label>

@@ -691,7 +691,7 @@ body.Admin {
     }*/
 
   &.tabs-bar-on {
-    top: 144px;
+    /*top: 144px;*/
   }
 
   & > .tabs-bar {
@@ -890,7 +890,7 @@ button {
 }
 
 .apps-menu-title, .apps-menu-link {
-  color: #000;
+  color: inherit;
   font-size: 16px;
   font-weight: 400;
   margin: 0;
@@ -963,16 +963,43 @@ a.apps-menu-link:hover {
   top: 0;
   width: 100%;
   overflow: hidden;
-  z-index: 5;
-  box-shadow: 0 1px 3px 0px rgba(0,0,0,0.06),0 0px 5px rgba(0,0,0,0.1);
+  z-index: 7;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 1px 4px rgba(0,0,0,.05) , 0 5px 15px rgba(0,0,0,.06);
+  /*box-shadow: 0 1px 3px 0px rgba(0,0,0,0.06),0 0px 5px rgba(0,0,0,0.1);*/
   transition: all .3s ease-out;
 
   &.tabs-bar-on {
-    height: 144px;
+    > .app-bar-middle-section {
+      height: 94px;
+    }
   }
 
-  .tabs-bar {
-    margin-left: 94px;
+  > .app-bar-middle-section {
+    height: 56px;
+    overflow: hidden;
+    display: flex;
+    flex: 1 0 auto;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    transition: all .3s ease-in-out;
+  }
+
+  .tabs-bar {        
+    margin: 0;    
+    display: flex;
+    align-items: center;
+    align-self: center;
+    
+    > ul {
+      padding: 0 15px;  
+    }
+
+    a {
+      padding: 8px 15px 6px;
+    }
   }
 }
 
@@ -988,13 +1015,12 @@ a.apps-menu-link:hover {
 
 .app-bar-title {
   float: left;
-  margin-left: 94px;
-  padding: 15px;
+  width: 260px;
+  padding: 27px 20px 27px 40px;
   font-size: 1.8em;
   line-height: 30px;
-  margin-top: 17px;
+  margin-top: 0;
   color: #1B2433;
-  padding-left: 40px;
 }
 
 .app-bar-title.inline-loader:after {
@@ -1698,12 +1724,12 @@ ul.layout-components li.block li.block {
 ul.layout-components li.panel {
   border-radius: 0;
   margin-right: 0;
-  
+
   > .item-label {
     border-top-left-radius: 16px;
     border-bottom-left-radius: 16px;
   }
-  
+
   > ul {
     min-height: 40px;
     padding-bottom: 20px;
