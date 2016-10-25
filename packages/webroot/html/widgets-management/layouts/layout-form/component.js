@@ -630,7 +630,7 @@ UISForm.prototype.getLayoutWidgets = function () {
 UISForm.prototype.init = function () {
   var self = this;
   // if uis id exist show the save change button, else show the save and start editing button
-  if (self.uisId && self.uisId != 0)
+  if (self.uisId && self.uisId !== 0)
   {
     $('#ew-uis-editor-tabs a[href="#template-control"]').show();
     $('#ew-uis-editor-tabs a[href="#inspector"]').show();
@@ -695,9 +695,9 @@ UISForm.prototype.addUIStructure = function () {
     template_settings: JSON.stringify(self.templateSettings),
     defaultUIS: defaultUIS,
     homeUIS: homeUIS
-  }, function (data) {
+  }, function (response) {
     self.uisTemplate = $('#template').val();
-    self.uisId = data.uisId;
+    self.uisId = response.data.uisId;
 
     EW.setHashParameters({
       "uisId": self.uisId
@@ -706,7 +706,8 @@ UISForm.prototype.addUIStructure = function () {
     $(document).trigger("uis-list.refresh");
     self.reloadFrame();
     self.init();
-    $("body").EW().notify(data).show();
+
+    $("body").EW().notify(response).show();
   }, "json");
 };
 

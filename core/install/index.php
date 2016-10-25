@@ -5,7 +5,7 @@ if ($_REQUEST["install"])
   $_REQUEST["install"] = null;
   if ($res)
   {
-    header("Location:~admin/");
+    header("Location:html/admin/");
     echo "<h1>Database installed successfully</h1>";
     echo "<h3><a href='.'> refresh</a></h3>";
   }

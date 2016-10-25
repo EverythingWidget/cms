@@ -221,13 +221,14 @@ class EWCore {
    */
 
   public static function import_sql($file, $database_name = "", $delimiter = ';') {
-    $database_config = include('../config/database.php');
+    $database_config = include(EW_ROOT_DIR . 'config/database.php');
     if (!$database_config['database']) {
       die("Please configure the /config/database.php");
     }
+
     // default database connection
     mysqli_report(MYSQLI_REPORT_STRICT);
-    $db = new mysqli($database_config['host'], $database_config['username'], $database_config['password']);
+    $db = new mysqli($database_config['host'], $database_config['username'], $database_config['password'], $database_config['database']);
 
     $lines = file($file);
     $db->begin_transaction();
@@ -241,6 +242,7 @@ class EWCore {
       if (substr($line, 0, 2) == '--' || $line == '') {//This IF Remove Comment Inside SQL FILE
         continue;
       }
+
       $op_data .= $line;
       if (substr(trim($line), -1, 1) == ';') {//Breack Line Upto ';' NEW QUERY
         $db->multi_query($op_data);
@@ -251,10 +253,7 @@ class EWCore {
         $op_data = '';
       }
     }
-    //$sql .= file_get_contents($file);
-    //echo $sql;
-    //$res = $db->multi_query($sql);
-    //var_dump($db->next_result());
+
     return true;
   }
 
@@ -269,16 +268,33 @@ class EWCore {
    * @return mysqli
    */
   public static function get_db_connection() {
-    $database_config = include('../config/database.php');
+    $database_config = include(EW_ROOT_DIR . 'config/database.php');
     // default database connection
     mysqli_report(MYSQLI_REPORT_STRICT);
 
-    $db = new mysqli($database_config['host'], $database_config['username'], $database_config['password']);
+    try {
+      $db = new mysqli($database_config['host'], $database_config['username'], $database_config['password'], $database_config['database']);
+    }
+    catch (Exception $e) {
+      echo "Service unavailable";
+      echo "message: " . $e->message;   // not in live code obviously...
+      exit;
+    }
+
     $result = $db->query("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '{$database_config['database']}'");
 
+
+
     if ($result->num_rows !== 1) {
-      include "/install/index.php";
+      include EW_ROOT_DIR . "core/install/index.php";
       die();
+    }
+    else {
+      $result = $db->query("SHOW TABLES LIKE 'ew_settings'");
+      if ($result->num_rows !== 1) {
+        include EW_ROOT_DIR . "core/install/index.php";
+        die();
+      }
     }
 
     $db = new mysqli($database_config['host'], $database_config['username'], $database_config['password'], $database_config['database']);
@@ -1930,7 +1946,7 @@ class EWCore {
       }
     }
 
-    file_put_contents("$dir/$file", $contents);
+    file_put_contents("$dir$file", $contents);
   }
 
   public static function create_table($table, $fields) {
@@ -1968,5 +1984,4 @@ class EWCore {
   public static function is_list($array) {
     return count(array_filter(array_keys($array), 'is_string')) > 0;
   }
-
 }
