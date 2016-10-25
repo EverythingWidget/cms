@@ -34,11 +34,13 @@
       <h1> App's pages </h1>
     </div>
     <div class="card-content">
-      <div class="block-row" v-for="feeder in pageFeeders">
-        <input type='hidden'  name='{{ feeder.url }}_uisId' id='{{ feeder.url }}_uisId' v-bind:value='feeder.uis_id'>
+      <div class="block-row" v-for="feeder in pageFeeders">        
         <system-field class="field">
           <label>{{ feeder.url }}</label>
           <input class='text-field app-page-uis' name='/{{ feeder.url }}' v-bind:value='getFeederLayout(feeder.url).name'>
+          <div class="field-actions">
+            <button class="btn btn-info" v-on:click="selectLayout(feeder.url)"><i class="icon-menu"></i></button>
+          </div>
         </system-field>
       </div>
     </div>      

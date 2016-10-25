@@ -761,7 +761,8 @@ pre code {
   -ms-user-select: none;
   -o-user-select: none;
   user-select: none;
-  transition: all .2s;
+  transition-property: background-color, box-shadow, color;
+  transition-duration: .2s;
   text-transform: uppercase;
   letter-spacing: .5px;
   font-weight: 600;

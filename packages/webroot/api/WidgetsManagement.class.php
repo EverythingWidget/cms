@@ -1128,16 +1128,17 @@ class WidgetsManagement extends \ew\Module {
   }
 
   public function set_uis($path = null, $uis_id = null) {
-    $path = ($path) ? $path : $_REQUEST["path"];
-    $uis_id = ($uis_id) ? $uis_id : $_REQUEST["uisId"];
+//    $path = ($path) ? $path : $_REQUEST["path"];
+//    $uis_id = ($uis_id) ? $uis_id : $_REQUEST["uisId"];
     $db = \EWCore::get_db_connection();
     $res = array(
         "status" => "success",
         message  => "UIS has been set successfully for $path");
+
     if (!$uis_id) {
       $result = $db->query("DELETE FROM ew_pages_ui_structures WHERE path = '$path'");
       if ($result) {
-        return json_encode($res);
+        return $res;
       }
     }
     $db->query("SELECT * FROM ew_pages_ui_structures WHERE path = '$path'") or die($db->error);
@@ -1147,10 +1148,11 @@ class WidgetsManagement extends \ew\Module {
       $stm = $db->prepare("INSERT INTO ew_pages_ui_structures(path ,ui_structure_id ) VALUES(?,?)") or die($db->error);
       $stm->bind_param("ss", $path, $uis_id);
       if ($stm->execute())
-        $res = array(
+        $res = [
             "status" => "success",
             message  => "UIS has been set successfully for $path ",
-            "puisId" => $stm->insert_id);
+            "puisId" => $stm->insert_id
+        ];
       else
         $res = array(
             "status" => "error",
@@ -1168,6 +1170,10 @@ class WidgetsManagement extends \ew\Module {
     $stm->close();
     $db->close();
     return $res;
+  }
+
+  public function page_layout_update($response, $_input) {
+    
   }
 
   public static function get_path_uis($path = null) {

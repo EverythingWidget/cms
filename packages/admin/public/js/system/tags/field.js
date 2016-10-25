@@ -10,7 +10,7 @@
           console.warn('Only one input field is allowed inside system-field', this);
         }
 
-        this.xtag._input = this.querySelectorAll('input, textarea, select')[0];
+        element.xtag._input = this.querySelectorAll('input, textarea, select')[0];
 
         var setEmptiness = function () {
           if (element.xtag._input.value || element.xtag._input.type === 'file') {
@@ -20,35 +20,41 @@
           }
         };
 
-        if (this.xtag._input) {
+        if (element.xtag._input) {
           setEmptiness();
 
-          this.xtag._input.addEventListener('focus', function () {
+          element.xtag._input.addEventListener('focus', function () {
             element.setAttribute('focus', '');
             setEmptiness();
           });
 
-          this.xtag._input.addEventListener('blur', function () {
+          element.xtag._input.addEventListener('blur', function () {
             element.removeAttribute('focus');
           });
 
-          this.xtag._input.onchange = function (e) {
-            if (this.value) {
-              element.removeAttribute('empty');
-            } else {
-              element.setAttribute('empty', '');
-            }
+          element.xtag._input.onchange = function (e) {
+            setEmptiness();
           };
 
-          this.xtag._input.addEventListener('input', function (e) {
+          element.xtag._input.addEventListener('input', function (e) {
             setEmptiness();
           });
+
+          element.xtag.observer = new MutationObserver(function (mutations) {
+            mutations.forEach(function (mutation) {
+              if (mutation.attributeName === 'value') {
+                setEmptiness();
+              }
+            });
+          });
+
+          element.xtag.observer.observe(this.xtag._input, {attributes: true});
         }
       },
       inserted: function () {
-        xtag.fireEvent(this.xtag._input,'change');
       },
       removed: function () {
+        this.xtag.observer.disconnect();
       }
     },
     accessors: {

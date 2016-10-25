@@ -5,7 +5,8 @@
 .field {
 
   &.search-field {
-    width: 320px;
+    width: 100%;
+    max-width: 460px;
     margin: 8px auto;
     padding: 0;
 
@@ -29,6 +30,28 @@
       border-radius: 20px;
       padding: 0px 15px;
       background-color: #eee;
+    }
+  }
+}
+
+.field-actions {
+  position: absolute;
+  right: 0;
+  bottom: 17px;
+  padding: 3px 0;
+  
+  > .btn {
+    min-width: 30px;
+    padding: 0px;
+    line-height: 26px;
+    border-radius: 15px;
+    text-align: center;
+    
+    > i {
+      font-size: 20px;
+      min-width: 26px;
+      min-height: 26px;
+      width: 26px;
     }
   }
 }

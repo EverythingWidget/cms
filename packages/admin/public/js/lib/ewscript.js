@@ -775,7 +775,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction) {
 
       originElement = self.activeElement;
       if (settings.initElement && originElement && originElement.parent().length !== 0 && $.contains(document, originElement[0])) {
-        if (originElement.is("p,h1,h2,h3,h4,h5,h6,span")) {
+        if (originElement.is("p,h1,h2,h3,h4,h5,h6,span,button > i")) {
           originElement = originElement.parent();
         }
         System.UI.body = $('#base-pane')[0];
@@ -1355,6 +1355,9 @@ EWTable.prototype.createHeadersRow = function (headers) {
 EWTable.prototype.createRow = function (columnValues, rowCounter) {
   var ewTable = this;
   var tableRow = $(document.createElement("tr"));
+  tableRow[0].rowData = {
+    id: columnValues.id
+  };
   tableRow.data("field-id", columnValues.id);
   tableRow.attr("data-field-id", columnValues.id);
   var fieldId = columnValues.id;
@@ -1482,6 +1485,7 @@ EWTable.prototype.createRow = function (columnValues, rowCounter) {
       var value = System.utility.getProperty(columnValues, p);
 
       tableRow[0].setAttribute('data-field-' + a, value);
+      tableRow[0].rowData[a] = value;
       return '<td>' + value + '</td>';
     });
     /*$.each(ewTable.config.columns, function (k, v) {
