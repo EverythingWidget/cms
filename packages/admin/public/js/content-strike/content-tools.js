@@ -5694,6 +5694,7 @@
         'heading',
         'heading2',
         'paragraph',
+        'preformatted',
         'link-block',
         'unordered-list',
         'ordered-list',
@@ -5707,8 +5708,7 @@
         'ew-media',
         'image',
         'video',
-        'widget-embed',
-        'preformatted',
+        'widget-embed',        
         'content-field'
       ],
       [
@@ -10752,6 +10752,7 @@
       var app, forceAdd, paragraph, region;
       app = ContentTools.EditorApp.get();
       forceAdd = app.ctrlDown();
+
       if (ContentTools.Tools.Heading.canApply(element) && !forceAdd) {
         return Paragraph.__super__.constructor.apply.call(this, element, selection, callback);
       } else {
@@ -10825,9 +10826,9 @@
                 width: selectedItem.width,
                 hight: selectedItem.height
               });
-              
+
               node.parent().detach(element);
-              
+
               if (node.parent()) {
                 node.parent().attach(image, index);
               } else {
@@ -11187,6 +11188,117 @@
     return Link;
 
   })(ContentTools.Tools.Bold);
+
+  ContentTools.Tools.Preformatted = (function (superClass) {
+    extend(Preformatted, superClass);
+
+    function Preformatted() {
+      return Preformatted.__super__.constructor.apply(this, arguments);
+    }
+
+    ContentTools.ToolShelf.stow(Preformatted, 'preformatted');
+
+    Preformatted.label = 'Preformatted';
+
+    Preformatted.icon = 'preformatted';
+
+    Preformatted.tagName = 'pre';
+
+    Preformatted.apply = function (element, selection, callback) {
+      var insertAt, parent, preText, text;
+      text = element.content.text();
+      preText = new ContentEdit.PreText('pre', {}, HTMLString.String.encode(text));
+      parent = element.parent();
+      insertAt = parent.children.indexOf(element);
+      parent.detach(element);
+      parent.attach(preText, insertAt);
+      element.blur();
+      preText.focus();
+      preText.selection(selection);
+      return callback(true);
+    };
+
+    return Preformatted;
+
+  })(ContentTools.Tools.Heading);
+
+  ContentTools.Tools.UnorderedList = (function (superClass) {
+    extend(UnorderedList, superClass);
+
+    function UnorderedList() {
+      return UnorderedList.__super__.constructor.apply(this, arguments);
+    }
+
+    ContentTools.ToolShelf.stow(UnorderedList, 'unordered-list');
+
+    UnorderedList.label = 'Bullet list';
+
+    UnorderedList.icon = 'unordered-list';
+
+    UnorderedList.listTag = 'ul';
+
+    UnorderedList.canApply = function (element, selection) {
+      var ref;
+      return element.content !== void 0 && ((ref = element.parent().type()) === 'Region' || ref === 'ListItem');
+    };
+
+    UnorderedList.isApplied = function (element, selection) {
+      var parent = element.parent().parent();
+      return parent && parent._tagName === 'ul';
+    };
+
+    UnorderedList.apply = function (element, selection, callback) {
+      var insertAt, list, listItem, listItemText, parent;
+      if (element.parent().type() === 'ListItem') {
+        element.storeState();
+        list = element.closest(function (node) {
+          return node.type() === 'List';
+        });
+        list.tagName(this.listTag);
+        element.restoreState();
+      } else {
+        listItemText = new ContentEdit.ListItemText(element.content.copy());
+        listItem = new ContentEdit.ListItem();
+        listItem.attach(listItemText);
+        list = new ContentEdit.List(this.listTag, {});
+        list.attach(listItem);
+        parent = element.parent();
+        insertAt = parent.children.indexOf(element);
+        parent.detach(element);
+        parent.attach(list, insertAt);
+        listItemText.focus();
+        listItemText.selection(selection);
+      }
+      return callback(true);
+    };
+
+    return UnorderedList;
+
+  })(ContentTools.Tool);
+
+  ContentTools.Tools.OrderedList = (function (superClass) {
+    extend(OrderedList, superClass);
+
+    function OrderedList() {
+      return OrderedList.__super__.constructor.apply(this, arguments);
+    }
+
+    ContentTools.ToolShelf.stow(OrderedList, 'ordered-list');
+
+    OrderedList.label = 'Numbers list';
+
+    OrderedList.icon = 'ordered-list';
+
+    OrderedList.listTag = 'ol';
+
+    OrderedList.isApplied = function (element, selection) {
+      var parent = element.parent().parent();
+      return parent && parent._tagName === 'ol';
+    };
+
+    return OrderedList;
+
+  })(ContentTools.Tools.UnorderedList);
 
 })(this);
 
