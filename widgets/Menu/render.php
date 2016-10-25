@@ -52,10 +52,10 @@ $result_html = "";
     for ($i = 0, $len = count($titles); $i < $len; $i++) {
       $sub_menus = null;
       $link = json_decode($links[$i], true);
-      $link_url = ".";
+      $link_url = '';
 
       if (!isset($links[$i])) {
-        $links[$i] = '.';
+        $links[$i] = '';
       }
 
       if (json_last_error() !== JSON_ERROR_NONE) {
@@ -86,14 +86,14 @@ $result_html = "";
         {
         $linkURL = EW_DIR_URL . $url_language;
         } */
-      $link_requlare_expression_ready = preg_quote($link_url, '/');
-      $pattern = "/$link_requlare_expression_ready(.*)/";
+//      $link_requlare_expression_ready = preg_quote($link_url, '/');
+//      $pattern = "/$link_requlare_expression_ready/";
 
-      preg_match($pattern, $_SERVER['REQUEST_URI'] . '\.', $match);
-      $active = ($match) ? "active" : "";
+//      preg_match($pattern, $_SERVER['REQUEST_URI'] . '.', $match);
+      $active = (rtrim($link_url,'/') === rtrim($_SERVER['REQUEST_URI'], '/')) ? "active" : "";
 
       // Menu
-      $result_html .= "<li class='$active'><a class='{$class[$i]}' href='{$link_url}'>$titles[$i]</a>";
+      $result_html .= "<li class='$active'><a class='{$class[$i]}' href='{$link_url}'>{$titles[$i]}</a>";
 
       // Sub menu if exist
       if ($sub_menus) {
@@ -123,10 +123,11 @@ $result_html = "";
       $link_url = EW_DIR_URL . $url_language;
     }
 
-    $link_requlare_expression_ready = preg_quote($link_url, '/');
-    $pattern = "/$link_requlare_expression_ready(.*)/";
-    preg_match($pattern, $_SERVER['REQUEST_URI'] . '.', $match);
-    $active = ($match) ? "active" : "";
+    // $link_requlare_expression_ready = preg_quote($link_url, '/');
+    // $pattern = "/$link_requlare_expression_ready(.*)/";
+    // preg_match($pattern, $_SERVER['REQUEST_URI'] . '.', $match);
+    // $active = ($match) ? "active" : "";
+    $active = (rtrim($link_url,'/') === rtrim($_SERVER['REQUEST_URI'], '/')) ? "active" : "";
 
     $result_html .= "<li class='$active' ><a href='$link_url'>$titles</a>";
     if ($sub_menus) {
