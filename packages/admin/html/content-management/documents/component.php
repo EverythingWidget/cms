@@ -426,9 +426,9 @@
       },
       success: function (response) {
         if (response.status_code === 200) {
-          handler.ui.folders_card_vue.articles.forEach(function (item, index) {
+          handler.ui.folders_card_vue.articles.data.forEach(function (item, index) {
             if (item.id === response.data.id) {
-              handler.ui.folders_card_vue.articles.splice(index, 1);
+              handler.ui.folders_card_vue.articles.data.splice(index, 1);
             }
           });
         }

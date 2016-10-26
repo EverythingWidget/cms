@@ -19,8 +19,8 @@
         color: #fff;
         text-align: center;
         line-height: 22px;
-        padding: 17px 6px 15px;
-        border-bottom: 2px solid transparent;
+        padding: 17px 6px 14px;
+        border-bottom: 3px solid transparent;
       }
 
       &:hover {
@@ -50,3 +50,151 @@
     margin: 3px;
   }
 }
+
+.widget.projects-list {  
+
+  > .list-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    > .list-item {
+      width: auto;
+      padding: 0;
+    }
+  }
+
+  .list-item-cell {
+    background-color: #fff;
+    width: 340px;
+    height: 216px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+
+    > .thumbnail {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      position: absolute;
+      left: 0;
+      top: 0;
+      z-index: 1;
+    }
+
+    > .title {
+      font-size: 16px;
+      width: 100%;
+      height: 216px;
+      background-color: rgba(#000,.8);
+      color: #fff;
+      font-weight: 300;
+      margin: 0;
+      top: 216px;
+      left: 0;
+      text-align: center;
+      padding: 15px 10px;
+      position: absolute;
+      z-index: 2;
+      transition: all .35s ease-in-out;
+    }
+
+    > .item-link {
+      width: 100%;
+      height: 216px;
+      color: #fff;
+      padding: 150px 0 0 0;
+      font-size: 20px;
+      font-weight: bold;
+      margin: 0;
+      position: absolute;
+      left: 0;
+      top: 0;
+      text-align: center;
+      z-index: 3;
+      opacity: 0;
+      transition: all .35s ease-in-out;
+    }
+
+    &:hover {
+      > .title {
+        top: 0;
+      }
+
+      > .item-link {
+        opacity: 1;
+      }
+    }
+  }
+}
+
+.widget.title {
+  color: #EF4035;
+  text-align: center;
+
+  h1 {
+    font-weight: 300;
+    font-size: 40px;
+    margin: 30px 0;
+    text-transform: uppercase;
+  }
+
+}
+
+.widget.subtitle {
+  p {
+    margin: 0;
+    padding: 15px 0;
+  }
+}
+
+.widget.article {
+  h1 {
+    color: #EF4035;
+    text-align: center;
+    font-weight: 300;
+    font-size: 40px;
+    margin: 30px 0;
+    text-transform: uppercase;
+  }
+
+  h2 {
+    font-weight: 300;
+    font-size: 26px;
+    color: #333;
+  }
+
+  .list-item {
+    > .list-item-cell {
+      overflow: hidden;
+
+      h2, p, ul {
+        color: #555;
+        width: 100%;
+        float: left;
+        max-width: 460px;
+      }
+
+      h2 {
+        color: #333;
+        margin: 0 0 15px;
+        padding-top: 150px;
+      }
+    }
+
+    .banner {
+      float: right;
+    }
+
+    &:nth-child(even) {
+      h2, p, ul {
+        float: right;
+      }
+
+      .banner {
+        float: left;
+      }
+    }
+  }
+}
+
