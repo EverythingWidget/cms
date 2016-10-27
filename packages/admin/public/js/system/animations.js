@@ -183,6 +183,7 @@
           height: _this.height
         }, {
           height: newHeight,
+          clearProps: newHeight === 0 ? 'height' : '',
           ease: 'Power2.easeInOut',
           onComplete: function () {
             _this.height = newHeight;
