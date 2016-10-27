@@ -54,7 +54,7 @@ function UISForm() {
   $("#perview_url").EW().inputButton({
     title: "Apply",
     id: "set_url_btn",
-    onClick: _this.reloadFrame
+    onClick: _this.reloadFrame.bind(_this)
   });
 
   var itemsList = $("#items-list");
@@ -777,7 +777,8 @@ UISForm.prototype.updateTemplateBody = function () {
   $.get('api/webroot/widgets-management/get-layout/', {
     uisId: _this.uisId,
     template: _this.uisTemplate,
-    template_settings: JSON.stringify(_this.templateSettings)
+    template_settings: JSON.stringify(_this.templateSettings),
+    url: $("#perview_url").val() || ''
   }, function (response) {
     var myIframe = _this.editorIFrame[0],
             myIframeContent = $(myIframe).contents(),

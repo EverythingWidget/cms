@@ -507,19 +507,19 @@ class WidgetsManagement extends \ew\Module {
     }
   }
 
-  public static function create_panel_content($panel, $container_id, $no_data = null) {
+  public static function create_panel_content($panel, $container_id, $no_data = null, $public_data = []) {
     $result_html = '';
     if (isset($panel)) {
       foreach ($panel as $key => $value) {
         if ($value["type"] == "panel") {
           self::$panel_index++;
           $result_html.=self::open_panel("panel-" . self::$current_timestamp . '-' . self::$ui_index . '-' . self::$panel_index, $container_id, $value["class"], $value["id"], $value["panelParameters"], FALSE);
-          $result_html.=self::create_panel_content($value["children"], "panel-" . self::$ui_index . '-' . self::$panel_index);
+          $result_html.=self::create_panel_content($value["children"], "panel-" . self::$ui_index . '-' . self::$panel_index, $public_data);
           $result_html.=self::close_panel();
         }
         else {
           self::$widget_index++;
-          $result_html.=self::open_widget("widget-" . self::$current_timestamp . '-' . self::$ui_index . '-' . self::$widget_index, $value["widgetType"], $value["class"], $value["widgetClass"], $value["id"], $value["widgetParameters"], $no_data);
+          $result_html.=self::open_widget("widget-" . self::$current_timestamp . '-' . self::$ui_index . '-' . self::$widget_index, $value, $no_data, $public_data);
           $result_html.=self::close_widget();
         }
       }
@@ -527,7 +527,7 @@ class WidgetsManagement extends \ew\Module {
     return $result_html;
   }
 
-  public static function open_panel($panel_id, $container_id, $style_class, $style_id, $parameters, $row = TRUE, $block_name = null) {
+  public static function open_panel($panel_id, $container_id, $style_class, $style_id, $parameters, $row = TRUE) {
     $result_html = '';
     $parameters_array = json_decode($parameters, TRUE);
 
@@ -549,7 +549,7 @@ class WidgetsManagement extends \ew\Module {
     return '</div>';
   }
 
-  public static function open_block($panel_id, $container_id, $style_class, $style_id, $parameters, $row = TRUE, $block_name) {
+  public static function open_block($panel_id, $container_id, $style_class, $style_id, $parameters, $row = TRUE) {
     $result_html = '';
     $param_json = $parameters;
 
@@ -596,8 +596,14 @@ class WidgetsManagement extends \ew\Module {
    * @param string  $style_id widget style id
    * @param json $params widget parameters
    */
-  public static function open_widget($widget_id, $widget_type, $style_class, $widget_style_class, $style_id, $params, $no_data = false) {
+  public static function open_widget($widget_id, $conf, $no_data = false, $public_data = []) {
     // Empty widget style class when creating a widget
+    $widget_type = $conf['widgetType'];
+    $style_class = $conf["class"];
+    $widget_style_class = $conf["widgetClass"];
+    $style_id = $conf["id"];
+    $params = $conf["widgetParameters"];
+
     $__widget_html_output = '';
     if ($style_id) {
       $WIDGET_STYLE_ID = "id='$style_id'";
@@ -672,12 +678,16 @@ class WidgetsManagement extends \ew\Module {
     self::$current_timestamp = strval($timestamp);
     $widget_id = "widget-" . self::$current_timestamp . '-' . self::$ui_index . '-' . self::$widget_index;
     $widget_html = '';
-    $widget_html .=self::open_widget($widget_id, $widget_type, $style_class, $widget_style_class, $style_id, $widget_parameters);
+    $widget_html .=self::open_widget($widget_id, [
+                'widgetType'       => $widget_type,
+                'class'            => $style_class,
+                'widgetClass'      => $widget_style_class,
+                'id'               => $style_id,
+                'widgetParameters' => $widget_parameters
+    ]);
+
     $widget_html .=self::close_widget();
-    /* if (self::get_widget_data_object())
-      {
-      $widget_data = reset(self::get_widget_data_object());
-      } */
+
     $widget_script = self::get_html_scripts($widget_id);
 
     return [
@@ -843,7 +853,7 @@ class WidgetsManagement extends \ew\Module {
     return self::$widget_data[$id];
   }
 
-  public static function generate_view($uisId, $index = 0, $no_data = false) {
+  public static function generate_view($uisId, $no_data = false, $public_data = []) {
     $RESULT_HTML = '';
     $db = \EWCore::get_db_PDO();
     if (!$no_data) {
@@ -852,10 +862,6 @@ class WidgetsManagement extends \ew\Module {
 
     $statement = $db->prepare("SELECT structure FROM ew_ui_structures WHERE id = ? ") or die($db->error);
 
-
-    //$statement->bind_result($structure);
-    //$rows = $blocks->fetch_assoc();
-    // Create unigue set of ID's every time when generate_view is called
     $timestamp = time();
     if ($_SESSION["_ew_gw_ts"] == $timestamp) {
       self::$ui_index++;
@@ -873,16 +879,16 @@ class WidgetsManagement extends \ew\Module {
 
     if (isset($structure_array)) {
       foreach ($structure_array as $key => $value) {
-        $RESULT_HTML.=self::open_block("panel-" . self::$current_timestamp . "-" . self::$ui_index . "-" . self::$panel_index, "", $value["class"], $value["id"], $value["blockParameters"], FALSE, $value["blockName"]);
-        $RESULT_HTML.=self::create_panel_content($value["children"], "panel-" . self::$current_timestamp . '-' . self::$ui_index . '-' . self::$panel_index, $no_data);
+        $RESULT_HTML.=self::open_block('panel-' . self::$current_timestamp . "-" . self::$ui_index . "-" . self::$panel_index, "", $value["class"], $value["id"], $value["blockParameters"], FALSE);
+        $RESULT_HTML.=self::create_panel_content($value['children'], "panel-" . self::$current_timestamp . '-' . self::$ui_index . '-' . self::$panel_index, $no_data, $public_data);
         $RESULT_HTML.=self::close_block();
         self::$panel_index++;
       }
     }
 
     return [
-        "body_html"   => $RESULT_HTML,
-        "widget_data" => self::get_widget_data()
+        'body_html'   => $RESULT_HTML,
+        'widget_data' => self::get_widget_data()
     ];
   }
 
@@ -1121,7 +1127,7 @@ class WidgetsManagement extends \ew\Module {
         $this->close_panel();
       }
       else if ($rows["item_type"] == 'widget') {
-        $this->open_widget($rows["id"], $rows["widget_type"], $rows["style_class"], $rows["style_id"], $rows["widgets_parameters"]);
+        $this->open_widget($rows["id"], $rows);
         $this->close_widget();
       }
     }
@@ -1206,8 +1212,10 @@ class WidgetsManagement extends \ew\Module {
     return $result->fetchAll(\PDO::FETCH_ASSOC);
   }
 
-  public static function get_layout($uisId, $template = null, $template_settings = null) {
-    $layout = WidgetsManagement::generate_view($uisId);
+  public static function get_layout($uisId, $template = null, $template_settings = null, $url = null) {
+
+    $public_data = [];
+    $layout = WidgetsManagement::generate_view($uisId, false, $public_data);
     $template_body = $layout["body_html"];
     $widget_data = $layout["widget_data"];
     $settings = json_decode($template_settings, true);

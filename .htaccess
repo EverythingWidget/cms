@@ -15,7 +15,7 @@ RewriteRule (.*) http://%1/$1 [R=302,L]
 #AddOutputFilterByType DEFLATE application/x-javascript
 
 RewriteCond %{REQUEST_URI} public/ [NC]
-RewriteRule ^public/([^/]*)/(.*) packages/$1/public/$2 [L]
+RewriteRule ^([^-]{2})?/?public/([^/]*)/(.*) packages/$2/public/$3 [L]
 
 RewriteCond %{REQUEST_URI} -(.*)/public/ [NC]
 RewriteRule -(.*)/public/(.*) packages/$1/public/$2 [L]
