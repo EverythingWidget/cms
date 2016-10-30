@@ -196,6 +196,8 @@
 //      console.log('new state', app, scope._stateId);
       if (app === scope._stateId) {
         this.state(app, handler);
+      } else {
+        scope._doNotRegister = true;
       }
     },
     /** This method will be called whenever System attempts to load an app
@@ -428,6 +430,7 @@
       }
 
       if (moduleExist) {
+        console.log(module.id);
         if ('function' === typeof (System.onModuleLoaded["system/" + module.id])) {
           System.onModuleLoaded["system/" + module.id].call(this, moduleExist, moduleExist.html);
           delete System.onModuleLoaded["system/" + module.id];
@@ -552,11 +555,13 @@
 
         var currentModule = System.modules['system/' + module.id];
 
-        if (module.temprory) {
+        if (module.temprory || scope._doNotRegister) {
+          delete scope._doNotRegister;
           currentModule = {};
         } else if (!currentModule) {
           currentModule = System.modules['system/' + module.id] = {};
         }
+        
 
         currentModule.html = filtered.html;
         currentModule.scope = scope;

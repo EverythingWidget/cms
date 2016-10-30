@@ -75,7 +75,7 @@ if (!isset($_SESSION['login'])) {
       <div id="app-main-actions"></div>
 
       <system-float-menu id="main-float-menu" class="system-float-menu">
-        <div class="float-menu-indicator"></div>
+        <div class="float-menu-indicator" indicator></div>
         <div class="float-menu-actions" actions>
           <button type="button"
                   class="btn btn-primary"

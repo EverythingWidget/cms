@@ -23,7 +23,6 @@
       this.inited = true;
       this.trigger('onInit');
       //this.triggerEvent('init');
-      //this.solo = this.stateKey !== 'app';
 
       this.installModules.forEach(function (lib) {
         _this.domain.loadModule(lib);

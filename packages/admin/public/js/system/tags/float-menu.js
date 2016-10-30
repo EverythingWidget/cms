@@ -5,9 +5,7 @@
     lifecycle: {
       created: function () {
         var _this = this;
-        this.xtag.indicator = document.createElement("div");
-        this.xtag.indicator.className = "ew-float-menu-indicator";
-        this.xtag.indicator.style.position = "absolute";
+        _this.xtag.indicator = _this.querySelector('[indicator]');
         _this.xtag.actionsContainer = _this.querySelector('[actions]');
 
         var expand = function (e) {

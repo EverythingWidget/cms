@@ -37,7 +37,7 @@ class WidgetsManagement extends \ew\Module {
     ]);
 
     EWCore::register_ui_element('apps/widgets/navs', 'layouts', [
-        'id'    => 'widgets-management/uis-list',
+        'id'    => 'widgets-management/layouts',
         'title' => 'tr{Layouts}',
         'url'   => 'html/webroot/widgets-management/layouts/component.php'
     ]);

@@ -79,7 +79,7 @@
 
       System.ui.components.mainContent.empty();
       System.abortAllRequests();
-
+debugger;
       System.loadModule(moduleConfig, function (module, html) {
         $("#action-bar-items").find("button,div").remove();
 

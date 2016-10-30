@@ -1,3 +1,5 @@
+/* global System, TweenLite */
+
 //Form data to JSOn Object
 $.fn.serializeJSON = function (flag) {
   var pureObject = {
@@ -41,12 +43,12 @@ function EverythingWidgets() {
   ];
   this.originalActivity = [
   ];
-  //$("#components-pane").hide();
+
   var oldSize = "";
   $(document).on('mousedown touchstart', function (event) {
-    //console.log("clicked: " + $(event.target).text());
     self.activeElement = $(event.target);
   });
+
   $(window).resize(function () {
     if ($(window).width() < 768 && oldSize !== "xs")
     {
@@ -66,9 +68,8 @@ function EverythingWidgets() {
       oldSize = "lg";
     }
   });
-  this.customFunction = function () {
 
-  };
+  this.customFunction = function () { };
 
   this.verbs = {
     get: 'read',
@@ -78,62 +79,6 @@ function EverythingWidgets() {
   };
 }
 
-EverythingWidgets.prototype.showAllComponents = function () {
-  var self = this;
-  var cPane = $("#components-pane");
-  //$("#components-pane").show();
-  //$("#components-pane").addClass("trans zoom-out");
-  cPane.show().css({
-    transfom: "translateZ(150px)",
-    opacity: 0
-  });
-  cPane.stop().animate({
-    //top: "0px",
-    transform: "translateZ(0)",
-    opacity: 1
-  },
-          500, "Power3.easeOut").addClass("in");
-  /*$("#base-pane").animate({
-   top: "100%"
-   },
-   500);*/
-  $("#base-pane").stop().animate({
-    //top: "0px",
-    transform: "translateZ(-150px)"
-  },
-          500, "Power3.easeOut");
-  this.lock("body", " ");
-  $(".glass-pane-lock").bind("click", function (e) {
-
-    //if ($('#components-pane').hasClass('in'))
-    {
-      cPane.stop().animate({
-        //top: "-100px",
-        //left: -$("#components-pane").outerWidth()
-        transform: "translateZ(150px)",
-        opacity: 0,
-        display: "none"
-      },
-              500, "Power3.easeOut", function () {
-                //$("#components-pane").hide(0);
-              }).removeClass("in");
-      $("#base-pane").stop().animate({
-        //top: "0px",
-        transform: "translateZ(0px)"
-      },
-              500, "Power3.easeOut");
-      //cPane.removeClass("zoom-out")
-      self.unlock("body");
-      $("#base-pane").removeClass("blur");
-      //$("#components-pane").animate({top: -200}, 300);
-      $(".glass-pane-lock").unbind("click");
-      /*$("#base-pane").animate({
-       top: "0"
-       },
-       500);*/
-    }
-  });
-};
 /**
  * @syntax addAction(text, handler, css)
  * @param {String} text title of button
@@ -683,9 +628,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction) {
 
   // Close event   
   modalPane.on("close", function () {
-
-    if (modalPane.isOpen && modalPane.triggerHandler("beforeClose"))
-    {
+    if (modalPane.isOpen && modalPane.triggerHandler('beforeClose')) {
       modalPane.isOpen = false;
       self.unlock(basePane, 400);
 
@@ -697,7 +640,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction) {
 
       if (settings.class.indexOf("left") > -1) {
         xButton.remove();
-        System.UI.Animation.slideOut({
+        System.ui.Animation.slideOut({
           time: .3,
           element: modalPane[0],
           to: "left",
@@ -716,9 +659,9 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction) {
         });
         return;
       } else {
-        if (originElement.parent().is('system-float-menu')) {
+        if (originElement.parent().is('.float-menu-actions')) {
           originElement.css({visibility: '', display: null});
-          originElement = [originElement.parent()[0].__xtag__.indicator]
+          originElement = [originElement.parent().parent()[0].__xtag__.indicator];
         }
 
         System.ui.body = $('#base-pane')[0];
@@ -756,7 +699,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction) {
       if (settings.class.indexOf("left") === -1) {
         /*modalPane.css("left", ($(window).width() - modalPane.outerWidth(true)) / 2);*/
       } else {
-        System.UI.Animation.slideIn({
+        System.ui.Animation.slideIn({
           time: .5,
           fade: .3,
           element: modalPane[0],
@@ -778,20 +721,9 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction) {
         if (originElement.is("p,h1,h2,h3,h4,h5,h6,span,button > i")) {
           originElement = originElement.parent();
         }
-        System.UI.body = $('#base-pane')[0];
-        /*System.UI.Animation.blastTo({from: originElement[0],
-         to: modalPane[0],
-         time: .6,
-         ease: "Power1.easeOut",
-         fade: .5,
-         flow: true,
-         text: originElement.data("label"),
-         textColor: "#fff",
-         onComplete: function () {
-         methods.setCloseButton();
-         modalPane.isOpen = true;
-         }});*/
-        System.UI.Animation.transform({
+
+        System.ui.body = $('#base-pane')[0];
+        System.ui.Animation.transform({
           from: originElement[0],
           to: modalPane[0],
           time: .7,
@@ -812,7 +744,6 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction) {
           opacity: "1",
           ease: "Power3.easeOut",
           onComplete: function () {
-            //modalPane.css("left", "");
             methods.setCloseButton();
             modalPane.isOpen = true;
             if (settings.class === "full")
@@ -839,12 +770,9 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction) {
 
   if (settings.hash) {
     self.addURLHandler(function () {
-      if (self.getHashParameter(settings.hash.key, settings.hash.name) === settings.hash.value)
-      {
+      if (self.getHashParameter(settings.hash.key, settings.hash.name) === settings.hash.value) {
         modalPane.trigger("open");
       } else {
-        //settings.autoOpen=true;
-        //modalPane=EW.createModal(settings);
         modalPane.trigger("close");
       }
     });
@@ -875,7 +803,7 @@ EverythingWidgets.prototype.setWidgetParam = function (field, key, val) {
   var obj = $(field).val();
   if (obj)
     obj = $.parseJSON(obj);
-  if (typeof obj != "object")
+  if (typeof obj !== "object")
     obj = new Object();
   obj[key] = val;
   $(field).val(JSON.stringify(obj));
@@ -884,7 +812,7 @@ EverythingWidgets.prototype.getWidgetParam = function (field, key) {
   var obj = $(field).val();
   if (obj)
     obj = $.parseJSON(obj);
-  if (typeof obj != "object")
+  if (typeof obj !== "object")
     return obj[key];
   return null;
 };
@@ -921,26 +849,18 @@ function HashListener(name) {
   this.Check;
   var self = this;
   var detect = function () {
-    if (self.oldHash !== customHashes[name].hash || self.newHandler)
-    {
+    if (self.oldHash !== customHashes[name].hash || self.newHandler) {
       self.newHandler = false;
       self.oldHash = customHashes[name].hash;
       $(window).trigger(name);
-      /*for (var i = 0; i < self.handlers.length; i++)
-       {
-       self.handlers[i].call();
-       }*/
     }
   };
   this.Check = setInterval(function () {
     detect();
   }, 50);
   this.addHandler = function (handlerName, handlerFunction) {
-    //alert(name + " " + handlerName);
-    for (var i = 0; i < self.handlers.length; i++)
-    {
-      if (" " + self.handlers[i] == " " + handlerFunction)
-      {
+    for (var i = 0; i < self.handlers.length; i++) {
+      if (" " + self.handlers[i] == " " + handlerFunction) {
         $(window).off(handlerName, null, self.handlers[i]);
         self.handlers[i] = null;
         self.handlers[i] = handlerFunction;
@@ -948,9 +868,8 @@ function HashListener(name) {
         return;
       }
     }
-    self.handlers.push(handlerFunction);
-    /*this.urlHandlers = handlers;*/
 
+    self.handlers.push(handlerFunction);
     $(window).on(handlerName, handlerFunction);
   };
 }
@@ -973,12 +892,6 @@ EverythingWidgets.prototype.setHashParameter = function (key, value, hashName) {
 };
 
 EverythingWidgets.prototype.setHashParameters = function (parameters, hashName, clean) {
-  /*if (JSON.stringify(this.lastHashParams) == JSON.stringify(parameters) || $.isEmptyObject(parameters))
-   {
-   console.log("repeated params");
-   return;
-   }
-   console.log(parameters);*/
   this.lastHashParams = parameters;
   var hashValue = window.location.hash;
   if (hashName)
@@ -1003,53 +916,17 @@ EverythingWidgets.prototype.setHashParameters = function (parameters, hashName, 
   var newHash = "#";
   var and = false;
   hashValue.replace(/([^&]*)=([^&]*)/g, function (m, k, v) {
-    if (parameters[k] != null)
-    {
+    if (parameters[k] != null) {
       newHash += k + "=" + parameters[k];
       newHash += '&';
       and = true;
       delete parameters[k];
-    } else if (!parameters.hasOwnProperty(k) && !clean)
-    {
+    } else if (!parameters.hasOwnProperty(k) && !clean) {
       newHash += k + "=" + v;
       newHash += '&';
       and = true;
     }
-    //if (and)
-
-    //console.log(m);
   });
-  // Existed keys
-  /*$.each(pairs, function (i, v)
-   {
-   var keyAndValue = v.split("=");
-   var keyExisted = false;
-   // set new value for existed key
-   if (parameters[keyAndValue[0]] != null)
-   {
-   if (and)
-   {
-   newHash += "/";
-   and = false;
-   }
-   newHash += keyAndValue[0] + "=" + parameters[keyAndValue[0]];
-   and = true;
-   delete parameters[keyAndValue[0]];
-   }
-   // Set pervious value for existed key
-   else if (!parameters.hasOwnProperty(keyAndValue[0]) && v && !clean)
-   {
-   
-   if (and)
-   {
-   newHash += "/";
-   and = false;
-   }
-   newHash += keyAndValue[0] + "=" + keyAndValue[1];
-   and = true;
-   }
-   //alert(newHash);
-   });*/
 
   // New keys
   $.each(parameters, function (key, value) {
@@ -1472,14 +1349,15 @@ EWTable.prototype.createRow = function (columnValues, rowCounter) {
   //delete val.id;
   var index = rowCounter;
   // Set the row label 
-  if (ewTable.config.rowLabel)
+  if (ewTable.config.rowLabel) {
     var rt = ewTable.config.rowLabel.replace(/{(\w+)}/g, function (a, p) {
       return columnValues[p];
     });
+  }
+
   tableRow.data("label", rt);
   // When user spacify columns attribute 
-  if (ewTable.config.columns)
-  {
+  if (ewTable.config.columns) {
     var columnString = ewTable.config.columns.join(" ");
     var row = columnString.replace(/(\S+)/g, function (a, p) {
       var value = System.utility.getProperty(columnValues, p);
@@ -1488,27 +1366,13 @@ EWTable.prototype.createRow = function (columnValues, rowCounter) {
       tableRow[0].rowData[a] = value;
       return '<td>' + value + '</td>';
     });
-    /*$.each(ewTable.config.columns, function (k, v) {
-     
-     $.each(val, function (k, v) {
-     tableRow.data("field-" + k, v);
-     if (ewTable.config.rowLabel == k)
-     tableRow.data("label", v);
-     });*/
-    tableRow.html(row);
-    //$(row).appendTo(tableRow);
-//alert(row);
-    //index++;
-    //});
-  } else
-  {
 
+    tableRow.html(row);
+  } else {
+    var children = ewTable.headers.children();
     $.each(columnValues, function (k, v) {
-      if (ewTable.headers.children().eq(index).css("display") !== "none")
-      {
-        //alert(k+" "+index);
+      if (children.eq(index).css("display") !== "none") {
         tableRow.data("field-" + k, v);
-        //$('<td>' + v + '</td>').appendTo(tableRow);
         tableRow[0].innerHTML += '<td>' + v + '</td>';
       }
       index++;
@@ -1549,11 +1413,10 @@ EWTable.prototype.listRows = function () {
 // read the table data from given url
 EWTable.prototype.read = function (customURLData) {
   var _this = this;
-  var lock = System.UI.lock({
+  var lock = System.ui.lock({
     element: _this.tableBodyDiv[0],
-    akcent: "loader top"
-  },
-          .3);
+    akcent: 'loader top'
+  }, .3);
 
   var urlData = $.extend(_this.urlData, {
     token: _this.token,
@@ -1714,6 +1577,7 @@ EverythingWidgets.prototype.addHashHandler = EverythingWidgets.prototype.addURLH
   return handler;
   //handler.call();
 };
+
 EverythingWidgets.prototype.removeURLHandler = function (handler, hashName) {
   // Get primary URL handlers
   var handlers = this.urlHandlers;
@@ -2449,6 +2313,6 @@ $(document).ready(function () {
     }
     EW.setHashParameters({
       ew_activity: null
-    }, "FORMLESS_ACTIVITY");
-  }, "FORMLESS_ACTIVITY");
+    }, 'FORMLESS_ACTIVITY');
+  }, 'FORMLESS_ACTIVITY');
 });
