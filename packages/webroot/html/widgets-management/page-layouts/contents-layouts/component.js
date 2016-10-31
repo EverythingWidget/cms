@@ -9,16 +9,22 @@ function Handler(state, scope) {
     el: scope.views.main,
     data: {
       pageFeeders: $php.page_feeders['data'] || [],
-      pathLayouts: $php.url_layouts || []
+      pathLayouts: $php.url_layouts || [],
+      custom: {
+        path: ''
+      }
     },
     methods: {
       getFeederLayout: function (feederURL) {
         return this.pathLayouts.filter(function (item) {
-          return item.path === '/' + feederURL;
+          return item.path === feederURL;
         })[0] || {};
       },
       selectLayout: function (url) {
         uisListDialog(url);
+      },
+      addCustom: function (parameters) {
+
       }
     }
   });
@@ -38,11 +44,11 @@ function Handler(state, scope) {
 
   function setLayout(pageLayout) {
     $.post("api/webroot/widgets-management/set-uis", {
-      path: '/' + pageLayout.url,
+      path: pageLayout.url,
       uis_id: pageLayout.layoutId
     }, function (response) {
       var exist = vue.pathLayouts.filter(function (item) {
-        return item.path === '/' + pageLayout.url;
+        return item.path === pageLayout.url;
       })[0];
 
       if (exist) {
@@ -50,9 +56,11 @@ function Handler(state, scope) {
       } else {
         vue.pathLayouts.push({
           name: pageLayout.layoutName,
-          path: '/' + pageLayout.url
+          path: pageLayout.url
         });
       }
+
+      vue.custom = {};
 
       $('body').EW().notify(response).show();
     });

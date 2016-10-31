@@ -1176,14 +1176,23 @@ class EWCore {
     return $newString;
   }
 
-  public static function to_slug($title, $table_name, $field_name = "slug") {
+  public static function to_slug($title, $table_name, $field_name = "slug", $id = null, $type = null, $type_field_name = 'type') {
     $db = \EWCore::get_db_connection();
     $slug = self::make_slugs($title);
     //echo $slug;
-    $query = "SELECT COUNT(*) AS NumHits FROM $table_name WHERE  $field_name  LIKE '$slug%'";
+    $query = "SELECT COUNT(*), id AS NumHits FROM $table_name WHERE $field_name  LIKE '$slug%'";
+    
+    if(!is_null($type)) {
+      $query = "SELECT COUNT(*), id AS NumHits FROM $table_name WHERE $type_field_name = $type AND $field_name LIKE '$slug%'";
+    }
+    
     $result = $db->query($query) or die($db->error);
     $row = $result->fetch_assoc();
     $numHits = $row['NumHits'];
+
+    if ($numHits === 1 && $id) {
+      return ($row['id'] === $id) ? $slug : ($slug . '-1');
+    }
 
     return ($numHits > 0) ? ($slug . '-' . $numHits) : $slug;
   }
@@ -1984,4 +1993,5 @@ class EWCore {
   public static function is_list($array) {
     return count(array_filter(array_keys($array), 'is_string')) > 0;
   }
+
 }

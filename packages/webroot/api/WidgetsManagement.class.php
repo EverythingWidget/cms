@@ -1020,10 +1020,14 @@ class WidgetsManagement extends \ew\Module {
     $html_keywords_string = static::get_html_title();
     $description = static::get_html_description();
 
+    if ($current_path === '/' || !$current_path || !$description) {
+      $description = $currentAppConf["webroot/description"];
+    }
+
     return [
         'url'                 => CURRENT_URL,
         'title'               => ($current_path === '/' || !$current_path) ? $currentAppConf["webroot/title"] : $html_keywords_string,
-        'description'         => ($current_path === '/' || !$current_path) ? $currentAppConf["webroot/description"] : $description,
+        'description'         => $description,
         'keywords'            => $currentAppConf["webroot/keywords"],
         'favicon'             => $currentAppConf["webroot/favicon"],
         'google-analytics-id' => $currentAppConf["webroot/google-analytics-id"]
@@ -1363,10 +1367,10 @@ class WidgetsManagement extends \ew\Module {
    * @type string type of widget feeder
    * @return mixed
    */
-  public static function get_widget_feeders($_response, $type = "all") {
+  public static function get_widget_feeders($_response, $type = 'all') {
     $feeders = [];
     foreach (static::$widgets_feeders as $feeder_id => $feeder_config) {
-      if ($feeder_config->feeder_type === $type || $type === "all") {
+      if ($feeder_config->is_type($type) || $type === 'all') {
         $feeders[] = $feeder_config;
       }
     }

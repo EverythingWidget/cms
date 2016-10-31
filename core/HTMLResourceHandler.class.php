@@ -110,14 +110,14 @@ class HTMLResourceHandler extends ResourceHandler {
   }
 
   private function set_uis($module_name, $file) {
-    $request_url = strtok($_SERVER["REQUEST_URI"], "?");
+    $request_url = strtok($_SERVER['REQUEST_URI'], '?');
 
     // If root dir is same with the uri then refer to the base url
-    if ($root_dir == str_replace("/", "", $request_url))
-      $request_url = "/";
+    if ($root_dir == str_replace('/', '', $request_url))
+      $request_url = '/';
 
     // Check if UI structure is specified
-    if (!isset($_REQUEST["_uis"])) {
+    if (!isset($_REQUEST['_uis'])) {
       if ($module_name) {
         $request_url = "/$module_name/";
       }
@@ -127,21 +127,21 @@ class HTMLResourceHandler extends ResourceHandler {
       }
 
       $uis_data = static::find_url_uis($request_url);
-      $_REQUEST["_uis"] = $uis_data["uis_id"];
-      $_REQUEST["_uis_template"] = $uis_data["uis_template"];
-      if (!isset($_REQUEST["_uis_template_settings"]))
-        $_REQUEST["_uis_template_settings"] = $uis_data["uis_template_settings"];
+      $_REQUEST['_uis'] = $uis_data['uis_id'];
+      $_REQUEST['_uis_template'] = $uis_data['uis_template'];
+      if (!isset($_REQUEST['_uis_template_settings']))
+        $_REQUEST['_uis_template_settings'] = $uis_data['uis_template_settings'];
     }
     else {
-      $uis_data = \webroot\WidgetsManagement::get_uis($_REQUEST["_uis"]);
-      $_REQUEST["_uis_template"] = $uis_data["template"];
-      if (!$_REQUEST["_uis_template_settings"]) {
-        $_REQUEST["_uis_template_settings"] = json_encode($uis_data["template_settings"]);
+      $uis_data = \webroot\WidgetsManagement::get_uis($_REQUEST['_uis']);
+      $_REQUEST['_uis_template'] = $uis_data['template'];
+      if (!$_REQUEST['_uis_template_settings']) {
+        $_REQUEST['_uis_template_settings'] = json_encode($uis_data['template_settings']);
       }
     }
 
-    if (isset($_REQUEST["_parameters"])) {
-      $GLOBALS["page_parameters"] = explode("/", $_REQUEST["_parameters"]);
+    if (isset($_REQUEST['_parameters'])) {
+      $GLOBALS['page_parameters'] = explode("/", $_REQUEST['_parameters']);
     }
   }
 
@@ -196,9 +196,9 @@ class HTMLResourceHandler extends ResourceHandler {
     }
 
     return [
-        "uis_id"                => $row["ui_structure_id"],
-        "uis_template"          => $row["template"],
-        "uis_template_settings" => $row["template_settings"]
+        'uis_id'                => $row['ui_structure_id'],
+        'uis_template'          => $row['template'],
+        'uis_template_settings' => $row['template_settings']
     ];
   }
 

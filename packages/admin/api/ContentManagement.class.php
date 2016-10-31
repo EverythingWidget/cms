@@ -127,6 +127,10 @@ class ContentManagement extends \ew\Module {
     $folder_feeder = new \ew\WidgetFeeder('folders', $this, 'list', "ew-list-feeder-folders");
     $folder_feeder->set_title('folders');
     \webroot\WidgetsManagement::register_widget_feeder($folder_feeder);
+
+    $content_feeder = new \ew\WidgetFeeder('pages', $this, 'page,list', "feeder");
+    $content_feeder->set_title('Pages');
+    \webroot\WidgetsManagement::register_widget_feeder($content_feeder);
   }
 
   protected function install_permissions() {
@@ -182,7 +186,8 @@ class ContentManagement extends \ew\Module {
         'api/contents-read',
         'api/ew-page-feeder-articles',
         'api/ew-list-feeder-folders',
-        'api/ew-list-feeder-related-contents'
+        'api/ew-list-feeder-related-contents',
+        'api/feeder'
     ]);
   }
 
@@ -519,7 +524,7 @@ class ContentManagement extends \ew\Module {
     $content->author_id = $_SESSION['EW.USER_ID'];
     $content->type = $type;
     $content->title = $title;
-    $content->slug = EWCore::to_slug($title, "ew_contents");
+    $content->slug = EWCore::to_slug($title, "ew_contents", $id);
     $content->keywords = $keywords;
     $content->description = $description;
     $content->parent_id = $parent_id;
@@ -570,10 +575,10 @@ class ContentManagement extends \ew\Module {
   }
 
   public function ew_page_feeder_articles($_response, $id, $language = "en") {
-    if(!is_numeric($id)) {
+    if (!is_numeric($id)) {
       $id = EWCore::slug_to_id($id, 'ew_contents');
     }
-    
+
     $articles = $this->contents_labels($_response, $id, "admin_ContentManagement_language", $language);
     $article = [];
 
@@ -1613,9 +1618,49 @@ class ContentManagement extends \ew\Module {
 
     return \ew\APIResponse::standard_response($_response, $result);
   }
-  
+
   public function folder_delete($_input, $_response) {
     $result = (new ContentsRepository())->delete_folder($_input);
+
+    return \ew\APIResponse::standard_response($_response, $result);
+  }
+
+  public function feeder($_response, $_input, $order_by = 'ASC', $_language = 'en', $token = 0, $page_size = 30) {
+    if (!is_numeric($_input->id)) {
+      $_input->id = EWCore::slug_to_id($_input->id, 'ew_contents');
+    }
+
+
+    //$articles_size = $this->contents_articles($_response, $id, null, null, null, $_language);
+    $articles = $this->contents_articles($_response, $_input->id, $token, $page_size, $order_by, $_language);
+
+    $result = new \ew\Result;
+    $result->data = new \Illuminate\Database\Eloquent\Collection;
+//    $result->data->add($_input);
+    if (isset($articles)) {
+      foreach ($articles as $article) {
+        $article["content_fields"]['@content/date-created'] = [
+            'tag'     => 'p',
+            'content' => \DateTime::createFromFormat('Y-m-d H:i:s', $article['date_created'])->format('Y-m-d')
+        ];
+
+        $result->data->add([
+            "id"             => $article["id"],
+            "html"           => $article["content"],
+            "content_fields" => $article["content_fields"]
+        ]);
+      }
+    }
+
+    $folder_data = (new ContentsRepository)->find_by_id($_input->id);
+    $parent_data = [];
+    if (isset($folder_data->data)) {
+      $parent_data = $folder_data->data;
+    }
+
+    $result->total = $articles['total'];
+    $result->page_size = $articles['page_size'];
+    $result->parent = $parent_data;
 
     return \ew\APIResponse::standard_response($_response, $result);
   }

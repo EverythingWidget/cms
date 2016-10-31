@@ -18,8 +18,9 @@ class WidgetFeeder {
   public $id = "";
   public $url = "";
   public $module;
-  private $resourse_type = "api";
-  public $feeder_type = "widget";
+  private $resourse_type = 'api';
+  public $feeder_type = 'widget';
+  private $feeder_types = ['widget'];
   public $method_name;
   public $title = "Widget";
   public $description = "This is a widget";
@@ -29,6 +30,7 @@ class WidgetFeeder {
     $this->url = (substr($url, -1) === "/") ? $url : "$url/";
     $this->module = $module;
     $this->feeder_type = $feeder_type;
+    $this->feeder_types = array_map('trim', explode(',', $feeder_type));
     $this->method_name = $method_name;
     $this->resourse_type = $resource_type;
     $this->id = str_replace('_', '-', $module->get_app()->get_root())
@@ -36,6 +38,10 @@ class WidgetFeeder {
             . '/' . \EWCore::camelToHyphen($module->get_name()
                     . '/' . $method_name);
     $this->api_url = $this->id;
+  }
+
+  public function is_type($type) {
+    return in_array($type, $this->feeder_types);
   }
 
   public function set_title($title) {
