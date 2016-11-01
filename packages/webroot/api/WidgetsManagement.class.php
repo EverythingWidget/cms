@@ -1350,6 +1350,7 @@ class WidgetsManagement extends \ew\Module {
         }
       }
     }
+
     return null;
   }
 

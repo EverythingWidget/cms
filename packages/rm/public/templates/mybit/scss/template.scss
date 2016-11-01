@@ -7,10 +7,26 @@
 html, body {
   font-family: 'Open Sans', sans-serif;
   color: #333;
+  min-height: 100%;
+  position: relative;
+  font-size: 14px;
 }
 
 .container {
   width: 100%;
   position: relative;
   z-index: 1;
+}
+
+h1, h2 {
+  font-weight: 300; 
+}
+
+a {
+  color: #EF4035;
+
+  &:hover {
+    color: #EF4035;
+    text-decoration: underline;
+  }
 }

@@ -8,7 +8,11 @@
     justify-content: flex-end;
     height: 100%;
     list-style: none;
-    font-size: 1.1em;
+    font-size: .9em;
+
+    @media screen and (min-width: 1025px) {
+      font-size: 1.1em;
+    }
 
     > li {
       margin: 0 15px;
@@ -20,12 +24,15 @@
         text-align: center;
         line-height: 22px;
         padding: 17px 6px 14px;
+        white-space: nowrap;
         border-bottom: 3px solid transparent;
+
       }
 
       &:hover {
         > a {
           background-color: rgba(#fff, .1);
+          text-decoration: none;
         }
       }
 
@@ -43,6 +50,7 @@
   height: 100%;
   flex-direction: column;
   justify-content: center;
+  position: absolute;
 
   > img {
     display:block;
@@ -198,3 +206,80 @@
   }
 }
 
+.widget.main-slider {
+  .owl-item {
+    min-height: 400px;  
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    img {
+      float: left;
+      max-width: 50%;
+      height: auto;
+    }
+
+    h2 {
+      font-size: 30px;
+      margin: 60px 0 0;
+    }
+
+    p, h2 {
+      max-width: 50%;
+      padding: 0 30px;
+      float: left;
+      text-align: justify;
+    }
+  }
+
+  .owl-controls {
+    margin: 0;
+
+    .owl-dots {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      > .owl-dot {
+        > span {
+          margin: 5px;
+          width: 20px;
+          height: 20px;
+        }
+
+        &:hover {
+          > span {
+            background-color: lighten(#EF4035, 20%);
+          }
+        }
+
+        &.active {
+          > span {
+            background-color: #EF4035;
+          }
+        }
+      }
+    }
+  }
+
+  .owl-nav {
+
+  }
+}
+
+.widget.image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.widget {
+  &.text-center {
+    text-align: center;
+
+    > p, > h1, > h2, > h3 {
+      text-align: center;
+    }
+  }
+}

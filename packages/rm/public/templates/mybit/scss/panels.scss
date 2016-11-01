@@ -1,4 +1,15 @@
 .panel.width-1060 {
-  width: 1060px;
+  width: 100%;
   margin: 0 auto;
+
+  @media screen and (min-width: 1025px) {
+    max-width: 1060px;
+  }
+}
+
+.panel.block {
+  padding: 30px 0;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
 }

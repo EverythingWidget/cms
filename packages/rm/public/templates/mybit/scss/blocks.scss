@@ -14,12 +14,17 @@
 }
 
 .block.section {
-  padding: 30px 0;
+  padding: 0 0 30px;
 }
 
 .block.secondry {
+  padding: 0 0 30px;
   background-color: #E4E4E4;
-  color: #585858;
+  color: #111;
+
+  p {
+    text-align: justify;
+  }
 }
 
 .block.footer {
@@ -29,7 +34,9 @@
 }
 
 .block.license {
-  padding: 20px 0 60px;
+  padding: 0px 0 10px;
   border-top: 1px solid #6b6b6b;
   background-color: #545454;
+  text-align: center;
+  color: #fff;
 }

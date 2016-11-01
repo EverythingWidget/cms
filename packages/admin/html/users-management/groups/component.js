@@ -3,7 +3,7 @@
 'use restrict';
 
 System.newStateHandler(Scope, Handler);
-alert('asd');
+
 function Handler(state, scope) {
   scope = scope || Scope;
   scope.primaryMenu = System.entity('ui/primary-menu');

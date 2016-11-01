@@ -158,14 +158,14 @@ if ($widget_parameters['content_fields'] && isset($items)) {
   window.addEventListener('load', function () {
     $("div[data-widget-id='{$widget_id}'] > .owl-carousel").owlCarousel({
       responsiveClass: true,
-      autoHeight:<?php echo $auto_height ?>,
-      loop:<?php echo $loop ?>,
-      center:<?php echo $center ?>,
-      dots:<?php echo $slide_indicator ?>,
-      nav:<?php echo $nav ?>,
-      autoplay:<?php echo $auto_play ?>,
-      autoplayTimeout: <?php echo $slide_timeout ?>,
-      autoplayHoverPause:<?php echo $autoPlayPause ?>,
+      autoHeight:<?= $auto_height ?>,
+      loop:<?= $loop ?>,
+      center:<?= $center ?>,
+      dots:<?= $slide_indicator ?>,
+      nav:<?= $nav ?>,
+      autoplay:<?= $auto_play ?>,
+      autoplayTimeout: <?= $slide_timeout ?>,
+      autoplayHoverPause:<?= $autoPlayPause ?>,
       smartSpeed: <?= $smart_speed ?>,
       navText: [
         '',

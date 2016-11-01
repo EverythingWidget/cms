@@ -841,7 +841,7 @@ class ContentManagement extends \ew\Module {
   public function content_fields($_parts__id, $language) {
     $content = $this->get_content_by_id($_parts__id, $language);
 
-    return \ew\APIResourceHandler::to_api_response($content["data"]["content_fields"]);
+    return \ew\APIResourceHandler::to_api_response($content->data["content_fields"]);
   }
 
   private function get_content_by_id($id, $language = 'en') {

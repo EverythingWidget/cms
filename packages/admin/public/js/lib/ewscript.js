@@ -1800,12 +1800,15 @@ function EWNotification(element, options) {
   var $this = this;
   if (this.options.closable)
     var link = $('<a class="close close-icon" href="#"></a>');
-  //link.css({})
-  link.on('click', function (e) {
+
+  var closeAction = function (e) {
     e.preventDefault();
     $this.closeNotification();
-  });
+  };
+
+  link.on('click', closeAction);
   this.$note.prepend(link);
+  this.$note.on('click', closeAction);
   // Show notification
   //this.show();
   return this;

@@ -213,6 +213,7 @@ $panelId = $_REQUEST['panelId'];
 
       if (widgetParams) {
         setTimeout(function () {
+          console.log('widget data: ', widgetParams);
           EW.setFormData("#uis-widget", widgetParams);
         });
       }
