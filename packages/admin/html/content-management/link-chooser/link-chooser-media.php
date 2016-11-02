@@ -43,7 +43,7 @@
 </div>
 
 <system-float-menu id='media-chooser-main-actions' class="system-float-menu" position="se">  
-  <div class="float-menu-indicator"></div>
+  <div class="float-menu-indicator" indicator></div>
   <div class="float-menu-actions" actions>
     <button type="button"
             class="btn btn-primary"

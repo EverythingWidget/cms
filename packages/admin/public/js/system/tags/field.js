@@ -12,7 +12,7 @@
 
         element.xtag._input = this.querySelectorAll('input, textarea, select')[0];
 
-        var setEmptiness = function () {
+        element.setEmptiness = function () {
           if (element.xtag._input.value || element.xtag._input.type === 'file') {
             element.removeAttribute('empty');
           } else {
@@ -21,11 +21,11 @@
         };
 
         if (element.xtag._input) {
-          setEmptiness();
+          element.setEmptiness();
 
           element.xtag._input.addEventListener('focus', function () {
             element.setAttribute('focus', '');
-            setEmptiness();
+            element.setEmptiness();
           });
 
           element.xtag._input.addEventListener('blur', function () {
@@ -33,17 +33,17 @@
           });
 
           element.xtag._input.onchange = function (e) {
-            setEmptiness();
+            element.setEmptiness();
           };
 
           element.xtag._input.addEventListener('input', function (e) {
-            setEmptiness();
+            element.setEmptiness();
           });
 
           element.xtag.observer = new MutationObserver(function (mutations) {
             mutations.forEach(function (mutation) {
               if (mutation.attributeName === 'value') {
-                setEmptiness();
+                element.setEmptiness();
               }
             });
           });
@@ -52,6 +52,7 @@
         }
       },
       inserted: function () {
+        this.setEmptiness();
       },
       removed: function () {
         this.xtag.observer.disconnect();

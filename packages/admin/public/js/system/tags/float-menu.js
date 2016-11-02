@@ -5,8 +5,8 @@
     lifecycle: {
       created: function () {
         var _this = this;
-        _this.xtag.indicator = _this.querySelector('[indicator]');
-        _this.xtag.actionsContainer = _this.querySelector('[actions]');
+        _this.xtag.indicator = _this.querySelector('[indicator]') || _this.getElementsByTagName('div')[0];
+        _this.xtag.actionsContainer = _this.querySelector('[actions]') || _this.getElementsByTagName('div')[1];
 
         var expand = function (e) {
           e.stopPropagation();

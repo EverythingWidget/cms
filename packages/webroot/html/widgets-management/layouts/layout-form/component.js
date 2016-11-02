@@ -266,47 +266,48 @@ UISForm.prototype.createInspector = function (element, init) {
   $.each(children, function (k, uisItem) {
     uisItem = $(uisItem);
     var liUl = null;
-    //var div = $("<div></div>");
+
     if (uisItem.hasClass("panel") || uisItem.hasClass("block")) {
       liUl = $("<li><div href='#' class='item-label'>\n\
       <span class='handle panel'></span></div><a href='#' class='btn btn-primary btn-text add-item'>+</a><a href='#' class='close-icon' ></a></li>");
-      itemLabel = liUl.find(".item-label");
-      liUl.attr("data-linked-panel-id", uisItem.attr("data-panel-id"));
+      itemLabel = liUl.find('.item-label');
+
+      var dataPanelId = uisItem.attr('data-panel-id');
+      liUl.attr("data-linked-panel-id", dataPanelId);
+
       skipBoxBlock = false;
 
       if (uisItem.hasClass("row")) {
-        itemLabel.append("Block");
         liUl.find(".handle").attr("class", "handle block");
         liUl.addClass("block");
-        itemLabel.click(function (e) {
-          self.blockForm(uisItem.attr('data-panel-id'));
+
+        itemLabel.append("Block").click(function (e) {
+          self.blockForm(dataPanelId);
           e.preventDefault();
         });
-      } else if (uisItem.children(".row").length > 0) {
-        itemLabel.append("Panel");
-        liUl.addClass("panel");
-        // Set data link panel id for the panel
-        liUl.attr("data-linked-panel-id", uisItem.attr('data-panel-id'));
+      } else if (uisItem.children(".row:not(.widget-container)").length > 0) {
+        liUl.addClass("panel").attr("data-linked-panel-id", dataPanelId);
         self.lastItem = liUl;
 
+        itemLabel.append("Panel");
         itemLabel.click(function (e) {
-          self.editPanel(uisItem.attr('data-panel-id'), uisItem.attr('data-container-id'));
+          self.editPanel(dataPanelId, uisItem.attr('data-container-id'));
           e.preventDefault();
         });
         //skipBoxBlock = true;
         skipChildren = true;
       } else {
-        itemLabel.append("Panel: " + (uisItem.attr('id') || ''));
+        itemLabel.append('Panel: ' + (uisItem.attr('id') || ''));
         liUl.addClass("panel");
         itemLabel.click(function (e) {
-          self.editPanel(uisItem.attr('data-panel-id'), uisItem.attr('data-container-id'));
+          self.editPanel(dataPanelId, uisItem.attr('data-container-id'));
           e.preventDefault();
         });
       }
 
       // Add widget button for panels
       var addItem = liUl.find(".add-item");
-      addItem.click($.proxy(self.showWidgetsList, self, uisItem.attr('data-panel-id')));
+      addItem.click($.proxy(self.showWidgetsList, self, dataPanelId));
       addItem.hover(function () {
         liUl.addClass("highlight");
       }, function () {
@@ -323,13 +324,6 @@ UISForm.prototype.createInspector = function (element, init) {
         var panel = frameBody.find("[data-panel-id='" + uisItem.attr('data-panel-id') + "']");
         // Scroll to the panel if the panel is not in view port
         var offset = panel.offset();
-//          var scrollTop = frameBody.scrollTop();
-//
-//          if (offset.top > (scrollTop + self.editorIFrame.height()) || offset.top + panel.outerHeight() < scrollTop) {
-//            frameBody.stop().animate({
-//              scrollTop: offset.top
-//            }, 500);
-//          }
 
         self.currentElementHighlight.css({
           top: offset.top,
@@ -337,7 +331,7 @@ UISForm.prototype.createInspector = function (element, init) {
           position: "absolute",
           width: panel.outerWidth(),
           height: panel.outerHeight(),
-          margin: "0"
+          margin: 0
         });
 
         self.currentElementHighlight.show();
@@ -352,7 +346,7 @@ UISForm.prototype.createInspector = function (element, init) {
         if (self.lastItem) {
           self.lastItem.find(".add-item").unbind("click").click(function (e) {
             e.preventDefault();
-            self.showWidgetsList(uisItem.attr('data-panel-id'));
+            self.showWidgetsList(dataPanelId);
           });
 
           self.lastItem.append(ul);
@@ -370,7 +364,7 @@ UISForm.prototype.createInspector = function (element, init) {
       }
     }
 
-    if (uisItem.hasClass("widget-container")) {
+    if (uisItem.hasClass('widget-container')) {
       var widgetGlassPane = $(document.createElement("div"));
       widgetGlassPane.addClass("widget-glass-pane");
       widgetGlassPane.data("widget-element", uisItem);
@@ -421,21 +415,8 @@ UISForm.prototype.createInspector = function (element, init) {
       }
       // Show bloack glass on hover for widget
 
-      //var widgetClone = widget.clone();
       li.hover(function () {
-        //console.log(widget);
-        //var widget = frameBody.find("[data-widget-id='" + widget.attr('data-widget-id') + "']");
-        // Scroll to the widget if the panel is not in view port
         var offset = widget.offset();
-//          var scrollTop = frameBody.scrollTop();
-//
-//          if (offset.top > (scrollTop + self.editorIFrame.height()) || offset.top + widget.outerHeight() < scrollTop) {
-//
-//            frameBody.stop().animate({
-//              scrollTop: widget.offset().top
-//            }, 500);
-//          }
-
         self.currentElementHighlight.css({
           top: offset.top,
           left: offset.left,
@@ -447,11 +428,12 @@ UISForm.prototype.createInspector = function (element, init) {
       }
       , function () {
         self.currentElementHighlight.hide();
-
       });
+
       result.push(li);
     }
   });
+
   return result;
 };
 
