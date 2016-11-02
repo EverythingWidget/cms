@@ -118,7 +118,8 @@ class WidgetsManagement extends \ew\Module {
         "html/ne-uis.php"));
 
     $this->register_public_access([
-        'api/get-widget-feeders'
+        'api/get-widget-feeders',
+        'api/masons-read'
     ]);
   }
 
@@ -1442,6 +1443,35 @@ class WidgetsManagement extends \ew\Module {
         $this->set_uis("@HOME_PAGE", $_input->id);
       }
     }
+
+    return \ew\APIResponse::standard_response($_response, $result);
+  }
+
+  public function masons_read($_response, $_input) {
+    $result = new \ew\Result;
+    $path = EW_TEMPLATES_DIR . '/' . $_input->template . '/masons/';
+
+    if (!is_dir($path)) {
+      $result->error = 404;
+      $result->message = 'masons not found: ' . $path;
+
+      return \ew\APIResponse::standard_response($_response, $result);
+    }
+
+    $masons_dir = opendir($path);
+
+    $result->data = new \Illuminate\Database\Eloquent\Collection;
+
+    while ($mason_filename = readdir($masons_dir)) {
+      if (strpos($mason_filename, '.') === 0)
+        continue;
+
+      $mason = include $path . '/' . $mason_filename;
+
+      $result->data->add($mason);
+    }
+
+    //$result->data->add($_input);
 
     return \ew\APIResponse::standard_response($_response, $result);
   }

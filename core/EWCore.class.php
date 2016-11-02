@@ -1181,11 +1181,11 @@ class EWCore {
     $slug = self::make_slugs($title);
     //echo $slug;
     $query = "SELECT COUNT(*), id AS NumHits FROM $table_name WHERE $field_name  LIKE '$slug%'";
-    
-    if(!is_null($type)) {
+
+    if (!is_null($type)) {
       $query = "SELECT COUNT(*), id AS NumHits FROM $table_name WHERE $type_field_name = $type AND $field_name LIKE '$slug%'";
     }
-    
+
     $result = $db->query($query) or die($db->error);
     $row = $result->fetch_assoc();
     $numHits = $row['NumHits'];
@@ -1934,9 +1934,10 @@ class EWCore {
   }
 
   public static function populate_view($view_html, $view_data) {
-    return preg_replace_callback("/\{\{([\w]*)\}\}/", function($match) use ($view_data) {
-      $data = $view_data[$match[1]];
-      return isset($data) ? $data : $match[0];
+    return preg_replace_callback("/\{\{([\w-.>]*)\}\}/", function($match) use ($view_data) {
+      $data = $view_data{$match[1]};
+
+      return isset($data) ? $data : '@' . $match[1];
     }, $view_html);
   }
 

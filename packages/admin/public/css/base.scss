@@ -992,7 +992,7 @@ a.apps-menu-link:hover {
     display: flex;
     align-items: center;
     align-self: center;
-    
+
     > ul {
       padding: 0 15px;  
     }
@@ -1348,22 +1348,31 @@ ul.actions-bar li label {
   overflow: hidden;
 }
 
+.list.arrangeable.fields > li {
+  margin: 0 15px 5px;
+  border-radius: 6px;
+  box-shadow: none;
+}
+
 .list.arrangeable.fields > li > .wrapper {
-  padding: 10px 10px 6px;
-  padding-left: 30px;
+  padding: 6px 10px 4px;
+  padding-left: 26px;
   border-radius: 0;
-  background-color: #f9f9f9;
+  background-color: #eee;
   overflow: hidden;
 }
 
-.list.arrangeable.fields > li > .wrapper .text-field{
-  /* font-weight: 300; */
-  /* line-height: 30px; */
-  font-size: 20px;
-  border-color: transparent;
-  margin-bottom: 0;
-  padding-bottom: 0;
-  /* padding-top: 26px; */
+.list.arrangeable.fields > li > .wrapper {
+  .text-field, .field {
+    font-size: 20px;
+    border-color: transparent;
+    margin-bottom: 0;
+    padding-bottom: 0;
+    
+    > label {
+      top: 5px;
+    }
+  }
 }
 
 .list.arrangeable.fields > li > .wrapper .text-field:hover {
