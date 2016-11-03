@@ -55,7 +55,7 @@
     $form = EWCore::call($label_object['form'], compact("comp_id", "value", "form_id"));
     ?>
     <div class="block-row">
-      <div class='box box-grey content-label disabled' data-activated="false">
+      <div id="<?= $comp_id ?>_label_block" class='box box-grey content-label disabled' data-activated="false">
         <div class='block-row'>
           <h3 class="pull-left"><?= $label_object["title"] ?></h3>
 

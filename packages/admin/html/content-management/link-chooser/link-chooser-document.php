@@ -23,26 +23,29 @@
       this.preParentId = -1;
       this.document = {};
       //$("#documents-up-btn").click($.proxy(this.preCategory, this));
-      this.bUp = EW.addAction("tr{Up}", $.proxy(this.preCategory, this), {
-        float: "right"
-      }, "content-chooser-actions-bar").hide();
+      this.bUp = EW.addActionButton({
+        text: "<i class='icon-left-open-1'></i>",
+        handler: $.proxy(this.preCategory, this),
+        parent: Scope.html.find('#content-chooser-actions-bar'),
+        float: 'right'
+      }).hide();
 
       this.bSelect = EW.addActionButton({
         text: "<i class='icon-ok'></i>",
         class: "btn-float btn-success pos-se",
-        parent: parentDialog,
+        parent: Scope.html.filter('#link-chooser'),
         handler: function () {
           _this.selectContent(null);
         }
       }).hide();
 
       this.folderList = $("#content-chooser #content-chooser-folders-list");
-      this.folderListHeader = this.folderList.children().eq(0);
-      this.folderListContent = this.folderList.children().eq(1);
+      this.folderListHeader = Scope ? Scope.html.find('#content-chooser-folders-list').children().eq(0) : this.folderList.children().eq(0);
+      this.folderListContent = Scope ? Scope.html.find('#content-chooser-folders-list').children().eq(1) : this.folderList.children().eq(1);
 
       this.articlesList = $("#content-chooser #articles-list");
-      this.articlesListHeader = this.articlesList.children().eq(0);
-      this.articlesListContent = this.articlesList.children().eq(1);
+      this.articlesListHeader = Scope ? Scope.html.find('#articles-list').children().eq(0) : this.articlesList.children().eq(0);
+      this.articlesListContent = Scope ? Scope.html.find('#articles-list').children().eq(1) : this.articlesList.children().eq(1);
 
       this.listFilesAndFolders(this.parentId);
     }
@@ -67,26 +70,25 @@
       _this.articlesListContent.empty();
 
       this.bSelect.hide();
-      if (_this.contentType === "all" || _this.contentType === "list" || _this.contentType === "contentField") {
+      if (_this.contentType === "all" || _this.contentType === "list" || _this.contentType === "content") {
         _this.folderListHeader.html("tr{Loading folders}");
 
         $.post('api/admin/content-management/contents-folders', {
           parent_id: parentId
-        },
-                function (data) {
-                  _this.folderListHeader.html("tr{Folders}");
-                  var cId = EW.getHashParameter("categoryId");
-                  $.each(data.data, function (index, element) {
-                    var temp = _this.createFolder(element);
+        }, function (data) {
+          _this.folderListHeader.html("tr{Folders}");
+          var cId = EW.getHashParameter("categoryId");
+          $.each(data.data, function (index, element) {
+            var temp = _this.createFolder(element);
 
-                    if (element.id == cId) {
-                      temp.addClass("selected");
-                      _this.oldItem = temp;
-                    }
+            if (element.id == cId) {
+              temp.addClass("selected");
+              _this.oldItem = temp;
+            }
 
-                    _this.folderListContent.append(temp);
-                  });
-                }, "json");
+            _this.folderListContent.append(temp);
+          });
+        }, "json");
       }
 
       if (_this.contentType === "all" || _this.contentType === "content" || _this.contentType === "contentField") {
@@ -117,7 +119,7 @@
       var div = $("<div class='content-item folder' data-category-id='{id}'><span></span><p>{title}</p><p class='date'>{round_date_created}</p></div>").EW().createView(model);
       div.click(function () {
 
-        if (_this.contentType === "all" || _this.contentType === "list") {
+        if (_this.contentType === "all" || _this.contentType === "list" || _this.contentType === "content") {
           _this.bSelect.comeIn(300);
         }
 
@@ -216,6 +218,11 @@
         this.showContentFields(content);
         this.bUp.comeIn(300);
 
+        return;
+      }
+
+      if (Scope && Scope.onSelect) {
+        Scope.onSelect();
         return;
       }
 

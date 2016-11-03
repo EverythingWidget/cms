@@ -1480,6 +1480,22 @@ class WidgetsManagement extends \ew\Module {
     
   }
 
+  public static function get_mason($mason_name) {
+    $names = explode('/', $mason_name);
+
+    $path = EW_TEMPLATES_DIR . '/' . $names[0] . '/masons/' . $names[1] . '.php';
+
+    if (file_exists($path)) {
+      include_once $path;
+      $mason_name = str_replace('/', '\\', $mason_name);
+
+      return new $mason_name;
+    }
+    else {
+      return null;
+    }
+  }
+
   public function get_title() {
     return "Widgets";
   }

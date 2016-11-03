@@ -144,7 +144,7 @@ class ContentsRepository implements \ew\CRUDRepository {
 
     if (!$content) {
       $result->error = 404;
-      $result->message = 'contentnot found';
+      $result->message = 'content not found';
 
       return $result;
     }
@@ -159,8 +159,19 @@ class ContentsRepository implements \ew\CRUDRepository {
       $content->content_fields = null;
       $content->parsed_content = null;
     }
+
     $content->save();
 
+    if ($content->id) {
+      $labels = json_decode($input->labels, true);
+      if (is_array($labels)) {
+        foreach ($labels as $key => $value) {
+          $this->update_label($content->id, $key, $value);
+        }
+      }
+    }
+
+    $result->message = 'content has been updated';
     $result->data = $content;
 
     return $result;

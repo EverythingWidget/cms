@@ -1,18 +1,10 @@
 <input class="text-field" type="hidden" id="{{comp_id}}_key" name="key" value="{{comp_id}}"/>
-<input class="text-field" type="hidden" id="{{comp_id}}_value" name="value" value=""/>
+<input class="text-field" type="hidden" id="{{comp_id}}_value" name="value" v-model="activeLanguage"/>
 
 <system-field class="field col-xs-12">
   <label>tr{Add a language}</label>
-  <select id="{{comp_id}}_select">
-    <option value="en">Default</option>
-    <option value="en">English</option>
-    <option value="es">Spanish</option>
-    <option value="de">German</option>
-    <option value="ru">Russian</option>
-    <option value="cmn">Mandarin</option>
-    <option value="ar">Arabic</option>
-    <option value="fa">فارسی</option>
-    <option value="nl">Dutch</option>
+  <select id="{{comp_id}}_select" v-model="activeLanguage">
+    <option v-for="lang in languages" v-bind:value="lang.name">{{ lang.title }}</option>
   </select>
 </system-field>
 
@@ -21,7 +13,7 @@
     <ul id="{{comp_id}}_languages" class="list links">
       <li v-for="item in items" class="zoom-item" v-bind:class="{ 'active': item.id === contentId }" >
         <a href='#' class='link' v-on:click="select($event,item)">
-          {{ languages[item.value] }}
+          {{ languagesMap[item.value] }}
           <p>
             {{ item.title }}
           </p>
@@ -32,11 +24,62 @@
 </div>
 <script>
   (function () {
-    var languages = {en: "English", es: "Spanish", de: "German", ru: "Russian", cmn: "Mandarin", ar: "Arabic", fa: "فارسی", nl: 'Dutch'};
+    var languages = [
+      {
+        name: 'en',
+        title: 'Default'
+      },
+      {
+        name: 'en',
+        title: 'English'
+      },
+      {
+        name: 'es',
+        title: 'Spanish'
+      },
+      {
+        name: 'de',
+        title: 'German'
+      },
+      {
+        name: 'ru',
+        title: 'Russian'
+      },
+      {
+        name: 'cmn',
+        title: 'Mandarin'
+      },
+      {
+        name: 'ar',
+        title: 'Arabic'
+      },
+      {
+        name: 'fa',
+        title: 'Persian'
+      },
+      {
+        name: 'nl',
+        title: 'Dutch'
+      }
+    ];
+
+    var languagesMap = {
+      en: "English",
+      es: "Spanish",
+      de: "German",
+      ru: "Russian",
+      cmn: "Mandarin",
+      ar: "Arabic",
+      fa: "Persian",
+      nl: 'Dutch'
+    };
+
     var languagesLabelVue = new Vue({
-      el: '#{{comp_id}}_languages',
+      el: '#{{comp_id}}_label_block',
       data: {
         items: [],
+        activeLanguage: '{{value}}',
+        languagesMap: languagesMap,
         languages: languages,
         contentId: null
       },
@@ -50,15 +93,16 @@
 
           $.get('api/admin/content-management/get-article/', {articleId: item.id}, function (response) {
             ContentForm.setData(response.data);
+            languagesLabelVue.activeLanguage = ContentForm.getLabel("{{comp_id}}");
           });
         }
       }
     });
 
-    $("#{{comp_id}}_value").val("<?php echo $value ?>");
-    $("#{{comp_id}}_select").on("change", function () {
-      $("#{{comp_id}}_value").val($("#{{comp_id}}_select").val());
-    });
+
+//    $("#{{comp_id}}_select").on("change", function () {
+//      $("#{{comp_id}}_value").val($("#{{comp_id}}_select").val());
+//    });
 
     $("#{{form_id}}").on('refresh', function (e, response) {
       var documentId = response.id;
@@ -81,11 +125,7 @@
       }, success);
 
       function success(data) {
-        // setTimeout(function() {
-
         languagesLabelVue.items = data['data'];
-        //},2000)
-
       }
     });
   })();

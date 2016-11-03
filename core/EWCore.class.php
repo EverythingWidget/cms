@@ -1937,7 +1937,7 @@ class EWCore {
     return preg_replace_callback("/\{\{([\w-.>]*)\}\}/", function($match) use ($view_data) {
       $data = $view_data{$match[1]};
 
-      return isset($data) ? $data : '@' . $match[1];
+      return isset($data) ? $data : $match[0];
     }, $view_html);
   }
 

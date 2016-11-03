@@ -445,7 +445,7 @@
 
       System.onLoadQueue["system/" + module.id] = true;
 
-      $.get(module.url, module.params | {}, function (response) {
+      $.get(module.url, module.params || {}, function (response) {
         var parsedContent = System.parseContent(response, module);
 
         setTimeout(function () {
@@ -561,7 +561,7 @@
         } else if (!currentModule) {
           currentModule = System.modules['system/' + module.id] = {};
         }
-        
+
 
         currentModule.html = filtered.html;
         currentModule.scope = scope;
@@ -576,7 +576,7 @@
       }
     },
     parseContent: function (raw, module) {
-      var scripts = null;
+      var scripts = [];
       var imports = [];
       if (!System.utility.isHTML(raw)) {
         console.log('Resource is not a valid html file:', module.url);
@@ -591,8 +591,15 @@
       var raw = $(raw);
       //var scripts = raw.filter("script").remove();
       var html = raw.filter(function (i, e) {
+        if (e.nodeType === Node.ELEMENT_NODE) {
+          e.querySelectorAll('script').forEach(function (tag) {
+            scripts.push(tag.innerHTML);
+            tag.parentNode.removeChild(tag);
+          });
+        }
+
         if (e.tagName && e.tagName.toLowerCase() === 'script') {
-          scripts = e.innerHTML;
+          scripts.push(e.innerHTML);
           return false;
         }
 
@@ -625,7 +632,7 @@
         html: html,
         imports: imports,
         uiView: uiView,
-        script: scripts
+        script: scripts.join('\n')
       };
     },
     addActiveRequest: function (request) {
