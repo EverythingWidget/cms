@@ -1,10 +1,10 @@
 <input class="text-field" type="hidden" id="{{comp_id}}_key" name="key" value="{{comp_id}}"/>
-<input class="text-field" type="hidden" id="{{comp_id}}_value" name="value" value=""/>
+<input class="text-field" type="hidden" id="{{comp_id}}_value" name="value" v-model="parentContentId"/>
 
 <div class="col-xs-12">
   <system-field class="field">
     <label>tr{Select a content}</label>
-    <input class="text-field" id="{{comp_id}}_text" name="text" value="" />  
+    <input class="text-field" id="{{comp_id}}_text" name="text" v-model="parentContentTitle" />  
     <div class="field-actions">
       <button type="button" class="btn btn-info" v-on:click="selectContent()"><i class="icon-link"></i></button>
     </div>
@@ -30,6 +30,8 @@
     var relatedDocumentsVue = new Vue({
       el: "#{{comp_id}}_label_block",
       data: {
+        parentContentId: null,
+        parentContentTitle: '',
         contentId: parseInt("{{value}}"),
         items: []
       },
@@ -49,7 +51,25 @@
           }
         },
         selectContent: function () {
-          contentChooserDialog();
+          var linkChooserDialog = EW.createModal({
+            class: "center slim"
+          });
+
+          System.loadModule({
+            url: 'html/admin/content-management/link-chooser/component.php',
+            params: {
+              contentType: 'content'
+            }
+          }, function (module) {
+            module.scope.onSelect = function (content) {
+              relatedDocumentsVue.parentContentId = content.id;
+              relatedDocumentsVue.parentContentTitle = content.title;
+              
+              linkChooserDialog.dispose();
+            };
+
+            linkChooserDialog.html(module.html);
+          });
         }
       }
     });
@@ -96,24 +116,5 @@
       });
     });
 
-    function contentChooserDialog() {
-      var linkChooserDialog = EW.createModal({
-        class: "center slim"
-      });
-
-      System.loadModule({
-        url: 'html/admin/content-management/link-chooser/component.php',
-        params: {
-          contentType: 'content'
-        }
-      }, function (module) {
-        module.scope.onSelect = function (parameters) {
-          alert('asdasd');
-          linkChooserDialog.dispose();
-        };
-
-        linkChooserDialog.html(module.html);
-      });
-    }
   }());
 </script>

@@ -15,7 +15,6 @@
 
 <script  type="text/javascript">
   var LinkChooserDocuments = (function () {
-    var parentDialog = EW.getParentDialog($("#content-chooser-folders-list"));
     function LinkChooserDocuments() {
       var _this = this;
       this.contentType = "<?php echo $_REQUEST["contentType"] ?>" || null;
@@ -126,6 +125,7 @@
         _this.document = {
           feederId: "admin/api/content-management/ew-list-feeder-folders",
           id: model.id,
+          title: model.title,
           params: {}
         };
 
@@ -151,6 +151,7 @@
         _this.document = {
           feederId: "admin/api/content-management/ew-page-feeder-articles",
           id: model.id,
+          title: model.title,
           params: {}
         };
 
@@ -222,7 +223,7 @@
       }
 
       if (Scope && Scope.onSelect) {
-        Scope.onSelect();
+        Scope.onSelect(this.document);
         return;
       }
 

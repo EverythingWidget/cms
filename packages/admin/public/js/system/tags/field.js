@@ -12,13 +12,13 @@
 
         element.xtag._input = this.querySelectorAll('input, textarea, select')[0];
 
-        element.setEmptiness = function () {
-          if (element.xtag._input.value || element.xtag._input.type === 'file') {
-            element.removeAttribute('empty');
-          } else {
-            element.setAttribute('empty', '');
-          }
-        };
+//        element.setEmptiness = function () {
+//          if (element.xtag._input.value || element.xtag._input.type === 'file') {
+//            element.removeAttribute('empty');
+//          } else {
+//            element.setAttribute('empty', '');
+//          }
+//        };
 
         if (element.xtag._input) {
           element.setEmptiness();
@@ -40,27 +40,49 @@
             element.setEmptiness();
           });
 
-          element.xtag.observer = new MutationObserver(function (mutations) {
-            mutations.forEach(function (mutation) {
-              if (mutation.attributeName === 'value') {
-                element.setEmptiness();
-              }
-            });
-          });
-
-          element.xtag.observer.observe(this.xtag._input, {attributes: true});
+//          element.xtag.observer
+//
+//          element.xtag.observer = new MutationObserver(function (mutations) {
+//            mutations.forEach(function (mutation) {
+//              if (mutation.attributeName === 'value') {
+//                console.log(mutation)
+//                element.setEmptiness();
+//              }
+//            });
+//          });
+//
+//          element.xtag.observer.observe(this.xtag._input, {attributes: true});
         }
       },
       inserted: function () {
-        this.setEmptiness();
+        var tag = this;
+        tag.xtag.observer = setInterval(function () {
+          if (tag.xtag._input.value !== tag.xtag.oldValue) {
+            tag.setEmptiness();
+            tag.xtag.oldValue = tag.xtag._input.value;
+          }
+        }, 250);
+
+        tag.setEmptiness();
       },
       removed: function () {
-        this.xtag.observer.disconnect();
+        clearInterval(this.xtag.observer);
       }
     },
     accessors: {
     },
     events: {
+    },
+    methods: {
+      setEmptiness: function () {
+        var element = this;
+
+        if (element.xtag._input.value || element.xtag._input.type === 'file') {
+          element.removeAttribute('empty');
+        } else {
+          element.setAttribute('empty', '');
+        }
+      }
     }
   };
 

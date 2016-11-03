@@ -62,7 +62,7 @@ window.addEventListener('load', function () {
       //var base = this;
       var $element = $(element);
       defaults.callback = function (link) {
-        $element.val(link).change();
+        $element.val(JSON.stringify(link || '{}')).change();
         linkChooserDialog.trigger("close");
       };
       //this.$element = $(element);
@@ -80,16 +80,18 @@ window.addEventListener('load', function () {
           linkChooserDialog = EW.createModal({
             class: "center slim"
           });
-          $.post('html/admin/content-management/link-chooser/component.php', {
-            callback: settings.callbackName,
-            data: $element.val(),
-            contentType: $element.data("content-type") || "all"
-          }, function (data) {
-            var functionRefrence = $("<div style='display:none;' id='function-reference'></div>");
-            functionRefrence.data("callback", settings.callback);
-            e = $(data);
-            e.append(functionRefrence);
-            linkChooserDialog.html(e);
+          System.loadModule({url: 'html/admin/content-management/link-chooser/component.php', params: {
+              callback: settings.callbackName,
+              data: $element.val(),
+              contentType: $element.data("content-type") || "all"
+            }
+          }, function (module) {
+//            var functionRefrence = $("<div style='display:none;' id='function-reference'></div>");
+//            functionRefrence.data("callback", settings.callback);
+//            e = $(module);
+//            e.append(functionRefrence);
+            module.scope.onSelect = settings.callback;
+            linkChooserDialog.html(module.html);
           });
         }
       });

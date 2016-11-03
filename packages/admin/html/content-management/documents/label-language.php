@@ -78,7 +78,7 @@
       el: '#{{comp_id}}_label_block',
       data: {
         items: [],
-        activeLanguage: '{{value}}',
+        activeLanguage: '$php.value' === '' ? 'en' : '$php.value',
         languagesMap: languagesMap,
         languages: languages,
         contentId: null
