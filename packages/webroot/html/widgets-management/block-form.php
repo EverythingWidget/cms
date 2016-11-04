@@ -6,7 +6,7 @@ $container_id = $_REQUEST["containerId"];
 $name = $_REQUEST["name"];
 ?>
 <div id="uis-block-form">
-  <div class="header-pane">
+  <div class="header-pane thin">
     <h1 id="uis-block-title">
       Add Block
     </h1>

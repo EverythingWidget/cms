@@ -51,53 +51,13 @@
           }
         },
         selectContent: function () {
-          var linkChooserDialog = EW.createModal({
-            class: "center slim"
-          });
-
-          System.loadModule({
-            url: 'html/admin/content-management/link-chooser/component.php',
-            params: {
-              contentType: 'content'
-            }
-          }, function (module) {
-            module.scope.onSelect = function (content) {
-              relatedDocumentsVue.parentContentId = content.id;
-              relatedDocumentsVue.parentContentTitle = content.title;
-              
-              linkChooserDialog.dispose();
-            };
-
-            linkChooserDialog.html(module.html);
+          System.entity('ui/dialogs/link-chooser').open(function (content) {
+            relatedDocumentsVue.parentContentId = content.id;
+            relatedDocumentsVue.parentContentTitle = content.title;
           });
         }
       }
     });
-
-//    text.autocomplete({
-//      source: function (input) {
-//        $.get('api/admin/content-management/contents/', {
-//          filter: {
-//            where: {
-//              type: 'article',
-//              title: {
-//                like: text.val() + '%'
-//              }
-//            }
-//          },
-//          page_size: 10
-//        }, function (response) {
-//          input.trigger("updateList", [
-//            response.data
-//          ]);
-//        });
-//      },
-//      templateText: "<li class='text-item'><a href='#'><%= title %><span><%= date_created %></span></a><li>",
-//      insertText: function (item) {
-//        value.val(item.id);
-//        return item.title;
-//      }
-//    });
 
     $("#{{form_id}}").on('refresh.documents', function (e, formData) {
       relatedDocumentsVue.contentId = formData.id;

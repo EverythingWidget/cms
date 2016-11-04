@@ -14,7 +14,7 @@
 
     System.entity('ui/app-bar').isLoading = true;
     if (EW.selectedSection) {
-      System.ui.utility.addClass(EW.selectedSection, "inline-loader");
+      System.ui.utility.addClass(EW.selectedSection, 'inline-loader');
     }
 
     System.entity('ui/main-content').show = false;
@@ -36,7 +36,7 @@
   };
 
   System.services.app_service.load = function (path, app) {
-    if (!app || app === "Home") {
+    if (!app || app === 'Home') {
       app = 'content-management';
     }
 
@@ -75,13 +75,13 @@
 
       System.entity('ui/app-bar').subSections = [];
       System.entity('ui/primary-menu').actions = [];
-      $("#app-main-actions").empty();
+      $('#app-main-actions').empty();
 
       System.ui.components.mainContent.empty();
       System.abortAllRequests();
 
       System.loadModule(moduleConfig, function (module, html) {
-        $("#action-bar-items").find("button,div").remove();
+        $('#action-bar-items').find("button,div").remove();
 
         if (!System.getHashNav("app")[0]) {
           return;
@@ -106,7 +106,7 @@
   System.services.app_service.load_tab = function (module) {
     System.entity('ui/app-bar').isLoading = true;
     System.entity('ui/primary-menu').actions = [];
-    $("#app-main-actions").empty();
+    $('#app-main-actions').empty();
 
     System.ui.components.mainContent.empty();
     System.abortAllRequests();
@@ -201,24 +201,35 @@
           System.setHashParameters(activityParameters, true);
           activityParameters = EW.getHashParameters();
 
-          $.ajax({
-            type: currentActivity.request.method || "GET",
-            url: currentActivity.request.url,
-            data: $.extend({}, activityParameters, currentActivity.privateParams),
-            success: function (data) {
-              modal.html(data);
-            },
-            error: function (result) {
-              console.log(result);
-              //alert(result.responseText);
-              modal.html(result.responseText);
-              if (result.responseJSON) {
-                alert(result.responseJSON.message);
-              }
+          var method = currentActivity.request.method || 'GET';
 
-              EW.customAjaxErrorHandler = true;
-            }
-          });
+//          if (true) {
+//            System.loadModule({
+//              url: currentActivity.request.url,
+//              params: $.extend({}, activityParameters, currentActivity.privateParams)
+//            }, function (module) {
+//              modal.html(module.html);
+//            });
+//          } else {
+            $.ajax({
+              type: method,
+              url: currentActivity.request.url,
+              data: $.extend({}, activityParameters, currentActivity.privateParams),
+              success: function (data) {
+                modal.html(data);
+              },
+              error: function (result) {
+                console.log(result);
+                //alert(result.responseText);
+                modal.html(result.responseText);
+                if (result.responseJSON) {
+                  alert(result.responseJSON.message);
+                }
+
+                EW.customAjaxErrorHandler = true;
+              }
+            });
+//          }
         },
         onClose: function () {
           currentActivity = EW.activities[activityId] || EW.activities[activityName];

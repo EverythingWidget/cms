@@ -397,14 +397,12 @@
       }
     },
     load: function (href, onDone) {
-
-      return this.addActiveRequest($.get(href, function (response) {
-
+      var promise = $.get(href, function (response) {
         if ("function" === typeof (onDone)) {
           onDone.call(this, response);
         }
-
-      }));
+      });
+      return this.addActiveRequest(promise);
     },
     /**
      * 
@@ -454,7 +452,6 @@
       });
 
       function compile(parsedContent) {
-        //if (filtered.script) {
         var scopeUIViews = {};
         Array.prototype.forEach.call(parsedContent.uiView, function (item) {
           var uiViewName = item.getAttribute('system-ui-view') || item.getAttribute('name');
@@ -551,7 +548,6 @@
         }
 
 //        delete scope.export;
-        //}
 
         var currentModule = System.modules['system/' + module.id];
 
@@ -561,7 +557,6 @@
         } else if (!currentModule) {
           currentModule = System.modules['system/' + module.id] = {};
         }
-
 
         currentModule.html = filtered.html;
         currentModule.scope = scope;
@@ -668,8 +663,7 @@
         //console.log("aborted: "+ this.activeRequests[request].creationId);
         delete this.activeRequests[request];
       }
-//      this.onLoadQueue = [
-//      ];
+
       this.currentOnLoad = null;
     },
     startModule: function (moduleId) {
@@ -684,7 +678,6 @@
     },
     startLastLoadedModule: function () {
       if (this.notYetStarted.length > 0) {
-        //alert(this.modules[this.notYetStarted[this.notYetStarted.length - 1]].id)
         this.modules[this.notYetStarted[this.notYetStarted.length - 1]].start();
       }
     },
@@ -803,9 +796,5 @@
       return !isNaN(o - 0) && o !== null && o !== "" && o !== false;
     }
   };
-
-//  window.System = System;
-
-  //exports.System = System;
 }());
 

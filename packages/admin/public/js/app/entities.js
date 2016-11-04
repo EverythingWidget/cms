@@ -1,4 +1,3 @@
-
 /* global System, EW */
 
 (function () {
@@ -100,6 +99,34 @@
 
     // ------ //
 
+    var linkChooserDialog = {};
+    linkChooserDialog.open = function (onSelect) {
+      var linkChooserDialog = EW.createModal({
+        class: "center slim"
+      });
+
+      System.loadModule({
+        url: 'html/admin/content-management/link-chooser/component.php',
+        params: {
+          contentType: 'content'
+        }
+      }, function (module) {
+        module.scope.onSelect = function (content) {
+          onSelect.call(null, content);
+
+          linkChooserDialog.dispose();
+        };
+
+        linkChooserDialog.html(module.html);
+      });
+
+      return linkChooserDialog;
+    };
+    
+    System.entity('ui/dialogs/link-chooser', linkChooserDialog);
+
+    // ------ //
+
     ContentTools.Tools.EWMedia = (function (superClass) {
       System.utility.extend(EWMedia, superClass);
 
@@ -185,5 +212,4 @@
 
     })(ContentTools.Tool);
   }
-
 })();

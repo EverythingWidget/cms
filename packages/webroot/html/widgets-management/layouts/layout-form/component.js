@@ -1001,7 +1001,7 @@ UISForm.prototype.widgetForm = function (widgetType, parentId, feederType) {
   }, 300);
 
   var d = EW.createModal({
-    class: "center"
+    class: "center slim"
   });
 
   self.currentDialog = d;

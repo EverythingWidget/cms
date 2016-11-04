@@ -4,7 +4,7 @@ $uiStructureId = $_REQUEST['uisId'];
 $panel_id = $_REQUEST["panelId"];
 $container_id = $_REQUEST["containerId"];
 ?>
-<div class="header-pane tabs-bar">
+<div class="header-pane tabs-bar thin">
   <h1 id="uis-panel-title">
     <span>tr{Add}</span>tr{Panel}
   </h1>
