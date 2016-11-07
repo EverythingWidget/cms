@@ -1,4 +1,4 @@
-/* global EW, System */
+/* global EW, System, Scope */
 
 function UIStructureList() {
   var self = this;
@@ -210,7 +210,7 @@ UIStructureList.prototype.listUIStructures = function () {
 var uisList;
 
 
-System.state("widgets-management/layouts/all", function (state) {
+System.newStateHandler(Scope, function (state) {
   state.onInit = function () { };
 
   state.onStart = function () {

@@ -193,9 +193,9 @@
     newStateHandler: function (scope, handler) {
       var app = this.getHashParam('app');
 
-//      console.log('new state', app, scope._stateId);
-      if (app === scope._stateId) {
-        this.state(app, handler);
+//      console.log('new state', app, scope._stateId, app.indexOf(scope._stateId));
+      if (app.indexOf(scope._stateId) === 0) {
+        this.state(scope._stateId, handler);
       } else {
         scope._doNotRegister = true;
       }
@@ -552,9 +552,11 @@
         var currentModule = System.modules['system/' + module.id];
 
         if (module.temprory || scope._doNotRegister) {
+//          console.log('do not register', module.id);
           delete scope._doNotRegister;
           currentModule = {};
         } else if (!currentModule) {
+//          console.log('empty', module.id);
           currentModule = System.modules['system/' + module.id] = {};
         }
 
@@ -562,7 +564,7 @@
         currentModule.scope = scope;
 
         if ('function' === typeof (System.onModuleLoaded['system/' + module.id])) {
-          //console.log(currentModule);
+          //console.log('immidiate load: ', currentModule, System.onModuleLoaded);
           System.onModuleLoaded['system/' + module.id].call(this, currentModule, currentModule.html);
           delete System.onModuleLoaded['system/' + module.id];
         }

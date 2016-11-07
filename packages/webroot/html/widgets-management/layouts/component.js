@@ -1,7 +1,9 @@
 /* global EW, System, Scope */
 
 
-System.state('widgets-management/layouts', Handler);
+System.newStateHandler(Scope, Handler);
+
+Scope.export = Handler;
 
 function Handler(state, scope) {
   scope = scope || Scope;
