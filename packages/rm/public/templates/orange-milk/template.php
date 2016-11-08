@@ -60,8 +60,8 @@ class template extends TemplateControl {
           });
         }
 
-        System.UI.forms.uis_form.inspectorEditor.off("refresh.template");
-        System.UI.forms.uis_form.inspectorEditor.on("refresh.template", function (e, data) {
+        System.ui.forms.uis_form.inspectorEditor.off("refresh.template");
+        System.ui.forms.uis_form.inspectorEditor.on("refresh.template", function (e, data) {
           var currentValue = $("#menu-id").val();
           var currentValueSlider = $("#page-slider").val();
           initSelect("#menu-id", currentValue);
@@ -88,7 +88,7 @@ class template extends TemplateControl {
                 height: "toggle"
               }, 400, "Power2.easeOut");
 
-              //System.UI.forms.uis_form.updateTemplateBody();
+              //System.ui.forms.uis_form.updateTemplateBody();
               widgets = System.ui.forms.uis_form.getLayoutWidgets();
               initSelect("#menu-id", data["menu-id"]);
               initSelect("#page-slider", data["page-slider"]);

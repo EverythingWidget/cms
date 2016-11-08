@@ -29,21 +29,21 @@ PageLayoutsStateHandler.prototype.init = function () {
 PageLayoutsStateHandler.prototype.start = function () {
   System.entity('ui/app-bar').subSections = [
     {
-      title: 'All Layouts',
-      state: 'all',
-      url: 'html/webroot/widgets-management/page-layouts/all/component.php',
-      id: 'widgets-management/pages-uis/all'
-    },
-    {
       title: 'Contents Layouts',
       state: 'contents-layouts',
       url: 'html/webroot/widgets-management/page-layouts/contents-layouts/component.php',
       id: 'widgets-management/pages-uis/contents-layouts'
+    },
+    {
+      title: 'All Layouts',
+      state: 'all',
+      url: 'html/webroot/widgets-management/page-layouts/all/component.php',
+      id: 'widgets-management/pages-uis/all'
     }
   ];
 
   if (!System.entity('ui/apps').currentSubSection) {
-    System.entity('ui/apps').goToState('widgets-management/pages-uis/all');
+    System.entity('ui/apps').goToState('widgets-management/pages-uis/contents-layouts');
   }
 };
 

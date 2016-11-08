@@ -39,19 +39,6 @@
           element.xtag._input.addEventListener('input', function (e) {
             element.setEmptiness();
           });
-
-//          element.xtag.observer
-//
-//          element.xtag.observer = new MutationObserver(function (mutations) {
-//            mutations.forEach(function (mutation) {
-//              if (mutation.attributeName === 'value') {
-//                console.log(mutation)
-//                element.setEmptiness();
-//              }
-//            });
-//          });
-//
-//          element.xtag.observer.observe(this.xtag._input, {attributes: true});
         }
       },
       inserted: function () {

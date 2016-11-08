@@ -72,8 +72,6 @@
       behaviors: {}
     };
 
-    this.state.type = "app-section";
-
     this.state.onInit = function () {
       component.init();
     };
@@ -324,7 +322,6 @@
       {
         title: "tr{New Folder}",
         activity: "admin/html/content-management/documents/folder-form/component.php",
-        //parent: System.UI.components.mainFloatMenu,
         parameters: function (hash) {
           hash.parent = component.parentId;
         },
@@ -335,7 +332,6 @@
       }, {
         title: "tr{New Article}",
         activity: "admin/html/content-management/documents/article-form/component.php_new",
-        //parent: System.UI.components.mainFloatMenu,
         parameters: function (hash) {
           hash.parent = component.parentId;
           hash.article = null;
@@ -353,7 +349,7 @@
 
 //      this.testBtn = EW.addActionButton({
 //        text: "tr{test form}",
-//        parent: System.UI.components.mainFloatMenu,
+//        parent: System.ui.components.mainFloatMenu,
 //        handler: function () {
 //          component.state.setParam('component', 'forms/test-form');
 //        }

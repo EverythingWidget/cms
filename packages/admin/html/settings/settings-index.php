@@ -1,5 +1,5 @@
 <div class="card z-index-1 card-medium">
-  <div  class='card-header'>
+  <div class='card-header'>
     <div class="card-title-action"></div>
     <div class="card-title-action-right"></div>
     <h1>

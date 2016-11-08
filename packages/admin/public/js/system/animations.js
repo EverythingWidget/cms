@@ -1,4 +1,4 @@
-/* global TweenLite */
+/* global TweenLite, Vue, System */
 
 (function () {
   Vue.transition('slide', {
@@ -212,6 +212,9 @@
     _this.zoomItem = element.getAttribute('zoom');
 
     if (!this.observer) {
+      var existedNodes = element.querySelectorAll('.' + _this.zoomItem);
+      _this.animate(existedNodes);
+
       _this.observer = new MutationObserver(function (mutations) {
         _this.stagger = 0;
         var nodes = [];
@@ -271,7 +274,7 @@
     nodes.forEach(function (element) {
       TweenLite.set(element, {
         transition: 'none',
-        scale: 0.01,
+        scale: element.dataset.zoomFrom || 0.01,
         opacity: 0
       });
 
@@ -285,6 +288,103 @@
     });
 
     timeline.add(timelineItems, null, null, System.spiritAnimations.CONFIG.staggerDuration);
+
+    timeline.play(0);
+  };
+
+  // ------ //
+
+  System.spiritAnimations.zoomContent = {
+    register: function (element) {
+      new ZoomContentAnimation(element);
+    },
+    deregister: function (element) {
+      if (element.xtag.ZoomContentAnimation) {
+        element.xtag.ZoomContentAnimation.off();
+      }
+    }
+  };
+
+  function ZoomContentAnimation(element) {
+    var _this = this;
+    _this.element = element;
+
+    if (!this.observer) {
+      var existedNodes = Array.prototype.slice.call(element.children);
+      _this.animate(existedNodes);
+
+      _this.observer = new MutationObserver(function (mutations) {
+        _this.stagger = 0;
+        var nodes = [];
+
+        mutations.forEach(function (item) {
+          var node = null;
+          if (item.addedNodes[0]) {
+
+            if (item.addedNodes[0].__ui_neutral ||
+                    item.addedNodes[0].nodeType !== Node.ELEMENT_NODE)
+              return null;
+
+            node = item.addedNodes[0];
+          }
+
+          if (item.removedNodes[0] && item.removedNodes[0].__ui_neutral) {
+            return null;
+          }
+
+          node && nodes.push(node);
+        });
+
+        _this.animate(nodes);
+      });
+
+      _this.observer.observe(_this.element, {
+        attributes: false,
+        childList: true,
+        characterData: false,
+        subtree: true
+      });
+    }
+
+    _this.element.xtag.ZoomContentAnimation = this;
+  }
+
+  ZoomContentAnimation.prototype.off = function () {
+    if (this.observer) {
+      this.observer.disconnect();
+    }
+  };
+
+  ZoomContentAnimation.prototype.animate = function (nodes, style) {
+    if (!nodes.length) {
+      return;
+    }
+
+    var timelineItems = [];
+    var timeline = new TimelineLite({
+      paused: true,
+      smoothChildTiming: true,
+      onComplete: function () {
+      }
+    });
+
+    nodes.forEach(function (element) {
+      TweenLite.set(element, {
+        transition: 'none',
+        scale: element.dataset.zoomFrom || 0.8,
+        opacity: 0
+      });
+
+      timelineItems.push(TweenLite.to(element, System.spiritAnimations.CONFIG.baseDuration, {
+        scale: 1,
+        opacity: 1,
+        clearProps: 'transition,scale,opacity',
+        ease: 'Power3.easeOut',
+        onComplete: function () { }
+      }));
+    });
+
+    timeline.add(timelineItems, null, null);
 
     timeline.play(0);
   };
@@ -438,6 +538,7 @@
   function verticalShift(element) {
     var _this = this;
 
+    _this.allNodes = [];
     _this.element = element;
     _this.verticalShiftItem = element.getAttribute('vertical-shift');
 
@@ -449,7 +550,6 @@
         mutations.forEach(function (item) {
           var node = null;
           if (item.addedNodes[0]) {
-
             if (item.addedNodes[0].__ui_neutral ||
                     item.addedNodes[0].nodeType !== Node.ELEMENT_NODE ||
                     !item.addedNodes[0].classList.contains(_this.verticalShiftItem))
@@ -490,33 +590,50 @@
       return;
     }
 
-    var timelineItems = [];
-    var timeline = new TimelineLite({
-      paused: true,
-      smoothChildTiming: true,
-      onComplete: function () {
-      }
-    });
+    var _this = this;
 
-    nodes.forEach(function (element) {
+    if (!_this.throttle) {
+      _this.allNodes = nodes;
+    } else {
+      clearTimeout(_this.throttle);
+      _this.allNodes = _this.allNodes.concat(nodes);
+      _this.throttle = null;
+    }
+
+    _this.allNodes.forEach(function (element) {
       TweenLite.set(element, {
         transition: 'none',
         y: 50,
         opacity: 0
       });
-
-      timelineItems.push(TweenLite.to(element, System.spiritAnimations.CONFIG.baseDuration, {
-        opacity: 1,
-        y: 0,
-        clearProps: 'transition,y,opacity',
-        ease: 'Power3.easeOut',
-        onComplete: function () { }
-      }));
     });
 
-    timeline.add(timelineItems, null, null, System.spiritAnimations.CONFIG.staggerDuration / 2);
+    _this.throttle = setTimeout(function () {
+      var timelineItems = [];
+      var timeline = new TimelineLite({
+        paused: true,
+        smoothChildTiming: true,
+        onComplete: function () {
+        }
+      });
 
-    timeline.play(0);
+      _this.allNodes.forEach(function (element) {
+        timelineItems.push(TweenLite.to(element, System.spiritAnimations.CONFIG.baseDuration, {
+          opacity: 1,
+          y: 0,
+          clearProps: 'transition,y,opacity',
+          ease: 'Power3.easeOut',
+          onComplete: function () {
+            _this.timeline = null;
+          }
+        }));
+      });
+
+      timeline.add(timelineItems, null, null, System.spiritAnimations.CONFIG.staggerDuration);
+
+      timeline.play(0);
+      _this.throttle = null;
+    }, 100);
   };
 
 })(TweenLite);

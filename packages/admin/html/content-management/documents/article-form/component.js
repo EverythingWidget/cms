@@ -12,7 +12,7 @@ function Article() {
         return false;
       }
 
-      loader = System.UI.lock({
+      loader = System.ui.lock({
         element: dialog[0],
         akcent: 'loader center'
       });
@@ -21,7 +21,7 @@ function Article() {
       return data;
     },
     onDone: function (response) {
-      System.UI.components.body.EW().notify(response).show();
+      System.ui.components.body.EW().notify(response).show();
       ContentForm.setData(response.data);
       $(document).trigger("article-list.refresh");
       loader.dispose();
@@ -40,7 +40,7 @@ function Article() {
         return false;
       }
 
-      loader = System.UI.lock({
+      loader = System.ui.lock({
         element: dialog[0],
         akcent: 'loader center'
       });
@@ -49,7 +49,7 @@ function Article() {
       return data;
     },
     onDone: function (data) {
-      System.UI.components.body.EW().notify(data).show();
+      System.ui.components.body.EW().notify(data).show();
       dialog.trigger("close");
       $(document).trigger("article-list.refresh");
       loader.dispose(true);
@@ -65,7 +65,7 @@ function Article() {
         return false;
       }
 
-      loader = System.UI.lock({
+      loader = System.ui.lock({
         element: dialog[0],
         akcent: 'loader center'
       });
@@ -74,7 +74,7 @@ function Article() {
       return data;
     },
     onDone: function (response) {
-      System.UI.components.body.EW().notify(response).show();
+      System.ui.components.body.EW().notify(response).show();
       ContentForm.setData(response.data);
       $(document).trigger("article-list.refresh");
       loader.dispose();
@@ -94,7 +94,7 @@ function Article() {
     onDone: function (response) {
       $.EW("getParentDialog", $("#article-form")).trigger("destroy");
       EW.setHashParameter("articleId", null, "document");
-      System.UI.components.body.EW().notify(response).show();
+      System.ui.components.body.EW().notify(response).show();
       $(document).trigger("article-list.refresh");
     }}).hide();
 

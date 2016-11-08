@@ -8,35 +8,30 @@ function get_ew_user_form($user_id, $data) {
   ob_start();
   ?>
   <input type="hidden" id="id" name="id" value="">
-  <div class="row mt">
-    <system-field class="field col-xs-12">
+  <div class="col-xs-12 mt">
+    <system-field class="field">
       <label>tr{Username}</label>
       <input class="text-field" value="" id="email" name="email" data-validate="r" required/>  
     </system-field>
-  </div>
-  <div class="row">
-    <system-field class="field col-xs-12 col-md-6 col-lg-6">
+
+
+    <system-field class="field">
       <label>tr{First Name}</label>
       <input class="text-field" value="" id="first_name" name="first_name" />  
     </system-field>
 
-    <system-field class="field col-xs-12 col-md-6 col-lg-6">
+    <system-field class="field">
       <label>tr{Last Name}</label>
       <input class="text-field" value="" id="last_name" name="last_name" />  
     </system-field>   
-  </div>
-  <?php if (!isset($user_id)) { ?>
-    <div class="row">
-      <system-field class="field col-xs-12">
+
+    <?php if (!isset($user_id)) { ?>
+      <system-field class="field ">
         <label>tr{Password}</label>
         <input class="text-field" value="" id="password" name="password"/>
       </system-field>   
-
-    </div>
-  <?php } ?>
-  <div class="row">    
-
-    <system-field class="field col-xs-12">
+    <?php } ?>
+    <system-field class="field">
       <label>tr{Group}</label>
       <select id="group_id" name="group_id" data-width="100%">
         <?php
@@ -68,7 +63,7 @@ function get_ew_user_form($user_id, $data) {
               return false;
             }
 
-            loader = System.UI.lock({
+            loader = System.ui.lock({
               element: dialog[0],
               akcent: 'loader center'
             });
@@ -95,7 +90,7 @@ function get_ew_user_form($user_id, $data) {
               return false;
             }
 
-            loader = System.UI.lock({
+            loader = System.ui.lock({
               element: dialog[0],
               akcent: 'loader center'
             });
@@ -142,8 +137,8 @@ $tabsDefault = EWCore::read_registry("ew-user-form-default");
 $tabs = EWCore::read_registry("ew-user-form");
 ?>
 <form id="user-form"  action="#" method="POST" onsubmit="return false;">
-  <div class="block-row header-pane tabs-bar">
-    <h1 id='form-title' class="col-xs-12">
+  <div class="header-pane tabs-bar thin">
+    <h1 id='form-title'>
       tr{New User}
     </h1>
 
@@ -163,7 +158,7 @@ $tabs = EWCore::read_registry("ew-user-form");
     </ul>
   </div>
   <div class="block-row form-content  tabs-bar">
-    <div class="tab-content col-xs-12">
+    <div class="tab-content">
       <?php
       foreach ($tabsDefault as $id => $tab) {
         if ($id == "ew-user-form")

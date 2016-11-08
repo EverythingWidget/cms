@@ -195,10 +195,12 @@
 
 //      console.log('new state', app, scope._stateId, app.indexOf(scope._stateId));
       if (app.indexOf(scope._stateId) === 0) {
-        this.state(scope._stateId, handler);
+        return this.state(scope._stateId, handler);
       } else {
         scope._doNotRegister = true;
       }
+
+      return null;
     },
     /** This method will be called whenever System attempts to load an app
      * 
@@ -413,8 +415,8 @@
     loadModule: function (module, onDone) {
       module.id = module.id || (new Date()).valueOf() + '-' + performance.now();
 
-      System.onModuleLoaded["system/" + module.id] = onDone;
-      var moduleExist = System.modules["system/" + module.id];
+      System.onModuleLoaded['system/' + module.id] = onDone;
+      var moduleExist = System.modules['system/' + module.id];
 
       var invokers = [module.url];
 
@@ -429,9 +431,9 @@
 
       if (moduleExist) {
         console.log(module.id);
-        if ('function' === typeof (System.onModuleLoaded["system/" + module.id])) {
-          System.onModuleLoaded["system/" + module.id].call(this, moduleExist, moduleExist.html);
-          delete System.onModuleLoaded["system/" + module.id];
+        if ('function' === typeof (System.onModuleLoaded['system/' + module.id])) {
+          System.onModuleLoaded['system/' + module.id].call(this, moduleExist, moduleExist.html);
+          delete System.onModuleLoaded['system/' + module.id];
         }
 
         return;

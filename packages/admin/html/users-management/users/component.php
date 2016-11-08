@@ -51,7 +51,7 @@
     component.scope.primaryMenu.actions = [
       {
         title: 'tr{New User}',
-        parent: System.UI.components.mainFloatMenu,
+        parent: System.ui.components.mainFloatMenu,
         modal: {
           class: "center"
         },
@@ -97,8 +97,8 @@
             url: 'api/admin/users-management/users/',
             data: {id: id},
             success: function (response) {
-              System.UI.components.document.trigger("users-list.refresh");
-              System.UI.components.body.EW().notify(response).show();
+              System.ui.components.document.trigger("users-list.refresh");
+              System.ui.components.body.EW().notify(response).show();
             }
           });
 
@@ -110,11 +110,11 @@
       }
     });
 
-    System.UI.components.mainContent.html(this.table.container);
+    System.ui.components.mainContent.html(this.table.container);
     this.table.read();
 
-    System.UI.components.document.off("users-list.refresh");
-    System.UI.components.document.on("users-list.refresh", function () {
+    System.ui.components.document.off("users-list.refresh");
+    System.ui.components.document.on("users-list.refresh", function () {
       component.table.refresh();
     });
   };

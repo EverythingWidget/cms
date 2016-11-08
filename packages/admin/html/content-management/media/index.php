@@ -7,7 +7,6 @@
     handler.tabs = {};
 
     handler.state = state;
-    handler.state.type = "app-section";
 
     handler.state.onInit = function (templates) {
       handler.init(templates);

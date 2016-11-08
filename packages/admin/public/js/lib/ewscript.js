@@ -2237,8 +2237,8 @@ EverythingWidgets.prototype.initPlugins = function ($element) {
     $element.attr("dir", "auto");
     if ($element.is("[data-ew-plugin='link-chooser']"))
       $element.EW().linkChooser();
-    if ($element.is("[data-label]"))
-      $element.floatlabel();
+    //if ($element.is("[data-label]"))
+      //$element.floatlabel();
     if ($element.is('[data-ew-plugin="image-chooser"]'))
       $element.EW().imageChooser();
     if ($element.is("[data-slider]"))
@@ -2251,7 +2251,7 @@ EverythingWidgets.prototype.initPlugins = function ($element) {
     // Begin
     $element.find('input[data-ew-plugin="link-chooser"], textarea[data-ew-plugin="link-chooser"]').EW().linkChooser();
     // Input floatable labels
-    $element.find('input[data-label], textarea[data-label], select[data-label]').floatlabel();
+    //$element.find('input[data-label], textarea[data-label], select[data-label]').floatlabel();
     $element.find('[data-ew-plugin="image-chooser"]').EW().imageChooser();
     $element.find('[data-slider]').simpleSlider();
   }

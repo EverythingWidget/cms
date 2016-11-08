@@ -1,7 +1,7 @@
 /* global System, TweenLite */
 
 (function (tween) {
-  System.UI = System.ui = new SystemUI();
+  System.ui = new SystemUI();
 
   /**
    * System ui
@@ -184,7 +184,7 @@
 
   SystemUI.prototype.createModal = function (ori, text) {
     var lockPane;
-    var modal = System.UI.clone(System.UI.COMPONENT_STRUCTURE);
+    var modal = System.ui.clone(System.ui.COMPONENT_STRUCTURE);
     modal.close = function () {
 
     };
@@ -220,7 +220,7 @@
 
     }, 1000);
 
-    var loader = System.UI.animation.toLoader(origin, "btn-loader");
+    var loader = System.ui.animation.toLoader(origin, "btn-loader");
     loader.on("cancel", function () {
       clearTimeout(loadModal);
     });
@@ -228,7 +228,7 @@
     //origin.style.opacity = "0";
     modal.el.addEventListener("click", function () {
       lockPane.dispose();
-      System.UI.animation.scaleTransform({
+      System.ui.animation.scaleTransform({
         from: modal.el,
         to: origin,
         time: .6,
@@ -247,7 +247,7 @@
    */
   SystemUI.prototype.lock = function (conf, t) {
     var _this = this;
-    t = t || System.UI.DEFAULTS.animationDuration;
+    t = t || System.ui.DEFAULTS.animationDuration;
     var sourceRect = conf.element.getBoundingClientRect();
     var ss = window.getComputedStyle(conf.element);
     var lockPane = document.createElement('div');
@@ -310,7 +310,7 @@
 
   SystemUI.prototype.animations = SystemUI.prototype.Animation = {
     transformBetween: function (conf) {
-      var time = conf.time || System.UI.DEFAULTS.animationDuration;
+      var time = conf.time || System.ui.DEFAULTS.animationDuration;
       var sourceRect = conf.from.getBoundingClientRect();
       var distRect = conf.to.getBoundingClientRect();
       var ss = window.getComputedStyle(conf.from);
@@ -341,7 +341,7 @@
       });
     },
     slideOut: function (conf) {
-      var t = conf.time || System.UI.DEFAULTS.animationDuration,
+      var t = conf.time || System.ui.DEFAULTS.animationDuration,
               sourceRect = conf.element.getBoundingClientRect(),
               direction = conf.to;
 
@@ -358,7 +358,7 @@
       });
     },
     slideIn: function (conf) {
-      var t = conf.time || System.UI.DEFAULTS.animationDuration,
+      var t = conf.time || System.ui.DEFAULTS.animationDuration,
               sourceRect = conf.element.getBoundingClientRect(),
               direction = conf.from,
               transformBox = document.createElement("div"),
@@ -384,7 +384,7 @@
 
       conf.element.style.visibility = "hidden";
 
-      System.UI.body.appendChild(transformBox);
+      System.ui.body.appendChild(transformBox);
 
       tween.fromTo(transformBox, t, {
         width: sourceRect.width,
@@ -417,7 +417,7 @@
       });
     },
     blastTo: function (conf) {
-      var t = conf.time || System.UI.DEFAULTS.animationDuration;
+      var t = conf.time || System.ui.DEFAULTS.animationDuration;
       //var sourceRect = conf.from.getBoundingClientRect();
       //var sourceRect = conf.fromPoint;
       var sourceRect = conf.fromPoint;
@@ -509,7 +509,7 @@
       });
     },
     transform: function (options) {
-      var duration = options.time || System.UI.DEFAULTS.animationDuration;
+      var duration = options.time || System.ui.DEFAULTS.animationDuration;
       var sourceRect = options.from.getBoundingClientRect();
       var distRect = options.to.getBoundingClientRect();
       var sourceStyle = window.getComputedStyle(options.from, null);
@@ -591,7 +591,7 @@
      * @returns {undefined}
      */
     sizeTransform: function (conf) {
-      var t = conf.time || System.UI.DEFAULTS.animationDuration;
+      var t = conf.time || System.ui.DEFAULTS.animationDuration;
       var sourceRect = conf.from.getBoundingClientRect();
       var distRect = conf.to.getBoundingClientRect();
       var transformBox = document.createElement("div");
@@ -610,7 +610,7 @@
       if (conf.to.parentNode) {
         conf.to.parentNode.appendChild(transformBox);
       } else {
-        System.UI.body.appendChild(transformBox);
+        System.ui.body.appendChild(transformBox);
       }
 
       tween.fromTo(transformBox, t, {
@@ -651,7 +651,7 @@
      * @returns {undefined}
      */
     rippleOut: function (conf) {
-      var t = conf.time || System.UI.DEFAULTS.animationDuration;
+      var t = conf.time || System.ui.DEFAULTS.animationDuration;
       var sourceRect = conf.from.getBoundingClientRect();
       var distRect = conf.to.getBoundingClientRect();
       var transformBox = document.createElement("div");
@@ -671,7 +671,7 @@
       if (conf.to.parentNode) {
         conf.to.parentNode.appendChild(transformBox);
       } else {
-        System.UI.body.appendChild(transformBox);
+        System.ui.body.appendChild(transformBox);
       }
       var width = distRect.width > distRect.height ? distRect.width : distRect.height,
               halfWidth = distRect.width / 2,
@@ -709,7 +709,7 @@
       });
     },
     scaleTransform: function (conf) {
-      var time = conf.time || System.UI.DEFAULTS.animationDuration;
+      var time = conf.time || System.ui.DEFAULTS.animationDuration;
       var ease = conf.ease || "Power2.easeInOut";
       var sourceRect = conf.from.getBoundingClientRect();
       var distRect = conf.to.getBoundingClientRect();
@@ -729,7 +729,7 @@
       distBoxStyle.fontWeight = distStyle.fontWeight;
       distBoxStyle.textAlign = distStyle.textAlign;
       distBoxStyle.textTransform = distStyle.textTransform;
-      distBoxStyle.zIndex = (System.UI.body.style.zIndex === "0" || System.UI.body.style.zIndex === "auto") ? 1 : System.UI.body.style.zIndex || 1;
+      distBoxStyle.zIndex = (System.ui.body.style.zIndex === "0" || System.ui.body.style.zIndex === "auto") ? 1 : System.ui.body.style.zIndex || 1;
       distBoxStyle.width = distRect.width + "px";
       distBoxStyle.height = distRect.height + "px";
       distBoxStyle.lineHeight = distStyle.lineHeight;
@@ -752,7 +752,7 @@
       originBox.style.fontWeight = sourceStyle.fontWeight;
       originBox.style.textAlign = sourceStyle.textAlign;
       originBox.style.textDecoration = sourceStyle.textDecoration;
-      originBox.style.zIndex = (System.UI.body.style.zIndex === "0" || System.UI.body.style.zIndex === "auto") ? 2 : parseInt(System.UI.body.style.zIndex || 1) + 1;
+      originBox.style.zIndex = (System.ui.body.style.zIndex === "0" || System.ui.body.style.zIndex === "auto") ? 2 : parseInt(System.ui.body.style.zIndex || 1) + 1;
       //alert((Anim.body.zIndex === "0" || Anim.body.zIndex === "auto") ? 2 : parseInt(Anim.body.zIndex) +1)
       originBox.style.margin = "0px";
       originBox.style.width = sourceRect.width + "px";
@@ -769,8 +769,8 @@
         conf.from.style.transition = "none";
       }
 
-      System.UI.body.appendChild(distBox);
-      System.UI.body.appendChild(originBox);
+      System.ui.body.appendChild(distBox);
+      System.ui.body.appendChild(originBox);
 
       tween.fromTo(originBox, time, {
         left: sourceRect.left,
@@ -812,7 +812,7 @@
       });
     },
     toLoader: function (el, loaderClass) {
-      var loader = System.UI.clone(System.UI.COMPONENT_STRUCTURE);
+      var loader = System.ui.clone(System.ui.COMPONENT_STRUCTURE);
 
       loader.el = document.createElement("div");
       loader.cancel = function () {
@@ -835,9 +835,9 @@
 
       var elemStyle = window.getComputedStyle(el);
       var elemRect = el.getBoundingClientRect();
-      var elemCent = System.UI.getCenterPoint(elemRect);
+      var elemCent = System.ui.getCenterPoint(elemRect);
       loader.el.className = loaderClass;
-      System.UI.body.appendChild(loader.el);
+      System.ui.body.appendChild(loader.el);
 
       var loaderStyle = window.getComputedStyle(loader.el);
       var loaderRect = loader.el.getBoundingClientRect();

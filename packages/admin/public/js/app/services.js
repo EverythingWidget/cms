@@ -60,7 +60,7 @@
   System.services.app_service.load_section = function (moduleId) {
     var element = System.ui.components.sectionsMenuList[0].links[EW.oldApp + "/" + moduleId];
     System.ui.behaviors.highlightAppSection(element.dataset.index, element);
-    //System.UI.components.sectionsMenuList[0].value = element.dataset.index;
+    //System.ui.components.sectionsMenuList[0].value = element.dataset.index;
 
     if (element) {
       var moduleConfig = System.ui.components.sectionsMenuList[0].data[element.dataset.index];
@@ -134,7 +134,7 @@
 
   System.services.app_service.select_app_section = function (component, full, section) {
     if (!section) {
-      System.UI.components.sectionsMenuList[0].value = '0';
+      System.ui.components.sectionsMenuList[0].value = '0';
       return;
     }
 

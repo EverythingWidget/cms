@@ -8,7 +8,7 @@ function UIStructureList() {
   System.entity('ui/primary-menu').actions = [{
       title: "tr{New Layout}",
       activity: 'webroot/html/widgets-management/layouts/layout-form/component.php',
-//      parent: System.UI.components.mainFloatMenu,
+//      parent: System.ui.components.mainFloatMenu,
       parameters: {
         uisId: null
       },
@@ -31,7 +31,7 @@ function UIStructureList() {
   if (this.importUISActivity) {
     /*var fileInput = $("<input type=file id=uis_file name=uis_file accept='.json'/>");
      var button = $("<div class='btn btn-file btn-primary' >tr{Import Layout}</div>").hide();
-     parent: System.UI.components.mainFloatMenu.append(button.append(fileInput));
+     parent: System.ui.components.mainFloatMenu.append(button.append(fileInput));
      button.comeIn();
      
      fileInput.change(function (e) {

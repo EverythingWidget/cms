@@ -6,58 +6,40 @@
 
 <script  type="text/javascript">
 
-  (function () {
-    function SettingsStateHandler(state) {
-      var component = this;
-      this.state = state;
-      this.state.type = "app-section";
-      this.state.component = this;
+  function SettingsStateHandler(state, scope) {
+    var handler = this;
+    scope = scope || Scope;
 
-      this.state.onInit = function () {
-        component.init();
-      };
-
-      this.state.onStart = function () {
-        component.start();
-      };
-    }
-
-    SettingsStateHandler.prototype.init = function () {
-
-    };
-
-    SettingsStateHandler.prototype.start = function () {
-      var handler = this;
-
+    state.onStart = function () {
       this.saveSettings = EW.addActionButton({
         text: '<i class="icon-check"></i>',
         handler: function () {
-          handler.saveAppSetings([
+          saveAppSetings([
             "webroot"
           ]);
         },
-        class: "btn-float btn-success",
-        parent: System.UI.components.appMainActions
+        class: 'btn-float btn-success',
+        parent: System.ui.components.appMainActions
       });
 
       this.refresh = EW.addActionButton({
         text: '<i class="icon-cw-1"></i>',
         handler: function () {
-          handler.loadAppsGeneralSettings(<?= json_encode(EWCore::read_registry("ew/ui/settings/general")) ?>);
+          loadAppsGeneralSettings(<?= json_encode(EWCore::read_registry('ew/ui/settings/general')) ?>);
         },
-        class: "btn-float priority-1 btn-primary",
-        parent: System.UI.components.appMainActions
+        class: 'btn-float priority-1 btn-primary',
+        parent: System.ui.components.appMainActions
       });
 
       if (!handler.appsLoaded) {
-        handler.loadAppsGeneralSettings(<?= json_encode(EWCore::read_registry("ew/ui/settings/general")) ?>);
+        loadAppsGeneralSettings(<?= json_encode(EWCore::read_registry('ew/ui/settings/general')) ?>);
       }
 
       handler.appsLoaded = true;
     };
 
-    SettingsStateHandler.prototype.loadAppsGeneralSettings = function (apps) {
-      var settingsCard = $("#settings-cards");
+    function loadAppsGeneralSettings(apps) {
+      var settingsCard = $('#settings-cards');
       settingsCard.empty();
       $.get('api/admin/settings/read-settings', function (response) {
         success(response.data);
@@ -75,21 +57,18 @@
           });
         }
       }
-    };
+    }
 
-    SettingsStateHandler.prototype.saveAppSetings = function (apps) {
-      var data = $("#settings-cards").serializeJSON();
+    function saveAppSetings(apps) {
+      var data = $('#settings-cards').serializeJSON();
 
-      $.post("api/admin/settings/save-settings", {
+      $.post('api/admin/settings/save-settings', {
         params: data
       }, function (response) {
-        System.UI.components.body.EW().notify(response).show();
+        System.ui.components.body.EW().notify(response).show();
       });
-    };
+    }
+  }
 
-
-    System.state("settings/general", function (state) {
-      new SettingsStateHandler(state);
-    });
-  })();
+  System.newStateHandler(Scope, SettingsStateHandler);
 </script>

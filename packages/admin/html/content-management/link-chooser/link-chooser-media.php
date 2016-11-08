@@ -97,7 +97,7 @@
     photos.selectMedia = function (image) {
       var _this = this;
 
-      var loader = System.UI.lock({
+      var loader = System.ui.lock({
         element: Scope.uiViews.photos_component,
         akcent: "loader center"
       }, .5);

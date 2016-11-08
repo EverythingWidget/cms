@@ -248,7 +248,7 @@ window.addEventListener('load', function () {
         });
       }
     } else {
-      //alert(System.UI.components.sectionsMenu.height());
+      //alert(System.ui.components.sectionsMenu.height());
       System.ui.components.sectionsMenu.css("height", System.ui.components.sectionsMenu.height());
       TweenLite.to(System.ui.components.sectionsMenu[0], .2, {
         className: "sections-menu out",

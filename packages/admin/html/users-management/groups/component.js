@@ -14,7 +14,7 @@ function Handler(state, scope) {
     handler.editGroupActivity = EW.getActivity({
       activity: 'admin/html/users-management/groups/group-form/component.php_edit',
       onDone: function () {
-        handler.state.setParam('groupId', null);
+        state.setParam('groupId', null);
       }
     });
 

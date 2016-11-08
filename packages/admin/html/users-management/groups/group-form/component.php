@@ -6,16 +6,16 @@ function get_ew_user_form() {
   ?>
   <input type="hidden" id="id" name="id" value="">
   <input type="hidden" id="group_id" name="group_id" value="">
-  
-  <div class="row mt">
-    <system-field class="field col-xs-12">
+
+  <div class="col-xs-12 mt">
+    <system-field class="field">
       <label>tr{Title}</label>
       <input class="text-field" value="" id="title" name="title"/>
     </system-field>  
 
-    <system-field class="field col-xs-12">
+    <system-field class="field">
       <label>tr{Description}</label>
-      <textarea class="text-field" id="description" name="description"  /></textarea>
+      <textarea class="text-field" id="description" name="description"></textarea>
     </system-field> 
   </div>  
   <?php
@@ -263,8 +263,8 @@ EWCore::register_form("ew/ui/user-form", "ew-user-permissions", ["title"   => "P
 $tabs = EWCore::read_registry("ew/ui/user-form");
 ?>
 <form id="users-group-form"  action="#" method="POST" onsubmit="return false;">
-  <div class="block-row header-pane tabs-bar">
-    <h1 id='form-title' class="col-xs-12">
+  <div class="header-pane tabs-bar thin">
+    <h1 id="form-title">
       tr{New Group}
     </h1>
     <ul class="nav nav-pills">
@@ -280,7 +280,7 @@ $tabs = EWCore::read_registry("ew/ui/user-form");
   </div>
   <div class="block-row form-content tabs-bar">
 
-    <div class="tab-content col-xs-12" style="height:100%;position:absolute;">
+    <div class="tab-content" >
       <?php
       foreach ($tabs as $id => $tab) {
         if ($id == "ew-user-form")
