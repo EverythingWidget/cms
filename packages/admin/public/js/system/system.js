@@ -591,7 +591,8 @@
       //var scripts = raw.filter("script").remove();
       var html = raw.filter(function (i, e) {
         if (e.nodeType === Node.ELEMENT_NODE) {
-          e.querySelectorAll('script').forEach(function (tag) {
+          var scriptTags = Array.prototype.slice.call(e.querySelectorAll('script'));
+          scriptTags.forEach(function (tag) {
             scripts.push(tag.innerHTML);
             tag.parentNode.removeChild(tag);
           });
