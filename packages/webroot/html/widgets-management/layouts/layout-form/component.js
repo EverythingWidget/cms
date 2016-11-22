@@ -709,8 +709,8 @@ UISForm.prototype.updateUIS = function (reload) {
   var structure = (self.createContentHeirarchy());
   var defaultUIS = $("#uis-default").is(":checked");
   var homeUIS = $("#uis-home-page").is(":checked");
-  self.templateSettings = self.templateSettingsForm.serializeJSON();
-  self.templateSettingsForm.trigger("getData");
+  self.templateSettings = self.templateSettingsForm.serializeJSON(true);
+  self.templateSettingsForm.trigger('getData');
 
   $.ajax({
     method: 'put',

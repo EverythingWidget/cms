@@ -30,7 +30,9 @@ class template extends TemplateControl {
   }
 
   public function get_template_settings_form() {
-    return '';
+    ob_start();
+    include 'settings.php';
+    return ob_get_clean();
   }
 
   //put your code here

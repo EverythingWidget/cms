@@ -22,8 +22,7 @@ $.fn.serializeJSON = function (flag) {
     pureObject[this.getAttribute('name') || this.getAttribute('id')] = this.value;
   });
 
-  if ($.isEmptyObject(pureObject))
-  {
+  if ($.isEmptyObject(pureObject)) {
     return null;
   }
 
@@ -450,13 +449,13 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler) {
 
     return;
   }
-
+//debugger;
   $.each(jsonData, function (key, val) {
-    if (val && typeof (val) === "object") {
-      setInputData(key, val, form);
-    } else {
-      setInputData(key, val, form);
-    }
+//    if (val && typeof (val) === "object") {
+//      setInputData(key, val, form);
+//    } else {
+    setInputData(key, val, form);
+//    }
   });
 
   setTimeout(function () {
@@ -2238,7 +2237,7 @@ EverythingWidgets.prototype.initPlugins = function ($element) {
     if ($element.is("[data-ew-plugin='link-chooser']"))
       $element.EW().linkChooser();
     //if ($element.is("[data-label]"))
-      //$element.floatlabel();
+    //$element.floatlabel();
     if ($element.is('[data-ew-plugin="image-chooser"]'))
       $element.EW().imageChooser();
     if ($element.is("[data-slider]"))

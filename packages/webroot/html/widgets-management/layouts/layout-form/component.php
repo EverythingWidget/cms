@@ -32,7 +32,7 @@
 
         </system-sortable-list>
       </div>
-      <div class="tab-pane col-xs-12" id="template-control">
+      <div class="tab-pane" id="template-control">
         <form id="template_settings_form">
 
         </form>

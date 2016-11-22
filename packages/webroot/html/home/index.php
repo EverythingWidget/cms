@@ -35,14 +35,19 @@ if (file_exists($template_php)) {
     $template_settings = json_encode($template_settings);
   }
 
-  if (!isset($template_settings) || $template_settings === 'null') {
+  if (empty($template_settings)) {
     $template_settings = '{}';
   }
 
   $TEMPLATE_SCRIPT = "";
   $template_script_dom = $template->get_template_script(json_decode($_REQUEST["_uis_template_settings"], true));
   if ($template_script_dom) {
-    $template_script_dom = preg_replace('/\'json\|\$template_settings\'/', $template_settings, $template_script_dom);
+    $template_script_dom = preg_replace('/\$php\.\$template_settings/', $template_settings, $template_script_dom);
+//    $template_script_dom = preg_replace_callback('/\$php\.([\w]*)/', function($match) use ($view_data) {
+//      $data = $view_data[$match[1]];
+//      return isset($data) ? $data : null;
+//    }, $template_script_dom);
+
     $TEMPLATE_SCRIPT = '<script id="template-script">' . $template_script_dom . '</script>';
   }
 }
