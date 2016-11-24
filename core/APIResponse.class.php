@@ -20,6 +20,7 @@ class APIResponse implements \JsonSerializable {
   private $type = null;
   public $data = [];
   public $properties = [];
+  public $downloadable = false;
   private $links = [];
 
   public function __construct($url) {
@@ -75,6 +76,22 @@ class APIResponse implements \JsonSerializable {
     return array_merge(array_filter($this->properties, [$this, 'result_filter']), [
         'data' => $this->data
     ]);
+  }
+
+  public function to_file() {
+    return $this->data;
+  }
+
+  public function as_download($data) {
+    $this->downloadable = true;
+    $this->set_data($data['data']);
+    header("Cache-Control: public");
+    header("Content-Description: File Transfer");
+    header("Content-Length: " . strlen($data['data']) . ";");
+    header("Content-Disposition: attachment; filename=\"{$data['name']}\"");
+    header("Content-Type: " + $data['contentType']);
+    
+    return $this;
   }
 
   public function jsonSerialize() {

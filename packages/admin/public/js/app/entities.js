@@ -47,7 +47,6 @@
         sectionsMenuTitle: '',
         isLoading: false,
         subSections: null,
-        currentState: null,
         currentSubSection: appsVue.currentSubSection
       },
       computed: {
@@ -59,6 +58,9 @@
           }
 
           return classes.join(' ');
+        },
+        currentState: function () {
+          return appsVue.currentState;
         }
       },
       methods: {
@@ -72,6 +74,12 @@
         }
       }
     });
+
+//    appBarVue.$watch('subSections', function (value) {
+//      if (value) {
+//        appBarVue.currentSubSection = null;
+//      }
+//    });
 
     System.entity('ui/app-bar', appBarVue);
 
@@ -122,7 +130,7 @@
 
       return linkChooserDialog;
     };
-    
+
     System.entity('ui/dialogs/link-chooser', linkChooserDialog);
 
     // ------ //

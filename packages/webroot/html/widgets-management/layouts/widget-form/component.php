@@ -95,7 +95,7 @@ $panelId = $_REQUEST['panelId'];
   };
   UISWidget.prototype.addWidgetToPanel = function () {
     var self = this;
-    $.EW("lock", $.EW("getParentDialog", this.uisWidgetForm));
+    $.EW('lock', $.EW("getParentDialog", this.uisWidgetForm));
 
     var wp = $("#uis-widget").serializeJSON(true);
     if (self.getWidgetData) {
@@ -173,6 +173,7 @@ $panelId = $_REQUEST['panelId'];
     var self = this;
     var widget = $();
     self.widgetType = widgetType;
+    widgetParams = widgetParams || {};
     // if widgetId exist, get the corresponding widget
     if (self.widgetId != "") {
       widget = uisForm.getEditorItem(self.widgetId);

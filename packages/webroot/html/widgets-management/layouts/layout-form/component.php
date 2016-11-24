@@ -45,18 +45,20 @@
             </div>
           </div>
 
-          <div class="row">
-            <div class="col-xs-12" >
-              <div class="btn-group btn-group-justified" data-toggle="buttons">
-                <label class="btn btn-default " data-tooltip="Use this layout as default layout for all the pages">
-                  <input type="checkbox" name="uis-default" id="uis-default" value="true" > Default UIS
-                </label>
-                <label class="btn btn-default" data-tooltip="Use this layout as home page layout">
-                  <input type="checkbox" name="uis-home-page" id="uis-home-page"  value="true" > Home Page UIS
-                </label>
-              </div>
-            </div>
+          <div class="block-row mt">
+            <label class="checkbox">
+              tr{Default UIS}
+              <input type="checkbox" name="uis-default" id="uis-default" value="true"/><i></i>
+            </label>
           </div>
+          
+          <div class="block-row mt">
+            <label class="checkbox">
+              tr{Home Page UIS}
+              <input type="checkbox" name="uis-home-page" id="uis-home-page"  value="true"/><i></i>
+            </label>             
+          </div>
+          
           <div class="row mt">
             <div class="col-xs-12" >
 

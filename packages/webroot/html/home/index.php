@@ -35,7 +35,7 @@ if (file_exists($template_php)) {
     $template_settings = json_encode($template_settings);
   }
 
-  if (empty($template_settings)) {
+  if (empty($template_settings) || $template_settings === 'null') {
     $template_settings = '{}';
   }
 

@@ -4,7 +4,7 @@
     display: flex;
     align-items: center;
     float: right;
-    height: 84px;
+    height: 64px;
     padding: 15px;
     flex-direction: row-reverse;    
 
@@ -19,8 +19,8 @@
 
   system-float-menu {
     position: absolute;
-    top: 70px;
-    right: 30px;
+    top: 46px;
+    right: 46px;
     z-index: 8;
 
     &.expand {

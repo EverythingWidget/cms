@@ -1,4 +1,4 @@
-/* global System */
+/* global System, EW */
 
 function UISForm() {
   clearTimeout(repTimeout);
@@ -1001,7 +1001,7 @@ UISForm.prototype.widgetForm = function (widgetType, parentId, feederType) {
   }, 300);
 
   var d = EW.createModal({
-    class: "center slim"
+    class: 'left big'
   });
 
   self.currentDialog = d;
@@ -1031,15 +1031,15 @@ function scaleBy(target, ratio) {
 UISForm.prototype.editWidget = function (wId) {
   var self = this;
   var widgetFormDialog = EW.createModal({
-    class: "left big"
+    class: 'left big'
   });
 
   self.currentDialog = widgetFormDialog;
   var widget = self.getEditorItem(wId);
-  $.post("html/webroot/widgets-management/layouts/widget-form/component.php", {
+  $.post('html/webroot/widgets-management/layouts/widget-form/component.php', {
     template: self.uisTemplate,
     widgetId: wId,
-    widgetType: widget.attr("data-widget-type"),
+    widgetType: widget.attr('data-widget-type'),
     uiStructureId: self.uisId
   }, function (data) {
     widgetFormDialog.html(data);
@@ -1048,16 +1048,16 @@ UISForm.prototype.editWidget = function (wId) {
 
 UISForm.prototype.removeWidget = function (wId) {
   var uisForm = this;
-  if (confirm("Do you really want to remove this Widget?")) {
-    uisForm.getEditorItem(wId).data("container").remove();
-    this.inspectorEditor.trigger("refresh");
+  if (confirm('Do you really want to remove this Widget?')) {
+    uisForm.getEditorItem(wId).data('container').remove();
+    this.inspectorEditor.trigger('refresh');
   }
 };
 
 UISForm.prototype.removePanel = function (wId) {
-  if (confirm("Do you really want to remove this Panel?")) {
-    $("#fr").contents().find("body #base-content-pane div[data-panel-id='" + wId + "']").remove();
-    this.inspectorEditor.trigger("refresh");
+  if (confirm('Do you really want to remove this Panel?')) {
+    $('#fr').contents().find("body #base-content-pane div[data-panel-id='" + wId + "']").remove();
+    this.inspectorEditor.trigger('refresh');
   }
 };
 

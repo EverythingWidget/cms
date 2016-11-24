@@ -350,7 +350,7 @@ class WidgetsManagement extends \ew\Module {
     return json_encode($res);
   }
 
-  public function export_uis($uis_id) {
+  public function export_uis($uis_id, $_response) {
     $db = \EWCore::get_db_connection();
     $table = "ew_ui_structures";
     if (!$uis_id)
@@ -375,12 +375,13 @@ class WidgetsManagement extends \ew\Module {
     //fwrite($file, $user_interface_structure);
     //fclose($file);
 
-    header("Cache-Control: public");
-    header("Content-Description: File Transfer");
-    header("Content-Length: " . strlen($file) . ";");
-    header("Content-Disposition: attachment; filename=\"$name.json\"");
-    header("Content-Type: application/octet-stream");
-    return $file;
+//    header("Cache-Control: public");
+//    header("Content-Description: File Transfer");
+//    header("Content-Length: " . strlen($file) . ";");
+//    header("Content-Disposition: attachment; filename=\"$name.json\"");
+//    header("Content-Type: application/octet-stream");
+//die($file);
+     return $_response->as_download(['data' => $file, 'name' => "$name.json",'contentType'=>'application/json']);
   }
 
   public function clone_uis($uisId = null) {

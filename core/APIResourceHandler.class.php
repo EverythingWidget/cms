@@ -160,6 +160,10 @@ class APIResourceHandler extends ResourceHandler {
       catch (Exception $e) {
         echo $e->getTraceAsString();
       }
+      
+      if($response->downloadable) {
+        return $response->to_file();
+      }
 
       if (isset($output_as_array)) {
         return $response->to_array();

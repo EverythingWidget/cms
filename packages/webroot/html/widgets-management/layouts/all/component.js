@@ -13,7 +13,7 @@ function UIStructureList() {
         uisId: null
       },
       modal: {
-        class: "full"
+        class: 'full'
       },
       onDone: function (hash) {
         hash.uisId = null;
@@ -131,8 +131,8 @@ function UIStructureList() {
       "tr{Export}": exportAction
     }
   });
+  
   $("#main-content").html(this.table.container);
-
 }
 
 UIStructureList.prototype.selectUIS = function (obj, uisId) {

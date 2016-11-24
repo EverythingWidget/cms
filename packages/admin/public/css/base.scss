@@ -650,7 +650,7 @@ body.Admin {
       margin: 0;
       font-size: 23px;
       padding: 0 30px;
-      font-weight: 400;
+      font-weight: 500;
     }
   }
 }
@@ -677,7 +677,7 @@ body.Admin {
   padding-right: 0px;
   margin-right: -14px;
   display: block;
-  top: 94px;
+  top: 64px;
   left: 94px;
   bottom: 0;
   opacity: 0;
@@ -758,9 +758,8 @@ body.Admin {
   &.full {
     top: 0;
     left:0;
-    bottom: 0;
-    right: 0;
-    width: auto;
+    width: 100%;
+    height: 100%;
   }
 
   &.center-big {
@@ -858,6 +857,9 @@ h2 {
   color: #05b;
   padding: 0;
   cursor: default;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   z-index: 10;
 
   &.loader {
@@ -956,49 +958,81 @@ a.apps-menu-link:hover {
 }
 
 .app-bar {
-  background-color: #fff;
-  height: 94px;
-  position: absolute;
-  top: 0;
-  width: 100%;
-  overflow: hidden;
-  z-index: 7;
   display: flex;
   align-items: center;
-  box-shadow: 0 1px 4px rgba(0,0,0,.05) , 0 5px 15px rgba(0,0,0,.06);
-  /*box-shadow: 0 1px 3px 0px rgba(0,0,0,0.06),0 0px 5px rgba(0,0,0,0.1);*/
-  transition: all .3s ease-out;
+  flex-direction: column;
 
-  &.tabs-bar-on {
+  > .white-area {
+    justify-content: center;
+    width: 100%;
+    display: flex;
+    background-color: #fff;
+    height: 68px;
+    overflow: hidden;
+    z-index: 7;
+
+    align-items: center;
+    box-shadow: 0 1px 4px rgba(0,0,0,.07) , 0 5px 15px rgba(0,0,0,.07);
+    transition: all .3s ease-out;
+
     > .app-bar-middle-section {
-      height: 94px;
+      overflow: hidden;
+      height: 100%;
+      flex: 1 0 auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      align-items: center;
     }
   }
 
-  > .app-bar-middle-section {
-    height: 56px;
-    overflow: hidden;
-    display: flex;
-    flex: 1 0 auto;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    transition: all .3s ease-in-out;
+  &.tabs-bar-on {
+    + #main-content {
+      top: 110px;
+    }
+    
+    .tabs-bar {  
+      margin-top: 0;
+    }
   }
 
-  .tabs-bar {        
-    margin: 0;    
+  .tabs-bar {     
+    height: 42px;
+    margin: -42px 0 0; 
     display: flex;
     align-items: center;
     align-self: center;
+    transition: all .3s ease-in-out;
 
     > ul {
+      background-color: transparent;
       padding: 0 15px;  
+
+      .active {
+        a {
+          /*          background-color: #5cb1cc;*/
+          background-color: #fff;
+          box-shadow: 0 1px 3px rgba(0,0,0,.05) , 0 4px 6px rgba(0,0,0,.06);
+
+          &:hover, &:focus {
+            background-color: #fff;
+          }
+        }
+      }
     }
 
     a {
-      padding: 6px 10px 4px;
-      margin: 0 1px;
+      border: none;
+      border-radius: 8px;
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+      padding: 10px 20px;
+      line-height: 22px;
+      margin: 0 5px;
+
+      &:hover, &:focus {
+        background-color: #fff;
+      }
     }
   }
 }
@@ -1016,7 +1050,7 @@ a.apps-menu-link:hover {
 .app-bar-title {
   float: left;
   width: 260px;
-  padding: 27px 20px 27px 40px;
+  padding: 17px 20px 17px 40px;
   font-size: 1.8em;
   line-height: 30px;
   margin-top: 0;
