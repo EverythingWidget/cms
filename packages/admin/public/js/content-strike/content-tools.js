@@ -5017,25 +5017,26 @@
             return child;
           };
 
-  ContentEdit.TagNames.get().register(ContentEdit.Text, 'address', 'blockquote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'a','div');
+  ContentEdit.ElementCollection.prototype.html = function (indent) {
+    var c, children;
+    if (indent == null) {
+      indent = '';
+    }
 
-//  ContentEdit.Root = (function () {
-//    var instance;
-//
-//    function Root() {}
-//
-//    instance = null;
-//
-//    Root.get = function () {
-//      return instance != null ? instance : instance = new _Root();
-//    };
-//
-//    Root.getNew = function () {
-//      return new _Root();
-//    };
-//
-//    return Root;
-//  })();
+    var _i, _len, _ref, _results;
+    _ref = this.children;
+    _results = [];
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      c = _ref[_i];
+      if (c._domElement.hasAttribute('edit-mode-only')) {
+        continue;
+      }
+
+      _results.push(c.html(indent + ContentEdit.INDENT));
+    }
+
+    return ("" + indent + "<" + (this.tagName()) + (this._attributesToString()) + ">\n") + ("" + (_results.join('\n')) + "\n") + ("" + indent + "</" + (this.tagName()) + ">");
+  };
 
   ContentEdit.Region = (function (_super) {
     __extends(Region, _super);
@@ -5278,7 +5279,7 @@
 
   ContentEdit.TagNames.get().register(ContentEdit.Image, 'img');
 
-
+  // ------ //
 
   ContentEdit.Text = (function (_super) {
     __extends(Text, _super);
@@ -5670,6 +5671,193 @@
 
   })(ContentEdit.Element);
 
+  ContentEdit.TagNames.get().register(ContentEdit.Text, 'address', 'blockquote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'a');
+
+  function Resizable(element) {
+    var _this = this;
+    _this.element = element;
+    _this.resizing = false;
+    _this.threshold = 10;
+    _this.counter = 0;
+
+    this.resizerTool = document.createElement('span');
+    this.resizerTool.classList.add('inline-tool--div-resize');
+
+    element.appendChild(this.resizerTool);
+
+    this.resizerTool.addEventListener('mousedown', function (event) {
+      _this.start(event.x, event.y);
+    });
+
+    window.addEventListener('mousemove', _this.move.bind(this));
+
+    window.addEventListener('mouseup', function (event) {
+      _this.stop();
+    });
+  }
+
+  Resizable.prototype.start = function (x, y) {
+    var _this = this;
+    this.oldX = this.startX = x;
+    this.starty = y;
+
+    var defaultWidth = this.element.clientWidth;
+    this.element.style.width = '100%';
+
+    window.requestAnimationFrame(function () {
+      _this.maxWidth = _this.element.clientWidth;
+      _this.element.style.width = defaultWidth + 'px';
+
+      var width = Math.round((defaultWidth * 100) / _this.maxWidth);
+
+      if (_this.orginalWidth !== width) {
+        _this.orginalWidth = width;
+        _this.element.style.width = _this.orginalWidth + '%';
+      }
+
+      _this.resizing = true;
+    });
+
+  };
+
+  Resizable.prototype.move = function (event) {
+    if (!this.resizing) {
+      return;
+    }
+
+    this.oldX = event.x;
+    var newWidth = this.orginalWidth + (Math.round(((event.x - this.startX) * 100) / this.maxWidth));
+
+    if (this.oldWidth !== newWidth && newWidth >= 1 && newWidth <= 100) {
+      this.element.style.width = newWidth + '%';
+    }
+  };
+
+  Resizable.prototype.stop = function (x, y) {
+    this.resizing = false;
+  };
+
+  ContentEdit.Div = (function (_super) {
+    __extends(Div, _super);
+
+    function Div(attributes, child) {
+      Div.__super__.constructor.call(this, 'div', attributes);
+      this.child = child;
+
+      if (child) {
+        var content = new ContentEdit.Text('p');
+        this.attach(content);
+      }
+    }
+
+    Div.prototype.setupTools = function () {
+      new Resizable(this._domElement, this.parent()._domElement);
+    };
+
+    Div.prototype.cssTypeName = function () {
+      return 'div';
+    };
+
+    Div.prototype.type = function () {
+      return 'Div';
+    };
+
+    Div.prototype.typeName = function () {
+      return 'Div';
+    };
+
+    Div.prototype.mount = function () {
+      Div.__super__.mount.call(this);
+
+      if (!this._parent._domElement.classList.contains('flex-box')) {
+        this.addCSSClass('flex-box');
+      }
+
+//      if (this.child) {
+//        this.setupTools();
+//      }
+    };
+
+    Div.fromDOMElement = function (dom) {
+      var div = new Div(this.getDOMElementAttributes(dom));
+
+      var childNode, childNodes, cls, element, tagNames, _i, _len;
+      tagNames = ContentEdit.TagNames.get();
+      childNodes = dom.childNodes || [];
+
+      for (_i = 0, _len = childNodes.length; _i < _len; _i++) {
+        childNode = childNodes[_i];
+        if (childNode.nodeType !== 1) {
+          continue;
+        }
+        if (childNode.getAttribute("data-ce-tag")) {
+          cls = tagNames.match(childNode.getAttribute("data-ce-tag"));
+        } else {
+          cls = tagNames.match(childNode.tagName);
+        }
+        element = cls.fromDOMElement(childNode);
+        //this._domElement.removeChild(childNode);
+        if (element) {
+          div.attach(element);
+        }
+      }
+
+      return div;
+    };
+
+    Div.prototype.focus = function (param) {
+//      ContentEdit.Element.prototype.focus.call(this, true);
+console.log(this);
+    };
+
+    Div.prototype.blur = function (param) {
+//      ContentEdit.Element.prototype.blur.call(this);
+    };
+
+    Div.prototype._onMouseDown = function (ev) {
+      if (ev.target !== this._domElement) {
+        return;
+      }
+
+      clearTimeout(this._dragTimeout);
+      this._dragTimeout = setTimeout((function (_this) {
+        return function () {
+          return _this.drag(ev.pageX, ev.pageY);
+        };
+      })(this), ContentEdit.DRAG_HOLD_DURATION);
+    };
+
+    Div.prototype._onMouseUp = function (ev) {
+      Div.__super__._onMouseDown.call(this, ev);
+      clearTimeout(this._dragTimeout);
+    };
+
+    Div.droppers = {
+      'Static': ContentEdit.Element._dropVert,
+      'Text': ContentEdit.Element._dropVert,
+      'Div': ContentEdit.Element._dropVert
+    };
+
+    Div.prototype.createDraggingDOMElement = function () {
+      var helper, text;
+      if (!this.isMounted()) {
+        return;
+      }
+      helper = Div.__super__.createDraggingDOMElement.call(this);
+      text = this._domElement.textContent;
+      if (text.length > ContentEdit.HELPER_CHAR_LIMIT) {
+        text = text.substr(0, ContentEdit.HELPER_CHAR_LIMIT);
+      }
+      helper.innerHTML = text;
+      return helper;
+    };
+
+    return Div;
+
+  })(ContentEdit.ElementCollection);
+
+  ContentEdit.TagNames.get().register(ContentEdit.Div, 'div');
+
 })(this);
 /* 
  * To change this license header, choose License Headers in Project Properties.
@@ -5711,7 +5899,7 @@
         'video',
         'widget-embed',        
         'content-field',
-        'layer'
+        'flex-box'
       ],
       [
         'undo',
@@ -11304,40 +11492,42 @@
 
   })(ContentTools.Tools.UnorderedList);
 
-  ContentTools.Tools.Layer = (function (superClass) {
-    extend(Layer, superClass);
+  ContentTools.Tools.FlexBox = (function (superClass) {
+    extend(FlexBox, superClass);
 
-    function Layer() {
-      return Layer.__super__.constructor.apply(this, arguments);
+    function FlexBox() {
+      return FlexBox.__super__.constructor.apply(this, arguments);
     }
 
-    Layer.label = 'Layers';
-    Layer.icon = 'layers';
+    FlexBox.label = 'Flex Box';
+    FlexBox.icon = 'flex-box';
 
-    ContentTools.ToolShelf.stow(Layer, 'layer');
+    ContentTools.ToolShelf.stow(FlexBox, 'flex-box');
 
-    Layer.canApply = function (element, selection) {
+    FlexBox.canApply = function (element, selection) {
       return element.parent().constructor.name === 'Region' || element._parent.constructor.name === 'ListItem';
     };
 
     //var oldContentField = null;
-    Layer.apply = function (element, selection, callback) {
-      var layer = new ContentEdit.ElementCollection('div', {});
-      layer.attr('layer', true);
-      
+    FlexBox.apply = function (element, selection, callback) {
+      var layer = new ContentEdit.Div({});
+
 //      layer.focus = ContentEdit.Element.prototype.focus.bind(layer);
-      
+
 //      layer.blur = ContentEdit.Element.prototype.blur.bind(layer);
-      
+
       var region = element.parent();
       region.attach(layer);
-      
-      var paragraph = new ContentEdit.Text('p');
+
+      var paragraph = new ContentEdit.Div({}, true);
       layer.attach(paragraph);
-      paragraph.focus();
+
+      paragraph = new ContentEdit.Div({}, true);
+      layer.attach(paragraph);
+
     };
 
-    Layer.isApplied = function (element, selection) {
+    FlexBox.isApplied = function (element, selection) {
       return false;
     };
 
