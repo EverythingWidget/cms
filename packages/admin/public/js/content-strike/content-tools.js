@@ -5743,6 +5743,7 @@
     function Div(attributes, child) {
       Div.__super__.constructor.call(this, 'div', attributes);
       this.child = child;
+//      this.content = new HTMLString.String('').trim();
 
       if (child) {
         var content = new ContentEdit.Text('p');
@@ -5751,7 +5752,56 @@
     }
 
     Div.prototype.setupTools = function () {
-      new Resizable(this._domElement, this.parent()._domElement);
+//      new Resizable(this._domElement, this.parent()._domElement);
+      var _this = this;
+
+      var toolsBar = document.createElement('div');
+      toolsBar.setAttribute('edit-mode-only', true);
+      toolsBar.classList.add('ce-element-tools-bar');
+      toolsBar.addEventListener('click', function () {
+        var root;
+        root = ContentEdit.Root.get();
+        if (_this.isFocused()) {
+          return;
+        }
+        if (root.focused()) {
+          root.focused().blur();
+        }
+        _this._addCSSClass('ce-element--focused');
+        root._focused = _this;
+
+        root.trigger('focus', _this);
+      });
+
+      var remove = document.createElement('button');
+      remove.className = 'btn i-remove';
+      remove.type = 'button';
+      remove.addEventListener('click', function () {
+        _this._parent.detach(_this);
+      });
+      toolsBar.appendChild(remove);
+
+      if (this._domElement.classList.contains('flex-box')) {
+        var direction = document.createElement('button');
+        direction.innerText = 'Row';
+        direction.className = 'btn btn-text';
+        direction.type = 'button';
+        direction.addEventListener('click', function () {
+          if (_this._domElement.classList.contains('flex-box-column')) {
+            _this.removeCSSClass('flex-box-column');
+            _this.addCSSClass('flex-box-row');
+            direction.innerText = 'Row';
+          } else {
+            _this.removeCSSClass('flex-box-row');
+            _this.addCSSClass('flex-box-column');
+            direction.innerText = 'Column';
+          }
+        });
+        toolsBar.appendChild(direction);
+      }
+
+      this._domElement.insertBefore(toolsBar, this._domElement.firstChild);
+      this._toolsBar = toolsBar;
     };
 
     Div.prototype.cssTypeName = function () {
@@ -5773,10 +5823,9 @@
         this.addCSSClass('flex-box');
       }
 
-//      if (this.child) {
-//        this.setupTools();
-//      }
+      this.setupTools();
     };
+
 
     Div.fromDOMElement = function (dom) {
       var div = new Div(this.getDOMElementAttributes(dom));
@@ -5805,17 +5854,45 @@
       return div;
     };
 
-    Div.prototype.focus = function (param) {
-//      ContentEdit.Element.prototype.focus.call(this, true);
-console.log(this);
+    Div.prototype.focus = function () {
+      var root;
+      var _this = this;
+      root = ContentEdit.Root.get();
+
+      if (_this.isFocused()) {
+        return;
+      }
+
+      if (root._focused && _this._domElement.contains(root._focused._domElement)) {
+        return;
+      }
+
+      if (root.focused()) {
+        root.focused().blur();
+      }
+
+      _this._addCSSClass('ce-element--focused');
+      root._focused = _this;
+
+      if (_this.isMounted()) {
+        _this.domElement().focus();
+      }
+
+      return root.trigger('focus', _this);
     };
 
     Div.prototype.blur = function (param) {
-//      ContentEdit.Element.prototype.blur.call(this);
+      var root;
+      root = ContentEdit.Root.get();
+      if (this.isFocused()) {
+        this._removeCSSClass('ce-element--focused');
+        root._focused = null;
+        return root.trigger('blur', this);
+      }
     };
 
     Div.prototype._onMouseDown = function (ev) {
-      if (ev.target !== this._domElement) {
+      if (ev.target !== this._domElement && ev.target !== this._toolsBar) {
         return;
       }
 
@@ -5835,7 +5912,8 @@ console.log(this);
     Div.droppers = {
       'Static': ContentEdit.Element._dropVert,
       'Text': ContentEdit.Element._dropVert,
-      'Div': ContentEdit.Element._dropVert
+      'Div': ContentEdit.Element._dropVert,
+      'Image': ContentEdit.Element._dropVert
     };
 
     Div.prototype.createDraggingDOMElement = function () {
@@ -5850,6 +5928,29 @@ console.log(this);
       }
       helper.innerHTML = text;
       return helper;
+    };
+
+    Div.prototype._onOver = function (ev) {
+      var dragging, root;
+      this._addCSSClass('ce-element--over');
+      root = ContentEdit.Root.get();
+      dragging = root.dragging();
+      if (!dragging) {
+        return;
+      }
+
+      if (dragging === this || dragging._parent === this) {
+        return;
+      }
+
+      if (root._dropTarget) {
+        return;
+      }
+
+      if (this.constructor.droppers[dragging.type()] || dragging.constructor.droppers[this.type()]) {
+        this._addCSSClass('ce-element--drop');
+        return root._dropTarget = this;
+      }
     };
 
     return Div;
@@ -9254,6 +9355,11 @@ console.log(this);
         }
 
         if (lastChild.focus) {
+          var root = ContentEdit.Root.get();
+          if (root.focused()) {
+            root.focused().blur();
+          }
+          
           lastChild.focus();
         } else {
           lastChild._domElement.focus();
@@ -11098,9 +11204,12 @@ console.log(this);
         } else if (e.keyCode === 13) {
           e.preventDefault();
           input.blur();
-          var l = element.content.length();
-          element.selection(new ContentSelect.Range(l, l));
-          element.focus();
+
+          if (element.content) {
+            var l = element.content.length();
+            element.selection(new ContentSelect.Range(l, l));
+            element.focus();
+          }
         }
         e.stopPropagation();
       });
@@ -11177,7 +11286,8 @@ console.log(this);
     ContentField.canApply = function (element, selection) {
       return element.parent().constructor.name === 'Region' ||
               element._parent.constructor.name === 'ListItem' ||
-              element.parent().constructor.name === 'ElementCollection';
+              element.parent().constructor.name === 'ElementCollection' ||
+              element.parent().constructor.name === 'Div';
     };
 
     //var oldContentField = null;
@@ -11510,21 +11620,22 @@ console.log(this);
 
     //var oldContentField = null;
     FlexBox.apply = function (element, selection, callback) {
-      var layer = new ContentEdit.Div({});
 
-//      layer.focus = ContentEdit.Element.prototype.focus.bind(layer);
 
-//      layer.blur = ContentEdit.Element.prototype.blur.bind(layer);
+      if (element._domElement.classList.contains('flex-box')) {
+        var layer = new ContentEdit.Div({}, true);
+        element.attach(layer);
+      } else {
+        var layer = new ContentEdit.Div({});        
 
-      var region = element.parent();
-      region.attach(layer);
-
-      var paragraph = new ContentEdit.Div({}, true);
-      layer.attach(paragraph);
-
-      paragraph = new ContentEdit.Div({}, true);
-      layer.attach(paragraph);
-
+        var region = element.parent();
+        region.attach(layer);
+        
+        layer.focus();
+        
+        var firstChild = new ContentEdit.Div({}, true);
+        layer.attach(firstChild);        
+      }
     };
 
     FlexBox.isApplied = function (element, selection) {

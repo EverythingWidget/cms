@@ -18,16 +18,11 @@ class Core extends \ew\Module {
   }
 
   protected function install_assets() {
-    $table_install = EWCore::create_table('ew_blog_posts', [
-                'id'             => 'BIGINT AUTO_INCREMENT PRIMARY KEY',
-                'content_id'     => 'VARCHAR(200) NOT NULL',
-                'visibility'     => 'VARCHAR(300) NOT NULL',
-                'post_status'    => 'TINYINT(1) NULL',
-                'draft'          => 'BOOLEAN',
-                'comments'       => 'TINYINT(1) NOT NULL DEFAULT 0',
-                'date_published' => 'DATETIME NULL',
-                'post_order'     => 'SMALLINT DEFAULT 0',
-                'user_id'        => 'BIGINT(20) NOT NULL'
+    $table_install = EWCore::create_table('ew_blog_subscribers', [
+                'id'           => 'BIGINT AUTO_INCREMENT PRIMARY KEY',
+                'email'        => 'VARCHAR(300) NOT NULL',
+                'options'      => 'TEXT NULL',
+                'date_created' => 'DATETIME NULL'
     ]);
 
     $pdo = EWCore::get_db_PDO();
@@ -203,8 +198,8 @@ class Core extends \ew\Module {
                 'content',
                 'posts.date_published'
     ]);
-    
-    if(isset($params['id'])) {
+
+    if (isset($params['id'])) {
       $id = $params['id'];
     }
 

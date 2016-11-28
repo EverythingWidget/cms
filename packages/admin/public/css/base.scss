@@ -967,12 +967,12 @@ a.apps-menu-link:hover {
     width: 100%;
     display: flex;
     background-color: #fff;
-    height: 68px;
+    height: 64px;
     overflow: hidden;
     z-index: 7;
 
     align-items: center;
-    box-shadow: 0 1px 4px rgba(0,0,0,.07) , 0 5px 15px rgba(0,0,0,.07);
+    box-shadow: 0 1px 3px rgba(0,0,0,.07) , 0 4px 12px rgba(0,0,0,.07);
     transition: all .3s ease-out;
 
     > .app-bar-middle-section {
@@ -990,19 +990,24 @@ a.apps-menu-link:hover {
     + #main-content {
       top: 110px;
     }
-    
+
     .tabs-bar {  
       margin-top: 0;
     }
   }
 
   .tabs-bar {     
-    height: 42px;
-    margin: -42px 0 0; 
+    height: 46px;
+    margin: -46px 0 0; 
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     align-self: center;
-    transition: all .3s ease-in-out;
+    justify-content: center;
+    z-index: 2;
+    background-color: #fff;
+    width: 100%;
+    box-shadow: 0 0 3px 0px rgba(0,0,0,0.04),0 2px 7px rgba(0,0,0,0.07);
+    transition: all .2s ease-in-out;
 
     > ul {
       background-color: transparent;
@@ -1010,9 +1015,9 @@ a.apps-menu-link:hover {
 
       .active {
         a {
-          /*          background-color: #5cb1cc;*/
-          background-color: #fff;
-          box-shadow: 0 1px 3px rgba(0,0,0,.05) , 0 4px 6px rgba(0,0,0,.06);
+          /*background-color: #5cb1cc;*/
+          /*background-color: #fff;*/
+          /*box-shadow: 0 9px 12px -4px rgba(0,0,0,.3);*/
 
           &:hover, &:focus {
             background-color: #fff;
@@ -1022,15 +1027,12 @@ a.apps-menu-link:hover {
     }
 
     a {
-      border: none;
-      border-radius: 8px;
-      border-top-left-radius: 0;
-      border-top-right-radius: 0;
-      padding: 10px 20px;
+      padding: 12px 20px 9px;
       line-height: 22px;
-      margin: 0 5px;
+      margin: 0;
+      color: #999;
 
-      &:hover, &:focus {
+        &:hover, &:focus {
         background-color: #fff;
       }
     }
@@ -1539,7 +1541,8 @@ ul.actions-bar li label {
   padding:  15px 0;
   /*box-shadow: 0 1px 1px rgba(0,0,0,.1) , 0 0px 3px rgba(0,0,0,.14);*/
   /*box-shadow: 0 1px 3px rgba(0,0,0,.14) , 0 3px 6px rgba(0,0,0,.14);*/
-  box-shadow: 0 2px 5px rgba(0,0,0,.08) , 1px 3px 15px rgba(0,0,0,.1);
+  /*box-shadow: 0 2px 5px rgba(0,0,0,.08) , 1px 3px 15px rgba(0,0,0,.1);*/
+  box-shadow: 0 1px 3px 0px rgba(0,0,0,0.06), 1px 0 7px rgba(0,0,0,0.1);
   color: #000;
   z-index: 1;
   float: left;  
