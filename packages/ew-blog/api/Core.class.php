@@ -18,19 +18,6 @@ class Core extends \ew\Module {
   }
 
   protected function install_assets() {
-    $table_install = EWCore::create_table('ew_blog_subscribers', [
-                'id'           => 'BIGINT AUTO_INCREMENT PRIMARY KEY',
-                'email'        => 'VARCHAR(300) NOT NULL',
-                'options'      => 'TEXT NULL',
-                'date_created' => 'DATETIME NULL'
-    ]);
-
-    $pdo = EWCore::get_db_PDO();
-    $stm = $pdo->prepare($table_install);
-    if (!$stm->execute()) {
-      echo EWCore::log_error(500, '', $stm->errorInfo());
-    }
-
     \EWCore::register_ui_element('settings/general', 'ew-blog-settings', [
         'title'   => 'EW Blog',
         'content' => '',

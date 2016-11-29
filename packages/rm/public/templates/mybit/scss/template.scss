@@ -33,11 +33,12 @@ a {
 
 .article-title {
   text-align: center;
-  color: #585858;
-  font-size: 22px;
+  color: #666;
+  font-size: 25px;
   line-height: 34px;
   font-weight: 600;
-  padding-bottom: 40px;
+  margin: 0;
+  padding: 40px 0;
 }
 
 .flex-box {
@@ -50,5 +51,37 @@ a {
 
   &.flex-box-column {
     flex-direction: column;
+  }
+  
+  > div {
+    flex: 0 1 100%;
+    
+    > img {
+      max-width: 100%;
+      height: auto;
+    }
+  }
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+h2 {
+  &.primary-title {
+    margin: 30px 0;
+  }
+
+  &.secondary-title {
+    margin-top: -30px;
+    font-size: .8em;
   }
 }

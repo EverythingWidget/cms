@@ -1,0 +1,1 @@
+<?= ew\ResourceUtility::load_js_as_tag('ew-blog/html/subscribers/component.js') ?>

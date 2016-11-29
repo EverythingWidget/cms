@@ -10914,6 +10914,87 @@
 
   })();
 
+  ContentTools.Tools.Bold = (function (superClass) {
+    extend(Bold, superClass);
+
+    function Bold() {
+      return Bold.__super__.constructor.apply(this, arguments);
+    }
+
+    ContentTools.ToolShelf.stow(Bold, 'bold');
+
+    Bold.label = 'Bold';
+
+    Bold.icon = 'bold';
+
+    Bold.tagName = 'strong';
+
+    Bold.oldTagName = 'b';
+
+    Bold.canApply = function (element, selection) {
+      if (!element.content) {
+        return false;
+      }
+      return selection && !selection.isCollapsed();
+    };
+
+    Bold.isApplied = function (element, selection) {
+      var from, ref, to;
+      if (element.content === void 0 || !element.content.length()) {
+        return false;
+      }
+      ref = selection.get(), from = ref[0], to = ref[1];
+      if (from === to) {
+        to += 1;
+      }
+      return element.content.slice(from, to).hasTags(this.tagName, true);
+    };
+
+    Bold.apply = function (element, selection, callback) {
+      var from, ref, to;
+      element.storeState();
+      ref = selection.get(), from = ref[0], to = ref[1];
+      if (this.isApplied(element, selection)) {
+        element.content = element.content.unformat(from, to, new HTMLString.Tag(this.tagName));
+
+        if (this.oldTagName) {
+          element.content = element.content.unformat(from, to, new HTMLString.Tag(this.oldTagName)); // backward compatibility
+        }
+      } else {
+        element.content = element.content.format(from, to, new HTMLString.Tag(this.tagName));
+      }
+      element.content.optimize();
+      element.updateInnerHTML();
+      element.taint();
+      element.restoreState();
+      return callback(true);
+    };
+
+    return Bold;
+
+  })(ContentTools.Tool);
+
+  ContentTools.Tools.Italic = (function (superClass) {
+    extend(Italic, superClass);
+
+    function Italic() {
+      return Italic.__super__.constructor.apply(this, arguments);
+    }
+
+    ContentTools.ToolShelf.stow(Italic, 'italic');
+
+    Italic.label = 'Italic';
+
+    Italic.icon = 'italic';
+
+    Italic.tagName = 'em';
+
+    Italic.oldTagName = 'i';
+
+    return Italic;
+
+  })(ContentTools.Tools.Bold);
+
   ContentTools.Tools.Heading = (function (superClass) {
     extend(Heading, superClass);
 
@@ -10930,7 +11011,7 @@
     Heading.tagName = 'h1';
 
     Heading.canApply = function (element, selection) {
-      return element.content !== void 0 && element.parent().type() === 'Region';
+      return element.content !== void 0;
     };
 
     Heading.isApplied = function (element, selection) {
@@ -11626,15 +11707,15 @@
         var layer = new ContentEdit.Div({}, true);
         element.attach(layer);
       } else {
-        var layer = new ContentEdit.Div({});        
+        var layer = new ContentEdit.Div({});
 
         var region = element.parent();
         region.attach(layer);
-        
+
         layer.focus();
-        
+
         var firstChild = new ContentEdit.Div({}, true);
-        layer.attach(firstChild);        
+        layer.attach(firstChild);
       }
     };
 
