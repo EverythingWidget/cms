@@ -108,6 +108,8 @@ class APIResponse implements \JsonSerializable {
    */
   public static function standard_response(APIResponse $_response, $result) {
     $_response->properties['message'] = $result->message;
+    $_response->properties['message_code'] = $result->message_code;
+    
 
     if ($result->error) {
       $_response->set_status_code($result->error);

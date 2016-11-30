@@ -24,7 +24,7 @@ class Subscribers extends \ew\Module {
   protected function install_assets() {
     $table_install = \EWCore::create_table('ew_blog_subscribers', [
                 'id'           => 'BIGINT AUTO_INCREMENT PRIMARY KEY',
-                'email'        => 'VARCHAR(300) NOT NULL',
+                'email'        => 'VARCHAR(255) NOT NULL UNIQUE',
                 'options'      => 'TEXT NULL',
                 'date_created' => 'DATETIME NULL'
     ]);

@@ -43,7 +43,21 @@ class SimpleRepository implements \ew\CRUDRepository {
 
     $comment = new $class_name();
     $comment->fill((array) $input);
-    $comment->save();
+
+    try {
+      $comment->save();
+    }
+    catch (\PDOException $exception) {
+      $result->error = 201;
+      $error_code = $exception->errorInfo[1];
+
+      if ($error_code === 1062) {
+        $result->message = $this->name . ' is duplicate';
+        $result->message_code = 'duplicate';
+      }
+
+      return $result;
+    }
 
     $result->data = $comment;
     $result->message = $this->name . ' has been created';

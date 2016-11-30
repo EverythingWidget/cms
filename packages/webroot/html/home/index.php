@@ -124,6 +124,9 @@ $HTML_META_TAGS = webroot\WidgetsManagement::get_meta_tags();
       })();
     </script>
 
+    <script src="public/rm/js/webcomponents/webcomponents-lite.min.js"></script>
+    <script src="public/rm/js/x-tag/x-tag.min.js"></script>
+    <script src="public/rm/js/galaxyjs/galaxy-tags-min.js"></script>
     <script src="public/rm/js/jquery/build.js"></script>
     <script src="public/rm/js/vue/vue.min.js"></script>       
 

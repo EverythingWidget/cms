@@ -386,3 +386,41 @@
     margin: 15px;
   }
 }
+
+.widget.subscribe {
+  background-color: #EF4035;
+  margin: 15px auto;
+  max-width: 400px;
+  padding: 20px 15px;
+  border-radius: 12px;
+  color: #fff;
+  box-shadow: 0 2px  7px rgba(#000, .12), 0 9px 17px rgba(#000, .19);
+
+  > form {    
+    align-items: stretch;
+    display: flex;
+    flex-direction: column;  
+
+    .field {
+      color: #fff;
+    }
+
+    .field-text {      
+      color: #fff;
+      background-color: rgba(#000, .15);
+    }
+
+    > h2 {
+      text-align: center;
+      font-size: 2.4em;
+      margin: 0;
+      font-weight: 300;
+    }
+
+    > .msg-success {
+      text-align: center;
+      font-weight: bold;
+    }
+  }
+
+}

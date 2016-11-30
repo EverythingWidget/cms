@@ -767,6 +767,7 @@ pre code {
   letter-spacing: .5px;
   font-weight: 600;
   background-color: #fff;
+  box-shadow: 0 0 0 rgba(0,0,0,0.12);
   /* font-family: sans-serif; */
 }
 .btn:focus {
@@ -775,9 +776,9 @@ pre code {
   outline-offset: -2px;*/
   outline:none;
 }
-.btn:hover{
+.btn:hover {
   /*color: #333333;*/
-  box-shadow: 0px 1px 3px 0px rgba(0,0,0,.24);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
   text-decoration: none;  
 }
 .btn:active

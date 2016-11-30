@@ -13,7 +13,7 @@ namespace ew_blog;
  *
  * @author Eeliya
  */
-class ew_blog_subscribers {
+class ew_blog_subscribers extends \Illuminate\Database\Eloquent\Model{
 
   protected $table = 'ew_blog_subscribers';
   protected $fillable = [

@@ -1362,7 +1362,7 @@ ul.actions-bar li label {
 .list.arrangeable li .handle {
   width: 20px;
   position: absolute;
-  background-color: rgba(0,0,0,.1);
+  background-color: rgba(0,0,0,.15);
   top: 0;
   left: 0;
   bottom: 0;
@@ -1370,7 +1370,7 @@ ul.actions-bar li label {
 }
 
 .list.arrangeable li .handle:hover {
-  background-color: rgba(0,0,0,.2);
+  background-color: rgba(0,0,0,.26);
   cursor: move;
 }
 
@@ -1387,13 +1387,19 @@ ul.actions-bar li label {
   margin: 0 15px 5px;
   border-radius: 6px;
   box-shadow: none;
+  /*border: 2px solid rgba(#000 , .2);*/
+  
+  .close-icon {
+    right: 2px;
+    top: 3px;
+  }
 }
 
 .list.arrangeable.fields > li > .wrapper {
-  padding: 6px 10px 4px;
+  padding: 2px 10px 4px;
   padding-left: 26px;
   border-radius: 0;
-  background-color: #eee;
+  background-color: #CFD8DC;
   overflow: hidden;
 }
 
