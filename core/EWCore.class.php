@@ -611,7 +611,7 @@ class EWCore {
     $file = EW_ROOT_DIR . 'core/' . $class_name . '.class.php';
     //echo $file."<br>";
     if (file_exists($file)) {
-      require_once $file;
+      include_once $file;
     }
   }
 

@@ -16,6 +16,7 @@ class App {
 
   public static $EW_APP = "app";
   public static $Core_APP = "core_app";
+  public static $app_root_path;
   protected $name = "EW App";
   protected $description = "This is a ew app";
   protected $version = "0.1";
@@ -30,6 +31,8 @@ class App {
     if ($this->loaded) {
       return;
     }
+
+    static::$app_root_path = str_replace('_', '-', $this->get_root());
 
     $this->loaded = true;
     $this->load_assets();
@@ -47,10 +50,9 @@ class App {
     }
   }
 
-  private function load_dependecies($dir) {
+  private function read_modules($dir) {
     $app_root = $this->get_root();
-    $app_root_path = str_replace('_', '-', $app_root);
-    $path = EW_PACKAGES_DIR . '/' . $app_root_path . '/' . $dir;
+    $path = EW_PACKAGES_DIR . '/' . static::$app_root_path . '/' . $dir;
     if (!file_exists($path)) {
       return [];
     }
@@ -69,14 +71,11 @@ class App {
       if (!$i = strpos($section_name, '.class.php')) {
         continue;
       }
-      require_once $path . '/' . $section_name;
+      
+      include_once $path . '/' . $section_name;
 
       $section_class_name = substr($section_name, 0, $i);
       $dependencies[] = "$app_root\\$section_class_name";
-//
-//      if (array_key_exists($class_type, class_parents($real_class_name))) {
-//        $dependencies [] = new $real_class_name($this);
-//      }
     }
 
     return $dependencies;
@@ -87,7 +86,7 @@ class App {
 //    $path = EW_PACKAGES_DIR . '/' . $app_root . '/' . $dir;
 
     try {
-      $this->load_dependecies('api/repositories');
+      $this->read_modules('api/repositories');
       $this->load_and_populate_modules();
     }
     catch (\Exception $e) {
@@ -96,15 +95,12 @@ class App {
   }
 
   protected function install_resource_handlers() {
-//    $this->register_resource_handler('api', new APIResourceHandler($this));
-//    $this->register_resource_handler($this->default_resource, new HTMLResourceHandler($this));
-
     $this->register_resource_handler('api', 'ew\\APIResourceHandler');
     $this->register_resource_handler($this->default_resource, 'ew\\HTMLResourceHandler');
   }
 
   public function load_and_populate_modules() {
-    $apis = $this->load_dependecies('api');
+    $apis = $this->read_modules('api');
 
     $this->loaded_modules = [];
 
@@ -128,7 +124,7 @@ class App {
 
     if ($this->resource_handlers[$resource_type]) {
 //      return $this->resource_handlers[$resource_type]->process($this, $package, $resource_type, $module_name, $method_name, $parameters);
-      return $this->getResourceHandler($resource_type)->process($this, $package, $resource_type, $module_name, $method_name, $parameters);
+      return $this->get_resource_handler($resource_type)->process($this, $package, $resource_type, $module_name, $method_name, $parameters);
     }
     else {
       $error = \EWCore::log_error(404, "Resource not found: `$resource_type/$module_name/$method_name`", [
@@ -224,7 +220,7 @@ class App {
     $this->resource_handlers[$name] = $func;
   }
 
-  private function getResourceHandler($resource_type) {
+  private function get_resource_handler($resource_type) {
     $resource_handler_name = $this->resource_handlers[$resource_type];
 
     return new $resource_handler_name($this);
