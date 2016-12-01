@@ -1,14 +1,13 @@
 /* global Scope, System, EW */
 
+var BlogService = Scope.import('html/ew-blog/core/service.html');
+
 Scope.export = PostsComponent;
 
-var blogService = Scope.import('html/ew-blog/core/service.html');
-
-function PostsComponent(scope, state) {
+function PostsComponent(state, scope) {
   var component = this;
   component.scope = scope;
   component.state = state;
-  component.state.type = 'app';
   component.data = {
     tab: null,
     card_title: 'Posts',
@@ -38,48 +37,41 @@ function PostsComponent(scope, state) {
     ]
   };
 
-  component.state.onInit = component.init.bind(component);
-
-  component.state.onStart = component.start.bind(component);
-}
-
-PostsComponent.prototype.init = function () {
-  var component = this;
-
-  component.vue = new Vue({
-    el: Scope.views.comments_card,
-    data: component.data,
-    methods: {
-      getCommentStatus: function (post) {
-        return this.comment_status.filter(function (item) {
-          return item.value === post.comments;
-        })[0];
-      },
-      showPost: blogService.showArticle,
-      reload: function () {
-        component.vue.$broadcast('refresh');
+  state.onInit = function () {
+    component.vue = new Vue({
+      el: Scope.views.comments_card,
+      data: component.data,
+      methods: {
+        getCommentStatus: function (post) {
+          return this.comment_status.filter(function (item) {
+            return item.value === post.comments;
+          })[0];
+        },
+        showPost: BlogService.showArticle,
+        reload: function () {
+          component.vue.$broadcast('refresh');
+        }
       }
-    }
-  });
+    });
 
-  component.vue.$watch('compact_view', function (value) {
-    if (value) {
-      component.data.posts.page_size = 15;
-    } else {
-      component.data.posts.page_size = 9;
-    }
-  });
+    component.vue.$watch('compact_view', function (value) {
+      if (value) {
+        component.data.posts.page_size = 15;
+      } else {
+        component.data.posts.page_size = 9;
+      }
+    });
 
-};
+  };
 
-PostsComponent.prototype.start = function () {
-  var component = this;
-  component.data.tab = null;
+  state.onStart = function () {
+    component.data.tab = null;
 
-  $(document).off('article-list.refresh').on('article-list.refresh', function (e, eventData) {
-    component.vue.$broadcast('refresh');
-  });
-};
+    $(document).off('article-list.refresh').on('article-list.refresh', function (e, eventData) {
+      component.vue.$broadcast('refresh');
+    });
+  };
+}
 
 PostsComponent.prototype.readPosts = function () {
   var component = this;
@@ -90,14 +82,6 @@ PostsComponent.prototype.readPosts = function () {
   });
 };
 
-
-// ------ Registring the state handler ------ //
-var stateId = 'ew-blog/posts';
-
-if (Scope._stateId === stateId) {
-  Scope.primaryMenu = System.entity('ui/primary-menu');
-
-  System.state(stateId, function (state) {
-    new PostsComponent(Scope, state);
-  });
-}
+System.newStateHandler(Scope, function (state) {
+  new PostsComponent(state, Scope);
+});

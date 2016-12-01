@@ -2557,7 +2557,7 @@ table.contents td {
   vertical-align: top;
   text-align: center;
   padding: 5px;
-  border-radius: 2px;
+  border-radius: 6px;
   font-weight: 600;
   font-size: 16px;
   min-height: 50px;
@@ -3232,11 +3232,11 @@ li h3.icon-header {
   background-color: #0097a7;
 }
 
-.mt {
+*.mt {
   margin-top: 15px;
 }
 
-.mt\+ {
+*.mt\+ {
   margin-top: 30px;
 }
 

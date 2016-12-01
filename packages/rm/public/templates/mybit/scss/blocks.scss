@@ -39,15 +39,35 @@
 
 
 .block.footer {
-  padding: 30px 0;
+  padding: 15px 0;
   background-color: #545454;
   border-bottom: 1px solid #202020;
+  bottom: 60px;
+  position: absolute;
+  width: 100%;
+  height: 120px;
+  color: #fff;
 }
 
 .block.license {
-  padding: 0px 0 10px;
+  padding: 0;
   border-top: 1px solid #6b6b6b;
   background-color: #545454;
   text-align: center;
   color: #fff;
+  bottom: 0;
+  position: absolute;
+  width: 100%;
+  height: 60px;
+  align-items: center;
+  display: flex;
+  font-size: .88em;
+}
+
+.block.career-header {
+  background-image:  url('images/career-header.jpg');
+  background-repeat: no-repeat;
+  min-height: 350px;
+  background-size: contain;
+  background-color: #EAE8EB;
 }

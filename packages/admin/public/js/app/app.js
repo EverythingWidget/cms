@@ -131,10 +131,9 @@ window.addEventListener('load', function () {
       var wrapper = $element.parent().parent();
       if (imageChooserDialog)
         imageChooserDialog.remove();
-      var image = wrapper.find("img");
+      var image = wrapper.find('img');
       if (image.length <= 0) {
-        image = $("<img>");
-        //console.log(image);
+        image = $(document.createElement('img'));
         wrapper.find("div").append(image);
       }
 
@@ -142,7 +141,7 @@ window.addEventListener('load', function () {
       var imageChooserBtn;
       // if the plugin has been called later again on same element
       if ($element.attr(ACTIVE_PLUGIN_ATTR)) {
-        imageChooserBtn = wrapper.find("button.btn-image-chooser");
+        imageChooserBtn = wrapper.find('.btn-image-chooser');
       }
       // If the plugin has been called for the first time
       else {
@@ -157,7 +156,7 @@ window.addEventListener('load', function () {
           margin: "2px auto 2px auto"
         });
 
-        imageChooserBtn = $("<button type='button' class='btn btn-xs btn-link btn-link-chooser' >Choose Image</button>");
+        imageChooserBtn = $("<button type='button' class='btn btn-xs btn-link btn-image-chooser'>Choose Image</button>");
         imageChooserBtn.css({
           position: "absolute",
           right: "2px",
@@ -175,8 +174,9 @@ window.addEventListener('load', function () {
 
         System.loadModule({
           //$.post("html/admin/content-management/link-chooser-media.php", {
-          id: "content-management/media",
+//          id: "content-management/media",
           url: "html/admin/content-management/link-chooser/link-chooser-media.php",
+//          fresh: true,
           params: {
             callback: settings.callbackName
           },

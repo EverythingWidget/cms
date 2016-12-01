@@ -30,10 +30,10 @@
           <h3>
             {{ comment.email }}
           </h3>
-          <p>
-            <strong>{{ comment.name }}</strong> - 
-            {{ comment.content }}
-          </p>
+          <h3>
+            {{ comment.name }}
+          </h3>
+          <p class="pre-text">{{ comment.content }}</p>
           <a class="text-link" v-on:click="showPost(comment.ew_content.id)">
             {{ comment.ew_content.title }}
           </a>

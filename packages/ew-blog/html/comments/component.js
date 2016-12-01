@@ -1,14 +1,13 @@
-/* global Scope, System, system */
+/* global Scope, System */
+
+var BlogService = Scope.import('html/ew-blog/core/service.html');
 
 Scope.export = CommentsComponent;
 
-var blogService = Scope.import('html/ew-blog/core/service.html');
-
-function CommentsComponent(scope, state) {
+function CommentsComponent(state, scope) {
   var component = this;
   component.scope = scope;
   component.state = state;
-  component.state.type = "app";
   component.data = {
     tab: null,
     card_title: 'Comments',
@@ -28,46 +27,40 @@ function CommentsComponent(scope, state) {
     }
   };
 
-  component.state.onInit = component.init.bind(component);
+  state.onInit = function () {
+    component.vue = new Vue({
+      el: Scope.views.comments_card,
+      data: component.data,
+      methods: {
+        confirmComment: component.confirmComment.bind(component),
+        deleteComment: component.deleteComment.bind(component),
+        showPost: BlogService.showArticle,
+        reloadComments: function () {
+          component.vue.$broadcast('refresh');
+        }
+      },
+      watch: {
+        show: function (value, oldValue) {
+          switch (value) {
+            case 'confirmed':
+              component.data.filter.where.visibility = 'confirmed';
+              break;
+            case 'new':
+              component.data.filter.where.visibility = {not: 'confirmed'};
+              break;
+          }
 
-  component.state.onStart = component.start.bind(component);
+          this.reloadComments();
+        }
+      }
+    });
+  };
+
+  state.onStart = function () {
+    component.data.tab = null;
+  };
 }
 
-CommentsComponent.prototype.init = function () {
-  var component = this;
-  
-  component.vue = new Vue({
-    el: Scope.views.comments_card,
-    data: component.data,
-    methods: {
-      confirmComment: component.confirmComment.bind(component),
-      deleteComment: component.deleteComment.bind(component),
-      showPost: blogService.showArticle,
-      reloadComments: function () {
-        component.vue.$broadcast('refresh');
-      }
-    },
-    watch: {
-      show: function (value, oldValue) {
-        switch (value) {
-          case 'confirmed':
-            component.data.filter.where.visibility = 'confirmed';
-            break;
-          case 'new':
-            component.data.filter.where.visibility = {not: 'confirmed'};
-            break;
-        }
-
-        this.reloadComments();
-      }
-    }
-  });
-};
-
-CommentsComponent.prototype.start = function () {
-  var component = this;
-  component.data.tab = null;
-};
 
 CommentsComponent.prototype.confirmComment = function (id) {
   var component = this;
@@ -109,12 +102,7 @@ CommentsComponent.prototype.deleteComment = function (id) {
 
 
 // ------ Registring the state handler ------ //
-var stateId = 'ew-blog/comments';
 
-if (Scope._stateId === stateId) {
-  Scope.primaryMenu = System.entity('ui/primary-menu');
-
-  System.state(stateId, function (state) {
-    new CommentsComponent(Scope, state);
-  });
-}
+System.newStateHandler(Scope, function (state) {
+  new CommentsComponent(state, Scope);
+});
