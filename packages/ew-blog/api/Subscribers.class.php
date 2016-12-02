@@ -90,8 +90,8 @@ class Subscribers extends \ew\Module {
 
   public function options() {
     return [
-        'name'        => 'EW Blog - Comments',
-        'description' => 'Add comments feature to the contents',
+        'name'        => 'EW Blog - Subscribers',
+        'description' => 'Add subscribe feature to the contents',
         'version'     => '0.5.0'
     ];
   }
