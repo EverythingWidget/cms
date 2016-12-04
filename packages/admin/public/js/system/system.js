@@ -430,7 +430,7 @@
       }
 
       if (moduleExist) {
-        console.log(module.id);
+//        console.log(module.id);
         if ('function' === typeof (System.onModuleLoaded['system/' + module.id])) {
           System.onModuleLoaded['system/' + module.id].call(this, moduleExist, moduleExist.html);
           delete System.onModuleLoaded['system/' + module.id];

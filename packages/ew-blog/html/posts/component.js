@@ -12,6 +12,7 @@ function PostsComponent(state, scope) {
     tab: null,
     card_title: 'Posts',
     compact_view: false,
+    loading: false,
     filter: {},
     posts: {
       url: 'api/ew-blog/posts/included-contents',
@@ -75,6 +76,7 @@ function PostsComponent(state, scope) {
 
 PostsComponent.prototype.readPosts = function () {
   var component = this;
+
   $.get('api/ew-blog/posts/included-contents', {
     page_size: 10
   }, function (response) {

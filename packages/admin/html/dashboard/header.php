@@ -69,6 +69,6 @@
 <!--<script src="public/admin/js/lib/floatlabels.min.js" defer></script>-->
 
 <script src="public/admin/js/lib/bootstrap.js" defer></script>
-<script src="public/admin/js/content-strike/content-tools.min.js" defer></script>
+<script src="public/admin/js/content-strike/content-tools.js" defer></script>
 
 <script src="public/admin/js/lib/ewscript.js"></script>      

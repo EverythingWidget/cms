@@ -1,7 +1,7 @@
 <form v-on:submit="subscribe">
-  <h2>
+  <h1>
     Subscribe
-  </h2>
+  </h1>
 
   <galaxy-field v-if="!success" class="field field-name">
     <label class="field-label">Email Address</label>

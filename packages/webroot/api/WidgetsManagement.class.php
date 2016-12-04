@@ -931,8 +931,6 @@ class WidgetsManagement extends \ew\Module {
         $includes[] = $script["include"];
       }
       else {
-
-
         $script_tags.="<script $element_id $element_src defer>{$script["script"]}</script>\n";
       }
 
@@ -982,7 +980,7 @@ class WidgetsManagement extends \ew\Module {
     }
 
     if ($minified_code) {
-      $script_tags.="<script id='ew-compiled-scripts' src='$cache_path_url' defer></script>";
+      $script_tags.="<script id='ew-compiled-scripts' src='$cache_path_url' ></script>";
     }
 
     return $script_tags;

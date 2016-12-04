@@ -28,6 +28,10 @@
       type: Number,
       default: 30
     },
+    loading: {
+      type: Boolean,
+      default: false
+    },
     onLoad: Function
   };
 

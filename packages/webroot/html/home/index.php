@@ -10,6 +10,11 @@ $_REQUEST['cmdResult'] = '';
 
 webroot\WidgetsManagement::include_html_link(["rm/public/css/bootstrap.css"]);
 
+webroot\WidgetsManagement::add_html_script(["include" => "rm/public/js/jquery/build.js"]);
+webroot\WidgetsManagement::add_html_script(["include" => "rm/public/js/webcomponents/webcomponents-lite.min.js"]);
+webroot\WidgetsManagement::add_html_script(["include" => "rm/public/js/x-tag/x-tag.min.js"]);
+webroot\WidgetsManagement::add_html_script(["include" => "rm/public/js/galaxyjs/galaxy-tags-min.js"]);
+webroot\WidgetsManagement::add_html_script(["include" => "rm/public/js/vue/vue.min.js"]);
 webroot\WidgetsManagement::add_html_script(["include" => "admin/public/js/lib/bootstrap.js"]);
 webroot\WidgetsManagement::add_html_script(["include" => "rm/public/js/gsap/TweenLite.min.js"]);
 webroot\WidgetsManagement::add_html_script(["include" => "rm/public/js/gsap/easing/EasePack.min.js"]);
@@ -43,10 +48,6 @@ if (file_exists($template_php)) {
   $template_script_dom = $template->get_template_script(json_decode($_REQUEST["_uis_template_settings"], true));
   if ($template_script_dom) {
     $template_script_dom = preg_replace('/\$php\.\$template_settings/', $template_settings, $template_script_dom);
-//    $template_script_dom = preg_replace_callback('/\$php\.([\w]*)/', function($match) use ($view_data) {
-//      $data = $view_data[$match[1]];
-//      return isset($data) ? $data : null;
-//    }, $template_script_dom);
 
     $TEMPLATE_SCRIPT = '<script id="template-script">' . $template_script_dom . '</script>';
   }
@@ -122,14 +123,9 @@ $HTML_META_TAGS = webroot\WidgetsManagement::get_meta_tags();
         window.ew_widget_data = ew_widget_data;
         window.ew_widget_actions = ew_widget_actions;
       })();
-    </script>
-
-    <script src="public/rm/js/webcomponents/webcomponents-lite.min.js"></script>
-    <script src="public/rm/js/x-tag/x-tag.min.js"></script>
-    <script src="public/rm/js/galaxyjs/galaxy-tags-min.js"></script>
-    <script src="public/rm/js/jquery/build.js"></script>
-    <script src="public/rm/js/vue/vue.min.js"></script>       
-
+    </script>      
+    
+    <!--<script src="public/rm/js/jquery/build.js"></script>-->
 
     <?= $HTML_SCRIPTS; ?>
     <?= $TEMPLATE_SCRIPT; ?>      

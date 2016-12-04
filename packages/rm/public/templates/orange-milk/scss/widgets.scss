@@ -1095,7 +1095,7 @@
         display: block;
         height: 100%;
       }
-      
+
       &:hover {
         background-color: lighten(#3e5b98,10%);
       }
@@ -1109,6 +1109,57 @@
 
     }
   }
+}
+
+.widget.subscribe {
+  background-color: #fff;
+  box-shadow: 0 8px 17px 0px rgba(0,0,0,0.1), 0 1px 5px rgba(0,0,0, .12);
+  padding: 15px 15px 25px;
+  border-radius: 8px;
+  max-width: 400px;
+  margin: 0 auto;
+  
+  h1 {
+    margin-bottom: 15px;
+  }
+
+  > form {
+    display: flex;
+    flex-direction: column;  
+    justify-content: center;
+    align-items: center;
+  } 
+
+  galaxy-field {
+    width: 100%;
+    text-align: center;
+
+    label {
+      display: block;
+      padding: 0 0 10px;
+      font-size: 1.5em;
+      display: none;
+    }
+
+    input {
+      width: 100%;
+      border: 2px solid $akcent-background-color;
+      border-radius: 2px;
+      outline: none;
+      font-size: 1.5em;
+      line-height: 36px;
+      padding: 8px 10px;
+      color: $font-color;
+
+      &:focus {
+        border-color: $font-akcent-color;
+      }
+    }       
+  }
+  
+  .btn-submit {
+      margin-top: 25px;
+    }
 }
 
 .title h1 {

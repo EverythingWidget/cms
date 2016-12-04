@@ -1,6 +1,6 @@
 <system-ui-view name="comments-card" class="card card-medium z-index-1">
   <div class="card-header">
-    <h1> {{ card_title }} </h1>
+    <h1 v-bind:class="{'inline-loader': loading}"> {{ card_title }} </h1>
 
     <div class="card-title-action-right">
       <button class="btn btn-circle" v-on:click="reloadComments()"><i class="icon-cw-1"></i></button>
@@ -21,7 +21,7 @@
         </label>
       </div>
 
-      <ew-pagination v-bind:list.sync="comments" v-bind:filter="filter"></ew-pagination>
+      <ew-pagination v-bind:list.sync="comments" v-bind:filter="filter" v-bind:loading.sync="loading"></ew-pagination>
     </div>
 
     <system-spirit animations="liveHeight,verticalShift" vertical-shift="list-item">
@@ -33,7 +33,7 @@
           <h3>
             {{ comment.name }}
           </h3>
-          <p class="pre-text">{{ comment.content }}</p>
+          <p class="pre-text" dir="auto">{{ comment.content }}</p>
           <a class="text-link" v-on:click="showPost(comment.ew_content.id)">
             {{ comment.ew_content.title }}
           </a>

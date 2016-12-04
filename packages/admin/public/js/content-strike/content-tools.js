@@ -11459,7 +11459,7 @@
 
     Link.apply = function (element, selection, callback) {
       var allowScrolling, app, applied, dialog, domElement, from, measureSpan, modal, rect, ref, selectTag, to, transparent;
-      applied = false;
+      applied = false;   
       if (element.type() === 'Image') {
         rect = element.domElement().getBoundingClientRect();
       } else if (element._tagName === "a") {
@@ -11489,7 +11489,9 @@
         }
         return callback(applied);
       });
-      dialog = new ContentTools.LinkDialog(this.getAttr('href', element, selection), this.getAttr('target', element, selection));
+
+      dialog = new ContentTools.LinkDialog(element._domElement.getAttribute('href'), this.getAttr('target', element, selection));
+      
       /*dialog.position([
        rect.left + (rect.width / 2) + window.scrollX,
        rect.top + (rect.height / 2) + window.scrollY

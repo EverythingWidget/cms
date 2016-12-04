@@ -10,6 +10,7 @@ function CommentsComponent(state, scope) {
   component.state = state;
   component.data = {
     tab: null,
+    loading: false,
     card_title: 'Comments',
     url: 'api/ew-blog/comments/',
     show: 'new',

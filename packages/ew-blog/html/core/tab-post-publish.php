@@ -18,13 +18,13 @@
 
 <script>
   (function () {
-    $("#article-form").on('refresh', function () {
+    $("#{{formId}}").on('refresh', function () {
       var value = $("#ew_blog\\/date_published");
       value.datepicker({
         format: 'yyyy-mm-dd'
       });
     });
-    
+
     new Vue({
       el: '#ew_blog\\/comments',
       data: {

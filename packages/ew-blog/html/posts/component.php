@@ -1,6 +1,6 @@
-<system-ui-view name="comments-card" class="card card-medium z-index-1">
+<system-ui-view name="comments-card" class="card card-glass card-medium">
   <div class="card-header">
-    <h1> {{ card_title }} </h1>
+    <h1 v-bind:class="{'inline-loader': loading}"> {{ card_title }} </h1>
 
     <div class="card-title-action-right">
       <button class="btn btn-circle" v-on:click="reload()"><i class="icon-cw-1"></i></button>
@@ -13,11 +13,11 @@
               Compact view
               <input type="checkbox" v-model="compact_view" /><i></i>
             </label>-->
-      <ew-pagination v-bind:list.sync="posts" v-bind:filter="filter"></ew-pagination>
+      <ew-pagination v-bind:list.sync="posts" v-bind:loading.sync="loading" v-bind:filter="filter"></ew-pagination>
     </div>
 
-    <system-spirit animations="liveHeight,verticalShift" vertical-shift="list-item">
-      <ul class="list items" v-bind:class="{'compact' : compact_view}">
+    <system-spirit animations="verticalShift" vertical-shift="list-item">
+      <ul class="list rows" v-bind:class="{'compact' : compact_view}">
         <li class="list-item action" v-for="post in posts.data" v-on:click="showPost(post.content.id)">
           <h3>
             {{ post.id + '. ' +post.content.title }}
