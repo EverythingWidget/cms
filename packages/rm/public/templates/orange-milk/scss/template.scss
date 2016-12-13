@@ -60,7 +60,7 @@ $nav-bar-bg: rgba(255,255,255,.9);
       padding-bottom: 20px;
       background-clip: padding-box; 
       overflow: hidden;      
-      font-size: 0.9em;
+      font-size: 16px;
       box-shadow: 0 3px 5px rgba(0,0,0,.1), 0 8px 14px rgba(0,0,0,.14); 
 
       .widget-container, .widget {
@@ -70,20 +70,27 @@ $nav-bar-bg: rgba(255,255,255,.9);
       }
 
       .widget {
-        padding: 20px 50px;
+        padding: 15px 30px;
 
       }     
 
       img {
+        max-width: 100%;
         width: auto;
         height: auto;
         margin: 0px auto;
         display: block;
 
         &:first-child {
-          margin: 0;
-          margin-bottom: 30px;
+          margin: -15px -30px 30px;
+          max-width: none;
         }
+      }
+
+      iframe {
+        display: block;
+        margin: 1em auto;
+        width: 100%;
       }
     }
   }
@@ -140,7 +147,7 @@ $nav-bar-bg: rgba(255,255,255,.9);
       img {
         width: auto;
         &:first-child {
-          margin-bottom: 30px;
+          margin: -15px -60px 30px;
         }
       }
     }

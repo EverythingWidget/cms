@@ -36,13 +36,21 @@
     <h1>Google Services</h1>
   </div>
   <div class='card-content'>
+    <h3>Accelerated Mobile Pages (AMP)</h3>
+    <label class="checkbox">
+      tr{Enable}
+      <input type="checkbox" name="webroot/accelerated-mobile-pages" value="true"/><i></i>
+    </label> 
+  </div>
+
+  <div class='card-content'>
     <h3>Analytics</h3>
     <system-field class="field">
       <label>tr{Google analytics ID}</label>
       <input class="text-field" name="webroot/google-analytics-id" />
     </system-field>    
   </div>
-  
+
   <div class='card-content'>
     <h3>reCAPTCHA</h3>
 
@@ -56,7 +64,7 @@
       <input class="text-field" name="webroot/google/recaptcha/secret-key" />
     </system-field>   
   </div>
-  
+
   <div  class='card-header top-devider'>
     <h1>Facebook Services</h1>
   </div>
@@ -67,5 +75,5 @@
       <input class="text-field" name="webroot/facebook/app-id" />
     </system-field>    
   </div>
-  
+
 </div>

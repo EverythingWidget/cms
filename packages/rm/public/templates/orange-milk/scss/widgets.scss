@@ -944,7 +944,11 @@
   @include list-footer();
 
   &.post-comment {
-    overflow: hidden;
+    &:after {
+      content: ' ';
+      display: table;
+      clear: both;
+    }
 
     input, textarea {
       width: 80%;
@@ -984,6 +988,12 @@
     .g-recaptcha {
       display: flex;
       justify-content: center;
+
+      iframe {
+        display: block;
+        margin: 0 auto;
+        width: 100%;
+      }
     }
 
     .btn-submit {
@@ -1111,6 +1121,14 @@
   }
 }
 
+[data-widget-type='social-share'] {
+  overflow: hidden;
+
+  iframe {
+    margin: 0 !important;
+  }
+}
+
 .widget.subscribe {
   background-color: #fff;
   box-shadow: 0 8px 17px 0px rgba(0,0,0,0.1), 0 1px 5px rgba(0,0,0, .12);
@@ -1118,7 +1136,7 @@
   border-radius: 8px;
   max-width: 400px;
   margin: 0 auto;
-  
+
   h1 {
     margin-bottom: 15px;
   }
@@ -1156,10 +1174,10 @@
       }
     }       
   }
-  
+
   .btn-submit {
-      margin-top: 25px;
-    }
+    margin-top: 25px;
+  }
 }
 
 .title h1 {

@@ -26,7 +26,7 @@ $HTML_BODY = $VIEW["body_html"];
 $WIDGET_DATA = $VIEW["widget_data"];
 
 $TEMPLATE_LINK = ($_REQUEST["_uis_template"]) ?
-        '<link rel="stylesheet" property="stylesheet" type="text/css" id="template-css" href="public/rm/' . $_REQUEST["_uis_template"] . '/template.css" />' : "";
+        '<link rel="stylesheet" property="stylesheet" id="template-css" href="public/rm/' . $_REQUEST["_uis_template"] . '/template.css" />' : "";
 
 // If template has a 'template.php' then include it
 $template_php = EW_PACKAGES_DIR . '/rm/public/' . $_REQUEST["_uis_template"] . '/template.php';
@@ -60,6 +60,7 @@ $page_description = $currentAppConf["description"];
 $website_keywords = $currentAppConf["keywords"];
 $favicon = $currentAppConf["favicon"];
 $google_analytics_id = $currentAppConf["google-analytics-id"];
+$accelerated_mobile_pages = $currentAppConf["accelerated-mobile-pages"];
 
 if ($page_description) {
   \webroot\WidgetsManagement::set_meta_tag([
@@ -75,24 +76,26 @@ $HTML_LINKS = webroot\WidgetsManagement::get_html_links();
 $HTML_CSS = webroot\WidgetsManagement::get_html_links_concatinated();
 $HTML_META_TAGS = webroot\WidgetsManagement::get_meta_tags();
 ?>
-<!DOCTYPE html> 
-<html>
+<!doctype html> 
+<html amp>
   <head>
     <base href="<?= EW_ROOT_URL ?>">
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />  
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1" />  
 
     <?php
     echo $HTML_META_TAGS;
     echo "<title>$HTML_TITLE</title>";
-    echo "<meta name='keywords' content='$HTML_KEYWORDS'/>";
-    echo "<link rel='shortcut icon' href='$favicon'>";
-    echo "<link rel='apple-touch-icon-precomposed' href='$favicon'>";
-    echo '<meta name="msapplication-TileColor" content="#FFFFFF">';
-    echo "<meta name='msapplication-TileImage' content='$favicon'>";
+    echo "<meta name='keywords' content='$HTML_KEYWORDS' />";
+    echo "<link rel='shortcut icon' href='$favicon' />";
+    echo "<link rel='apple-touch-icon-precomposed' href='$favicon' />";
+    echo '<meta name="msapplication-TileColor" content="#FFFFFF" />';
+    echo "<meta name='msapplication-TileImage' content='$favicon' />";
+    echo "<link rel='canonical' href='{$_SERVER['REQUEST_URI']}' />";
 
     if (isset($google_analytics_id)) {
       ?>
+
       <script>
         (function (i, s, o, g, r, a, m) {
           i['GoogleAnalyticsObject'] = r;
@@ -112,24 +115,30 @@ $HTML_META_TAGS = webroot\WidgetsManagement::get_meta_tags();
       </script>
       <?php
     }
-    ?>
+
+    if ($accelerated_mobile_pages) {
+      ?> 
+
+      <script async src="https://cdn.ampproject.org/v0.js"></script>
+      <style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
+    <?php } ?>
+
     <script id="widget-data">
-      (function () {
-        var ew_widget_data = {};
-        var ew_widget_actions = {};
+        (function () {
+          var ew_widget_data = {};
+          var ew_widget_actions = {};
 
 <?= $WIDGET_DATA; ?>
 
-        window.ew_widget_data = ew_widget_data;
-        window.ew_widget_actions = ew_widget_actions;
-      })();
+          window.ew_widget_data = ew_widget_data;
+          window.ew_widget_actions = ew_widget_actions;
+        })();
     </script>      
-    
-    <!--<script src="public/rm/js/jquery/build.js"></script>-->
+
+<!--<script src="public/rm/js/jquery/build.js"></script>-->
 
     <?= $HTML_SCRIPTS; ?>
-    <?= $TEMPLATE_SCRIPT; ?>      
-
+    <?= $TEMPLATE_SCRIPT; ?>          
   </head>
   <body class="<?= EWCore::get_language_dir($_REQUEST["_language"]) ?>">
     <div id="base-content-pane" class="container">
