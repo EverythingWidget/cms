@@ -9,7 +9,13 @@
   </div>
 
   <div class="block-row">
-    <a id="slug" class="btn btn-xs btn-info mb" href="" target="_blank"></a>
+    <system-field class="field">
+      <label>tr{Slug}</label>
+      <input class="text-field" value="" name="slug"/>  
+      <div class="field-actions">
+        <a id="slug" class="btn btn-info" href="" target="_blank" data-no-text><i class="icon-link"></i></a>
+      </div>
+    </system-field>
   </div>
 
   <div class="row">
@@ -17,7 +23,7 @@
       <label>tr{Keywords}</label>
       <textarea class="text-field" value="" id="keywords" name="keywords"></textarea>
     </system-field>
-    
+
     <system-field class="field col-xs-12 col-md-6 col-lg-6">
       <label>tr{Description}</label>
       <textarea class="text-field" value="" id="description" name="description"></textarea>

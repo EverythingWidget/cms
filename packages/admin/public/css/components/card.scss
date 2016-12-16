@@ -73,7 +73,7 @@
   &-glass {
     background-color: transparent;    
     box-shadow: none;
-    
+
     > .card-header {
       padding: 10px 10px 0;
     }
@@ -116,12 +116,13 @@
       margin: 10px auto;
       transition: padding-left .15s ease-out;
 
-    
+
       &.inline-loader {
-        padding-left: 30px;
-                
+        padding-right: 30px;
+
         &:after {
-          left: 0;               
+          right: 0;
+          left: auto;
         }
       }
     }

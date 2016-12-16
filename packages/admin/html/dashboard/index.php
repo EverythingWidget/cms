@@ -19,7 +19,6 @@ if (!isset($_SESSION['login'])) {
 
       <div id="navigation-menu" class="navigation-menu">
         <div id="apps-menu" class="apps-menu" >
-          <span id="app-title" class="apps-menu-title"></span>
           <ul class="apps-menu-list">
             <li v-for="app in apps">
               <a class="apps-menu-link" v-bind:data-app="app.id" v-bind:class="{ 'selected' : currentApp === app.id}">

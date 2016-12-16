@@ -257,10 +257,11 @@ EverythingWidgets.prototype.getActivity = function (conf) {
     if (activityController.form) {
       _this.activitySource = activityController;
       activityController.newParams = hash;
+//      $.extend(hashParameters, hash);
       activityController.privateParams = privateParams;
 
       // 2016-06-12: the `true` can cause issue 
-      System.setHashParameters(hashParameters, true);
+      System.setHashParameters(hashParameters);
     }
     // if the activity does not contains any form then set a formless hash parameter
     else {
@@ -374,51 +375,60 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler) {
       form.find("[id='" + key + "']").val(handler(key, value));
     } else
     {
-      var element = [];
+      var elements = [];
       try {
-        element = form.find(":input[name='" + key + "'][value='" + value + "']");
+        elements.push(form.find(":input[name='" + key + "'][value='" + value + "']"));
 
       } catch (e) {
 
       }
       // Find the element only by its key
-      if (element.length === 0) {
-        element = form.find(":input[name='" + key + "']");
+      var byName = form.find(":input[name='" + key + "']");
+      if (byName[0]) {
+        elements.push(byName);
       }
       // Find the element by its id
-      if (element.length === 0) {
-        element = form.find("#" + key);
+      var byId = form.find("#" + key);
+      if (byId[0]) {
+        elements.push(byId);
       }
       // Do not proceed furthur if the field is not found
-      if (element.length === 0) {
+      if (elements.length === 0) {
         //console.warn('field not found: ' + key);
         return;
       }
 
-      if (element.is(":radio") || element.is(":checkbox")) {
-        if (element.val() === (value + '') && !element.is(":checked")) {
-          element.click();
-          element.prop("checked", true).change();
+      $.each(elements, function (index, element) {
+        if (element.is(":radio") || element.is(":checkbox")) {
+          if (element.val() === (value + '') && !element.is(":checked")) {
+            element.click();
+            element.prop("checked", true).change();
+          }
+
+        } else if (element.is("img")) {
+          element.prop("src", value).attr({
+            "data-file-extension": /[^.]+$/.exec(value),
+            "data-filename": /^[^.]+/.exec(value)
+          });
+
+        } else if (element.is(":input")) {
+          element.val(value).change();
+
+        } else if (element.is('a')) {
+          element.attr('href', value)
+
+          if (!element[0].hasAttribute('data-no-text')) {
+            element.text(value);
+          }
+
+          element.change();
+        } else {
+          if (element[0] && element[0].elementType === 'input') {
+            element[0].value = value;
+          } else
+            element.text(value).change();
         }
-
-      } else if (element.is("img")) {
-        element.prop("src", value).attr({
-          "data-file-extension": /[^.]+$/.exec(value),
-          "data-filename": /^[^.]+/.exec(value)
-        });
-
-      } else if (element.is(":input")) {
-        element.val(value).change();
-
-      } else if (element.is('a')) {
-        element.attr('href', value).text(value).change();
-
-      } else {
-        if (element[0] && element[0].elementType === 'input') {
-          element[0].value = value;
-        } else
-          element.text(value).change();
-      }
+      });
     }
   };
 

@@ -196,9 +196,10 @@
           // Add the parameters which have been pass to the activity caller function 
           if (currentActivity.newParams) {
             $.extend(activityParameters, currentActivity.newParams);
+            System.setHashParameters(activityParameters, true);
           }
 
-          System.setHashParameters(activityParameters, true);
+          
           activityParameters = EW.getHashParameters();
 
           var method = currentActivity.request.method || 'GET';
