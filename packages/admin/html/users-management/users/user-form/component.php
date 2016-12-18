@@ -2,139 +2,9 @@
 session_start();
 $user_id = $_REQUEST['id'];
 
-$data = $user_id ? EWCore::call_api("admin/api/users-management/users", ['id' => $user_id]) : [];
+$data = $user_id ? EWCore::call_api('admin/api/users-management/users', ['id' => $user_id]) : [];
 
-function get_ew_user_form($user_id, $data) {
-  ob_start();
-  ?>
-  <input type="hidden" id="id" name="id" value="">
-  <div class="col-xs-12 mt">
-    <system-field class="field">
-      <label>tr{Username}</label>
-      <input class="text-field" value="" id="email" name="email" data-validate="r" required/>  
-    </system-field>
-
-
-    <system-field class="field">
-      <label>tr{First Name}</label>
-      <input class="text-field" value="" id="first_name" name="first_name" />  
-    </system-field>
-
-    <system-field class="field">
-      <label>tr{Last Name}</label>
-      <input class="text-field" value="" id="last_name" name="last_name" />  
-    </system-field>   
-
-    <?php if (!isset($user_id)) { ?>
-      <system-field class="field ">
-        <label>tr{Password}</label>
-        <input class="text-field" value="" id="password" name="password"/>
-      </system-field>   
-    <?php } ?>
-    <system-field class="field">
-      <label>tr{Group}</label>
-      <select id="group_id" name="group_id" data-width="100%">
-        <?php
-        $users_groups = EWCore::call_api('admin/api/users-management/groups');
-        foreach ($users_groups['data'] as $group) {
-          echo "<option value='{$group['id']}'>{$group['title']}</option>";
-        }
-        ?>
-      </select>
-    </system-field>   
-  </div>
-
-  <script type="text/javascript">
-    (function () {
-      var dialog = $.EW("getParentDialog", $("#user-form"));
-      var loader;
-
-      function UserForm() {
-        var _this = this;
-        this.bAdd = EW.addActivity({
-          title: "tr{Add}",
-          modal: {
-            class: "center"
-          },
-          verb: 'POST',
-          activity: 'admin/api/users-management/users',
-          parameters: function () {
-            if (!$("#email").val()) {
-              return false;
-            }
-
-            loader = System.ui.lock({
-              element: dialog[0],
-              akcent: 'loader center'
-            });
-
-            return $.parseJSON($("#user-form").serializeJSON());
-          },
-          onDone: function (response) {
-            loader.dispose();
-            $(document).trigger("users-list.refresh");
-            $("body").EW().notify(response).show();
-          }
-        });
-
-        this.bSave = EW.addActivity({
-          title: "tr{Save}",
-          modal: {
-            class: "center"
-          },
-          defaultClass: 'btn-success',
-          verb: 'PUT',
-          activity: 'admin/api/users-management/users',
-          parameters: function () {
-            if (!$("#email").val()) {
-              return false;
-            }
-
-            loader = System.ui.lock({
-              element: dialog[0],
-              akcent: 'loader center'
-            });
-
-            return $.parseJSON($("#user-form").serializeJSON());
-          },
-          onDone: function (response) {
-            loader.dispose();
-            $(document).trigger("users-list.refresh");
-            $("body").EW().notify(response).show();
-          }
-        });
-
-        $('#user-form').on('refresh', function (event, data) {
-          if (data['id']) {
-            $("#form-title").html("<span>tr{User Info}</span>" + data["first_name"]);
-            _this.bAdd.comeOut();
-            _this.bSave.comeIn();
-          } else {
-            $("#user-form #password").val("<?= admin\UsersManagement::random_password() ?>").change();
-            _this.bAdd.comeIn();
-            _this.bSave.comeOut();
-          }
-        });
-      }
-
-      new UserForm();
-    })();
-
-    var formData = <?= json_encode($data['data']); ?>;
-    EW.setFormData("#user-form", formData);
-
-  </script>
-  <?php
-  return ob_get_clean();
-}
-
-EWCore::register_form("ew-user-form-default", "ew-user-form", [
-    "title"   => "User Info",
-    "content" => get_ew_user_form($user_id, $data)
-]);
-
-$tabsDefault = EWCore::read_registry("ew-user-form-default");
-$tabs = EWCore::read_registry("ew-user-form");
+$tabs = EWCore::read_registry('ew/ui/forms/user/tabs');
 ?>
 <form id="user-form"  action="#" method="POST" onsubmit="return false;">
   <div class="header-pane tabs-bar thin">
@@ -144,15 +14,10 @@ $tabs = EWCore::read_registry("ew-user-form");
 
     <ul class="nav nav-pills">
       <?php
-      foreach ($tabsDefault as $id => $tab) {
-        if ($id == "ew-user-form")
-          echo "<li class='active'><a href='#{$id}' data-toggle='tab'>tr{" . $tab["title"] . "}</a></li>";
-        else
-          echo "<li ><a href='#{$id}' data-toggle='tab'>tr{" . $tab["title"] . "}</a></li>";
-      }
-
+      $active = 'active';
       foreach ($tabs as $id => $tab) {
-        echo "<li ><a href='#{$id}' data-toggle='tab'>tr{" . $tab["title"] . "}</a></li>";
+        echo "<li class='$active'><a href='#{$id}' data-toggle='tab'>tr{" . $tab['title'] . "}</a></li>";
+        $active = '';
       }
       ?>
     </ul>
@@ -160,14 +25,13 @@ $tabs = EWCore::read_registry("ew-user-form");
   <div class="block-row form-content  tabs-bar">
     <div class="tab-content">
       <?php
-      foreach ($tabsDefault as $id => $tab) {
-        if ($id == "ew-user-form")
-          echo "<div class='tab-pane active' id='{$id}'>{$tab["content"]}</div>";
-        else
-          echo "<div class='tab-pane' id='{$id}'>{$tab["content"]}</div>";
-      }
+      $active = 'active';
       foreach ($tabs as $id => $tab) {
-        echo "<div class='tab-pane' id='{$id}'>{$tab["content"]}</div>";
+        echo "<div class='tab-pane $active' id='{$id}'>" . EWCore::get_view($tab['template_url'], [
+            'user_id' => $user_id,
+            'data'    => $data['data']
+        ]) . "</div>";
+        $active = '';
       }
       ?>
     </div>

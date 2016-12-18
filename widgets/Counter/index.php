@@ -1,7 +1,7 @@
 <?php
 webroot\WidgetsManagement::add_html_script(["include" => "rm/public/js/countdown/jquery.countdown.js"]);
 ?>
-<div id="{$widget_id}">
+<div id="$php.widget_id">
   <div class="days-wrapper">
     <span class="days"></span> <br>days
   </div>
@@ -22,7 +22,7 @@ webroot\WidgetsManagement::add_html_script(["include" => "rm/public/js/countdown
      */
     var now = new Date(<?= $widget_parameters["date"] ?>);
     var countTo = <?= $widget_parameters["days"] ?> * 24 * 60 * 60 * 1000 + now.valueOf();
-    $('#{$widget_id}').countdown(countTo, function (event) {
+    $('#$php.widget_id').countdown(countTo, function (event) {
       var $this = $(this);
       switch (event.type) {
         case "seconds":

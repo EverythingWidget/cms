@@ -104,7 +104,7 @@
 //      $("#{{comp_id}}_value").val($("#{{comp_id}}_select").val());
 //    });
 
-    $("#{{form_id}}").on('refresh', function (e, response) {
+    $("#$php.form_id").on('refresh', function (e, response) {
       var documentId = response.id;
       languagesLabelVue.contentId = documentId;
 

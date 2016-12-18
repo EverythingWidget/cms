@@ -1,3 +1,4 @@
+
 <script  type="text/javascript">
    var LinkChooserUIS = (function () {
       function LinkChooserUIS() {
@@ -17,7 +18,8 @@
                }
             }
          });
-         $("#link-chooser #link-chooser-uis-list").html(this.table.container);
+         Scope.html.find('#uis-chooser').html(this.table.container);
+         this.table.read();
       }
 
       LinkChooserUIS.prototype.selectUIS = function () {
@@ -36,7 +38,4 @@ else
       return new LinkChooserUIS();
    })();
 </script>
-
-
-
 

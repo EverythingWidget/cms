@@ -39,7 +39,7 @@
     <h3>Accelerated Mobile Pages (AMP)</h3>
     <label class="checkbox">
       tr{Enable}
-      <input type="checkbox" name="webroot/accelerated-mobile-pages" value="true"/><i></i>
+      <input type="checkbox" name="webroot/accelerated-mobile-pages" value="true" data-off-value/><i></i>
     </label> 
   </div>
 

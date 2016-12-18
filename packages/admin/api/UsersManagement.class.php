@@ -28,6 +28,21 @@ class UsersManagement extends \ew\Module {
         'title' => 'Groups',
         'url'   => 'html/admin/users-management/groups/component.php'
     ]);
+
+    EWCore::register_ui_element('forms/user/tabs', 'user-info', [
+        'title'        => 'User Info',
+        'template_url' => 'admin/html/users-management/users/user-form/info.php'
+    ]);
+
+    EWCore::register_ui_element('forms/user-group/tabs', 'group-info', [
+        'title'        => 'Group Info',
+        'template_url' => 'admin/html/users-management/groups/group-form/info.php'
+    ]);
+
+    EWCore::register_ui_element('forms/user-group/tabs', 'group-permissions', [
+        'title'        => 'Permissions',
+        'template_url' => 'admin/html/users-management/groups/group-form/permissions.php'
+    ]);
   }
 
   protected function install_permissions() {

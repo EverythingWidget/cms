@@ -115,9 +115,11 @@ class HTMLResourceHandler extends ResourceHandler {
     // If root dir is same with the uri then refer to the base url
     if ($root_dir == str_replace('/', '', $request_url))
       $request_url = '/';
-
+//    echo('<h1>' . $request_url . 'aaa- ' . $_REQUEST['_uis'] . '</h1>');
+//    print_r($_REQUEST);
+//    die($module_name);
     // Check if UI structure is specified
-    if (!isset($_REQUEST['_uis'])) {
+    if (!isset($_GET['_uis'])) {
       if ($module_name) {
         $request_url = "/$module_name/";
       }
@@ -139,6 +141,8 @@ class HTMLResourceHandler extends ResourceHandler {
         $_REQUEST['_uis_template_settings'] = json_encode($uis_data['template_settings']);
       }
     }
+
+
 
     if (isset($_REQUEST['_parameters'])) {
       $GLOBALS['page_parameters'] = explode("/", $_REQUEST['_parameters']);

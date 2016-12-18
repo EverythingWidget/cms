@@ -21,6 +21,12 @@ $.fn.serializeJSON = function (flag) {
   $.each(this.find('[element-type="input"]'), function () {
     pureObject[this.getAttribute('name') || this.getAttribute('id')] = this.value;
   });
+  
+  $.each(this.find("input:checkbox:not(:checked)"), function () {
+    if(this.hasAttribute('data-off-value')) {
+      pureObject[this.getAttribute('name') || this.getAttribute('id')] = this.getAttribute('data-off-value');
+    }
+  });
 
   if ($.isEmptyObject(pureObject)) {
     return null;

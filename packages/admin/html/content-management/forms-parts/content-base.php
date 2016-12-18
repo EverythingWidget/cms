@@ -5,31 +5,28 @@
     </h1>
 
     <ul class="nav nav-pills xs-nav-tabs">
-      <li class="active"><a href="#content-properties" data-toggle='tab'>tr{Properties}</a></li>
-
-      <li class=""><a href="#content-html" data-toggle='tab'>tr{Content}</a></li>
 
       <?php
+      $active = 'active';
       foreach ($tabs as $id => $tab) {
-        echo "<li class=''><a href='#{$id}' data-toggle='tab'>tr{{$tab["title"]}}</a></li>";
+        echo "<li class='$active'><a href='#{$id}' data-toggle='tab'>tr{{$tab["title"]}}</a></li>";
+        $active = '';
       }
       ?>
     </ul>
   </div>
 
   <div class="form-content">
-    <div class="tab-content">
-      <div class="tab-pane active" id="content-properties">
-        <?= get_properties($form_config, $form_id); ?>
-      </div>
-
-      <div class="tab-pane" id="content-html">
-        <?= get_editor($form_config, $form_id); ?>
-      </div>
-
+    <div class="tab-content">     
       <?php
+      $active = 'active';
       foreach ($tabs as $id => $tab) {
-        echo "<div class='tab-pane' id='{$id}'>" . preg_replace('/\{\{formId\}\}/', $form_id, $tab["form"]) . "</div>";
+        echo "<div class='tab-pane $active' id='{$id}'>" .
+        EWCore::get_view($tab['template_url'], [
+            'form_id' => $form_id
+        ]) . "</div>";
+
+        $active = '';
       }
       ?>
     </div>

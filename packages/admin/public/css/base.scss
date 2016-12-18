@@ -915,6 +915,8 @@ button {
   line-height: 74px;
   padding: 0;
   cursor: pointer;
+  transition-property: background-color, color;
+  transition-duration: .15s;
 }
 
 a.apps-menu-link:hover {
@@ -930,7 +932,8 @@ a.apps-menu-link:hover {
 
 .apps-menu-list {
   padding: 0;
-  margin: 0;
+  padding-bottom: 200px;
+    margin: 0;
 
   li {
     display: block;
@@ -965,19 +968,20 @@ a.apps-menu-link:hover {
   align-items: center;
   flex-direction: column;
   margin-left: 94px;
+  background-color: #edeff1;
 
   > .white-area {
     justify-content: center;
     width: 100%;
     display: flex;
-    background-color: #eceff1;
+    /*background-color: #edeff1;*/
     height: 64px;
     overflow: hidden;
     z-index: 4;
 
     align-items: center;
     /*box-shadow: 0 0 3px 0px rgba(0,0,0,0.05), 0 2px 7px rgba(0,0,0,0.1);*/
-    transition: all .3s ease-out;
+    /*transition: all .3s ease-out;*/
 
     > .app-bar-middle-section {
       overflow: hidden;
@@ -995,27 +999,34 @@ a.apps-menu-link:hover {
       top: 110px;
     }
 
-    .tabs-bar {  
-      margin-top: 0;
+    .tabs-bar {        
+      height: 110px;
+      
+      ul {
+        opacity: 1;
+      }
     }
   }
 
   .tabs-bar {     
-    height: 46px;
-    margin: -46px 0 0; 
+    height: 64px;
+    margin: -64px 0 0; 
     display: flex;
-    align-items: flex-start;
+    align-items: flex-end;
     align-self: center;
     justify-content: center;
-    z-index: 2;
-    background-color: #eceff1;
+    z-index: 2;    
     width: 100%;
     box-shadow: 0 1px 3px 0px rgba(0,0,0,0.07), 0 4px 14px rgba(0,0,0,0.11);
-    transition: all .2s ease-in-out;
+    /*border-bottom: 3px solid rgba(#fff,.7);*/
+    transition: all .25s ease-in-out;
 
     > ul {
       background-color: transparent;
       padding: 0 15px;  
+      /*margin-bottom: -3px;*/
+      opacity: 0;
+      transition: all .6s linear;
 
       .active {
         a {
@@ -1487,7 +1498,7 @@ ul.actions-bar li label {
   box-shadow: none;
   background-color: transparent;
   display: inline-block;
-  
+
   > .icon {
     margin: 2px 0;
   }
@@ -2274,9 +2285,8 @@ textarea.text-field {
   padding: 0;
   overflow: hidden;
   position: absolute;
-  top: 0;
+  height: calc(100% - 15px);
   right: 0;
-  bottom: 0;
   left: 0;
   margin: 15px 0 0 0 ;
 }

@@ -110,6 +110,21 @@ class ContentManagement extends \ew\Module {
         'title' => 'Media',
         'url'   => 'html/admin/content-management/media/index.php'
     ]);
+
+    EWCore::register_ui_element('forms/content/tabs', 'properties', [
+        'title' => 'Properties',
+        'template_url'  => 'admin/html/content-management/forms-parts/content-properties.php'
+    ]);
+
+    EWCore::register_ui_element('forms/content/tabs', 'content-html', [
+        'title' => 'Content',
+        'template_url'  => 'admin/html/content-management/forms-parts/content-editor.php'
+    ]);
+
+    EWCore::register_ui_element('forms/content/tabs', 'json-linked-data', [
+        'title' => 'JSON LD',
+        'template_url'  => 'admin/html/content-management/forms-parts/json-linked-data.php'
+    ]);
   }
 
   protected function install_handlers() {
@@ -1591,7 +1606,7 @@ class ContentManagement extends \ew\Module {
    * @return string
    */
   public static function create_content_form($form_config = null) {
-    return \EWCore::load_file("admin/html/content-management/content-form.php", $form_config);
+    return \EWCore::load_file("admin/html/content-management/forms-parts/content-form.php", $form_config);
   }
 
   public function contents_create($_response, $_input) {

@@ -17,14 +17,13 @@
       Subscribe
     </button>
   </div>
-
 </form>
 
 <script>
 
-  (function () {
-    var subscribeForm = new Vue({
-      el: '[data-widget-id="{$widget_id}"]',
+  window.addEventListener('load', function () {
+    new Vue({
+      el: '[data-widget-id="$php.widget_id"]',
       data: {
         email: '',
         success: false,
@@ -61,6 +60,6 @@
         }
       }
     });
-  })();
+  });
 
 </script>

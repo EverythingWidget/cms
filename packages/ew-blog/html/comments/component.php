@@ -33,7 +33,7 @@
           <h3>
             {{ comment.name }}
           </h3>
-          <p class="pre-text" dir="auto">{{ comment.content }}</p>
+          <p class="pre-text text-small" dir="auto">{{ comment.content }}</p>
           <a class="text-link" v-on:click="showPost(comment.ew_content.id)">
             {{ comment.ew_content.title }}
           </a>

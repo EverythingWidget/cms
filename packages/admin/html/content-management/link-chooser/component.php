@@ -1,7 +1,7 @@
 <?php
 $data = $_REQUEST["data"];
 
-$tabs = EWCore::read_registry("ew/ui/components/link-chooser");
+$tabs = EWCore::read_registry('ew/ui/components/link-chooser');
 ?>
 
 <div class="header-pane tabs-bar thin">

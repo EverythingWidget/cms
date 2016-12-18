@@ -1,4 +1,5 @@
 <?php
+
 $content_data = $form_config["data"];
 
 // Set form id to 'content-form' if it is not specified
@@ -14,18 +15,6 @@ if (!$form_config["formTitle"]) {
   $form_config["formTitle"] = "Article";
 }
 
-function get_editor($form_config, $form_id) {
-  ob_start();
-  include 'forms-parts/content-editor.php';
-  return ob_get_clean();
-}
+$tabs = EWCore::read_registry('ew/ui/forms/content/tabs');
 
-function get_properties($form_config, $form_id) {
-  ob_start();
-  include 'forms-parts/content-properties.php';
-  return ob_get_clean();
-}
-
-$tabs = EWCore::read_registry("ew/ui/forms/content/tabs");
-
-include 'forms-parts/content-base.php';
+include 'content-base.php';

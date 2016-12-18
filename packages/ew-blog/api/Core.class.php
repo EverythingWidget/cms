@@ -44,9 +44,9 @@ class Core extends \ew\Module {
     $post_feeder->title = 'post';
     \webroot\WidgetsManagement::register_widget_feeder($post_feeder);
 
-    EWCore::register_form('ew/ui/forms/content/tabs', 'post-publish', [
+    EWCore::register_ui_element('forms/content/tabs', 'post-publish', [
         'title' => 'Post',
-        'form'  => EWCore::get_view('ew-blog/html/core/tab-post-publish.php')
+        'template_url'  => 'ew-blog/html/core/tab-post-publish.php'
     ]);
 
     $this->add_listener('admin/api/content-management/contents-create', 'on_contents_update');

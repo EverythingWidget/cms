@@ -31,15 +31,15 @@ function Handler(state, scope) {
 
 
   state.onInit = function () {
-    console.log('init');
+//    console.log('init');
   };
 
   state.onStart = function () {
-    console.log('start');
+//    console.log('start');
   };
 
   state.onStop = function () {
-    console.log('stop');
+//    console.log('stop');
   };
 
   function setLayout(pageLayout) {

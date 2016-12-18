@@ -31,9 +31,9 @@ class WidgetsManagement extends \ew\Module {
   protected function install_assets() {
     EWCore::register_app_ui_element('widgets-management', $this);
 
-    EWCore::register_ui_element('forms/content/tabs', 'uis-tab', [
-        'title' => 'UI',
-        'form'  => $this->get_app()->get_view('html/widgets-management/uis-tab.php', [], false)
+    EWCore::register_ui_element('forms/content/tabs', 'content-layout', [
+        'title'        => 'UI',
+        'template_url' => 'webroot/html/widgets-management/content-layout-tab.php'
     ]);
 
     EWCore::register_ui_element('apps/widgets/navs', 'layouts', [
@@ -56,7 +56,7 @@ class WidgetsManagement extends \ew\Module {
 
     EWCore::register_ui_element('components/link-chooser', 'uis-chooser', [
         'title'   => 'UI Structures',
-        'content' => $this->get_app()->get_view('html/widgets-management/link-chooser-uis.php', [], false)
+        'content' => EWCore::get_view('webroot/html/widgets-management/link-chooser-uis.php')
     ]);
 
     $this->add_listener('admin/api/content-management/contents-update', 'on_contents_update');
@@ -374,14 +374,13 @@ class WidgetsManagement extends \ew\Module {
     $file = json_encode($user_interface_structure);
     //fwrite($file, $user_interface_structure);
     //fclose($file);
-
 //    header("Cache-Control: public");
 //    header("Content-Description: File Transfer");
 //    header("Content-Length: " . strlen($file) . ";");
 //    header("Content-Disposition: attachment; filename=\"$name.json\"");
 //    header("Content-Type: application/octet-stream");
 //die($file);
-     return $_response->as_download(['data' => $file, 'name' => "$name.json",'contentType'=>'application/json']);
+    return $_response->as_download(['data' => $file, 'name' => "$name.json", 'contentType' => 'application/json']);
   }
 
   public function clone_uis($uisId = null) {
@@ -628,7 +627,12 @@ class WidgetsManagement extends \ew\Module {
       $widget_class_instance = (new $widget_class_name());
       $widget_title = $widget_class_instance->get_title();
       $widget_content_raw = $widget_class_instance->render($widget_parameters, $widget_id, $style_id, $style_class);
-      $widget_content = str_replace(['{$widget_id}', '$widget_id_js'], [$widget_id, str_replace('-', '_', $widget_id)], $widget_content_raw);
+
+      $widget_content = EWCore::populate_view($widget_content_raw, [
+                  'widget_id'    => $widget_id,
+                  'widget_id_js' => str_replace('-', '_', $widget_id)
+      ]);
+//      $widget_content = str_replace(['{$widget_id}', '$widget_id_js'], [$widget_id, str_replace('-', '_', $widget_id)], $widget_content_raw);
     }
     else {
 
@@ -638,7 +642,11 @@ class WidgetsManagement extends \ew\Module {
         ob_start();
         include EW_WIDGETS_DIR . '/' . $widget_type . '/index.php';
         $widget_content_raw = ob_get_clean();
-        $widget_content = str_replace(['{$widget_id}', '$widget_id_js'], [$widget_id, str_replace('-', '_', $widget_id)], $widget_content_raw);
+//        $widget_content = str_replace(['{$widget_id}', '$widget_id_js'], [$widget_id, str_replace('-', '_', $widget_id)], $widget_content_raw);
+        $widget_content = EWCore::populate_view($widget_content_raw, [
+                    'widget_id'    => $widget_id,
+                    'widget_id_js' => str_replace('-', '_', $widget_id)
+        ]);
       }
     }
     // Add widget style class which specified with UIS editor to the widget
@@ -980,7 +988,7 @@ class WidgetsManagement extends \ew\Module {
     }
 
     if ($minified_code) {
-      $script_tags.="<script id='ew-compiled-scripts' src='$cache_path_url' ></script>";
+      $script_tags.="<script id='ew-compiled-scripts' src='$cache_path_url' async></script>";
     }
 
     return $script_tags;
@@ -1015,22 +1023,23 @@ class WidgetsManagement extends \ew\Module {
             ])['data'];
 
 
-    static::set_html_keywords($currentAppConf["webroot/title"] . ',' . $currentAppConf["webroot/keywords"]);
+    static::set_html_keywords($currentAppConf['webroot/title'] . ',' . $currentAppConf['webroot/keywords']);
 
     $html_keywords_string = static::get_html_title();
     $description = static::get_html_description();
 
     if ($current_path === '/' || !$current_path || !$description) {
-      $description = $currentAppConf["webroot/description"];
+      $description = $currentAppConf['webroot/description'];
     }
 
     return [
-        'url'                 => CURRENT_URL,
-        'title'               => ($current_path === '/' || !$current_path) ? $currentAppConf["webroot/title"] : $html_keywords_string,
-        'description'         => $description,
-        'keywords'            => $currentAppConf["webroot/keywords"],
-        'favicon'             => $currentAppConf["webroot/favicon"],
-        'google-analytics-id' => $currentAppConf["webroot/google-analytics-id"]
+        'url'                      => CURRENT_URL,
+        'title'                    => ($current_path === '/' || !$current_path) ? $currentAppConf['webroot/title'] : $html_keywords_string,
+        'description'              => $description,
+        'keywords'                 => $currentAppConf['webroot/keywords'],
+        'favicon'                  => $currentAppConf['webroot/favicon'],
+        'google-analytics-id'      => $currentAppConf['webroot/google-analytics-id'],
+        'accelerated-mobile-pages' => $currentAppConf['webroot/accelerated-mobile-pages']
     ];
   }
 

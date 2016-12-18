@@ -22,7 +22,7 @@ if (!$is_allowed) {
   </label>
 
   <div class="field recaptcha">
-    <div id="g-recaptcha-{$widget_id}" class="g-recaptcha"></div>
+    <div id="g-recaptcha-$php.widget_id" class="g-recaptcha"></div>
   </div>
 
   <div class="field actions">
@@ -32,7 +32,7 @@ if (!$is_allowed) {
 
 
 <script >
-  (function () {
+  window.addEventListener('load', function () {
     var siteKey = '<?=
 EWCore::call_api('admin/api/settings/read-settings', [
     'app_name' => 'webroot/google/recaptcha/site-key'
@@ -40,14 +40,14 @@ EWCore::call_api('admin/api/settings/read-settings', [
 ?>';
 
 
-    post_comment_$widget_id_js = function () {
+    post_comment_$php.widget_id_js = function () {
       if (siteKey === '') {
         return postCommentForm.disablePosting = false;
       } else {
         postCommentForm.disablePosting = true;
       }
 
-      grecaptcha.render('g-recaptcha-{$widget_id}', {
+      grecaptcha.render('g-recaptcha-$php.widget_id', {
         sitekey: siteKey,
         callback: postCommentForm.verifyCapcha,
         'expired-callback': function () {
@@ -59,7 +59,7 @@ EWCore::call_api('admin/api/settings/read-settings', [
 
 
     var postCommentForm = new Vue({
-      el: '[data-widget-id="{$widget_id}"]',
+      el: '[data-widget-id="$php.widget_id"]',
       data: {
         name: '',
         email: '',
@@ -92,11 +92,11 @@ EWCore::call_api('admin/api/settings/read-settings', [
         postComment: function (event) {
           event.preventDefault();
           var _this = this;
-          
-          if(!_this.$data.content_id) {
+
+          if (!_this.$data.content_id) {
             return console.error('No `content_id` is specified for this comment widget');
           }
-          
+
           _this.$data.recaptcha = grecaptcha.getResponse();
 
           $.ajax({
@@ -117,12 +117,8 @@ EWCore::call_api('admin/api/settings/read-settings', [
         }
       }
     });
-    /*var forWidget = document.querySelector('#<?= $widget_parameters['for_widget'] ?>');
-     var forWidgetData = window.ew_widget_data[forWidget.getAttribute('data-widget-id')];
-     
-     console.log('<?= $widget_parameters['for_widget'] ?>',forWidgetData);*/
-  })();
+  });
 </script>
 
-<script src='https://www.google.com/recaptcha/api.js?onload=post_comment_$widget_id_js&render=explicit'></script>
+<script src='https://www.google.com/recaptcha/api.js?onload=post_comment_$php.widget_id_js&render=explicit'></script>
 

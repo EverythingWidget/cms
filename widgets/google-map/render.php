@@ -7,7 +7,7 @@ $longtitude = $widget_parameters['lng'] ? $widget_parameters['lng'] : 0;
 <script src="https://maps.googleapis.com/maps/api/js?callback=initMap&q=Kerkgracht+60,1354+AM+Almere" defer></script>
 <script>
   function initMap() {
-    var mapDiv = document.querySelector('[data-widget-id={$widget_id}] .map-container');
+    var mapDiv = document.querySelector('[data-widget-id=$php.widget_id] .map-container');
     var map = new google.maps.Map(mapDiv, {
       center: {
         lat: <?= $latitude ?>,

@@ -34,8 +34,8 @@
   // App custom inputs
   $input_groups = EWCore::read_registry("ew/ui/forms/content/properties");
   foreach ($input_groups as $id => $inputs) {
-    echo "<div class=row><div class='col-xs-12'><h3>{$inputs["title"]}</h3></div></div>";
-    echo $inputs["content"];
+    echo "<div class=row><div class='col-xs-12'><h3>{$inputs['title']}</h3></div></div>";
+    echo $inputs['content'];
   }
   ?>
 </div>
@@ -58,7 +58,8 @@
       }
     }
 
-    $form = EWCore::call($label_object['form'], compact("comp_id", "value", "form_id"));
+    $form = EWCore::call_api($label_object['form'], compact("comp_id", "value", "form_id"));
+
     ?>
     <div class="block-row">
       <div id="<?= $comp_id ?>_label_block" class='box box-grey content-label disabled' data-activated="false">

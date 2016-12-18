@@ -20,8 +20,11 @@ function inputs() {
 }
 
 EWCore::register_form("ew/ui/forms/content/properties", "category-properties", ["content" => inputs()]);
-echo admin\ContentManagement::create_content_form(["formTitle"      => "Folder",
-    "formId"         => "category-form",
-    "contentType"    => "folder",
-    "include_script" => \ew\ResourceUtility::get_view(__DIR__ . '/component.js', [], true),
-    "data"           => get_folder_data($_REQUEST["folderId"])]);
+echo admin\ContentManagement::create_content_form(
+        [
+            "formTitle"      => "Folder",
+            "formId"         => "category-form",
+            "contentType"    => "folder",
+            "include_script" => \ew\ResourceUtility::get_view(__DIR__ . '/component.js', [], true),
+            "data"           => get_folder_data($_REQUEST["folderId"])
+]);

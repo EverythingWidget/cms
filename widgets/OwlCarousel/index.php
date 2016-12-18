@@ -156,7 +156,7 @@ if ($widget_parameters['content_fields'] && isset($items)) {
 
 <script>
   window.addEventListener('load', function () {
-    $("div[data-widget-id='{$widget_id}'] > .owl-carousel").owlCarousel({
+    $("div[data-widget-id='$php.widget_id'] > .owl-carousel").owlCarousel({
       responsiveClass: true,
       autoHeight:<?= $auto_height ?>,
       loop:<?= $loop ?>,

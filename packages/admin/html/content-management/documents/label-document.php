@@ -59,7 +59,7 @@
       }
     });
 
-    $("#{{form_id}}").on('refresh.documents', function (e, formData) {
+    $("#$php.form_id").on('refresh.documents', function (e, formData) {
       relatedDocumentsVue.contentId = formData.id;
 
       if (!ContentForm.getLabel("{{comp_id}}")) {
