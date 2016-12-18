@@ -1,11 +1,12 @@
+<div class="form-block">
+  <system-field class="field">
+    <label>tr{URL link}</label>
+    <input class="text-field" name="url_link" id="url_link"/>
+  </system-field>
 
-<system-field class="field col-xs-12">
-  <label>tr{URL link}</label>
-  <input class="text-field" name="url_link" id="url_link"/>
-</system-field>
-
-<div class="col-xs-12 ">
-  <button type="button" class="btn btn-primary" onclick="url_done();">Done</button>
+  <div class="block-row">
+    <button type="button" class="btn btn-primary" onclick="url_done();">Done</button>
+  </div>
 </div>
 
 <script>

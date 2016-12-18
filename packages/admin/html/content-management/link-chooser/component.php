@@ -1,6 +1,5 @@
 <?php
-$data = $_REQUEST["data"];
-
+$data = $_REQUEST['data'];
 $tabs = EWCore::read_registry('ew/ui/components/link-chooser');
 ?>
 
@@ -12,7 +11,7 @@ $tabs = EWCore::read_registry('ew/ui/components/link-chooser');
   <ul class="nav nav-pills xs-nav-tabs">    
     <?php
     foreach ($tabs as $id => $tab) {
-      if ($id == "content-chooser") {
+      if ($id == 'content-chooser') {
         echo "<li class='active '><a href='#{$id}' data-toggle='tab'>{$tab["title"]}</a></li>";
       }
       else {
@@ -26,11 +25,15 @@ $tabs = EWCore::read_registry('ew/ui/components/link-chooser');
   <div class="tab-content">
     <?php
     foreach ($tabs as $id => $tab) {
-      if ($id == "content-chooser") {
-        echo "<div class='tab-pane active' id='{$id}'>{$tab["content"]}</div>";
+      if ($id == 'content-chooser') {
+        echo "<div class='tab-pane active' id='{$id}'>" . EWCore::get_view($tab['template_url'], [
+            'data' => $data
+        ]) . "</div>";
       }
       else {
-        echo "<div class='tab-pane' id='{$id}'>{$tab["content"]}</div>";
+        echo "<div class='tab-pane' id='{$id}'>" . EWCore::get_view($tab['template_url'], [
+            'data' => $data
+        ]) . "</div>";
       }
     }
     ?>

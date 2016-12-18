@@ -34,20 +34,6 @@ class ContentManagement extends \ew\Module {
     require_once 'asset/DocumentComponent.class.php';
     require_once 'asset/LanguageComponent.class.php';
 
-    EWCore::register_form('ew/ui/components/link-chooser', "custom-url", [
-        "title"   => "URL",
-        "content" => \ew\ResourceUtility::get_view('admin/html/content-management/link-chooser/url-tab.php')
-    ]);
-
-    ob_start();
-    include EW_PACKAGES_DIR . '/admin/html/content-management/link-chooser/link-chooser-document.php';
-    $link_chooser_document = ob_get_clean();
-
-    EWCore::register_form("ew/ui/components/link-chooser", "content-chooser", [
-        "title"   => "Contents",
-        "content" => $link_chooser_document
-    ]);
-
     $ew_tags_table_install = EWCore::create_table('ew_tags', [
                 'id'            => 'BIGINT(20) AUTO_INCREMENT PRIMARY KEY',
                 'name'          => 'VARCHAR(256) NOT NULL',
@@ -112,18 +98,28 @@ class ContentManagement extends \ew\Module {
     ]);
 
     EWCore::register_ui_element('forms/content/tabs', 'properties', [
-        'title' => 'Properties',
-        'template_url'  => 'admin/html/content-management/forms-parts/content-properties.php'
+        'title'        => 'Properties',
+        'template_url' => 'admin/html/content-management/forms-parts/content-properties.php'
     ]);
 
     EWCore::register_ui_element('forms/content/tabs', 'content-html', [
-        'title' => 'Content',
-        'template_url'  => 'admin/html/content-management/forms-parts/content-editor.php'
+        'title'        => 'Content',
+        'template_url' => 'admin/html/content-management/forms-parts/content-editor.php'
     ]);
 
     EWCore::register_ui_element('forms/content/tabs', 'json-linked-data', [
-        'title' => 'JSON LD',
-        'template_url'  => 'admin/html/content-management/forms-parts/json-linked-data.php'
+        'title'        => 'JSON LD',
+        'template_url' => 'admin/html/content-management/forms-parts/json-linked-data.php'
+    ]);
+
+    EWCore::register_ui_element('components/link-chooser', 'custom-url', [
+        'title'        => 'URL',
+        'template_url' => 'admin/html/content-management/link-chooser/custom-url.php'
+    ]);
+
+    EWCore::register_ui_element('components/link-chooser', 'content-chooser', [
+        'title'        => 'Contents',
+        'template_url' => 'admin/html/content-management/link-chooser/documents.php'
     ]);
   }
 

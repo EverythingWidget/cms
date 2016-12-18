@@ -3,6 +3,7 @@ if (!$is_allowed) {
   echo '<p> Commenting is disabled </p>';
   return;
 }
+
 ?>
 
 <form v-on:submit="postComment">
@@ -26,7 +27,7 @@ if (!$is_allowed) {
   </div>
 
   <div class="field actions">
-    <button class="btn btn-submit" type="submit" v-bind:disabled="disablePosting">Post</button>
+    <button class="btn btn-submit" type="submit" v-bind:disabled="disablePosting" disabled="true">Post</button>
   </div>
 </form>
 
@@ -39,8 +40,7 @@ EWCore::call_api('admin/api/settings/read-settings', [
 ])['data']['webroot/google/recaptcha/site-key'];
 ?>';
 
-
-    post_comment_$php.widget_id_js = function () {
+    window.post_comment_$php.widget_id_js = function () {
       if (siteKey === '') {
         return postCommentForm.disablePosting = false;
       } else {
@@ -117,8 +117,15 @@ EWCore::call_api('admin/api/settings/read-settings', [
         }
       }
     });
+
+    (function (d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id))
+        return;
+      js = d.createElement(s);
+      js.id = id;
+      js.src = "https://www.google.com/recaptcha/api.js?onload=post_comment_$php.widget_id_js&render=explicit";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'google-recaptcha'));
   });
 </script>
-
-<script src='https://www.google.com/recaptcha/api.js?onload=post_comment_$php.widget_id_js&render=explicit'></script>
-

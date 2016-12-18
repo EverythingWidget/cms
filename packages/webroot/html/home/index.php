@@ -8,7 +8,12 @@ $app = "webroot";
 $_SESSION['ROOT_DIR'] = EW_ROOT_DIR;
 $_REQUEST['cmdResult'] = '';
 
-webroot\WidgetsManagement::include_html_link(["rm/public/css/bootstrap.css"]);
+webroot\WidgetsManagement::include_html_link(['rm/public/css/bootstrap.css']);
+
+if($_REQUEST['_uis_template']) {
+  webroot\WidgetsManagement::include_html_link(['rm/public/'.$_REQUEST['_uis_template'].'/template.css']);
+
+}
 
 webroot\WidgetsManagement::add_html_script(["include" => "rm/public/js/jquery/build.js"]);
 webroot\WidgetsManagement::add_html_script(["include" => "rm/public/js/webcomponents/webcomponents-lite.min.js"]);
@@ -24,9 +29,6 @@ webroot\WidgetsManagement::add_html_script(["include" => "rm/public/js/gsap/plug
 $VIEW = webroot\WidgetsManagement::generate_view($_REQUEST["_uis"]);
 $HTML_BODY = $VIEW["body_html"];
 $WIDGET_DATA = $VIEW["widget_data"];
-
-$TEMPLATE_LINK = ($_REQUEST["_uis_template"]) ?
-        '<link rel="stylesheet" property="stylesheet" id="template-css" href="public/rm/' . $_REQUEST["_uis_template"] . '/template.css" />' : "";
 
 // If template has a 'template.php' then include it
 $template_php = EW_PACKAGES_DIR . '/rm/public/' . $_REQUEST["_uis_template"] . '/template.php';
@@ -96,7 +98,7 @@ $HTML_META_TAGS = webroot\WidgetsManagement::get_meta_tags();
     if (isset($google_analytics_id)) {
       ?>
 
-      <script>
+    <script type="text/javascript">
         (function (i, s, o, g, r, a, m) {
           i['GoogleAnalyticsObject'] = r;
           i[r] = i[r] || function () {
@@ -147,6 +149,5 @@ $HTML_META_TAGS = webroot\WidgetsManagement::get_meta_tags();
 
     <?= $HTML_CSS ?>
     <?= $HTML_LINKS; ?>
-    <?= $TEMPLATE_LINK; ?>    
   </body>  
 </html>

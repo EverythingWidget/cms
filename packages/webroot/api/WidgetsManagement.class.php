@@ -56,7 +56,7 @@ class WidgetsManagement extends \ew\Module {
 
     EWCore::register_ui_element('components/link-chooser', 'uis-chooser', [
         'title'   => 'UI Structures',
-        'content' => EWCore::get_view('webroot/html/widgets-management/link-chooser-uis.php')
+        'template_url' => 'webroot/html/widgets-management/layout-chooser.php'
     ]);
 
     $this->add_listener('admin/api/content-management/contents-update', 'on_contents_update');

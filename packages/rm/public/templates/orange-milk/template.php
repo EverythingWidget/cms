@@ -18,7 +18,6 @@ class template extends TemplateControl {
 
   public function get_template_script($template_settings) {
     \webroot\WidgetsManagement::add_html_script(["include" => "/rm/public/js/scroll-it/scroll-it.js"]);
-    \webroot\WidgetsManagement::add_html_link('https://fonts.googleapis.com/css?family=Roboto:400,300,500,700');
 
     ob_start();
     include 'template.js';
