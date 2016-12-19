@@ -21,9 +21,9 @@ $.fn.serializeJSON = function (flag) {
   $.each(this.find('[element-type="input"]'), function () {
     pureObject[this.getAttribute('name') || this.getAttribute('id')] = this.value;
   });
-  
+
   $.each(this.find("input:checkbox:not(:checked)"), function () {
-    if(this.hasAttribute('data-off-value')) {
+    if (this.hasAttribute('data-off-value')) {
       pureObject[this.getAttribute('name') || this.getAttribute('id')] = this.getAttribute('data-off-value');
     }
   });
@@ -242,8 +242,7 @@ EverythingWidgets.prototype.getActivity = function (conf) {
 
   if (activityController.modalObject) {
     if (settings.modal && settings.modal.class) {
-      activityController.modalObject.css("left", "");
-      activityController.modalObject.attr("class", "top-pane " + settings.modal.class);
+      activityController.modalObject.css('left', '').attr('class', 'top-pane ' + settings.modal.class);
       activityController.modalObject.methods.setCloseButton();
     }
 
@@ -271,13 +270,51 @@ EverythingWidgets.prototype.getActivity = function (conf) {
     }
     // if the activity does not contains any form then set a formless hash parameter
     else {
-      //console.log(activityController);
       _this.activitySource = activityController;
-      _this.setHashParameters(hashParameters, "FORMLESS_ACTIVITY");
+      _this.processActivity(activityId, activityController, hashParameters);
+//      _this.setHashParameters(hashParameters, "FORMLESS_ACTIVITY");
     }
   };
 
   return activityCaller;
+};
+
+EverythingWidgets.prototype.processActivity = function (activityId, activityController, hashParameters) {
+  $(document).trigger(activityId + '.call', activityController);
+
+  var activityParameters = hashParameters;
+  if (activityController.parameters) {
+    if (typeof activityController.parameters === 'function') {
+      activityParameters = activityController.parameters.call(activityController);
+    } else {
+      activityParameters = activityController.parameters;
+    }
+  }
+
+  if (!activityParameters) {
+    return;
+  }
+
+  $.ajax({
+    type: activityController.request.method || 'GET',
+    url: activityController.request.url,
+    data: activityParameters,
+    success: function (data) {
+      if (activityController.onDone) {
+        activityController.onDone.apply(activityController, [
+          data
+        ]);
+      }
+      $(document).trigger(activityId + '.done', data);
+      EW.activitySource = null;
+    },
+    error: function (data) {
+      if (activityController.onFail) {
+        activityController.onFail.call(activityController, data);
+      }
+      $(document).trigger(activityId + '.fail', data);
+    }
+  });
 };
 /**
  * Create activity button and add it to the <b>action-bar-items</b> as default or to the parent if specified
@@ -2282,55 +2319,61 @@ $(document).ready(function () {
   var modal = null;
 
 
-  EW.addURLHandler(function () {
-    var activity = EW.getHashParameter("ew_activity", "FORMLESS_ACTIVITY");
-    var currentActivity = EW.activitySource;
-    EW.$docuement = EW.$docuement || $(document);
-    if (activity) {
-      if (currentActivity) {
-        // Trigger activityName.call event
-        EW.$docuement.trigger(activity + ".call", currentActivity);
-        var activityParameters = EW.getHashParameters("FORMLESS_ACTIVITY");
-        // Manage post data if it is set
-        if (currentActivity.parameters) {
-          // Overwrite the content of postData variable  with the user defined post data
-          // Call postData if it is a function
-          if (typeof currentActivity.parameters === 'function') {
-            activityParameters = currentActivity.parameters.call(currentActivity);
-          } else {
-            activityParameters = currentActivity.parameters;
-          }
-        }
-
-        // Do not proceed further if postData is null
-        if (!activityParameters) {
-          // set hash ew_activity to null
-          EW.setHashParameters({
-            ew_activity: null
-          }, "FORMLESS_ACTIVITY");
-          return;
-        }
-
-        $.ajax({
-          type: currentActivity.request.method || "GET",
-          url: currentActivity.request.url,
-          data: activityParameters,
-          success: function (data) {
-            if (currentActivity.onDone) {
-              currentActivity.onDone.apply(currentActivity, [
-                data
-              ]);
-            }
-            // Trigger activityName.done event
-            EW.$docuement.trigger(activity + ".done", data);
-            EW.activitySource = null;
-          }});
-      } else {
-        alert("Formless activity not found");
-      }
-    }
-    EW.setHashParameters({
-      ew_activity: null
-    }, 'FORMLESS_ACTIVITY');
-  }, 'FORMLESS_ACTIVITY');
+//  EW.addURLHandler(function () {
+//    var activity = EW.getHashParameter("ew_activity", "FORMLESS_ACTIVITY");
+//    var currentActivity = EW.activitySource;
+//    EW.$docuement = EW.$docuement || $(document);
+//    if (activity) {
+//      if (currentActivity) {
+//        // Trigger activityName.call event
+//        EW.$docuement.trigger(activity + ".call", currentActivity);
+//        var activityParameters = EW.getHashParameters("FORMLESS_ACTIVITY");
+//        // Manage post data if it is set
+//        if (currentActivity.parameters) {
+//          // Overwrite the content of postData variable  with the user defined post data
+//          // Call postData if it is a function
+//          if (typeof currentActivity.parameters === 'function') {
+//            activityParameters = currentActivity.parameters.call(currentActivity);
+//          } else {
+//            activityParameters = currentActivity.parameters;
+//          }
+//        }
+//
+//        // Do not proceed further if postData is null
+//        if (!activityParameters) {
+//          // set hash ew_activity to null
+//          EW.setHashParameters({
+//            ew_activity: null
+//          }, "FORMLESS_ACTIVITY");
+//          return;
+//        }
+//
+//        $.ajax({
+//          type: currentActivity.request.method || "GET",
+//          url: currentActivity.request.url,
+//          data: activityParameters,
+//          success: function (data) {
+//            if (currentActivity.onDone) {
+//              currentActivity.onDone.apply(currentActivity, [
+//                data
+//              ]);
+//            }
+//            // Trigger activityName.done event
+//            EW.$docuement.trigger(activity + ".done", data);
+//            EW.activitySource = null;
+//          },
+//          error: function (data) {
+//            if (currentActivity.onFail) {
+//              currentActivity.onFail.call(currentActivity, data);
+//            }
+//          }
+//        });
+//      } else {
+//        alert("Formless activity not found");
+//      }
+//    }
+//    EW.setHashParameters({
+//      ew_activity: null
+//    }, 'FORMLESS_ACTIVITY');
+//  }, 'FORMLESS_ACTIVITY');
 });

@@ -22,9 +22,9 @@ function inputs() {
 EWCore::register_form("ew/ui/forms/content/properties", "category-properties", ["content" => inputs()]);
 echo admin\ContentManagement::create_content_form(
         [
-            "formTitle"      => "Folder",
+            "form_title"      => "Folder",
             "formId"         => "category-form",
-            "contentType"    => "folder",
+            "content_type"    => "folder",
             "include_script" => \ew\ResourceUtility::get_view(__DIR__ . '/component.js', [], true),
             "data"           => get_folder_data($_REQUEST["folderId"])
 ]);

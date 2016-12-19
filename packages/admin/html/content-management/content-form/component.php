@@ -1,11 +1,28 @@
+<?php
+$content_data = $form_config["data"];
+
+// Set form id to 'content-form' if it is not specified
+$form_id = ($form_config["formId"]) ? $form_config["formId"] : "content-form";
+
+// Set content type to the default content type if it is not specified. Default content type is article
+if (!$form_config['content_type']) {
+  $form_config['content_type'] = "article";
+}
+
+// Set default form title to 'Article'
+if (!$form_config['form_title']) {
+  $form_config['form_title'] = 'Article';
+}
+
+$tabs = EWCore::read_registry('ew/ui/forms/content/tabs');
+?>
+
 <form id="<?= $form_id ?>"  action="#" method="POST">
   <div class="header-pane thin tabs-bar">
     <h1 id="form-title">
       <span>tr{New}</span>tr{<?= $form_config["form_title"] ?>}
     </h1>
-
     <ul class="nav nav-pills xs-nav-tabs">
-
       <?php
       $active = 'active';
       foreach ($tabs as $id => $tab) {
@@ -23,9 +40,9 @@
       foreach ($tabs as $id => $tab) {
         echo "<div class='tab-pane $active' id='{$id}'>" .
         EWCore::get_view($tab['template_url'], [
-            'form_id'     => $form_id,
+            'form_id'      => $form_id,
             'content_type' => $form_config['content_type'],
-            'form_config' => $form_config
+            'form_config'  => $form_config
         ]) . "</div>";
 
         $active = '';
@@ -65,7 +82,7 @@
     activeLabel: function (label, flag) {
 
       if (!flag) {
-        $("#" + label + "_control_button:not(:checked)").click();
+        $("#" + label + '_control_button:not(:checked)').click();
         $("#" + label + "_control_button").prop("checked", true);
         return;
       }

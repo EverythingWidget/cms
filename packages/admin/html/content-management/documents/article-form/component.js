@@ -1,3 +1,5 @@
+/* global System, EW */
+
 function Article() {
   var _this = this;
   var dialog = $.EW("getParentDialog", $("#article-form"));
@@ -28,7 +30,11 @@ function Article() {
       System.setHashParameters({
         article: response.data.id
       });
-    }}).hide();
+    },
+    onFail: function (response) {
+      loader.dispose();
+    }
+  }).hide();
 
   this.bEditAndClose = EW.addActivity({
     title: "<i class='icon-check'></i>",

@@ -70,19 +70,19 @@ class ContentManagement extends \ew\Module {
     ]);
 
     $this->register_content_component("document", [
-        "title"       => "Document",
-        "description" => "Main document",
-        "explorer"    => "admin/html/content-management/documents/explorer-document.php",
-        "explorerUrl" => "html/admin/content-management/documents/explorer-document.php",
-        "form"        => "admin/html/content-management/documents/label-document.php"
+        "title"       => 'Document',
+        "description" => 'Main document',
+        "explorer"    => 'admin/html/content-management/documents/explorer-document.php',
+        "explorerUrl" => 'html/admin/content-management/documents/explorer-document.php',
+        "form"        => 'admin/html/content-management/documents/label-document.php'
     ]);
 
     $this->register_content_component("language", [
-        "title"       => "Language",
-        "description" => "Language of the content",
-        "explorer"    => "admin/html/content-management/documents/explorer-language.php",
-        "explorerUrl" => "html/admin/content-management/documents/explorer-language.php",
-        "form"        => "admin/html/content-management/documents/label-language.php"
+        "title"       => 'Language',
+        "description" => 'Language of the content',
+        "explorer"    => 'admin/html/content-management/documents/explorer-language.php',
+        "explorerUrl" => 'html/admin/content-management/documents/explorer-language.php',
+        "form"        => 'admin/html/content-management/documents/label-language.php'
     ]);
 
     EWCore::register_ui_element('apps/contents/navs', "documents", [
@@ -99,17 +99,17 @@ class ContentManagement extends \ew\Module {
 
     EWCore::register_ui_element('forms/content/tabs', 'properties', [
         'title'        => 'Properties',
-        'template_url' => 'admin/html/content-management/forms-parts/content-properties.php'
+        'template_url' => 'admin/html/content-management/content-form/properties.php'
     ]);
 
     EWCore::register_ui_element('forms/content/tabs', 'content-html', [
         'title'        => 'Content',
-        'template_url' => 'admin/html/content-management/forms-parts/content-editor.php'
+        'template_url' => 'admin/html/content-management/content-form/editor.php'
     ]);
 
     EWCore::register_ui_element('forms/content/tabs', 'json-linked-data', [
         'title'        => 'JSON LD',
-        'template_url' => 'admin/html/content-management/forms-parts/json-linked-data.php'
+        'template_url' => 'admin/html/content-management/content-form/json-linked-data.php'
     ]);
 
     EWCore::register_ui_element('components/link-chooser', 'custom-url', [
@@ -1602,7 +1602,7 @@ class ContentManagement extends \ew\Module {
    * @return string
    */
   public static function create_content_form($form_config = null) {
-    return \EWCore::load_file("admin/html/content-management/forms-parts/content-form.php", $form_config);
+    return \EWCore::load_file('admin/html/content-management/content-form/component.php', $form_config);
   }
 
   public function contents_create($_response, $_input) {

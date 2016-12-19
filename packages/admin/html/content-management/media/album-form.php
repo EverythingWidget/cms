@@ -23,8 +23,8 @@ function scripts() {
 //EWCore::register_form("ew-content-form-proerties", "article-properties", ["content" => inputs()]);
 echo admin\ContentManagement::create_content_form([
     "formId"         => "album-form",
-    'formTitle'      => 'Album',
-    "contentType"    => "album",
+    'form_title'      => 'Album',
+    "content_type"    => "album",
     "include_script" => scripts(),
     "data"           => json_encode($albumInfo)
 ]);

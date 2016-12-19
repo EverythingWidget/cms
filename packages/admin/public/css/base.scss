@@ -418,15 +418,13 @@ body {
 
 @-webkit-keyframes spin {
   to {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg);
+    transform: scale(1) rotate(360deg);
   }
 }
 
 @keyframes spin {
   to {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg);
+    transform: scale(1) rotate(360deg);
   }
 }
 
@@ -494,7 +492,6 @@ body {
     border-left: 4px solid #ff7200;
     border-bottom: 4px solid #000;
     content: "";
-    -webkit-animation: spin 2s ease infinite;
     animation: spin 2s ease infinite;
     border-radius: 100%;
   }
