@@ -6,13 +6,13 @@ $content_data = $form_config["data"];
 $form_id = ($form_config["formId"]) ? $form_config["formId"] : "content-form";
 
 // Set content type to the default content type if it is not specified. Default content type is article
-if (!$form_config["contentType"]) {
-  $form_config["contentType"] = "article";
+if (!$form_config["content_type"]) {
+  $form_config["content_type"] = "article";
 }
 
 // Set default form title to 'Article'
-if (!$form_config["formTitle"]) {
-  $form_config["formTitle"] = "Article";
+if (!$form_config["form_title"]) {
+  $form_config["form_title"] = "Article";
 }
 
 $tabs = EWCore::read_registry('ew/ui/forms/content/tabs');

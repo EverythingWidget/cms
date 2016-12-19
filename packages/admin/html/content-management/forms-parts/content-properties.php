@@ -1,7 +1,7 @@
 <div id="properties-form" class="col-lg-8 col-md-8 col-sm-12 col-xs-12" >
   <div class="block-row mt">
     <input type="hidden" id="id" name="id" value="">
-    <input type="hidden" id="type" name="type" value="<?php echo $form_config["contentType"] ?>">
+    <input type="hidden" id="type" name="type" value="$php.content_type">
     <system-field class="field">
       <label>tr{Title}</label>
       <input class="text-field" value="" id="title" name="title" data-validate="r" required/>  
@@ -46,8 +46,9 @@
   $content_components = EWCore::read_registry(EWCore::$EW_CONTENT_COMPONENT);
 
   foreach ($content_components as $comp_id => $label_object) {
-    $data_array = json_decode($form_config["data"], true);
+    $data_array = json_decode($view_data['form_config']['data'], true);
     $labels = $data_array["labels"];
+    $value = '';
 
     if (isset($labels)) {
       foreach ($labels as $label) {
@@ -59,7 +60,6 @@
     }
 
     $form = EWCore::call_api($label_object['form'], compact("comp_id", "value", "form_id"));
-
     ?>
     <div class="block-row">
       <div id="<?= $comp_id ?>_label_block" class='box box-grey content-label disabled' data-activated="false">

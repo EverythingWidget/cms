@@ -55,7 +55,7 @@ class WidgetsManagement extends \ew\Module {
     ]);
 
     EWCore::register_ui_element('components/link-chooser', 'uis-chooser', [
-        'title'   => 'UI Structures',
+        'title'        => 'UI Structures',
         'template_url' => 'webroot/html/widgets-management/layout-chooser.php'
     ]);
 
@@ -1092,13 +1092,26 @@ class WidgetsManagement extends \ew\Module {
       }
 
       EWCore::file_force_contents($cache_path, $minified_css);
+
+//      $layout_cache_path = EW_PACKAGES_DIR . '/rm/public/cache/layout-' . $cache_file_name;
+//      $theme_cache_path = EW_PACKAGES_DIR . '/rm/public/cache/theme-' . $cache_file_name;
+//
+//      $css_classes_list = \ew\ResourceUtility::css_to_array($minified_css);
+//      $res = \ew\ResourceUtility::parse_css_to_layout_and_theme($css_classes_list);
+//      header('Content-Type: application/json');
+//      echo json_encode(self::$html_included_links);
+//      echo json_encode($cp->parsed);
+//      die();
     }
 
     if ($minified_css) {
       $css_tag.="<link rel='stylesheet' property='stylesheet' type='text/css' id='ew-compiled-css' href='$cache_path_url' />";
     }
 
-    return $css_tag;
+    return [
+        'path' => $cache_path_url,
+        'tag'  => $css_tag
+    ];
   }
 
   public static function set_html_title($title) {

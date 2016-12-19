@@ -12,7 +12,6 @@ webroot\WidgetsManagement::include_html_link(['rm/public/css/bootstrap.css']);
 
 if($_REQUEST['_uis_template']) {
   webroot\WidgetsManagement::include_html_link(['rm/public/'.$_REQUEST['_uis_template'].'/template.css']);
-
 }
 
 webroot\WidgetsManagement::add_html_script(["include" => "rm/public/js/jquery/build.js"]);
@@ -76,6 +75,8 @@ $HTML_KEYWORDS = webroot\WidgetsManagement::get_html_keywords();
 $HTML_SCRIPTS = webroot\WidgetsManagement::get_html_scripts();
 $HTML_LINKS = webroot\WidgetsManagement::get_html_links();
 $HTML_CSS = webroot\WidgetsManagement::get_html_links_concatinated();
+
+
 $HTML_META_TAGS = webroot\WidgetsManagement::get_meta_tags();
 ?>
 <!doctype html> 
@@ -147,7 +148,7 @@ $HTML_META_TAGS = webroot\WidgetsManagement::get_meta_tags();
       <?= $HTML_BODY; ?>
     </div>
 
-    <?= $HTML_CSS ?>
+    <?= $HTML_CSS['tag'] ?>
     <?= $HTML_LINKS; ?>
   </body>  
 </html>

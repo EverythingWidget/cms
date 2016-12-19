@@ -20,7 +20,7 @@ function inputs() {
   return ob_get_clean();
 }
 
-EWCore::register_form("ew/ui/forms/content/properties", "article-properties", ["content" => inputs()]);
+EWCore::register_ui_element("forms/content/properties", "article-properties", ["content" => inputs()]);
 
 echo admin\ContentManagement::create_content_form([
     'formId'         => 'article-form',

@@ -189,8 +189,10 @@
             // Call post data if it is a function
             if (typeof currentActivity.parameters === 'function') {
               $.extend(activityParameters, currentActivity.parameters(activityParameters));
-            } else {
+              System.setHashParameters(activityParameters, true);
+            } else if (currentActivity.parameters) {
               $.extend(activityParameters, currentActivity.parameters);
+              System.setHashParameters(activityParameters, true);
             }
           }
           // Add the parameters which have been pass to the activity caller function 
@@ -199,7 +201,6 @@
             System.setHashParameters(activityParameters, true);
           }
 
-          
           activityParameters = EW.getHashParameters();
 
           var method = currentActivity.request.method || 'GET';
@@ -212,24 +213,24 @@
 //              modal.html(module.html);
 //            });
 //          } else {
-            $.ajax({
-              type: method,
-              url: currentActivity.request.url,
-              data: $.extend({}, activityParameters, currentActivity.privateParams),
-              success: function (data) {
-                modal.html(data);
-              },
-              error: function (result) {
-                console.log(result);
-                //alert(result.responseText);
-                modal.html(result.responseText);
-                if (result.responseJSON) {
-                  alert(result.responseJSON.message);
-                }
-
-                EW.customAjaxErrorHandler = true;
+          $.ajax({
+            type: method,
+            url: currentActivity.request.url,
+            data: $.extend({}, activityParameters, currentActivity.privateParams),
+            success: function (data) {
+              modal.html(data);
+            },
+            error: function (result) {
+              console.log(result);
+              //alert(result.responseText);
+              modal.html(result.responseText);
+              if (result.responseJSON) {
+                alert(result.responseJSON.message);
               }
-            });
+
+              EW.customAjaxErrorHandler = true;
+            }
+          });
 //          }
         },
         onClose: function () {

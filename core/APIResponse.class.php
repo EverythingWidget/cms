@@ -115,7 +115,7 @@ class APIResponse implements \JsonSerializable {
       $_response->set_status_code($result->error);
 
       //return $result->data;
-      return null;
+      return $result->reason;
     }
 
     foreach ($result as $key => $value) {

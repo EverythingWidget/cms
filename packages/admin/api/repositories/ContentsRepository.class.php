@@ -21,23 +21,22 @@ class ContentsRepository implements \ew\CRUDRepository {
    */
   public function create($input) {
     $result = new \ew\Result();
-    $validator = new \Valitron\Validator((array) $input);
 
-    $validator->rules([
-        "required" => [
-            ["title"], ["type"]
-        ],
-        "integer"  => "parent_id"
-    ]);
-
-    if (!isset($input->parent_id)) {
+    if (!isset($input->parent_id) || !$input->parent_id) {
       $input->parent_id = 0;
     }
 
-    if (!$validator->validate()) {
-      $result->error = 503;
-      $result->message = 'ContentsRepository: REST create functionality is not implemented';
-      $result->reason = $validator->errors();
+    $validator = \SimpleValidator\Validator::validate((array) $input, [
+                'title'     => ['required'],
+                'type'      => ['required'],
+                'parent_id' => ['integer']
+    ]);
+
+
+    if ($validator->isSuccess() !== true) {
+      $result->error = 400;
+      $result->message = $validator->getErrors();
+//      $result->reason = $validator->errors();
 
       return $result;
     }

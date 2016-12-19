@@ -1,7 +1,7 @@
 <form id="<?= $form_id ?>"  action="#" method="POST">
   <div class="header-pane thin tabs-bar">
     <h1 id="form-title">
-      <span>tr{New}</span>tr{<?= $form_config["formTitle"] ?>}
+      <span>tr{New}</span>tr{<?= $form_config["form_title"] ?>}
     </h1>
 
     <ul class="nav nav-pills xs-nav-tabs">
@@ -23,7 +23,9 @@
       foreach ($tabs as $id => $tab) {
         echo "<div class='tab-pane $active' id='{$id}'>" .
         EWCore::get_view($tab['template_url'], [
-            'form_id' => $form_id
+            'form_id'     => $form_id,
+            'content_type' => $form_config['content_type'],
+            'form_config' => $form_config
         ]) . "</div>";
 
         $active = '';
