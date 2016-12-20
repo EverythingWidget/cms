@@ -1016,8 +1016,8 @@ class WidgetsManagement extends \ew\Module {
   }
 
   public static function get_page_info() {
-    $current_path = str_replace(EW_DIR, '', $_SERVER['REQUEST_URI']);
-
+    $url = parse_url(str_replace(EW_DIR, '/', $_SERVER['REQUEST_URI']));
+    
     $currentAppConf = EWCore::call_api('admin/api/settings/read-settings', [
                 'app_name' => 'webroot'
             ])['data'];
@@ -1028,19 +1028,15 @@ class WidgetsManagement extends \ew\Module {
     $html_keywords_string = static::get_html_title();
     $description = static::get_html_description();
 
-    if ($current_path === '/' || !$current_path || !$description) {
+    if ($url['path'] === '/' || !$url['path']) {
       $description = $currentAppConf['webroot/description'];
     }
 
-    return [
-        'url'                      => CURRENT_URL,
-        'title'                    => ($current_path === '/' || !$current_path) ? $currentAppConf['webroot/title'] : $html_keywords_string,
-        'description'              => $description,
-        'keywords'                 => $currentAppConf['webroot/keywords'],
-        'favicon'                  => $currentAppConf['webroot/favicon'],
-        'google-analytics-id'      => $currentAppConf['webroot/google-analytics-id'],
-        'accelerated-mobile-pages' => $currentAppConf['webroot/accelerated-mobile-pages']
-    ];
+    return array_merge($currentAppConf, [
+        'webroot/url'         => CURRENT_URL,
+        'webroot/title'       => ($url['path'] === '/' || !$url['path']) ? $currentAppConf['webroot/title'] : $html_keywords_string,
+        'webroot/description' => $description
+    ]);
   }
 
   public static function set_html_description($description) {

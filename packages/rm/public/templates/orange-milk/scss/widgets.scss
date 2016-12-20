@@ -30,11 +30,11 @@
     }
 
     .btn-prev {
-      background-image: url(images/icon-arrow-left.png) !important;
+      background-image: url(../templates/orange-milk/images/icon-arrow-left.png) !important;
     } 
 
     .btn-next {
-      background-image: url(images/icon-arrow-right.png) !important;
+      background-image: url(../templates/orange-milk/images/icon-arrow-right.png) !important;
       float: right;
     }
   }
@@ -42,12 +42,12 @@
   &.rtl {   
     .list-footer {
       .btn-prev {      
-        background-image: url(images/icon-arrow-right.png) !important;
+        background-image: url(../templates/orange-milk/images/icon-arrow-right.png) !important;
         float: right;
       } 
 
       .btn-next {
-        background-image: url(images/icon-arrow-left.png) !important;
+        background-image: url(../templates/orange-milk/images/icon-arrow-left.png) !important;
         float: left;
       }
     }
@@ -289,11 +289,11 @@
       }
 
       .owl-prev {
-        background-image: url(images/icon-arrow-left.png) !important;
+        background-image: url(../templates/orange-milk/images/icon-arrow-left.png) !important;
       } 
 
       .owl-next {
-        background-image: url(images/icon-arrow-right.png) !important;
+        background-image: url(../templates/orange-milk/images/icon-arrow-right.png) !important;
         float: right;
       }      
 

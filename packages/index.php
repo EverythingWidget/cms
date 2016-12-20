@@ -30,13 +30,6 @@ error_reporting(E_WARNING | E_ERROR);
 $ew_core = new EWCore();
 $ew_core->init();
 
-/* $api_call = urldecode($_SERVER['REQUEST_URI']);
-
-  $api_call =str_replace(EW_DIR,'', $api_call);
-  echo $api_call;
-  preg_match_all('/([^\/\s]{2,3}\/)?~?([^\/\s]*)\/?([^\/\s]*)?\/?([^\/\s]*)?\/?([^\/\s]*)?\//', $api_call, $matches);
-  var_dump($matches);
-  die(); */
 //ini_set('display_errors', '1');
 
 EWCore::set_default_locale("admin");
@@ -59,8 +52,8 @@ if ($elements[0] && strpos(EW_DIR, $elements[0])) {
 }
 
 // Check the language parameter
-$language = "en";
-$default_language = EWCore::read_setting("ew/language");
+$language = 'en';
+$default_language = EWCore::read_setting('ew/language');
 
 if ($default_language) {
   $language = $default_language;
@@ -68,20 +61,20 @@ if ($default_language) {
 
 if (preg_match("/^([^-]{2})$/", $elements[$parameter_index], $match)) {
   $language = $match[0];
-  $_REQUEST["_url_language"] = $language;
+  $_REQUEST['_url_language'] = $language;
   array_shift($elements);
 }
 
-$_REQUEST["_language"] = $language;
+$_REQUEST['_language'] = $language;
 
-$url_language = ($language == "en") ? '' : $language . '/';
+$url_language = ($language == 'en') ? '' : $language . '/';
 
 // Set protocol to https if detected
 $protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') ||
-        $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+        $_SERVER['SERVER_PORT'] == 443) ? 'https://' : 'http://';
 
 // Set the language for the root url
-if ($_SERVER['SERVER_PORT'] !== "80" && $_SERVER['SERVER_PORT'] !== "443") {
+if ($_SERVER['SERVER_PORT'] !== '80' && $_SERVER['SERVER_PORT'] !== '443') {
   $host_url = $protocol . $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'];
   $u = $protocol . $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'] . EW_DIR_URL . $url_language;
 }
@@ -105,8 +98,8 @@ $resource_types = [
 ];
 
 // Check the app parameter
-$resource_type = "html";
-$app_name = "webroot";
+$resource_type = 'html';
+$app_name = 'webroot';
 //var_dump($elements[$parameter_index + 1]);
 if (strpos($elements[$parameter_index], '-') === 0) {
   $app_name = str_replace('-', '', $elements[$parameter_index]);
@@ -130,7 +123,7 @@ else if (in_array($elements[$parameter_index], $resource_types)) {
 $section_name = null;
 if (isset($elements[$parameter_index]) && preg_match("/^([^\.]*)$/", $elements[$parameter_index], $match)) {
   $section_name = $elements[$parameter_index];
-  $_REQUEST["_module_name"] = $section_name;
+  $_REQUEST['_module_name'] = $section_name;
 
   $parameter_index++;
 }
@@ -140,27 +133,24 @@ $function_name = null;
 if (isset($elements[$parameter_index])) {
   $function_name = $elements[$parameter_index];
   //$function_name = ($function_name == 'index.php') ? 'index' : $function_name;
-  $_REQUEST["_method_name"] = $function_name;
+  $_REQUEST['_method_name'] = $function_name;
 
   $rest_of_elements = array_slice($elements, $parameter_index);
   $file_uri = implode('/', $rest_of_elements);
   //if (strpos($file_uri, '?'))
   //$file_uri = substr($file_uri, 0, strpos($file_uri, '?'));
   $_file = preg_replace('{/$}', '', $file_uri);
-  $_REQUEST["_file"] = $_file;
+  $_REQUEST['_file'] = $_file;
 
   $parameter_index++;
 }
-// Create instance of EWCore class 
-//if (!ob_start("ob_gzhandler")) {
-//  ob_start();
-//}
+
 // set default user group if no user group has been spacified
-if (!isset($_SESSION["EW.USER_GROUP_ID"])) {
+if (!isset($_SESSION['EW.USER_GROUP_ID'])) {
   $_SESSION['EW.USER_GROUP_ID'] = /* json_decode(EWCore::get_default_users_group(), true)["id"] */ 1;
 }
 
-$RESULT_CONTENT = "RESULT_CONTENT: EMPTY";
+$RESULT_CONTENT = 'RESULT_CONTENT: EMPTY';
 
 $real_class_name = $app_name . '\\' . $section_name;
 
@@ -178,13 +168,7 @@ function translate($match) {
 
 // show the result
 if ($RESULT_CONTENT) {
-  //$RESULT_CONTENT = preg_replace_callback("/\{\{([^\|]*)\|?([^\|]*)\}\}/", $callback, $RESULT_CONTENT);
-  // Show translated result  
-
   echo preg_replace_callback("/tr(\:\w*)?\{(.*?)\}/", 'translate', $RESULT_CONTENT);
-  //$time_end = microtime(true);
-  //$time = $time_end - $time_start;
-  //echo  round($time,2) . " s";
 }
 //$after = microtime(true);
 //echo ($after-$before) . " sec/serialize\n";

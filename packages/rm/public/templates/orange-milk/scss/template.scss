@@ -7,18 +7,18 @@ and open the template in the editor.
     Created on : Jan 21, 2016, 11:47:41 AM
     Author     : Eeliya
 */
-@import url(https://fonts.googleapis.com/css?family=Roboto:400,300,500,700);
+/*@import url(https://fonts.googleapis.com/css?family=Roboto:400,300,500,700);*/
 
 @font-face {
   font-family: 'FarNazaninBold';
-  src: url('fonts/FarNazaninBold.eot') format('embedded-opentype');
+  src: url('../templates/orange-milk/fonts/FarNazaninBold.eot') format('embedded-opentype');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'FarNazaninBold';
-  src:  url(data:application/x-font-woff;charset=utf-8;base64,) format('woff'), url('fonts/FarNazaninBold.ttf')  format('truetype'), url('fonts/FarNazaninBold.svg#FarNazaninBold') format('svg');
+  src:  url(data:application/x-font-woff;charset=utf-8;base64,) format('woff'), url('../templates/orange-milk/fonts/FarNazaninBold.ttf')  format('truetype'), url('../templates/orange-milk/fonts/FarNazaninBold.svg#FarNazaninBold') format('svg');
   font-weight: normal;
   font-style: normal;
 }

@@ -6,7 +6,7 @@ $longtitude = $widget_parameters['lng'] ? $widget_parameters['lng'] : 0;
 <div class="map-container"></div>
 <script>
   window.addEventListener('load', function () {
-    window.google_map_$php.widget_id_js = function () {
+    var onload = function () {
       var mapDiv = document.querySelector('[data-widget-id=$php.widget_id] .map-container');
       var map = new google.maps.Map(mapDiv, {
         center: {
@@ -114,11 +114,14 @@ $longtitude = $widget_parameters['lng'] ? $widget_parameters['lng'] : 0;
 
     (function (d, s, id) {
       var js, fjs = d.getElementsByTagName(s)[0];
-      if (d.getElementById(id))
-        return;
+      var exist = d.getElementById(id);
+      if (exist) {
+        return exist.addEventListener('load', onload);
+      }
       js = d.createElement(s);
       js.id = id;
-      js.src = "https://maps.googleapis.com/maps/api/js?callback=google_map_$php.widget_id_js&q=Kerkgracht+60,1354+AM+Almere";
+      js.addEventListener('load', onload);
+      js.src = "https://maps.googleapis.com/maps/api/js?q=Kerkgracht+60,1354+AM+Almere";
       fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'google-maps'));
   });

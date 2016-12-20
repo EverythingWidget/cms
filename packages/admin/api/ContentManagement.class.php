@@ -601,6 +601,10 @@ class ContentManagement extends \ew\Module {
       $result['content'] = $article['content'];
       $result['content_fields'] = $article['content_fields'];
 
+      $parent_data = (new ContentsRepository)->find_by_id($article['parent_id']);
+      if (isset($parent_data->data)) {
+        $_response->properties['parent'] = $parent_data->data;
+      }
       $_response->properties['type'] = 'object';
 
       return $result;
@@ -637,7 +641,7 @@ class ContentManagement extends \ew\Module {
     $folder_data = (new ContentsRepository)->find_by_id($id);
     $parent_data = [];
     if (isset($folder_data->data)) {
-      $parent_data = $folder_data->data;
+      $parent_data = $folder_data->data->toArray();
     }
 
     $_response->properties['total'] = $articles['total'];

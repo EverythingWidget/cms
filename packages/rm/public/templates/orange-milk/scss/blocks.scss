@@ -10,13 +10,13 @@
   }
 
   &.background {
-    background-image: url('images/default-bg.jpg');
+    background-image: url('../templates/orange-milk/images/default-bg.jpg');
     background-repeat: repeat-x;
     background-position: center top;
   }
 
   &.daily-feed-bg {
-    background-image: url('images/daily-feed-bg.jpg');
+    background-image: url('../templates/orange-milk/images/daily-feed-bg.jpg');
     background-repeat: repeat-x;
     background-position: center center;
     min-height: 440px;
@@ -110,7 +110,7 @@
 
   &.contact-us {  
     min-height: 200px;
-    background-image: url(images/gifts.png);
+    background-image: url(../templates/orange-milk/images/gifts.png);
     background-repeat: no-repeat;
     background-size: auto 88%;
     background-position: right bottom;
@@ -150,7 +150,7 @@
 
   &.light-grey {
     margin: 0 -15px;
-    background-image: url('images/people-bg-dark.jpg');
+    background-image: url('../templates/orange-milk/images/people-bg-dark.jpg');
     background-size: cover;
   }
 

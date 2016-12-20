@@ -10,10 +10,6 @@ $_REQUEST['cmdResult'] = '';
 
 webroot\WidgetsManagement::include_html_link(['rm/public/css/bootstrap.css']);
 
-if($_REQUEST['_uis_template']) {
-  webroot\WidgetsManagement::include_html_link(['rm/public/'.$_REQUEST['_uis_template'].'/template.css']);
-}
-
 webroot\WidgetsManagement::add_html_script(["include" => "rm/public/js/jquery/build.js"]);
 webroot\WidgetsManagement::add_html_script(["include" => "rm/public/js/webcomponents/webcomponents-lite.min.js"]);
 webroot\WidgetsManagement::add_html_script(["include" => "rm/public/js/x-tag/x-tag.min.js"]);
@@ -54,14 +50,19 @@ if (file_exists($template_php)) {
   }
 }
 
+if ($_REQUEST['_uis_template']) {
+  webroot\WidgetsManagement::include_html_link(['rm/public/' . $_REQUEST['_uis_template'] . '/template.css']);
+}
+
 $currentAppConf = webroot\WidgetsManagement::get_page_info();
 
-$website_title = $currentAppConf["title"];
-$page_description = $currentAppConf["description"];
-$website_keywords = $currentAppConf["keywords"];
-$favicon = $currentAppConf["favicon"];
-$google_analytics_id = $currentAppConf["google-analytics-id"];
-$accelerated_mobile_pages = $currentAppConf["accelerated-mobile-pages"];
+$website_title = $currentAppConf['webroot/title'];
+$page_description = $currentAppConf['webroot/description'];
+$website_keywords = $currentAppConf['webroot/keywords'];
+$favicon = $currentAppConf['webroot/favicon'];
+$google_analytics_id = $currentAppConf['webroot/google-analytics-id'];
+$accelerated_mobile_pages = $currentAppConf['webroot/accelerated-mobile-pages'];
+$page_language = $currentAppConf['webroot/language'] ? $currentAppConf['webroot/language'] : 'en';
 
 if ($page_description) {
   \webroot\WidgetsManagement::set_meta_tag([
@@ -70,36 +71,37 @@ if ($page_description) {
   ]);
 }
 
-$HTML_TITLE = $website_title;
 $HTML_KEYWORDS = webroot\WidgetsManagement::get_html_keywords();
+\webroot\WidgetsManagement::set_meta_tag([
+    'name'    => 'keywords',
+    'content' => $HTML_KEYWORDS
+]);
+
 $HTML_SCRIPTS = webroot\WidgetsManagement::get_html_scripts();
 $HTML_LINKS = webroot\WidgetsManagement::get_html_links();
 $HTML_CSS = webroot\WidgetsManagement::get_html_links_concatinated();
-
-
 $HTML_META_TAGS = webroot\WidgetsManagement::get_meta_tags();
 ?>
 <!doctype html> 
-<html amp>
+<html amp lang="<?= $page_language ?>">
   <head>
     <base href="<?= EW_ROOT_URL ?>">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1" />  
 
     <?php
+    echo "<title>$website_title</title>";
     echo $HTML_META_TAGS;
-    echo "<title>$HTML_TITLE</title>";
-    echo "<meta name='keywords' content='$HTML_KEYWORDS' />";
+    echo "<link rel='alternate' href='{$_SERVER['REQUEST_URI']}' hreflang='$page_language' />";
     echo "<link rel='shortcut icon' href='$favicon' />";
     echo "<link rel='apple-touch-icon-precomposed' href='$favicon' />";
-    echo '<meta name="msapplication-TileColor" content="#FFFFFF" />';
+    echo "<meta name='msapplication-TileColor' content='#FFFFFF' />";
     echo "<meta name='msapplication-TileImage' content='$favicon' />";
-    echo "<link rel='canonical' href='{$_SERVER['REQUEST_URI']}' />";
 
     if (isset($google_analytics_id)) {
       ?>
 
-    <script type="text/javascript">
+      <script id="google-analytics">
         (function (i, s, o, g, r, a, m) {
           i['GoogleAnalyticsObject'] = r;
           i[r] = i[r] || function () {
@@ -120,6 +122,7 @@ $HTML_META_TAGS = webroot\WidgetsManagement::get_meta_tags();
     }
 
     if ($accelerated_mobile_pages) {
+      echo "<link rel='canonical' href='{$_SERVER['REQUEST_URI']}' />";
       ?> 
 
       <script async src="https://cdn.ampproject.org/v0.js"></script>
@@ -127,18 +130,16 @@ $HTML_META_TAGS = webroot\WidgetsManagement::get_meta_tags();
     <?php } ?>
 
     <script id="widget-data">
-        (function () {
-          var ew_widget_data = {};
-          var ew_widget_actions = {};
+      (function () {
+        var ew_widget_data = {};
+        var ew_widget_actions = {};
 
 <?= $WIDGET_DATA; ?>
 
-          window.ew_widget_data = ew_widget_data;
-          window.ew_widget_actions = ew_widget_actions;
-        })();
+        window.ew_widget_data = ew_widget_data;
+        window.ew_widget_actions = ew_widget_actions;
+      })();
     </script>      
-
-<!--<script src="public/rm/js/jquery/build.js"></script>-->
 
     <?= $HTML_SCRIPTS; ?>
     <?= $TEMPLATE_SCRIPT; ?>          

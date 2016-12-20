@@ -105,10 +105,10 @@ $row_num = ($token * $num_of_items_per_page) + $num_of_items_per_page;
 $items_count = $items_list["total"];
 $items = $items_list["data"];
 $page = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
-
-webroot\WidgetsManagement::add_html_script([
-    'include' => "rm/public/js/owl-carousel/owl.carousel.js"
-]);
+//
+//webroot\WidgetsManagement::add_html_script([
+//    'include' => 'rm/public/js/owl-carousel/owl.carousel.min.js'
+//]);
 
 webroot\WidgetsManagement::include_html_link([
     'rm/public/js/owl-carousel/animate.css',
@@ -117,7 +117,7 @@ webroot\WidgetsManagement::include_html_link([
 ]);
 
 if ($widget_parameters['content_fields'] && isset($items)) {
-  $fields = $widget_parameters["content_fields"];
+  $fields = $widget_parameters['content_fields'];
 
   if (is_string($fields)) {
     $fields = [$fields];
@@ -156,38 +156,51 @@ if ($widget_parameters['content_fields'] && isset($items)) {
 
 <script>
   window.addEventListener('load', function () {
+    var onload = function () {
+
     $("div[data-widget-id='$php.widget_id'] > .owl-carousel").owlCarousel({
-      responsiveClass: true,
-      autoHeight:<?= $auto_height ?>,
-      loop:<?= $loop ?>,
-      center:<?= $center ?>,
-      dots:<?= $slide_indicator ?>,
-      nav:<?= $nav ?>,
-      autoplay:<?= $auto_play ?>,
-      autoplayTimeout: <?= $slide_timeout ?>,
-      autoplayHoverPause:<?= $autoPlayPause ?>,
-      smartSpeed: <?= $smart_speed ?>,
-      navText: [
-        '',
-        ''
-      ],
-      responsive: {
-        0: {
-          items: <?php echo $item_per_slide_xs ?>
-        },
-        768: {
-          items:<?php echo $item_per_slide_sm ?>
-        },
-        991: {
-          items:<?php echo $item_per_slide_md ?>
-        },
-        1359: {
-          items:<?php echo $item_per_slide_lg ?>
+        responsiveClass: true,
+        autoHeight:<?= $auto_height ?>,
+        loop:<?= $loop ?>,
+        center:<?= $center ?>,
+        dots:<?= $slide_indicator ?>,
+        nav:<?= $nav ?>,
+        autoplay:<?= $auto_play ?>,
+        autoplayTimeout: <?= $slide_timeout ?>,
+        autoplayHoverPause:<?= $autoPlayPause ?>,
+        smartSpeed: <?= $smart_speed ?>,
+        navText: [
+          '',
+          ''
+        ],
+        responsive: {
+          0: {
+            items: <?php echo $item_per_slide_xs ?>
+          },
+          768: {
+            items:<?php echo $item_per_slide_sm ?>
+          },
+          991: {
+            items:<?php echo $item_per_slide_md ?>
+          },
+          1359: {
+            items:<?php echo $item_per_slide_lg ?>
+          }
         }
+      });
+    };
+
+    (function (d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      var exist = d.getElementById(id);
+      if (exist) {
+        return exist.addEventListener('load', onload);        
       }
-    });
+      js = d.createElement(s);
+      js.id = id;
+      js.src = "public/rm/js/owl-carousel/owl.carousel.min.js";
+      js.addEventListener('load', onload);
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'owl-carousel'));
   });
-  /*$(document).ready(function () {
-   
-   });*/
 </script>

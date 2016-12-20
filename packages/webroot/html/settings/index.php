@@ -1,4 +1,4 @@
-<div class="card z-index-1 card-medium">
+<div id="webroot-settings-card" class="card z-index-1 card-medium">
   <div  class='card-header'>
     <div class="card-title-action"></div>
     <div class="card-title-action-right"></div>
@@ -8,6 +8,12 @@
   </div>
 
   <div class='card-content'>
+    <system-field class="field">
+      <label>tr{Language}</label>
+      <select name="webroot/language" v-model="activeLanguage">
+        <option v-for="lang in languages" v-bind:value="lang.name">{{ lang.title }}</option>
+      </select>
+    </system-field>
 
     <system-field class="field">
       <label>tr{Title}</label>
@@ -77,3 +83,65 @@
   </div>
 
 </div>
+
+<script>
+  (function () {
+    var languages = [
+      {
+        name: 'en',
+        title: 'English'
+      },
+      {
+        name: 'es',
+        title: 'Spanish'
+      },
+      {
+        name: 'de',
+        title: 'German'
+      },
+      {
+        name: 'ru',
+        title: 'Russian'
+      },
+      {
+        name: 'cmn',
+        title: 'Mandarin'
+      },
+      {
+        name: 'ar',
+        title: 'Arabic'
+      },
+      {
+        name: 'fa',
+        title: 'Persian'
+      },
+      {
+        name: 'nl',
+        title: 'Dutch'
+      }
+    ];
+
+    var languagesMap = {
+      en: "English",
+      es: "Spanish",
+      de: "German",
+      ru: "Russian",
+      cmn: "Mandarin",
+      ar: "Arabic",
+      fa: "Persian",
+      nl: 'Dutch'
+    };
+
+    new Vue({
+      el: '#webroot-settings-card',
+      data: {
+        items: [],
+        activeLanguage: 'en',
+        languagesMap: languagesMap,
+        languages: languages,
+        contentId: null
+      }
+    });
+
+  })();
+</script>
