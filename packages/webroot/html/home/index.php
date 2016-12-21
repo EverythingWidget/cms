@@ -8,25 +8,24 @@ $app = "webroot";
 $_SESSION['ROOT_DIR'] = EW_ROOT_DIR;
 $_REQUEST['cmdResult'] = '';
 
-webroot\WidgetsManagement::include_html_link(['rm/public/css/bootstrap.css']);
+webroot\WidgetsManagement::include_html_link(['rm/public/css/grid.css']);
 
-webroot\WidgetsManagement::add_html_script(["include" => "rm/public/js/jquery/build.js"]);
-webroot\WidgetsManagement::add_html_script(["include" => "rm/public/js/webcomponents/webcomponents-lite.min.js"]);
-webroot\WidgetsManagement::add_html_script(["include" => "rm/public/js/x-tag/x-tag.min.js"]);
-webroot\WidgetsManagement::add_html_script(["include" => "rm/public/js/galaxyjs/galaxy-tags-min.js"]);
-webroot\WidgetsManagement::add_html_script(["include" => "rm/public/js/vue/vue.min.js"]);
-webroot\WidgetsManagement::add_html_script(["include" => "admin/public/js/lib/bootstrap.js"]);
-webroot\WidgetsManagement::add_html_script(["include" => "rm/public/js/gsap/TweenLite.min.js"]);
-webroot\WidgetsManagement::add_html_script(["include" => "rm/public/js/gsap/easing/EasePack.min.js"]);
-webroot\WidgetsManagement::add_html_script(["include" => "rm/public/js/gsap/jquery.gsap.min.js"]);
-webroot\WidgetsManagement::add_html_script(["include" => "rm/public/js/gsap/plugins/CSSPlugin.min.js"]);
+webroot\WidgetsManagement::add_html_script(['include' => 'rm/public/js/jquery/build.js']);
+webroot\WidgetsManagement::add_html_script(['include' => 'rm/public/js/webcomponents/webcomponents-lite.min.js']);
+webroot\WidgetsManagement::add_html_script(['include' => 'rm/public/js/x-tag/x-tag.min.js']);
+webroot\WidgetsManagement::add_html_script(['include' => 'rm/public/js/galaxyjs/galaxy-tags-min.js']);
+webroot\WidgetsManagement::add_html_script(['include' => 'rm/public/js/vue/vue.min.js']);
+webroot\WidgetsManagement::add_html_script(['include' => 'rm/public/js/gsap/TweenLite.min.js']);
+webroot\WidgetsManagement::add_html_script(['include' => 'rm/public/js/gsap/easing/EasePack.min.js']);
+webroot\WidgetsManagement::add_html_script(['include' => 'rm/public/js/gsap/jquery.gsap.min.js']);
+webroot\WidgetsManagement::add_html_script(['include' => 'rm/public/js/gsap/plugins/CSSPlugin.min.js']);
 
 $VIEW = webroot\WidgetsManagement::generate_view($_REQUEST["_uis"]);
-$HTML_BODY = $VIEW["body_html"];
-$WIDGET_DATA = $VIEW["widget_data"];
+$HTML_BODY = $VIEW['body_html'];
+$WIDGET_DATA = $VIEW['widget_data'];
 
 // If template has a 'template.php' then include it
-$template_php = EW_PACKAGES_DIR . '/rm/public/' . $_REQUEST["_uis_template"] . '/template.php';
+$template_php = EW_PACKAGES_DIR . '/rm/public/' . $_REQUEST['_uis_template'] . '/template.php';
 if (file_exists($template_php)) {
   require_once $template_php;
   $template = new \template();
@@ -46,7 +45,7 @@ if (file_exists($template_php)) {
   if ($template_script_dom) {
     $template_script_dom = preg_replace('/\$php\.\$template_settings/', $template_settings, $template_script_dom);
 
-    $TEMPLATE_SCRIPT = '<script id="template-script">' . $template_script_dom . '</script>';
+    $TEMPLATE_SCRIPT = '<script id="template-script" async>' . $template_script_dom . '</script>';
   }
 }
 
@@ -95,8 +94,11 @@ $HTML_META_TAGS = webroot\WidgetsManagement::get_meta_tags();
     echo "<link rel='alternate' href='{$_SERVER['REQUEST_URI']}' hreflang='$page_language' />";
     echo "<link rel='shortcut icon' href='$favicon' />";
     echo "<link rel='apple-touch-icon-precomposed' href='$favicon' />";
+    echo $HTML_LINKS['head'];
     echo "<meta name='msapplication-TileColor' content='#FFFFFF' />";
     echo "<meta name='msapplication-TileImage' content='$favicon' />";
+
+//    echo '<style>' . file_get_contents(EW_PACKAGES_DIR . '/rm/public/css/grid.css') . '</style>';
 
     if (isset($google_analytics_id)) {
       ?>
@@ -116,6 +118,7 @@ $HTML_META_TAGS = webroot\WidgetsManagement::get_meta_tags();
         })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
 
         ga('create', '<?= $google_analytics_id ?>', 'auto');
+        ga('require', 'linkid');
         ga('send', 'pageview');
       </script>
       <?php
@@ -130,15 +133,15 @@ $HTML_META_TAGS = webroot\WidgetsManagement::get_meta_tags();
     <?php } ?>
 
     <script id="widget-data">
-      (function () {
-        var ew_widget_data = {};
-        var ew_widget_actions = {};
+        (function () {
+          var ew_widget_data = {};
+          var ew_widget_actions = {};
 
 <?= $WIDGET_DATA; ?>
 
-        window.ew_widget_data = ew_widget_data;
-        window.ew_widget_actions = ew_widget_actions;
-      })();
+          window.ew_widget_data = ew_widget_data;
+          window.ew_widget_actions = ew_widget_actions;
+        })();
     </script>      
 
     <?= $HTML_SCRIPTS; ?>
@@ -150,6 +153,6 @@ $HTML_META_TAGS = webroot\WidgetsManagement::get_meta_tags();
     </div>
 
     <?= $HTML_CSS['tag'] ?>
-    <?= $HTML_LINKS; ?>
+    <?= $HTML_LINKS['body'] ?>
   </body>  
 </html>

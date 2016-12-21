@@ -850,7 +850,7 @@ class WidgetsManagement extends \ew\Module {
   private static function get_widget_data() {
     foreach (self::$widget_data as $wi => $data) {
       $data = ($data) ? json_encode($data, JSON_UNESCAPED_SLASHES) : "{}";
-      $data_string.="ew_widget_data['$wi'] = $data;\n\n";
+      $data_string.="ew_widget_data['$wi'] = $data;\n";
     }
     return $data_string;
   }
@@ -932,11 +932,12 @@ class WidgetsManagement extends \ew\Module {
         $element_src = "src='{$script["src"]}'";
       }
 
-      if ($script["include"]) {
-        if (in_array($script["include"], $includes))
+      if ($script['include']) {
+        if (in_array($script['include'], $includes)) {
           continue;
+        }
 
-        $includes[] = $script["include"];
+        $includes[] = $script['include'];
       }
       else {
         $script_tags.="<script $element_id $element_src defer>{$script["script"]}</script>\n";
@@ -995,7 +996,10 @@ class WidgetsManagement extends \ew\Module {
   }
 
   public static function add_html_link($href) {
-    self::$html_links[] = $href;
+    if (is_array($href)) {
+      return self::$html_links[] = $href;
+    }
+    self::$html_links[] = ['rel' => 'stylesheet', 'href' => $href];
   }
 
   public static function set_meta_tag($tag) {
@@ -1017,7 +1021,7 @@ class WidgetsManagement extends \ew\Module {
 
   public static function get_page_info() {
     $url = parse_url(str_replace(EW_DIR, '/', $_SERVER['REQUEST_URI']));
-    
+
     $currentAppConf = EWCore::call_api('admin/api/settings/read-settings', [
                 'app_name' => 'webroot'
             ])['data'];
@@ -1048,11 +1052,21 @@ class WidgetsManagement extends \ew\Module {
   }
 
   public static function get_html_links() {
-    $link_tags = "";
-    foreach (self::$html_links as $href) {
-      $link_tags .= "<link rel='stylesheet' property='stylesheet' type='text/css' href='$href' />";
+    $head_link_tags = '';
+    $body_link_tags = '';
+    foreach (self::$html_links as $item) {
+      if ($item['place'] === 'body') {
+        $body_link_tags .= "<link rel='{$item['rel']}' href='{$item['href']}' />";
+      }
+      else {
+        $head_link_tags .= "<link rel='{$item['rel']}' href='{$item['href']}' />";
+      }
     }
-    return $link_tags;
+    
+    return [
+        'head' => $head_link_tags,
+        'body' => $body_link_tags
+    ];
   }
 
   public static function get_html_links_concatinated($element_id = '') {
