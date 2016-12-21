@@ -322,7 +322,7 @@ window.addEventListener('load', function () {
       System.ui.components.navigationMenu.removeClass("expand");
       TweenLite.to(System.ui.components.sectionsMenu[0], .2, {
         className: "sections-menu",
-        marginTop: 0,
+//        marginTop: 0,
         ease: "Power2.easeInOut",
         onComplete: function () {
           if (!System.services.app_service.loading_app && currentSectionIndex !== System.ui.components.sectionsMenuList[0].value) {
@@ -341,7 +341,7 @@ window.addEventListener('load', function () {
     System.ui.components.navigationMenu.removeClass("expand");
     TweenLite.to(System.ui.components.sectionsMenu[0], .2, {
       className: "sections-menu",
-      marginTop: 0,
+//      marginTop: 0,
       ease: "Power2.easeInOut",
       onComplete: function () {
         if (!System.services.app_service.loading_app && currentSectionIndex !== System.ui.components.sectionsMenuList[0].value) {

@@ -30,9 +30,9 @@
         <div v-for="folder in folders.data" track-by="id" tabindex='1' class='content-item folder' 
              v-bind:data-content-id="folder.id" 
              v-on:drop="moveItem" v-on:dragover="isAllowed">
-          <span></span>
-          <p class="date">{{ folder.round_date_created }}</p>
+          <span></span>          
           <p>{{ folder.title }}</p>          
+          <p class="date">{{ folder.round_date_created }}</p>
         </div>
       </div>
 
@@ -48,9 +48,9 @@
              v-bind:data-content-id="article.id"
              v-for="article in articles.data" 
              v-on:dragstart="dragStart">
-          <span></span>
-          <p class='date'>{{ article.round_date_created }}</p>
+          <span></span>          
           <p>{{ article.title }}</p>          
+          <p class='date'>{{ article.round_date_created }}</p>
         </div>
       </div>    
     </div>

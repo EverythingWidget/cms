@@ -20,6 +20,7 @@ class App extends \ew\App
    protected $name = "Webroot";
    protected $description = "Show contents to the users";
    protected $version = "0.9";   
+   public static $HOME_PAGE_JS_PLUGINS = 'webroot/home-page/head/js';
    
    public function index()
    {

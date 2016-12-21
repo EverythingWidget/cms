@@ -3,6 +3,8 @@ body{margin:0;padding:0}
 a{text-decoration:none}
 input,button,select,textarea{font-family:inherit;font-size:inherit;line-height:inherit}
 .container{margin-right:auto;margin-left:auto;padding-left:15px;padding-right:15px}
+.pull-right{float: right !important;}
+.pull-left{float: left !important;}
 .row{margin-left:-15px;margin-right:-15px}
 .row:before,.row:after{content:" ";display:table}
 .row:after{clear:both}

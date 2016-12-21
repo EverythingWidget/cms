@@ -58,6 +58,14 @@ class WidgetsManagement extends \ew\Module {
         'title'        => 'UI Structures',
         'template_url' => 'webroot/html/widgets-management/layout-chooser.php'
     ]);
+    
+    \EWCore::register_object(\webroot\App::$HOME_PAGE_JS_PLUGINS, 'google-analytics',[
+        'path'=>'webroot/html/home/google-analytics.php'
+    ]);
+    
+    \EWCore::register_object(\webroot\App::$HOME_PAGE_JS_PLUGINS, 'google-amp',[
+        'path'=>'webroot/html/home/google-amp.php'
+    ]);
 
     $this->add_listener('admin/api/content-management/contents-update', 'on_contents_update');
     $this->add_listener('admin/api/content-management/get-article', 'call_on_folder_get');
