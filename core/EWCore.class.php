@@ -164,14 +164,12 @@ class EWCore {
       $response_data = $EW->process($parameters);
     }
     else {
-      if(static::$CACHED_APPS[$real_class_name]) {
-        $response_data = static::$CACHED_APPS[$real_class_name]->process_command($package, $resource_type, $module_name, $method_name, $parameters);
+      if (isset(static::$APPS[$real_class_name])) {
+        $response_data = static::get_app($real_class_name)->process_command($package, $resource_type, $module_name, $method_name, $parameters);
       }
       else if (class_exists($real_class_name)) {
         // Create an instance of section with its parent App
         $app_object = new $real_class_name;
-        static::$CACHED_APPS[$real_class_name] = $app_object;
-
         $response_data = $app_object->process_command($package, $resource_type, $module_name, $method_name, $parameters);
       }
       else {
@@ -565,7 +563,7 @@ class EWCore {
           require_once EW_PACKAGES_DIR . "/" . $app_dir . "/App.app.php";
           $app_class_name = $package . "\\App";
 
-          self::$APPS[$package] = new $app_class_name();
+          self::$APPS[$app_class_name] = new $app_class_name();
         }
         catch (Exception $ex) {
           echo $ex->getTraceAsString();
@@ -574,7 +572,6 @@ class EWCore {
     }
 
     foreach (self::$APPS as $key => $app) {
-//      echo $app->get_root() . "/App.app.php <br>";
       $app->init_app();
     }
     // Optimization tip

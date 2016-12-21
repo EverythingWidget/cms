@@ -26,6 +26,7 @@ class App {
   private $resource_handlers = [];
   private $loaded_modules = [];
   private $loaded = false;
+  private $cached_resource_handlers = [];
 
   public function __construct() {
     if ($this->loaded) {
@@ -207,9 +208,7 @@ class App {
 
   public function register_resource_handler($name, $func) {
     $this->resource_handlers[$name] = $func;
-  }
-
-  private $cached_resource_handlers = [];
+  }  
 
   private function get_resource_handler($resource_type) {
     $resource_handler_name = $this->resource_handlers[$resource_type];
