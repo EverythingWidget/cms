@@ -83,7 +83,7 @@ $nav-bar-bg: rgba(255,255,255,.9);
 
         &:first-child {
           margin: -15px -30px 30px;
-          max-width: none;
+          max-width: calc(100% + 60px);
         }
       }
 
