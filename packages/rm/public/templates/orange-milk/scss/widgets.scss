@@ -1150,43 +1150,62 @@
 .widget.social-links {
   display: flex;
   justify-content: center;
-  margin: 20px 0;
+  margin: 0;
+  padding: 20px 0;
 
   .link {
-    width: 64px;
-    height: 64px;
+    width: 58px;
+    height: 58px;
+    margin: 0 5px;
+    text-align: center;
+    border-radius: 7px;
+    overflow: hidden;
+    transition: all .2s linear;
 
+    &:hover {
+      opacity: 0.9;
+    }
 
     > .icon {
       font-family: 'si';
       display: block;
-      width: 64px;
-      height: 64px;
-      line-height: 64px;
-      text-align: center;
-      border-radius: 6px;
-      font-size: 35px;
+      width: 58px;
+      height: 58px;
+      line-height: 58px;
+      text-align: center;      
+      font-size: 36px;
       color:#fff;
-      background-color: #3e5b98;
 
       &::before {
         font-style: normal;
         font-family: 'si';
         display: block;
         height: 100%;
-      }
-
-      &:hover {
-        background-color: lighten(#3e5b98,10%);
-      }
+      }      
     }
 
     > .icon-facebook {
+      background-color: #3e5b98;
 
       &::before {
         content:'\e041';  
       }
+    }
 
+    > .icon-youtube {
+      background-color: #e02a20;
+
+      &::before {
+        content:'\e051';  
+      }
+    }
+
+    > .icon-twitter {
+      background-color: #4da7de;
+
+      &::before {
+        content:'\e040';  
+      }
     }
   }
 }

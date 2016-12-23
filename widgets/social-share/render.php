@@ -7,7 +7,7 @@ $facebook_app_id = EWCore::call_api('admin/api/settings/read-settings', [
 
 webroot\WidgetsManagement::set_meta_tag([
     'property' => 'og:url',
-    'content'  => $page_info['url']
+    'content'  => $page_info['webroot/url']
 ]);
 
 webroot\WidgetsManagement::set_meta_tag([
@@ -17,12 +17,12 @@ webroot\WidgetsManagement::set_meta_tag([
 
 webroot\WidgetsManagement::set_meta_tag([
     'property' => 'og:title',
-    'content'  => $page_info['title']
+    'content'  => $page_info['webroot/title']
 ]);
 
 webroot\WidgetsManagement::set_meta_tag([
     'property' => 'og:description',
-    'content'  => $page_info['description']
+    'content'  => $page_info['webroot/description']
 ]);
 
 webroot\WidgetsManagement::set_meta_tag([
@@ -31,7 +31,7 @@ webroot\WidgetsManagement::set_meta_tag([
 ]);
 ?>
 <div class="fb-like" 
-     data-href="<?= $page_info['url'] ?>" 
+     data-href="<?= $page_info['webroot/url'] ?>" 
      data-layout="box_count" 
      data-action="like" 
      data-size="large" 
@@ -40,7 +40,7 @@ webroot\WidgetsManagement::set_meta_tag([
 
 
 <div class="fb-share-button" 
-     data-href="<?= $page_info['url'] ?>" 
+     data-href="<?= $page_info['webroot/url'] ?>" 
      data-layout="box_count" 
      data-size="large" 
      data-mobile-iframe="false">
@@ -58,14 +58,4 @@ webroot\WidgetsManagement::set_meta_tag([
     js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.8";
     fjs.parentNode.insertBefore(js, fjs);
   }(document, 'script', 'facebook-jssdk'));
-
-  (function () {
-//    document.getElementById('shareBtn').onclick = function () {
-//      FB.ui({
-//        method: 'share',
-//        display: 'popup',
-//        href: '<?= $page_info['url'] ?>',
-//      }, function (response) {});
-//    }
-  })();
 </script>

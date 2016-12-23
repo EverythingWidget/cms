@@ -1,7 +1,12 @@
-<div class="form">    
+<div class="form-block">    
   <system-field class="field">
     <label>Facebook</label>
-    <input class="text-field" name="facebook" id="facebook" >    
+    <input class="text-field" name="facebook" />    
+  </system-field>
+  
+  <system-field class="field">
+    <label>YouTube</label>
+    <input class="text-field" name="youtube" />    
   </system-field>
 
 </div>
@@ -11,6 +16,5 @@
       el: '#uis-widget',
       data: {}
     });
-
   })();
 </script>

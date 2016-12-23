@@ -22,6 +22,20 @@ class Home extends \ew\Module
    {
       return 'Home Page';
    }
+   
+   protected function install_assets() {
+     \EWCore::register_object(\webroot\App::$HOME_PAGE_JS_PLUGINS, 'google-analytics',[
+        'path'=>'webroot/html/home/google-analytics.php'
+    ]);
+    
+    \EWCore::register_object(\webroot\App::$HOME_PAGE_JS_PLUGINS, 'google-amp',[
+        'path'=>'webroot/html/home/google-amp.php'
+    ]);
+    
+    \EWCore::register_object(\webroot\App::$HOME_PAGE_JS_PLUGINS, 'ew-widgets-data',[
+        'path'=>'webroot/html/home/ew-widgets-data.php'
+    ]);
+   }
 
    protected function install_permissions()
    {

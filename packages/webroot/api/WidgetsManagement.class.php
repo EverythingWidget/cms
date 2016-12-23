@@ -58,14 +58,6 @@ class WidgetsManagement extends \ew\Module {
         'title'        => 'UI Structures',
         'template_url' => 'webroot/html/widgets-management/layout-chooser.php'
     ]);
-    
-    \EWCore::register_object(\webroot\App::$HOME_PAGE_JS_PLUGINS, 'google-analytics',[
-        'path'=>'webroot/html/home/google-analytics.php'
-    ]);
-    
-    \EWCore::register_object(\webroot\App::$HOME_PAGE_JS_PLUGINS, 'google-amp',[
-        'path'=>'webroot/html/home/google-amp.php'
-    ]);
 
     $this->add_listener('admin/api/content-management/contents-update', 'on_contents_update');
     $this->add_listener('admin/api/content-management/get-article', 'call_on_folder_get');
@@ -1083,7 +1075,7 @@ class WidgetsManagement extends \ew\Module {
         $head_link_tags .= "<link rel='{$item['rel']}' href='{$item['href']}' />";
       }
     }
-    
+
     return [
         'head' => $head_link_tags,
         'body' => $body_link_tags
@@ -1136,6 +1128,19 @@ class WidgetsManagement extends \ew\Module {
     }
 
     if ($minified_css) {
+//      $oCssParser = new \Sabberworm\CSS\Parser(file_get_contents($cache_path));
+//      $oCssDocument = $oCssParser->parse();
+//      $oFormat = \Sabberworm\CSS\OutputFormat::create()->get('display');
+//
+//      foreach ($oCssDocument->getAllRuleSets() as $oRuleSet) {
+//        $oRuleSet->setRules(
+//            $oRuleSet->getRules('width')
+//        );
+//      }
+//
+//      echo $oCssDocument->render($oFormat);
+//      die();
+
       $css_tag.="<link rel='stylesheet' property='stylesheet' type='text/css' id='ew-compiled-css' href='$cache_path_url' />";
     }
 

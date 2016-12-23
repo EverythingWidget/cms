@@ -1,5 +1,5 @@
 <?php
-$accelerated_mobile_pages = $view_data['webroot/accelerated-mobile-pages'];
+$accelerated_mobile_pages = $view_data['configs']['webroot/accelerated-mobile-pages'];
 if (!$accelerated_mobile_pages) {
   return;
 }

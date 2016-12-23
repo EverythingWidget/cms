@@ -3,7 +3,7 @@ session_start();
 global $rootAddress, $pageAddress;
 
 $current_path = str_replace(EW_DIR, '', $_SERVER['REQUEST_URI']);
-$app = "webroot";
+$app = 'webroot';
 
 $_SESSION['ROOT_DIR'] = EW_ROOT_DIR;
 $_REQUEST['cmdResult'] = '';
@@ -22,14 +22,12 @@ webroot\WidgetsManagement::add_html_script(['include' => 'rm/public/js/gsap/plug
 
 $VIEW = webroot\WidgetsManagement::generate_view($_REQUEST['_uis']);
 $HTML_BODY = $VIEW['body_html'];
-$WIDGET_DATA = $VIEW['widget_data'];
 
 // If template has a 'template.php' then include it
 $template_php = EW_PACKAGES_DIR . '/rm/public/' . $_REQUEST['_uis_template'] . '/template.php';
 if (file_exists($template_php)) {
   require_once $template_php;
   $template = new \template();
-  //$uis_data = json_decode(admin\WidgetsManagement::get_uis($_REQUEST["_uis"]), true);
   $template_settings = $_REQUEST['_uis_template_settings'];
 
   if (is_array($template_settings)) {
@@ -53,13 +51,12 @@ if ($_REQUEST['_uis_template']) {
   webroot\WidgetsManagement::include_html_link(['rm/public/' . $_REQUEST['_uis_template'] . '/template.css']);
 }
 
-$currentAppConf = webroot\WidgetsManagement::get_page_info();
-
-$website_title = $currentAppConf['webroot/title'];
-$page_description = $currentAppConf['webroot/description'];
-$website_keywords = $currentAppConf['webroot/keywords'];
-$favicon = $currentAppConf['webroot/favicon'];
-$page_language = $currentAppConf['webroot/language'] ? $currentAppConf['webroot/language'] : 'en';
+$webroot_config = webroot\WidgetsManagement::get_page_info();
+$website_title = $webroot_config['webroot/title'];
+$page_description = $webroot_config['webroot/description'];
+$website_keywords = $webroot_config['webroot/keywords'];
+$favicon = $webroot_config['webroot/favicon'];
+$page_language = $webroot_config['webroot/language'] ? $webroot_config['webroot/language'] : 'en';
 
 if ($page_description) {
   \webroot\WidgetsManagement::set_meta_tag([
@@ -97,34 +94,43 @@ $HTML_META_TAGS = webroot\WidgetsManagement::get_meta_tags();
     echo $HTML_LINKS['head'];
 
     $js_plugins = EWCore::read_registry_as_array(\webroot\App::$HOME_PAGE_JS_PLUGINS);
-
     foreach ($js_plugins as $plugin) {
-      echo EWCore::get_view($plugin['path'], $currentAppConf);
+      echo EWCore::get_view($plugin['path'], [
+          'configs' => $webroot_config,
+          'view'    => $VIEW
+      ]);
     }
 
-    ?>
+    echo $HTML_SCRIPTS;
+    echo $TEMPLATE_SCRIPT;
+    ?>          
 
-    <script id="widget-data">
-      (function () {
-        var ew_widget_data = {};
-        var ew_widget_actions = {};
+    <script>
+      (function (href, before, media) {
+        var doc = window.document;
+        var link = doc.createElement('link');        
+        link.rel = 'stylesheet';
+        link.href = href;
+        link.media = 'only x';
 
-<?= $WIDGET_DATA; ?>
+        function stylesheetLoaded() {
+          if (link.addEventListener) {
+            link.removeEventListener('load', stylesheetLoaded);
+          }
+          link.media = media || 'all';
+        }
 
-        window.ew_widget_data = ew_widget_data;
-        window.ew_widget_actions = ew_widget_actions;
-      })();
-    </script>      
-
-    <?= $HTML_SCRIPTS; ?>
-    <?= $TEMPLATE_SCRIPT; ?>          
+        link.addEventListener('load', stylesheetLoaded);
+        (doc.getElementsByTagName('head')[0]).appendChild(link);
+      })('<?= $HTML_CSS['path'] ?>');
+    </script>
+    <noscript><link rel="stylesheet" href="<?= $HTML_CSS['path'] ?>"></noscript>
   </head>
   <body class="<?= EWCore::get_language_dir($_REQUEST['_language']) ?>">
     <div id="base-content-pane" class="container">
       <?= $HTML_BODY; ?>
     </div>
 
-    <?= $HTML_CSS['tag'] ?>
     <?= $HTML_LINKS['body'] ?>
   </body>  
 </html>

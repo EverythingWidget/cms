@@ -1,5 +1,5 @@
 <?php
-$google_analytics_id = $view_data['webroot/google-analytics-id'];
+$google_analytics_id = $view_data['configs']['webroot/google-analytics-id'];
 if (!isset($google_analytics_id)) {
   return;
 }

@@ -6,5 +6,12 @@ if ($widget_parameters['facebook']) {
   </a>
   <?php
 }
-?>
+
+if ($widget_parameters['youtube']) {
+  ?>
+  <a class="link youtube" target="_blank" href="<?= $widget_parameters['youtube'] ?>">
+    <i class="icon icon-youtube"></i>
+  </a>
+  <?php
+}
 
