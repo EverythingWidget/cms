@@ -34,15 +34,17 @@ class Blocks extends \ew\Module {
 
   protected function install_permissions() {
     $this->register_permission('view', 'User can view the blocks section', [
+        'api/read',
         'html/blocks-tabs/component.php',
-        'api/read'
+        'html/block-form/component.php'
     ]);
 
     $this->register_permission('manipulate', 'User can add, edit and remove a block', [
         'api/create',
         'api/update',
         'api/delete',
-        'html/blocks-tabs/component.php'
+        'html/blocks-tabs/component.php',
+        'html/block-form/component.php'
     ]);
 
     $this->register_public_access([
