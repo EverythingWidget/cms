@@ -24,6 +24,7 @@ class EWCore {
   public static $EW_CONTENT_COMPONENT = "ew-content-component";
   public static $EW_APP = "ew-app";
   public static $APPS = [];
+  public static $DEFINED_TABLES = [];
 
   public function __construct() {
     static::$languages = include('../config/languages.php');
@@ -39,12 +40,11 @@ class EWCore {
   }
 
   public function init() {
+    self::$loaders_installed = true;
     $database_config = include('../config/database.php');
     $this->load_vendors();
-    self::$loaders_installed = true;
-    self::init_packages();
 
-    if ($database_config["database_library"] == TRUE) {
+    if ($database_config['database_library'] == TRUE) {
       static::$DB = new Illuminate\Database\Capsule\Manager;
       static::$DB->addConnection([
           'driver'    => 'mysql',
@@ -59,6 +59,11 @@ class EWCore {
       static::$DB->setAsGlobal();
       static::$DB->bootEloquent();
     }
+
+    static::$DEFINED_TABLES = ew\DBUtility::get_tables($database_config['database']);
+
+
+    self::init_packages();
   }
 
   public function start() {
@@ -1546,6 +1551,8 @@ class EWCore {
     if (isset(self::$no_permission_needed["$app_name/$module_name"]) && in_array($method_name, self::$no_permission_needed["$app_name/$module_name"])) {
       return "public-access";
     }
+    
+    
 
     $pers = isset(self::$permissions_groups[$app_name]) ? self::$permissions_groups[$app_name]["section"] : false;
 
@@ -1556,6 +1563,7 @@ class EWCore {
     if ($pers) {
       $pers = $pers[$module_name]["permission"];
     }
+//    print_r($pers);
     //$permissions_titles = array();
 
     $result = array();

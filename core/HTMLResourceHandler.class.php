@@ -88,9 +88,10 @@ class HTMLResourceHandler extends ResourceHandler {
     if ($path !== null && is_file(EW_PACKAGES_DIR . '/' . $path)) {
       //$ext = $this->get_extension($path);
       $type = $this->get_mime_type($path);
-      if (\admin\UsersManagement::user_has_permission($app->get_root(), 'html', $module_name, $method_name)) {
+      
+      if (\admin\UsersManagement::user_has_permission($app->get_root(), 'html', $module_name, $file)) {
         $result = $this->load_file(EW_PACKAGES_DIR . '/' . $path, $type, $parameters);
-
+//echo $app->get_root(). 'html'. $module_name.'/'. $file;
         return $result;
       }
       else {

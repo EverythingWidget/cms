@@ -63,6 +63,20 @@ $nav-bar-bg: rgba(255,255,255,.9);
       font-size: 16px;
       box-shadow: 0 3px 5px rgba(0,0,0,.1), 0 8px 14px rgba(0,0,0,.14); 
 
+/*      &:before {
+        content: ' ';
+        display: block;
+        width: 100%;
+        top: 0;
+        left: 0;
+        height: 125px;
+        background-image: url('../templates/orange-milk/images/bible-text.jpg');
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center center;
+        position: absolute;
+      }*/
+
       .widget-container, .widget {
         padding: 0;
         margin: 0;
@@ -70,7 +84,7 @@ $nav-bar-bg: rgba(255,255,255,.9);
       }
 
       .widget {
-        padding: 15px 30px;
+        padding: 0 30px;
 
       }     
 
@@ -82,7 +96,8 @@ $nav-bar-bg: rgba(255,255,255,.9);
         display: block;
 
         &:first-child {
-          margin: -15px -30px 30px;
+          width: auto;
+          margin: -15px -30px 0;
           max-width: calc(100% + 60px);
         }
       }
@@ -104,10 +119,9 @@ $nav-bar-bg: rgba(255,255,255,.9);
   .panel {
     &.article {
       width: 720px;
-      padding: 0;
       padding-bottom: 30px;
       border-width: 0px;
-      border-radius: 5px;
+      border-radius: 7px;
       font-size: 1em;
 
       .widget {
@@ -119,7 +133,8 @@ $nav-bar-bg: rgba(255,255,255,.9);
       img {
         width: auto;
         &:first-child {
-          margin: -15px -60px 30px;
+          margin: -15px -80px 0;
+          max-width: calc(100% + 120px);
         }
       }
     }
@@ -153,22 +168,19 @@ $nav-bar-bg: rgba(255,255,255,.9);
 }
 
 @media (min-width: 992px) {
-
   .panel{
-
     &.article {
       width: 860px;
-      padding: 0;
       padding-bottom: 60px;
 
       .widget {
-        padding:0 80px;
+        padding: 15px 80px;
       }
 
       img {
         &:first-child {
-          margin: 0 -80px;
-          margin-bottom: 60px;
+          margin: -15px -80px 0;
+          max-width: calc(100% + 160px);
         }
       }
     }

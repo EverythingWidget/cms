@@ -1006,7 +1006,7 @@ UISForm.prototype.widgetForm = function (widgetType, parentId, feederType) {
 
   self.currentDialog = d;
 
-  $.post("html/webroot/widgets-management/layouts/widget-form/component.php", {
+  $.post("html/webroot/widgets-management/widget-form/component.php", {
     template: self.uisTemplate,
     widgetType: widgetType,
     feederType: feederType,
@@ -1036,7 +1036,7 @@ UISForm.prototype.editWidget = function (wId) {
 
   self.currentDialog = widgetFormDialog;
   var widget = self.getEditorItem(wId);
-  $.post('html/webroot/widgets-management/layouts/widget-form/component.php', {
+  $.post('html/webroot/widgets-management/widget-form/component.php', {
     template: self.uisTemplate,
     widgetId: wId,
     widgetType: widget.attr('data-widget-type'),

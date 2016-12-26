@@ -132,7 +132,7 @@
 //    component.state.on('select', component.states.select);
     component.actions.newAlbum = {
       title: "tr{New Album}",
-      activity: "admin/html/content-management/media/album-form.php",
+      activity: "admin/html/content-management/album-form/component.php",
       hide: false,
       parameters: function (params) {
         params.albumId = null;
@@ -142,7 +142,7 @@
 
     component.actions.uploadImage = {
       title: "tr{Upload Photo}",
-      activity: "admin/html/content-management/media/upload-form.php",
+      activity: "admin/html/content-management/upload-form/component.php",
       hide: false,
       parameters: function () {
         return {
@@ -211,7 +211,7 @@
     });
 
     this.seeAlbumActivity = EW.getActivity({
-      activity: "admin/html/content-management/media/album-form.php",
+      activity: "admin/html/content-management/album-form/component.php",
       parent: "action-bar-items",
       modal: {
         class: "center properties"

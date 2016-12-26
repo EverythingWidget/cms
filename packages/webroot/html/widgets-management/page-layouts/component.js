@@ -31,13 +31,13 @@ PageLayoutsStateHandler.prototype.start = function () {
     {
       title: 'Contents Layouts',
       state: 'contents-layouts',
-      url: 'html/webroot/widgets-management/page-layouts/contents-layouts/component.php',
+      url: 'html/webroot/widgets-management/contents-layouts-tab/component.php',
       id: 'widgets-management/pages-uis/contents-layouts'
     },
     {
       title: 'All Layouts',
       state: 'all',
-      url: 'html/webroot/widgets-management/page-layouts/all/component.php',
+      url: 'html/webroot/widgets-management/all-layouts-tab/component.php',
       id: 'widgets-management/pages-uis/all'
     }
   ];

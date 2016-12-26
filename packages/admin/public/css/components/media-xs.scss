@@ -286,16 +286,16 @@
     z-index: 5;
     float: left;
     padding: 0;
-    background-color: rgba(#fff,0);
-    transition: all .25s ease-in-out;    
+    /*background-color: rgba(#fff,0);*/
+    /*transition: all .25s ease-in-out;*/    
   }
 
   .navigation-menu.expand {
     width: 360px;
-    transition-property: background-color, box-shadow;
-    transition-duration: 1s;  
-    background-color: rgba(#fff,.4);
-    box-shadow: 1px 0 3px rgba(0,0,0,0.02), 4px 0 17px rgba(0,0,0,0.05);
+    /*transition-property: background-color, box-shadow;*/
+    /*transition-duration: 1s;*/  
+    /*background-color: rgba(#fff,.5);*/
+    /*box-shadow: 1px 0 3px rgba(0,0,0,0.03), 4px 0 17px rgba(0,0,0,0.06);*/
   }
 
   .navigation-menu.expand .apps-menu{

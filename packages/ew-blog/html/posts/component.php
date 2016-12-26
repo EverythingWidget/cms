@@ -9,7 +9,7 @@
 
   <div class="card-content list">
     <div class="card-control-bar">
-      <!--      <label class="checkbox">
+<!--            <label class="checkbox">
               Compact view
               <input type="checkbox" v-model="compact_view" /><i></i>
             </label>-->

@@ -15,6 +15,11 @@
       },
       methods: {
         goToState: function (state) {
+          if (System.modules['system/' + state]) {
+            var lastSelectedSection = System.modules['system/' + state].params['app'] || state;
+            return System.app.setNav(lastSelectedSection);
+          }
+          
           System.app.setNav(state);
         }
       }

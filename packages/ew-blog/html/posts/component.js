@@ -74,16 +74,6 @@ function PostsComponent(state, scope) {
   };
 }
 
-PostsComponent.prototype.readPosts = function () {
-  var component = this;
-
-  $.get('api/ew-blog/posts/included-contents', {
-    page_size: 10
-  }, function (response) {
-    component.data.posts = response;
-  });
-};
-
 System.newStateHandler(Scope, function (state) {
   new PostsComponent(state, Scope);
 });

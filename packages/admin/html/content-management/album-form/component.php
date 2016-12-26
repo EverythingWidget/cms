@@ -1,18 +1,9 @@
 <?php
 
 //session_start();
-$albumInfo = EWCore::call_api("admin/api/content-management/albums", [
+$albumInfo = EWCore::call_api('admin/api/content-management/albums', [
             'albumId' => $_REQUEST["albumId"]
         ])['data'];
-
-function inputs() {
-  ob_start();
-  ?>
-
-  <?php
-
-  return ob_get_clean();
-}
 
 function scripts() {
   ob_start();
@@ -20,11 +11,10 @@ function scripts() {
   return ob_get_clean();
 }
 
-//EWCore::register_form("ew-content-form-proerties", "article-properties", ["content" => inputs()]);
 echo admin\ContentManagement::create_content_form([
     "formId"         => "album-form",
     'form_title'      => 'Album',
     "content_type"    => "album",
-    "include_script" => scripts(),
+    "include_script" => \ew\ResourceUtility::get_view(__DIR__ . '/component.js', [], true),
     "data"           => json_encode($albumInfo)
 ]);

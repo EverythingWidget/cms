@@ -16,22 +16,24 @@ class Posts extends \ew\Module {
   }
 
   protected function install_assets() {
-    $table_install = \EWCore::create_table('ew_blog_posts', [
-                'id'             => 'BIGINT AUTO_INCREMENT PRIMARY KEY',
-                'content_id'     => 'VARCHAR(200) NOT NULL',
-                'visibility'     => 'VARCHAR(300) NOT NULL',
-                'post_status'    => 'TINYINT(1) NULL',
-                'draft'          => 'BOOLEAN',
-                'comments'       => 'TINYINT(1) NOT NULL DEFAULT 0',
-                'date_published' => 'DATETIME NULL',
-                'post_order'     => 'SMALLINT DEFAULT 0',
-                'user_id'        => 'BIGINT(20) NOT NULL'
-    ]);
+    if (!in_array('ew_blog_posts', \EWCore::$DEFINED_TABLES)) {
+      $table_install = \EWCore::create_table('ew_blog_posts', [
+                  'id'             => 'BIGINT AUTO_INCREMENT PRIMARY KEY',
+                  'content_id'     => 'VARCHAR(200) NOT NULL',
+                  'visibility'     => 'VARCHAR(300) NOT NULL',
+                  'post_status'    => 'TINYINT(1) NULL',
+                  'draft'          => 'BOOLEAN',
+                  'comments'       => 'TINYINT(1) NOT NULL DEFAULT 0',
+                  'date_published' => 'DATETIME NULL',
+                  'post_order'     => 'SMALLINT DEFAULT 0',
+                  'user_id'        => 'BIGINT(20) NOT NULL'
+      ]);
 
-    $pdo = \EWCore::get_db_PDO();
-    $stm = $pdo->prepare($table_install);
-    if (!$stm->execute()) {
-      echo \EWCore::log_error(500, '', $stm->errorInfo());
+      $pdo = \EWCore::get_db_PDO();
+      $stm = $pdo->prepare($table_install);
+      if (!$stm->execute()) {
+        echo \EWCore::log_error(500, '', $stm->errorInfo());
+      }
     }
 
     \EWCore::register_ui_element('apps/ew-blog/navs', 'posts', [
@@ -115,12 +117,12 @@ class Posts extends \ew\Module {
 //    $query->orderBy('ew_contents.date_modified', 'desc');
 
     $result = New \ew\Result;
-    
+
     $result->total = $query->get()->count();
-    
+
     \ew\DBUtility::paginate($query, $_input->start, $_input->page_size);
 
-    $result->data = $query->get();        
+    $result->data = $query->get();
     $result->start = intval($_input->start);
     $result->page_size = intval($_input->page_size);
 

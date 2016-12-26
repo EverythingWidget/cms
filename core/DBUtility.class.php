@@ -54,7 +54,7 @@ class DBUtility {
 
     if (is_array($filter['order'])) {
       foreach ($filter['order'] as $value) {
-        $query->orderBy($value,'desc');
+        $query->orderBy($value, 'desc');
       }
     }
 
@@ -151,6 +151,20 @@ class DBUtility {
     }
 
     $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
+
+    return $result;
+  }
+
+  public static function get_tables($database) {
+    $PDO = \EWCore::get_db_PDO();
+
+    $statement = $PDO->prepare("select TABLE_NAME from information_schema.tables where table_schema = '$database'");
+
+    if (!$statement->execute()) {
+      return false;
+    }
+
+    $result = $statement->fetchAll(\PDO::FETCH_COLUMN);
 
     return $result;
   }

@@ -186,7 +186,7 @@ $panelId = $_REQUEST['panelId'];
     this.uisWidgetForm.html("").show();
     $("#widgets-list-form").hide();
     EW.lock(this.uisWidgetForm);
-    $.post('html/webroot/widgets-management/layouts/widget-form/form.php', {
+    $.post('html/webroot/widgets-management/widget-form/form.php', {
       widgetType: widgetType,
       template: self.template,
       widgetParameters: JSON.stringify(self.widgetParameters)
@@ -348,5 +348,6 @@ $panelId = $_REQUEST['panelId'];
 </script>
 <?php
 // Load widget control panel scripts
-if (function_exists("get_script"))
+if (function_exists('get_script')) {
   echo get_script();
+}

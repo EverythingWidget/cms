@@ -8,23 +8,24 @@ namespace webroot;
  */
 class Blocks extends \ew\Module {
 
-  protected $resource = "api";
-  private $app_blocks = [];
+  protected $resource = 'api';
 
   protected function install_assets() {
-//    $table_install = \EWCore::create_table('ew_layout_blocks', [
-//                'id'           => 'BIGINT AUTO_INCREMENT PRIMARY KEY',
-//                'name'         => 'VARCHAR(300) NULL',
-//                'structure'    => 'BLOB NULL',
-//                'date_created' => 'DATETIME NULL',
-//                'date_updated' => 'DATETIME NULL'
-//    ]);
-//
-//    $PDO = \EWCore::get_db_PDO();
-//    $create_table_statement = $PDO->prepare($table_install);
-//    if (!$create_table_statement->execute()) {
-//      echo \EWCore::log_error(500, '', $create_table_statement->errorInfo());
-//    }
+    if (!in_array('ew_layout_blocks', \EWCore::$DEFINED_TABLES)) {
+      $table_install = \EWCore::create_table('ew_layout_blocks', [
+                  'id'           => 'BIGINT AUTO_INCREMENT PRIMARY KEY',
+                  'name'         => 'VARCHAR(300) NULL',
+                  'structure'    => 'BLOB NULL',
+                  'date_created' => 'DATETIME NULL',
+                  'date_updated' => 'DATETIME NULL'
+      ]);
+
+      $PDO = \EWCore::get_db_PDO();
+      $create_table_statement = $PDO->prepare($table_install);
+      if (!$create_table_statement->execute()) {
+        echo \EWCore::log_error(500, '', $create_table_statement->errorInfo());
+      }
+    }
   }
 
   public function get_title() {
@@ -32,27 +33,59 @@ class Blocks extends \ew\Module {
   }
 
   protected function install_permissions() {
-    
+    $this->register_permission('view', 'User can view the blocks section', [
+        'html/blocks-tabs/component.php',
+        'api/read'
+    ]);
+
+    $this->register_permission('manipulate', 'User can add, edit and remove a block', [
+        'api/create',
+        'api/update',
+        'api/delete',
+        'html/blocks-tabs/component.php'
+    ]);
+
+    $this->register_public_access([
+        'api/options'
+    ]);
   }
 
-  public function read($_response) {
-//    $path = EW_ROOT_DIR . '/blocks/';
-//
-//    $blocks_dir = opendir($path);
-//    while ($block_dir = readdir($blocks_dir)) {
-//      if (strpos($block_dir, '.') === 0)
-//        continue;
-//    }
-//
-//
-//    if (file_exists(EW_WIDGETS_DIR . '/' . $widget_type . "/$widge_class.class.php")) {
-//      require_once EW_WIDGETS_DIR . '/' . $widget_type . "/$widge_class.class.php";
-//      $widget_class_name = "webroot\\$widge_class";
-//      $widget_class_instance = (new $widget_class_name());
-//      $widget_title = $widget_class_instance->get_title();
-//      $widget_content_raw = $widget_class_instance->render($widget_parameters, $widget_id, $style_id, $style_class);
-//      $widget_content = str_replace(['{$widget_id}', '$widget_id_js'], [$widget_id, str_replace('-', '_', $widget_id)], $widget_content_raw);
-//    }
+  public function create(\ew\APIResponse $_response, $_input) {
+    $result = (new LayoutBlocksRepository())->create($_input);
+
+    return \ew\APIResponse::standard_response($_response, $result);
+  }
+
+  public function read(\ew\APIResponse $_response, $_input, $_identifier) {
+    $_input->id = $_identifier;
+
+    $result = (new LayoutBlocksRepository())->read($_input);
+
+    return \ew\APIResponse::standard_response($_response, $result);
+  }
+
+  public function update(\ew\APIResponse $_response, $_input, $_identifier) {
+    $_input->id = $_identifier;
+
+    $result = (new LayoutBlocksRepository())->update($_input);
+
+    return \ew\APIResponse::standard_response($_response, $result);
+  }
+
+  public function delete(\ew\APIResponse $_response, $_input, $_identifier) {
+    $_input->id = $_identifier;
+
+    $result = (new LayoutBlocksRepository())->delete($_input);
+
+    return \ew\APIResponse::standard_response($_response, $result);
+  }
+
+  public function options() {
+    return [
+        'name'        => 'Webroot - Layout Blocks',
+        'description' => 'This module provides layout block feature for webroot layouts.',
+        'version'     => '0.5.0'
+    ];
   }
 
 }

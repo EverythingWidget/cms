@@ -12,13 +12,13 @@ function Handler(state, scope) {
     {
       title: 'Layouts',
       state: 'all',
-      url: 'html/webroot/widgets-management/layouts/all/component.php',
+      url: 'html/webroot/widgets-management/layouts-tab/component.php',
       id: 'widgets-management/layouts/all'
     },
     {
       title: 'Blocks',
       state: 'blocks',
-      url: 'html/webroot/widgets-management/layouts/blocks/component.php',
+      url: 'html/webroot/blocks/blocks-tab/component.php',
       id: 'widgets-management/layouts/blocks'
     }
   ];

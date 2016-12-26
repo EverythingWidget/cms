@@ -21,24 +21,26 @@ class Comments extends \ew\Module {
     return "EW Blog comments";
   }
 
-  protected function install_assets() {
-    $table_install = \EWCore::create_table('ew_blog_comments', [
-                'id'           => 'BIGINT AUTO_INCREMENT PRIMARY KEY',
-                'content_id'   => 'BIGINT NOT NULL',
-                'parent_id'    => 'BIGINT NOT NULL',
-                'name'         => 'VARCHAR(300) NULL',
-                'email'        => 'VARCHAR(300) NULL',
-                'commenter_id' => 'BIGINT NULL',
-                'content'      => 'TEXT NULL',
-                'visibility'   => 'VARCHAR(300) DEFAULT "not confirmed"',
-                'date_created' => 'DATETIME NULL',
-                'date_updated' => 'DATETIME NULL'
-    ]);
+  protected function install_assets() { 
+    if (!in_array('ew_blog_comments', \EWCore::$DEFINED_TABLES)) {
+      $table_install = \EWCore::create_table('ew_blog_comments', [
+                  'id'           => 'BIGINT AUTO_INCREMENT PRIMARY KEY',
+                  'content_id'   => 'BIGINT NOT NULL',
+                  'parent_id'    => 'BIGINT NOT NULL',
+                  'name'         => 'VARCHAR(300) NULL',
+                  'email'        => 'VARCHAR(300) NULL',
+                  'commenter_id' => 'BIGINT NULL',
+                  'content'      => 'TEXT NULL',
+                  'visibility'   => 'VARCHAR(300) DEFAULT "not confirmed"',
+                  'date_created' => 'DATETIME NULL',
+                  'date_updated' => 'DATETIME NULL'
+      ]);
 
-    $PDO = \EWCore::get_db_PDO();
-    $create_table_statement = $PDO->prepare($table_install);
-    if (!$create_table_statement->execute()) {
-      echo \EWCore::log_error(500, '', $create_table_statement->errorInfo());
+      $PDO = \EWCore::get_db_PDO();
+      $create_table_statement = $PDO->prepare($table_install);
+      if (!$create_table_statement->execute()) {
+        echo \EWCore::log_error(500, '', $create_table_statement->errorInfo());
+      }
     }
 
     \EWCore::register_ui_element('apps/ew-blog/navs', 'comments', [
@@ -89,7 +91,7 @@ class Comments extends \ew\Module {
     while ($comments_status === 0) {
       $post = $repository->find_with_content_id($content_id);
       $comments = intval($post->data->comments);
-      
+
       // if parent content is not a post, then ignore it and assume commenting is disabled
       if (!$post->data) {
         $post->error = 400;

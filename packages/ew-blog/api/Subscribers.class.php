@@ -22,17 +22,19 @@ class Subscribers extends \ew\Module {
   }
 
   protected function install_assets() {
-    $table_install = \EWCore::create_table('ew_blog_subscribers', [
-                'id'           => 'BIGINT AUTO_INCREMENT PRIMARY KEY',
-                'email'        => 'VARCHAR(255) NOT NULL UNIQUE',
-                'options'      => 'TEXT NULL',
-                'date_created' => 'DATETIME NULL'
-    ]);
+    if (!in_array('ew_blog_subscribers', \EWCore::$DEFINED_TABLES)) {
+      $table_install = \EWCore::create_table('ew_blog_subscribers', [
+                  'id'           => 'BIGINT AUTO_INCREMENT PRIMARY KEY',
+                  'email'        => 'VARCHAR(255) NOT NULL UNIQUE',
+                  'options'      => 'TEXT NULL',
+                  'date_created' => 'DATETIME NULL'
+      ]);
 
-    $pdo = \EWCore::get_db_PDO();
-    $stm = $pdo->prepare($table_install);
-    if (!$stm->execute()) {
-      echo \EWCore::log_error(500, '', $stm->errorInfo());
+      $pdo = \EWCore::get_db_PDO();
+      $stm = $pdo->prepare($table_install);
+      if (!$stm->execute()) {
+        echo \EWCore::log_error(500, '', $stm->errorInfo());
+      }
     }
 
     \EWCore::register_ui_element('apps/ew-blog/navs', 'subscribers', [

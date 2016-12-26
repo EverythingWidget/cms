@@ -1,5 +1,5 @@
 <form id="apps-page-uis" onsubmit="return false;" system-ui-view="main">         
-  <div class="card card-big center-block z-index-1">
+  <div class="card card-medium center-block z-index-1">
     <div  class="card-header">
       <div class="card-title-action"></div>
       <div class="card-title-action-right"></div>

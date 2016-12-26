@@ -35,7 +35,7 @@
                         <i class="icon circle"></i>
                         <h3 class="icon-header"><?= $permission_info['title'] ?></h3>
                         <p class="icon-header"><?= $permission_info['description'] ?></p>
-                      </label>
+                      </label>     
                     </li>
                     <?php
                   }

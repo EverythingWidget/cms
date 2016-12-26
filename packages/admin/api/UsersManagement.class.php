@@ -31,17 +31,17 @@ class UsersManagement extends \ew\Module {
 
     EWCore::register_ui_element('forms/user/tabs', 'user-info', [
         'title'        => 'User Info',
-        'template_url' => 'admin/html/users-management/users/user-form/info.php'
+        'template_url' => 'admin/html/users-management/user-form/info.php'
     ]);
 
     EWCore::register_ui_element('forms/user-group/tabs', 'group-info', [
         'title'        => 'Group Info',
-        'template_url' => 'admin/html/users-management/groups/group-form/info.php'
+        'template_url' => 'admin/html/users-management/group-form/info.php'
     ]);
 
     EWCore::register_ui_element('forms/user-group/tabs', 'group-permissions', [
         'title'        => 'Permissions',
-        'template_url' => 'admin/html/users-management/groups/group-form/permissions.php'
+        'template_url' => 'admin/html/users-management/group-form/permissions.php'
     ]);
   }
 
@@ -53,7 +53,7 @@ class UsersManagement extends \ew\Module {
         'api/get_user_by_id',
         'api/get_user_by_email',
         'api/logout',
-        'html/users/user-form/component.php',
+        'html/user-form/component.php',
         'html/' . $this->get_index()
     ]);
 
@@ -61,7 +61,7 @@ class UsersManagement extends \ew\Module {
         'api/users-create',
         "api/users-update",
         "api/users-delete",
-        'html/users/user-form/component.php',
+        'html/user-form/component.php',
         "api/logout",
         'html/' . $this->get_index()]);
 
@@ -69,7 +69,7 @@ class UsersManagement extends \ew\Module {
         "api/get_users_groups_list",
         "api/get_user_group_by_id",
         "api/get_users_group_by_type",
-        'html/groups/group-form/component.php',
+        'html/group-form/component.php',
         'html/' . $this->get_index()]);
 
     $this->register_permission("manipulate-groups", "User can add, edit delete user group", [
@@ -260,6 +260,7 @@ class UsersManagement extends \ew\Module {
 
   public static function user_has_permission($app_name, $resource, $module_name, $command_name) {
     $permission_id = \EWCore::does_need_permission($app_name, $module_name, $resource . '/' . $command_name);
+    
     if ($permission_id && $permission_id !== FALSE) {
       if (!static::group_has_permission($app_name, $module_name, $permission_id, $_SESSION['EW.USER_GROUP_ID'])) {
         return false;

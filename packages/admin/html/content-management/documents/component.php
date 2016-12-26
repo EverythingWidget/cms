@@ -256,7 +256,7 @@
     });
 
     this.seeFolderActivity = EW.getActivity({
-      activity: "admin/html/content-management/documents/folder-form/component.php_see",
+      activity: "admin/html/content-management/folder-form/component.php_see",
       modal: {
         class: "center properties"
       },
@@ -269,7 +269,7 @@
     });
 
     this.seeArticleActivity = EW.getActivity({
-      activity: "admin/html/content-management/documents/article-form/component.php_see",
+      activity: "admin/html/content-management/article-form/component.php_see",
       onDone: function () {
         System.setHashParameters({
           folderId: null
@@ -321,7 +321,7 @@
     System.entity('ui/primary-menu').actions = [
       {
         title: "tr{New Folder}",
-        activity: "admin/html/content-management/documents/folder-form/component.php",
+        activity: "admin/html/content-management/folder-form/component.php",
         parameters: function (hash) {
           hash.parent = component.parentId;
         },
@@ -331,7 +331,7 @@
         }
       }, {
         title: "tr{New Article}",
-        activity: "admin/html/content-management/documents/article-form/component.php_new",
+        activity: "admin/html/content-management/article-form/component.php_new",
         parameters: function (hash) {
           hash.parent = component.parentId;
           hash.article = null;

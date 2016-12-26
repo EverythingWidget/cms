@@ -34,32 +34,36 @@ class ContentManagement extends \ew\Module {
     require_once 'asset/DocumentComponent.class.php';
     require_once 'asset/LanguageComponent.class.php';
 
-    $ew_tags_table_install = EWCore::create_table('ew_tags', [
-                'id'            => 'BIGINT(20) AUTO_INCREMENT PRIMARY KEY',
-                'name'          => 'VARCHAR(256) NOT NULL',
-                'date_created'  => 'DATETIME NOT NULL',
-                'date_modified' => 'DATETIME NOT NULL',
-                'date_deleted'  => 'DATETIME NOT NULL'
-    ]);
+    if (!in_array('ew_tags', \EWCore::$DEFINED_TABLES)) {
+      $ew_tags_table_install = EWCore::create_table('ew_tags', [
+                  'id'            => 'BIGINT(20) AUTO_INCREMENT PRIMARY KEY',
+                  'name'          => 'VARCHAR(256) NOT NULL',
+                  'date_created'  => 'DATETIME NOT NULL',
+                  'date_modified' => 'DATETIME NOT NULL',
+                  'date_deleted'  => 'DATETIME NOT NULL'
+      ]);
 
-    $pdo = EWCore::get_db_PDO();
-    $stm = $pdo->prepare($ew_tags_table_install);
-    if (!$stm->execute()) {
-      echo EWCore::log_error(500, '', $stm->errorInfo());
+      $pdo = EWCore::get_db_PDO();
+      $stm = $pdo->prepare($ew_tags_table_install);
+      if (!$stm->execute()) {
+        echo EWCore::log_error(500, '', $stm->errorInfo());
+      }
     }
 
-    $ew_contents_tags_table_install = EWCore::create_table('ew_contents_tags', [
-                'id'            => 'BIGINT(20) AUTO_INCREMENT PRIMARY KEY',
-                'content_id'    => 'BIGINT(20) NOT NULL',
-                'tag_id'        => 'BIGINT(20) NOT NULL',
-                'date_created'  => 'DATETIME NOT NULL',
-                'date_modified' => 'DATETIME NOT NULL',
-                'date_deleted'  => 'DATETIME NOT NULL'
-    ]);
+    if (!in_array('ew_contents_tags', \EWCore::$DEFINED_TABLES)) {
+      $ew_contents_tags_table_install = EWCore::create_table('ew_contents_tags', [
+                  'id'            => 'BIGINT(20) AUTO_INCREMENT PRIMARY KEY',
+                  'content_id'    => 'BIGINT(20) NOT NULL',
+                  'tag_id'        => 'BIGINT(20) NOT NULL',
+                  'date_created'  => 'DATETIME NOT NULL',
+                  'date_modified' => 'DATETIME NOT NULL',
+                  'date_deleted'  => 'DATETIME NOT NULL'
+      ]);
 
-    $stm = $pdo->prepare($ew_contents_tags_table_install);
-    if (!$stm->execute()) {
-      echo EWCore::log_error(500, '', $stm->errorInfo());
+      $stm = $pdo->prepare($ew_contents_tags_table_install);
+      if (!$stm->execute()) {
+        echo EWCore::log_error(500, '', $stm->errorInfo());
+      }
     }
 
     EWCore::register_ui_element('apps', 'content-management', [
@@ -145,7 +149,7 @@ class ContentManagement extends \ew\Module {
   }
 
   protected function install_permissions() {
-    $this->register_permission("see-content", "User can see the contents", [
+    $this->register_permission('see-content', 'User can see the contents', [
         'api/index',
         'api/content_fields',
         'api/contents-labels',
@@ -159,12 +163,12 @@ class ContentManagement extends \ew\Module {
         'api/get-content-by-slug',
         // ------ html resources ------ //
         'html/index.php',
-        'html/documents/article-form/component.php',
-        'html/documents/folder-form/component.php',
-        'html/media/album-form.php'
+        'html/article-form/component.php',
+        'html/folder-form/component.php',
+        'html/album-form/component.php'
     ]);
 
-    $this->register_permission("manipulate-content", "User can add new, edit, delete contents", [
+    $this->register_permission('manipulate-content', 'User can add new, edit, delete contents', [
         'api/index',
         'api/add_content',
         'api/contents-create',
@@ -186,11 +190,11 @@ class ContentManagement extends \ew\Module {
         'api/images-create',
         // ------ html resources ------ //
         'html/index.php',
-        "html/documents/article-form/component.php",
-        "html/documents/folder-form/component.php",
-        "html/media/album-form.php",
-        "html/media/upload-form.php",
-        "html/media/upload-audio-form.php",
+        'html/article-form/component.php',
+        'html/folder-form/component.php',
+        'html/album-form/component.php',
+        'html/upload-form/component.php',
+        'html/media/upload-audio-form.php',
     ]);
 
     $this->register_public_access([

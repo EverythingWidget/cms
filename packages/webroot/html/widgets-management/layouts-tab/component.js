@@ -7,7 +7,7 @@ function UIStructureList() {
 
   System.entity('ui/primary-menu').actions = [{
       title: "tr{New Layout}",
-      activity: 'webroot/html/widgets-management/layouts/layout-form/component.php',
+      activity: 'webroot/html/widgets-management/layout-form/component.php',
 //      parent: System.ui.components.mainFloatMenu,
       parameters: {
         uisId: null
@@ -104,7 +104,7 @@ function UIStructureList() {
       });
     },
     onEdit: ((editActivity = EW.getActivity({
-      activity: "webroot/html/widgets-management/layouts/layout-form/component.php_see",
+      activity: "webroot/html/widgets-management/layout-form/component.php_see",
       modal: {
         class: "full"
       },

@@ -292,7 +292,7 @@ window.addEventListener('load', function () {
 
   var moveAnim = null;
 
-  System.ui.components.appsMenu.on('mouseenter touchstart', "a", function (e) {
+  System.ui.components.appsMenu.on('mouseenter touchstart', 'a', function (e) {
     var app = e.currentTarget.dataset.app;
     EW.hoverApp = "system/" + app;
 

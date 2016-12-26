@@ -91,9 +91,9 @@ class UsersGroupsRepository implements \ew\CRUDRepository {
       return $result;
     }
 
-    if (!isset($input->type)) {
-      $input->type = 'default';
-    }
+//    if (!isset($input->type)) {
+//      $input->type = 'default';
+//    }
 
     $group = ew_users_groups::find($input->id);
 

@@ -897,7 +897,6 @@ button {
   padding: 0;
   height: 60px;
   line-height: 60px;
-  border-radius: 4px;
   display: block;   
 }
 
@@ -928,7 +927,7 @@ a.apps-menu-link:hover {
 .apps-menu-list {
   padding: 0;
   padding-bottom: 100px;
-    margin: 0;
+  margin: 0;
 
   li {
     display: block;
@@ -996,7 +995,7 @@ a.apps-menu-link:hover {
 
     .tabs-bar {        
       height: 110px;
-      
+
       ul {
         opacity: 1;
       }
@@ -1550,21 +1549,17 @@ ul.actions-bar li label {
 }
 
 .sections-menu {
-  /*background-color: #5cb1cc;*/
   background-color: #fff;
   position: absolute;
   left: -170px; 
-  width: 250px;
+  width: 240px;
   min-height: 94px; 
   border-radius: 0;
   overflow: hidden;
   font-size: 16px;
   margin: -10px 0;
   padding:  10px 0;
-  /*box-shadow: 0 1px 1px rgba(0,0,0,.1) , 0 0px 3px rgba(0,0,0,.14);*/
-  /*box-shadow: 0 1px 3px rgba(0,0,0,.14) , 0 3px 6px rgba(0,0,0,.14);*/
-  /*box-shadow: 0 2px 5px rgba(0,0,0,.08) , 1px 3px 15px rgba(0,0,0,.1);*/
-  box-shadow: 0 1px 3px 0px rgba(0,0,0,0), 1px 0 7px rgba(0,0,0,0);
+  box-shadow: 0 2px 5px rgba(0,0,0,.05) , 2px 4px 17px rgba(0,0,0,.1);
   color: #000;
   z-index: 1;
   float: left;  
@@ -1572,7 +1567,6 @@ ul.actions-bar li label {
   &.in {        
     height: auto;
     left: 110px;
-    /*box-shadow: 0 1px 3px 0px rgba(0,0,0,0.06), 1px 0 7px rgba(0,0,0,0.1);*/
 
     > * {
       display: inherit;  
@@ -1655,18 +1649,24 @@ ul.actions-bar li label {
   background-repeat: no-repeat;
   color: inherit;
   text-decoration: none;
-  padding: 10px 10px;
-  padding-left: 42px;
+  padding: 10px 16px;
+  padding-right: 42px;
   display: block;
   line-height: 30px;
   min-height: 44px;
   vertical-align: middle;
   position: relative;
   white-space: nowrap;
-  border-radius: 2px;
   transition-property: background-color, color;
   transition-duration: .15s;
-  margin: 6px;
+  margin: 6px;  
+
+  &.inline-loader {
+    &:after {
+      left: auto;
+      right: 5px;
+    }
+  }
 }
 
 .sections-menu li a img {
@@ -2597,7 +2597,7 @@ table.contents td {
       opacity: 1;
     }
   }
-  
+
   @media(max-width: 768px) {
     padding: 0 5px;
   }

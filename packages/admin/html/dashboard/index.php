@@ -21,7 +21,7 @@ if (!isset($_SESSION['login'])) {
         <div id="apps-menu" class="apps-menu" >
           <ul class="apps-menu-list">
             <li v-for="app in apps">
-              <a class="apps-menu-link" v-bind:data-app="app.id" v-bind:class="{ 'selected' : currentApp === app.id}">
+              <a class="apps-menu-link" v-on:click="goToState(app.id)" v-bind:data-app="app.id" v-bind:class="{ 'selected' : currentApp === app.id}">
                 <span>{{app.title}}</span>
               </a>
             </li>

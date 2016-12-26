@@ -111,12 +111,9 @@ $tabs = EWCore::read_registry('ew/ui/forms/user-group/tabs');
         }
         //
         $.each(givenPermissions, function (i, c) {
-          if (a.val() === (c))
-          {
-            //a.click();
+          if (a.val() === (c) && a.prop('checked') !== true)          {
             a.prop('checked', true);
             a.click();
-            //$("#permission").append($(v));
             givenPermissions[i] = null;
           }
         });

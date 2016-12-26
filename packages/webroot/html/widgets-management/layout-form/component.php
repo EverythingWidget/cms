@@ -173,7 +173,7 @@
   }
 </div>
 
-<?= ew\ResourceUtility::load_js_as_tag('webroot/html/widgets-management/layouts/layout-form/component.js') ?>
+<?= ew\ResourceUtility::load_js_as_tag('webroot/html/widgets-management/layout-form/component.js') ?>
 
 <script>
   $(document).ready(function () {

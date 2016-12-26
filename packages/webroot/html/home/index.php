@@ -8,6 +8,9 @@ $app = 'webroot';
 $_SESSION['ROOT_DIR'] = EW_ROOT_DIR;
 $_REQUEST['cmdResult'] = '';
 
+//$tables = ew\DBUtility::get_tables('ew');
+//echo json_encode($tables);
+//die();
 webroot\WidgetsManagement::include_html_link(['rm/public/css/grid.css']);
 
 webroot\WidgetsManagement::add_html_script(['include' => 'rm/public/js/jquery/build.js']);
@@ -103,34 +106,14 @@ $HTML_META_TAGS = webroot\WidgetsManagement::get_meta_tags();
 
     echo $HTML_SCRIPTS;
     echo $TEMPLATE_SCRIPT;
+    echo $HTML_CSS['tag'];
     ?>          
-
-    <script>
-      (function (href, before, media) {
-        var doc = window.document;
-        var link = doc.createElement('link');        
-        link.rel = 'stylesheet';
-        link.href = href;
-        link.media = 'only x';
-
-        function stylesheetLoaded() {
-          if (link.addEventListener) {
-            link.removeEventListener('load', stylesheetLoaded);
-          }
-          link.media = media || 'all';
-        }
-
-        link.addEventListener('load', stylesheetLoaded);
-        (doc.getElementsByTagName('head')[0]).appendChild(link);
-      })('<?= $HTML_CSS['path'] ?>');
-    </script>
-    <noscript><link rel="stylesheet" href="<?= $HTML_CSS['path'] ?>"></noscript>
   </head>
   <body class="<?= EWCore::get_language_dir($_REQUEST['_language']) ?>">
     <div id="base-content-pane" class="container">
       <?= $HTML_BODY; ?>
     </div>
 
-    <?= $HTML_LINKS['body'] ?>
+    <?= $HTML_LINKS['body'] ?>    
   </body>  
 </html>

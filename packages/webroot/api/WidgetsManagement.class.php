@@ -23,8 +23,8 @@ class WidgetsManagement extends \ew\Module {
   private static $html_links = [];
   private static $html_keywords = [];
   private static $widgets_feeders = array();
-  protected $resource = "api";
-  public static $WIDGET_FEEDER = "ew-widget-feeder";
+  protected $resource = 'api';
+  public static $WIDGET_FEEDER = 'ew-widget-feeder';
   private static $registry = [];
   private $link_chooser_form = null;
 
@@ -65,57 +65,57 @@ class WidgetsManagement extends \ew\Module {
   }
 
   protected function install_permissions() {
-    $this->register_permission("view", "User can view the widgets section", [
+    $this->register_permission('view', 'User can view the widgets section', [
         'api/layouts-read',
-        "api/get_uis",
-        "api/get_uis_list",
-        "api/get_widgets_types",
-        "api/widgets_types",
-        "api/get_all_pages_uis_list",
-        "api/get_path_uis",
-        "api/get_template_settings_form",
-        "api/get_layout",
-        "api/get_templates",
+        'api/get_uis',
+        'api/get_uis_list',
+        'api/get_widgets_types',
+        'api/widgets_types',
+        'api/get_all_pages_uis_list',
+        'api/get_path_uis',
+        'api/get_template_settings_form',
+        'api/get_layout',
+        'api/get_templates',
         'api/create_widget',
         'api/update-uis',
         'api/ew_form_uis_tab',
-        'html/layouts/layout-form/component.php',
+        'html/layout-form/component.php',
         'html/' . $this->get_index()
     ]);
 
-    $this->register_permission("manipulate", "User can create and edit layouts", [
-        "api/add_uis",
-        "api/get_uis",
-        "api/set_uis",
-        "api/get_uis_list",
-        "api/get_widgets_types",
-        "api/get_all_pages_uis_list",
-        "api/get_path_uis",
-        "api/get_template_settings_form",
-        "api/get_layout",
-        "api/get_templates",
-        "api/create_widget",
-        "api/update-uis",
-        "api/ew_form_uis_tab",
-        "api/delete_uis",
-        "api/clone_uis",
+    $this->register_permission('manipulate', 'User can create and edit layouts', [
+        'api/add_uis',
+        'api/get_uis',
+        'api/set_uis',
+        'api/get_uis_list',
+        'api/get_widgets_types',
+        'api/get_all_pages_uis_list',
+        'api/get_path_uis',
+        'api/get_template_settings_form',
+        'api/get_layout',
+        'api/get_templates',
+        'api/create_widget',
+        'api/update-uis',
+        'api/ew_form_uis_tab',
+        'api/delete_uis',
+        'api/clone_uis',
         'api/layouts-create',
         'api/layouts-read',
         'api/layouts-update',
         'api/layouts-delete',
-        "html/ne-uis.php",
-        'html/layouts/layout-form/component.php',
+        'html/ne-uis.php',
+        'html/layout-form/component.php',
         'html/' . $this->get_index()
     ]);
 
 
-    $this->register_permission("export-uis", "User can export UIS", array(
-        "api/export_uis",
-        "html/ne-uis.php"));
+    $this->register_permission('export-uis', 'User can export UIS', array(
+        'api/export_uis',
+        'html/ne-uis.php'));
 
-    $this->register_permission("import-uis", "User can import UIS", array(
-        "api/import_uis",
-        "html/ne-uis.php"));
+    $this->register_permission('import-uis', 'User can import UIS', array(
+        'api/import_uis',
+        'html/ne-uis.php'));
 
     $this->register_public_access([
         'api/get-widget-feeders',
