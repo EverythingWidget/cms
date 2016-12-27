@@ -88,9 +88,8 @@ $result_html = "";
         } */
 //      $link_requlare_expression_ready = preg_quote($link_url, '/');
 //      $pattern = "/$link_requlare_expression_ready/";
-
 //      preg_match($pattern, $_SERVER['REQUEST_URI'] . '.', $match);
-      $active = (rtrim($link_url,'/') === rtrim($_SERVER['REQUEST_URI'], '/')) ? "active" : "";
+      $active = (rtrim($link_url, '/') === rtrim($_SERVER['REQUEST_URI'], '/')) ? "active" : "";
 
       // Menu
       $result_html .= "<li class='$active'><a class='{$class[$i]}' href='{$link_url}'>{$titles[$i]}</a>";
@@ -127,7 +126,7 @@ $result_html = "";
     // $pattern = "/$link_requlare_expression_ready(.*)/";
     // preg_match($pattern, $_SERVER['REQUEST_URI'] . '.', $match);
     // $active = ($match) ? "active" : "";
-    $active = (rtrim($link_url,'/') === rtrim($_SERVER['REQUEST_URI'], '/')) ? "active" : "";
+    $active = (rtrim($link_url, '/') === rtrim($_SERVER['REQUEST_URI'], '/')) ? "active" : "";
 
     $result_html .= "<li class='$active' ><a href='$link_url'>$titles</a>";
     if ($sub_menus) {
@@ -144,3 +143,8 @@ $result_html = "";
   echo $result_html;
   ?>
 </ul>
+<script>
+  document.querySelector('[data-widget-id=$php.widget_id]').addEventListener('click', function () {
+    this.classList.toggle('active');
+  });
+</script>

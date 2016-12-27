@@ -636,10 +636,10 @@
   &.nav-menu {
     white-space: nowrap;
     font-size: .9em;
-    overflow: hidden;
-    overflow-y: scroll;
+    overflow: hidden;    
     height: 80px;
     margin: 0 -10px;
+    position: relative;
 
     ul {
       @extend .content-box;
@@ -674,6 +674,52 @@
       background-color: $font-akcent-color;
       color: #fff;
     } 
+
+    @media (max-width: 420px) {     
+      min-width: 240px;
+      width: 75%;
+      font-size: 1.2em;
+      position: fixed;
+      height: 80px;
+      z-index: 99999;
+      right: 0;
+      margin: 0;
+      box-shadow: 0 0 0 rgba(#000,.18);
+      background-color: transparent;
+      overflow-y: auto;
+      transition: all .3s ease-in-out;
+
+      &:before {
+        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyBpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBXaW5kb3dzIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkYxNTMzODE1Q0MxNjExRTZCNEFERjQwMUE0MzZDNDM1IiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkYxNTMzODE2Q0MxNjExRTZCNEFERjQwMUE0MzZDNDM1Ij4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6RjE1MzM4MTNDQzE2MTFFNkI0QURGNDAxQTQzNkM0MzUiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6RjE1MzM4MTRDQzE2MTFFNkI0QURGNDAxQTQzNkM0MzUiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz6BMTZGAAAAOklEQVR42uzVMREAMAACMVr/nqkMhgYFuWP4k6QZ7mY8AACA+U5bF2wv0AIAAC3QAhdoAQDA94AnwADvogkrnL/m1QAAAABJRU5ErkJggg==');
+        background-repeat: no-repeat;
+        background-position: center center;
+        content: ' ';
+        width: 80px;
+        height: 80px;
+        display: block;
+        margin: 0 0 0 auto;
+      }
+
+      ul {                      
+        li {
+          float: none;
+          display: block;
+        }
+      }  
+
+      a {
+        text-align: right;
+        width: auto;
+        padding: 20px;
+      }
+
+      &.active {
+        background-color: #fff;
+        
+        height: 100%;
+        box-shadow: -2px 3px 23px rgba(#000,.3);       
+      }
+    }
   }
 
   &.nav-menu-footer {
