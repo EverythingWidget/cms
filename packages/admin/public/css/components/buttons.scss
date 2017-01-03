@@ -51,7 +51,7 @@
   > i {
     font-size: 26px;
   }
-  
+
   &:hover {
     box-shadow: 0 2px 8px 0 rgba(0,0,0,0.16),0 8px 17px 0 rgba(0,0,0,0.26);
   }
@@ -66,12 +66,30 @@
   padding: 0px;
   display: flex;
   justify-content: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.2);
+
+  &:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.24) , 0 1px 3px rgba(0,0,0,0.12);  
+  }
 
   > i {
-    font-size: 29px;
-    max-height: 44px;
-    line-height: 44px;
+    font-size: 28px;
+    max-height: 40px;
+    line-height: 40px;
     float: none;
+  }
+
+  .actions-bar > &.btn {
+    width: 38px;
+    height: 38px;
+
+    > i {
+      font-size: 24px;
+      height: 34px;
+      max-height: 34px;
+      line-height: 34px;
+      display: block;
+    }
   }
 }
 
@@ -204,7 +222,7 @@
     color: #00BBEE;
     background-color: #daf2fd;
   }
-  
+
   &:active {
     color: #fff;
     background-color: #00BBEE;

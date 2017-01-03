@@ -339,6 +339,13 @@ EverythingWidgets.prototype.addActivity = function (conf) {
   //var li = $(document.createElement("li"));
   var action = $(document.createElement("button"));
   action.html(settings.title);
+  
+  if(settings.icon) {
+    var icon = document.createElement('i');
+    icon.className = settings.icon;
+    action.append(icon);
+  }
+  
   action.addClass("btn " + settings.defaultClass + " " + ((settings.class) ? settings.class : ""));
 
   action.attr("type", "button");

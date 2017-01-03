@@ -37,8 +37,8 @@ function Article() {
   }).hide();
 
   this.bEditAndClose = EW.addActivity({
-    title: "<i class='icon-check'></i>",
-    defaultClass: "btn-text btn-success pull-right",
+    icon: 'icon-check',
+    defaultClass: "btn-primary pull-right btn-circle",
     verb: 'PUT',
     activity: 'admin/api/content-management/contents',
     parameters: function () {
@@ -64,8 +64,8 @@ function Article() {
   this.bUpdate = EW.addActivity({
     verb: 'PUT',
     activity: 'admin/api/content-management/contents',
-    title: "tr{Update}",
-    defaultClass: "btn-success",
+    icon: 'icon-save',
+    defaultClass: 'btn-success btn-circle',
     parameters: function () {
       if (!$("#article-form").EW().validate()) {
         return false;
@@ -87,7 +87,7 @@ function Article() {
     }}).hide();
 
   this.bDelete = EW.addActivity({title: "<i class='icon-trash-empty'></i>",
-    defaultClass: "btn-danger btn-text",
+    defaultClass: 'btn-danger btn-text btn-circle',
     verb: 'DELETE',
     activity: "admin/api/content-management/contents",
     parameters: function () {
