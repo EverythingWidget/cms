@@ -589,6 +589,30 @@ class WidgetsManagement extends \ew\Module {
 
   private static $CACHED_WIDGETS = [];
 
+  public static function render_widget($widget_class_name, $widget_file_path, $data = []) {
+    if (isset(static::$CACHED_WIDGETS[$widget_class_name])) {
+      $widget_instance = static::$CACHED_WIDGETS[$widget_class_name];
+    }
+    else if (file_exists($widget_file_path)) {
+      require_once $widget_file_path;
+      $widget_instance = (new $widget_class_name());
+      static::$CACHED_WIDGETS[$widget_class_name] = $widget_instance;
+    }
+    else {
+      return false;
+    }
+
+    $widget_content_raw = $widget_instance->render($data['widget_parameters'], $data['widget_id'], $data['style_id'], $data['style_class']);
+
+    return [
+        'instance' => $widget_instance,
+        'content'  => EWCore::populate_view($widget_content_raw, [
+            'widget_id'    => $data['widget_id'],
+            'widget_id_js' => str_replace('-', '_', $data['widget_id'])
+        ])
+    ];
+  }
+
   /**
    * Create a widget element
    * 
@@ -597,65 +621,50 @@ class WidgetsManagement extends \ew\Module {
    * @param string $style_class widget container style classes
    * @param string $widget_style_class widget style classes
    * @param string  $style_id widget style id
-   * @param json $params widget parameters
+   * @param json $parameters_string widget parameters
    */
   public static function open_widget($widget_id, $conf) {
     // Empty widget style class when creating a widget
     $widget_type = $conf['widgetType'];
-    $style_class = $conf["class"];
-    $widget_style_class = $conf["widgetClass"];
-    $style_id = $conf["id"];
-    $params = $conf["widgetParameters"];
+    $style_id = $conf['id'];
+    $style_class = $conf['class'];
+    $widget_style_class = $conf['widgetClass'];
+    $parameters_string = $conf['widgetParameters'];
 
     $__widget_html_output = '';
     if ($style_id) {
       $WIDGET_STYLE_ID = "id='$style_id'";
     }
 
-    if (is_array($params)) {
-      $widget_parameters = $params;
-      $params = json_encode($params);
+    if (is_array($parameters_string)) {
+      $widget_parameters = $parameters_string;
+      $parameters_string = json_encode($parameters_string);
     }
-    else if ($params) {
-      $widget_parameters = json_decode($params, true);
+    else if ($parameters_string) {
+      $widget_parameters = json_decode($parameters_string, true);
     }
+
+    $widget_data = [
+        'widget_parameters' => $widget_parameters,
+        'widget_id'         => $widget_id,
+        'style_id'          => $style_id,
+        'style_class'       => $style_class
+    ];
 
     $widge_class = EWCore::hyphenToCamel($widget_type);
     $widget_class_name = "webroot\\$widge_class";
+    $rendered_widget = static::render_widget($widget_class_name, EW_WIDGETS_DIR . '/' . $widget_type . "/$widge_class.class.php", $widget_data);
 
-    if (isset(static::$CACHED_WIDGETS[$widget_class_name])) {
-      $widget_class_instance = static::$CACHED_WIDGETS[$widget_class_name];
-      $widget_title = $widget_class_instance->get_title();
-      $widget_content_raw = $widget_class_instance->render($widget_parameters, $widget_id, $style_id, $style_class);
-
-      $widget_content = EWCore::populate_view($widget_content_raw, [
-                  'widget_id'    => $widget_id,
-                  'widget_id_js' => str_replace('-', '_', $widget_id)
-      ]);
-    }
-    else if (file_exists(EW_WIDGETS_DIR . '/' . $widget_type . "/$widge_class.class.php")) {
-      require_once EW_WIDGETS_DIR . '/' . $widget_type . "/$widge_class.class.php";
-      $widget_class_instance = (new $widget_class_name());
-
-      static::$CACHED_WIDGETS[$widget_class_name] = $widget_class_instance;
-
-      $widget_title = $widget_class_instance->get_title();
-      $widget_content_raw = $widget_class_instance->render($widget_parameters, $widget_id, $style_id, $style_class);
-
-      $widget_content = EWCore::populate_view($widget_content_raw, [
-                  'widget_id'    => $widget_id,
-                  'widget_id_js' => str_replace('-', '_', $widget_id)
-      ]);
+    if ($rendered_widget !== false) {
+      $widget_title = $rendered_widget['instance']->get_title();
+      $widget_content = $rendered_widget['content'];
     }
     else {
-
-      $widget_title = WidgetsManagement::get_widget_details($widget_type)["title"];
-      // Include widget content
+      $widget_title = WidgetsManagement::get_widget_details($widget_type)['title'];
       if (file_exists(EW_WIDGETS_DIR . '/' . $widget_type . '/index.php')) {
         ob_start();
         include EW_WIDGETS_DIR . '/' . $widget_type . '/index.php';
         $widget_content_raw = ob_get_clean();
-//        $widget_content = str_replace(['{$widget_id}', '$widget_id_js'], [$widget_id, str_replace('-', '_', $widget_id)], $widget_content_raw);
         $widget_content = EWCore::populate_view($widget_content_raw, [
                     'widget_id'    => $widget_id,
                     'widget_id_js' => str_replace('-', '_', $widget_id)
@@ -669,11 +678,11 @@ class WidgetsManagement extends \ew\Module {
     $widget_type_string = "data-widget-type='$widget_type' ";
     $widget_title_string = "data-widget-title='$widget_title' ";
     $widget_editor_title_string = "data-widget-editor-title='{$widget_parameters['editor_title']}' ";
-    //}
+
     $__widget_html_output .= "<div class='widget-container $style_class' data-widget-container='true'>";
     $__widget_html_output .= "<div class='widget $WIDGET_STYLE_CLASS' $WIDGET_STYLE_ID data-widget-id='$widget_id' ";
     $__widget_html_output .= $widget_type_string . $widget_title_string . $widget_editor_title_string;
-    $__widget_html_output .= "data-widget='true'>";
+    $__widget_html_output .= "data-widget>";
     $__widget_html_output .= $widget_content;
     self::$widget_style_class = "";
     self::add_widget_data($widget_id, $widget_parameters);
@@ -699,7 +708,7 @@ class WidgetsManagement extends \ew\Module {
     }
 
     self::$current_timestamp = strval($timestamp);
-    $widget_id = "widget-" . self::$current_timestamp . '-' . self::$ui_index . '-' . self::$widget_index;
+    $widget_id = 'widget-' . self::$current_timestamp . '-' . self::$ui_index . '-' . self::$widget_index;
     $widget_html = '';
     $widget_html .=self::open_widget($widget_id, [
                 'widgetType'       => $widget_type,

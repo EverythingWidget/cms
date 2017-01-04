@@ -537,9 +537,6 @@ class EWCore {
 
   public static function init_packages() {
     if (!self::$loaders_installed) {
-      spl_autoload_register([
-          self,
-          'autoload_core']);
       self::$loaders_installed = true;
     }
 
@@ -557,11 +554,7 @@ class EWCore {
 
       $package = str_replace('-', '_', $app_dir);
 
-
       if (is_dir($app_dir)) {
-        $app_dir_content = opendir($app_dir);
-
-        //echo EW_PACKAGES_DIR . '/' . $app_dir . "\\App" . "<br/>";
         if (!file_exists(EW_PACKAGES_DIR . "/" . $app_dir . "/App.app.php"))
           continue;
         try {

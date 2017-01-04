@@ -968,14 +968,10 @@ a.apps-menu-link:hover {
     justify-content: center;
     width: 100%;
     display: flex;
-    /*background-color: #edeff1;*/
-    height: 64px;
+    height: 55px;
     overflow: hidden;
     z-index: 4;
-
     align-items: center;
-    /*box-shadow: 0 0 3px 0px rgba(0,0,0,0.05), 0 2px 7px rgba(0,0,0,0.1);*/
-    /*transition: all .3s ease-out;*/
 
     > .app-bar-middle-section {
       overflow: hidden;
