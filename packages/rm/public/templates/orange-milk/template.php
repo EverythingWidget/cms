@@ -21,6 +21,11 @@ class template extends TemplateControl {
     \webroot\WidgetsManagement::add_html_link([
         'place' => 'body',
         'rel'   => 'stylesheet',
+        'href'  => 'public/rm/templates/orange-milk/fonts.css'
+    ]);
+    \webroot\WidgetsManagement::add_html_link([
+        'place' => 'body',
+        'rel'   => 'stylesheet',
         'href'  => 'https://fonts.googleapis.com/css?family=Roboto:400,300,500,700'
     ]);
 

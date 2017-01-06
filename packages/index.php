@@ -16,9 +16,22 @@ header_remove("X-Powered-By");
 // ([^\/\s]{2,3}\/)?~?([^\/\s]*)\/?([^\/\s]*)?\/?([^\/\s]*)?\/?([^\/\s]*)?\/
 
 ob_start();
-require '../config/app.php';
+$app_configs = require '../config/app.php';
+
+define('EW_DIR', $app_configs['EW_DIR']);
+// URL path the refer to EverythigWidget root. if EverythingWidget is in the root then '/'
+define('EW_DIR_URL', $app_configs['EW_DIR_URL']);
+define('EW_ROOT_DIR', $_SERVER['DOCUMENT_ROOT'] . '/' . $app_configs['EW_DIR']);
+define('EW_CACHE_PATH', $app_configs['EW_CACHE_PATH']);
+define('EW_CACHE_DIR', EW_ROOT_DIR . EW_CACHE_PATH);
+define('EW_PACKAGES_DIR', EW_ROOT_DIR . 'packages');
+define('EW_TEMPLATES_DIR', EW_ROOT_DIR . 'packages/rm/public/templates');
+define('EW_WIDGETS_DIR', EW_ROOT_DIR . 'widgets');
+define('EW_MEDIA_DIR', EW_ROOT_DIR . 'packages/rm/public/media');
+define('HOST_URL', 'http://' . $_SERVER['SERVER_NAME']);
+
 require '../core/EWCore.class.php';
-/* require '../core/modules/Valitron/Validator.php'; */
+
 ob_end_clean();
 if (ob_get_level()) {
   ob_end_clean();
@@ -46,7 +59,7 @@ if (strpos($path, '?') !== false)
   $path = substr($path, 0, strpos($path, '?'));
 $elements = explode('/', $path);
 $parameter_index = 0;
-if ($elements[0] && strpos(EW_DIR, $elements[0])) {
+if ($elements[0] && strpos('/' . EW_DIR, $elements[0])) {
   $root_dir = array_shift($elements);
   //$parameter_index = 1;
 }
@@ -76,16 +89,18 @@ $protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') ||
 // Set the language for the root url
 if ($_SERVER['SERVER_PORT'] !== '80' && $_SERVER['SERVER_PORT'] !== '443') {
   $host_url = $protocol . $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'];
-  $u = $protocol . $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'] . EW_DIR_URL . $url_language;
+  $u = $protocol . $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'] . '/' . EW_DIR_URL . $url_language;
 }
 else {
   $host_url = $protocol . $_SERVER['SERVER_NAME'];
-  $u = $protocol . $_SERVER['SERVER_NAME'] . EW_DIR_URL . $url_language;
+  $u = $protocol . $_SERVER['SERVER_NAME'] . '/' . EW_DIR_URL . $url_language;
 }
 
 define('HOST_URL', $host_url);
 define('EW_ROOT_URL', $u);
+define('EW_CACHE_URL', EW_ROOT_URL . EW_CACHE_PATH);
 define('CURRENT_URL', $host_url . $_SERVER['REQUEST_URI']);
+
 
 
 

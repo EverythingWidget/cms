@@ -14,6 +14,9 @@ RewriteRule (.*) http://%1/$1 [R=302,L]
 #AddOutputFilterByType DEFLATE application/javascript
 #AddOutputFilterByType DEFLATE application/x-javascript
 
+RewriteCond %{REQUEST_URI} cache/ [NC]
+RewriteRule ^([^-]{2})?/?cache/(.*) cache/$2 [L]
+
 RewriteCond %{REQUEST_URI} public/ [NC]
 RewriteRule ^([^-]{2})?/?public/([^/]*)/(.*) packages/$2/public/$3 [L]
 

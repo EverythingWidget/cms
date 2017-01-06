@@ -1,9 +1,9 @@
 /packages/rm/public/cache/
+/cache/
 /packages/rm/public/media/
 /nbproject/private/
 /vendor/
 /node_modules/
-/packages/webroot/html/_cache/
 /packages/admin/public/js/ew-elements/build/
 /packages/admin/public/js/system/build/
 /packages/admin/public/js/app/build/

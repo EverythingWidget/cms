@@ -1,28 +1,7 @@
-/*
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
-*/
 /* 
     Created on : Jan 21, 2016, 11:47:41 AM
     Author     : Eeliya
 */
-/*@import url(https://fonts.googleapis.com/css?family=Roboto:400,300,500,700);*/
-
-@font-face {
-  font-family: 'FarNazaninBold';
-  src: url('../templates/orange-milk/fonts/FarNazaninBold.eot') format('embedded-opentype');
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'FarNazaninBold';
-  src:  url(data:application/x-font-woff;charset=utf-8;base64,) format('woff'), url('../templates/orange-milk/fonts/FarNazaninBold.ttf')  format('truetype'), url('../templates/orange-milk/fonts/FarNazaninBold.svg#FarNazaninBold') format('svg');
-  font-weight: normal;
-  font-style: normal;
-}
-
 $background-color: #fff;
 $akcent-background-color: #eee;
 $item-background-color: #078c6d;
@@ -37,7 +16,6 @@ $font-akcent-color: #00a651;
 $font-akcent-color-dark: #04C160;
 $nav-bar-bg: rgba(255,255,255,.9);
 
-@import 'icons.scss';
 @import 'blocks.scss';
 @import 'panels.scss';
 @import 'widgets.scss';

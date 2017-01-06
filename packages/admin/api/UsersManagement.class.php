@@ -97,7 +97,6 @@ class UsersManagement extends \ew\Module {
   }
 
   public function test_plugin($_data) {
-//$_data["first_name"] = "Jawady";
     return $_data;
   }
 
@@ -128,33 +127,13 @@ class UsersManagement extends \ew\Module {
       return false;
     }
 
-
     $_SESSION['login'] = '1';
     $_SESSION['sesUserName'] = $username;
     $_SESSION['EW.USER_ID'] = $user_info["id"];
     $_SESSION['EW.USER_GROUP_ID'] = $user_info["group_id"];
     $_SESSION['EW.USERNAME'] = $user_info["email"];
 
-    //$stm->free_result();
     return TRUE;
-
-
-
-    /*  $user = $db->query("SELECT * FROM ew_users, ew_users_groups WHERE ew_users.group_id = ew_users_groups.id AND ew_users.email = '$username' AND password = '$password' LIMIT 1") or die($db->error);
-      /* $stm->execute();
-
-      $user = $db->query("SELECT COUNT(*)  FROM events ") or die($db->error);
-      if ($user_info = $user->fetch_assoc())
-      {
-      $_SESSION['login'] = '1';
-      $_SESSION['sesUserName'] = $username;
-      $_SESSION['EW.USER_ID'] = $user_info["ew_users.id"];
-      $_SESSION['EW.USER_GROUP_ID'] = $user_info["ew_users_groups.id"];
-      $_SESSION['EW.USERNAME'] = $user_info["username"];
-      //$_SESSION['EW.USER_PERMISSIONS'] = explode(",", $user_info["permission"]);
-      return TRUE;
-      }
-     */
   }
 
   public function logout($url) {
@@ -162,7 +141,8 @@ class UsersManagement extends \ew\Module {
     session_destroy();
     if (!$url)
       $url = '/';
-    header("Location: $url");
+
+    header("Location: /$url");
   }
 
   public function am_i_in() {
