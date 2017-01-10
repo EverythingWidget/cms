@@ -88,7 +88,7 @@ class HTMLResourceHandler extends ResourceHandler {
     if ($path !== null && is_file(EW_PACKAGES_DIR . '/' . $path)) {
       //$ext = $this->get_extension($path);
       $type = $this->get_mime_type($path);
-      
+
       if (\admin\UsersManagement::user_has_permission($app->get_root(), 'html', $module_name, $file)) {
         $result = $this->load_file(EW_PACKAGES_DIR . '/' . $path, $type, $parameters);
 //echo $app->get_root(). 'html'. $module_name.'/'. $file;
@@ -151,7 +151,7 @@ class HTMLResourceHandler extends ResourceHandler {
   public static function find_url_uis($url) {
     $pdo = \EWCore::get_db_PDO();
     // if the url is the root, the home layout will be set
-    if ($url == "/" || $url === EW_DIR || $url === EW_DIR . $_REQUEST["_language"] . "/") {
+    if ($url == "/" || $url === EW_DIR . '/' || $url === EW_DIR . '/' . $_REQUEST["_language"] . "/") {
       $url = "@HOME_PAGE";
     }
 
@@ -201,7 +201,9 @@ class HTMLResourceHandler extends ResourceHandler {
     return [
         'uis_id'                => $row['ui_structure_id'],
         'uis_template'          => $row['template'],
-        'uis_template_settings' => $row['template_settings']
+        'uis_template_settings' => $row['template_settings
+
+      ']
     ];
   }
 

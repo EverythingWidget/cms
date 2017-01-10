@@ -104,9 +104,6 @@ define('EW_ROOT_URL', $u);
 define('EW_CACHE_URL', EW_ROOT_URL . basename(EW_CACHE_PATH));
 define('CURRENT_URL', $host_url . $_SERVER['REQUEST_URI']);
 
-
-
-
 $resource_types = [
     'html', // All the HTML resources should be hosted here.
     'api', // All the api resources should be hosted here.
