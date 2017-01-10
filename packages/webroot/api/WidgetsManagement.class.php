@@ -982,7 +982,7 @@ class WidgetsManagement extends \ew\Module {
 
     $cache_file_name = md5($file_times) . '.js';
     $cache_path = EW_CACHE_DIR . '/' . $cache_file_name;
-    $cache_path_url = EW_CACHE_URL . $cache_file_name;
+    $cache_path_url = EW_CACHE_URL . '/' . $cache_file_name;
 
     if (file_exists($cache_path)) {
       //$minified_code .= file_get_contents($cache_path);
@@ -1103,7 +1103,7 @@ class WidgetsManagement extends \ew\Module {
 
     $cache_file_name = md5($file_times) . '.css';
     $cache_path = EW_CACHE_DIR . '/' . $cache_file_name;
-    $cache_path_url = EW_CACHE_URL . $cache_file_name;
+    $cache_path_url = EW_CACHE_URL . '/' . $cache_file_name;
 
     if (file_exists($cache_path)) {
       $cache_path = EW_CACHE_DIR . "/$cache_file_name";

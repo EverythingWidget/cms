@@ -59,7 +59,7 @@ $result_html = "";
       }
 
       if (json_last_error() !== JSON_ERROR_NONE) {
-        $link = [];
+        $link = [];        
         $link_url = EW_DIR_URL . $links[$i];
       }
       else {
@@ -92,6 +92,7 @@ $result_html = "";
       $active = (rtrim($link_url, '/') === rtrim($_SERVER['REQUEST_URI'], '/')) ? "active" : "";
 
       // Menu
+      
       $result_html .= "<li class='$active'><a class='{$class[$i]}' href='{$link_url}'>{$titles[$i]}</a>";
 
       // Sub menu if exist

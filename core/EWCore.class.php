@@ -62,7 +62,6 @@ class EWCore {
 
     static::$DEFINED_TABLES = ew\DBUtility::get_tables($database_config['database']);
 
-
     self::init_packages();
   }
 
@@ -228,7 +227,7 @@ class EWCore {
    */
 
   public static function import_sql($file, $database_name = "", $delimiter = ';') {
-    $database_config = include(EW_ROOT_DIR . 'config/database.php');
+    $database_config = include(EW_ROOT_DIR . '/config/database.php');
     if (!$database_config['database']) {
       die("Please configure the /config/database.php");
     }
@@ -286,7 +285,7 @@ class EWCore {
    * @return mysqli
    */
   public static function get_db_connection() {
-    $database_config = include(EW_ROOT_DIR . 'config/database.php');
+    $database_config = include(EW_ROOT_DIR . '/config/database.php');
     // default database connection
     mysqli_report(MYSQLI_REPORT_STRICT);
 
@@ -304,13 +303,13 @@ class EWCore {
 
 
     if ($result->num_rows !== 1) {
-      include EW_ROOT_DIR . "core/install/index.php";
+      include EW_ROOT_DIR . "/core/install/index.php";
       die();
     }
     else {
       $result = $db->query("SHOW TABLES LIKE 'ew_settings'");
       if ($result->num_rows !== 1) {
-        include EW_ROOT_DIR . "core/install/index.php";
+        include EW_ROOT_DIR . "/core/install/index.php";
         die();
       }
     }
@@ -544,9 +543,10 @@ class EWCore {
 
     self::$plugins_initialized = true;
 
-    $apps_dirs = opendir(EW_PACKAGES_DIR);
-
-    while ($app_dir = readdir($apps_dirs)) {
+    $apps_dirs = scandir(EW_PACKAGES_DIR);
+    sort($apps_dirs);
+    
+    foreach ($apps_dirs as $key => $app_dir) {
       if (strpos($app_dir, '.') === 0)
         continue;
 
@@ -568,6 +568,7 @@ class EWCore {
     }
 
     foreach (self::$APPS as $key => $app) {
+//      echo $key.'<br/>';
       $app->init_app();
     }
   }
@@ -611,7 +612,7 @@ class EWCore {
       $class_name = end(explode('\\', $class_name));
     }
 
-    $file = EW_ROOT_DIR . 'core/' . $class_name . '.class.php';
+    $file = EW_ROOT_DIR . '/core/' . $class_name . '.class.php';
     //echo $file."<br>";
     if (file_exists($file)) {
       include_once $file;

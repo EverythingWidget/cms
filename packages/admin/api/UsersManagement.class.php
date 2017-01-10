@@ -142,7 +142,7 @@ class UsersManagement extends \ew\Module {
     if (!$url)
       $url = '/';
 
-    header("Location: /$url");
+    header("Location: $url");
   }
 
   public function am_i_in() {

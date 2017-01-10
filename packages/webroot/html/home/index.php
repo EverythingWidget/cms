@@ -8,6 +8,12 @@ $app = 'webroot';
 $_SESSION['ROOT_DIR'] = EW_ROOT_DIR;
 $_REQUEST['cmdResult'] = '';
 
+$webroot_config = webroot\WidgetsManagement::get_page_info();
+
+if (isset($webroot_config['webroot/language'])) {
+  $_REQUEST['_language'] = $webroot_config['webroot/language'];
+}
+
 //$tables = ew\DBUtility::get_tables('ew');
 //echo json_encode($tables);
 //die();
@@ -54,7 +60,7 @@ if ($_REQUEST['_uis_template']) {
   webroot\WidgetsManagement::include_html_link(['rm/public/' . $_REQUEST['_uis_template'] . '/template.css']);
 }
 
-$webroot_config = webroot\WidgetsManagement::get_page_info();
+
 $website_title = $webroot_config['webroot/title'];
 $page_description = $webroot_config['webroot/description'];
 $website_keywords = $webroot_config['webroot/keywords'];

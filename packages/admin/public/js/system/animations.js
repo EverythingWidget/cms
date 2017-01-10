@@ -152,6 +152,9 @@
     }
 
     _this.element.xtag.liveHeightAnimation = this;
+    window.requestAnimationFrame(function () {
+      _this.animate();
+    });
   }
 
   LiveHeightAnimation.prototype.off = function () {
@@ -182,7 +185,7 @@
         _this.animation = TweenLite.fromTo(_this.element, System.spiritAnimations.CONFIG.baseDuration, {
           height: _this.height
         }, {
-          height: newHeight,
+          height: _this.element.offsetParent ? newHeight : '',
           clearProps: newHeight === 0 ? 'height' : '',
           ease: 'Power2.easeInOut',
           onComplete: function () {

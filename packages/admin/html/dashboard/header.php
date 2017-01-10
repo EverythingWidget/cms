@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<base href="<?php echo EW_ROOT_URL ?>">
+<base href="<?php echo EW_ROOT_URL ?>en/">
 <link rel="shortcut icon" href="public/admin/css/images/favicon.ico">  
 <link rel="stylesheet" href="public/rm/css/bootstrap.css" >  
 <link rel="stylesheet" href="public/admin/css/simple-slider.css"  >  
