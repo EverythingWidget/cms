@@ -1,10 +1,9 @@
-/packages/rm/public/cache/
-/cache/
-/packages/rm/public/media/
-/nbproject/private/
 /vendor/
 /node_modules/
+/cache/
+/packages/rm/public/cache/
+/packages/rm/public/media/
+/nbproject/private/
 /packages/admin/public/js/ew-elements/build/
 /packages/admin/public/js/system/build/
 /packages/admin/public/js/app/build/
-/packages/rm/public/templates/orange-milk/template.css

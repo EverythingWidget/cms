@@ -194,7 +194,7 @@ class Module {
       }
 
       $functions_arguments[] = $temp;
-      $this->current_method_args[$param->getName()] = $temp;
+      $this->current_method_args[$param_name] = $temp;
     }
 
     $method_object->setAccessible(true);

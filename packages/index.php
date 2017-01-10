@@ -33,9 +33,9 @@ define('HOST_URL', 'http://' . $_SERVER['SERVER_NAME']);
 require '../core/EWCore.class.php';
 
 ob_end_clean();
-if (ob_get_level()) {
-  ob_end_clean();
-}
+//if (ob_get_level()) {
+//  ob_end_clean();
+//}
 
 $_file = null;
 error_reporting(E_WARNING | E_ERROR);

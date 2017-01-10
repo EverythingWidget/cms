@@ -116,8 +116,8 @@ class EWCore {
 
     ksort($params);
 
-    $params["_APIResourceHandler_output_array"] = true;
-    $params["_APIResourceHandler_verb"] = $verb;
+    $params['_APIResourceHandler_output_array'] = true;
+    $params['_APIResourceHandler_verb'] = $verb;
 
     return static::process_request_command($parts[0], $parts[1], $parts[2], $parts[3], $params);
   }
@@ -138,8 +138,8 @@ class EWCore {
       return static::$CACHED_API_CALL_RESULTS[$cached_resource_id];
     }
 
-    $params["_APIResourceHandler_output_array"] = true;
-    $params["_APIResourceHandler_verb"] = $verb;
+    $params['_APIResourceHandler_output_array'] = true;
+    $params['_APIResourceHandler_verb'] = $verb;
 
     static::$CACHED_API_CALL_RESULTS[$cached_resource_id] = static::process_request_command($parts[0], $parts[1], $parts[2], $parts[3], $params);
     return static::$CACHED_API_CALL_RESULTS[$cached_resource_id];
@@ -185,7 +185,7 @@ class EWCore {
     return $response_data;
   }
 
-  public static function create_arguments($method, $parameters = [], $response) {
+  public static function create_arguments($method, $parameters = [], $response = null) {
     $arguments = $method->getParameters();
     $method_arguments = array();
 
@@ -207,14 +207,15 @@ class EWCore {
 
     foreach ($arguments as $arg) {
       $temp = null;
+      $param_name = $arg->getName();
 
-      if ($arg->getName() === "__response_data") {
+      if ($param_name === '__response_data') {
         $method_arguments[] = $response->to_array();
         continue;
       }
 
-      if (isset($parameters[$arg->getName()])) {
-        $temp = $parameters[$arg->getName()];
+      if (isset($parameters[$param_name])) {
+        $temp = $parameters[$param_name];
       }
 
       $method_arguments[] = $temp;
@@ -376,8 +377,7 @@ class EWCore {
   }
 
   public static function get_users_premissions() {
-
-    return $_SESSION["EW.USERS_PREMISSION"];
+    return $_SESSION['EW.USERS_PREMISSION'];
   }
 
   public static function get_apps($type = "app") {
@@ -533,8 +533,6 @@ class EWCore {
     return FALSE;
   }
 
-  private static $existed_classes = array();
-
   public static function init_packages() {
     if (!self::$loaders_installed) {
       self::$loaders_installed = true;
@@ -572,7 +570,6 @@ class EWCore {
     foreach (self::$APPS as $key => $app) {
       $app->init_app();
     }
-    // Optimization tip
   }
 
   public static function is_url_exist($url) {
@@ -591,14 +588,10 @@ class EWCore {
     return $status;
   }
 
-  public static function set_parameter() {
-    
-  }
-
   //public function get_category   
 
   public function get_page() {
-    $path = EW_PACKAGES_DIR . '/' . $this->request["_app_name"] . '/sections/' . $this->request["page"];
+    $path = EW_PACKAGES_DIR . '/' . $this->request['_app_name'] . '/sections/' . $this->request['page'];
     //echo $path;
     include_once $path;
   }
@@ -1544,8 +1537,8 @@ class EWCore {
     if (isset(self::$no_permission_needed["$app_name/$module_name"]) && in_array($method_name, self::$no_permission_needed["$app_name/$module_name"])) {
       return "public-access";
     }
-    
-    
+
+
 
     $pers = isset(self::$permissions_groups[$app_name]) ? self::$permissions_groups[$app_name]["section"] : false;
 
