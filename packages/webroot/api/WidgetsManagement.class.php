@@ -1042,8 +1042,12 @@ class WidgetsManagement extends \ew\Module {
   }
 
   public static function get_page_info() {
-    $url = parse_url(str_replace(EW_DIR, '/', $_SERVER['REQUEST_URI']));
+    $language = '';
+    if (isset($_REQUEST['_url_language'])) {
+      $language = '/' . $_REQUEST['_url_language'];
+    }
 
+    $url = parse_url(str_replace(EW_DIR . $language, '', CURRENT_URL));
     $currentAppConf = EWCore::call_api('admin/api/settings/read-settings', [
                 'app_name' => 'webroot'
             ])['data'];

@@ -20,7 +20,7 @@ if ($feeder["type"] === "widget-feeder") {
               'token'     => $token * $num_of_items_per_page,
               'page_size' => $num_of_items_per_page,
               'order_by'  => $order,
-              '_language' => $_REQUEST['_language']
+              '_language' => URL_LANGUAGE
   ]);
 }
 else {
@@ -32,7 +32,7 @@ else {
               'token'     => $token * $num_of_items_per_page,
               'page_size' => $num_of_items_per_page,
               'order_by'  => $order,
-              '_language' => $_REQUEST['_language']
+              '_language' => URL_LANGUAGE
   ]);
 }
 $item_per_slide_lg = 1;

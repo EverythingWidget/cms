@@ -1,10 +1,12 @@
 <?php
-$language = $_REQUEST["_language"];
-if ($_REQUEST["_url_language"] || $_REQUEST["_language"] != 'en') {
-  $language = $_REQUEST["_language"];
-  $url_language = $language . "/";
+$language = $_REQUEST['_language'];
+
+if ($_REQUEST['_url_language']) {
+  $language = $_REQUEST['_url_language'];
+  $url_language = $language . '/';
 }
 
+//die($language);
 
 $titles = $widget_parameters["title"];
 $links = $widget_parameters["link"];
@@ -21,8 +23,8 @@ if ($feeder) {
   }
 
   $page = EWCore::call_api($feeder_obj->api_url, [
-              "id"       => $feeder["id"],
-              "language" => $language
+              'id'       => $feeder["id"],
+              '_language' => $language
   ]);
 
   $content_fields = $page["data"]["content_fields"];
@@ -44,6 +46,9 @@ if ($feeder) {
 }
 
 $result_html = "";
+
+$base_url = rtrim(EW_DIR_URL, '/') . '/';
+$base_url_with_language = $base_url . $url_language;
 ?>
 <ul>
   <?php
@@ -59,27 +64,27 @@ $result_html = "";
       }
 
       if (json_last_error() !== JSON_ERROR_NONE) {
-        $link = [];        
-        $link_url = EW_DIR_URL . $links[$i];
+        $link = [];
+        $link_url = $base_url_with_language . $links[$i];
       }
       else {
-        $link_url = EW_DIR_URL . $links[$i];
+        $link_url = $base_url_with_language . $links[$i];
       }
       if ($link["type"] == "admin/content-management/link") {
         if (!EWCore::$languages[str_replace('/', '', $links[$i])]) {
-          $link_url = EW_DIR_URL . $url_language . $links[$i];
+          $link_url = $base_url_with_language . $links[$i];
         }
         else {
-          $link_url = EW_DIR_URL . $links[$i];
+          $link_url = $base_url_with_language . $links[$i];
         }
       }
       else if ($link["type"] == "widget-feeder") {
         $link_url = '#';
-        $sub_menus_json = webroot\WidgetsManagement::get_widget_feeder("menu", $link["feederName"]);
+        $sub_menus_json = webroot\WidgetsManagement::get_widget_feeder('menu', $link['feederName']);
         $sub_menus = json_decode($sub_menus_json, TRUE);
       }
       else if ($link["type"]) {
-        $link_url = EW_DIR_URL . $url_language . $link["type"] . '/' . $link["id"];
+        $link_url = $base_url_with_language . $link['type'] . '/' . $link['id'];
       }
 
       /* else
@@ -92,14 +97,14 @@ $result_html = "";
       $active = (rtrim($link_url, '/') === rtrim($_SERVER['REQUEST_URI'], '/')) ? "active" : "";
 
       // Menu
-      
+
       $result_html .= "<li class='$active'><a class='{$class[$i]}' href='{$link_url}'>{$titles[$i]}</a>";
 
       // Sub menu if exist
       if ($sub_menus) {
         $result_html .= "<ul>";
         foreach ($sub_menus as $sub_menu) {
-          $result_html .= "<li class='$active'><a class='{$class[$i]}' href='" . EW_DIR_URL . $url_language . "{$sub_menu["link"]}'>{$sub_menu["title"]}</a></li>";
+          $result_html .= "<li class='$active'><a class='{$class[$i]}' href='" . $base_url_with_language . "{$sub_menu["link"]}'>{$sub_menu["title"]}</a></li>";
         }
         $result_html .= "</ul>";
       }
@@ -108,19 +113,19 @@ $result_html = "";
   }
   else {
     $link = json_decode($links, true);
-    if ($link["type"] == "admin/content-management/link") {
-      $link_url = EW_DIR_URL . $link["url"];
+    if ($link['type'] == 'admin/content-management/link') {
+      $link_url = $base_url . $link["url"];
     }
-    else if ($link["type"] == "widget-feeder") {
+    else if ($link['type'] == 'widget-feeder') {
       $link_url = '#';
-      $sub_menus_json = webroot\WidgetsManagement::get_widget_feeder("menu", $link["feederName"]);
+      $sub_menus_json = webroot\WidgetsManagement::get_widget_feeder('menu', $link['feederName']);
       $sub_menus = json_decode($sub_menus_json, TRUE);
     }
     else if ($link["type"]) {
-      $link_url = EW_DIR_URL . $url_language . $link["type"] . '/' . $link["id"];
+      $link_url = $base_url_with_language . $link['type'] . '/' . $link['id'];
     }
     else {
-      $link_url = EW_DIR_URL . $url_language;
+      $link_url = $base_url_with_language;
     }
 
     // $link_requlare_expression_ready = preg_quote($link_url, '/');
@@ -133,7 +138,7 @@ $result_html = "";
     if ($sub_menus) {
       $result_html .= "<ul>";
       foreach ($sub_menus as $sub_menu) {
-        $result_html .= "<li class='$active'><a href='" . EW_DIR_URL . $url_language . "{$sub_menu["link"]}'>";
+        $result_html .= "<li class='$active'><a href='" . $base_url_with_language . "{$sub_menu["link"]}'>";
         $result_html .= $sub_menu["title"] . "</a></li>";
       }
       $result_html .= "</ul>";

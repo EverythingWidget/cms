@@ -14,8 +14,8 @@ if ($feeder_id) {
   $feeder_obj = webroot\WidgetsManagement::get_widget_feeder($feeder_id);
 
   $page = EWCore::call_cached_api($feeder_obj->api_url, [
-              "id"       => $feeder["id"],
-              "language" => $language
+              'id'       => $feeder["id"],
+              '_language' => $language
   ]);
 
   $page_data = $page["data"];

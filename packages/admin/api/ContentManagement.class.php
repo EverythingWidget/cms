@@ -589,12 +589,12 @@ class ContentManagement extends \ew\Module {
     return $links;
   }
 
-  public function ew_page_feeder_articles($_response, $id, $language = "en") {
+  public function ew_page_feeder_articles($_response, $id, $_language = 'en') {
     if (!is_numeric($id)) {
       $id = EWCore::slug_to_id($id, 'ew_contents');
     }
 
-    $articles = $this->contents_labels($_response, $id, "admin_ContentManagement_language", $language);
+    $articles = $this->contents_labels($_response, $id, 'admin_ContentManagement_language', $_language);
     $article = [];
 
     if ($articles[0]) {
@@ -860,7 +860,7 @@ class ContentManagement extends \ew\Module {
   public function content_fields($_parts__id, $language) {
     $content = $this->get_content_by_id($_parts__id, $language);
 
-    return \ew\APIResourceHandler::to_api_response($content->data["content_fields"]);
+    return \ew\APIResourceHandler::to_api_response($content->data['content_fields']);
   }
 
   private function get_content_by_id($id, $language = 'en') {
