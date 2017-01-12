@@ -3283,14 +3283,13 @@ system-list, dis-block {
 
 system-input-json {
   //box-shadow: 0 2px 3px rgba(0,0,0,.1), 0 5px 9px rgba(0,0,0,.1);
+  position: relative;
   display: block;
   margin: 0;
-  border-radius: 3px;
   overflow: hidden;
   background-color: #fff;
-  border: 1px solid #dadada;  
-  box-shadow:0 1px 3px rgba(0,0,0,0.1);
   font-size: 16px;
+  padding: 5px;
 
   p {
     margin: 0;
@@ -3299,12 +3298,27 @@ system-input-json {
     border-bottom: 1px solid #dadada;
 
     system-input-json {
+      margin-top: -5px;
+      padding-top: 30px;
       float: left;
 
+      &:before {
+        content: ' ';
+        position: absolute;
+        width: 10px;
+        height: 100%;
+        left: 0;
+        top: 0;
+        border: 0 solid #d0d0d0;
+        border-width: 0 0 1px 1px;
+        border-bottom-left-radius: 5px;
+        z-index: 1;
+      }
+
       &.value {
-        width: 98%;
+        width: 100%;
         border-left-color: #dadada; 
-        margin: 0px 0 10px 1%;
+        margin: -30px 0 10px 0;
       }
     }
 
@@ -3314,7 +3328,7 @@ system-input-json {
 
     input {
       background: transparent;
-      padding: 10px;
+      padding: 5px 10px;
       border: none;
       float: left;
 
@@ -3326,12 +3340,21 @@ system-input-json {
 
     .name {
       font-weight: bold;
-      width: 35%;      
+      width: 35%;     
+      position: relative;
+      z-index: 2;
+    }
+
+    .splitter {
+      width: 1px;
+      margin: 5px 0;
+      height: 24px;
+      background-color: #d0d0d0;
+      float: left;
     }
 
     .value {
-      width: 65%;
-      border-left: 1px solid #eee;  
+      width: calc(65% - 1px);
     }
   }
 }

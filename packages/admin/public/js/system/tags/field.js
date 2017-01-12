@@ -10,7 +10,7 @@
           console.warn('Only one input field is allowed inside system-field', this);
         }
 
-        element.xtag._input = this.querySelectorAll('input, textarea, select')[0];
+        element.xtag._input = this.querySelectorAll('input, textarea, select, system-input-json')[0] || {};
 
 //        element.setEmptiness = function () {
 //          if (element.xtag._input.value || element.xtag._input.type === 'file') {

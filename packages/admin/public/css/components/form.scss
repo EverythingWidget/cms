@@ -42,12 +42,17 @@
       background-color: rgba(0,0,0,.06);
     }
   }
+  
+  > system-input-json {
+    margin-top: 5px;
+    margin-right: 35px;
+  }
 }
 
 .field-actions {
   position: absolute;
   right: 0;
-  bottom: 17px;
+  top: 22px;
   padding: 3px 0;
   
   > .btn {

@@ -652,8 +652,9 @@ class WidgetsManagement extends \ew\Module {
     ];
 
     $widge_class = EWCore::hyphenToCamel($widget_type);
+    
     $widget_class_name = "webroot\\$widge_class";
-    $rendered_widget = static::render_widget($widget_class_name, EW_WIDGETS_DIR . '/' . $widget_type . "/$widge_class.class.php", $widget_data);
+    $rendered_widget = static::render_widget($widget_class_name, EW_WIDGETS_DIR . '/' . strtolower($widget_type) . "/$widge_class.class.php", $widget_data);
 
     if ($rendered_widget !== false) {
       $widget_title = $rendered_widget['instance']->get_title();

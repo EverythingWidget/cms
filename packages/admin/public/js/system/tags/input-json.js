@@ -23,6 +23,9 @@
         name.className = 'name';
         name.placeholder = 'name';
 
+        var splitter = document.createElement('span');
+        splitter.className = 'splitter';
+
         var value = document.createElement('input');
         if ('object' === typeof valueValue) {
           value = document.createElement('system-input-json');
@@ -52,6 +55,7 @@
 
         field._name = name;
         field.appendChild(name);
+        field.appendChild(splitter);
         field.appendChild(value);
 
         this.xtag.allFields.push({
@@ -124,7 +128,7 @@
           jsonInput.xtag.fields = [];
 
           if ('string' === typeof data)
-            data = JSON.parse(data);
+            data = JSON.parse(data || '{}');
 
           if ('object' !== typeof data) {
             return;
@@ -132,16 +136,14 @@
 
           if (Object.keys(data).length === 0) {
             jsonInput.xtag.lastField = jsonInput.createField('', '');
-            jsonInput.xtag.allFields.push(jsonInput.xtag.lastField);
           } else {
             for (var key in data) {
               if (data.hasOwnProperty(key)) {
-                jsonInput.xtag.lastField = jsonInput.createField(key, data[key]);
-                jsonInput.xtag.allFields.push(jsonInput.xtag.lastField);
+                jsonInput.createField(key, data[key]);
               }
             }
 
-            jsonInput.xtag.lastField = {};
+            jsonInput.xtag.lastField = jsonInput.createField('', '');
           }
 
           jsonInput.updateFieldsCount();
