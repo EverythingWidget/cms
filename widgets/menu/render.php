@@ -23,7 +23,7 @@ if ($feeder) {
   }
 
   $page = EWCore::call_api($feeder_obj->api_url, [
-              'id'       => $feeder["id"],
+              'id'        => $feeder["id"],
               '_language' => $language
   ]);
 

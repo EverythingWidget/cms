@@ -27,8 +27,8 @@ class Text implements Widget {
     $format = $widget_parameters['format'];
     if ($widget_parameters['feeder']) {
       $feeder = json_decode($widget_parameters['feeder'], TRUE);
-      $content_id = $feeder["id"];
-      $field_id = $feeder["fieldId"];
+      $content_id = $feeder['id'];
+      $field_id = $feeder['fieldId'];
     }
     else {
       return "<$format>&nbsp;</$format>";
@@ -37,17 +37,17 @@ class Text implements Widget {
     $content = \EWCore::call_cached_api('admin/api/content-management/ew-list-feeder-related-contents', [
                 'content_id' => $content_id,
                 'key'        => "admin_ContentManagement_language",
-                "value"      => URL_LANGUAGE
-            ])["data"];
+                'value'      => URL_LANGUAGE
+            ])['data'];
 
     if (isset($content)) {
-      $contentFields = $content[0]["content_fields"];
+      $contentFields = $content[0]['content_fields'];
 
       if ($format === 'default') {
-        return $contentFields[$field_id]["content"];
+        return $contentFields[$field_id]['content'];
       }
       else {
-        return "<$format> {$contentFields[$field_id]["content"]} </$format>";
+        return "<$format> {$contentFields[$field_id]['content']} </$format>";
       }
     }
     else {
