@@ -10,6 +10,7 @@
 @import "components/icons";
 @import "components/buttons";
 @import "components/transitions";
+@import "components/simple-slider";
 /*@font-face{ 
   font-family: 'geomanist';
   src: url('fonts/geomanist-bold-webfont.ttf');
@@ -1056,15 +1057,16 @@ a.apps-menu-link:hover {
 .app-bar-title {
   float: left;
   width: 260px;
-  padding: 17px 20px 17px 35px;
+  padding: 15px 20px 15px 35px;
   font-size: 1.8em;
-  line-height: 30px;
+  line-height: 25px;
   margin-top: 0;
+  font-weight: 300;
   color: #1B2433;
-}
 
-.app-bar-title.inline-loader:after {
-  left: 5px;
+  &.inline-loader:after {
+    left: 5px;
+  }
 }
 
 .overlay {
@@ -1156,7 +1158,7 @@ a.apps-menu-link:hover {
 
 .actions-bar {
   height: 54px;
-  padding: 10px;
+  padding: 10px 15px;
   padding-bottom: 0;
   display: block;
   overflow: auto;
@@ -1189,12 +1191,12 @@ a.apps-menu-link:hover {
 
 h2.actions-bar {
   min-height: 54px;
-}
 
-h2.actions-bar span {
-  float: left;
-  margin-right: 15px;
-  line-height: 34px;
+  span {
+    float: left;
+    margin-right: 15px;
+    line-height: 34px;
+  }
 }
 
 .width-lg-8 {
@@ -1232,25 +1234,25 @@ ul.actions-bar {
   padding: 8px;
   display: block;
   list-style: none;
-}
 
-ul.actions-bar li {
-  margin-right: 10px;
-  padding: 0;
-  float: left;
-  overflow: hidden;
-  height: 34px;
-}
+  li {
+    margin-right: 10px;
+    padding: 0;
+    float: left;
+    overflow: hidden;
+    height: 34px;
 
-ul.actions-bar li a.button {
-  display: block;
-  white-space: nowrap;
-}
+    label {
+      padding: 0;
+      height: 34px;
+      line-height: 34px;
+    }
 
-ul.actions-bar li label {
-  padding: 0;
-  height: 34px;
-  line-height: 34px;
+    a.button {
+      display: block;
+      white-space: nowrap;
+    }
+  }
 }
 
 .actions-bar .btn-group {
@@ -1521,15 +1523,13 @@ ul.actions-bar li label {
 
   li {
     a {
-      font-weight: bold;
       display: block;
       float: none;
     }
 
     p {
-      margin: 2px 0;
+      margin: 0;
       display: block;
-      font-weight: 400;
     }
   }
 }
@@ -2991,8 +2991,8 @@ label.small .tag {
 }
 
 a.link {
-  padding: 4px 12px;
-  border-radius: 2px;
+  padding: 6px 8px;
+  border-radius: 4px;
   color: #fff;
   background-color: #00BCD4;
   line-height: 20px;
@@ -3009,8 +3009,9 @@ a.link {
   }
 }
 
-a.link.active,.active > a.link {
-  cursor: default;
+a.link.active, .active > a.link {
+  cursor: default;  
+  color: rgba(#fff, .82);
   background-color: #0097A7;
   text-decoration: none;
 }

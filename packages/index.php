@@ -7,13 +7,6 @@
 ini_set('session.cookie_httponly', 1);
 session_start();
 header_remove("X-Powered-By");
-//$before = microtime(true);
-// 05 November, 2013
-// Do NOT touch this file unless you are expert in Everything Widget CMS
-// All contents inside the apps directory is reached throuth this file
-// parse app_name, section_name, function_name from url
-//$time_start = microtime(true);
-// ([^\/\s]{2,3}\/)?~?([^\/\s]*)\/?([^\/\s]*)?\/?([^\/\s]*)?\/?([^\/\s]*)?\/
 
 ob_start();
 $app_configs = require '../config/app.php';
@@ -115,7 +108,6 @@ $resource_types = [
 // Check the app parameter
 $resource_type = 'html';
 $app_name = 'webroot';
-//var_dump($elements[$parameter_index + 1]);
 if (strpos($elements[$parameter_index], '-') === 0) {
   $app_name = str_replace('-', '', $elements[$parameter_index]);
   $parameter_index++;
@@ -133,8 +125,6 @@ else if (in_array($elements[$parameter_index], $resource_types)) {
   }
 }
 
-//echo $elements[$parameter_index + 1];
-// Read the section name parameter
 $section_name = null;
 if (isset($elements[$parameter_index]) && preg_match("/^([^\.]*)$/", $elements[$parameter_index], $match)) {
   $section_name = $elements[$parameter_index];
@@ -143,17 +133,13 @@ if (isset($elements[$parameter_index]) && preg_match("/^([^\.]*)$/", $elements[$
   $parameter_index++;
 }
 
-// Read the function name parameter
 $function_name = null;
 if (isset($elements[$parameter_index])) {
   $function_name = $elements[$parameter_index];
-  //$function_name = ($function_name == 'index.php') ? 'index' : $function_name;
   $_REQUEST['_method_name'] = $function_name;
 
   $rest_of_elements = array_slice($elements, $parameter_index);
   $file_uri = implode('/', $rest_of_elements);
-  //if (strpos($file_uri, '?'))
-  //$file_uri = substr($file_uri, 0, strpos($file_uri, '?'));
   $_file = preg_replace('{/$}', '', $file_uri);
   $_REQUEST['_file'] = $_file;
 
@@ -165,11 +151,7 @@ if (!isset($_SESSION['EW.USER_GROUP_ID'])) {
   $_SESSION['EW.USER_GROUP_ID'] = /* json_decode(EWCore::get_default_users_group(), true)["id"] */ 1;
 }
 
-$RESULT_CONTENT = 'RESULT_CONTENT: EMPTY';
-
-$real_class_name = $app_name . '\\' . $section_name;
-
-$inputs = array();
+$inputs = [];
 parse_str(file_get_contents('php://input'), $inputs);
 
 $request_params = array_merge($_REQUEST, $inputs);
@@ -184,6 +166,10 @@ function translate($match) {
 // show the result
 if ($RESULT_CONTENT) {
   echo preg_replace_callback("/tr(\:\w*)?\{(.*?)\}/", 'translate', $RESULT_CONTENT);
+//  echo $RESULT_CONTENT;
+}
+else {
+  echo 'RESULT_CONTENT: EMPTY';
 }
 //$after = microtime(true);
 //echo ($after-$before) . " sec/serialize\n";

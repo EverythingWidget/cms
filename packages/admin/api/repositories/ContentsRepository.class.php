@@ -67,7 +67,9 @@ class ContentsRepository implements \ew\CRUDRepository {
           $this->update_label($content->id, $key, $value);
         }
       }
-    }
+      
+      $content->labels = $this->parse_labels($this->get_content_labels($content->id), $content);
+    }       
 
     $result->message = 'content has been created';
     $result->data = $content;
@@ -168,6 +170,8 @@ class ContentsRepository implements \ew\CRUDRepository {
           $this->update_label($content->id, $key, $value);
         }
       }
+      
+      $content->labels = $this->parse_labels($this->get_content_labels($content->id), $content);
     }
 
     $result->message = 'content has been updated';

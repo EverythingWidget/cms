@@ -25,7 +25,7 @@ function Article() {
     onDone: function (response) {
       System.ui.components.body.EW().notify(response).show();
       ContentForm.setData(response.data);
-      $(document).trigger("article-list.refresh");
+      $(document).trigger('article-list.refresh');
       loader.dispose();
       System.setHashParameters({
         article: response.data.id

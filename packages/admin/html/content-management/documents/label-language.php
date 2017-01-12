@@ -13,7 +13,7 @@
     <ul id="{{comp_id}}_languages" class="list links">
       <li v-for="item in items" class="zoom-item" v-bind:class="{ 'active': item.id === contentId }" >
         <a href='#' class='link' v-on:click="select($event,item)">
-          {{ languagesMap[item.value] }}
+          <strong>{{ languagesMap[item.value] }}</strong>
           <p>
             {{ item.title }}
           </p>

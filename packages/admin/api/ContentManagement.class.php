@@ -1432,7 +1432,7 @@ class ContentManagement extends \ew\Module {
         }
       }
       else {
-        $error+=2;
+        $error += 2;
       }
     }
 

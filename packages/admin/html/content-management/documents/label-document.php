@@ -24,15 +24,12 @@
 
 <script>
   (function () {
-    var text = $("#{{comp_id}}_text");
-    var value = $("#{{comp_id}}_value");
-
     var relatedDocumentsVue = new Vue({
-      el: "#{{comp_id}}_label_block",
+      el: '#{{comp_id}}_label_block',
       data: {
         parentContentId: null,
         parentContentTitle: '',
-        contentId: parseInt("{{value}}"),
+        contentId: parseInt('{{value}}'),
         items: []
       },
       methods: {
@@ -59,22 +56,27 @@
       }
     });
 
-    $("#$php.form_id").on('refresh.documents', function (e, formData) {
+    $('#$php.form_id').on('refresh.documents', function (e, formData) {
       relatedDocumentsVue.contentId = formData.id;
 
-      if (!ContentForm.getLabel("{{comp_id}}")) {
-        ContentForm.activeLabel("{{comp_id}}", true);
-        value.val('$content.id');
-        text.val(formData["title"]).change();
+      if (!ContentForm.getLabel('{{comp_id}}')) {
+        ContentForm.activeLabel('{{comp_id}}', true);
+        relatedDocumentsVue.parentContentId = '$content.id';
+        relatedDocumentsVue.parentContentTitle = formData.title;
       }
 
       $.get('api/admin/content-management/contents-labels/', {
-        content_id: ContentForm.getLabel("{{comp_id}}"),
-        key: "{{comp_id}}"
+        content_id: ContentForm.getLabel('{{comp_id}}'),
+        key: '{{comp_id}}'
       }, function (response) {
         relatedDocumentsVue.items = response['data'];
+        var parentId = parseInt(ContentForm.getLabel('{{comp_id}}'));
+        relatedDocumentsVue.items.forEach(function (item) {
+          if (item.id === parentId) {
+            relatedDocumentsVue.parentContentTitle = item.title;
+          }
+        });
       });
     });
-
   }());
 </script>

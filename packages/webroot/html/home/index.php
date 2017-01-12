@@ -8,10 +8,10 @@ $app = 'webroot';
 $_SESSION['ROOT_DIR'] = EW_ROOT_DIR;
 $_REQUEST['cmdResult'] = '';
 
-$webroot_config = webroot\WidgetsManagement::get_page_info();
+$webroot_language = webroot\WidgetsManagement::get_page_info()['webroot/language'];
 
-if (isset($webroot_config['webroot/language'])) {
-  $_REQUEST['_language'] = $webroot_config['webroot/language'];
+if (isset($webroot_language)) {
+  $_REQUEST['_language'] = $webroot_language;
 }
 
 if ($_REQUEST['_url_language']) {
@@ -19,9 +19,7 @@ if ($_REQUEST['_url_language']) {
 } else {
   define('URL_LANGUAGE' , $_REQUEST['_language']);
 }
-//$tables = ew\DBUtility::get_tables('ew');
-//echo json_encode($tables);
-//die();
+
 webroot\WidgetsManagement::include_html_link(['rm/public/css/grid.css']);
 
 webroot\WidgetsManagement::add_html_script(['include' => 'rm/public/js/jquery/build.js']);
@@ -56,13 +54,12 @@ if (file_exists($template_php)) {
   $template_script_dom = $template->get_template_script(json_decode($_REQUEST['_uis_template_settings'], true));
   if ($template_script_dom) {
     $template_script_dom = preg_replace('/\$php\.\$template_settings/', $template_settings, $template_script_dom);
-
     $TEMPLATE_SCRIPT = '<script id="template-script" async>' . $template_script_dom . '</script>';
   }
 }
 
 if ($_REQUEST['_uis_template']) {
-  webroot\WidgetsManagement::include_html_link(['rm/public/' . $_REQUEST['_uis_template'] . '/template.css']);
+  webroot\WidgetsManagement::include_html_link(["rm/public/{$_REQUEST['_uis_template']}/template.css"]);
 }
 
 $webroot_config = webroot\WidgetsManagement::get_page_info();

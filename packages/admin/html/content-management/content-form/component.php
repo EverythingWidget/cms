@@ -120,7 +120,7 @@ $tabs = EWCore::read_registry('ew/ui/forms/content/tabs');
       $.each(this.uiForm.find("#content-labels .content-label[data-activated='true']"), function (i, el) {
         el = $(el);
 
-        if (el.find("input[name='key']:not(:disabled)").val() == key) {
+        if (el.find("input[name='key']:not(:disabled)").val() === key) {
           value = el.find("[name='value']").val();
           return;
         }
@@ -154,7 +154,7 @@ $tabs = EWCore::read_registry('ew/ui/forms/content/tabs');
     setData: function (contentInfo) {
       if (contentInfo && contentInfo.labels) {
         ContentForm.initLabels(contentInfo.labels);
-        ContentForm.setLabels(contentInfo.labels);
+        ContentForm.setLabels(contentInfo.labels);        
       }
 
       EW.setFormData(ContentForm.formId, contentInfo);

@@ -150,10 +150,10 @@
 
       window.addEventListener('resize', _this.resizeHandler);
     }
-
-    _this.element.xtag.liveHeightAnimation = this;
+ 
     window.requestAnimationFrame(function () {
-      _this.animate();
+      _this.animate();     
+      _this.element.xtag.liveHeightAnimation = _this;
     });
   }
 
