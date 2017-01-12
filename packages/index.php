@@ -21,7 +21,7 @@ $app_configs = require '../config/app.php';
 define('EW_DIR', $app_configs['EW_DIR']);
 // URL path the refer to EverythigWidget root. if EverythingWidget is in the root then '/'
 define('EW_DIR_URL', $app_configs['EW_DIR_URL']);
-define('EW_ROOT_DIR', $_SERVER['DOCUMENT_ROOT'] . $app_configs['EW_DIR']);
+define('EW_ROOT_DIR', rtrim($_SERVER['DOCUMENT_ROOT'] . $app_configs['EW_DIR'], '/'));
 define('EW_CACHE_PATH', $app_configs['EW_CACHE_PATH']);
 define('EW_CACHE_DIR', EW_ROOT_DIR . EW_CACHE_PATH);
 define('EW_PACKAGES_DIR', EW_ROOT_DIR . '/packages');
