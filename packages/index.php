@@ -10,12 +10,28 @@ header_remove("X-Powered-By");
 
 ob_start();
 $app_configs = require '../config/app.php';
+require '../core/EWCore.class.php';
+$env_variables = null;
+foreach ($app_configs['DOMAINS'] as $key => $value) {
+  if (in_array($_SERVER['HTTP_HOST'], $value)) {
+    define('EW_ENVIROMENT', $key);
 
-define('EW_DIR', $app_configs['EW_DIR']);
+    $env_variables = $app_configs['VARIABLES'][$key];
+    break;
+  }
+}
+
+if (is_null($env_variables)) {
+  die(EWCore::log_error(500, 'Could not find enviroments variables', [
+              'domain' => $_SERVER['HTTP_HOST']
+  ]));
+}
+
+define('EW_DIR', $env_variables['EW_DIR']);
 // URL path the refer to EverythigWidget root. if EverythingWidget is in the root then '/'
-define('EW_DIR_URL', $app_configs['EW_DIR_URL']);
-define('EW_ROOT_DIR', rtrim($_SERVER['DOCUMENT_ROOT'] . $app_configs['EW_DIR'], '/'));
-define('EW_CACHE_PATH', $app_configs['EW_CACHE_PATH']);
+define('EW_DIR_URL', $env_variables['EW_DIR_URL']);
+define('EW_ROOT_DIR', rtrim($_SERVER['DOCUMENT_ROOT'] . $env_variables['EW_DIR'], '/'));
+define('EW_CACHE_PATH', $env_variables['EW_CACHE_PATH']);
 define('EW_CACHE_DIR', EW_ROOT_DIR . EW_CACHE_PATH);
 define('EW_PACKAGES_DIR', EW_ROOT_DIR . '/packages');
 define('EW_TEMPLATES_DIR', EW_ROOT_DIR . '/packages/rm/public/templates');
@@ -23,7 +39,7 @@ define('EW_WIDGETS_DIR', EW_ROOT_DIR . '/widgets');
 define('EW_MEDIA_DIR', EW_ROOT_DIR . 'packages/rm/public/media');
 define('HOST_URL', 'http://' . $_SERVER['SERVER_NAME']);
 
-require '../core/EWCore.class.php';
+
 
 ob_end_clean();
 //if (ob_get_level()) {

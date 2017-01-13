@@ -1,9 +1,10 @@
 /vendor/
 /node_modules/
 /cache/
+/config/
 /packages/rm/public/cache/
 /packages/rm/public/media/
-/nbproject
+/nbproject/
 /packages/admin/public/js/ew-elements/build/
 /packages/admin/public/js/system/build/
 /packages/admin/public/js/app/build/

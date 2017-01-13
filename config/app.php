@@ -1,1 +1,0 @@
-<?phpreturn [    'EW_DIR'        => '/EverythingWidget',    'EW_DIR_URL'    => '/EverythingWidget',    'EW_CACHE_PATH' => '/cache'];
