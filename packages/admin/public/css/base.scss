@@ -675,7 +675,7 @@ body.Admin {
   padding-right: 0px;
   margin-right: -14px;
   display: block;
-  top: 64px;
+  top: 55px;
   left: 110px;
   bottom: 0;
   opacity: 0;
@@ -986,11 +986,11 @@ a.apps-menu-link:hover {
 
   &.tabs-bar-on {
     + #main-content {
-      top: 110px;
+      top: 101px;
     }
 
     .tabs-bar {        
-      height: 110px;
+      height: 101px;
 
       ul {
         opacity: 1;
@@ -999,8 +999,8 @@ a.apps-menu-link:hover {
   }
 
   .tabs-bar {     
-    height: 64px;
-    margin: -64px 0 0; 
+    height: 55px;
+    margin: -55px 0 0;
     display: flex;
     align-items: flex-end;
     align-self: center;

@@ -83,8 +83,6 @@
       done();
     }
   });
-
-
 })();
 
 (function (TweenLite) {
@@ -104,6 +102,7 @@
     deregister: function (element) {
       if (element.xtag.liveHeightAnimation) {
         element.xtag.liveHeightAnimation.off();
+        element.xtag.liveHeightAnimation = null;
       }
     }
   };
@@ -111,8 +110,9 @@
   function LiveHeightAnimation(element) {
     var _this = this;
     _this.element = element;
+    _this.element.xtag.liveHeightAnimation = this;
 
-    if (!this.observer) {
+    if (!_this.observer) {
       _this.observer = new MutationObserver(function (mutations) {
         mutations.forEach(function (item) {
           if (item.addedNodes[0] && item.addedNodes[0].__ui_neutral) {
@@ -128,34 +128,34 @@
       });
 
       window.requestAnimationFrame(function () {
-        _this.height = element.offsetHeight;
+        if (!_this.observer) {
+          return;
+        }
 
+        _this.height = _this.element.offsetHeight;
         TweenLite.set(_this.element, {
           height: _this.height
         });
 
-        if (_this.observer) {
-          _this.observer.observe(_this.element, {
-            attributes: false,
-            childList: true,
-            characterData: false,
-            subtree: true
-          });
+        _this.observer.observe(_this.element, {
+          attributes: false,
+          childList: true,
+          characterData: false,
+          subtree: true
+        });
 
-          _this.animate();
-        }
+        _this.animate();
       });
 
       _this.resizeHandler = function () {
         _this.animate();
       };
-
       window.addEventListener('resize', _this.resizeHandler);
     }
-
   }
 
   LiveHeightAnimation.prototype.off = function () {
+    clearTimeout(this.animationThrottle);
     if (this.observer) {
       this.observer.disconnect();
       this.observer = null;
@@ -170,7 +170,6 @@
   LiveHeightAnimation.prototype.animate = function () {
     var _this = this;
     clearTimeout(_this.animationThrottle);
-
     _this.animationThrottle = setTimeout(function () {
       if (_this.animation) {
         _this.animation.pause();
@@ -188,6 +187,7 @@
           ease: 'Power2.easeInOut',
           onComplete: function () {
             _this.height = newHeight;
+            _this.animation = null;
           }
         });
       }
@@ -225,8 +225,7 @@
           if (item.addedNodes[0]) {
 
             if (item.addedNodes[0].__ui_neutral ||
-                    item.addedNodes[0].nodeType !== Node.ELEMENT_NODE ||
-                    !item.addedNodes[0].classList.contains(_this.zoomItem))
+                item.addedNodes[0].nodeType !== Node.ELEMENT_NODE || !item.addedNodes[0].classList.contains(_this.zoomItem))
               return null;
 
             node = item.addedNodes[0];
@@ -284,7 +283,8 @@
         opacity: 1,
         clearProps: 'transition,scale,opacity',
         ease: 'Power3.easeOut',
-        onComplete: function () { }
+        onComplete: function () {
+        }
       }));
     });
 
@@ -323,7 +323,7 @@
           if (item.addedNodes[0]) {
 
             if (item.addedNodes[0].__ui_neutral ||
-                    item.addedNodes[0].nodeType !== Node.ELEMENT_NODE)
+                item.addedNodes[0].nodeType !== Node.ELEMENT_NODE)
               return null;
 
             node = item.addedNodes[0];
@@ -381,7 +381,8 @@
         opacity: 1,
         clearProps: 'transition,scale,opacity',
         ease: 'Power3.easeOut',
-        onComplete: function () { }
+        onComplete: function () {
+        }
       }));
     });
 
@@ -420,8 +421,7 @@
 
           if (item.addedNodes[0]) {
             if (item.addedNodes[0].__ui_neutral || item.addedNodes[0].__in_out ||
-                    item.addedNodes[0].nodeType !== Node.ELEMENT_NODE ||
-                    !item.addedNodes[0].classList.contains(_this.item))
+                item.addedNodes[0].nodeType !== Node.ELEMENT_NODE || !item.addedNodes[0].classList.contains(_this.item))
               return null;
 
             node = item.addedNodes[0];
@@ -434,8 +434,8 @@
           }
 
           if (item.removedNodes[0] &&
-                  item.removedNodes[0].nodeType === Node.ELEMENT_NODE &&
-                  item.removedNodes[0].classList.contains(_this.item)) {
+              item.removedNodes[0].nodeType === Node.ELEMENT_NODE &&
+              item.removedNodes[0].classList.contains(_this.item)) {
             node = item.removedNodes[0];
             node.__in_out = true;
             item.target.insertBefore(node, item.previousSibling.nextSibling);
@@ -497,7 +497,8 @@
         _this.timelineItems.push(TweenLite.to(element, .4, {
           className: '-=' + _this.class,
           ease: 'Power3.easeOut',
-          onComplete: function () { }
+          onComplete: function () {
+          }
         }));
       });
 
@@ -552,8 +553,7 @@
           var node = null;
           if (item.addedNodes[0]) {
             if (item.addedNodes[0].__ui_neutral ||
-                    item.addedNodes[0].nodeType !== Node.ELEMENT_NODE ||
-                    !item.addedNodes[0].classList.contains(_this.verticalShiftItem))
+                item.addedNodes[0].nodeType !== Node.ELEMENT_NODE || !item.addedNodes[0].classList.contains(_this.verticalShiftItem))
               return null;
 
             node = item.addedNodes[0];

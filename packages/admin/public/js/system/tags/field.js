@@ -11,14 +11,10 @@
         }
 
         element.xtag._input = this.querySelectorAll('input, textarea, select, system-input-json')[0] || {};
-
-//        element.setEmptiness = function () {
-//          if (element.xtag._input.value || element.xtag._input.type === 'file') {
-//            element.removeAttribute('empty');
-//          } else {
-//            element.setAttribute('empty', '');
-//          }
-//        };
+        element.xtag._label = this.querySelectorAll('label')[0];
+        if (element.xtag._label) {
+          element.xtag._label.addEventListener('click', element.xtag._input.focus.bind(element.xtag._input));
+        }
 
         if (element.xtag._input) {
           element.setEmptiness();
@@ -56,10 +52,8 @@
         clearInterval(this.xtag.observer);
       }
     },
-    accessors: {
-    },
-    events: {
-    },
+    accessors: {},
+    events: {},
     methods: {
       setEmptiness: function () {
         var element = this;

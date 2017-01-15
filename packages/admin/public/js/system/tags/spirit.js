@@ -3,15 +3,14 @@
     lifecycle: {
       created: function () {
         var element = this;
-        element.xtag.animations = [];
+        element.xtag.animations = element.getAttribute('animations').split(/[\s,]+/).filter(Boolean);
         element.xtag.registeredAnimations = [];
-        this.xtag.cachedAnimations = this.getAttribute('animations');
-      },
-      attributeChanged: function (attrName, oldValue, newValue) {
+        element.xtag.cachedAnimations = element.getAttribute('animations');
       },
       inserted: function () {
         if (this.xtag.cachedAnimations && !this.xtag.animations.length) {
-          this.setAttribute('animations', this.xtag.cachedAnimations)
+          this.setAttribute('animations', this.xtag.cachedAnimations);
+          this.xtag.animations = this.xtag.cachedAnimations.split(/[\s,]+/).filter(Boolean);
           this.xtag.cachedAnimations = null;
           this.prepare();
         }
@@ -24,8 +23,7 @@
     },
     accessors: {
       animations: {
-        attribute: {
-        },
+        attribute: {},
         set: function (value) {
           var element = this;
           if (typeof value === 'string') {
@@ -41,8 +39,7 @@
         }
       }
     },
-    events: {
-    },
+    events: {},
     methods: {
       prepare: function () {
         var element = this;
@@ -59,8 +56,9 @@
           element.xtag.registeredAnimations.push(item);
         });
 
+        var animations = element.getAttribute('animations').split(/[\s,]+/).filter(Boolean);
         this.xtag.registeredAnimations = this.xtag.registeredAnimations.filter(function (item) {
-          if (element.xtag.animations.indexOf(item) === -1) {
+          if (animations.indexOf(item) === -1) {
             System.spiritAnimations[item].deregister(element);
             return false;
           }
