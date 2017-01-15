@@ -21,9 +21,8 @@
   };
 
   System.services.app_service.on_loaded = function (app, html) {
-    $("#app-content").append(html);
-
-    if (app.type === "app"/* && app.id === "system/" + System.getHashParam("app")*/) {
+    $('#app-content').append(html);
+    if (app.type === 'app'/* && app.id === "system/" + System.getHashParam("app")*/) {
       EW.currentAppSections = System.modules[app.id].data.sections;
       EW.hoverApp = app.id;
 
@@ -204,15 +203,6 @@
           activityParameters = EW.getHashParameters();
 
           var method = currentActivity.request.method || 'GET';
-
-//          if (true) {
-//            System.loadModule({
-//              url: currentActivity.request.url,
-//              params: $.extend({}, activityParameters, currentActivity.privateParams)
-//            }, function (module) {
-//              modal.html(module.html);
-//            });
-//          } else {
           $.ajax({
             type: method,
             url: currentActivity.request.url,
@@ -231,7 +221,7 @@
               EW.customAjaxErrorHandler = true;
             }
           });
-//          }
+
         },
         onClose: function () {
           currentActivity = EW.activities[activityId] || EW.activities[activityName];
@@ -263,17 +253,10 @@
       if (currentActivity) {
         // Trigger open activity event and pass settings to it before creating modal
         $(document).trigger(activityName + ".open", settings);
-
-        // Do not create modal if activity has a modal already
-        //if (self.activities[activity].hasModal)
-        //return;
-
         $.extend(settings, currentActivity.modal);
-        //modal = self.createModal(settings);
         currentActivity.modalObject = EW.activities[activityName].modalObject = EW.createModal(settings);
-        //EW.activities[activity].
       } else {
-        alert("Activity not found: " + activityName);
+        alert('Activity not found: ' + activityName);
         EW.setHashParameters({
           ew_activity: null
         });
@@ -281,7 +264,7 @@
       oldEWActivity = activityName;
     } else if (oldEWActivity !== activityName) {
       if (oldEWActivity && EW.activities[oldEWActivity].modalObject) {
-        EW.activities[oldEWActivity].modalObject.trigger("close");
+        EW.activities[oldEWActivity].modalObject.trigger('close');
       }
 
       oldEWActivity = activityName;

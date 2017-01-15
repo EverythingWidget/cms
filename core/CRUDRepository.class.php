@@ -1,11 +1,5 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace ew;
 
 /**
@@ -15,7 +9,6 @@ namespace ew;
  */
 interface CRUDRepository {
 
-  //put your code here
   public function create($input);
 
   public function read($input);

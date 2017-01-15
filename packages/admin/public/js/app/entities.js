@@ -19,7 +19,7 @@
             var lastSelectedSection = System.modules['system/' + state].params['app'] || state;
             return System.app.setNav(lastSelectedSection);
           }
-          
+
           System.app.setNav(state);
         }
       }
@@ -80,12 +80,6 @@
       }
     });
 
-//    appBarVue.$watch('subSections', function (value) {
-//      if (value) {
-//        appBarVue.currentSubSection = null;
-//      }
-//    });
-
     System.entity('ui/app-bar', appBarVue);
 
     // ------ //
@@ -115,7 +109,7 @@
     var linkChooserDialog = {};
     linkChooserDialog.open = function (onSelect) {
       var linkChooserDialog = EW.createModal({
-        class: "center slim"
+        class: 'center slim'
       });
 
       System.loadModule({
@@ -148,13 +142,9 @@
       }
 
       ContentTools.ToolShelf.stow(EWMedia, 'ew-media');
-
       EWMedia.label = 'EW Media';
-
       EWMedia.icon = 'ew-media';
-
       EWMedia.tagName = 'p';
-
       EWMedia.canApply = function (element, selection) {
         return true;
       };
@@ -168,10 +158,10 @@
         });
 
         System.loadModule({
-          id: "media-chooser",
-          url: "html/admin/content-management/link-chooser/link-chooser-media.php",
+          id: 'media-chooser',
+          url: 'html/admin/content-management/link-chooser/link-chooser-media.php',
           params: {
-            callback: ""
+            callback: ''
           }
         }, function (module, html) {
           imageChooserDialog.html(html);

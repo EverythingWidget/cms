@@ -1,4 +1,3 @@
-
 /* global System, ew_plugins, EW_APPS, EW, EW_ACTIVITIES */
 
 window.addEventListener('load', function () {
@@ -58,6 +57,7 @@ window.addEventListener('load', function () {
       callbackName: "function-reference"
     };
     var linkChooserDialog;
+
     function LinkChooser(element, options) {
       //var base = this;
       var $element = $(element);
@@ -66,8 +66,7 @@ window.addEventListener('load', function () {
         linkChooserDialog.trigger("close");
       };
       //this.$element = $(element);
-      var settings = $.extend({
-      }, defaults, options);
+      var settings = $.extend({}, defaults, options);
       //$element.EW().putInWrapper();
       //var wrapper = this.$element.parent();
       if (linkChooserDialog)
@@ -75,21 +74,18 @@ window.addEventListener('load', function () {
       $element.EW().inputButton({
         title: '<i class="link-icon"></i>',
         label: 'tr{Link Chooser}',
-        class: "btn-default",
-        onClick: function (e) {
+        class: 'btn-default',
+        onClick: function () {
           linkChooserDialog = EW.createModal({
-            class: "center slim"
+            class: 'center slim'
           });
-          System.loadModule({url: 'html/admin/content-management/link-chooser/component.php', params: {
+          System.loadModule({
+            url: 'html/admin/content-management/link-chooser/component.php', params: {
               callback: settings.callbackName,
               data: $element.val(),
               contentType: $element.data("content-type") || "all"
             }
           }, function (module) {
-//            var functionRefrence = $("<div style='display:none;' id='function-reference'></div>");
-//            functionRefrence.data("callback", settings.callback);
-//            e = $(module);
-//            e.append(functionRefrence);
             module.scope.onSelect = settings.callback;
             linkChooserDialog.html(module.html);
           });
@@ -98,43 +94,43 @@ window.addEventListener('load', function () {
     }
 
     return this.each(function () {
-      if (!$.data(this, "ew_plugin_link_chooser")) {
-        $.data(this, "ew_plugin_link_chooser", true);
+      if (!$.data(this, 'ew_plugin_link_chooser')) {
+        $.data(this, 'ew_plugin_link_chooser', true);
         new LinkChooser(this, options);
       }
     });
   };
 
   ew_plugins.imageChooser = function (options) {
-    var ACTIVE_PLUGIN_ATTR = "data-active-plugin-image-chooser";
+    var ACTIVE_PLUGIN_ATTR = 'data-active-plugin-image-chooser';
     var defaults = {
-      callbackName: "function-reference"
+      callbackName: 'function-reference'
     };
     var imageChooserDialog;
+
     function ImageChooser(element, options) {
       var base = this;
       var $element = $(element);
-      $element.off("change.image-chooser");
-      $element.on("change.image-chooser", function () {
-        image.attr("src", $element.val() || "html/admin/content-management/media/no-image.png");
+      $element.off('change.image-chooser');
+      $element.on('change.image-chooser', function () {
+        image.attr('src', $element.val() || 'html/admin/content-management/media/no-image.png');
       });
 
       defaults.callback = function (link) {
         imageChooserDialog.dispose();
       };
 
-      var settings = $.extend({
-      }, defaults, options);
-      if (!$element.parent().attr("data-element-wrapper"))
+      var settings = $.extend({}, defaults, options);
+      if (!$element.parent().attr('data-element-wrapper'))
         $element.wrap('<div class="element-wrapper" style="position:relative;padding-bottom:30px;" data-element-wrapper="true"><div style="padding:5px 0;border:2px dashed #aaa;background-color:#fff;display:block;overflow:hidden;" data-element-wrapper="true"></div></div>');
-      $element.attr("type", "hidden");
+      $element.attr('type', 'hidden');
       var wrapper = $element.parent().parent();
       if (imageChooserDialog)
         imageChooserDialog.remove();
       var image = wrapper.find('img');
       if (image.length <= 0) {
         image = $(document.createElement('img'));
-        wrapper.find("div").append(image);
+        wrapper.find('div').append(image);
       }
 
       image.css("max-height", $element.css("max-height"));
@@ -182,9 +178,6 @@ window.addEventListener('load', function () {
           },
           fresh: true
         }, function (module) {
-          console.log(module);
-          //imageChooserDialog.find(".form-content:first").append(data);
-          //imageChooserDialog.prepend("<div class='header-pane row'><h1 class='form-title'>Media</h1></div>");
           imageChooserDialog.html(module.html);
           module.scope.selectMedia = function (image) {
             $element.val(image.src).change();
@@ -205,7 +198,7 @@ window.addEventListener('load', function () {
 
   function initPlugins(element) {
     if (!element.innerHTML && element.nodeName.toLowerCase() !== 'input' &&
-            element.nodeName.toLowerCase() !== 'textarea') {
+        element.nodeName.toLowerCase() !== 'textarea') {
       return;
     }
 
@@ -213,8 +206,8 @@ window.addEventListener('load', function () {
   }
 
   var mouseInNavMenu = false,
-          enterOnLink = false,
-          currentSectionIndex = null;
+      enterOnLink = false,
+      currentSectionIndex = null;
 
   System.ui.body = $("body")[0];
   System.ui.components = {
@@ -248,7 +241,6 @@ window.addEventListener('load', function () {
         });
       }
     } else {
-      //alert(System.ui.components.sectionsMenu.height());
       System.ui.components.sectionsMenu.css("height", System.ui.components.sectionsMenu.height());
       TweenLite.to(System.ui.components.sectionsMenu[0], .2, {
         className: "sections-menu out",
@@ -271,21 +263,20 @@ window.addEventListener('load', function () {
     });
   });
 
-  System.ui.components.navigationMenu.on("mouseenter touchstart", function (e) {
+  System.ui.components.navigationMenu.on('mouseenter touchstart', function () {
     if (mouseInNavMenu)
       return;
 
     mouseInNavMenu = true;
-    System.ui.components.navigationMenu.addClass("expand");
-
+    System.ui.components.navigationMenu.addClass('expand');
     if (System.ui.components.sectionsMenuList[0].data.length) {
       if (!enterOnLink) {
-        System.ui.components.sectionsMenu[0].style.top = System.ui.components.appsMenu.find(".apps-menu-link.selected")[0].getBoundingClientRect().top + "px";
+        System.ui.components.sectionsMenu[0].style.top = System.ui.components.appsMenu.find('.apps-menu-link.selected')[0].getBoundingClientRect().top + 'px';
       }
 
       TweenLite.to(System.ui.components.sectionsMenu[0], .3, {
-        className: "sections-menu in",
-        ease: "Power2.easeInOut"
+        className: 'sections-menu in',
+        ease: 'Power2.easeInOut'
       });
     }
   });
@@ -294,9 +285,9 @@ window.addEventListener('load', function () {
 
   System.ui.components.appsMenu.on('mouseenter touchstart', 'a', function (e) {
     var app = e.currentTarget.dataset.app;
-    EW.hoverApp = "system/" + app;
+    EW.hoverApp = 'system/' + app;
 
-    var sections = System.modules["system/" + app] ? System.modules["system/" + app].data.sections : [];
+    var sections = System.modules['system/' + app] ? System.modules['system/' + app].data.sections : [];
 
     if (System.ui.components.sectionsMenuList[0].data !== sections) {
       System.ui.components.sectionsMenuList[0].data = sections;
@@ -307,7 +298,7 @@ window.addEventListener('load', function () {
     }
 
     if (!mouseInNavMenu) {
-      System.ui.components.sectionsMenu[0].style.top = e.currentTarget.getBoundingClientRect().top + "px";
+      System.ui.components.sectionsMenu[0].style.top = e.currentTarget.getBoundingClientRect().top + 'px';
       enterOnLink = true;
       return;
     }
@@ -319,11 +310,10 @@ window.addEventListener('load', function () {
 
   System.ui.components.navigationMenu.on('click', function (event) {
     if (event.target === System.ui.components.navigationMenu[0]) {
-      System.ui.components.navigationMenu.removeClass("expand");
+      System.ui.components.navigationMenu.removeClass('expand');
       TweenLite.to(System.ui.components.sectionsMenu[0], .2, {
-        className: "sections-menu",
-//        marginTop: 0,
-        ease: "Power2.easeInOut",
+        className: 'sections-menu',
+        ease: 'Power2.easeInOut',
         onComplete: function () {
           if (!System.services.app_service.loading_app && currentSectionIndex !== System.ui.components.sectionsMenuList[0].value) {
             System.ui.components.sectionsMenuList[0].data = EW.currentAppSections;
@@ -338,11 +328,10 @@ window.addEventListener('load', function () {
     mouseInNavMenu = false;
     enterOnLink = false;
 
-    System.ui.components.navigationMenu.removeClass("expand");
+    System.ui.components.navigationMenu.removeClass('expand');
     TweenLite.to(System.ui.components.sectionsMenu[0], .2, {
-      className: "sections-menu",
-//      marginTop: 0,
-      ease: "Power2.easeInOut",
+      className: 'sections-menu',
+      ease: 'Power2.easeInOut',
       onComplete: function () {
         if (!System.services.app_service.loading_app && currentSectionIndex !== System.ui.components.sectionsMenuList[0].value) {
           System.ui.components.sectionsMenuList[0].data = EW.currentAppSections;
@@ -427,8 +416,8 @@ window.addEventListener('load', function () {
   var observer = new MutationObserver(function (mutations) {
     mutations.forEach(function (mutation) {
       if (mutation.type === 'childList' &&
-              mutation.addedNodes.length &&
-              mutation.addedNodes[0].nodeType === Node.ELEMENT_NODE) {
+          mutation.addedNodes.length &&
+          mutation.addedNodes[0].nodeType === Node.ELEMENT_NODE) {
         initPlugins(mutation.target);
       }
     });

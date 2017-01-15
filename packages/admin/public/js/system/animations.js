@@ -141,6 +141,8 @@
             characterData: false,
             subtree: true
           });
+
+          _this.animate();
         }
       });
 
@@ -150,11 +152,7 @@
 
       window.addEventListener('resize', _this.resizeHandler);
     }
- 
-    window.requestAnimationFrame(function () {
-      _this.animate();     
-      _this.element.xtag.liveHeightAnimation = _this;
-    });
+
   }
 
   LiveHeightAnimation.prototype.off = function () {

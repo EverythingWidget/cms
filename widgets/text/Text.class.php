@@ -29,28 +29,25 @@ class Text implements Widget {
       $feeder = json_decode($widget_parameters['feeder'], TRUE);
       $content_id = $feeder['id'];
       $field_id = $feeder['fieldId'];
-    }
-    else {
+    } else {
       return "<$format>&nbsp;</$format>";
     }
 
     $content = \EWCore::call_cached_api('admin/api/content-management/ew-list-feeder-related-contents', [
-                'content_id' => $content_id,
-                'key'        => "admin_ContentManagement_language",
-                'value'      => URL_LANGUAGE
-            ])['data'];
+        'content_id' => $content_id,
+        'key' => 'admin_ContentManagement_language',
+        'value' => URL_LANGUAGE
+    ])['data'];
 
     if (isset($content)) {
       $contentFields = $content[0]['content_fields'];
 
       if ($format === 'default') {
         return $contentFields[$field_id]['content'];
-      }
-      else {
+      } else {
         return "<$format> {$contentFields[$field_id]['content']} </$format>";
       }
-    }
-    else {
+    } else {
       return "<span style='color:red'>Text not found</span>";
     }
   }
@@ -59,5 +56,4 @@ class Text implements Widget {
     return null;
   }
 
-//put your code here
 }

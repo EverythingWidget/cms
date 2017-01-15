@@ -2,12 +2,6 @@
 
 namespace ew;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
  * Description of APIResourceHandler
  *
@@ -16,17 +10,17 @@ namespace ew;
 class APIResourceHandler extends ResourceHandler {
 
   private $verbs = [
-      'GET'     => 'read',
-      'POST'    => 'create',
-      'PUT'     => 'update',
-      'DELETE'  => 'delete',
+      'GET' => 'read',
+      'POST' => 'create',
+      'PUT' => 'update',
+      'DELETE' => 'delete',
       'OPTIONS' => 'options'
   ];
   public static $VERBS = [
-      'read'    => 'GET',
-      'create'  => 'POST',
-      'update'  => 'PUT',
-      'delete'  => 'DELETE',
+      'read' => 'GET',
+      'create' => 'POST',
+      'update' => 'PUT',
+      'delete' => 'DELETE',
       'options' => 'OPTIONS'
   ];
   private $cached_modules = [];
@@ -49,7 +43,6 @@ class APIResourceHandler extends ResourceHandler {
     }
 
     $verb = $api_verb ? $this->verbs[strtoupper($api_verb)] : $this->verbs[strtoupper($_SERVER['REQUEST_METHOD'])];
-
     if (!$verb) {
       return \EWCore::log_error(400, 'Request verb is unknown: server: ' . $_SERVER['REQUEST_METHOD'] . ', internal: ' . $api_verb);
     }
@@ -73,15 +66,13 @@ class APIResourceHandler extends ResourceHandler {
 
     if ($this->cached_modules[$real_class_name]) {
       $app_section_object = $this->cached_modules[$real_class_name];
-    }
-    else if (class_exists($real_class_name)) {
+    } else if (class_exists($real_class_name)) {
       $app_section_object = new $real_class_name($app);
       $this->cached_modules[$real_class_name] = $app_section_object;
-    }
-    else {
+    } else {
       if (isset($output_as_array)) {
         return \EWCore::log_api_error(404, "Section not found: `$module_class_name`", [
-                    "$app_name/$module_class_name/$method_name"
+            "$app_name/$module_class_name/$method_name"
         ]);
       }
 
@@ -91,8 +82,7 @@ class APIResourceHandler extends ResourceHandler {
     // if command is null then fallback to the $verb
     if (!$command || is_numeric($method_name)) {
       $api_command_name = $api_method_name = $verb;
-    }
-    else {
+    } else {
       $api_method_name = $method_name . '_' . $verb;
       $api_command_name = $command_name . '-' . $verb;
     }
@@ -106,73 +96,56 @@ class APIResourceHandler extends ResourceHandler {
     if (!method_exists($app_section_object, $api_method_name)) {
       if (isset($output_as_array)) {
         return \EWCore::log_api_error(404, "api command not found: `$api_command_name`", [
-                    "$app_name/$module_name/$api_command_name"
+            "$app_name/$module_name/$api_command_name"
         ]);
       }
 
-      return \EWCore::log_error(404, 'api command not found: ' . $api_command_name, [
-                  'api call' => "$app_name/$module_name/$api_command_name"
+      return \EWCore::log_error(404, "api command not found: `$api_command_name``", [
+          'api call' => "$app_name/$module_name/$api_command_name"
       ]);
     }
 
     $parameters['_parts'] = array_slice(explode('/', $parameters["_file"]), 1);
-
     $parameters['_identifier'] = is_numeric($parameters['_parts'][0]) ? intval($parameters['_parts'][0]) : null;
     $parameters['_identifier'] = is_numeric($method_name) ? intval($method_name) : $parameters['_identifier'];
 
     $permission_id = \EWCore::does_need_permission($app_name, $module_name, $resource_name . '/' . $api_command_name);
-
     if (!method_exists($app_section_object, $api_method_name)) {
       return \EWCore::log_error(404, "$app_name-$resource_name: Method not found: `$api_method_name`");
     }
 
     $response = new APIResponse("$resource_name/$app_name/$module_name/$api_command_name");
     $parameters['_response'] = $response;
-
     if ($permission_id === 'public-access') {
       $response_data = $app_section_object->process_request($verb, $api_method_name, $parameters);
       $call = true;
-    }
-    else {
-      if ($permission_id && $permission_id !== false) {
-        if (\admin\UsersManagement::group_has_permission($app_name, $api_method_name, $permission_id, $_SESSION['EW.USER_GROUP_ID'])) {
-          $response_data = $app_section_object->process_request($verb, $api_method_name, $parameters);
-          $call = true;
-        }
-      }
-      else if ($app_section_object->is_unathorized_method_invoke()) {
+    } else if ($permission_id && $permission_id !== false) {
+      if (\admin\UsersManagement::group_has_permission($app_name, $api_method_name, $permission_id, $_SESSION['EW.USER_GROUP_ID'])) {
         $response_data = $app_section_object->process_request($verb, $api_method_name, $parameters);
         $call = true;
       }
+    } else if ($app_section_object->is_unathorized_method_invoke()) {
+      $response_data = $app_section_object->process_request($verb, $api_method_name, $parameters);
+      $call = true;
     }
+
 
     if (!isset($response_data)) {
       if ($call === false) {
-        return \EWCore::log_error(403, "You do not have corresponding permission to invoke this api request", [
-                    "Access Denied" => "$app_name/$module_class_name/$api_command_name"
+        return \EWCore::log_error(403, 'You do not have corresponding permission to invoke this api request', [
+            'Access Denied' => "$app_name/$module_class_name/$api_command_name"
         ]);
       }
     }
 
     $api_listeners = \EWCore::read_registry("$app_name/$resource_name/$module_name/$api_command_name");
-
-//      if (isset($api_listeners) && is_string($result)) {
-//        $converted_result = json_decode($result, true);
-//        if (json_last_error() === JSON_ERROR_NONE) {
-//          $result = $converted_result;
-//        }
-//      }
-
-
     try {
       // Call the listeners with the same data as the command data
       $this->add_response_data($response, $response_data, $parameters, $real_class_name, $api_method_name, $output_as_array);
-
       if (isset($api_listeners)) {
         $this->execute_api_listeners($api_listeners, $parameters, $response);
       }
-    }
-    catch (Exception $e) {
+    } catch (Exception $e) {
       echo $e->getTraceAsString();
     }
 
@@ -191,22 +164,20 @@ class APIResourceHandler extends ResourceHandler {
     if ($response_data instanceof APIResponse && $response_data !== $response) {
       $response = $response_data;
       $parameters['_response'] = $response;
-    }
-    else if (!($response_data instanceof APIResponse)) {
+    } else if (!($response_data instanceof APIResponse)) {
       if ($response_data instanceof \stdClass) {
-        $response_data = (array) $response_data;
-      }
-      else if ($response_data !== null && !is_a($response_data, 'stdClass') && !is_array($response_data)) {
+        $response_data = (array)$response_data;
+      } else if ($response_data !== null && !is_a($response_data, 'stdClass') && !is_array($response_data)) {
         $type = is_object($response_data) ? get_class($response_data) : gettype($response_data);
 
         if ($output_as_array) {
           return \EWCore::log_api_error(500, "Module can not return `$type`. Only array or stdClass is allowed", [
-                      $real_class_name . '->' . $api_method_name . " returns `$type`."
+              $real_class_name . '->' . $api_method_name . " returns `$type`."
           ]);
         }
 
         die(\EWCore::log_error(500, "Module can not return `$type`. Only array or stdClass is allowed", [
-                    $real_class_name . '->' . $api_method_name . " returns `$type`."
+            $real_class_name . '->' . $api_method_name . " returns `$type`."
         ]));
       }
 
@@ -229,12 +200,11 @@ class APIResourceHandler extends ResourceHandler {
           $response_data = $response->data;
 
           if ($listener_result instanceof \stdClass) {
-            $listener_result = (array) $listener_result;
-          }
-          else if ($listener_result !== null && !is_a($listener_result, 'stdClass') && !is_array($listener_result)) {
+            $listener_result = (array)$listener_result;
+          } else if ($listener_result !== null && !is_a($listener_result, 'stdClass') && !is_array($listener_result)) {
             $type = is_object($object) ? get_class($object) : gettype($object);
             die(\EWCore::log_error(500, 'Module can not return object. Only array or stdClass is allowed', [
-                        $type . '->' . $listener . ' returns object.'
+                $type . '->' . $listener . ' returns object.'
             ]));
           }
 
@@ -246,13 +216,10 @@ class APIResourceHandler extends ResourceHandler {
 
   public static function to_api_response($data, $meta = []) {
     $response = new APIResponse($_SERVER['REQUEST_URI']);
-    //$response['status_code'] = 200;
     $response->set_status_code(200);
-
     if (is_null($data)) {
       $response->set_type(null);
-    }
-    else {
+    } else {
       $response->set_type(array_keys($data) === range(0, count($data) - 1) ? 'list' : 'item');
     }
 
@@ -262,5 +229,5 @@ class APIResourceHandler extends ResourceHandler {
     return $response;
   }
 
-//put your code here
+  //put your code here
 }

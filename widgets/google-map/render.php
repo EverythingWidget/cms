@@ -121,7 +121,7 @@ $longtitude = $widget_parameters['lng'] ? $widget_parameters['lng'] : 0;
       js = d.createElement(s);
       js.id = id;
       js.addEventListener('load', onload);
-      js.src = "https://maps.googleapis.com/maps/api/js?q=Kerkgracht+60,1354+AM+Almere";
+      js.src = 'https://maps.googleapis.com/maps/api/js';
       fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'google-maps'));
   });
