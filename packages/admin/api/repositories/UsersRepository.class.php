@@ -13,16 +13,13 @@ namespace admin;
  *
  * @author Eeliya
  */
-class UsersRepository implements \ew\CRUDRepository
-{
+class UsersRepository implements \ew\CRUDRepository {
 
-  public function __construct()
-  {
+  public function __construct() {
     require_once EW_PACKAGES_DIR . '/admin/api/models/ew_users.php';
   }
 
-  public function create($input)
-  {
+  public function create($input) {
     $result = new \ew\Result();
     $validation_result = \SimpleValidator\Validator::validate((array)$input, ew_users::$RULES);
 
@@ -55,8 +52,7 @@ class UsersRepository implements \ew\CRUDRepository
     return $result;
   }
 
-  public function read($input)
-  {
+  public function read($input) {
     if (isset($input->id)) {
       return $this->find_by_id($input->id);
     }
@@ -64,8 +60,7 @@ class UsersRepository implements \ew\CRUDRepository
     return $this->all($input->page, $input->page_size);
   }
 
-  public function update($input)
-  {
+  public function update($input) {
     $result = new \ew\Result();
 
     $user = ew_users::find($input->id);
@@ -125,8 +120,7 @@ class UsersRepository implements \ew\CRUDRepository
     return $result;
   }
 
-  public function delete($input)
-  {
+  public function delete($input) {
     $result = new \ew\Result();
 
     $result->message = 'user has been deleted';
@@ -154,8 +148,7 @@ class UsersRepository implements \ew\CRUDRepository
 
   // ------ //
 
-  public function all($page = 0, $page_size = 100)
-  {
+  public function all($page = 0, $page_size = 100) {
     if (!isset($page_size)) {
       $page_size = 100;
     }
@@ -169,8 +162,7 @@ class UsersRepository implements \ew\CRUDRepository
     return $result;
   }
 
-  public function find_by_id($id)
-  {
+  public function find_by_id($id) {
     $result = new \ew\Result();
 
     $data = ew_users::with('group')->find($id);
@@ -187,8 +179,7 @@ class UsersRepository implements \ew\CRUDRepository
     return $result;
   }
 
-  public static function generate_hash($password)
-  {
+  public static function generate_hash($password) {
     $salt = strtr(base64_encode(mcrypt_create_iv(16, MCRYPT_DEV_URANDOM)), '+', '.');
     $salt = sprintf("$2a$%02d$", 10) . $salt;
     return crypt($password, $salt);

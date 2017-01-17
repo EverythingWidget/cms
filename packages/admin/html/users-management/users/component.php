@@ -18,12 +18,6 @@
 
   UsersComponent.prototype.defineStates = function (handlers) {
     var component = this;
-
-//    handlers.app = function (full, value) {
-//      if (parseInt(value)) {
-//        component.editActivity(false, {id: value});
-//      }
-//    };
   };
 
   UsersComponent.prototype.init = function () {
@@ -46,7 +40,6 @@
     var component = this;
 
     this.table = null;
-    //this.bAddUser = EW.addActivity().hide().comeIn(300);
 
     component.scope.primaryMenu.actions = [
       {
