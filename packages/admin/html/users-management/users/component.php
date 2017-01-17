@@ -19,11 +19,11 @@
   UsersComponent.prototype.defineStates = function (handlers) {
     var component = this;
 
-    handlers.app = function (full, value) {
-      if (parseInt(value)) {
-        component.editActivity(false, {id: value});
-      }
-    };
+//    handlers.app = function (full, value) {
+//      if (parseInt(value)) {
+//        component.editActivity(false, {id: value});
+//      }
+//    };
   };
 
   UsersComponent.prototype.init = function () {
@@ -31,10 +31,10 @@
     this.editActivity = EW.getActivity({
       activity: 'admin/html/users-management/user-form/component.php_edit',
       modal: {
-        class: "center"
+        class: 'center'
       },
       onDone: function () {
-        component.state.setNav(null);
+        component.state.setParam('id', null);
       }
     });
 
@@ -78,14 +78,10 @@
       rowLabel: "{first_name} {last_name}",
       columns: ["email", "first_name", "last_name", "group.title"],
       headers: {
-        "tr{Username}": {
-        },
-        "tr{First Name}": {
-        },
-        "tr{Last Name}": {
-        },
-        "tr{Group}": {
-        }
+        "tr{Username}": {},
+        "tr{First Name}": {},
+        "tr{Last Name}": {},
+        "tr{Group}": {}
       },
       rowCount: true,
       url: "api/admin/users-management/users/",
@@ -106,7 +102,7 @@
         });
       },
       onEdit: function (id) {
-        component.state.setNav(id);
+        component.editActivity({id: id});
       }
     });
 

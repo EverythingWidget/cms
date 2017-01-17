@@ -26,8 +26,8 @@ class ew_users extends \Illuminate\Database\Eloquent\Model {
   ];
   public static $RULES = [
       'email'    => [
-          'required',
-          'email'
+          'required'
+//          'email'
       ],
       'password' => [
           'required'

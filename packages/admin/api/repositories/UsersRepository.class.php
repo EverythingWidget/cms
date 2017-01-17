@@ -13,15 +13,18 @@ namespace admin;
  *
  * @author Eeliya
  */
-class UsersRepository implements \ew\CRUDRepository {
+class UsersRepository implements \ew\CRUDRepository
+{
 
-  public function __construct() {
+  public function __construct()
+  {
     require_once EW_PACKAGES_DIR . '/admin/api/models/ew_users.php';
   }
 
-  public function create($input) {
+  public function create($input)
+  {
     $result = new \ew\Result();
-    $validation_result = \SimpleValidator\Validator::validate((array) $input, ew_users::$RULES);
+    $validation_result = \SimpleValidator\Validator::validate((array)$input, ew_users::$RULES);
 
     if ($validation_result->isSuccess() !== true) {
       $result->error = 400;
@@ -35,7 +38,7 @@ class UsersRepository implements \ew\CRUDRepository {
     }
 
     $user = new ew_users();
-    $user->fill((array) $input);
+    $user->fill((array)$input);
     $user->password = static::generate_hash($input->password);
     $datetime = new \DateTime();
     $user->date_created = $datetime->format('y-m-d H:i:s');
@@ -52,7 +55,8 @@ class UsersRepository implements \ew\CRUDRepository {
     return $result;
   }
 
-  public function read($input) {
+  public function read($input)
+  {
     if (isset($input->id)) {
       return $this->find_by_id($input->id);
     }
@@ -60,11 +64,41 @@ class UsersRepository implements \ew\CRUDRepository {
     return $this->all($input->page, $input->page_size);
   }
 
-  public function update($input) {
+  public function update($input)
+  {
     $result = new \ew\Result();
-    $input->password = 'password may not be updated';
-    $validation_result = \SimpleValidator\Validator::validate((array) $input, ew_users::$RULES);
-    unset($input->password);
+
+    $user = ew_users::find($input->id);
+    if (!empty($input->password)) {
+
+      if (!isset($input->new_password)) {
+        $result->error = 400;
+        $result->message = 'New password can not be empty';
+        return $result;
+      }
+
+      if (!UsersManagement::verify_hash($input->password, $user->password)) {
+        $result->error = 400;
+        $result->message = 'Old password is wrong';
+        return $result;
+      }
+
+      if ($input->new_password !== $input->new_password_repeat) {
+        $result->error = 400;
+        $result->message = 'New password and its repeat are not equal';
+        return $result;
+      }
+    } else {
+      $input->password = 'UNSET_THIS';
+    }
+
+    $validation_result = \SimpleValidator\Validator::validate((array)$input, ew_users::$RULES);
+
+    if ($input->password === 'UNSET_THIS') {
+      unset($input->password);
+    } else {
+      $input->password = static::generate_hash($input->new_password);
+    }
 
     if (!$validation_result->isSuccess()) {
       $result->error = 400;
@@ -82,7 +116,7 @@ class UsersRepository implements \ew\CRUDRepository {
       return $result;
     }
 
-    $user->fill((array) $input);
+    $user->fill((array)$input);
     $user->save();
 
     $result->data = $user;
@@ -91,7 +125,8 @@ class UsersRepository implements \ew\CRUDRepository {
     return $result;
   }
 
-  public function delete($input) {
+  public function delete($input)
+  {
     $result = new \ew\Result();
 
     $result->message = 'user has been deleted';
@@ -119,7 +154,8 @@ class UsersRepository implements \ew\CRUDRepository {
 
   // ------ //
 
-  public function all($page = 0, $page_size = 100) {
+  public function all($page = 0, $page_size = 100)
+  {
     if (!isset($page_size)) {
       $page_size = 100;
     }
@@ -133,7 +169,8 @@ class UsersRepository implements \ew\CRUDRepository {
     return $result;
   }
 
-  public function find_by_id($id) {
+  public function find_by_id($id)
+  {
     $result = new \ew\Result();
 
     $data = ew_users::with('group')->find($id);
@@ -150,7 +187,8 @@ class UsersRepository implements \ew\CRUDRepository {
     return $result;
   }
 
-  public static function generate_hash($password) {
+  public static function generate_hash($password)
+  {
     $salt = strtr(base64_encode(mcrypt_create_iv(16, MCRYPT_DEV_URANDOM)), '+', '.');
     $salt = sprintf("$2a$%02d$", 10) . $salt;
     return crypt($password, $salt);

@@ -2,26 +2,44 @@
   <input type="hidden" id="id" name="id" value="">
   <system-field class="field">
     <label>tr{Username}</label>
-    <input class="text-field" value="" id="email" name="email" data-validate="r" required/>  
+    <input class="text-field" value="" id="email" name="email" data-validate="r" required/>
   </system-field>
 
 
   <system-field class="field">
     <label>tr{First Name}</label>
-    <input class="text-field" value="" id="first_name" name="first_name" />  
+    <input class="text-field" value="" id="first_name" name="first_name"/>
   </system-field>
 
   <system-field class="field">
     <label>tr{Last Name}</label>
-    <input class="text-field" value="" id="last_name" name="last_name" />  
-  </system-field>   
+    <input class="text-field" value="" id="last_name" name="last_name"/>
+  </system-field>
 
-  <?php if (!isset($view_data['user_id'])) { ?>
+  <?php if (isset($view_data['user_id'])) { ?>
+    <system-field class="field ">
+      <label>tr{Password}</label>
+      <input type="password" class="text-field" value="" id="password" name="password"/>
+    </system-field>
+
+    <system-field class="field ">
+      <label>tr{New Password}</label>
+      <input type="password" class="text-field" value="" name="new_password"/>
+    </system-field>
+
+    <system-field class="field ">
+      <label>tr{Repeat new password}</label>
+      <input type="password" class="text-field" value="" name="new_password_repeat"/>
+    </system-field>
+  <?php } else {
+    ?>
     <system-field class="field ">
       <label>tr{Password}</label>
       <input class="text-field" value="" id="password" name="password"/>
-    </system-field>   
-  <?php } ?>
+    </system-field>
+    <?php
+  } ?>
+
   <system-field class="field">
     <label>tr{Group}</label>
     <select id="group_id" name="group_id" data-width="100%">
@@ -32,7 +50,7 @@
       }
       ?>
     </select>
-  </system-field>   
+  </system-field>
 </div>
 
 <script type="text/javascript">
@@ -92,6 +110,9 @@
           loader.dispose();
           $(document).trigger("users-list.refresh");
           $("body").EW().notify(response).show();
+        },
+        onFail: function () {
+          loader.dispose();
         }
       });
 
