@@ -25,15 +25,6 @@ class AppsManagement extends \ew\Module {
     ]);
   }
 
-  public function get_app_sections($appDir) {
-    $app_class_name = $appDir . '\\App';
-    if (class_exists($app_class_name)) {
-      // Create an instance of section with its parent App
-      $obj = new $app_class_name;
-      return json_encode($obj->get_app_api_modules());
-    }
-  }
-
   public function get_apps($type = "all") {
     $path = EW_PACKAGES_DIR . '/';
 

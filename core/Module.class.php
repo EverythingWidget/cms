@@ -336,23 +336,23 @@ class Module {
   }
 
   /**
-   * Registare an activity for the this Section.<br/><p>
-   * An activity is a proccess that usually contains a visual form(s). An activity itself has no business logic but it have interaction with business logic.
-   * It is highly recommended to avoid implemmenting business logic in an activity. It is recommended to register an activity for every form.<br/>
+   * Register an activity for the this Section.<br/><p>
+   * An activity is a process that usually contains a visual form(s). An activity itself has no business logic but it have interaction with business logic.
+   * It is highly recommended to avoid implementing business logic in an activity. It is recommended to register an activity for every form.<br/>
    * <code>$parameter</code> can contain title, description, form, url, actions and custom parameters </p>
    * @param type $id 
    * @param array $parameters
    */
   public function register_activity($id, $parameters) {
-    if (!$parameters["compId"]) {
-      $parameters["compId"] = "AppsManagement";
+    if (!$parameters['compId']) {
+      $parameters['compId'] = 'AppsManagement';
     }
-    $parameters["app"] = $this->app->get_root();
-    $parameters["section"] = $this->current_class->getShortName();
-    $parameters["appTitle"] = $this->app->get_name();
-    $parameters["url"] = EW_ROOT_URL . "app-" . $this->app->get_root() . "/" . $this->current_class->getShortName() . "/" . $parameters["form"];
+    $parameters['app'] = $this->app->get_root();
+    $parameters['section'] = $this->current_class->getShortName();
+    $parameters['appTitle'] = $this->app->get_name();
+    $parameters['url'] = EW_ROOT_URL . "app-" . $this->app->get_root() . "/" . $this->current_class->getShortName() . "/" . $parameters['form'];
 
-    \EWCore::register_object("ew-activity", "app-" . $this->app->get_root() . "/" . $this->current_class->getShortName() . "/" . $id, $parameters);
+    \EWCore::register_object('ew-activity', "app-" . $this->app->get_root() . "/" . $this->current_class->getShortName() . "/" . $id, $parameters);
   }
 
   private function save_setting($key = null, $value = null) {

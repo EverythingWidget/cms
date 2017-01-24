@@ -33,8 +33,9 @@ class WidgetFeeder {
     $this->feeder_types = array_map('trim', explode(',', $feeder_type));
     $this->method_name = $method_name;
     $this->resourse_type = $resource_type;
-    $this->id = str_replace('_', '-', $module->get_app()->get_root()) . '/' . $resource_type . '/' . \EWCore::camelToHyphen($module->get_name() . '/' . $method_name);
-    $this->api_url = $this->id;
+    $link = str_replace('_', '-', $module->get_app()->get_root()) . '/' . $resource_type . '/' . \EWCore::camelToHyphen($module->get_name() . '/' . $method_name);
+    $this->id = $link;
+    $this->api_url = $link;
   }
 
   public function is_type($type) {

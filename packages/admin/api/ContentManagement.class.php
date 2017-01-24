@@ -113,7 +113,7 @@ class ContentManagement extends \ew\Module {
     ]);
 
     EWCore::register_ui_element('forms/content/tabs', 'json-linked-data', [
-        'title' => 'JSON LD',
+        'title' => 'JSON Linked Data',
         'template_url' => 'admin/html/content-management/content-form/json-linked-data.php'
     ]);
 
@@ -136,7 +136,7 @@ class ContentManagement extends \ew\Module {
   }
 
   protected function install_feeders() {
-    $article_feeder = new \ew\WidgetFeeder('articles', $this, 'page', "ew-page-feeder-articles");
+    $article_feeder = new \ew\WidgetFeeder('articles', $this, 'page', 'ew-page-feeder-articles');
     $article_feeder->set_title('articles');
     \webroot\WidgetsManagement::register_widget_feeder($article_feeder);
 
@@ -378,12 +378,12 @@ class ContentManagement extends \ew\Module {
       $value = '%';
 
     $rows = \ew_contents_labels::join('ew_contents', 'ew_contents_labels.content_id', '=', 'ew_contents.id')->where(function ($query) use ($content_id) {
-          $query->whereIn('content_id', function ($query) use ($content_id) {
-            $query->select('content_id')->from('ew_contents_labels')->where('content_id', '=', $content_id);
-          })->orWhereIn('content_id', function ($query) use ($content_id) {
-            $query->select('content_id')->from('ew_contents_labels')->where('key', '=', 'admin_ContentManagement_document')->where('value', '=', $content_id);
-          });
-        })->where('key', 'LIKE', $key)->where('value', 'LIKE', $value)->orderBy('value');
+      $query->whereIn('content_id', function ($query) use ($content_id) {
+        $query->select('content_id')->from('ew_contents_labels')->where('content_id', '=', $content_id);
+      })->orWhereIn('content_id', function ($query) use ($content_id) {
+        $query->select('content_id')->from('ew_contents_labels')->where('key', '=', 'admin_ContentManagement_document')->where('value', '=', $content_id);
+      });
+    })->where('key', 'LIKE', $key)->where('value', 'LIKE', $value)->orderBy('value');
     /* return ["collection_size" => $rows->count(),
       "result" => $rows->get(['*',
       \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")])]; */
@@ -585,9 +585,10 @@ class ContentManagement extends \ew\Module {
         ];
 
         $result[] = [
-            "id" => $article["id"],
-            "html" => $article["content"],
-            "content_fields" => $article["content_fields"]
+            'id' => $article['id'],
+            'slug' => $article['slug'],
+            'html' => $article['content'],
+            'content_fields' => $article['content_fields']
         ];
       }
     }
@@ -880,9 +881,9 @@ class ContentManagement extends \ew\Module {
     }
 
     $contents = ew_contents::where('type', 'LIKE', $type)->where(\Illuminate\Database\Capsule\Manager::raw("`title` COLLATE UTF8_GENERAL_CI"), 'LIKE', $title_filter . '%')->orderBy('title')->take($page_size)->skip($token)->get([
-            '*',
-            \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")
-        ]);
+        '*',
+        \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")
+    ]);
 
     return \ew\APIResourceHandler::to_api_response($contents->toArray(), ["total" => $contents->count()]);
   }

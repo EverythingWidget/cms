@@ -32,30 +32,30 @@ class WidgetsManagement extends \ew\Module {
     EWCore::register_app_ui_element('widgets-management', $this);
 
     EWCore::register_ui_element('forms/content/tabs', 'content-layout', [
-        'title'        => 'UI',
+        'title' => 'UI',
         'template_url' => 'webroot/html/widgets-management/content-layout-tab.php'
     ]);
 
     EWCore::register_ui_element('apps/widgets/navs', 'layouts', [
-        'id'    => 'widgets-management/layouts',
+        'id' => 'widgets-management/layouts',
         'title' => 'tr{Layouts}',
-        'url'   => 'html/webroot/widgets-management/layouts/component.php'
+        'url' => 'html/webroot/widgets-management/layouts/component.php'
     ]);
 
     EWCore::register_ui_element('apps/widgets/navs', 'page-layouts', [
-        'id'    => 'widgets-management/pages-uis',
+        'id' => 'widgets-management/pages-uis',
         'title' => 'tr{Page layouts}',
-        'url'   => 'html/webroot/widgets-management/page-layouts/component.php'
+        'url' => 'html/webroot/widgets-management/page-layouts/component.php'
     ]);
 
     EWCore::register_ui_element('apps/widgets/navs', 'feeders', [
-        'id'    => 'widgets-management/feeders',
+        'id' => 'widgets-management/feeders',
         'title' => 'tr{Feeders}',
-        'url'   => 'html/webroot/widgets-management/feeders/component.php'
+        'url' => 'html/webroot/widgets-management/feeders/component.php'
     ]);
 
     EWCore::register_ui_element('components/link-chooser', 'uis-chooser', [
-        'title'        => 'UI Structures',
+        'title' => 'UI Structures',
         'template_url' => 'webroot/html/widgets-management/layout-chooser.php'
     ]);
 
@@ -129,8 +129,7 @@ class WidgetsManagement extends \ew\Module {
 
     if (isset($id) && $page_uis_id) {
       $this->set_uis("/{$type}s/" . $id, $page_uis_id);
-    }
-    else {
+    } else {
       $this->set_uis("/{$type}s/" . $id, null);
     }
   }
@@ -147,15 +146,14 @@ class WidgetsManagement extends \ew\Module {
 
       if ($content_data['type'] === 'article') {
         $page_uis = $this->get_path_uis("/articles/$uis_id");
-      }
-      else if ($content_data['type'] === 'folder') {
+      } else if ($content_data['type'] === 'folder') {
         $page_uis = $this->get_path_uis("/folders/$uis_id");
       }
     }
 
     return [
         'webroot/page_uis_id' => ($page_uis["uis_id"]) ? $page_uis["uis_id"] : "",
-        'webroot/name'        => ($page_uis["uis_name"]) ? $page_uis["uis_name"] : "Inherit/Default"
+        'webroot/name' => ($page_uis["uis_name"]) ? $page_uis["uis_name"] : "Inherit/Default"
     ];
   }
 
@@ -205,8 +203,7 @@ class WidgetsManagement extends \ew\Module {
   public function category_action_update($_input, $id, $WidgetManagement_pageUisId) {
     if ($WidgetManagement_pageUisId) {
       $this->set_uis("/folder/" . $id, $WidgetManagement_pageUisId);
-    }
-    else {
+    } else {
       $this->set_uis("/folder/" . $id);
     }
   }
@@ -227,8 +224,7 @@ class WidgetsManagement extends \ew\Module {
     //echo $id;
     if ($WidgetManagement_pageUisId) {
       $this->set_uis("/article/" . $id, $WidgetManagement_pageUisId);
-    }
-    else {
+    } else {
       $this->set_uis("/article/" . $id);
     }
   }
@@ -273,7 +269,7 @@ class WidgetsManagement extends \ew\Module {
     while ($r = $result->fetch_assoc()) {
       $rows[] = array(
           $r["path"] . "_uisId" => $r["id"],
-          $r["path"]            => $r["name"]);
+          $r["path"] => $r["name"]);
     }
     $db->close();
     //$out = array(;
@@ -311,8 +307,8 @@ class WidgetsManagement extends \ew\Module {
     }
     $res = array(
         "status" => "success",
-        "uisId"  => $stm->insert_id,
-        "name"   => $name);
+        "uisId" => $stm->insert_id,
+        "name" => $name);
     $stm->close();
     $db->close();
     return $res;
@@ -325,7 +321,7 @@ class WidgetsManagement extends \ew\Module {
 
     if (!$fileContent["name"]) {
       $res = array(
-          "status"  => "unsuccess",
+          "status" => "unsuccess",
           "message" => "The field name is mandatory");
       $db->close();
       return json_encode($res);
@@ -342,8 +338,8 @@ class WidgetsManagement extends \ew\Module {
       $this->set_uis("@DEFAULT", $stm->insert_id);
       } */
     $res = array(
-        "status"  => "success",
-        "uisId"   => $stm->insert_id,
+        "status" => "success",
+        "uisId" => $stm->insert_id,
         "message" => "tr{The UIS has been imported succesfully}");
     $stm->close();
     $db->close();
@@ -367,10 +363,10 @@ class WidgetsManagement extends \ew\Module {
     $structure = $original_record["structure"];
     $template_settings = $original_record["template_settings"];
     $user_interface_structure = array(
-        "name"              => $name,
-        "template"          => $template,
+        "name" => $name,
+        "template" => $template,
         "template_settings" => $template_settings,
-        "structure"         => $structure);
+        "structure" => $structure);
     $file = json_encode($user_interface_structure);
     //fwrite($file, $user_interface_structure);
     //fclose($file);
@@ -424,7 +420,7 @@ class WidgetsManagement extends \ew\Module {
 //echo json_encode($structure);
     if (!$name) {
       $res = [
-          "status"  => "unsuccess",
+          "status" => "unsuccess",
           "message" => "The field name is mandatory"
       ];
       $db->close();
@@ -452,13 +448,12 @@ class WidgetsManagement extends \ew\Module {
       $stm->close();
       $db->close();
       return [
-          status    => "success",
+          status => "success",
           "message" => "tr{The layout has been saved successfully}",
-          "data"    => [title => $name]];
-    }
-    else {
+          "data" => [title => $name]];
+    } else {
       return [
-          status  => "unsuccess",
+          status => "unsuccess",
           message => $error];
     }
   }
@@ -487,8 +482,7 @@ class WidgetsManagement extends \ew\Module {
         $row["uis-home-page"] = "true";
       }
       return $row;
-    }
-    else {
+    } else {
       return [];
     }
   }
@@ -501,8 +495,7 @@ class WidgetsManagement extends \ew\Module {
     if ($statement->execute()) {
       return array(
           status => "success");
-    }
-    else {
+    } else {
       return array(
           status => "unsuccess");
     }
@@ -514,14 +507,13 @@ class WidgetsManagement extends \ew\Module {
       foreach ($panel as $key => $value) {
         if ($value['type'] === 'panel') {
           self::$panel_index++;
-          $result_html.=self::open_panel('panel-' . self::$current_timestamp . '-' . self::$ui_index . '-' . self::$panel_index, $container_id, $value["class"], $value["id"], $value["panelParameters"], FALSE);
-          $result_html.=self::create_panel_content($value['children'], 'panel-' . self::$ui_index . '-' . self::$panel_index, $public_data);
-          $result_html.='</div>';
-        }
-        else {
+          $result_html .= self::open_panel('panel-' . self::$current_timestamp . '-' . self::$ui_index . '-' . self::$panel_index, $container_id, $value["class"], $value["id"], $value["panelParameters"], FALSE);
+          $result_html .= self::create_panel_content($value['children'], 'panel-' . self::$ui_index . '-' . self::$panel_index, $public_data);
+          $result_html .= '</div>';
+        } else {
           self::$widget_index++;
-          $result_html.=self::open_widget('widget-' . self::$current_timestamp . '-' . self::$ui_index . '-' . self::$widget_index, $value);
-          $result_html.='</div></div>';
+          $result_html .= self::open_widget('widget-' . self::$current_timestamp . '-' . self::$ui_index . '-' . self::$widget_index, $value);
+          $result_html .= '</div></div>';
         }
       }
     }
@@ -536,7 +528,7 @@ class WidgetsManagement extends \ew\Module {
       $style_id_text = "id='$style_id'";
     }
 
-    $result_html.= "<div class='panel $style_class'  $style_id_text  data-panel-id=\"$panel_id\"  data-container-id=\"$container_id\"  data-panel='true'>";
+    $result_html .= "<div class='panel $style_class'  $style_id_text  data-panel-id=\"$panel_id\"  data-container-id=\"$container_id\"  data-panel='true'>";
 
     /* if ($parameters_array["title"] && $parameters_array["title"] != "none")
       {
@@ -560,7 +552,7 @@ class WidgetsManagement extends \ew\Module {
       $style_id_text = "id='$style_id'";
     }
 
-    $result_html.= "<div class='block $style_class'  $style_id_text  data-panel-id=\"$panel_id\"  $html_container_id data-panel-parameters='" . stripcslashes($param_json) . "' data-block='true'>";
+    $result_html .= "<div class='block $style_class'  $style_id_text  data-panel-id=\"$panel_id\"  $html_container_id data-panel-parameters='" . stripcslashes($param_json) . "' data-block='true'>";
 
     return $result_html;
   }
@@ -573,14 +565,14 @@ class WidgetsManagement extends \ew\Module {
 
   /**
    * Set style class for the widget which is currently being initialized
-   * 
+   *
    * @param String $class class name
    */
   public static function set_widget_style_class($class) {
     if (!$class) {
       return false;
     }
-    self::$widget_style_class.="$class ";
+    self::$widget_style_class .= "$class ";
   }
 
   public static function get_widget_style_class() {
@@ -592,13 +584,11 @@ class WidgetsManagement extends \ew\Module {
   public static function render_widget($widget_class_name, $widget_file_path, $data = []) {
     if (isset(static::$CACHED_WIDGETS[$widget_class_name])) {
       $widget_instance = static::$CACHED_WIDGETS[$widget_class_name];
-    }
-    else if (file_exists($widget_file_path)) {
+    } else if (file_exists($widget_file_path)) {
       require_once $widget_file_path;
       $widget_instance = (new $widget_class_name());
       static::$CACHED_WIDGETS[$widget_class_name] = $widget_instance;
-    }
-    else {
+    } else {
       return false;
     }
 
@@ -606,8 +596,8 @@ class WidgetsManagement extends \ew\Module {
 
     return [
         'instance' => $widget_instance,
-        'content'  => EWCore::populate_view($widget_content_raw, [
-            'widget_id'    => $data['widget_id'],
+        'content' => EWCore::populate_view($widget_content_raw, [
+            'widget_id' => $data['widget_id'],
             'widget_id_js' => str_replace('-', '_', $data['widget_id'])
         ])
     ];
@@ -615,12 +605,12 @@ class WidgetsManagement extends \ew\Module {
 
   /**
    * Create a widget element
-   * 
+   *
    * @param type $widget_id
    * @param type $widget_type
    * @param string $style_class widget container style classes
    * @param string $widget_style_class widget style classes
-   * @param string  $style_id widget style id
+   * @param string $style_id widget style id
    * @param json $parameters_string widget parameters
    */
   public static function open_widget($widget_id, $conf) {
@@ -639,36 +629,34 @@ class WidgetsManagement extends \ew\Module {
     if (is_array($parameters_string)) {
       $widget_parameters = $parameters_string;
       $parameters_string = json_encode($parameters_string);
-    }
-    else if ($parameters_string) {
+    } else if ($parameters_string) {
       $widget_parameters = json_decode($parameters_string, true);
     }
 
     $widget_data = [
         'widget_parameters' => $widget_parameters,
-        'widget_id'         => $widget_id,
-        'style_id'          => $style_id,
-        'style_class'       => $style_class
+        'widget_id' => $widget_id,
+        'style_id' => $style_id,
+        'style_class' => $style_class
     ];
 
     $widge_class = EWCore::hyphenToCamel($widget_type);
-    
+
     $widget_class_name = "webroot\\$widge_class";
     $rendered_widget = static::render_widget($widget_class_name, EW_WIDGETS_DIR . '/' . strtolower($widget_type) . "/$widge_class.class.php", $widget_data);
 
     if ($rendered_widget !== false) {
       $widget_title = $rendered_widget['instance']->get_title();
       $widget_content = $rendered_widget['content'];
-    }
-    else {
+    } else {
       $widget_title = WidgetsManagement::get_widget_details($widget_type)['title'];
       if (file_exists(EW_WIDGETS_DIR . '/' . $widget_type . '/index.php')) {
         ob_start();
         include EW_WIDGETS_DIR . '/' . $widget_type . '/index.php';
         $widget_content_raw = ob_get_clean();
         $widget_content = EWCore::populate_view($widget_content_raw, [
-                    'widget_id'    => $widget_id,
-                    'widget_id_js' => str_replace('-', '_', $widget_id)
+            'widget_id' => $widget_id,
+            'widget_id_js' => str_replace('-', '_', $widget_id)
         ]);
       }
     }
@@ -699,8 +687,7 @@ class WidgetsManagement extends \ew\Module {
     $timestamp = time();
     if ($_SESSION['_ew_gw_ts'] == $timestamp) {
       self::$ui_index++;
-    }
-    else {
+    } else {
       $_SESSION['_ew_gw_ts'] = $timestamp;
     }
 
@@ -711,24 +698,24 @@ class WidgetsManagement extends \ew\Module {
     self::$current_timestamp = strval($timestamp);
     $widget_id = 'widget-' . self::$current_timestamp . '-' . self::$ui_index . '-' . self::$widget_index;
     $widget_html = '';
-    $widget_html .=self::open_widget($widget_id, [
-                'widgetType'       => $widget_type,
-                'class'            => $style_class,
-                'widgetClass'      => $widget_style_class,
-                'id'               => $style_id,
-                'widgetParameters' => $widget_parameters
+    $widget_html .= self::open_widget($widget_id, [
+        'widgetType' => $widget_type,
+        'class' => $style_class,
+        'widgetClass' => $widget_style_class,
+        'id' => $style_id,
+        'widgetParameters' => $widget_parameters
     ]);
 
-    $widget_html .=self::close_widget();
+    $widget_html .= self::close_widget();
 
     $widget_script = self::get_html_scripts($widget_id);
 
     return [
-        'widget_html'   => $widget_html,
-        'widget_data'   => $widget_parameters,
-        'widget_id'     => $widget_id,
+        'widget_html' => $widget_html,
+        'widget_data' => $widget_parameters,
+        'widget_id' => $widget_id,
         'widget_script' => $widget_script,
-        'widget_style'  => ""
+        'widget_style' => ""
     ];
   }
 
@@ -739,8 +726,7 @@ class WidgetsManagement extends \ew\Module {
       require_once EW_PACKAGES_DIR . '/rm/public/' . $path . '/template.php';
       $template = new \template();
       return ['html' => $template->get_template_settings_form()];
-    }
-    else {
+    } else {
       return [];
     }
   }
@@ -767,7 +753,7 @@ class WidgetsManagement extends \ew\Module {
 
     $out = [
         "totalRows" => $count,
-        "result"    => $apps
+        "result" => $apps
     ];
 
     return $out;
@@ -791,15 +777,14 @@ class WidgetsManagement extends \ew\Module {
         $widget_class_name = "webroot\\$widge_class";
         $widget_class_instance = new $widget_class_name();
         $widget_details = [
-            "name"        => $widget_class_instance->get_title(),
-            "path"        => $widget_dir,
-            "title"       => $widget_class_instance->get_title(),
+            "name" => $widget_class_instance->get_title(),
+            "path" => $widget_dir,
+            "title" => $widget_class_instance->get_title(),
             "description" => $widget_class_instance->get_description(),
             "feeder_type" => $widget_class_instance->get_feeder_type()
         ];
         $apps[] = $widget_details;
-      }
-      else {
+      } else {
         $apps[] = WidgetsManagement::get_widget_details($widget_dir);
       }
     }
@@ -821,9 +806,9 @@ class WidgetsManagement extends \ew\Module {
     $feeder_type = \EWCore::get_comment_parameters("feeder_type", $source);
 
     return [
-        "name"        => $widget_type,
-        "path"        => $widget_type,
-        "title"       => $title,
+        "name" => $widget_type,
+        "path" => $widget_type,
+        "title" => $title,
         "description" => $description,
         "feeder_type" => $feeder_type
     ];
@@ -839,15 +824,14 @@ class WidgetsManagement extends \ew\Module {
         $widget_class_name = "webroot\\$widge_class";
         $widget_class_instance = new $widget_class_name();
         $widget_configurator_form .= $widget_class_instance->get_configuration_form();
-      }
-      else {
+      } else {
         ob_start();
         include EW_WIDGETS_DIR . '/' . $widget_path . '/admin.php';
-        $widget_configurator_form.= ob_get_clean();
+        $widget_configurator_form .= ob_get_clean();
       }
     }
 
-    $widget_configurator_form.= '</form>';
+    $widget_configurator_form .= '</form>';
     return $widget_configurator_form;
   }
 
@@ -873,7 +857,7 @@ class WidgetsManagement extends \ew\Module {
   private static function get_widget_data() {
     foreach (self::$widget_data as $wi => $data) {
       $data = ($data) ? json_encode($data, JSON_UNESCAPED_SLASHES) : "{}";
-      $data_string.="ew_widget_data['$wi'] = $data;\n";
+      $data_string .= "ew_widget_data['$wi'] = $data;\n";
     }
     return $data_string;
   }
@@ -898,8 +882,7 @@ class WidgetsManagement extends \ew\Module {
     $timestamp = time();
     if ($_SESSION["_ew_gw_ts"] == $timestamp) {
       self::$ui_index++;
-    }
-    else {
+    } else {
       $_SESSION["_ew_gw_ts"] = $timestamp;
     }
     self::$current_timestamp = strval($timestamp);
@@ -912,15 +895,15 @@ class WidgetsManagement extends \ew\Module {
 
     if (isset($structure_array)) {
       foreach ($structure_array as $key => $value) {
-        $RESULT_HTML.=self::open_block('panel-' . self::$current_timestamp . "-" . self::$ui_index . "-" . self::$panel_index, "", $value["class"], $value["id"], $value["blockParameters"], FALSE);
-        $RESULT_HTML.=self::create_panel_content($value['children'], "panel-" . self::$current_timestamp . '-' . self::$ui_index . '-' . self::$panel_index, $no_data, $public_data);
-        $RESULT_HTML.= '</div>';
+        $RESULT_HTML .= self::open_block('panel-' . self::$current_timestamp . "-" . self::$ui_index . "-" . self::$panel_index, "", $value["class"], $value["id"], $value["blockParameters"], FALSE);
+        $RESULT_HTML .= self::create_panel_content($value['children'], "panel-" . self::$current_timestamp . '-' . self::$ui_index . '-' . self::$panel_index, $no_data, $public_data);
+        $RESULT_HTML .= '</div>';
         self::$panel_index++;
       }
     }
 
     return [
-        'body_html'   => $RESULT_HTML,
+        'body_html' => $RESULT_HTML,
         'widget_data' => self::get_widget_data()
     ];
   }
@@ -932,7 +915,7 @@ class WidgetsManagement extends \ew\Module {
     }
 
     self::$html_scripts[] = array(
-        "src"    => $src,
+        "src" => $src,
         "script" => $script);
   }
 
@@ -961,9 +944,8 @@ class WidgetsManagement extends \ew\Module {
         }
 
         $includes[] = $script['include'];
-      }
-      else {
-        $script_tags.="<script $element_id $element_src defer>{$script["script"]}</script>\n";
+      } else {
+        $script_tags .= "<script $element_id $element_src defer>{$script["script"]}</script>\n";
       }
 
       $element_id = "";
@@ -989,8 +971,7 @@ class WidgetsManagement extends \ew\Module {
       //$minified_code .= file_get_contents($cache_path);
       $cache_path = EW_CACHE_DIR . "/$cache_file_name";
       $minified_code = true;
-    }
-    else {
+    } else {
       //echo "$cache_file_name";
       //array_map('unlink', glob(EW_PACKAGES_DIR . '/rm/public/cache/' . "*"));
 
@@ -1000,8 +981,7 @@ class WidgetsManagement extends \ew\Module {
         if (!file_exists($src)) {
           $minified_code .= "\n\n\n // NOT FOUND: $src \n\n\n";
           //die('//NOT FOUND: ' . $src);
-        }
-        else {
+        } else {
           $file_content = file_get_contents($src);
 
           $minified_code .= \JShrink\Minifier::minify($file_content);
@@ -1012,7 +992,7 @@ class WidgetsManagement extends \ew\Module {
     }
 
     if ($minified_code) {
-      $script_tags.="<script id='ew-compiled-scripts' src='$cache_path_url' async></script>";
+      $script_tags .= "<script id='ew-compiled-scripts' src='$cache_path_url' async></script>";
     }
 
     return $script_tags;
@@ -1034,9 +1014,9 @@ class WidgetsManagement extends \ew\Module {
 
     foreach (self::$html_meta_tags as $tag) {
       $meta_tags .= '<meta ' .
-              ($tag['property'] ? "property=\"{$tag['property']}\" " : '') .
-              ($tag['name'] ? "name=\"{$tag['name']}\" " : '') .
-              "content=\"" . ($tag['content']) . "\" />";
+          ($tag['property'] ? "property=\"{$tag['property']}\" " : '') .
+          ($tag['name'] ? "name=\"{$tag['name']}\" " : '') .
+          "content=\"" . ($tag['content']) . "\" />";
     }
 
     return $meta_tags;
@@ -1050,8 +1030,8 @@ class WidgetsManagement extends \ew\Module {
 
     $url = parse_url(str_replace(EW_DIR . $language, '', CURRENT_URL));
     $currentAppConf = EWCore::call_api('admin/api/settings/read-settings', [
-                'app_name' => 'webroot'
-            ])['data'];
+        'app_name' => 'webroot'
+    ])['data'];
 
 
     static::set_html_keywords($currentAppConf['webroot/title'] . ',' . $currentAppConf['webroot/keywords']);
@@ -1064,8 +1044,8 @@ class WidgetsManagement extends \ew\Module {
     }
 
     return array_merge($currentAppConf, [
-        'webroot/url'         => CURRENT_URL,
-        'webroot/title'       => ($url['path'] === '/' || !$url['path']) ? $currentAppConf['webroot/title'] : $html_keywords_string,
+        'webroot/url' => CURRENT_URL,
+        'webroot/title' => ($url['path'] === '/' || !$url['path']) ? $currentAppConf['webroot/title'] : $html_keywords_string,
         'webroot/description' => $description
     ]);
   }
@@ -1084,8 +1064,7 @@ class WidgetsManagement extends \ew\Module {
     foreach (self::$html_links as $item) {
       if ($item['place'] === 'body') {
         $body_link_tags .= "<link rel='{$item['rel']}' href='{$item['href']}' />";
-      }
-      else {
+      } else {
         $head_link_tags .= "<link rel='{$item['rel']}' href='{$item['href']}' />";
       }
     }
@@ -1113,8 +1092,7 @@ class WidgetsManagement extends \ew\Module {
     if (file_exists($cache_path)) {
       $cache_path = EW_CACHE_DIR . "/$cache_file_name";
       $minified_css = true;
-    }
-    else {
+    } else {
       foreach (self::$html_included_links as $source) {
         $src = EW_PACKAGES_DIR . '/' . $source;
         $buffer = file_get_contents($src);
@@ -1155,12 +1133,12 @@ class WidgetsManagement extends \ew\Module {
 //      echo $oCssDocument->render($oFormat);
 //      die();
 
-      $css_tag.="<link rel='stylesheet' property='stylesheet' type='text/css' id='ew-compiled-css' href='$cache_path_url' />";
+      $css_tag .= "<link rel='stylesheet' property='stylesheet' type='text/css' id='ew-compiled-css' href='$cache_path_url' />";
     }
 
     return [
         'path' => $cache_path_url,
-        'tag'  => $css_tag
+        'tag' => $css_tag
     ];
   }
 
@@ -1201,8 +1179,7 @@ class WidgetsManagement extends \ew\Module {
         $this->open_panel($rows["id"], $rows["container_id"], $rows["style_class"], $rows["style_id"], $rows["widgets_parameters"], FALSE);
         $this->show_container($rows["id"]);
         $this->close_panel();
-      }
-      else if ($rows["item_type"] == 'widget') {
+      } else if ($rows["item_type"] == 'widget') {
         $this->open_widget($rows["id"], $rows);
         $this->close_widget();
       }
@@ -1215,7 +1192,7 @@ class WidgetsManagement extends \ew\Module {
     $db = \EWCore::get_db_connection();
     $res = array(
         "status" => "success",
-        message  => "UIS has been set successfully for $path");
+        message => "UIS has been set successfully for $path");
 
     if (!$uis_id) {
       $result = $db->query("DELETE FROM ew_pages_ui_structures WHERE path = '$path'");
@@ -1232,21 +1209,20 @@ class WidgetsManagement extends \ew\Module {
       if ($stm->execute())
         $res = [
             "status" => "success",
-            message  => "UIS has been set successfully for $path ",
+            message => "UIS has been set successfully for $path ",
             "puisId" => $stm->insert_id
         ];
       else
         $res = array(
             "status" => "error",
-            message  => "UIS has NOT been sat, Please try again");
-    }
-    else {
+            message => "UIS has NOT been sat, Please try again");
+    } else {
       $stm = $db->prepare("UPDATE ew_pages_ui_structures SET  ui_structure_id = ?  WHERE path = ?") or die($db->error);
       $stm->bind_param("ss", $uis_id, $path);
       if (!$stm->execute())
         $res = array(
             "status" => "error",
-            message  => "UIS has NOT been sat, Please try again");
+            message => "UIS has NOT been sat, Please try again");
     }
 
     $stm->close();
@@ -1255,26 +1231,25 @@ class WidgetsManagement extends \ew\Module {
   }
 
   public function page_layout_update($response, $_input) {
-    
+
   }
 
   public static function get_path_uis($path = null) {
     $path = ($path) ? $path : $_REQUEST["path"];
     $db = \EWCore::get_db_PDO();
     $result = $db->prepare("SELECT ew_ui_structures.id AS id,name,template, template_settings,path FROM ew_pages_ui_structures,ew_ui_structures"
-            . " WHERE ew_pages_ui_structures.ui_structure_id = ew_ui_structures.id"
-            . " AND path = ?") or die($db->error);
+        . " WHERE ew_pages_ui_structures.ui_structure_id = ew_ui_structures.id"
+        . " AND path = ?") or die($db->error);
     $result->execute([$path]);
 
     if ($row = $result->fetch(\PDO::FETCH_ASSOC)) {
       return [
-          "uis_id"                => $row["id"],
-          "uis_name"              => $row["name"],
-          "uis_template"          => $row["template"],
+          "uis_id" => $row["id"],
+          "uis_name" => $row["name"],
+          "uis_template" => $row["template"],
           "uis_template_settings" => $row["template_settings"]
       ];
-    }
-    else {
+    } else {
       return null;
     }
   }
@@ -1282,7 +1257,7 @@ class WidgetsManagement extends \ew\Module {
   public static function path_layouts() {
     $db = \EWCore::get_db_PDO();
     $result = $db->prepare("SELECT path, ew_ui_structures.id AS id,name,template, template_settings,path FROM ew_pages_ui_structures,ew_ui_structures"
-            . " WHERE ew_pages_ui_structures.ui_structure_id = ew_ui_structures.id") or die($db->error);
+        . " WHERE ew_pages_ui_structures.ui_structure_id = ew_ui_structures.id") or die($db->error);
     $result->execute([$path]);
 
     return $result->fetchAll(\PDO::FETCH_ASSOC);
@@ -1319,9 +1294,9 @@ class WidgetsManagement extends \ew\Module {
     }
 
     return [
-        "template_body"   => $template_body,
+        "template_body" => $template_body,
         "template_script" => $template_script,
-        "widget_data"     => $widget_data
+        "widget_data" => $widget_data
     ];
   }
 
@@ -1354,7 +1329,7 @@ class WidgetsManagement extends \ew\Module {
       return false;
     }
 
-    array_walk(self::$registry[static::$WIDGET_FEEDER], function($item, $key)use ($type, $app, $id, &$feederApp, &$result) {
+    array_walk(self::$registry[static::$WIDGET_FEEDER], function ($item, $key) use ($type, $app, $id, &$feederApp, &$result) {
       if ($app == "*" || $app == $key) {
         if ($type == '*') {
           foreach ($item as $feeder => $p) {
@@ -1363,8 +1338,7 @@ class WidgetsManagement extends \ew\Module {
               $result = true;
             }
           }
-        }
-        else if ($item[$type][$id]) {
+        } else if ($item[$type][$id]) {
           $feederApp = $key;
           $result = true;
         }
@@ -1398,7 +1372,7 @@ class WidgetsManagement extends \ew\Module {
   }
 
   /**
-   * 
+   *
    * @param String $id Id of feeder
    * @return \ew\WidgetFeeder
    */
@@ -1407,7 +1381,7 @@ class WidgetsManagement extends \ew\Module {
   }
 
   /**
-   * 
+   *
    * @param String $id Id of feeder
    * @return \ew\WidgetFeeder
    */
@@ -1427,7 +1401,7 @@ class WidgetsManagement extends \ew\Module {
   }
 
   /**
-   * 
+   *
    * @param \ew\Module $module
    * @param \ew\WidgetFeeder $feeder
    */
@@ -1436,7 +1410,7 @@ class WidgetsManagement extends \ew\Module {
   }
 
   /**
-   * 
+   *
    * @type string type of widget feeder
    * @return mixed
    */
@@ -1466,9 +1440,9 @@ class WidgetsManagement extends \ew\Module {
       $text = trim($part->nodeValue);
       $links[] = [
           'content-field' => $part->getAttribute('content-field'),
-          'tag'           => $tag_name,
-          'text'          => $text,
-          'html'          => $doc->saveHTML($part),
+          'tag' => $tag_name,
+          'text' => $text,
+          'html' => $doc->saveHTML($part),
       ];
     }
 
@@ -1548,7 +1522,7 @@ class WidgetsManagement extends \ew\Module {
   }
 
   public function layouts_delete($_input, $_response) {
-    
+
   }
 
   public static function get_mason($mason_name) {
@@ -1561,8 +1535,7 @@ class WidgetsManagement extends \ew\Module {
       $mason_name = str_replace('/', '\\', $mason_name);
 
       return new $mason_name;
-    }
-    else {
+    } else {
       return null;
     }
   }

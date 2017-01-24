@@ -23,7 +23,7 @@ foreach ($app_configs['DOMAINS'] as $key => $value) {
 
 if (is_null($env_variables)) {
   die(EWCore::log_error(500, 'Could not find enviroments variables', [
-              'domain' => $_SERVER['HTTP_HOST']
+      'domain' => $_SERVER['HTTP_HOST']
   ]));
 }
 
@@ -38,7 +38,6 @@ define('EW_TEMPLATES_DIR', EW_ROOT_DIR . '/packages/rm/public/templates');
 define('EW_WIDGETS_DIR', EW_ROOT_DIR . '/widgets');
 define('EW_MEDIA_DIR', EW_ROOT_DIR . 'packages/rm/public/media');
 define('HOST_URL', 'http://' . $_SERVER['SERVER_NAME']);
-
 
 
 ob_end_clean();
@@ -79,8 +78,7 @@ $default_language = EWCore::read_setting('ew/language');
 
 if ($default_language) {
   $language = $default_language;
-}
-else {
+} else {
   $default_language = 'en';
 }
 
@@ -96,14 +94,13 @@ $url_language = ($language == $default_language) ? '' : $language . '/';
 
 // Set protocol to https if detected
 $protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') ||
-        $_SERVER['SERVER_PORT'] == 443) ? 'https://' : 'http://';
+    $_SERVER['SERVER_PORT'] == 443) ? 'https://' : 'http://';
 
 // Set the language for the root url
 if ($_SERVER['SERVER_PORT'] !== '80' && $_SERVER['SERVER_PORT'] !== '443') {
   $host_url = $protocol . $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'];
   $u = $protocol . $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'] . EW_DIR_URL . '/' . $url_language;
-}
-else {
+} else {
   $host_url = $protocol . $_SERVER['SERVER_NAME'];
   $u = $protocol . $_SERVER['SERVER_NAME'] . EW_DIR_URL . '/' . $url_language;
 }
@@ -124,16 +121,16 @@ $resource_types = [
 // Check the app parameter
 $resource_type = 'html';
 $app_name = 'webroot';
-if (strpos($elements[$parameter_index], '-') === 0) {
-  $app_name = str_replace('-', '', $elements[$parameter_index]);
+if (strpos($elements[$parameter_index], '-') === 0 || strpos($elements[$parameter_index], '@') === 0) {
+//  $app_name = str_replace('-', '', $elements[$parameter_index]);
+  $app_name = substr($elements[$parameter_index], 1);
   $parameter_index++;
 
   if (count($elements) > 3 && $elements[$parameter_index]) {
     $resource_type = $elements[$parameter_index];
     $parameter_index++;
   }
-}
-else if (in_array($elements[$parameter_index], $resource_types)) {
+} else if (in_array($elements[$parameter_index], $resource_types)) {
   if (isset($elements[$parameter_index + 1])) {
     $app_name = $elements[$parameter_index + 1];
     $resource_type = $elements[$parameter_index];
@@ -164,7 +161,8 @@ if (isset($elements[$parameter_index])) {
 
 // set default user group if no user group has been spacified
 if (!isset($_SESSION['EW.USER_GROUP_ID'])) {
-  $_SESSION['EW.USER_GROUP_ID'] = /* json_decode(EWCore::get_default_users_group(), true)["id"] */ 1;
+  $_SESSION['EW.USER_GROUP_ID'] = /* json_decode(EWCore::get_default_users_group(), true)["id"] */
+      1;
 }
 
 $inputs = [];
@@ -183,8 +181,7 @@ function translate($match) {
 if ($RESULT_CONTENT) {
   echo preg_replace_callback("/tr(\:\w*)?\{(.*?)\}/", 'translate', $RESULT_CONTENT);
 //  echo $RESULT_CONTENT;
-}
-else {
+} else {
   echo 'RESULT_CONTENT: EMPTY';
 }
 //$after = microtime(true);

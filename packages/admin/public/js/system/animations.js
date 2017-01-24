@@ -2,7 +2,7 @@
 
 (function () {
   Vue.transition('slide', {
-    beforeEnter: function (el) {
+    beforeEnter: function () {
     },
     enter: function (el, done) {
       el.className += ' slide-out';
@@ -13,12 +13,12 @@
         }
       });
     },
-    afterEnter: function (el) {
+    afterEnter: function () {
     },
-    enterCancelled: function (el) {
+    enterCancelled: function () {
       // handle cancellation
     },
-    beforeLeave: function (el) {
+    beforeLeave: function () {
     },
     leave: function (el, done) {
       TweenLite.to(el, .3, {
@@ -29,9 +29,9 @@
         }
       });
     },
-    afterLeave: function (el) {
+    afterLeave: function () {
     },
-    leaveCancelled: function (el) {
+    leaveCancelled: function () {
       // handle cancellation
     }
   });
@@ -258,7 +258,7 @@
     }
   };
 
-  ZoomInAnimation.prototype.animate = function (nodes, style) {
+  ZoomInAnimation.prototype.animate = function (nodes) {
     if (!nodes.length) {
       return;
     }

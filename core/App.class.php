@@ -168,16 +168,6 @@ class App {
     return $this->get_root() . '/' . $path;
   }
 
-//  public function load_view($path, $view_data) {
-//    if ($view_data) {
-//      extract($view_data);
-//    }
-//    
-//    $path = EW_PACKAGES_DIR . '/' . $this->get_root() . '/' . $path;
-//
-//    include $path;
-//  }
-
   public function get_view($path, $view_data, $auto_populate = true) {
     $full_path = EW_PACKAGES_DIR . '/' . $this->get_root() . '/' . $path;
 
@@ -221,47 +211,4 @@ class App {
 
     return $this->cached_resource_handlers[$resource_handler_name];
   }
-
-  public function get_app_api_modules() {
-    $root = $this->get_root();
-    $path = EW_PACKAGES_DIR . '/' . $root . '/api/';
-
-    $modules = opendir($path);
-    $sections = array();
-
-    // Search app's root's dir
-
-    while ($module_file = readdir($modules)) {
-      if (strpos($module_file, '.') === 0)
-        continue;
-      //$i = strpos($section_dir, '.class.php');
-      $module_full_name = substr($module_file, 0, strpos($module_file, '.class.php'));
-      $module_name = $module_full_name;
-      $namespace_class_name = str_replace('-', '\\', $root) . "\\" . $module_full_name;
-      //echo $namespace_class_name . "<br>";
-      if (class_exists($namespace_class_name)) {
-        $module_full_name = $namespace_class_name;
-      }
-
-      if (class_exists($module_full_name) && get_parent_class($module_full_name) == 'ew\Module') {
-        $module = new $module_full_name($this);
-        $permission_id = \EWCore::does_need_permission($root, $module_name, $module->get_index());
-
-        if ($permission_id && $permission_id !== FALSE) {
-          // Check for user permission
-          if (!UsersManagement::user_has_permission($root, $module_name, $permission_id, $_SESSION['EW.USER_GROUP_ID'])) {
-            continue;
-          }
-        }
-
-        if ($module->get_title() && !$module->is_hidden())
-          $sections[] = array(
-              "title"       => "tr:$appDir" . "{" . $module->get_title() . "}",
-              "className"   => $module_name,
-              "description" => "tr:$appDir" . "{" . $module->get_description() . "}");
-      }
-    }
-    return ($sections);
-  }
-
 }

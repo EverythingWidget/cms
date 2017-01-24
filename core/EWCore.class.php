@@ -176,7 +176,7 @@ class EWCore {
         $app_object = new $real_class_name;
         $response_data = $app_object->process_command($package, $resource_type, $module_name, $method_name, $parameters);
       } else {
-        return \EWCore::log_error(404, "<h4>App not found</h4><p>Requested app `$package`, not found</p>");
+        return \EWCore::log_error(404, "App not found,Requested app `$package`, not found");
       }
     }
 

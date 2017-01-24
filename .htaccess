@@ -1,7 +1,7 @@
 RewriteEngine On
 
-RewriteCond %{HTTP_HOST} ^www\.(.*) [NC]
-RewriteRule (.*) http://%1/$1 [R=302,L]
+#RewriteCond %{HTTP_HOST} ^www\.(.*) [NC]
+#RewriteRule (.*) http://%1/$1 [R=302,L]
 
 # gzip compression
 #AddOutputFilterByType DEFLATE text/plain
@@ -20,8 +20,8 @@ RewriteRule ^([^-]{2})?/?cache/(.*) cache/$2 [L]
 RewriteCond %{REQUEST_URI} public/ [NC]
 RewriteRule ^([^-]{2})?/?public/([^/]*)/(.*) packages/$2/public/$3 [L]
 
-RewriteCond %{REQUEST_URI} -(.*)/public/ [NC]
-RewriteRule -(.*)/public/(.*) packages/$1/public/$2 [L]
+RewriteCond %{REQUEST_URI} [-@](.*)/public/ [NC]
+RewriteRule [-@](.*)/public/(.*) packages/$1/public/$2 [L]
 
 RewriteCond %{REQUEST_METHOD} GET
 RewriteCond %{REQUEST_URI} !(/$|\.) 

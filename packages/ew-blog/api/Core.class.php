@@ -19,17 +19,17 @@ class Core extends \ew\Module {
 
   protected function install_assets() {
     \EWCore::register_ui_element('settings/general', 'ew-blog-settings', [
-        'title'   => 'EW Blog',
+        'title' => 'EW Blog',
         'content' => '',
-        'url'     => 'html/ew-blog/settings/index.php'
+        'url' => 'html/ew-blog/settings/index.php'
     ]);
 
     $this->register_content_component("event", [
-        "title"       => "Event",
+        "title" => "Event",
         "description" => "Event information",
-        "explorer"    => "ew-blog/html/core/explorer-event.php",
+        "explorer" => "ew-blog/html/core/explorer-event.php",
         "explorerUrl" => "~ew-blog/html/core/explorer-event.php",
-        "form"        => "ew-blog/html/core/label-event.php"
+        "form" => "ew-blog/html/core/label-event.php"
     ]);
 
     $events_feeder = new \ew\WidgetFeeder('events', $this, 'list', 'ew_list_feeder_events');
@@ -46,7 +46,7 @@ class Core extends \ew\Module {
 
     EWCore::register_ui_element('forms/content/tabs', 'post-publish', [
         'title' => 'Post',
-        'template_url'  => 'ew-blog/html/core/tab-post-publish.php'
+        'template_url' => 'ew-blog/html/core/tab-post-publish.php'
     ]);
 
     $this->add_listener('admin/api/content-management/contents-create', 'on_contents_update');
@@ -62,15 +62,6 @@ class Core extends \ew\Module {
         'api/ew-list-feeder-posts',
         'api/ew-page-feeder-post',
     ]);
-  }
-
-  public function get_app_sections($appDir) {
-    $app_class_name = $appDir . '\\App';
-    if (class_exists($app_class_name)) {
-      // Create an instance of section with its parent App
-      $obj = new $app_class_name;
-      return json_encode($obj->get_app_api_modules());
-    }
   }
 
   public function get_apps($type = "all") {
@@ -104,8 +95,7 @@ class Core extends \ew\Module {
 
           if ($type === "all") {
             $apps[] = $app_object->get_app_details();
-          }
-          else if ($app_object->get_type() == $type) {
+          } else if ($app_object->get_type() == $type) {
             $apps[] = $app_object->get_app_details();
           }
         }
@@ -120,19 +110,19 @@ class Core extends \ew\Module {
     }
 
     $query = \admin\ew_contents::select([
-                'ew_contents.id',
-                'ew_contents.content',
-                'ew_contents.content_fields',
-                'events.value AS event_date'
+        'ew_contents.id',
+        'ew_contents.content',
+        'ew_contents.content_fields',
+        'events.value AS event_date'
     ]);
 
     $query->where('parent_id', '=', $id)
-            ->join('ew_contents_labels as langs', 'ew_contents.id', '=', 'langs.content_id')
-            ->join('ew_contents_labels as events', 'ew_contents.id', '=', 'events.content_id')
-            ->where('type', 'article')
-            ->where('langs.key', 'admin_ContentManagement_language')
-            ->where('langs.value', $_language)
-            ->where('events.key', 'ew_blog_Core_event');
+        ->join('ew_contents_labels as langs', 'ew_contents.id', '=', 'langs.content_id')
+        ->join('ew_contents_labels as events', 'ew_contents.id', '=', 'events.content_id')
+        ->where('type', 'article')
+        ->where('langs.key', 'admin_ContentManagement_language')
+        ->where('langs.value', $_language)
+        ->where('events.key', 'ew_blog_Core_event');
 
     if (strtoupper($order_by) === 'DEFAULT') {
       $order_by = 'ASC';
@@ -150,24 +140,24 @@ class Core extends \ew\Module {
     $ollection_size = $query->get()->count();
 
     $query->orderBy("events.value", $order_by)
-            ->take($page_size)
-            ->skip($token);
+        ->take($page_size)
+        ->skip($token);
 
     $events = $query->get();
 
     if (isset($events)) {
       foreach ($events as $article) {
         $result[] = [
-            'id'             => $article->id,
-            'html'           => $article->content,
-            'event_date'     => $article->event_date,
+            'id' => $article->id,
+            'html' => $article->content,
+            'event_date' => $article->event_date,
             'content_fields' => $article->content_fields
         ];
       }
     }
 
     $folder_info = \EWCore::call_cached_api('admin/api/content-management/contents', [
-                'id' => $id
+        'id' => $id
     ]);
 
     $_response->properties['total'] = $ollection_size;
@@ -179,11 +169,12 @@ class Core extends \ew\Module {
 
   public function ew_list_feeder_posts($_response, $id, $params = [], $token = 0, $page_size = 30, $order_by = 'DESC', $_language = 'en') {
     $query = \admin\ew_contents::select([
-                'ew_contents.id',
-                'date_created',
-                'content_fields',
-                'content',
-                'posts.date_published'
+        'ew_contents.id',
+        'ew_contents.slug',
+        'date_created',
+        'content_fields',
+        'content',
+        'posts.date_published'
     ]);
 
     if (isset($params['id'])) {
@@ -191,12 +182,12 @@ class Core extends \ew\Module {
     }
 
     $query->where('parent_id', '=', $id)
-            ->join('ew_contents_labels as langs', 'ew_contents.id', '=', 'langs.content_id')
-            ->join('ew_blog_posts as posts', 'ew_contents.id', '=', 'posts.content_id')
-            ->where('type', 'article')
-            ->where('langs.key', 'admin_ContentManagement_language')
-            ->where('langs.value', $_language)
-            ->where('posts.date_published', '<>', '0000-00-00 00:00:00');
+        ->join('ew_contents_labels as langs', 'ew_contents.id', '=', 'langs.content_id')
+        ->join('ew_blog_posts as posts', 'ew_contents.id', '=', 'posts.content_id')
+        ->where('type', 'article')
+        ->where('langs.key', 'admin_ContentManagement_language')
+        ->where('langs.value', $_language)
+        ->where('posts.date_published', '<>', '0000-00-00 00:00:00');
 
     if (strtoupper($order_by) === 'DEFAULT') {
       $order_by = 'DESC';
@@ -224,8 +215,8 @@ class Core extends \ew\Module {
     $collection_size = $query->get()->count();
 
     $query->orderBy("posts.date_published", $order_by)
-            ->take($page_size)
-            ->skip($token);
+        ->take($page_size)
+        ->skip($token);
 
     $query_result = $query->get();
 
@@ -236,25 +227,26 @@ class Core extends \ew\Module {
       foreach ($query_result_array as $post) {
         $content_fields = $post["content_fields"];
         $content_fields['@content/date-created'] = [
-            'tag'     => 'p',
+            'tag' => 'p',
             'content' => \DateTime::createFromFormat('Y-m-d H:i:s', $post['date_created'])->format('Y-m-d')
         ];
 
         $content_fields['@post/date-published'] = [
-            'tag'     => 'p',
+            'tag' => 'p',
             'content' => \DateTime::createFromFormat('Y-m-d H:i:s', $post['date_published'])->format('Y-m-d')
         ];
 
         $posts->add([
-            "id"             => $post["id"],
-            "html"           => $post["content"],
-            "content_fields" => $content_fields
+            'id' => $post['id'],
+            'slug' => $post['slug'] ? $post['slug'] : $post['id'],
+            'html' => $post['content'],
+            'content_fields' => $content_fields
         ]);
       }
     }
 
     $folder_info = \EWCore::call_cached_api('admin/api/content-management/contents', [
-                'id' => $id
+        'id' => $id
     ]);
 
     if ($folder_info['status_code'] !== 200) {
@@ -268,9 +260,9 @@ class Core extends \ew\Module {
     $result->page_size = $query_result->count();
 
     $_response->properties['parent'] = [
-        'title'          => $folder_info['data']['title'],
-        'keywords'       => $folder_info['data']['keywords'],
-        'description'    => $folder_info['data']['description'],
+        'title' => $folder_info['data']['title'],
+        'keywords' => $folder_info['data']['keywords'],
+        'description' => $folder_info['data']['description'],
         'content_fields' => $folder_info['data']['content_fields'],
     ];
 
@@ -280,19 +272,19 @@ class Core extends \ew\Module {
 
   public function ew_page_feeder_post($id, $params = [], $_language = 'en') {
     $post = \admin\ew_contents::join('ew_contents_labels as langs', 'ew_contents.id', '=', 'langs.content_id')
-                    ->join('ew_blog_posts as posts', 'ew_contents.id', '=', 'posts.content_id')
-                    ->where('ew_contents.id', '=', $id)
-                    ->where('langs.key', 'admin_ContentManagement_language')
-                    ->where('langs.value', $_language)
-                    ->where('posts.publish_date', '<>', '0000-00-00 00:00:00')
-                    ->get([
-                        'ew_contents.id',
-                        'ew_contents.title',
-                        'ew_contents.content',
-                        'ew_contents.parsed_content',
-                        'ew_contents.content_fields',
-                        'posts.date_published'
-                    ])->toArray();
+        ->join('ew_blog_posts as posts', 'ew_contents.id', '=', 'posts.content_id')
+        ->where('ew_contents.id', '=', $id)
+        ->where('langs.key', 'admin_ContentManagement_language')
+        ->where('langs.value', $_language)
+        ->where('posts.publish_date', '<>', '0000-00-00 00:00:00')
+        ->get([
+            'ew_contents.id',
+            'ew_contents.title',
+            'ew_contents.content',
+            'ew_contents.parsed_content',
+            'ew_contents.content_fields',
+            'posts.date_published'
+        ])->toArray();
 
     if (count($post) > 0) {
       $post_data = $post[0];
@@ -323,18 +315,17 @@ class Core extends \ew\Module {
     $post_id = \ew\DBUtility::row_exist($pdo, 'ew_blog_posts', $id, 'content_id');
     if ($post_id) {
       $this->update_post($post_id['id'], $publish_date, $draft, $comments);
-    }
-    else {
+    } else {
       $this->add_post($_response->data['id'], $publish_date, $draft, $comments);
     }
 
 
     return [
         'date_published' => $publish_date,
-        'included'       => [
+        'included' => [
             [
                 'type' => 'ew_blog_post',
-                'id'   => $post_id['id']
+                'id' => $post_id['id']
             ]
         ]
     ];
@@ -350,8 +341,7 @@ class Core extends \ew\Module {
 
     if (!$date || $date === '0000-00-00 00:00:00') {
       $date = '';
-    }
-    else {
+    } else {
       $date = \DateTime::createFromFormat('Y-m-d H:i:s', $post['date_published'])->format('Y-m-d');
     }
 
@@ -360,8 +350,8 @@ class Core extends \ew\Module {
     if ($post) {
       $result = [
           'ew_blog/date_published' => $date,
-          'ew_blog/draft'          => $post['draft'],
-          'ew_blog/comments'       => $post['comments']
+          'ew_blog/draft' => $post['draft'],
+          'ew_blog/comments' => $post['comments']
       ];
     }
 
@@ -381,11 +371,11 @@ class Core extends \ew\Module {
     $pdo = EWCore::get_db_PDO();
     $stmt = $pdo->prepare("INSERT INTO ew_blog_posts(content_id, date_published, draft, comments, user_id) VALUES (?, ?, ?, ?, ?)");
     return $stmt->execute([
-                $content_id,
-                $publish_date,
-                isset($draft) ? $draft : 0,
-                isset($comments) ? $comments : 0,
-                $_SESSION['EW.USER_ID']
+        $content_id,
+        $publish_date,
+        isset($draft) ? $draft : 0,
+        isset($comments) ? $comments : 0,
+        $_SESSION['EW.USER_ID']
     ]);
   }
 
