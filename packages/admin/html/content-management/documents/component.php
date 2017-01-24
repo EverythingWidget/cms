@@ -343,20 +343,9 @@
       }
     ];
 
-//      this.bNewFolder = EW.addActivity().hide();
-
-//      this.bNewFile = EW.addActivity().hide();
-
-//      this.testBtn = EW.addActionButton({
-//        text: "tr{test form}",
-//        parent: System.ui.components.mainFloatMenu,
-//        handler: function () {
-//          component.state.setParam('component', 'forms/test-form');
-//        }
-//      });
-
     $(document).off("article-list.refresh").on("article-list.refresh", function (e, eventData) {
-      component.listDocuments();
+      component.ui.folders_card_vue.$broadcast('refresh');
+//      component.listDocuments();
       if (eventData) {
         if (eventData.data.type === "article") {
           System.setHashParameters({

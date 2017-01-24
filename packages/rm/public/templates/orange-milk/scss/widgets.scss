@@ -30,11 +30,11 @@
     }
 
     .btn-prev {
-      background-image: url(../templates/orange-milk/images/icon-arrow-left.png) !important;
+      background-image: url(../public/rm/templates/orange-milk/images/icon-arrow-left.png) !important;
     } 
 
     .btn-next {
-      background-image: url(../templates/orange-milk/images/icon-arrow-right.png) !important;
+      background-image: url(../public/rm/templates/orange-milk/images/icon-arrow-right.png) !important;
       float: right;
     }
   }
@@ -42,12 +42,12 @@
   &.rtl {   
     .list-footer {
       .btn-prev {      
-        background-image: url(../templates/orange-milk/images/icon-arrow-right.png) !important;
+        background-image: url(../public/rm/templates/orange-milk/images/icon-arrow-right.png) !important;
         float: right;
       } 
 
       .btn-next {
-        background-image: url(../templates/orange-milk/images/icon-arrow-left.png) !important;
+        background-image: url(../public/rm/templates/orange-milk/images/icon-arrow-left.png) !important;
         float: left;
       }
     }
@@ -271,7 +271,7 @@
             text-align: center;
             position: relative;
 
-            b {
+            b, strong {
               font-size: 30px;
               display: block;
               width: 100%;
@@ -326,11 +326,11 @@
       }
 
       .owl-prev {
-        background-image: url(../templates/orange-milk/images/icon-arrow-left.png) !important;
+        background-image: url(../public/rm/templates/orange-milk/images/icon-arrow-left.png) !important;
       } 
 
       .owl-next {
-        background-image: url(../templates/orange-milk/images/icon-arrow-right.png) !important;
+        background-image: url(../public/rm/templates/orange-milk/images/icon-arrow-right.png) !important;
         float: right;
       }      
 
