@@ -182,9 +182,7 @@ class HTMLResourceHandler extends ResourceHandler {
     return [
         'uis_id' => $row['ui_structure_id'],
         'uis_template' => $row['template'],
-        'uis_template_settings' => $row['template_settings
-
-      ']
+        'uis_template_settings' => $row['template_settings']
     ];
   }
 

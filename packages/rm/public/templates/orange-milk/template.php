@@ -20,13 +20,13 @@ class template extends TemplateControl {
     \webroot\WidgetsManagement::add_html_script(['include' => '/rm/public/js/scroll-it/scroll-it.js']);
     \webroot\WidgetsManagement::add_html_link([
         'place' => 'body',
-        'rel'   => 'stylesheet',
-        'href'  => 'public/rm/templates/orange-milk/fonts.css'
+        'rel' => 'stylesheet',
+        'href' => 'public/rm/templates/orange-milk/fonts.css'
     ]);
     \webroot\WidgetsManagement::add_html_link([
         'place' => 'body',
-        'rel'   => 'stylesheet',
-        'href'  => 'https://fonts.googleapis.com/css?family=Roboto:400,300,500,700'
+        'rel' => 'stylesheet',
+        'href' => 'https://fonts.googleapis.com/css?family=Roboto:400,300,500,700'
     ]);
 
     ob_start();
@@ -37,18 +37,18 @@ class template extends TemplateControl {
   public function get_template_settings_form() {
     ob_start();
     ?>
-    <div class="block-row">
-      <div class="col-xs-12 mt" data-toggle="buttons">
-        <label id="spw" type="button" class="btn btn-primary col-xs-12" >
-          <input type="checkbox" name="spw" value="true">Single Page Website</label>
-      </div>
+    <div class="form-block">
+      <label class="checkbox">
+        Single Page Website
+        <input type="checkbox" id="spw" name="spw" value="true"><i></i>
+      </label>
     </div>
-    <div id="spw-cp">         
+    <div id="spw-cp" class="form-block">
       <div class="block-row mt">
         <select class="text-field" id="menu-id" name="menu-id" data-label="Main Menu ID">
           <option value=''></option>
         </select>
-      </div>   
+      </div>
     </div>
     <script>
       (function () {
@@ -64,7 +64,7 @@ class template extends TemplateControl {
             if ($widget.attr("id")) {
               var selected = (value === $widget.attr("id")) ? "selected=true" : "";
               $select.append("<option value='" + $widget.attr("id") + "' " + selected + ">" +
-                      $widget.attr("id") + "</option>");
+                  $widget.attr("id") + "</option>");
             }
           });
         }
@@ -78,8 +78,8 @@ class template extends TemplateControl {
         });
 
         template_settings_form.on("refresh", function (e, data) {
-          if (!$("#spw input").is(":checked"))
-          {
+          var spa = $("#spw");
+          if (!spa.is(":checked")) {
             $("#spw-cp :input").attr('disabled', true);
             $("#spw-cp").hide();
           }
@@ -89,9 +89,8 @@ class template extends TemplateControl {
           initSelect("#menu-id", data["menu-id"]);
           initSelect("#page-slider", data["page-slider"]);
 
-          $("#spw").off("change").on("change", function () {
-            if ($("#spw input").is(":checked"))
-            {
+          spa.off("change").on("change", function () {
+            if (spa.is(":checked")) {
               $("#spw-cp :input").attr('disabled', false);
               $("#spw-cp").stop().animate({
                 height: "toggle"
@@ -105,10 +104,7 @@ class template extends TemplateControl {
               $("#spw-cp").stop().fadeOut(200, function () {
                 $("#spw-cp :input").attr('disabled', true);
               });
-
-
             }
-
           });
         });
 

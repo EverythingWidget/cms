@@ -824,6 +824,11 @@ class WidgetsManagement extends \ew\Module {
         $widget_class_name = "webroot\\$widge_class";
         $widget_class_instance = new $widget_class_name();
         $widget_configurator_form .= $widget_class_instance->get_configuration_form();
+      } else if (file_exists(EW_WIDGETS_DIR . '/' . strtolower($widget_path) . "/$widge_class.class.php")) {
+        require_once EW_WIDGETS_DIR . '/' . strtolower($widget_path) . "/$widge_class.class.php";
+        $widget_class_name = "webroot\\$widge_class";
+        $widget_class_instance = new $widget_class_name();
+        $widget_configurator_form .= $widget_class_instance->get_configuration_form();
       } else {
         ob_start();
         include EW_WIDGETS_DIR . '/' . $widget_path . '/admin.php';
