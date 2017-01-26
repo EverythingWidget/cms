@@ -149,7 +149,7 @@
   };
 
   var EWPagination = Vue.extend({
-    template: "<div class=\"ew-pagination\">\r\n  <button class=\"btn btn-circle\" v-bind:disabled=\"from <= 0\" v-on:click=\"previous\">\r\n    <i class=\"icon-left-open-1\"></i>\r\n  </button>\r\n  <p>\r\n    <span class=\"from-till\">{{ from }} - {{ till }}</span>\r\n    <span class=\"of\"> <i class=\"icon-menu\"></i> </span>\r\n    <strong>{{ total }}</strong>\r\n  </p>\r\n  <button class=\"btn btn-circle\" v-bind:disabled=\"disableNext\" v-on:click=\"next\">\r\n    <i class=\"icon-right-open-1\"></i>\r\n  </button>\r\n</div>",
+    template: "<div class=\"ew-pagination\">\n  <button class=\"btn btn-circle\" v-bind:disabled=\"from <= 0\" v-on:click=\"previous\">\n    <i class=\"icon-left-open-1\"></i>\n  </button>\n  <p>\n    <span class=\"from-till\">{{ from }} - {{ till }}</span>\n    <span class=\"of\"> <i class=\"icon-menu\"></i> </span>\n    <strong>{{ total }}</strong>\n  </p>\n  <button class=\"btn btn-circle\" v-bind:disabled=\"disableNext\" v-on:click=\"next\">\n    <i class=\"icon-right-open-1\"></i>\n  </button>\n</div>",
     props: properties,
     compiled: methods.onReady,
     methods: methods,

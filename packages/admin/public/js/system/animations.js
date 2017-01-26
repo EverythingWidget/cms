@@ -89,7 +89,7 @@
   System.spiritAnimations = {
     CONFIG: {
       baseDuration: 0.4,
-      staggerDuration: 0.05
+      staggerDuration: 0.04
     }
   };
 

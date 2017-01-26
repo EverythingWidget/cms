@@ -41,6 +41,11 @@ class Posts extends \ew\Module {
         'title' => 'Posts',
         'url'   => 'html/ew-blog/posts/component.php'
     ]);
+
+    \EWCore::register_ui_element('forms/content/tabs', 'post-publish', [
+        'title' => 'Post',
+        'template_url' => 'ew-blog/html/posts/tab-post-publish.php'
+    ]);
   }
 
   protected function install_permissions() {

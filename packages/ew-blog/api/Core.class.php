@@ -28,7 +28,7 @@ class Core extends \ew\Module {
         "title" => "Event",
         "description" => "Event information",
         "explorer" => "ew-blog/html/core/explorer-event.php",
-        "explorerUrl" => "~ew-blog/html/core/explorer-event.php",
+        "explorerUrl" => "@ew-blog/html/core/explorer-event.php",
         "form" => "ew-blog/html/core/label-event.php"
     ]);
 
@@ -43,11 +43,6 @@ class Core extends \ew\Module {
     $post_feeder = new \ew\WidgetFeeder('post', $this, 'page', 'ew_page_feeder_post');
     $post_feeder->title = 'post';
     \webroot\WidgetsManagement::register_widget_feeder($post_feeder);
-
-    EWCore::register_ui_element('forms/content/tabs', 'post-publish', [
-        'title' => 'Post',
-        'template_url' => 'ew-blog/html/core/tab-post-publish.php'
-    ]);
 
     $this->add_listener('admin/api/content-management/contents-create', 'on_contents_update');
     $this->add_listener('admin/api/content-management/contents-update', 'on_contents_update');

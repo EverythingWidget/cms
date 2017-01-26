@@ -195,7 +195,6 @@
 
     @media (min-width: 992px) {
       height: 360px;
-      margin-bottom: 15px;
       margin-bottom: 0;
     }
 
@@ -379,7 +378,7 @@
 
       .front-image {
         float: left;
-        max-height: 1756x;
+        max-height: 1756px;
         max-width: 200px;
         margin-right: 20px;
       }
@@ -626,7 +625,7 @@
     .item {
       border: 2px solid #222;
       padding: 5px 10px;
-      text-align: justify center;
+      text-align: justify;
       margin: 0 5px 15px;
       border-radius: 2px;
       color: #222;
@@ -828,6 +827,8 @@
         width: 100%;
         max-height: 220px;
         display: block;
+        font-family: 'DastNevis';
+        font-size: 26px;
       }
 
       .person {
@@ -909,7 +910,6 @@
     .text-field {
       width: 100%;
       display: block;
-      border: none;
       padding: 10px 15px;
       background-color: #fff;
       border: 2px solid transparent;
