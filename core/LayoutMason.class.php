@@ -9,10 +9,8 @@ namespace ew;
  */
 abstract class LayoutMason {
 
-//  private $template;
   private $data_keys = [];
   private $title = 'Layout Mason';
-  private $description = '';
 
   public abstract function __construct();
 

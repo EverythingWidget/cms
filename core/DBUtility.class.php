@@ -2,6 +2,8 @@
 
 namespace ew;
 
+use Illuminate\Database\Eloquent\Builder;
+
 class DBUtility {
 
   /**
@@ -20,7 +22,7 @@ class DBUtility {
     return ($stmt->rowCount() > 0) ? $stmt->fetch(\PDO::FETCH_ASSOC) : false;
   }
 
-  public static function filter(\Illuminate\Database\Eloquent\Builder $query, $filter) {
+  public static function filter(Builder $query, $filter) {
     if (is_array($filter['include'])) {
       foreach ($filter['include'] as $value) {
         $query->with($value);
@@ -74,7 +76,6 @@ class DBUtility {
   }
 
   public static function create_table($table, $fields) {
-
     $sql = "CREATE TABLE IF NOT EXISTS `$table` (";
     $pk = '';
 
@@ -91,11 +92,6 @@ class DBUtility {
     $sql .= ") CHARACTER SET utf8 COLLATE utf8_general_ci";
     return $sql;
   }
-
-  private static $TYPES = [
-      'BIGINT'  => 'BIGINT(20)',
-      'BOOLEAN' => 'TINYINT(1)'
-  ];
 
   public static function alter_table($table, $fields, $current_stucture) {
     $new_fields = [];

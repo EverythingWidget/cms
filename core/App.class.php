@@ -83,9 +83,6 @@ class App {
   }
 
   protected function load_assets() {
-//    $app_root = $this->get_root();
-//    $path = EW_PACKAGES_DIR . '/' . $app_root . '/' . $dir;
-
     try {
       $this->read_modules('api/repositories');
       $this->load_and_populate_modules();

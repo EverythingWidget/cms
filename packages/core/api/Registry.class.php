@@ -11,11 +11,15 @@ class Registry extends \ew\Module {
   protected $resource = "api";
 
   public function get_title() {
-    return "EW Core";
+    return 'EW Registry';
+  }
+
+  public function get_description() {
+    return 'Provides list of registered components';
   }
 
   protected function install_assets() {
-    
+
   }
 
   protected function install_permissions() {
@@ -37,10 +41,10 @@ class Registry extends \ew\Module {
     return \EWCore::read_permissions_as_array();
   }
 
-  public function items_read($_response, $key) {
+  public function items_read($_response, $key = '*') {
     $_response->properties['system_version'] = $this->get_app()->get_app_version();
 
-    if (!isset($key)) {
+    if (empty($key)) {
       $key = '*';
     }
 
@@ -49,7 +53,7 @@ class Registry extends \ew\Module {
 
   public function read() {
     return [
-        'title'       => $this->get_title(),
+        'title' => $this->get_title(),
         'description' => $this->get_description()
     ];
   }

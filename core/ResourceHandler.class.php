@@ -13,7 +13,7 @@ namespace ew;
  *
  * @author Eeliya
  */
-class ResourceHandler {
+abstract class ResourceHandler {
 
   private $app;
   private $resource_handler_parameters = [];
@@ -29,9 +29,7 @@ class ResourceHandler {
     return $this->handle($app, $package, $resource_type, $section_name, $method_name, $parameters);
   }
 
-  protected function handle($parent, $package, $resource_type, $section_name, $method_name, $parameters) {
-    
-  }
+  protected abstract function handle($parent, $package, $resource_type, $section_name, $method_name, $parameters);
 
   protected function get_parameter($key) {
     return $this->resource_handler_parameters["_" . $this->handler_class . "_" . $key];

@@ -2,6 +2,8 @@
 
 namespace admin;
 
+use ew\APIResourceHandler;
+use EWCore;
 use Module;
 
 /**
@@ -14,21 +16,22 @@ class Settings extends \ew\Module {
   protected $resource = "api";
 
   protected function install_assets() {
-    \EWCore::register_app_ui_element("settings", $this);
     include_once 'models/ew_settings.php';
 
-    \EWCore::register_form('ew/ui/settings/general', 'ew-admin-settings', [
-        'title'   => "EW Admin",
+    EWCore::register_app_ui_element('settings', $this);
+
+    EWCore::register_ui_element('settings/general', 'ew-admin-settings', [
+        'title'   => 'EW Admin',
         'url'     => 'html/admin/settings/settings-index.php'
     ]);
 
-    \EWCore::register_form('ew/ui/apps/settings/navs', 'general', [
+    EWCore::register_ui_element('apps/settings/navs', 'general', [
         'id'    => 'settings/general',
         'title' => 'tr{General}',
         'url'   => 'html/admin/settings/general.php'
     ]);
 
-    \EWCore::register_form('ew/ui/apps/settings/navs', 'media', [
+    EWCore::register_ui_element('apps/settings/navs', 'media', [
         'id'    => 'settings/preference',
         'title' => 'tr{Preference}',
         'url'   => 'html/admin/settings/preference.php'
@@ -57,20 +60,19 @@ class Settings extends \ew\Module {
   }
 
   public function save_setting($key = null, $value = null) {
-    //$db = \EWCore::get_db_connection();
-    $db_pdo = \EWCore::get_db_PDO();
+    $db_pdo = EWCore::get_db_PDO();
 
     $setting = $db_pdo->prepare('SELECT * FROM `ew_settings` WHERE `key`= ?');
     $setting->execute([$key]);
     $row_count = $setting->rowCount();
 
     if ($row_count > 0) {
-      $db_pdo = \EWCore::get_db_PDO();
+      $db_pdo = EWCore::get_db_PDO();
       $stm = $db_pdo->prepare("UPDATE ew_settings SET value = ? WHERE `key`= ? ");
       return $stm->execute([$value, $key]);
     }
     else {
-      $db_pdo = \EWCore::get_db_PDO();
+      $db_pdo = EWCore::get_db_PDO();
       $stm = $db_pdo->prepare("INSERT INTO ew_settings(`key`, `value`) VALUES(?, ?)");
       return $stm->execute([$key, $value]);
     }
@@ -90,7 +92,7 @@ class Settings extends \ew\Module {
         }
       }
     }
-    return \ew\APIResourceHandler::to_api_response($params, [
+    return APIResourceHandler::to_api_response($params, [
                 "status"  => "success",
                 "message" => "App configurations has been saved succesfully"
     ]);
@@ -108,7 +110,7 @@ class Settings extends \ew\Module {
   }
 
   public function read_setting($key) {
-    $db = \EWCore::get_db_connection();
+    $db = EWCore::get_db_connection();
     if (!$key)
       $key = $db->real_escape_string($_REQUEST["key"]);
     $setting = $db->query("SELECT * FROM ew_settings WHERE `key` = '$key'") or die($db->error);
@@ -152,7 +154,7 @@ class Settings extends \ew\Module {
           status  => "success",
           message => "tr{The language file has been updated successfully}"]);
     }
-    return \EWCore::log_error(400, "Can't find the language file");
+    return EWCore::log_error(400, "Can't find the language file");
   }
 
   public function check_for_updates() {
@@ -170,7 +172,7 @@ class Settings extends \ew\Module {
       //couldn't access Github API
     }
 
-    return \ew\APIResourceHandler::to_api_response($is_up_to_date);
+    return APIResourceHandler::to_api_response($is_up_to_date);
   }
 
   public function do_update() {

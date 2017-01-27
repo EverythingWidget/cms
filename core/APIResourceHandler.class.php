@@ -2,6 +2,8 @@
 
 namespace ew;
 
+use admin\UsersManagement;
+
 /**
  * Description of APIResourceHandler
  *
@@ -120,7 +122,7 @@ class APIResourceHandler extends ResourceHandler {
       $response_data = $app_section_object->process_request($verb, $api_method_name, $parameters);
       $call = true;
     } else if ($permission_id && $permission_id !== false) {
-      if (\admin\UsersManagement::group_has_permission($app_name, $api_method_name, $permission_id, $_SESSION['EW.USER_GROUP_ID'])) {
+      if (UsersManagement::group_has_permission($app_name, $api_method_name, $permission_id, $_SESSION['EW.USER_GROUP_ID'])) {
         $response_data = $app_section_object->process_request($verb, $api_method_name, $parameters);
         $call = true;
       }

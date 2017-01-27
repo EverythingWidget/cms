@@ -2,6 +2,8 @@
 
 namespace webroot;
 
+use ew\DBUtility;
+
 /**
  *
  * @author Eeliya
@@ -12,7 +14,7 @@ class Blocks extends \ew\Module {
 
   protected function install_assets() {
     if (!in_array('ew_layout_blocks', \EWCore::$DEFINED_TABLES)) {
-      $table_install = \EWCore::create_table('ew_layout_blocks', [
+      $table_install = DBUtility::create_table('ew_layout_blocks', [
                   'id'           => 'BIGINT AUTO_INCREMENT PRIMARY KEY',
                   'name'         => 'VARCHAR(300) NULL',
                   'structure'    => 'BLOB NULL',

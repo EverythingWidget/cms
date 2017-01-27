@@ -15,13 +15,9 @@ namespace ew;
  */
 class APIResponse implements \JsonSerializable {
 
-  //put your code here
-
-  private $type = null;
   public $data = [];
   public $properties = [];
   public $downloadable = false;
-  private $links = [];
 
   public function __construct($url) {
     $this->properties = [
@@ -89,7 +85,7 @@ class APIResponse implements \JsonSerializable {
     header("Content-Description: File Transfer");
     header("Content-Length: " . strlen($data['data']) . ";");
     header("Content-Disposition: attachment; filename=\"{$data['name']}\"");
-    header("Content-Type: " + $data['contentType']);
+    header("Content-Type: {$data['contentType']}");
     
     return $this;
   }

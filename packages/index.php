@@ -122,11 +122,10 @@ $resource_types = [
 $resource_type = 'html';
 $app_name = 'webroot';
 if (strpos($elements[$parameter_index], '-') === 0 || strpos($elements[$parameter_index], '@') === 0) {
-//  $app_name = str_replace('-', '', $elements[$parameter_index]);
   $app_name = substr($elements[$parameter_index], 1);
   $parameter_index++;
 
-  if (count($elements) > 3 && $elements[$parameter_index]) {
+  if (count($elements) >= 3 && $elements[$parameter_index]) {
     $resource_type = $elements[$parameter_index];
     $parameter_index++;
   }

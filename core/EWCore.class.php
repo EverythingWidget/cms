@@ -1,39 +1,35 @@
 <?php
 
-//require 'config.php';
-
 /**
  * Core functions of EW have been ddefined in this class
  *
  * @author Eeliya
  */
 class EWCore {
-
+  public static $DB = null;
+  public static $languages;
+  public static $EW_CONTENT_COMPONENT = 'ew-content-component';
+  public static $EW_APP = 'ew-app';
+  public static $APPS = [];
+  public static $DEFINED_TABLES = [];
+  public static $CACHED_APPS = [];
   private $apps_root;
   private $request;
-  private static $registry = array();
-  private static $action_registry;
-  private static $permissions_groups = array();
-  private static $no_permission_needed = array();
+  private static $registry = [];
+  private static $action_registry = [];
+  private static $permissions_groups = [];
+  private static $no_permission_needed = [];
   private static $loaders_installed = false;
   private static $plugins_initialized = false;
   private static $db_connection = null;
+  private static $CACHED_API_CALL_RESULTS = [];
   private $current_method_args;
-  public static $DB = null;
-  public static $languages;
-  public static $EW_CONTENT_COMPONENT = "ew-content-component";
-  public static $EW_APP = "ew-app";
-  public static $APPS = [];
-  public static $DEFINED_TABLES = [];
 
   public function __construct() {
     static::$languages = include('../config/languages.php');
     $this->apps_root = EW_PACKAGES_DIR . '/';
     $this->request = $_REQUEST;
-    spl_autoload_register(array(
-        $this,
-        'autoload_core'
-    ));
+    spl_autoload_register([$this, 'autoload_core']);
   }
 
   public function load_vendors() {
@@ -109,11 +105,9 @@ class EWCore {
 
   public static function call_api($url, $parameters = [], $verb = 'GET') {
     $parts = explode('/', $url);
-    $params = array_merge(/* $_REQUEST, */
-        [
-            '_file' => implode('/', array_slice($parts, 3))
-        ], $parameters);
-
+    $params = array_merge([
+        '_file' => implode('/', array_slice($parts, 3))
+    ], $parameters);
     ksort($params);
 
     $params['_APIResourceHandler_output_array'] = true;
@@ -122,14 +116,11 @@ class EWCore {
     return static::process_request_command($parts[0], $parts[1], $parts[2], $parts[3], $params);
   }
 
-  private static $CACHED_API_CALL_RESULTS = [];
-
   public static function call_cached_api($url, $parameters = [], $verb = 'GET') {
     $parts = explode('/', $url);
-    $params = array_merge(/* $_REQUEST, */
-        [
-            '_file' => implode('/', array_slice($parts, 3))
-        ], $parameters);
+    $params = array_merge([
+        '_file' => implode('/', array_slice($parts, 3))
+    ], $parameters);
 
     ksort($params);
 
@@ -146,35 +137,27 @@ class EWCore {
     return static::$CACHED_API_CALL_RESULTS[$cached_resource_id];
   }
 
-  public static $CACHED_APPS = [];
-
   public static function process_request_command($package, $resource_type, $module_name, $method_name, $parameters) {
-    if (!$package /* || !$section_name || !$function_name */) {
+    if (!$package) {
       $response_data = EWCore::log_error(400, "Wrong command");
       return json_encode($response_data);
     }
 
-    //echo " $app_name  $section_name  $function_name";
-    //$app_namespace = explode('/', $package);
     $real_class_name = str_replace('-', '_', $package) . '\\App';
-    //echo $real_class_name;
-    $parameters["_app_name"] = $package;
-    $parameters["_resource_type"] = $resource_type;
-    $parameters["_module_name"] = $module_name;
-    $parameters["_method_name"] = $method_name;
-    $parameters["_parts"] = array_slice(explode('/', $parameters["_file"]), 1);
+    $parameters['_app_name'] = $package;
+    $parameters['_resource_type'] = $resource_type;
+    $parameters['_module_name'] = $module_name;
+    $parameters['_method_name'] = $method_name;
+    $parameters['_parts'] = array_slice(explode('/', $parameters['_file']), 1);
 
-
-    if ($module_name == "EWCore") {
+    if ($module_name == 'EWCore') {
       $EW = new \EWCore();
       $response_data = $EW->process($parameters);
     } else {
       if (isset(static::$APPS[$real_class_name])) {
         $response_data = static::get_app($real_class_name)->process_command($package, $resource_type, $module_name, $method_name, $parameters);
       } else if (class_exists($real_class_name)) {
-        // Create an instance of section with its parent App
-        $app_object = new $real_class_name;
-        $response_data = $app_object->process_command($package, $resource_type, $module_name, $method_name, $parameters);
+        $response_data = (new $real_class_name)->process_command($package, $resource_type, $module_name, $method_name, $parameters);
       } else {
         return \EWCore::log_error(404, "App not found,Requested app `$package`, not found");
       }
@@ -225,7 +208,7 @@ class EWCore {
    * Function to import SQL for a given $file
    */
 
-  public static function import_sql($file, $database_name = "", $delimiter = ';') {
+  public static function import_sql($file) {
     $database_config = include(EW_ROOT_DIR . '/config/database.php');
     if (!$database_config['database']) {
       die("Please configure the /config/database.php");
@@ -475,7 +458,6 @@ class EWCore {
       $db->query("INSERT INTO ew_settings(`key`, `value`) VALUES('$key','$value')") or die($db->error);
       return TRUE;
     }
-    return FALSE;
   }
 
   public function save_settings($params) {
@@ -513,26 +495,22 @@ class EWCore {
   public static function read_setting($key) {
     $db = \EWCore::get_db_connection();
     if (!$key)
-      $key = $db->real_escape_string($_REQUEST["key"]);
+      $key = $db->real_escape_string($_REQUEST['key']);
     $setting = $db->query("SELECT * FROM ew_settings WHERE `key` = '$key'") or die($db->error);
 
     while ($r = $setting->fetch_assoc()) {
-      return $r["value"];
+      return $r['value'];
     }
 
-    //$out = array("totalRows" => $setting->num_rows, "result" => $rows);
     return FALSE;
   }
 
   public static function init_packages() {
-    if (!self::$loaders_installed) {
-      self::$loaders_installed = true;
-    }
+    self::$loaders_installed = true;
 
     if (self::$plugins_initialized) {
       return;
     }
-
     self::$plugins_initialized = true;
 
     $apps_dirs = scandir(EW_PACKAGES_DIR);
@@ -559,7 +537,6 @@ class EWCore {
     }
 
     foreach (self::$APPS as $key => $app) {
-      //      echo $key.'<br/>';
       $app->init_app();
     }
   }
@@ -1230,7 +1207,6 @@ class EWCore {
   }
 
   public static function register_permission($app_pack_name, $module_name, $id, $app_title, $section_title, $description, $permissions = array()) {
-    $permission_group = "$app_pack_name.$module_name";
     if (!array_key_exists($app_pack_name, self::$permissions_groups)) {
       self::$permissions_groups[$app_pack_name] = array(
           "appTitle" => $app_title,
@@ -1310,12 +1286,9 @@ class EWCore {
                   $resource_name = $parts[0];
                   $method_name = $parts[1];
 
-                  $title = $method_name;
-
                   if (strpos($method_name, ':')) {
                     $temp = explode(':', $method_name, 2);
                     $method_name = $temp[0];
-                    $title = $temp[1];
                   }
 
                   $is_form = (strpos($method_name, '.php') && $method_name !== "index.php") ? true : false;
@@ -1370,9 +1343,9 @@ class EWCore {
 
   /**
    *
-   * @param type $registry_id registery id
-   * @param type $id id of current item
-   * @param type $object
+   * @param String $registry_id registery id
+   * @param String $id id of current item
+   * @param array $object
    */
   public static function register_object($registry_id, $id, $object = array()) {
     if (!array_key_exists($registry_id, self::$registry)) {
@@ -1421,6 +1394,7 @@ class EWCore {
     $result = [];
     foreach ($properties as $property => $data) {
       $data['__registry_id'] = $property;
+      ksort($data);
       $result[] = $data;
     }
 
@@ -1428,7 +1402,7 @@ class EWCore {
   }
 
   public static function read_registry_as_json($name, $option = 0) {
-    return json_encode(static::read_registry_as_array($name, $option));
+    return json_encode(static::read_registry_as_array($name));
   }
 
   public static function get_registry($_parts) {
@@ -1454,7 +1428,7 @@ class EWCore {
     return self::$permissions_groups;
   }
 
-  public static function read_public_activities_as_array($module) {
+  public static function read_public_activities_as_array() {
     EWCore::init_packages();
 
     return self::$permissions_groups;
@@ -1505,12 +1479,9 @@ class EWCore {
    * @return mixed <b>FALSE</B> if there is no need for any permission or <b>permissionId</b> if there is need for permission
    */
   public static function does_need_permission($app_name, $module_name = null, $method_name = null) {
-    //    EWCore::init_packages();
-
     if (isset(self::$no_permission_needed["$app_name/$module_name"]) && in_array($method_name, self::$no_permission_needed["$app_name/$module_name"])) {
       return "public-access";
     }
-
 
     $pers = isset(self::$permissions_groups[$app_name]) ? self::$permissions_groups[$app_name]["section"] : false;
 
@@ -1521,8 +1492,6 @@ class EWCore {
     if ($pers) {
       $pers = $pers[$module_name]["permission"];
     }
-    //    print_r($pers);
-    //$permissions_titles = array();
 
     $result = array();
     $flag = false;
@@ -1530,13 +1499,9 @@ class EWCore {
       foreach ($pers as $key => $value) {
 
         foreach ($value["methods"] as $method) {
-          //echo $method." -> $method_name<br>";
-          //if(strpos(':', $method))
-          //explode(':', $method);
           if ($method_name === $method) {
             $result[] = $key;
             $flag = true;
-            //return $key;
           }
         }
       }
@@ -1549,7 +1514,7 @@ class EWCore {
   }
 
   public static function register_app_ui_element($id, $object) {
-    return static::register_ui_element('apps', $id, [
+    static::register_ui_element('apps', $id, [
         "title" => "tr:{$object->get_app()->get_root()}" . "{" . $object->get_title() . "}",
         "id" => EWCore::camelToHyphen($object->get_section_name()),
         "url" => 'html/' . $object->get_app()->get_root() . '/' . EWCore::camelToHyphen($object->get_section_name()) . '/index.php',
@@ -1615,7 +1580,7 @@ class EWCore {
     $selectors = array();
 
     //Run the second regex pattern on $stripped input
-    $matches = preg_match_all($pattern_two, $file, $selectors);
+    preg_match_all($pattern_two, $file, $selectors);
     //Show the results
     asort($selectors[0]);
     return json_encode(array_unique($selectors[0]));
@@ -1639,7 +1604,7 @@ class EWCore {
     $selectors = array();
 
     //Run the second regex pattern on $stripped input
-    $matches = preg_match_all($pattern_two, $file, $selectors);
+    preg_match_all($pattern_two, $file, $selectors);
     //Show the results
     asort($selectors[0]);
 
@@ -1654,7 +1619,7 @@ class EWCore {
 
   //put your code here
 
-  public function save_app_config($assoc_arr, $app_dir, $has_sections = FALSE) {
+  public function save_app_config($assoc_arr, $app_dir) {
     if (!isset($assoc_arr)) {
       $assoc_arr = $_REQUEST["params"];
     }
@@ -1783,7 +1748,6 @@ class EWCore {
       return $match[2];
     }
     $source_app_name = self::$apps_locales;
-    $not_translated = array();
     if ($match[1]) {
       $source_app_name = substr($match[1], 1);
     }
@@ -1928,7 +1892,6 @@ class EWCore {
   }
 
   public static function testy($path) {
-    echo var_dump($_REQUEST);
     return var_dump(static::call($path));
   }
 
@@ -1943,22 +1906,6 @@ class EWCore {
     }
 
     file_put_contents("$dir$file", $contents);
-  }
-
-  public static function create_table($table, $fields) {
-
-    $sql = "CREATE TABLE IF NOT EXISTS `$table` (";
-    $pk = '';
-
-    foreach ($fields as $field => $type) {
-      $sql .= "`$field` $type,";
-    }
-
-    $sql = rtrim($sql, ',') /* . ', PRIMARY KEY (`' . $pk . '`)' */
-    ;
-
-    $sql .= ") CHARACTER SET utf8 COLLATE utf8_general_ci";
-    return $sql;
   }
 
   public static function prepare_database_model($table, $fields) {

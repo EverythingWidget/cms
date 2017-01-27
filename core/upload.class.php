@@ -4735,5 +4735,3 @@ class upload {
         return true;
     }
 }
-
-?>

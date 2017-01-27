@@ -8,6 +8,8 @@
 
 namespace ew_blog;
 
+use ew\DBUtility;
+
 /**
  * Description of Subscribers
  *
@@ -23,7 +25,7 @@ class Subscribers extends \ew\Module {
 
   protected function install_assets() {
     if (!in_array('ew_blog_subscribers', \EWCore::$DEFINED_TABLES)) {
-      $table_install = \EWCore::create_table('ew_blog_subscribers', [
+      $table_install = DBUtility::create_table('ew_blog_subscribers', [
                   'id'           => 'BIGINT AUTO_INCREMENT PRIMARY KEY',
                   'email'        => 'VARCHAR(255) NOT NULL UNIQUE',
                   'options'      => 'TEXT NULL',

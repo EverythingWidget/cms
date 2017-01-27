@@ -2,6 +2,7 @@
 
 namespace admin;
 
+use ew\DBUtility;
 use EWCore;
 
 /**
@@ -36,7 +37,7 @@ class ContentManagement extends \ew\Module {
     require_once 'asset/LanguageComponent.class.php';
 
     if (!in_array('ew_tags', \EWCore::$DEFINED_TABLES)) {
-      $ew_tags_table_install = EWCore::create_table('ew_tags', [
+      $ew_tags_table_install = DBUtility::create_table('ew_tags', [
           'id' => 'BIGINT(20) AUTO_INCREMENT PRIMARY KEY',
           'name' => 'VARCHAR(256) NOT NULL',
           'date_created' => 'DATETIME NOT NULL',
@@ -52,7 +53,7 @@ class ContentManagement extends \ew\Module {
     }
 
     if (!in_array('ew_contents_tags', \EWCore::$DEFINED_TABLES)) {
-      $ew_contents_tags_table_install = EWCore::create_table('ew_contents_tags', [
+      $ew_contents_tags_table_install = DBUtility::create_table('ew_contents_tags', [
           'id' => 'BIGINT(20) AUTO_INCREMENT PRIMARY KEY',
           'content_id' => 'BIGINT(20) NOT NULL',
           'tag_id' => 'BIGINT(20) NOT NULL',

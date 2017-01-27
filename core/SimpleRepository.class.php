@@ -1,19 +1,15 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 namespace ew;
 
+use SimpleValidator\Validator;
 /**
  * Description of UsersGroupsRepository
  *
  * @author Eeliya
  */
-class SimpleRepository implements \ew\CRUDRepository {
+class SimpleRepository implements CRUDRepository {
 
   protected $path_to_model = '';
   protected $model_name = '';
@@ -26,9 +22,9 @@ class SimpleRepository implements \ew\CRUDRepository {
   }
 
   public function create($input) {
-    $result = new \ew\Result();
+    $result = new Result();
     $class_name = $this->model_name;
-    $validation_result = \SimpleValidator\Validator::validate((array) $input, $class_name::$RULES);
+    $validation_result = Validator::validate((array) $input, $class_name::$RULES);
 
     if ($validation_result->isSuccess() !== true) {
       $result->error = 400;
@@ -66,7 +62,7 @@ class SimpleRepository implements \ew\CRUDRepository {
   }
 
   public function delete($input) {
-    $result = new \ew\Result();
+    $result = new Result();
     $class_name = $this->model_name;
 
     $result->message = $this->name . ' has been deleted';
@@ -95,7 +91,7 @@ class SimpleRepository implements \ew\CRUDRepository {
   /**
    * 
    * @param \stdClass $input
-   * @return \ew\Result
+   * @return Result
    */
   public function read($input) {
     if (isset($input->id)) {
@@ -108,13 +104,13 @@ class SimpleRepository implements \ew\CRUDRepository {
   /**
    * 
    * @param \stdClass $input
-   * @return \ew\Result
+   * @return Result
    */
   public function update($input) {
-    $result = new \ew\Result();
+    $result = new Result();
     $class_name = $this->model_name;
 
-    $validation_result = \SimpleValidator\Validator::validate((array) $input, $class_name::$RULES);
+    $validation_result = Validator::validate((array) $input, $class_name::$RULES);
 
     if (!$validation_result->isSuccess()) {
       $result->error = 400;
@@ -154,9 +150,9 @@ class SimpleRepository implements \ew\CRUDRepository {
 
     $query = $class_name::select();
 
-    \ew\DBUtility::filter($query, $filter);
+    DBUtility::filter($query, $filter);
 
-    $result = new \ew\Result();
+    $result = new Result();
 //die($query->toSql());
     $result->total = $query->get()->count();
     $result->page = intval($page);
@@ -175,7 +171,7 @@ class SimpleRepository implements \ew\CRUDRepository {
   }
 
   public function find_by_id($id) {
-    $result = new \ew\Result();
+    $result = new Result();
     $class_name = $this->model_name;
 
     $data = $class_name::find($id);

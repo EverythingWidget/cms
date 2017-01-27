@@ -9,17 +9,13 @@ namespace ew;
  */
 class Module {
 
-  var $sectionName;
   protected $resource = null;
-  var $pageTitles;
-  var $page;
-  var $command;
+  protected $pre_processors = [];
+  protected $unauthorized_method_invoke = false;
   public $pageTitle;
   private $app;
   private $current_class;
   private $current_method_args;
-  protected $pre_processors = [];
-  protected $unauthorized_method_invoke = false;
   private $permissions = [];
 
   /**
@@ -205,7 +201,7 @@ class Module {
 
   /**
    * 
-   * @param ew\PreProcess $preProcessObj An instance of pre process object
+   * @param PreProcess $preProcessObj An instance of pre process object
    */
   public function registerPreProcesser($preProcessObj) {
     
@@ -242,14 +238,6 @@ class Module {
 
   function getPageTitle() {
     return $this->pageTitle;
-  }
-
-  function getContent() {
-    global $HOST_ROOT_DIR;
-    if ($this->page)
-      return $this->sectionName . '/' . $this->page;
-    else
-      return $this->sectionName . '/index.php';
   }
 
   public function get_param($param) {
@@ -367,26 +355,5 @@ class Module {
       $db->query("INSERT INTO ew_settings(`key`, `value`) VALUES('$app_root/$key','$value')") or die($db->error);
       return TRUE;
     }
-    return FALSE;
   }
-
-  /* protected function save_settings($params)
-    {
-    //$db = \EWCore::get_db_connection();
-    if (!$params)
-    return \EWCore::log_error(400, "Please specify the paramaters");
-    $params = json_decode($params, TRUE);
-    foreach ($params as $key => $value)
-    {
-    //echo $key . " " . $value;
-    if (!$this->save_setting($key, $value))
-    return \EWCore::log_error(400, "The configuration has not been saved", ["key" => $key,
-    "value" => $value]);
-    }
-    }
-
-    public static function read_settings()
-    {
-    return \EWCore::read_settings($this->app->get_root());
-    } */
 }
