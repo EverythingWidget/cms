@@ -14,7 +14,7 @@ $font-akcent-color: #00a651;
 /*$font-akcent-color: #0599EF;*/
 /*$font-akcent-color-dark: #0C81C5;*/
 $font-akcent-color-dark: #04C160;
-$nav-bar-bg: rgba(255,255,255,.9);
+$nav-bar-bg: rgba(255, 255, 255, .9);
 
 @import 'blocks.scss';
 @import 'panels.scss';
@@ -34,26 +34,12 @@ $nav-bar-bg: rgba(255,255,255,.9);
   .panel {
     &.article {
       background-color: #fff;
-      padding: 0;      
+      padding: 0;
       padding-bottom: 20px;
-      background-clip: padding-box; 
-      overflow: hidden;      
+      background-clip: padding-box;
+      overflow: hidden;
       font-size: 16px;
-      box-shadow: 0 3px 5px rgba(0,0,0,.1), 0 8px 14px rgba(0,0,0,.14); 
-
-/*      &:before {
-        content: ' ';
-        display: block;
-        width: 100%;
-        top: 0;
-        left: 0;
-        height: 125px;
-        background-image: url('../templates/orange-milk/images/bible-text.jpg');
-        background-repeat: no-repeat;
-        background-size: cover;
-        background-position: center center;
-        position: absolute;
-      }*/
+      box-shadow: 0 10px 35px rgba(0,0,0,0.12);
 
       .widget-container, .widget {
         padding: 0;
@@ -64,7 +50,7 @@ $nav-bar-bg: rgba(255,255,255,.9);
       .widget {
         padding: 0 30px;
 
-      }     
+      }
 
       img {
         max-width: 100%;
@@ -140,13 +126,13 @@ $nav-bar-bg: rgba(255,255,255,.9);
         line-height: 40px;
         padding: 15px 0;
         margin: 15px 0;
-      } 
+      }
     }
   }
 }
 
 @media (min-width: 992px) {
-  .panel{
+  .panel {
     &.article {
       width: 860px;
       padding-bottom: 60px;
@@ -170,9 +156,10 @@ $nav-bar-bg: rgba(255,255,255,.9);
 
   .panel {
     &.article {
-      width: 860px;  
+      width: 860px;
 
-      .widget { }
+      .widget {
+      }
     }
   }
 }
@@ -201,7 +188,7 @@ body {
 .panel {
   display: block;
 
-  &:before, &:after{
+  &:before, &:after {
     content: " ";
     display: table;
   }
@@ -253,7 +240,7 @@ body {
   display: block;
 }
 
-.block-row:before,.block-row:after{
+.block-row:before, .block-row:after {
   content: " ";
   display: table;
 }
@@ -270,7 +257,7 @@ body {
   text-align: left;
 }
 
-.text-right{
+.text-right {
   text-align: right;
 }
 
@@ -282,18 +269,21 @@ body {
   background-color: transparent;
   border-radius: 6px;
   line-height: 30px;
-  padding: 15px 60px;
-  margin: 0 auto;
-  font-size: 1.1em;
+  padding: 15px 20px;
+  margin: 90px auto 0;
+  font-size: 1.23em;
   color: $font-akcent-color;
   display: inline-block;
-  margin-top: 35px;
-  border: 2px solid $font-akcent-color;
+  border: 0;
+  cursor: pointer;
   transition: all .3s;
 
   &:hover {
-    background-color: $font-akcent-color;
-    color:#fff;
+    background-color: rgba($font-akcent-color, .2);
+  }
+
+  &:active {
+    background-color: rgba($font-akcent-color, .4);
   }
 
   &:disabled {

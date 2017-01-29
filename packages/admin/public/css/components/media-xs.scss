@@ -4,7 +4,7 @@
     display: flex;
     align-items: center;
     float: right;
-    height: 64px;
+    height: 65px;
     padding: 15px;
     flex-direction: row-reverse;    
 
@@ -45,7 +45,6 @@
       right: 0;
       top: 0;
       z-index: 1;
-      padding: 6px 0;
       text-align: right;
       opacity: 0;
       padding: 55px 0 0 0;    
@@ -312,7 +311,7 @@
     left: 0;
     top: 0;
     /*box-shadow: 0 1px 3px 0px rgba(0,0,0,0.07), 1px 3px 8px rgba(0,0,0,0.08);*/
-    box-shadow: 1px 0 3px rgba(0,0,0,.06) , 4px 0 17px rgba(0,0,0,.12);
+    box-shadow: 4px 0 35px rgba(0,20,50,.06);
     z-index: 2;
     float: left;
     display: flex;

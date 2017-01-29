@@ -4,17 +4,22 @@
   </form>
 </system-spirit>
 
-<script  type="text/javascript">
+<script type="text/javascript">
+  var service = Scope.import('html/admin/settings/service.php');
 
   function SettingsStateHandler(state, scope) {
     var handler = this;
     scope = scope || Scope;
 
+    state.onInit = function () {
+      loadAppsGeneralSettings(<?= json_encode(EWCore::read_registry('ew/ui/settings/general')) ?>);
+    };
+
     state.onStart = function () {
       this.saveSettings = EW.addActionButton({
         text: '<i class="icon-check"></i>',
         handler: function () {
-          saveAppSetings([
+          saveAppSettings([
             "webroot"
           ]);
         },
@@ -30,20 +35,13 @@
         class: 'btn-float priority-1 btn-primary',
         parent: System.ui.components.appMainActions
       });
-
-      if (!handler.appsLoaded) {
-        loadAppsGeneralSettings(<?= json_encode(EWCore::read_registry('ew/ui/settings/general')) ?>);
-      }
-
-      handler.appsLoaded = true;
     };
 
     function loadAppsGeneralSettings(apps) {
-      var settingsCard = $('#settings-cards');
+      var settingsCard = Scope.html.find('#settings-cards');
       settingsCard.empty();
-      $.get('api/admin/settings/read-settings', function (response) {
-        success(response.data);
-      });
+
+      service.readGeneralSettings().success(success);
 
       function success(data) {
         for (var app in apps) {
@@ -53,18 +51,16 @@
 
           $.get(apps[app].url, function (response) {
             settingsCard.append(response);
-            EW.setFormData('#settings-cards', data);
+            EW.setFormData(settingsCard, data);
           });
         }
       }
     }
 
-    function saveAppSetings(apps) {
+    function saveAppSettings(apps) {
       var data = $('#settings-cards').serializeJSON();
 
-      $.post('api/admin/settings/save-settings', {
-        params: data
-      }, function (response) {
+      service.saveSettings(data).success(function (response) {
         System.ui.components.body.EW().notify(response).show();
       });
     }

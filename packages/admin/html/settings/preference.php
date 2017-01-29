@@ -1,29 +1,28 @@
-<?php
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-?>
-<div class="card z-index-1 center-block col-lg-9 col-md-10 col-xs-12">
-  <div  class='card-header'>
-    <div class="card-title-action"></div>
-    <div class="card-title-action-right"></div>
-    <h1>
-      Preference
-    </h1>
-  </div>
+<system-spirit animations="verticalShift" vertical-shift="card">
+  <form id="preference-cards">
 
-  <div class='card-content'>
-    <h2>
-      Under development
-    </h2>
-  </div>
-</div>
-<script  type="text/javascript">
-  (function () {
-    System.state("settings/preference", function () {
+  </form>
+</system-spirit>
 
-    });
-  })();
+<script type="text/javascript">
+  function Preference(state) {
+    var _this = this;
+
+    state.onStart = function () {
+      this.refresh = EW.addActionButton({
+        text: '<i class="icon-cw-1"></i>',
+        handler: function () {
+          _this.load(<?= json_encode(EWCore::read_registry('ew/ui/settings/preference')) ?>);
+        },
+        class: 'btn-float priority-1 btn-primary',
+        parent: System.ui.components.appMainActions
+      });
+    }
+  }
+
+  Preference.prototype.load = function () {
+
+  };
+
+  System.newStateHandler(Scope, Preference);
 </script>

@@ -176,7 +176,7 @@
       data: {
         upParentId: 0,
         parentId: 0,
-        card_title: 'tr{Contents}',
+        card_title: 'tr{Documents}',
         folders: {
           url: 'api/admin/content-management/contents-folders/',
           page_size: 12
@@ -459,7 +459,7 @@
       parent_id: component.parentId,
       page_size: component.ui.folders_card_vue.folders.page_size
     }, function (response) {
-      component.ui.folders_card_vue.card_title = response.parent ? response.parent.title : "tr{Contents}";
+      component.ui.folders_card_vue.card_title = response.parent ? response.parent.title : 'tr{Documents}';
 
       if (response.parent) {
         component.upParentId = response.parent.parent_id;
