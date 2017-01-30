@@ -2,6 +2,7 @@
 
 namespace admin;
 
+use ew\DBUtility;
 use EWCore;
 
 class UsersManagement extends \ew\Module {

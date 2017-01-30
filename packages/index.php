@@ -36,7 +36,7 @@ define('EW_CACHE_DIR', EW_ROOT_DIR . EW_CACHE_PATH);
 define('EW_PACKAGES_DIR', EW_ROOT_DIR . '/packages');
 define('EW_TEMPLATES_DIR', EW_ROOT_DIR . '/packages/rm/public/templates');
 define('EW_WIDGETS_DIR', EW_ROOT_DIR . '/widgets');
-define('EW_MEDIA_DIR', EW_ROOT_DIR . 'packages/rm/public/media');
+define('EW_MEDIA_DIR', EW_ROOT_DIR . '/packages/rm/public/media');
 define('HOST_URL', 'http://' . $_SERVER['SERVER_NAME']);
 
 

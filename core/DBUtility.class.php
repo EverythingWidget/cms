@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 class DBUtility {
 
   /**
-   * 
+   *
    * @param \PDO $pdo
    * @param String $table_name
    * @param int $id
@@ -47,8 +47,7 @@ class DBUtility {
             default :
               $query->where($key, $type, $value[$type]);
           }
-        }
-        else {
+        } else {
           $query->where($key, $value);
         }
       }
@@ -87,7 +86,8 @@ class DBUtility {
       }
     }
 
-    $sql = rtrim($sql, ',') /* . ', PRIMARY KEY (`' . $pk . '`)' */;
+    $sql = rtrim($sql, ',') /* . ', PRIMARY KEY (`' . $pk . '`)' */
+    ;
 
     $sql .= ") CHARACTER SET utf8 COLLATE utf8_general_ci";
     return $sql;
@@ -115,8 +115,7 @@ class DBUtility {
           if ($old_type === $type) {
             $status = 'same';
             $new_fields[] = $field;
-          }
-          elseif ($old_field['Field'] === $field && $old_type !== $type) {
+          } elseif ($old_field['Field'] === $field && $old_type !== $type) {
             $sql .= "MODIFY COLUMN `$field` $type,";
             $status = 'modify';
             $new_fields[] = $field;
@@ -130,13 +129,12 @@ class DBUtility {
     }
 
 
-
     $sql = rtrim($sql, ',');
 
     return $sql;
   }
 
-  public static function get_table_structre($table) {
+  public static function get_table_structure($table) {
     $PDO = \EWCore::get_db_PDO();
 
     $statement = $PDO->prepare("DESCRIBE $table");
@@ -149,6 +147,25 @@ class DBUtility {
     $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
     return $result;
+  }
+
+  public static function get_table_signature($table) {
+    $PDO = \EWCore::get_db_PDO();
+
+    $statement = $PDO->prepare("DESCRIBE $table");
+
+    if (!$statement->execute()) {
+      return false;
+    }
+
+    $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
+    $field_signatures = [];
+
+    foreach ($result as $index => $config) {
+      $field_signatures[] = strtolower(implode(' ', $config));
+    }
+
+    return $field_signatures;
   }
 
   public static function get_tables($database) {
@@ -164,5 +181,4 @@ class DBUtility {
 
     return $result;
   }
-
 }

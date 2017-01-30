@@ -1909,7 +1909,9 @@ class EWCore {
   }
 
   public static function prepare_database_model($table, $fields) {
-    $table_structure = ew\DBUtility::get_table_structre($table);
+    $table_structure = ew\DBUtility::get_table_structure($table);
+    var_dump($table_structure);
+    die();
     if ($table_structure === false) {
       //      $PDO = static::get_db_PDO();
       //      $table_statement = ew\DBUtility::create_table($table, $fields);
