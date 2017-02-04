@@ -86,17 +86,6 @@ class AppsManagement extends \ew\Module {
     return json_encode($apps);
   }
 
-  /**
-   * 
-   * @param array $form_config [optional] <p>An array that contains content form configurations.<br/>
-   * the keys are: <b>title</b>, <b>saveActivity</b>, <b>updateActivity</b>, <b>data</b>
-   * </p>
-   * @return string
-   */
-  public static function create_section_main_form($form_config = null) {
-    return \EWCore::load_file('admin/html/apps-management/section-main-form.php', $form_config);
-  }
-
   public function get_description() {
     return "Your app's Control Panel";
   }

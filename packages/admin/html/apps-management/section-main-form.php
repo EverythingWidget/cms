@@ -13,4 +13,4 @@ if (isset($app_main_form) && $form_config) {
   ?>
 
 <?php
-echo $app_main_form["script"];
+echo $app_main_form['script'];

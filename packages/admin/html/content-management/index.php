@@ -1,7 +1,5 @@
 <?php
 session_start();
-
-echo admin\AppsManagement::create_section_main_form();
 ?>
 <script>
   System.entity('services/media_chooser', {
