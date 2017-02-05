@@ -91,16 +91,16 @@ class ContentManagement extends \ew\Module {
         "form" => 'admin/html/content-management/documents/label-language.php'
     ]);
 
-    EWCore::register_ui_element('apps/contents/navs', "documents", [
+    EWCore::register_ui_element('apps/contents/navs', 'documents', [
         'id' => 'content-management/documents',
         'title' => 'Documents',
         'url' => 'html/admin/content-management/documents/component.php'
     ]);
 
-    EWCore::register_ui_element('apps/contents/navs', "media", [
+    EWCore::register_ui_element('apps/contents/navs', 'media', [
         'id' => 'content-management/media',
         'title' => 'Media',
-        'url' => 'html/admin/content-management/media/index.php'
+        'url' => 'html/admin/content-management/media/component.php'
     ]);
 
     EWCore::register_ui_element('forms/content/tabs', 'properties', [

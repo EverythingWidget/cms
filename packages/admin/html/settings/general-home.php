@@ -7,6 +7,10 @@
 <script type="text/javascript">
   var service = Scope.import('html/admin/settings/service.php');
 
+  Scope.export = SettingsStateHandler;
+
+  System.newStateHandler(Scope, SettingsStateHandler);
+
   function SettingsStateHandler(state, scope) {
     var handler = this;
     scope = scope || Scope;
@@ -20,7 +24,7 @@
         text: '<i class="icon-check"></i>',
         handler: function () {
           saveAppSettings([
-            "webroot"
+            'webroot'
           ]);
         },
         class: 'btn-float btn-success',
@@ -49,8 +53,8 @@
             continue;
           }
 
-          $.get(apps[app].url, function (response) {
-            settingsCard.append(response);
+          System.loadModule({url: apps[app].url}, function (module) {
+            settingsCard.append(module.html);
             EW.setFormData(settingsCard, data);
           });
         }
@@ -65,6 +69,4 @@
       });
     }
   }
-
-  System.newStateHandler(Scope, SettingsStateHandler);
 </script>

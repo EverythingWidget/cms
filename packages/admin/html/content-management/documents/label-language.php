@@ -99,11 +99,6 @@
       }
     });
 
-
-//    $("#{{comp_id}}_select").on("change", function () {
-//      $("#{{comp_id}}_value").val($("#{{comp_id}}_select").val());
-//    });
-
     $("#$php.form_id").on('refresh', function (e, response) {
       var documentId = response.id;
       languagesLabelVue.contentId = documentId;

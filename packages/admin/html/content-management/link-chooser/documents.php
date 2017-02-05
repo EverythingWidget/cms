@@ -24,7 +24,7 @@
       //$("#documents-up-btn").click($.proxy(this.preCategory, this));
       this.bUp = EW.addActionButton({
         text: "<i class='icon-left-open-1'></i>",
-        handler: $.proxy(this.preCategory, this),
+        handler: $.proxy(this.goUp, this),
         parent: Scope.html.find('#content-chooser-actions-bar'),
         float: 'right'
       }).hide();
@@ -49,7 +49,7 @@
       this.listFilesAndFolders(this.parentId);
     }
 
-    LinkChooserDocuments.prototype.preCategory = function () {
+    LinkChooserDocuments.prototype.goUp = function () {
       this.listFilesAndFolders(this.preParentId);
     };
 

@@ -1,18 +1,18 @@
 <system-ui-view module="content-management/documents" name="folders-card" class="card card-big center-block z-index-1">
-  <div  class='card-header'
-        v-bind:data-content-id="upParentId"
-        v-on:drop="moveItem"
-        v-on:dragover="isAllowed">
+  <div class='card-header'
+       v-bind:data-content-id="upParentId"
+       v-on:drop="moveItem"
+       v-on:dragover="isAllowed">
     <div class="card-title-action">
       <button type="button" class="btn btn-circle"
-              transition="slide"              
+              transition="slide"
               v-if="parentId"
               v-on:click="goUp()"><i class="icon-left-open-1"></i></button>
     </div>
 
     <div class="card-title-action-right"></div>
 
-    <h1> {{ card_title }} </h1>
+    <h1 v-bind:class="{'inline-loader': loading}"> {{ card_title }} </h1>
   </div>
 
   <system-spirit animations="liveHeight,verticalShift" vertical-shift="content-item">
@@ -20,39 +20,39 @@
 
     <div class='card-content'>
       <div class="card-control-bar">
-        <ew-pagination id="folders-pagination" 
+        <ew-pagination id="folders-pagination"
                        v-bind:auto-init="false"
-                       v-bind:list.sync="folders" 
+                       v-bind:list.sync="folders"
                        v-bind:api-params="contentsAPIParams"></ew-pagination>
       </div>
 
       <div id="folders-list" class="mt">
-        <div v-for="folder in folders.data" track-by="id" tabindex='1' class='content-item folder' 
-             v-bind:data-content-id="folder.id" 
+        <div v-for="folder in folders.data" track-by="id" tabindex='1' class='content-item folder'
+             v-bind:data-content-id="folder.id"
              v-on:drop="moveItem" v-on:dragover="isAllowed">
-          <span></span>          
-          <p>{{ folder.title }}</p>          
+          <span></span>
+          <p>{{ folder.title }}</p>
           <p class="date">{{ folder.round_date_created }}</p>
         </div>
       </div>
 
       <div class="card-control-bar">
-        <ew-pagination id="articles-pagination" 
+        <ew-pagination id="articles-pagination"
                        v-bind:auto-init="false"
-                       v-bind:list.sync="articles" 
+                       v-bind:list.sync="articles"
                        v-bind:api-params="contentsAPIParams"></ew-pagination>
       </div>
 
       <div id="articles-list" class="mt">
-        <div tabindex='1' draggable="true" class='content-item article' 
+        <div tabindex='1' draggable="true" class='content-item article'
              v-bind:data-content-id="article.id"
-             v-for="article in articles.data" 
+             v-for="article in articles.data"
              v-on:dragstart="dragStart">
-          <span></span>          
-          <p>{{ article.title }}</p>          
+          <span></span>
+          <p>{{ article.title }}</p>
           <p class='date'>{{ article.round_date_created }}</p>
         </div>
-      </div>    
+      </div>
     </div>
 
   </system-spirit>
@@ -86,11 +86,11 @@
 
     // you can use either states.<state> or states['<state>']
     states.article = function (full, id) {
-      component.ui.folders_card_vue.selectedId = id;
+      component.ui.documents_card_vue.selectedId = id;
     };
 
     states.folder = function (full, id, command) {
-      component.ui.folders_card_vue.selectedId = id;
+      component.ui.documents_card_vue.selectedId = id;
     };
 
     states.dir = function (full, id, list) {
@@ -148,7 +148,7 @@
 
     Object.defineProperty(this, 'parentId', {
       set: function (value) {
-        component.ui.folders_card_vue.parentId = value;
+        component.ui.documents_card_vue.parentId = value;
         this.$parentId = value;
       },
       get: function () {
@@ -158,7 +158,7 @@
 
     Object.defineProperty(this, 'upParentId', {
       set: function (value) {
-        component.ui.folders_card_vue.upParentId = value;
+        component.ui.documents_card_vue.upParentId = value;
         this.$upParentId = value;
       },
       get: function () {
@@ -171,9 +171,10 @@
     component.ui.components.folders_list = component.ui.components.folders_card.find("#folders-list");
     component.ui.components.articles_list = component.ui.components.folders_card.find("#articles-list");
 
-    component.ui.folders_card_vue = new Vue({
+    component.ui.documents_card_vue = new Vue({
       el: component.scope.uiViews.folders_card,
       data: {
+        loading: false,
         upParentId: 0,
         parentId: 0,
         card_title: 'tr{Documents}',
@@ -194,7 +195,7 @@
           set: function (value) {
             var _this = this;
             if (value) {
-              component.ui.folders_card_vue.$nextTick(function () {
+              component.ui.documents_card_vue.$nextTick(function () {
                 var item = document.querySelector('[data-content-id="' + value + '"]');
                 item ? item.classList.add('selected') : '';
                 _this._selectedItem ? _this._selectedItem.classList.remove('selected') : '';
@@ -221,39 +222,10 @@
         isAllowed: function (event) {
           event.preventDefault();
         },
-        goUp: function () {
-          component.preCategory.call(component);
-        }
-      },
-      events: {
-//        'articles-pagination/load': function (pagination) {
-//          this.loadingArticles = false;
-//        },
-//        'articles-pagination/loaded': function (pagination, response) {
-//          if (response.parent) {
-//            component.upParentId = response.parent.parent_id;
-//          }
-//
-//          this.articlesResponse = response;
-//          this.articlesLoaded = true;
-//
-//          this.contentsLoaded();
-//        },
-//        'folders-pagination/load': function (pagination) {
-//          this.foldersLoaded = false;
-//        },
-//        'folders-pagination/loaded': function (pagination, response) {
-//          if (response.parent) {
-//            component.upParentId = response.parent.parent_id;
-//          }
-//
-//          this.foldersResponse = response;
-//          this.foldersLoaded = true;
-//          
-//          this.contentsLoaded();
-//        }
+        goUp: component.goUp.bind(component)
       }
-    });
+    })
+    ;
 
     this.seeFolderActivity = EW.getActivity({
       activity: "admin/html/content-management/folder-form/component.php_see",
@@ -304,7 +276,7 @@
       },
       onDone: function (response) {
         $("body").EW().notify(response).show();
-        component.preCategory();
+        component.goUp();
       }
     }).hide();
 
@@ -320,8 +292,8 @@
 
     System.entity('ui/primary-menu').actions = [
       {
-        title: "tr{New Folder}",
-        activity: "admin/html/content-management/folder-form/component.php",
+        title: 'tr{New Folder}',
+        activity: 'admin/html/content-management/folder-form/component.php',
         parameters: function (hash) {
           hash.parent = component.parentId;
         },
@@ -330,8 +302,8 @@
           hash.folderId = null;
         }
       }, {
-        title: "tr{New Article}",
-        activity: "admin/html/content-management/article-form/component.php_new",
+        title: 'tr{New Article}',
+        activity: 'admin/html/content-management/article-form/component.php_new',
         parameters: function (hash) {
           hash.parent = component.parentId;
           hash.article = null;
@@ -343,56 +315,52 @@
       }
     ];
 
-    $(document).off("article-list.refresh").on("article-list.refresh", function (e, eventData) {
-      component.ui.folders_card_vue.$broadcast('refresh');
-//      component.listDocuments();
-      if (eventData) {
-        if (eventData.data.type === "article") {
+    $(document).off('article-list.refresh').on('article-list.refresh', function (event, data) {
+      component.ui.documents_card_vue.$broadcast('refresh');
+      if (data) {
+        if (data.data.type === "article") {
           System.setHashParameters({
             folderId: null,
-            article: eventData.data.id
+            article: data.data.id
           });
         }
 
-        if (eventData.data.type === "folder") {
+        if (data.data.type === "folder") {
           EW.setHashParameters({
-            folderId: eventData.data.id,
+            folderId: data.data.id,
             article: null
           }, "document");
         }
       }
     });
 
-    //this.bNewFile.comeIn();
-    //this.bNewFolder.comeIn();
-
-    this.state.setParamIfNull("dir", "0/list");
-
-    component.ui.components.folders_list.off('click').on('click', '.folder', function (e) {
+    component.ui.components.folders_list.off('click').on('click', '.folder', function (event) {
       System.setHashParameters({
         article: null,
-        folder: e.currentTarget.getAttribute('data-content-id')
+        folder: event.currentTarget.getAttribute('data-content-id')
       });
 
-      component.currentItem = e.currentTarget;
+      component.currentItem = event.currentTarget;
     });
 
-    component.ui.components.folders_list.off('dblclick touchstart').on('dblclick touchstart', '.folder', function (e) {
-      component.state.setParam("dir", e.currentTarget.getAttribute('data-content-id') + "/list");
+    component.ui.components.folders_list.off('dblclick touchstart').on('dblclick touchstart', '.folder', function (event) {
+      component.state.setParam('dir', event.currentTarget.getAttribute('data-content-id') + '/list');
     });
 
 
-    component.ui.components.articles_list.off('click').on('click', '.article', function (e) {
+    component.ui.components.articles_list.off('click').on('click', '.article', function (event) {
       component.state.setParam('folder', null);
-      component.state.setParam('article', e.currentTarget.getAttribute('data-content-id'));
-      component.currentItem = e.currentTarget;
+      component.state.setParam('article', event.currentTarget.getAttribute('data-content-id'));
+      component.currentItem = event.currentTarget;
     });
 
-    component.ui.components.articles_list.off('dblclick touchstart').on('dblclick touchstart', '.article', function (e) {
+    component.ui.components.articles_list.off('dblclick touchstart').on('dblclick touchstart', '.article', function (event) {
       component.seeArticleActivity({
-        article: e.currentTarget.getAttribute('data-content-id')
+        article: event.currentTarget.getAttribute('data-content-id')
       });
     });
+
+    this.state.setParamIfNull('dir', '0/list');
   };
 
   DocumentsStateHandler.prototype.moveItem = function (id, toId) {
@@ -411,9 +379,9 @@
       },
       success: function (response) {
         if (response.status_code === 200) {
-          handler.ui.folders_card_vue.articles.data.forEach(function (item, index) {
+          handler.ui.documents_card_vue.articles.data.forEach(function (item, index) {
             if (item.id === response.data.id) {
-              handler.ui.folders_card_vue.articles.data.splice(index, 1);
+              handler.ui.documents_card_vue.articles.data.splice(index, 1);
             }
           });
         }
@@ -423,7 +391,7 @@
     });
   };
 
-  DocumentsStateHandler.prototype.preCategory = function () {
+  DocumentsStateHandler.prototype.goUp = function () {
     this.currentItem = null;
     this.state.setParam("dir", this.upParentId + "/list");
   };
@@ -447,19 +415,20 @@
 
   DocumentsStateHandler.prototype.listDocuments = function () {
     var component = this,
-            articlesLoaded = false,
-            foldersLoaded = false,
-            currentSelected = System.getHashParam("article") || System.getHashParam("folder");
+        articlesLoaded = false,
+        foldersLoaded = false,
+        currentSelected = System.getHashParam("article") || System.getHashParam("folder");
+
+    component.ui.documents_card_vue.loading = true;
 
     var loader = $("<div class='loader top'></div>");
-    component.ui.folders_card_vue.contentsAPIParams.parent_id = component.parentId;
-//    this.ui.components.folders_card.find(".card-content").append(loader);
+    component.ui.documents_card_vue.contentsAPIParams.parent_id = component.parentId;
     var foldersElements = [];
     System.addActiveRequest($.get('api/admin/content-management/contents-folders/', {
       parent_id: component.parentId,
-      page_size: component.ui.folders_card_vue.folders.page_size
+      page_size: component.ui.documents_card_vue.folders.page_size
     }, function (response) {
-      component.ui.folders_card_vue.card_title = response.parent ? response.parent.title : 'tr{Documents}';
+      component.ui.documents_card_vue.card_title = response.parent ? response.parent.title : 'tr{Documents}';
 
       if (response.parent) {
         component.upParentId = response.parent.parent_id;
@@ -475,7 +444,7 @@
 
     System.addActiveRequest($.get('api/admin/content-management/contents-articles/', {
       parent_id: component.parentId,
-      page_size: component.ui.folders_card_vue.articles.page_size
+      page_size: component.ui.documents_card_vue.articles.page_size
     }, function (response) {
       if (response.parent) {
         component.upParentId = response.parent.parent_id;
@@ -492,9 +461,10 @@
         return;
       }
 
+      component.ui.documents_card_vue.loading = false;
       var startPoint = (component.currentItem) ?
-              component.currentItem.getBoundingClientRect() :
-              component.ui.components.folders_card.find('.card-header')[0].getBoundingClientRect();
+          component.currentItem.getBoundingClientRect() :
+          component.ui.components.folders_card.find('.card-header')[0].getBoundingClientRect();
 
       System.ui.animations.blastTo({
         fromPoint: startPoint,
@@ -505,15 +475,9 @@
         color: '#eee',
         toColor: '#fff',
         onComplete: function () {
-          component.ui.folders_card_vue.folders = foldersElements;
-          component.ui.folders_card_vue.articles = articlesList;
-          component.ui.folders_card_vue.selectedId = currentSelected;
-//          component.ui.folders_card_vue.$nextTick(function () {
-//            var item = document.querySelector('[data-content-id="' + currentSelected + '"]');
-//            if (item) {
-//              component.currentItem = System.ui.behaviors.selectElementOnly(item, component.currentItem);
-//            }
-//          });
+          component.ui.documents_card_vue.folders = foldersElements;
+          component.ui.documents_card_vue.articles = articlesList;
+          component.ui.documents_card_vue.selectedId = currentSelected;
 
           loader.remove();
         }
@@ -521,7 +485,7 @@
     };
   };
 
-// ------ Registring the state handler ------ //
+  // ------ Registring the state handler ------ //
 
   if (Scope._stateId === 'content-management/documents') {
     System.state('content-management/documents', function (state) {

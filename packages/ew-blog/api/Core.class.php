@@ -21,7 +21,13 @@ class Core extends \ew\Module {
     \EWCore::register_ui_element('settings/general', 'ew-blog-settings', [
         'title' => 'EW Blog',
         'content' => '',
-        'url' => 'html/ew-blog/settings/index.php'
+        'url' => 'html/ew-blog/settings/general.php'
+    ]);
+
+    \EWCore::register_ui_element('settings/preference', 'ew-blog-settings', [
+        'title' => 'EW Blog',
+        'content' => '',
+        'url' => 'html/ew-blog/settings/preference.php'
     ]);
 
     $this->register_content_component("event", [

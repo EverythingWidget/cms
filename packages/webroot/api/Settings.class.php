@@ -21,7 +21,7 @@ class Settings extends \ew\Module {
     \EWCore::register_form('ew/ui/settings/general', 'webroot-settings', [
         'title'   => 'Webroot',
         'content' => '',
-        'url'     => 'html/webroot/settings/index.php'
+        'url'     => 'html/webroot/settings/general.php'
     ]);
 
     //$this->add_listener("admin/api/settings/save-settings", "testy");

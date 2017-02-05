@@ -22,19 +22,19 @@ class Settings extends \ew\Module {
 
     EWCore::register_ui_element('settings/general', 'ew-admin-settings', [
         'title'   => 'EW Admin',
-        'url'     => 'html/admin/settings/settings-index.php'
+        'url'     => 'html/admin/settings/update-settings-card.php'
     ]);
 
     EWCore::register_ui_element('apps/settings/navs', 'general', [
         'id'    => 'settings/general',
         'title' => 'tr{General}',
-        'url'   => 'html/admin/settings/general.php'
+        'url'   => 'html/admin/settings/general-home.php'
     ]);
 
     EWCore::register_ui_element('apps/settings/navs', 'media', [
         'id'    => 'settings/preference',
         'title' => 'tr{Preference}',
-        'url'   => 'html/admin/settings/preference.php'
+        'url'   => 'html/admin/settings/preference-home.php'
     ]);
   }
 
