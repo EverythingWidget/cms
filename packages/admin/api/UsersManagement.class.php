@@ -7,7 +7,7 @@ use EWCore;
 
 class UsersManagement extends \ew\Module {
 
-  protected $resource = "api";
+  protected $resource = 'api';
 
   //protected $unauthorized_method_invoke = true;
 
@@ -40,7 +40,7 @@ class UsersManagement extends \ew\Module {
         'url' => 'html/admin/users-management/users/component.php'
     ]);
 
-    EWCore::register_form("ew/ui/apps/users/navs", "groups", [
+    EWCore::register_form('ew/ui/apps/users/navs', 'groups', [
         'id' => 'users-management/users-groups',
         'title' => 'Groups',
         'url' => 'html/admin/users-management/groups/component.php'
@@ -63,7 +63,7 @@ class UsersManagement extends \ew\Module {
   }
 
   protected function install_permissions() {
-    $this->register_permission("see-users", "User can see users list", [
+    $this->register_permission('see-users', 'User can see users list', [
         'api/get',
         'api/users-read',
         'api/groups-read',
@@ -74,7 +74,7 @@ class UsersManagement extends \ew\Module {
         'html/' . $this->get_index()
     ]);
 
-    $this->register_permission("manipulate-users", "User can add, edit delete users", [
+    $this->register_permission('manipulate-users', 'User can add, edit delete users', [
         'api/users-create',
         "api/users-update",
         "api/users-delete",
@@ -83,7 +83,7 @@ class UsersManagement extends \ew\Module {
         'html/' . $this->get_index()
     ]);
 
-    $this->register_permission("see-groups", "User can see user groups list", [
+    $this->register_permission('see-groups', 'User can see user groups list', [
         "api/get_users_groups_list",
         "api/get_user_group_by_id",
         "api/get_users_group_by_type",
@@ -91,7 +91,7 @@ class UsersManagement extends \ew\Module {
         'html/' . $this->get_index()
     ]);
 
-    $this->register_permission("manipulate-groups", "User can add, edit delete user group", [
+    $this->register_permission('manipulate-groups', 'User can add, edit delete user group', [
         'api/groups-create',
         'api/groups-update',
         'api/groups-delete',
@@ -101,18 +101,18 @@ class UsersManagement extends \ew\Module {
 
     $this->register_public_access([
         'api/read',
-        "api/am-i-in"
+        'api/am-i-in'
     ]);
 
     //$this->add_listener("admin-api/UsersManagement/get_user_by_id", "test_plugin");
   }
 
   public function get_title() {
-    return "Users";
+    return 'Users';
   }
 
   public function get_description() {
-    return "Manage users, create and edit roles, manage users premissions";
+    return 'Manage users, create and edit roles, manage users permissions';
   }
 
   public function test_plugin($_data) {
@@ -142,15 +142,15 @@ class UsersManagement extends \ew\Module {
       return false;
     }
 
-    if (!static::verify_hash($password, $user_info["password"])) {
+    if (!static::verify_hash($password, $user_info['password'])) {
       return false;
     }
 
     $_SESSION['login'] = '1';
     $_SESSION['sesUserName'] = $username;
-    $_SESSION['EW.USER_ID'] = $user_info["id"];
-    $_SESSION['EW.USER_GROUP_ID'] = $user_info["group_id"];
-    $_SESSION['EW.USERNAME'] = $user_info["email"];
+    $_SESSION['EW.USER_ID'] = $user_info['id'];
+    $_SESSION['EW.USER_GROUP_ID'] = $user_info['group_id'];
+    $_SESSION['EW.USERNAME'] = $user_info['email'];
 
     return TRUE;
   }
@@ -172,13 +172,13 @@ class UsersManagement extends \ew\Module {
     $resullt = json_decode(self::add_user(null, null, null, null, null), TRUE);
     $user_id = $resullt["id"];
     if ($user_id) {
-      $modules = EWCore::read_actions_registry("ew-user-action-sign-up");
+      $modules = EWCore::read_actions_registry('ew-user-action-sign-up');
       try {
         foreach ($modules as $id => $data) {
-          if (method_exists($data["class"], $data["function"])) {
+          if (method_exists($data['class'], $data['function'])) {
             $function_result = call_user_func([
-                $data["class"],
-                $data["function"]
+                $data['class'],
+                $data['function']
             ], $user_id);
             if ($function_result != true) {
               $message .= $function_result . "<br/>";
@@ -186,8 +186,8 @@ class UsersManagement extends \ew\Module {
           }
         }
         $resullt = [
-            "status" => "success",
-            "error_message" => $message
+            'status' => 'success',
+            'error_message' => $message
         ];
       } catch (Exception $e) {
 
@@ -246,7 +246,7 @@ class UsersManagement extends \ew\Module {
     }
 
     if ($user_info = $permissions->fetch_assoc()) {
-      $user_permissions = explode(",", $user_info["permission"]);
+      $user_permissions = explode(",", $user_info['permission']);
 
       foreach ($user_permissions as $permission) {
         if (strpos($permission, $app_name) !== false) {
@@ -333,8 +333,8 @@ class UsersManagement extends \ew\Module {
 
 
     if ($user_group_info = $statement->fetch(\PDO::FETCH_ASSOC)) {
-      if ($user_group_info["type"] === "superuser") {
-        $user_group_info["permission"] = implode(",", EWCore::read_permissions_ids());
+      if ($user_group_info['type'] === 'superuser') {
+        $user_group_info['permission'] = implode(",", EWCore::read_permissions_ids());
       }
 
       return \ew\APIResourceHandler::to_api_response($user_group_info);
@@ -366,13 +366,13 @@ class UsersManagement extends \ew\Module {
       //$db->close();
       return \ew\APIResourceHandler::to_api_response($user_info);
     }
-    return \EWCore::log_error(404, "User not found");
+    return \EWCore::log_error(404, 'User not found');
   }
 
   public static function get_user($userId = null) {
     $db = \EWCore::get_db_connection();
     if (!$userId) {
-      $userId = $db->real_escape_string($_REQUEST["userId"]);
+      $userId = $db->real_escape_string($_REQUEST['userId']);
     }
 
     $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_users WHERE id = '$userId'") or $db->error;
@@ -427,8 +427,8 @@ class UsersManagement extends \ew\Module {
 
     if (self::get_user_by_email($email) != NULL) {
       return json_encode([
-          status => "duplicate",
-          error_message => "An  account with this email address is already exist"
+          status => 'duplicate',
+          error_message => 'An account with this email address is already exist'
       ]);
     }
     $stm = $db->prepare("INSERT INTO ew_users (email, first_name, last_name, password, group_id, date_created)
@@ -438,7 +438,7 @@ class UsersManagement extends \ew\Module {
     if ($stm->execute()) {
 
       return [
-          status => "success",
+          status => 'success',
           email => $email,
           message => "New user '$email' has been added successfully",
           "id" => $stm->insert_id
@@ -446,8 +446,8 @@ class UsersManagement extends \ew\Module {
       $db->close();
     }
     return json_encode([
-        status => "unsuccess",
-        message => "New User has been NOT added"
+        status => 'unsuccess',
+        message => 'New User has been NOT added'
     ]);
   }
 
@@ -455,11 +455,11 @@ class UsersManagement extends \ew\Module {
 
     $db = \EWCore::get_db_connection();
     if (!$email)
-      $email = $db->real_escape_string($_REQUEST["email"]);
+      $email = $db->real_escape_string($_REQUEST['email']);
     if (!$first_name)
-      $first_name = $db->real_escape_string($_REQUEST["first_name"]);
+      $first_name = $db->real_escape_string($_REQUEST['first_name']);
     if (!$last_name)
-      $last_name = $db->real_escape_string($_REQUEST["last_name"]);
+      $last_name = $db->real_escape_string($_REQUEST['last_name']);
     $password = self::random_password();
     $group_id = 0;
     if (!$group_id)
@@ -474,11 +474,11 @@ class UsersManagement extends \ew\Module {
 
       if ($stm->execute()) {
         $user_info = [
-            "id" => $stm->insert_id,
-            "email" => $email,
-            "first_name" => $first_name,
-            "last_name" => $last_name,
-            "password" => $password
+            'id' => $stm->insert_id,
+            'email' => $email,
+            'first_name' => $first_name,
+            'last_name' => $last_name,
+            'password' => $password
         ];
         $db->close();
       }
