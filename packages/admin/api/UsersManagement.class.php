@@ -16,32 +16,48 @@ class UsersManagement extends \ew\Module {
   }
 
   protected function install_assets() {
-    EWCore::register_app_ui_element("users-management", $this);
+    EWCore::register_app_ui_element('users-management', $this);
 
-    EWCore::register_form("ew/ui/apps/users/navs", "users", [
-        'id'    => 'users-management/users',
+    if (!in_array('ew_users_profiles', \EWCore::$DEFINED_TABLES)) {
+      $table_install = DBUtility::create_table('ew_users_profiles', [
+          'id' => 'BIGINT AUTO_INCREMENT PRIMARY KEY',
+          'user_id' => 'BIGINT NOT NULL',
+          'key' => 'VARCHAR(300) NOT NULL',
+          'value' => 'TEXT NULL',
+          'date_created' => 'DATETIME NULL'
+      ]);
+
+      $pdo = \EWCore::get_db_PDO();
+      $stm = $pdo->prepare($table_install);
+      if (!$stm->execute()) {
+        echo \EWCore::log_error(500, '', $stm->errorInfo());
+      }
+    }
+
+    EWCore::register_form('ew/ui/apps/users/navs', 'users', [
+        'id' => 'users-management/users',
         'title' => 'Users',
-        'url'   => 'html/admin/users-management/users/component.php'
+        'url' => 'html/admin/users-management/users/component.php'
     ]);
 
     EWCore::register_form("ew/ui/apps/users/navs", "groups", [
-        'id'    => 'users-management/users-groups',
+        'id' => 'users-management/users-groups',
         'title' => 'Groups',
-        'url'   => 'html/admin/users-management/groups/component.php'
+        'url' => 'html/admin/users-management/groups/component.php'
     ]);
 
     EWCore::register_ui_element('forms/user/tabs', 'user-info', [
-        'title'        => 'User Info',
+        'title' => 'User Info',
         'template_url' => 'admin/html/users-management/user-form/info.php'
     ]);
 
     EWCore::register_ui_element('forms/user-group/tabs', 'group-info', [
-        'title'        => 'Group Info',
+        'title' => 'Group Info',
         'template_url' => 'admin/html/users-management/group-form/info.php'
     ]);
 
     EWCore::register_ui_element('forms/user-group/tabs', 'group-permissions', [
-        'title'        => 'Permissions',
+        'title' => 'Permissions',
         'template_url' => 'admin/html/users-management/group-form/permissions.php'
     ]);
   }
@@ -64,14 +80,16 @@ class UsersManagement extends \ew\Module {
         "api/users-delete",
         'html/user-form/component.php',
         "api/logout",
-        'html/' . $this->get_index()]);
+        'html/' . $this->get_index()
+    ]);
 
     $this->register_permission("see-groups", "User can see user groups list", [
         "api/get_users_groups_list",
         "api/get_user_group_by_id",
         "api/get_users_group_by_type",
         'html/group-form/component.php',
-        'html/' . $this->get_index()]);
+        'html/' . $this->get_index()
+    ]);
 
     $this->register_permission("manipulate-groups", "User can add, edit delete user group", [
         'api/groups-create',
@@ -147,7 +165,7 @@ class UsersManagement extends \ew\Module {
   }
 
   public function am_i_in() {
-    
+
   }
 
   public static function sign_up() {
@@ -160,25 +178,26 @@ class UsersManagement extends \ew\Module {
           if (method_exists($data["class"], $data["function"])) {
             $function_result = call_user_func([
                 $data["class"],
-                $data["function"]], $user_id);
+                $data["function"]
+            ], $user_id);
             if ($function_result != true) {
-              $message.=$function_result . "<br/>";
+              $message .= $function_result . "<br/>";
             }
           }
         }
         $resullt = [
-            "status"        => "success",
-            "error_message" => $message];
-      }
-      catch (Exception $e) {
-        
+            "status" => "success",
+            "error_message" => $message
+        ];
+      } catch (Exception $e) {
+
       }
     }
     return json_encode($resullt);
   }
 
   /**
-   * 
+   *
    * @param string $app_name
    * @param string $class_name
    * @param string $permission_id
@@ -209,7 +228,7 @@ class UsersManagement extends \ew\Module {
   }
 
   /**
-   * 
+   *
    * @param string $app_name
    * @param string $class_name
    * @param string $permission_id
@@ -218,12 +237,11 @@ class UsersManagement extends \ew\Module {
    */
   public static function user_has_permission_for_resource($app_name, $resource_name, $user_group_id) {
     $db_con = \EWCore::get_db_connection();
-//echo $user_id."asfdasd";
+    //echo $user_id."asfdasd";
 
     if (!$user_group_id) {
       $permissions = $db_con->query("SELECT permission FROM ew_users_groups WHERE type = 'default' LIMIT 1") or die($db_con->error);
-    }
-    else {
+    } else {
       $permissions = $db_con->query("SELECT ew_users_groups.permission FROM ew_users_groups WHERE id = '$user_group_id' LIMIT 1") or die($db_con->error);
     }
 
@@ -241,7 +259,7 @@ class UsersManagement extends \ew\Module {
 
   public static function user_has_permission($app_name, $resource, $module_name, $command_name) {
     $permission_id = \EWCore::does_need_permission($app_name, $module_name, $resource . '/' . $command_name);
-    
+
     if ($permission_id && $permission_id !== FALSE) {
       if (!static::group_has_permission($app_name, $module_name, $permission_id, $_SESSION['EW.USER_GROUP_ID'])) {
         return false;
@@ -409,8 +427,9 @@ class UsersManagement extends \ew\Module {
 
     if (self::get_user_by_email($email) != NULL) {
       return json_encode([
-          status        => "duplicate",
-          error_message => "An  account with this email address is already exist"]);
+          status => "duplicate",
+          error_message => "An  account with this email address is already exist"
+      ]);
     }
     $stm = $db->prepare("INSERT INTO ew_users (email, first_name, last_name, password, group_id, date_created)
             VALUES (?, ?, ?, ?, ? ,?)") or die($db->error);
@@ -419,16 +438,17 @@ class UsersManagement extends \ew\Module {
     if ($stm->execute()) {
 
       return [
-          status  => "success",
-          email   => $email,
+          status => "success",
+          email => $email,
           message => "New user '$email' has been added successfully",
-          "id"    => $stm->insert_id
+          "id" => $stm->insert_id
       ];
       $db->close();
     }
     return json_encode([
-        status  => "unsuccess",
-        message => "New User has been NOT added"]);
+        status => "unsuccess",
+        message => "New User has been NOT added"
+    ]);
   }
 
   public static function add_user_skip($email, $first_name, $last_name, $password) {
@@ -454,11 +474,11 @@ class UsersManagement extends \ew\Module {
 
       if ($stm->execute()) {
         $user_info = [
-            "id"         => $stm->insert_id,
-            "email"      => $email,
+            "id" => $stm->insert_id,
+            "email" => $email,
             "first_name" => $first_name,
-            "last_name"  => $last_name,
-            "password"   => $password
+            "last_name" => $last_name,
+            "password" => $password
         ];
         $db->close();
       }
@@ -498,9 +518,9 @@ class UsersManagement extends \ew\Module {
 
   public function read() {
     return [
-        'title'       => $this->get_title(),
+        'title' => $this->get_title(),
         'description' => $this->get_description(),
-        'resources'   => \EWCore::read_activities_as_array($this)
+        'resources' => \EWCore::read_activities_as_array($this)
     ];
   }
 
