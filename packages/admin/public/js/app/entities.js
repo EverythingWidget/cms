@@ -4,14 +4,16 @@
   System.entity('stage/init-ui-components', init);
 
   function init() {
-    var appsVue = new Vue({
-      el: '#apps-menu',
+    var navMenuVue = new Vue({
+      el: '#navigation-menu',
       data: {
         apps: [],
         currentState: null,
         currentApp: null,
         currentSection: null,
-        currentSubSection: null
+        currentSubSection: null,
+        isNavTitleIn: false,
+        isNavMenuIn: false
       },
       methods: {
         goToState: function (state) {
@@ -21,11 +23,17 @@
           }
 
           System.app.setNav(state);
+        },
+        navMenuIn: function () {
+          this.isNavMenuIn = true;
+        },
+        navMenuOut: function () {
+          this.isNavMenuIn = false;
         }
       }
     });
 
-    System.entity('ui/apps', appsVue);
+    System.entity('ui/apps', navMenuVue);
 
     // ------ //
 
@@ -49,10 +57,11 @@
     var appBarVue = new Vue({
       el: '#app-bar',
       data: {
-        sectionsMenuTitle: '',
+        appTitle: '',
+        sectionTitle: '',
         isLoading: false,
         subSections: null,
-        currentSubSection: appsVue.currentSubSection
+        currentSubSection: navMenuVue.currentSubSection
       },
       computed: {
         styleClass: function () {
@@ -65,17 +74,23 @@
           return classes.join(' ');
         },
         currentState: function () {
-          return appsVue.currentState;
+          return navMenuVue.currentState;
         }
       },
       methods: {
         goTo: function (tab, $event) {
           $event.preventDefault();
 
-          System.app.setNav(appsVue.currentApp + '/' + appsVue.currentSection + '/' + tab.state);
+          System.app.setNav(navMenuVue.currentApp + '/' + navMenuVue.currentSection + '/' + tab.state);
         },
         goToState: function (state) {
           System.app.setNav(state);
+        },
+        navTitleIn: function () {
+          navMenuVue.isNavTitleIn = true;
+        },
+        navTitleOut: function () {
+          navMenuVue.isNavTitleIn = false;
         }
       }
     });

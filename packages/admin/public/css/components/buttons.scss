@@ -26,24 +26,22 @@
 
 .btn > i {
   cursor: pointer;
-  background-position: center center;
-  background-repeat: no-repeat;
+  background: no-repeat center center;
   margin: 0;
   font-size: 24px;
   max-height: 30px;
-  float: left;
 }
 
 .btn-float {
   position: absolute;
-  right: 115px;
+  right: 100px;
   z-index: 10;
   width: 50px;
   height: 50px;
   border-radius: 25px;
   padding: 0;
   box-shadow: 0 1px 5px 0 rgba(0,0,0,0.1),0 6px 14px 0 rgba(0,0,0,0.16);
-  top: 46px;
+  top: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -60,24 +58,25 @@
 .btn-circle {
   width: 44px;
   height: 44px;
-  margin: 0;
+  overflow: hidden;
+  margin: 0 5px 0 0;
   border-radius: 22px;
-  margin-right: 5px;
-  padding: 0px;
+  padding: 0;
   display: flex;
   justify-content: center;
+  transition: all .2s linear;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.2);
 
   &:hover {
-    box-shadow: 0 4px 8px rgba(0,0,0,0.24) , 0 1px 3px rgba(0,0,0,0.12);  
+    box-shadow: 0 4px 8px rgba(0,0,0,0.24) , 0 1px 3px rgba(0,0,0,0.12);
   }
 
   > i {
-    font-size: 28px;
-    max-height: 38px;
-    line-height: 40px;
+    font-size: 29px;
+    max-height: 44px;
+    line-height: 44px;
     float: none;
-    
+    -webkit-font-smoothing: antialiased;
   }
 
   .actions-bar > &.btn {
@@ -92,16 +91,19 @@
       display: block;
     }
   }
+
+  &:focus {
+    outline: 1px dotted #000;
+  }
+
+  &.active {
+
+  }
 }
 
 .btn-text {
   &.btn-circle {
-    /*box-shadow: 0px 1px 3px 0px rgba(0,0,0,.24);*/
     padding: 0;
-
-    &:hover {
-      /*box-shadow: 0px 1px 3px 0px rgba(0,0,0,.24);*/
-    }
   }
 }
 
@@ -129,7 +131,7 @@
       border-radius: 15px;
       margin: 3px 0;
       margin-right: 5px;
-      transition: border-color .2s;      
+      transition: border-color .2s;
 
       &:after {
         transition: background-color .2s;
@@ -155,7 +157,7 @@
       & + i + span {
         color: #00BBEE;
       }
-    }    
+    }
   }
 }
 
@@ -201,7 +203,7 @@
           left: calc(50% - 2px);
         }
       }
-    }    
+    }
   }
 
   > span {
@@ -216,7 +218,7 @@
   padding: 5px 6px;
   margin: 5px -6px 0;
   display: inline-block;
-  cursor: pointer;  
+  cursor: pointer;
   border-radius: 4px;
 
   &:hover {

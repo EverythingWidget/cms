@@ -5,7 +5,7 @@ if (!isset($_SESSION['login'])) {
   include "Login.php";
   return;
 }
-?> 
+?>
 <!DOCTYPE html>
 <html>
   <head>
@@ -14,10 +14,12 @@ if (!isset($_SESSION['login'])) {
     </title>
     <?php include 'header.php'; ?>
   </head>
+
   <body id="base-pane" class="container <?= EWCore::get_language_dir($_REQUEST["_language"]); ?>" >
+
     <div id="app-content" >
 
-      <div id="navigation-menu" class="navigation-menu">
+      <div id="navigation-menu" class="navigation-menu" v-bind:class="{ 'in' : isNavMenuIn || isNavTitleIn }" v-on:mouseenter="navMenuIn()" v-on:mouseleave="navMenuOut()">
         <div id="apps-menu" class="apps-menu" >
           <ul class="apps-menu-list">
             <li v-for="app in apps">
@@ -27,7 +29,7 @@ if (!isset($_SESSION['login'])) {
             </li>
           </ul>
         </div>
-        <div id="sections-menu" class="sections-menu">
+        <div id="sections-menu" class="sections-menu" >
           <system-list id="sections-menu-list" class="sections-menu-list" action="a">
             <div class="sections-menu-item">
               <a class="sections-menu-item-link" href="{{id}}" >{{title}}</a>
@@ -35,8 +37,6 @@ if (!isset($_SESSION['login'])) {
           </system-list>
         </div>
       </div>
-
-      <div id="app-main-actions"></div>
 
       <system-float-menu id="main-float-menu" class="system-float-menu">
         <div class="float-menu-indicator" indicator></div>
@@ -51,9 +51,14 @@ if (!isset($_SESSION['login'])) {
       </system-float-menu>
 
       <div id="app-bar" class="app-bar" v-bind:class="styleClass">
-        <div class="white-area">
-          <div id="sections-menu-title" class="app-bar-title" v-bind:class="{ 'inline-loader' : isLoading }">
-            {{ sectionsMenuTitle }}
+        <div class="tool-bar">
+          <div class="app-bar-first-section"  v-on:mouseleave="navTitleOut()">
+            <button class="btn-circle" v-on:mouseenter="navTitleIn()">
+              <i class="icon-menu"></i>
+            </button>
+            <div id="sections-menu-title" class="app-bar-title" v-bind:class="{ 'inline-loader' : isLoading }" v-on:mouseenter="navTitleIn()">
+              <strong>{{ appTitle }}</strong> {{ sectionTitle }}
+            </div>
           </div>
 
           <div class="app-bar-middle-section">
@@ -64,14 +69,9 @@ if (!isset($_SESSION['login'])) {
           </div>
 
           <div class="action-center">
-            <?php
-            if ($_SESSION['login']) {
-              echo '<a class="ExitBtn action-item" href="api/admin/users-management/logout?url=' . EW_DIR_URL . '/html/admin/" ></a>';
-            }
-            ?>
-
-
-          </div>  
+            <div id="app-main-actions"></div>
+            <a class="ExitBtn action-item" href="api/admin/users-management/logout?url=<?= EW_DIR_URL ?>/html/admin/" ></a>
+          </div>
         </div>
         <div id="tabs-menu" class="tabs-bar" >
           <ul class="nav nav-pills nav-black-text">
@@ -82,14 +82,14 @@ if (!isset($_SESSION['login'])) {
         </div>
       </div>
 
-      <div id="main-content" class="col-xs-12 in" 
-           v-show="show" 
-           v-bind:class="styleClass" 
+      <div id="main-content" class="col-xs-12 in"
+           v-show="show"
+           v-bind:class="styleClass"
            transition="in"></div>
     </div>
 
-    <div id="notifications-panel"></div>   
+    <div id="notifications-panel"></div>
 
-    <?php include 'footer.php'; ?>      
+    <?php include 'footer.php'; ?>
   </body>
 </html>

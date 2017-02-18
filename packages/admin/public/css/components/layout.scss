@@ -1,0 +1,405 @@
+@import "variables";
+
+#app-content {
+  position: absolute;
+  margin: 0;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 0;
+  min-width: 780px;
+}
+
+#main-content {
+  min-width: 320px;
+  width: 100%;
+  position: absolute;
+  overflow: scroll;
+  overflow-x: hidden;
+  padding-left: 0;
+  padding-right: 0;
+  margin-right: -14px;
+  display: block;
+  top: 75px;
+  left: 0;
+  bottom: 0;
+  opacity: 0;
+  z-index: 1;
+  transform-origin: center top;
+
+  & > .tabs-bar {
+    position: relative;
+    box-shadow: 0 1px 2px 0px rgba(0, 0, 0, 0.06);
+  }
+
+  & > .tab-content {
+    background-color: transparent;
+    margin-left: 0;
+    position: absolute;
+    width: 100%;
+    top: 50px;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: inherit;
+  }
+
+  & > .header-pane.tabs-bar {
+    height: auto;
+  }
+}
+
+.app-bar {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  background-color: $app-bar-background;
+  position: relative;
+  z-index: 4;
+
+  &.tabs-bar-on {
+    + #main-content {
+      top: 130px;
+    }
+
+    .tabs-bar {
+      height: 130px;
+
+      ul {
+        opacity: 1;
+      }
+    }
+  }
+
+  &.in {
+    top: 0;
+    box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.24);
+  }
+
+  > .tool-bar {
+    background-color: $app-tool-bar-background;
+    justify-content: center;
+    width: 100%;
+    display: flex;
+    height: 74px;
+    overflow: hidden;
+    z-index: 4;
+    align-items: center;
+    box-shadow: $panel-shadow;
+
+    > .app-bar-first-section {
+      height: 100%;
+      width: 300px;
+      display: flex;
+      align-items: center;
+      padding-left: 25px;
+    }
+
+    > .app-bar-middle-section {
+      overflow: hidden;
+      height: 100%;
+      flex: 1 0 auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      align-items: center;
+    }
+
+    > .action-center {
+      width: 300px;
+      padding: 0 25px;
+      height: 76px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-end;
+    }
+  }
+
+  > .tabs-bar {
+    background-color: rgba($body-background, .8);
+    height: 74px;
+    margin: -74px 0 0;
+    display: flex;
+    align-items: flex-end;
+    align-self: center;
+    justify-content: center;
+    z-index: 2;
+    width: 100%;
+    position: relative;
+    transition: all .25s ease-in-out;
+
+    &:after {
+      content: ' ';
+      width: 100%;
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      height: 3px;
+      background-color: rgba($background-accent, .1);
+      z-index: 1;
+    }
+
+    > ul {
+      background-color: transparent;
+      padding: 0 15px;
+      opacity: 0;
+      position: relative;
+      z-index: 0;
+      transition: all .6s linear;
+
+      .active {
+        a {
+          &:hover, &:focus {
+            background-color: #fff;
+          }
+        }
+      }
+    }
+
+    a {
+      padding: 12px 20px 10px;
+      line-height: 22px;
+      margin: 0;
+      color: #999;
+
+      &:hover, &:focus {
+        background-color: #fff;
+      }
+    }
+  }
+}
+
+.app-bar-title {
+  float: left;
+  width: auto;
+  padding: 0 35px 0 15px;
+  font-size: 1.23em;
+  line-height: 34px;
+  margin-top: 0;
+  //font-weight: 500;
+  color: #1B2433;
+  white-space: nowrap;
+
+  &.inline-loader:after {
+    left: auto;
+    right: 5px;
+  }
+}
+
+// ------ navigation-menu ------ //
+
+.navigation-menu {
+  position: absolute;
+  top: 60px;
+  left: 15px;
+  height: calc(90% - 60px);
+  width: 260px;
+  z-index: 5;
+  float: left;
+  padding: 0;
+  margin: 0;
+  transition: all .25s ease-in-out;
+  transform-origin: 25px top;
+  transform: scale(0);
+  opacity: 0;
+  -webkit-font-smoothing: antialiased;
+
+  &.in {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  &.expand {
+    width: 370px;
+  }
+
+  &.expand .apps-menu {
+    overflow: visible;
+  }
+}
+
+// ------ apps-menu ------ //
+
+.apps-menu {
+  width: 110px;
+  text-align: center;
+  background-color: $apps-menu-background;
+  border-radius: 4px;
+  left: 0;
+  margin-top: 30px;
+  box-shadow: $panel-shadow;
+  z-index: 2;
+  float: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+
+  &:before {
+    content: ' ';
+    position: absolute;
+    left: 20px;
+    top: -14px;
+    width: 14px;
+    height: 14px;
+    border: 7px solid transparent;
+    border-bottom-color: $apps-menu-background;
+  }
+
+  &.expand {
+    height: 100%;
+  }
+}
+
+.apps-menu-title, .apps-menu-link {
+  color: inherit;
+  font-size: 12px;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: .2px;
+  margin: 6px;
+  padding: 0;
+  height: 60px;
+  line-height: 60px;
+  display: block;
+}
+
+.apps-menu-icon {
+  float: none;
+  display: block;
+  height: 27px;
+}
+
+.apps-menu-link {
+  padding: 0;
+  border-radius: 2px;
+  cursor: pointer;
+  transition-property: background-color, color;
+  transition-duration: .15s;
+}
+
+a.apps-menu-link:hover {
+  color: #000;
+  background-color: rgba(92, 177, 204, .18);
+}
+
+.apps-menu-link.selected, .apps-menu-link.selected:hover {
+  color: #fff;
+  background-color: #5cb1cc;
+  border-left: 0 solid #5CB1CC;
+}
+
+.apps-menu-list {
+  padding: 0;
+  margin: 0;
+
+  li {
+    display: block;
+    padding: 0;
+    margin: 0;
+  }
+}
+
+// ------ //
+// ------ sections-menu ------ //
+
+.sections-menu {
+  background-color: $apps-menu-background;
+  border-radius: 4px;
+  position: absolute;
+  left: 125px;
+  width: 240px;
+  min-height: 94px;
+  font-size: 16px;
+  margin: 30px 0 0 0;
+  padding: 0;
+  box-shadow: $panel-shadow;
+  color: #000;
+  z-index: 1;
+  float: left;
+  transform: scale(0);
+  transform-origin: left 45px;
+
+  &:before {
+    content: ' ';
+    position: absolute;
+    left: -14px;
+    top: 23px;
+    width: 14px;
+    height: 14px;
+    border: 7px solid transparent;
+    border-right-color: $apps-menu-background;
+  }
+
+  &.in {
+    height: auto;
+    transform: scale(1);
+
+    > * {
+      display: inherit;
+    }
+
+    .sections-menu-title {
+      display: none;
+    }
+  }
+
+  &.out {
+    height: 94px;
+    left: -186px;
+  }
+}
+
+.sections-menu-item {
+  padding: 0;
+  display: block;
+  overflow: hidden;
+}
+
+.sections-menu-item-link {
+  background: no-repeat right center;
+  color: inherit;
+  text-decoration: none;
+  padding: 10px 16px;
+  padding-right: 42px;
+  display: block;
+  line-height: 30px;
+  min-height: 44px;
+  vertical-align: middle;
+  position: relative;
+  white-space: nowrap;
+  border-radius: 2px;
+  transition-property: background-color, color;
+  transition-duration: .15s;
+  margin: 6px;
+
+  &.inline-loader {
+    &:after {
+      left: auto;
+      right: 5px;
+    }
+  }
+
+  &:hover {
+    background-color: rgba(92, 177, 204, .18);
+    color: inherit;
+  }
+
+  &:active {
+
+  }
+
+  &:focus {
+    background-color: rgba(92, 177, 204, .18);
+    outline-offset: -1px;
+    color: inherit;
+  }
+
+  &.selected {
+    background-color: rgba(92, 177, 204, 1);
+    color: #fff;
+    cursor: default;
+  }
+}

@@ -17,7 +17,7 @@
   &.search-field {
     width: 100%;
     max-width: 460px;
-    margin: 8px auto;
+    margin: 0;
     padding: 0;
 
     &[focus] {
@@ -63,6 +63,7 @@
     text-align: center;
     
     > i {
+      display: block;
       font-size: 20px;
       min-width: 26px;
       min-height: 26px;

@@ -271,8 +271,10 @@ window.addEventListener('load', function () {
     System.ui.components.navigationMenu.addClass('expand');
     if (System.ui.components.sectionsMenuList[0].data.length) {
       if (!enterOnLink) {
-        System.ui.components.sectionsMenu[0].style.top = System.ui.components.appsMenu.find('.apps-menu-link.selected')[0].getBoundingClientRect().top + 'px';
+        System.ui.components.sectionsMenu[0].style.top = System.ui.components.appsMenu.find('.apps-menu-link.selected')[0].offsetTop + 'px';
       }
+
+      System.ui.behaviors.highlightAppSection(currentSectionIndex, System.ui.components.sectionsMenuList[0].links[currentSectionIndex]);
 
       TweenLite.to(System.ui.components.sectionsMenu[0], .3, {
         className: 'sections-menu in',
@@ -283,8 +285,8 @@ window.addEventListener('load', function () {
 
   var moveAnim = null;
 
-  System.ui.components.appsMenu.on('mouseenter touchstart', 'a', function (e) {
-    var app = e.currentTarget.dataset.app;
+  System.ui.components.appsMenu.on('mouseenter touchstart', 'a', function (event) {
+    var app = event.currentTarget.dataset.app;
     EW.hoverApp = 'system/' + app;
 
     var sections = System.modules['system/' + app] ? System.modules['system/' + app].data.sections : [];
@@ -298,13 +300,13 @@ window.addEventListener('load', function () {
     }
 
     if (!mouseInNavMenu) {
-      System.ui.components.sectionsMenu[0].style.top = e.currentTarget.getBoundingClientRect().top + 'px';
+      System.ui.components.sectionsMenu[0].style.top = event.currentTarget.offsetTop + 'px';
       enterOnLink = true;
       return;
     }
 
     moveAnim = TweenLite.to(System.ui.components.sectionsMenu[0], .2, {
-      top: e.currentTarget.getBoundingClientRect().top
+      top: event.currentTarget.offsetTop
     });
   });
 

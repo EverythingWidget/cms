@@ -271,8 +271,10 @@ window.addEventListener('load', function () {
     System.ui.components.navigationMenu.addClass('expand');
     if (System.ui.components.sectionsMenuList[0].data.length) {
       if (!enterOnLink) {
-        System.ui.components.sectionsMenu[0].style.top = System.ui.components.appsMenu.find('.apps-menu-link.selected')[0].getBoundingClientRect().top + 'px';
+        System.ui.components.sectionsMenu[0].style.top = System.ui.components.appsMenu.find('.apps-menu-link.selected')[0].offsetTop + 'px';
       }
+
+      System.ui.behaviors.highlightAppSection(currentSectionIndex, System.ui.components.sectionsMenuList[0].links[currentSectionIndex]);
 
       TweenLite.to(System.ui.components.sectionsMenu[0], .3, {
         className: 'sections-menu in',
@@ -283,8 +285,8 @@ window.addEventListener('load', function () {
 
   var moveAnim = null;
 
-  System.ui.components.appsMenu.on('mouseenter touchstart', 'a', function (e) {
-    var app = e.currentTarget.dataset.app;
+  System.ui.components.appsMenu.on('mouseenter touchstart', 'a', function (event) {
+    var app = event.currentTarget.dataset.app;
     EW.hoverApp = 'system/' + app;
 
     var sections = System.modules['system/' + app] ? System.modules['system/' + app].data.sections : [];
@@ -298,13 +300,13 @@ window.addEventListener('load', function () {
     }
 
     if (!mouseInNavMenu) {
-      System.ui.components.sectionsMenu[0].style.top = e.currentTarget.getBoundingClientRect().top + 'px';
+      System.ui.components.sectionsMenu[0].style.top = event.currentTarget.offsetTop + 'px';
       enterOnLink = true;
       return;
     }
 
     moveAnim = TweenLite.to(System.ui.components.sectionsMenu[0], .2, {
-      top: e.currentTarget.getBoundingClientRect().top
+      top: event.currentTarget.offsetTop
     });
   });
 
@@ -437,14 +439,16 @@ window.addEventListener('load', function () {
   System.entity('stage/init-ui-components', init);
 
   function init() {
-    var appsVue = new Vue({
-      el: '#apps-menu',
+    var navMenuVue = new Vue({
+      el: '#navigation-menu',
       data: {
         apps: [],
         currentState: null,
         currentApp: null,
         currentSection: null,
-        currentSubSection: null
+        currentSubSection: null,
+        isNavTitleIn: false,
+        isNavMenuIn: false
       },
       methods: {
         goToState: function (state) {
@@ -454,11 +458,17 @@ window.addEventListener('load', function () {
           }
 
           System.app.setNav(state);
+        },
+        navMenuIn: function () {
+          this.isNavMenuIn = true;
+        },
+        navMenuOut: function () {
+          this.isNavMenuIn = false;
         }
       }
     });
 
-    System.entity('ui/apps', appsVue);
+    System.entity('ui/apps', navMenuVue);
 
     // ------ //
 
@@ -482,10 +492,11 @@ window.addEventListener('load', function () {
     var appBarVue = new Vue({
       el: '#app-bar',
       data: {
-        sectionsMenuTitle: '',
+        appTitle: '',
+        sectionTitle: '',
         isLoading: false,
         subSections: null,
-        currentSubSection: appsVue.currentSubSection
+        currentSubSection: navMenuVue.currentSubSection
       },
       computed: {
         styleClass: function () {
@@ -498,17 +509,23 @@ window.addEventListener('load', function () {
           return classes.join(' ');
         },
         currentState: function () {
-          return appsVue.currentState;
+          return navMenuVue.currentState;
         }
       },
       methods: {
         goTo: function (tab, $event) {
           $event.preventDefault();
 
-          System.app.setNav(appsVue.currentApp + '/' + appsVue.currentSection + '/' + tab.state);
+          System.app.setNav(navMenuVue.currentApp + '/' + navMenuVue.currentSection + '/' + tab.state);
         },
         goToState: function (state) {
           System.app.setNav(state);
+        },
+        navTitleIn: function () {
+          navMenuVue.isNavTitleIn = true;
+        },
+        navTitleOut: function () {
+          navMenuVue.isNavTitleIn = false;
         }
       }
     });
@@ -698,7 +715,7 @@ window.addEventListener('load', function () {
 
     if (app !== EW.oldApp) {
       EW.oldApp = app;
-
+      System.entity('ui/app-bar').appTitle = EW.apps[app].title;
       System.services.app_service.on_load(EW.apps[app]);
 
       System.loadModule(EW.apps[app], function (module) {
@@ -709,9 +726,8 @@ window.addEventListener('load', function () {
   };
 
   System.services.app_service.load_section = function (moduleId) {
-    var element = System.ui.components.sectionsMenuList[0].links[EW.oldApp + "/" + moduleId];
+    var element = System.ui.components.sectionsMenuList[0].links[EW.oldApp + '/' + moduleId];
     System.ui.behaviors.highlightAppSection(element.dataset.index, element);
-    //System.ui.components.sectionsMenuList[0].value = element.dataset.index;
 
     if (element) {
       var moduleConfig = System.ui.components.sectionsMenuList[0].data[element.dataset.index];
@@ -720,9 +736,9 @@ window.addEventListener('load', function () {
       }
 
       EW.oldSectionId = moduleConfig.id;
-      System.entity('ui/app-bar').sectionsMenuTitle = moduleConfig.title;
+      System.entity('ui/app-bar').sectionTitle = moduleConfig.title;
       System.entity('ui/app-bar').isLoading = true;
-      System.ui.utility.addClass(element, "inline-loader");
+      System.ui.utility.addClass(element, 'inline-loader');
 
       System.entity('ui/app-bar').subSections = [];
       System.entity('ui/primary-menu').actions = [];
@@ -734,7 +750,7 @@ window.addEventListener('load', function () {
       System.loadModule(moduleConfig, function (module, html) {
         $('#action-bar-items').find("button,div").remove();
 
-        if (!System.getHashNav("app")[0]) {
+        if (!System.getHashNav('app')[0]) {
           return;
         }
 
@@ -746,7 +762,7 @@ window.addEventListener('load', function () {
         module.start();
 
         System.entity('ui/app-bar').isLoading = false;
-        System.ui.utility.removeClass(element, "inline-loader");
+        System.ui.utility.removeClass(element, 'inline-loader');
         Vue.nextTick(function () {
           System.entity('ui/main-content').show = true;
         });
@@ -896,7 +912,7 @@ window.addEventListener('load', function () {
             }
           }
           // Trigger close activity event and pass closeHashParameters to it
-          $(document).trigger(activityName + ".close", closeHashParameters);
+          $(document).trigger(activityName + '.close', closeHashParameters);
           $.extend(closeHashParameters, settings.closeHash);
           EW.setHashParameters(closeHashParameters);
         }
@@ -904,7 +920,7 @@ window.addEventListener('load', function () {
 
       if (currentActivity) {
         // Trigger open activity event and pass settings to it before creating modal
-        $(document).trigger(activityName + ".open", settings);
+        $(document).trigger(activityName + '.open', settings);
         $.extend(settings, currentActivity.modal);
         currentActivity.modalObject = EW.activities[activityName].modalObject = EW.createModal(settings);
       } else {

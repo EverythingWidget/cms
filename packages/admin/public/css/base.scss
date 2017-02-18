@@ -1,5 +1,6 @@
-@import url(https://fonts.googleapis.com/css?family=Roboto:400,500,600,300,700,900);
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,500,600,300,700,900');
 @import "components/typography";
+@import "components/layout";
 @import "components/media-xs";
 @import "components/form";
 @import "components/card";
@@ -11,7 +12,8 @@
 @import "components/transitions";
 @import "components/simple-slider";
 
-/*@font-face{
+/*
+@font-face{
   font-family: 'geomanist';
   src: url('fonts/geomanist-bold-webfont.ttf');
   src: url('fonts/geomanist-bold-webfont.ttf') format('truetype');
@@ -41,7 +43,7 @@
   src: url('fonts/geomanist-light-webfont.ttf') format('truetype');
   font-weight: 300;
   font-style: normal;
-}*/
+} */
 
 @font-face {
   font-family: 'Homa';
@@ -167,9 +169,6 @@ root {
         color: rgba(0, 0, 0, .6);
       }
     }
-  }
-
-  .apps-menu {
   }
 }
 
@@ -657,17 +656,6 @@ body.Admin {
   }
 }
 
-#app-content {
-  position: absolute;
-  margin: 0;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 0;
-  perspective: 5000px;
-}
-
 .main-content {
   position: absolute;
   overflow: scroll;
@@ -676,54 +664,6 @@ body.Admin {
   left: 0;
   width: 100%;
   height: 100%;
-}
-
-#main-content {
-  min-width: 320px;
-  width: calc(100% - 94px);
-  position: absolute;
-  overflow: scroll;
-  overflow-x: hidden;
-  padding-left: 0px;
-  padding-right: 0px;
-  margin-right: -14px;
-  display: block;
-  top: 75px;
-  left: 110px;
-  bottom: 0;
-  opacity: 0;
-  z-index: 1;
-  transform-origin: center top;
-
-  /*  &.in {
-      opacity: 1;
-      transform: translateY(0%);
-    }*/
-
-  &.tabs-bar-on {
-    /*top: 144px;*/
-  }
-
-  & > .tabs-bar {
-    position: relative;
-    box-shadow: 0 1px 2px 0px rgba(0, 0, 0, 0.06);
-  }
-
-  & > .tab-content {
-    background-color: transparent;
-    margin-left: 0;
-    position: absolute;
-    width: 100%;
-    top: 50px;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    display: inherit;
-  }
-
-  & > .header-pane.tabs-bar {
-    height: auto;
-  }
 }
 
 .header-pane .nav-tabs > li > a {
@@ -898,55 +838,6 @@ button {
   overflow: hidden;
 }
 
-.apps-menu-title, .apps-menu-link {
-  color: inherit;
-  font-size: 12px;
-  text-transform: uppercase;
-  font-weight: 600;
-  letter-spacing: .2px;
-  margin: 6px;
-  padding: 0;
-  height: 60px;
-  line-height: 60px;
-  display: block;
-}
-
-.apps-menu-icon {
-  float: none;
-  display: block;
-  height: 27px;
-}
-
-.apps-menu-link {
-  padding: 0;
-  cursor: pointer;
-  transition-property: background-color, color;
-  transition-duration: .15s;
-}
-
-a.apps-menu-link:hover {
-  color: #000;
-  background-color: rgba(92, 177, 204, .18);
-}
-
-.apps-menu-link.selected, .apps-menu-link.selected:hover {
-  color: #fff;
-  background-color: #5cb1cc;
-  border-left: 0px solid #5CB1CC;
-}
-
-.apps-menu-list {
-  padding: 0;
-  padding-bottom: 100px;
-  margin: 0;
-
-  li {
-    display: block;
-    padding: 0;
-    margin: 0;
-  }
-}
-
 .btn-home-app {
   float: left;
   width: 36px;
@@ -966,115 +857,6 @@ a.apps-menu-link:hover {
 
 .btn.btn-home-app i {
   float: none;
-}
-
-.app-bar {
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  margin-left: 110px;
-  background-color: #edeff1;
-
-  > .white-area {
-    justify-content: center;
-    width: 100%;
-    display: flex;
-    height: 75px;
-    overflow: hidden;
-    z-index: 4;
-    align-items: center;
-
-    > .app-bar-middle-section {
-      overflow: hidden;
-      height: 100%;
-      flex: 1 0 auto;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-around;
-      align-items: center;
-    }
-  }
-
-  &.tabs-bar-on {
-    + #main-content {
-      top: 121px;
-    }
-
-    .tabs-bar {
-      height: 121px;
-
-      ul {
-        opacity: 1;
-      }
-    }
-  }
-
-  .tabs-bar {
-    height: 75px;
-    margin: -75px 0 0;
-    display: flex;
-    align-items: flex-end;
-    align-self: center;
-    justify-content: center;
-    z-index: 2;
-    width: 100%;
-    box-shadow: 0 3px 18px rgba(0, 20, 50, 0.05);
-    transition: all .25s ease-in-out;
-
-    > ul {
-      background-color: transparent;
-      padding: 0 15px;
-      opacity: 0;
-      width: 100%;
-      position: relative;
-      transition: all .6s linear;
-
-      .active {
-        a {
-
-          &:hover, &:focus {
-            background-color: #fff;
-          }
-        }
-      }
-    }
-
-    a {
-      padding: 12px 20px 9px;
-      line-height: 22px;
-      margin: 0;
-      color: #999;
-
-      &:hover, &:focus {
-        background-color: #fff;
-      }
-    }
-  }
-}
-
-.app-bar.in {
-  top: 0;
-  box-shadow: 0 0px 3px 0px rgba(0, 0, 0, 0.24);
-}
-
-.app-bar .action-pane {
-  display: block;
-  margin: 40px 0 0 350px;
-}
-
-.app-bar-title {
-  float: left;
-  width: 260px;
-  padding: 0 20px 0 35px;
-  font-size: 2em;
-  line-height: 35px;
-  margin-top: 0;
-  font-weight: 400;
-  color: #1B2433;
-
-  &.inline-loader:after {
-    left: 5px;
-  }
 }
 
 .overlay {
@@ -1547,160 +1329,6 @@ ul.actions-bar {
   background-position: center center;
   text-decoration: none;
   padding: 0;
-}
-
-.sections-menu {
-  background-color: #fff;
-  position: absolute;
-  left: -170px;
-  width: 240px;
-  min-height: 94px;
-  border-radius: 0;
-  overflow: hidden;
-  font-size: 16px;
-  margin: -10px 0;
-  padding: 10px 0;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, .05), 2px 4px 17px rgba(0, 0, 0, .1);
-  color: #000;
-  z-index: 1;
-  float: left;
-
-  &.in {
-    height: auto;
-    left: 110px;
-
-    > * {
-      display: inherit;
-    }
-
-    .sections-menu-title {
-      display: none;
-    }
-  }
-
-  &.out {
-    height: 94px;
-    left: -186px;
-  }
-}
-
-.sections-menu-title {
-  background-image: url(images/side-bar-btn.png);
-  background-repeat: no-repeat;
-  background-position: 14px center;
-  width: 250px;
-  height: 54px;
-  line-height: 54px;
-  padding: 0 30px;
-  padding-left: 52px;
-  font-size: 1.2em;
-  float: left;
-  display: inline;
-  font-weight: normal;
-  box-shadow: none;
-  text-align: left;
-  text-transform: none;
-  margin: 20px 0 0 0;
-  border-radius: 0;
-  border: 0;
-  display: none;
-}
-
-.sections-menu label {
-  min-width: 200px;
-  line-height: 30px;
-  font-size: 1.5em;
-  font-weight: bold;
-  padding: 15px 10px 15px 52px;
-  overflow: hidden;
-  border-left-width: 0;
-  display: block;
-  font-weight: 300;
-
-  ul, .sections-menu-list {
-    font-size: 1.2em;
-    font-weight: normal;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    min-width: 250px;
-    overflow: hidden;
-  }
-
-  ul + ul {
-    list-style: none;
-    padding: 0;
-    margin: 15px 0 0;
-    min-width: 250px;
-
-    label:first-child {
-      margin-top: 0px;
-    }
-  }
-
-  li, .sections-menu-item {
-    padding: 0;
-    display: block;
-    overflow: hidden;
-  }
-}
-
-.sections-menu li a, .sections-menu-item-link {
-  background-position: right center;
-  background-repeat: no-repeat;
-  color: inherit;
-  text-decoration: none;
-  padding: 10px 16px;
-  padding-right: 42px;
-  display: block;
-  line-height: 30px;
-  min-height: 44px;
-  vertical-align: middle;
-  position: relative;
-  white-space: nowrap;
-  transition-property: background-color, color;
-  transition-duration: .15s;
-  margin: 6px;
-
-  &.inline-loader {
-    &:after {
-      left: auto;
-      right: 5px;
-    }
-  }
-}
-
-.sections-menu li a img {
-  max-height: 28px;
-  float: left;
-  margin: 0;
-}
-
-.sections-menu li a label {
-  float: left;
-  padding: 0;
-  margin: 0;
-}
-
-.sections-menu li a:hover, .sections-menu-item-link:hover {
-  background-color: rgba(92, 177, 204, .18);
-  color: inherit;
-}
-
-.sections-menu li a:active, .sections-menu-item-link:active {
-
-}
-
-.sections-menu li a:focus, .sections-menu-item-link:focus {
-  background-color: rgba(92, 177, 204, .18);
-  outline-offset: -1px;
-  color: inherit;
-}
-
-.sections-menu li a.selected, .sections-menu-item-link.selected {
-  background-color: rgba(92, 177, 204, 1);
-  color: #fff;
-  cursor: default;
 }
 
 .texture {
@@ -3279,11 +2907,11 @@ li h3.icon-header {
 }
 
 .priority-1 {
-  right: 180px;
+  right: 165px;
 }
 
 .priority-2 {
-  right: 245px;
+  right: 230px;
 }
 
 system-list, dis-block {

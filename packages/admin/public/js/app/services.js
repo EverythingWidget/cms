@@ -46,7 +46,7 @@
 
     if (app !== EW.oldApp) {
       EW.oldApp = app;
-
+      System.entity('ui/app-bar').appTitle = EW.apps[app].title;
       System.services.app_service.on_load(EW.apps[app]);
 
       System.loadModule(EW.apps[app], function (module) {
@@ -57,9 +57,8 @@
   };
 
   System.services.app_service.load_section = function (moduleId) {
-    var element = System.ui.components.sectionsMenuList[0].links[EW.oldApp + "/" + moduleId];
+    var element = System.ui.components.sectionsMenuList[0].links[EW.oldApp + '/' + moduleId];
     System.ui.behaviors.highlightAppSection(element.dataset.index, element);
-    //System.ui.components.sectionsMenuList[0].value = element.dataset.index;
 
     if (element) {
       var moduleConfig = System.ui.components.sectionsMenuList[0].data[element.dataset.index];
@@ -68,9 +67,9 @@
       }
 
       EW.oldSectionId = moduleConfig.id;
-      System.entity('ui/app-bar').sectionsMenuTitle = moduleConfig.title;
+      System.entity('ui/app-bar').sectionTitle = moduleConfig.title;
       System.entity('ui/app-bar').isLoading = true;
-      System.ui.utility.addClass(element, "inline-loader");
+      System.ui.utility.addClass(element, 'inline-loader');
 
       System.entity('ui/app-bar').subSections = [];
       System.entity('ui/primary-menu').actions = [];
@@ -82,7 +81,7 @@
       System.loadModule(moduleConfig, function (module, html) {
         $('#action-bar-items').find("button,div").remove();
 
-        if (!System.getHashNav("app")[0]) {
+        if (!System.getHashNav('app')[0]) {
           return;
         }
 
@@ -94,7 +93,7 @@
         module.start();
 
         System.entity('ui/app-bar').isLoading = false;
-        System.ui.utility.removeClass(element, "inline-loader");
+        System.ui.utility.removeClass(element, 'inline-loader');
         Vue.nextTick(function () {
           System.entity('ui/main-content').show = true;
         });
@@ -244,7 +243,7 @@
             }
           }
           // Trigger close activity event and pass closeHashParameters to it
-          $(document).trigger(activityName + ".close", closeHashParameters);
+          $(document).trigger(activityName + '.close', closeHashParameters);
           $.extend(closeHashParameters, settings.closeHash);
           EW.setHashParameters(closeHashParameters);
         }
@@ -252,7 +251,7 @@
 
       if (currentActivity) {
         // Trigger open activity event and pass settings to it before creating modal
-        $(document).trigger(activityName + ".open", settings);
+        $(document).trigger(activityName + '.open', settings);
         $.extend(settings, currentActivity.modal);
         currentActivity.modalObject = EW.activities[activityName].modalObject = EW.createModal(settings);
       } else {
