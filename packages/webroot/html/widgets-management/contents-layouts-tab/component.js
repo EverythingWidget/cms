@@ -17,39 +17,41 @@ function Handler(state, scope) {
     methods: {
       getFeederLayout: function (feederURL) {
         return this.pathLayouts.filter(function (item) {
-          return item.path === feederURL;
-        })[0] || {};
+              return item.path === feederURL;
+            })[0] || {};
       },
       selectLayout: function (url) {
         uisListDialog(url);
-      },
-      addCustom: function (parameters) {
-
       }
     }
   });
 
 
   state.onInit = function () {
-//    console.log('init');
+
   };
 
   state.onStart = function () {
-//    console.log('start');
+
   };
 
   state.onStop = function () {
-//    console.log('stop');
+
   };
 
   function setLayout(pageLayout) {
-    $.post("api/webroot/widgets-management/set-uis", {
+    $.post('api/webroot/widgets-management/set-uis', {
       path: pageLayout.url,
       uis_id: pageLayout.layoutId
     }, function (response) {
       var exist = vue.pathLayouts.filter(function (item) {
         return item.path === pageLayout.url;
       })[0];
+
+      if (pageLayout.layoutId === null) {
+        vue.pathLayouts.splice(vue.pathLayouts.indexOf(exist), 1);
+        return;
+      }
 
       if (exist) {
         exist.name = pageLayout.layoutName;
@@ -68,24 +70,24 @@ function Handler(state, scope) {
 
   function uisListDialog(url) {
     var dialog = EW.createModal({
-      class: "center slim"
+      class: 'center slim'
     });
 
     this.table = EW.createTable({
-      name: "uis-list",
+      name: 'uis-list',
       headers: {
         Name: {},
         Template: {}
       },
       rowCount: true,
-      url: "api/webroot/widgets-management/get-uis-list/",
+      url: 'api/webroot/widgets-management/get-uis-list/',
       pageSize: 30,
       columns: [
-        "name",
-        "template"
+        'name',
+        'template'
       ],
       buttons: {
-        "Select": function (row) {
+        'Select': function (row) {
           setLayout({
             url: url,
             layoutName: row[0].rowData.name,
@@ -107,7 +109,7 @@ function Handler(state, scope) {
       dialog.dispose();
     });
 
-    dialog.append("<div class='header-pane thin'><h1 id='' class='col-xs-12'><span>Layouts</span> Select a layout</h1></div>");
+    dialog.append("<div class='header-pane thin'><h1 id='' class='col-xs-12'><span>Layouts</span>Select a layout</h1></div>");
     var d = $("<div id='' class='form-content'></div>");
     this.table.container.addClass("mt");
     d.append(this.table.container);
