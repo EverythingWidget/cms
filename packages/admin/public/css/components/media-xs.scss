@@ -1,3 +1,5 @@
+@import 'variables';
+
 @media(min-width: 320px) {
   //.action-center {
   //  width: 260px;
@@ -19,21 +21,22 @@
 
   system-float-menu {
     position: absolute;
-    top: 12px;
-    right: 100px;
+    top: 15px;
+    left: 300px;
     z-index: 8;
 
     &.expand {
       .float-menu-actions {
         opacity: 1;
-        border-radius: 0;
+        border-radius: 6px;
         transform: scale(1);
         /*position: relative;*/
         visibility: visible;
       }
 
       .float-menu-indicator {
-        box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.1), 0 9px 15px 0 rgba(0, 0, 0, 0.3);
+        box-shadow: none;
+        border-radius: 6px;
         &:after {
           transform: rotate(45deg);
         }
@@ -42,19 +45,21 @@
 
     .float-menu-actions {
       position: absolute;
-      right: 0;
       top: 0;
       z-index: 1;
       text-align: right;
       opacity: 0;
-      padding: 55px 0 0 0;
+      padding: 55px 10px 5px;
+      border-radius: 6px;
+      background-color: #1B2433;
       visibility: hidden;
-      transform-origin: right top;
-      transform: scale(.8);
+      transform-origin: left top;
+      transform: scale(.7);
       transition: all .15s ease-in-out;
       display: flex;
-      align-items: flex-end;
+      align-items: stretch;
       flex-direction: column;
+      box-shadow: $panel-shadow;
 
       > .btn {
         width: auto;
@@ -62,7 +67,7 @@
         float: right;
         margin: 5px 0;
         clear: right;
-        box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.1), 0 6px 11px 0 rgba(0, 0, 0, 0.15);
+        box-shadow: none;
         border-radius: 19px;
       }
     }
@@ -81,14 +86,13 @@
     .float-menu-indicator {
       cursor: pointer;
       background-color: #1B2433;
-      width: 50px;
-      height: 50px;
+      width: 44px;
+      height: 44px;
       border-radius: 25px;
       z-index: 2;
       opacity: 1;
       display: block;
       position: absolute;
-      right: 0;
       top: 0;
       transition: all .15s;
       box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1), 0 5px 9px rgba(0, 0, 0, 0.1);
@@ -108,15 +112,18 @@
   }
 
   system-float-menu[position='se'] {
+    left: auto;
     right: 35px;
   }
 
   system-float-menu[position='se'], .btn-float.pos-se {
     top: auto;
-    bottom: 30px;
+    bottom: 33px;
 
     .float-menu-actions {
       top: auto;
+      left: auto;
+      right: 0;
       bottom: 0;
       padding: 0 0 55px 0;
       transform-origin: right bottom;
@@ -124,6 +131,8 @@
     }
 
     .float-menu-indicator {
+      left: auto;
+      right: 0;
       top: auto;
       bottom: 0;
     }
