@@ -63,7 +63,7 @@ if (!isset($_SESSION['login'])) {
 
           <div class="app-bar-middle-section">
             <system-field class="field action-item search-field">
-              <label>Search</label>
+              <label><i class="icon-search"></i></label>
               <input class="text-field" type="text" />
             </system-field>
           </div>

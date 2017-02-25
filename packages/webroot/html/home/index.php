@@ -88,7 +88,7 @@ $HTML_CSS = webroot\WidgetsManagement::get_html_links_concatinated();
 $HTML_META_TAGS = webroot\WidgetsManagement::get_meta_tags();
 ?>
 <!doctype html> 
-<html amp lang="<?= $page_language ?>">
+<html lang="<?= $page_language ?>">
   <head>
     <base href="<?= EW_ROOT_URL ?>">
     <meta charset="utf-8">

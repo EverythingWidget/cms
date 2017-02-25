@@ -24,21 +24,21 @@
     }
 
     > label:first-child {
-      margin-left: 15px;
+      margin-left: 10px;
       top: 0;
       left: 0;
+      font-size: 22px;
       line-height: 38px;
     }
 
     &[focus] > label:first-child , &:not([empty]) > label:first-child {
       top: 0;
-      left: -80px;
     }
 
     > .text-field {
       border: none;
       border-radius: 20px;
-      padding: 0px 15px;
+      padding: 0 15px 0 40px;
       background-color: rgba(0,0,0,.06);
     }
   }
