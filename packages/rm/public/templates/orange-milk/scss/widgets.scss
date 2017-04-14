@@ -31,7 +31,7 @@
 
     .btn-prev {
       background-image: url(../public/rm/templates/orange-milk/images/icon-arrow-left.png) !important;
-    } 
+    }
 
     .btn-next {
       background-image: url(../public/rm/templates/orange-milk/images/icon-arrow-right.png) !important;
@@ -39,12 +39,12 @@
     }
   }
 
-  &.rtl {   
+  &.rtl {
     .list-footer {
-      .btn-prev {      
+      .btn-prev {
         background-image: url(../public/rm/templates/orange-milk/images/icon-arrow-right.png) !important;
         float: right;
-      } 
+      }
 
       .btn-next {
         background-image: url(../public/rm/templates/orange-milk/images/icon-arrow-left.png) !important;
@@ -83,21 +83,21 @@
     height: 100vh;
     position: relative;
 
-    .item {      
+    .item {
       overflow: hidden;
       direction: rtl;
       padding-top: 100px;
-      width: 100%;      
+      width: 100%;
       height: 100%;
 
       h2 {
         font-size: 3em;
-        color: #fff;        
+        color: #fff;
         width: 100%;
         margin: 0 auto;
         max-width: 1280px;
         text-align: center;
-        text-shadow: 0 2px 7px rgba(0,0,0,.9), 0 -2px 1px rgba(0,0,0,.3);
+        text-shadow: 0 2px 7px rgba(0, 0, 0, .9), 0 -2px 1px rgba(0, 0, 0, .3);
         position: relative;
         z-index: 2;
       }
@@ -122,10 +122,10 @@
     }
 
     .owl-stage-outer {
-      height: 100% !important;    
+      height: 100% !important;
     }
 
-    .owl-carousel,  .owl-stage,  .owl-item {
+    .owl-carousel, .owl-stage, .owl-item {
       height: 100%;
     }
 
@@ -145,7 +145,7 @@
       span {
         transition: all 0.2s;
         background-color: #fff;
-        box-shadow: 0 2px 3px rgba(0,0,0,.16), 0 3px 8px rgba(0,0,0,.1);
+        box-shadow: 0 2px 3px rgba(0, 0, 0, .16), 0 3px 8px rgba(0, 0, 0, .1);
         width: 20px;
         height: 20px;
       }
@@ -153,7 +153,7 @@
       &:hover {
         span {
           background-color: #eee;
-          box-shadow: 0 5px 4px rgba(0,0,0,.2), 0 6px 12px rgba(0,0,0,.2);
+          box-shadow: 0 5px 4px rgba(0, 0, 0, .2), 0 6px 12px rgba(0, 0, 0, .2);
         }
       }
 
@@ -168,13 +168,22 @@
   &.important-event {
     height: 475px;
     background-color: #fff;
-    box-shadow: 0 1px 5px rgba(0,0,0,0.16),0 4px 11px rgba(0,0,0,.26);
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.16), 0 4px 11px rgba(0, 0, 0, .26);
     overflow: hidden;
     background-clip: padding-box;
-    border-radius: 6px;
+    border-radius: 8px;
 
-    .list-content, .list-item, .list-item-cell {     
+    .list-content, .list-item, .list-item-cell {
       height: 100%;
+    }
+
+    .list-item-cell {
+      overflow: hidden;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
 
     img {
@@ -182,16 +191,23 @@
       margin: 0 auto;
       height: 100%;
       display: block;
-    }   
+      flex: 1 0 auto;
+    }
+
+    iframe {
+      width: 100%;
+      height: auto;
+      flex: 1 0 auto;
+    }
 
     @media (min-width: 320px) {
       max-width: 320px;
       margin: 0 auto;
-    } 
+    }
 
     @media (min-width: 768px) {
       margin-bottom: 45px;
-    }    
+    }
 
     @media (min-width: 992px) {
       height: 360px;
@@ -203,13 +219,13 @@
     }
   }
 
-  &.events-list { 
+  &.events-list {
     @media (min-width: 320px) {
-      margin-top: 30px; 
+      margin-top: 30px;
     }
 
     .owl-carousel {
-      .owl-stage-outer {                
+      .owl-stage-outer {
         @media (min-width: 992px) {
           padding: 0;
         }
@@ -259,7 +275,7 @@
             }
           }
 
-          &.date {           
+          &.date {
             background-color: #123321;
             color: #fff;
             border-radius: 5px;
@@ -309,7 +325,7 @@
         }
       }
 
-      .owl-prev, .owl-next  {
+      .owl-prev, .owl-next {
         background-repeat: no-repeat !important;
         background-position: center center !important;
         font-size: 2em;
@@ -326,12 +342,12 @@
 
       .owl-prev {
         background-image: url(../public/rm/templates/orange-milk/images/icon-arrow-left.png) !important;
-      } 
+      }
 
       .owl-next {
         background-image: url(../public/rm/templates/orange-milk/images/icon-arrow-right.png) !important;
         float: right;
-      }      
+      }
 
       .owl-prev:hover, .owl-next:hover {
         background-color: $font-akcent-color-dark;
@@ -344,7 +360,7 @@
 
     &.rtl {
       .owl-carousel {
-        .owl-stage-outer{
+        .owl-stage-outer {
           direction: ltr;
         }
 
@@ -365,15 +381,14 @@
 
     .list-item {
 
-
-      .list-item-cell {        
+      .list-item-cell {
         overflow: hidden;
         padding: 15px 0;
       }
 
       & + .list-item {
         margin-top: 5px;
-        border-top: 2px solid rgba(0,0,0,.1);
+        border-top: 2px solid rgba(0, 0, 0, .1);
       }
 
       .front-image {
@@ -385,14 +400,14 @@
 
       .title {
         font-size: 1.33em;
-        margin: 0;        
+        margin: 0;
         font-weight: 500;
       }
 
-      .\@content\/date-created , .\@post\/date-published {
+      .\@content\/date-created, .\@post\/date-published {
         font-size: .9em;
         font-weight: 500;
-        color:#aaa;
+        color: #aaa;
         margin: 0;
         margin-top: 5px;
       }
@@ -461,7 +476,7 @@
 
       @media (min-width: 768px) {
         flex: 1 0 100%;
-      }   
+      }
 
       @media (min-width: 992px) {
         flex: 1 0 50%;
@@ -473,15 +488,15 @@
         position: relative;
         border-radius: 3px;
         background-color: #fff;
-        padding: 0; 
+        padding: 0;
         padding-bottom: 48px;
         overflow: hidden;
         margin-bottom: 30px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-        transition: all 0.2s ease-in-out;  
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+        transition: all 0.2s ease-in-out;
 
         &:hover {
-          box-shadow: 0 10px 20px rgba(0,0,0,0.15), 0 6px 6px rgba(0,0,0,0.19);
+          box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15), 0 6px 6px rgba(0, 0, 0, 0.19);
         }
 
         p, h1, h2, h3 {
@@ -490,10 +505,10 @@
 
         .article-image, img:first-child {
           float: none;
-          display: block; 
+          display: block;
           max-width: 100%;
         }
-      }      
+      }
 
       .item-link {
         border-radius: 0;
@@ -502,7 +517,7 @@
         right: 0;
         border: 0px solid $font-akcent-color;
         border-width: 1px 0 0 1px;
-        border-top-left-radius: 5px;       
+        border-top-left-radius: 5px;
         color: $font-akcent-color;
         padding: 10px 30px;
         max-width: 350px;
@@ -568,7 +583,7 @@
         border-radius: 100%;
         width: 80px;
         height: 80px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1),0 4px 7px rgba(0,0,0,0.1);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 4px 7px rgba(0, 0, 0, 0.1);
       }
 
       .scrubber {
@@ -580,7 +595,7 @@
         left: 80px;
         right: 120px;
         width: auto;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1),0 4px 7px rgba(0,0,0,0.1);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 4px 7px rgba(0, 0, 0, 0.1);
 
         .progress {
           height: inherit;
@@ -615,7 +630,7 @@
     text-align: left;
   }
 
-  &.text-right{
+  &.text-right {
     text-align: right;
   }
 
@@ -636,16 +651,16 @@
   &.nav-menu {
     white-space: nowrap;
     font-size: .9em;
-    overflow: hidden;    
+    overflow: hidden;
     height: 80px;
     margin: 0 -10px;
     position: relative;
 
     ul {
       @extend .content-box;
-      list-style: none;    
-      text-transform: uppercase;    
-    }  
+      list-style: none;
+      text-transform: uppercase;
+    }
 
     &.right {
       text-align: right;
@@ -666,16 +681,16 @@
       display: block;
 
       &:hover {
-        background-color: rgba($font-akcent-color,.1);
+        background-color: rgba($font-akcent-color, .1);
       }
-    } 
+    }
 
     .active > a, a.selected {
       background-color: $font-akcent-color;
       color: #fff;
-    } 
+    }
 
-    @media (max-width: 420px) {     
+    @media (max-width: 420px) {
       min-width: 240px;
       width: 75%;
       font-size: 1.2em;
@@ -684,7 +699,7 @@
       z-index: 99999;
       right: 0;
       margin: 0;
-      box-shadow: 0 0 0 rgba(#000,.18);
+      box-shadow: 0 0 0 rgba(#000, .18);
       background-color: transparent;
       overflow-y: auto;
       transition: all .3s ease-in-out;
@@ -700,12 +715,12 @@
         margin: 0 0 0 auto;
       }
 
-      ul {                      
+      ul {
         li {
           float: none;
           display: block;
         }
-      }  
+      }
 
       a {
         text-align: right;
@@ -715,9 +730,9 @@
 
       &.active {
         background-color: #fff;
-        
+
         height: 100%;
-        box-shadow: -2px 3px 23px rgba(#000,.3);       
+        box-shadow: -2px 3px 23px rgba(#000, .3);
       }
     }
   }
@@ -728,23 +743,23 @@
 
     ul {
       @extend .content-box;
-      list-style: none;    
+      list-style: none;
       text-transform: uppercase;
 
-      li {      
+      li {
         padding: 10px;
         line-height: 30px;
       }
-    }   
+    }
 
     a {
       color: $font-color;
       font-weight: 300;
-    } 
+    }
 
     .active > a, a.selected {
       color: $font-akcent-color;
-    } 
+    }
   }
 
   &.right.nav-menu-footer {
@@ -756,7 +771,7 @@
     }
   }
 
-  &.daily-quote {  
+  &.daily-quote {
     margin: 0;
     padding-top: 30px;
     padding-bottom: 30px;
@@ -778,10 +793,10 @@
 
     .list-item {
       &:not(:last-child) {
-        &::after{
-          content:' ';
+        &::after {
+          content: ' ';
           width: 2px;
-          background-color: rgba(0,0,0,.1);
+          background-color: rgba(0, 0, 0, .1);
           position: absolute;
           top: 20px;
           bottom: 20px;
@@ -844,7 +859,7 @@
       }
 
       h2 {
-        font-weight: 500;             
+        font-weight: 500;
       }
 
       a {
@@ -854,7 +869,7 @@
         color: #000;
         margin-top: 15px;
         border-radius: 4px;
-        padding: 10px 25px;  
+        padding: 10px 25px;
         font-weight: 500;
         text-align: center;
         transition: all .3s;
@@ -872,17 +887,17 @@
   &.people {
     position: relative;
     text-align: center;
-    margin: 30px 0; 
-    padding: 20px 15px;  
+    margin: 30px 0;
+    padding: 20px 15px;
 
     * {
       position: relative;
       z-index: 1;
     }
 
-    h2 {    
+    h2 {
       font-weight: normal;
-      color: #fff;    
+      color: #fff;
     }
 
     img {
@@ -890,12 +905,12 @@
       height: 200px;
       border-radius: 50%;
       background-color: #fff;
-      margin: 15px auto;  
+      margin: 15px auto;
       display: block;
       overflow: hidden;
-      border: 10px solid #fff; 
+      border: 10px solid #fff;
       transition: all .3s;
-      box-shadow: 0 3px 5px rgba(0,0,0,.1), 0 5px 9px rgba(0,0,0,.1); 
+      box-shadow: 0 3px 5px rgba(0, 0, 0, .1), 0 5px 9px rgba(0, 0, 0, .1);
     }
   }
 
@@ -906,7 +921,7 @@
   &.contact-us-form {
     display: block;
     font-weight: 300;
-    font-size: 1.3em;  
+    font-size: 1.3em;
 
     .text-field {
       width: 100%;
@@ -982,21 +997,21 @@
       .list-item-cell {
         position: relative;
         background-color: $item-background-color;
-        overflow: hidden;      
+        overflow: hidden;
         height: 400px;
-        max-width: 245px;        
+        max-width: 245px;
         font-size: 17px;
         border-radius: 7px;
         padding: 0;
         text-align: center;
         margin: 0 auto 30px;
-        box-shadow:  0 1px 16px rgba(0,0,0,0.15),0 14px 16px rgba(0,0,0,0.12);
+        box-shadow: 0 1px 16px rgba(0, 0, 0, 0.15), 0 14px 16px rgba(0, 0, 0, 0.12);
         color: #fff;
         justify-content: space-between;
         flex-direction: column;
         display: flex;
 
-        .date {           
+        .date {
           /*background-color: rgba(255,255,255,.33);*/
           color: #fff;
           height: 160px;
@@ -1030,7 +1045,7 @@
 
         a {
           font-weight: 500;
-          color: rgba(0,0,0,.5);
+          color: rgba(0, 0, 0, .5);
         }
 
         .item-link {
@@ -1039,20 +1054,20 @@
           border: 2px solid #fff;
           color: #fff;
           border-radius: 18px;
-          white-space: nowrap;      
+          white-space: nowrap;
           overflow: hidden;
           display: inline-block;
           margin: 0 20px 20px;
 
           &:hover {
-            background-color: rgba(255,255,255,.1);
+            background-color: rgba(255, 255, 255, .1);
           }
         }
       }
     }
 
     &.rtl {
-      .list-item { 
+      .list-item {
         float: right;
       }
     }
@@ -1147,7 +1162,7 @@
       width: auto;
       border-radius: 6px;
       background-color: #fff;
-      /*box-shadow: 0 1px 16px rgba(0,0,0,0.08),0 14px 16px rgba(0,0,0,0.05);*/ 
+      /*box-shadow: 0 1px 16px rgba(0,0,0,0.08),0 14px 16px rgba(0,0,0,0.05);*/
       border: 2px solid #eee;
 
       p {
@@ -1169,7 +1184,7 @@
 
     .list-footer {
       margin: 0 -15px;
-      padding: 10px 5px 0;     
+      padding: 10px 5px 0;
       border-top: 2px solid #ccc;
       border-radius: 0;
       height: auto;
@@ -1184,7 +1199,7 @@
 
     iframe {
       display: block;
-      width: 100%;      
+      width: 100%;
       margin: 0 auto;
     }
   }
@@ -1219,23 +1234,23 @@
       width: 58px;
       height: 58px;
       line-height: 58px;
-      text-align: center;      
+      text-align: center;
       font-size: 36px;
-      color:#fff;
+      color: #fff;
 
       &::before {
         font-style: normal;
         font-family: 'si';
         display: block;
         height: 100%;
-      }      
+      }
     }
 
     > .icon-facebook {
       background-color: #3e5b98;
 
       &::before {
-        content:'\e041';  
+        content: '\e041';
       }
     }
 
@@ -1243,7 +1258,7 @@
       background-color: #e02a20;
 
       &::before {
-        content:'\e051';  
+        content: '\e051';
       }
     }
 
@@ -1251,7 +1266,7 @@
       background-color: #4da7de;
 
       &::before {
-        content:'\e040';  
+        content: '\e040';
       }
     }
   }
@@ -1267,7 +1282,7 @@
 
 .widget.subscribe {
   background-color: #fff;
-  box-shadow: 0 8px 17px 0px rgba(0,0,0,0.1), 0 1px 5px rgba(0,0,0, .12);
+  box-shadow: 0 8px 17px 0px rgba(0, 0, 0, 0.1), 0 1px 5px rgba(0, 0, 0, .12);
   padding: 15px 15px 25px;
   border-radius: 8px;
   max-width: 400px;
@@ -1279,10 +1294,10 @@
 
   > form {
     display: flex;
-    flex-direction: column;  
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-  } 
+  }
 
   galaxy-field {
     width: 100%;
@@ -1308,7 +1323,7 @@
       &:focus {
         border-color: $font-akcent-color;
       }
-    }       
+    }
   }
 
   .btn-submit {
@@ -1321,13 +1336,13 @@
 }
 
 .rtl {
-  .widget{
+  .widget {
     &.nav-menu {
       ul {
         li {
           float: right;
         }
-      }   
+      }
     }
 
     &.nav-menu-footer {
@@ -1335,7 +1350,7 @@
         li {
           text-align: right;
         }
-      }   
+      }
     }
   }
 }
