@@ -1,11 +1,12 @@
 /* global System, Scope */
 
-System.newStateHandler(Scope, function (state) {
-  var vue;
-  
+function SubscribersComponent(state, scope) {
+  var component = this;
+  component.scope = scope;
+
   state.onInit = function () {
-    vue = new Vue({
-      el: Scope.views.subscribers_card,
+    component.vue = new Vue({
+      el: scope.views.subscribers_card,
       data: {
         card_title: 'Subscribers',
         subscribers: {
@@ -14,8 +15,9 @@ System.newStateHandler(Scope, function (state) {
         }
       },
       methods: {
+        deleteSubscriber: component.deleteSubscriber.bind(component),
         reload: function () {
-          vue.$broadcast('refresh');
+          component.vue.$broadcast('refresh');
         }
       }
     });
@@ -24,4 +26,29 @@ System.newStateHandler(Scope, function (state) {
   state.onStart = function () {
 
   };
+}
+
+SubscribersComponent.prototype.deleteSubscriber = function (id) {
+  var component = this;
+  var lock = System.ui.lock({
+    element: component.scope.views.subscribers_card,
+    akcent: 'loader center'
+  });
+
+  $.ajax({
+    type: 'DELETE',
+    url: 'api/ew-blog/subscribers/' + id,
+    success: function () {
+      component.vue.$broadcast('refresh');
+    },
+    complete: function () {
+      lock.dispose();
+    }
+  });
+};
+
+// ------ Registering the state handler ------ //
+
+System.newStateHandler(Scope, function (state) {
+  new SubscribersComponent(state, Scope);
 });

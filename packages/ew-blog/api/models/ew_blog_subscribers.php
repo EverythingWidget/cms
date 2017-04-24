@@ -24,7 +24,8 @@ class ew_blog_subscribers extends \Illuminate\Database\Eloquent\Model{
   public static $rules = [];
   public static $RULES = [
       'email' => [
-          'required'
+          'required',
+          'email'
       ]
   ];
   protected $casts = [

@@ -27,6 +27,11 @@
           <p>
             {{ subscribers.options }}
           </p>
+          <p class="actions">
+            <button class="btn btn-text btn-circle btn-danger" type="button" v-on:click="deleteSubscriber(subscribers.id)">
+              <i class="icon-trash-empty"></i>
+            </button>
+          </p>
         </li>
       </ul>
     </system-spirit>
