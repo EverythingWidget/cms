@@ -1,4 +1,4 @@
-/* global System, EW */
+/* global System, EW, Vue */
 
 (function () {
   System.entity('stage/init-ui-components', init);

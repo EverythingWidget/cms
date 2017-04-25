@@ -1,4 +1,4 @@
-/* global Scope, System, EW */
+/* global $, Scope, System, Vue */
 
 var BlogService = Scope.import('html/ew-blog/core/service.html');
 
@@ -62,13 +62,12 @@ function PostsComponent(state, scope) {
         component.data.posts.page_size = 9;
       }
     });
-
   };
 
   state.onStart = function () {
     component.data.tab = null;
 
-    $(document).off('article-list.refresh').on('article-list.refresh', function (e, eventData) {
+    $(document).off('article-list.refresh').on('article-list.refresh', function () {
       component.vue.$broadcast('refresh');
     });
   };

@@ -1,4 +1,4 @@
-/* global System, Scope */
+/* global $, System, Scope, Vue */
 
 function SubscribersComponent(state, scope) {
   var component = this;

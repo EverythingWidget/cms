@@ -1,4 +1,4 @@
-/* global Scope, System */
+/* global $, Scope, System, Vue */
 
 var BlogService = Scope.import('html/ew-blog/core/service.html');
 
@@ -41,7 +41,7 @@ function CommentsComponent(state, scope) {
         }
       },
       watch: {
-        show: function (value, oldValue) {
+        show: function (value) {
           switch (value) {
             case 'confirmed':
               component.data.filter.where.visibility = 'confirmed';
