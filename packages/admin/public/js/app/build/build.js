@@ -1,4 +1,4 @@
-/* global System, ew_plugins, EW_APPS, EW, EW_ACTIVITIES */
+/* global $, System, ew_plugins, EW_APPS, EW, EW_ACTIVITIES, TweenLite, hashHandler */
 
 window.addEventListener('load', function () {
   System.entity('stage/init-ui-components').call();
@@ -16,31 +16,31 @@ window.addEventListener('load', function () {
   };
 
   $.fn.comeIn = function (dur) {
-    if (!this.is(":visible") || this.css("visibility") !== "visible") {
-      var orgClass = "";
+    if (!this.is(':visible') || this.css('visibility') !== 'visible') {
+      var orgClass = '';
       this.stop(true, true);
 
-      if (this.prop("class")) {
-        orgClass = this.prop("class").replace('btn-hide', '');
+      if (this.prop('class')) {
+        orgClass = this.prop('class').replace('btn-hide', '');
       }
 
-      this.addClass("btn-hide").css({
-        display: ""
+      this.addClass('btn-hide').css({
+        display: ''
       });
 
       this.animate({
         className: orgClass
-      }, dur || 300, "Power2.easeInOut");
+      }, dur || 300, 'Power2.easeInOut');
     }
 
     return this;
   };
 
   $.fn.comeOut = function (dur) {
-    if (!this.hasClass("btn-hide")) {
+    if (!this.hasClass('btn-hide')) {
       this.stop(true, true).animate({
-        className: this.prop("class") + " btn-hide"
-      }, dur || 300, "Power2.easeInOut", function () {
+        className: this.prop('class') + ' btn-hide'
+      }, dur || 300, 'Power2.easeInOut', function () {
         this.hide();
       });
     }
@@ -54,7 +54,7 @@ window.addEventListener('load', function () {
 
   ew_plugins.linkChooser = function (options) {
     var defaults = {
-      callbackName: "function-reference"
+      callbackName: 'function-reference'
     };
     var linkChooserDialog;
 
@@ -63,7 +63,7 @@ window.addEventListener('load', function () {
       var $element = $(element);
       defaults.callback = function (link) {
         $element.val(JSON.stringify(link || '{}')).change();
-        linkChooserDialog.trigger("close");
+        linkChooserDialog.trigger('close');
       };
       //this.$element = $(element);
       var settings = $.extend({}, defaults, options);
@@ -83,7 +83,7 @@ window.addEventListener('load', function () {
             url: 'html/admin/content-management/link-chooser/component.php', params: {
               callback: settings.callbackName,
               data: $element.val(),
-              contentType: $element.data("content-type") || "all"
+              contentType: $element.data('content-type') || 'all'
             }
           }, function (module) {
             module.scope.onSelect = settings.callback;
@@ -109,7 +109,6 @@ window.addEventListener('load', function () {
     var imageChooserDialog;
 
     function ImageChooser(element, options) {
-      var base = this;
       var $element = $(element);
       $element.off('change.image-chooser');
       $element.on('change.image-chooser', function () {
@@ -133,7 +132,7 @@ window.addEventListener('load', function () {
         wrapper.find('div').append(image);
       }
 
-      image.css("max-height", $element.css("max-height"));
+      image.css('max-height', $element.css('max-height'));
       var imageChooserBtn;
       // if the plugin has been called later again on same element
       if ($element.attr(ACTIVE_PLUGIN_ATTR)) {
@@ -141,22 +140,22 @@ window.addEventListener('load', function () {
       }
       // If the plugin has been called for the first time
       else {
-        image.attr("src", $element.val() || "asset/images/no-image.png");
+        image.attr('src', $element.val() || 'asset/images/no-image.png');
         image.css({
-          border: "none",
-          outline: "none",
-          minHeght: "128px",
-          maxWidth: "720px",
-          display: "block",
-          float: "",
-          margin: "2px auto 2px auto"
+          border: 'none',
+          outline: 'none',
+          minHeght: '128px',
+          maxWidth: '720px',
+          display: 'block',
+          float: '',
+          margin: '2px auto 2px auto'
         });
 
-        imageChooserBtn = $("<button type='button' class='btn btn-xs btn-link btn-image-chooser'>Choose Image</button>");
+        imageChooserBtn = $('<button type="button" class="btn btn-xs btn-link btn-image-chooser">Choose Image</button>');
         imageChooserBtn.css({
-          position: "absolute",
-          right: "2px",
-          bottom: "2px"
+          position: 'absolute',
+          right: '2px',
+          bottom: '2px'
         });
         wrapper.append(imageChooserBtn);
         $element.attr(ACTIVE_PLUGIN_ATTR, true);
@@ -165,14 +164,11 @@ window.addEventListener('load', function () {
       imageChooserBtn.click(function () {
         imageChooserDialog = EW.createModal({
           autoOpen: false,
-          class: "center"
+          class: 'center'
         });
 
         System.loadModule({
-          //$.post("html/admin/content-management/link-chooser-media.php", {
-//          id: "content-management/media",
-          url: "html/admin/content-management/link-chooser/link-chooser-media.php",
-//          fresh: true,
+          url: 'html/admin/content-management/link-chooser/link-chooser-media.php',
           params: {
             callback: settings.callbackName
           },
@@ -205,49 +201,47 @@ window.addEventListener('load', function () {
     EW.initPlugins($(element));
   }
 
-  var mouseInNavMenu = false,
-      enterOnLink = false,
-      currentSectionIndex = null;
+  var mouseInNavMenu = false, enterOnLink = false, currentSectionIndex = null;
 
-  System.ui.body = $("body")[0];
+  System.ui.body = $('body')[0];
   System.ui.components = {
-    appMainActions: $("#app-main-actions"),
-    mainContent: $("#main-content"),
-    body: $("body"),
+    appMainActions: $('#app-main-actions'),
+    mainContent: $('#main-content'),
+    body: $('body'),
     document: $(document),
-    navigationMenu: $("#navigation-menu"),
-    appsMenu: $("#apps-menu"),
-    sectionsMenu: $("#sections-menu"),
-    sectionsMenuList: $("#sections-menu-list")
+    navigationMenu: $('#navigation-menu'),
+    appsMenu: $('#apps-menu'),
+    sectionsMenu: $('#sections-menu'),
+    sectionsMenuList: $('#sections-menu-list')
   };
 
   System.ui.behaviors.highlightAppSection = function (index, section) {
     currentSectionIndex = index;
 
     if (EW.selectedSection) {
-      System.ui.utility.removeClass(EW.selectedSection, "selected");
+      System.ui.utility.removeClass(EW.selectedSection, 'selected');
     }
 
     EW.selectedSection = section;
-    System.ui.utility.addClass(EW.selectedSection, "selected");
+    System.ui.utility.addClass(EW.selectedSection, 'selected');
   };
 
   System.ui.components.sectionsMenuList[0].onSetData = function (data) {
     if (data.length) {
       if (mouseInNavMenu) {
         TweenLite.to(System.ui.components.sectionsMenu[0], .3, {
-          className: "sections-menu in",
-          ease: "Power2.easeInOut"
+          className: 'sections-menu in',
+          ease: 'Power2.easeInOut'
         });
       }
     } else {
-      System.ui.components.sectionsMenu.css("height", System.ui.components.sectionsMenu.height());
+      System.ui.components.sectionsMenu.css('height', System.ui.components.sectionsMenu.height());
       TweenLite.to(System.ui.components.sectionsMenu[0], .2, {
-        className: "sections-menu out",
-        height: "94px",
-        ease: "Power2.easeInOut",
+        className: 'sections-menu out',
+        height: '94px',
+        ease: 'Power2.easeInOut',
         onComplete: function () {
-          System.ui.components.sectionsMenu.css("height", "");
+          System.ui.components.sectionsMenu.css('height', '');
         }
       });
     }
@@ -283,8 +277,6 @@ window.addEventListener('load', function () {
     }
   });
 
-  var moveAnim = null;
-
   System.ui.components.appsMenu.on('mouseenter touchstart', 'a', function (event) {
     var app = event.currentTarget.dataset.app;
     EW.hoverApp = 'system/' + app;
@@ -305,7 +297,7 @@ window.addEventListener('load', function () {
       return;
     }
 
-    moveAnim = TweenLite.to(System.ui.components.sectionsMenu[0], .2, {
+    TweenLite.to(System.ui.components.sectionsMenu[0], .2, {
       top: event.currentTarget.offsetTop
     });
   });
@@ -392,23 +384,23 @@ window.addEventListener('load', function () {
       });
       errorsList += '</ul>';
     } catch (e) {
-      console.log("ajaxError: ", e);
-      console.log(data);
-      console.log(e.stack);
+      console.info('ajaxError: ', e);
+      console.info(data);
+      console.info(e.stack);
     }
 
     System.ui.components.body.EW().notify({
       message: {
-        html: (!data.responseJSON) ? "---ERROR---" : data.responseJSON.message + errorsList
+        html: (!data.responseJSON) ? '---ERROR---' : data.responseJSON.message + errorsList
       },
-      status: "error",
-      position: "n",
-      delay: "stay"
+      status: 'error',
+      position: 'n',
+      delay: 'stay'
     }).show();
   });
 
   $('select').selectpicker({
-    container: "body"
+    container: 'body'
   });
 
   // select the target node
@@ -433,7 +425,8 @@ window.addEventListener('load', function () {
     subtree: true
   });
 });
-/* global System, EW */
+
+/* global System, EW, Vue */
 
 (function () {
   System.entity('stage/init-ui-components', init);

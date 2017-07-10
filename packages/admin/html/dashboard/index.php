@@ -52,11 +52,11 @@ if (!isset($_SESSION['login'])) {
 
       <div id="app-bar" class="app-bar" v-bind:class="styleClass">
         <div class="tool-bar">
-          <div class="app-bar-first-section"  v-on:mouseleave="navTitleOut()">
-            <button class="btn-circle" v-on:mouseenter="navTitleIn()">
-              <i class="icon-menu"></i>
-            </button>
-            <div id="sections-menu-title" class="app-bar-title" v-bind:class="{ 'inline-loader' : isLoading }" v-on:mouseenter="navTitleIn()">
+          <div class="app-bar-first-section"  >
+<!--            <button class="btn-circle" v-on:mouseenter="navTitleIn()">-->
+<!--              <i class="icon-menu"></i>-->
+<!--            </button>-->
+            <div id="sections-menu-title" class="app-bar-title" v-bind:class="{ 'inline-loader' : isLoading }" >
               <strong>{{ appTitle }}</strong> {{ sectionTitle }}
             </div>
           </div>

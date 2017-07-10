@@ -12,8 +12,8 @@
 }
 
 #main-content {
+  width: auto;
   min-width: 320px;
-  width: 100%;
   position: absolute;
   overflow: scroll;
   overflow-x: hidden;
@@ -22,7 +22,8 @@
   margin-right: -14px;
   display: block;
   top: 75px;
-  left: 0;
+  left: 110px;
+  right: 0;
   bottom: 0;
   opacity: 0;
   z-index: 1;
@@ -51,7 +52,8 @@
 }
 
 .app-bar {
-  display: flex;
+  margin: 0 0 0 110px;
+  display: block;
   align-items: center;
   flex-direction: column;
   background-color: $app-bar-background;
@@ -87,6 +89,7 @@
     z-index: 4;
     align-items: center;
     box-shadow: $panel-shadow;
+    position: relative;
 
     > .app-bar-first-section {
       height: 100%;
@@ -94,6 +97,8 @@
       display: flex;
       align-items: center;
       padding-left: 25px;
+      min-width: 300px;
+      flex: 0 1 auto;
     }
 
     > .app-bar-middle-section {
@@ -192,18 +197,16 @@
 
 .navigation-menu {
   position: absolute;
-  top: 60px;
-  left: 15px;
-  height: calc(90% - 60px);
-  width: 260px;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 110px;
   z-index: 5;
   float: left;
   padding: 0;
   margin: 0;
   transition: all .25s ease-in-out;
   transform-origin: 25px top;
-  transform: scale(0);
-  opacity: 0;
   -webkit-font-smoothing: antialiased;
 
   &.in {
@@ -226,9 +229,7 @@
   width: 110px;
   text-align: center;
   background-color: $apps-menu-background;
-  border-radius: 4px;
   left: 0;
-  margin-top: 30px;
   box-shadow: $panel-shadow;
   z-index: 2;
   float: left;
@@ -236,17 +237,7 @@
   flex-direction: column;
   justify-content: center;
   position: relative;
-
-  &:before {
-    content: ' ';
-    position: absolute;
-    left: 20px;
-    top: -14px;
-    width: 14px;
-    height: 14px;
-    border: 7px solid transparent;
-    border-bottom-color: $apps-menu-background;
-  }
+  height: 100%;
 
   &.expand {
     height: 100%;
