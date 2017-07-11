@@ -2116,6 +2116,10 @@ textarea.text-field {
     font-weight: 300;
     white-space: nowrap;
 
+    &:not(:first-child) {
+      border-left: 1px solid #fff;
+    }
+
     &.actions {
       min-width: 80px;
     }
@@ -2128,10 +2132,23 @@ textarea.text-field {
     &:hover td {
       background-color: #fff;
       color: #000;
-      border-color: rgba(0, 0, 0, .7);
-      border-left-width: 0;
+      border-color: black;
+      border-width: 1px 0;
       padding-left: 11px;
+    }
 
+    td {
+      min-height: 32px;
+      line-height: 32px;
+      padding: 4px 10px;
+      border-color: transparent;
+      border-style: solid;
+      border-width: 1px 0;
+      font-weight: 500;
+
+      &:not(:first-child) {
+        border-left: 1px solid #fff;
+      }
     }
   }
 }
@@ -2149,20 +2166,6 @@ textarea.text-field {
 .data tr.selected td {
   background-color: #ffc;
   color: #000;
-}
-
-.data td {
-  min-height: 32px;
-  line-height: 32px;
-  padding: 4px 10px;
-  border: 0 solid transparent;
-  border-width: 1px 0;
-  font-weight: 500;
-}
-
-.data td:not(:first-child), .data th:not(:first-child) {
-  border-color: transparent;
-  border-left: 1px solid #fff;
 }
 
 .glass-pane-lock.data {
