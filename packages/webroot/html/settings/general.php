@@ -130,7 +130,7 @@
     nl: 'Dutch'
   };
 
-  new Vue({
+  var vue = new Vue({
     el: Scope.views.webroot_settings_card,
     data: {
       items: [],
@@ -139,5 +139,9 @@
       languages: languages,
       contentId: null
     }
+  });
+
+  Scope.parentScope.html.find('#settings-cards').on('refresh', function (event, response) {
+    vue.activeLanguage = response.data['webroot/language'];
   });
 </script>

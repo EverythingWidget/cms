@@ -180,6 +180,7 @@
         card_title: 'tr{Documents}',
         folders: {
           url: 'api/admin/content-management/contents-folders/',
+          start: 0,
           page_size: 12
         },
         articles: {
@@ -426,7 +427,8 @@
     var foldersElements = [];
     System.addActiveRequest($.get('api/admin/content-management/contents-folders/', {
       parent_id: component.parentId,
-      page_size: component.ui.documents_card_vue.folders.page_size
+      page_size: component.ui.documents_card_vue.folders.page_size,
+      start: component.ui.documents_card_vue.folders.start
     }, function (response) {
       component.ui.documents_card_vue.card_title = response.parent ? response.parent.title : 'tr{Documents}';
 

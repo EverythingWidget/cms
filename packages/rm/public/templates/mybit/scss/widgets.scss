@@ -8,14 +8,19 @@
     justify-content: flex-end;
     height: 100%;
     list-style: none;
-    font-size: .9em;
+    font-size: 16px;
+    font-weight: 300;
 
     @media screen and (min-width: 1025px) {
-      font-size: 1.1em;
+      //font-size: 1.1em;
     }
 
     > li {
-      margin: 0 15px;
+      margin: 0 40px 0 0;
+
+      &:last-child {
+        margin-right: 0;
+      }
 
       > a {
         font-weight: 300;
@@ -23,7 +28,7 @@
         color: #fff;
         text-align: center;
         line-height: 22px;
-        padding: 17px 6px 14px;
+        padding: 26px 8px 20px;
         white-space: nowrap;
         border-bottom: 3px solid transparent;
       }
@@ -504,4 +509,8 @@
     padding: 0;
     margin: 5px 0;
   }
+}
+
+.widget.content-box {
+  padding: 20px 50px;
 }

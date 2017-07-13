@@ -53,7 +53,7 @@
             continue;
           }
 
-          System.loadModule({url: apps[app].url}, function (module) {
+          System.loadModule({url: apps[app].url, scope: Scope}, function (module) {
             settingsCard.append(module.html);
             EW.setFormData(settingsCard, data);
           });

@@ -214,19 +214,19 @@ $panelId = $_REQUEST['panelId'];
 
       if (widgetParams) {
         setTimeout(function () {
-          console.log('widget data: ', widgetParams);
           EW.setFormData("#uis-widget", widgetParams);
         });
       }
 
       self.vue = new Vue({
-        el: '#widget-control-panel',
+        el: self.uisWidgetForm.find('#widget-control-panel')[0],
         data: {
           styleClasses: styleClasses,
           availableClasses: <?= json_encode(EWCore::parse_css_clean(EW_PACKAGES_DIR . '/rm/public/' . $_REQUEST["template"] . '/template.css', 'widget')) ?>,
           containerClasses: populateLayout(containerClasses),
           widgetClasses: [],
-          tempClasses: []
+          tempClasses: [],
+          styleClassesText: null
         },
         computed: {
           appliedClasses: function () {

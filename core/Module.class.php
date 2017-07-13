@@ -19,7 +19,7 @@ class Module {
   private $permissions = [];
 
   /**
-   * 
+   *
    * @param App $app An instance of owener app of this section
    */
   public function __construct($app) {
@@ -43,7 +43,7 @@ class Module {
     if (!isset($this->resource)) {
       throw new \Exception("Resource can't be NULL");
     }
-    
+
     return $this->resource;
   }
 
@@ -59,28 +59,28 @@ class Module {
    * Override this method to include all the external/internal resource that you are going to be used in this module
    */
   protected function install_assets() {
-    
+
   }
 
   /**
    * Override this method to register all the feeders that this module is going to provide
    */
   protected function install_feeders() {
-    
+
   }
 
   /**
    * Override this method to register all the action handlers that this module is going to provide
    */
   protected function install_handlers() {
-    
+
   }
 
   /**
    * Override this method to registare your plugins
    */
   protected function install_permissions() {
-    
+
   }
 
   public function is_unathorized_method_invoke() {
@@ -105,13 +105,12 @@ class Module {
       $result = $this->pre_processors[$i]->process($this, $verb, $method_name, $parameters);
       if ($result === true) {
         continue;
-      }
-      else {
+      } else {
         return ($result === false || $result === null) ?
-                \EWCore::log_error(400, "API request is not executed", [
-                    "Pre processor has stopped the process: " . get_class($this->pre_processors[$i]),
-                    "$verb: $method_name"]) :
-                $result;
+            \EWCore::log_error(400, "API request is not executed", [
+                "Pre processor has stopped the process: " . get_class($this->pre_processors[$i]),
+                "$verb: $method_name"]) :
+            $result;
       }
     }
     return true;
@@ -121,7 +120,7 @@ class Module {
     if (!$verb) {
       return \EWCore::log_error(400, "Wrong command: Request method is not defined");
     }
-    
+
     $parameters['_verb'] = $verb;
 
     if (!$method_name) {
@@ -130,8 +129,7 @@ class Module {
 
     if (preg_match('/(.*)\.(.*)?/', $method_name)) {
       $path = EW_PACKAGES_DIR . '/' . $this->app->get_root() . '/' . $this->current_class->getShortName() . '/' . $method_name;
-    }
-    else if (method_exists($this, $method_name)) {
+    } else if (method_exists($this, $method_name)) {
       //ob_start();
       return $this->invoke_method($verb, $method_name, $parameters);
       //return ob_get_clean();
@@ -143,12 +141,10 @@ class Module {
       ob_start();
       include $path;
       return ob_get_clean();
-    }
-    else if ($path) {
+    } else if ($path) {
       $tp = $this->app->get_root() . '/' . $this->current_class->getShortName() . '/' . $method_name;
       return \EWCore::log_error(404, "<h4>API not found</h4><p>API call: {$tp}</p>");
-    }
-    else {
+    } else {
       return \EWCore::log_error(404, "API not found: {$method_name}");
     }
   }
@@ -163,8 +159,13 @@ class Module {
     //$db = \EWCore::get_db_connection();
     $method_object = new \ReflectionMethod($this, $method_name);
     $method_parameters = $method_object->getParameters();
+    foreach ($parameters as $key => $value) {
+      if ($value === '') {
+        $parameters[$key] = NULL;
+      }
+    }
 
-    $parameters['_input'] = (object) $parameters;
+    $parameters['_input'] = (object)$parameters;
 
     ksort($method_parameters);
 
@@ -200,11 +201,11 @@ class Module {
   }
 
   /**
-   * 
+   *
    * @param PreProcess $preProcessObj An instance of pre process object
    */
   public function registerPreProcesser($preProcessObj) {
-    
+
   }
 
   /**
@@ -292,13 +293,13 @@ class Module {
   }
 
   /**
-   * 
+   *
    * @param type $key
    * @param type $default_value
    */
   public function register_content_label($key, $default_value) {
     //$ro = new ReflectionClass($this);
-    $defaults = ["app"     => $this->app->get_root(),
+    $defaults = ["app" => $this->app->get_root(),
         "section" => $this->get_section_name(),
         "command" => 'ew_label_' . $key];
     $defaults = array_merge($defaults, $default_value);
@@ -306,7 +307,7 @@ class Module {
   }
 
   public function register_content_type($type_name, $get, $get_list) {
-    
+
   }
 
   public function register_permission($id, $description, $permissions) {
@@ -328,7 +329,7 @@ class Module {
    * An activity is a process that usually contains a visual form(s). An activity itself has no business logic but it have interaction with business logic.
    * It is highly recommended to avoid implementing business logic in an activity. It is recommended to register an activity for every form.<br/>
    * <code>$parameter</code> can contain title, description, form, url, actions and custom parameters </p>
-   * @param type $id 
+   * @param type $id
    * @param array $parameters
    */
   public function register_activity($id, $parameters) {
@@ -350,8 +351,7 @@ class Module {
     if ($user_info = $setting->fetch_assoc()) {
       $db->query("UPDATE ew_settings SET value = '$value' WHERE `key` = '$app_root/$key' ") or die($db->error);
       return TRUE;
-    }
-    else {
+    } else {
       $db->query("INSERT INTO ew_settings(`key`, `value`) VALUES('$app_root/$key','$value')") or die($db->error);
       return TRUE;
     }

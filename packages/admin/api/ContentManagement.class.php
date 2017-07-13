@@ -774,7 +774,12 @@ class ContentManagement extends \ew\Module {
             'ew_contents.id',
             \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")
         ]);
-        $query->where('parent_id', '=', $parent_id)->join('ew_contents_labels', 'ew_contents.id', '=', 'ew_contents_labels.content_id')->where('type', 'article')->where('ew_contents_labels.key', 'admin_ContentManagement_language')->where('ew_contents_labels.value', $_language);
+        $query->where('parent_id', '=', $parent_id)
+            ->where('type', 'article')
+            ->join('ew_contents_labels', 'ew_contents.id', '=', 'ew_contents_labels.content_id')
+            ->where('ew_contents_labels.key', 'admin_ContentManagement_document')
+//            ->where('ew_contents_labels.value', $_language);
+            ->groupBy('ew_contents_labels.value');
 
         $_response->properties['total'] = $query->get()->count();
 
@@ -785,7 +790,13 @@ class ContentManagement extends \ew\Module {
             'ew_contents.id',
             \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")
         ]);
-        $query->where('parent_id', '=', $parent_id)->where('type', 'article')->join('ew_contents_labels', 'ew_contents.id', '=', 'ew_contents_labels.content_id')->where('type', 'article')->where('ew_contents_labels.key', 'admin_ContentManagement_language')->where('ew_contents_labels.value', $_language);
+        $query->where('parent_id', '=', $parent_id)
+            ->where('type', 'article')
+            ->join('ew_contents_labels', 'ew_contents.id', '=', 'ew_contents_labels.content_id')
+            ->where('ew_contents_labels.key', 'admin_ContentManagement_document')
+            ->groupBy('ew_contents_labels.value');
+//            ->where('ew_contents_labels.key', 'admin_ContentManagement_language')
+//            ->where('ew_contents_labels.value', $_language);
 
         $_response->properties['total'] = $query->get()->count();
 

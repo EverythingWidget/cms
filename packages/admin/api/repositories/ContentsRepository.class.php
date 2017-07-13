@@ -15,21 +15,22 @@ class ContentsRepository implements \ew\CRUDRepository {
   }
 
   /**
-   * 
+   *
    * @param \stdClass $input
    * @return \ew\Result
    */
   public function create($input) {
     $result = new \ew\Result();
+    $input->title = trim($input->title);
 
     if (!isset($input->parent_id) || !$input->parent_id) {
       $input->parent_id = 0;
     }
 
-    $validator = \SimpleValidator\Validator::validate((array) $input, [
-                'title'     => ['required'],
-                'type'      => ['required'],
-                'parent_id' => ['integer']
+    $validator = \SimpleValidator\Validator::validate((array)$input, [
+        'title' => ['required'],
+        'type' => ['required'],
+        'parent_id' => ['integer']
     ]);
 
 
@@ -43,15 +44,14 @@ class ContentsRepository implements \ew\CRUDRepository {
 
     $content = new ew_contents;
     $content->author_id = $_SESSION['EW.USER_ID'];
-    $content->fill((array) $input);
+    $content->fill((array)$input);
     $content->slug = \EWCore::to_slug($input->title, 'ew_contents');
 
     if (isset($content->content)) {
       $content_fields = $this->get_content_fields($content->content);
       $content->content_fields = $content_fields->content_fields;
       $content->parsed_content = $content_fields->html;
-    }
-    else {
+    } else {
       $content->content_fields = null;
       $content->parsed_content = null;
     }
@@ -67,9 +67,9 @@ class ContentsRepository implements \ew\CRUDRepository {
           $this->update_label($content->id, $key, $value);
         }
       }
-      
+
       $content->labels = $this->parse_labels($this->get_content_labels($content->id), $content);
-    }       
+    }
 
     $result->message = 'content has been created';
     $result->data = $content;
@@ -115,7 +115,7 @@ class ContentsRepository implements \ew\CRUDRepository {
   }
 
   /**
-   * 
+   *
    * @param type $input
    * @return mixed
    */
@@ -129,6 +129,7 @@ class ContentsRepository implements \ew\CRUDRepository {
 
   public function update($input) {
     $result = new \ew\Result();
+    $input->title = trim($input->title);
 
     if ($input->title === '') {
       $result->error = 400;
@@ -150,13 +151,12 @@ class ContentsRepository implements \ew\CRUDRepository {
       return $result;
     }
 
-    $content->fill((array) $input);
+    $content->fill((array)$input);
     if (isset($content->content)) {
       $content_fields = $this->get_content_fields($content->content);
       $content->content_fields = $content_fields->content_fields;
       $content->parsed_content = $content_fields->html;
-    }
-    else {
+    } else {
       $content->content_fields = null;
       $content->parsed_content = null;
     }
@@ -170,7 +170,7 @@ class ContentsRepository implements \ew\CRUDRepository {
           $this->update_label($content->id, $key, $value);
         }
       }
-      
+
       $content->labels = $this->parse_labels($this->get_content_labels($content->id), $content);
     }
 
@@ -243,7 +243,7 @@ class ContentsRepository implements \ew\CRUDRepository {
     }
 
     $content = ew_contents::find($id, ['*',
-                \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
+        \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")]);
 
     if (isset($content)) {
       $labels = $this->get_content_labels($id);
@@ -268,23 +268,24 @@ class ContentsRepository implements \ew\CRUDRepository {
 
     $content = ew_contents::find($content_id)->toArray();
 
-    $value = preg_replace_callback('/\$content\.(\w*)/', function($m) use ($content) {
+    $value = preg_replace_callback('/\$content\.(\w*)/', function ($m) use ($content) {
       return $content[$m[1]];
     }, $value);
 
     $label = \ew_contents_labels::firstOrNew(['content_id' => $content_id,
-                'key'        => $key]);
+        'key' => $key]);
 
     if ($value) {
       $label->value = $value;
       $label->save();
-    }
-    else if ($label->exists) {
+    } else if ($key === 'admin_ContentManagement_document') {
+      $label->value = $content_id;
+    } else if ($label->exists) {
       $label->delete();
     }
 
     return json_encode(["status" => "success",
-        "id"     => $label->id]);
+        "id" => $label->id]);
   }
 
   private function get_node_link($node) {
@@ -344,40 +345,38 @@ class ContentsRepository implements \ew\CRUDRepository {
           $field_value["alt"][] = $field->getAttribute("alt");
 
           $content_fields->{$field->getAttribute("content-field")} = $field_value;
-        }
-        else {
+        } else {
           $link = $this->get_node_link($field);
           $content_fields->{$field->getAttribute("content-field")} = ["content" => [
-                  $current_field_value["content"],
-                  trim($html)
-              ], "link"    => [
-                  $current_field_value["link"],
-                  $this->get_node_link($field)
-              ],
-              "src"     => [
+              $current_field_value["content"],
+              trim($html)
+          ], "link" => [
+              $current_field_value["link"],
+              $this->get_node_link($field)
+          ],
+              "src" => [
                   $current_field_value["src"],
                   $this->get_node_src($field)
               ],
-              "tag"     => [
+              "tag" => [
                   $current_field_value["tag"],
                   $field->tagName
               ],
-              "class"   => [
+              "class" => [
                   $current_field_value["class"],
                   $field->getAttribute("class")
               ]
           ];
         }
-      }
-      else {
+      } else {
         $link = $this->get_node_link($field);
         $src = $this->get_node_src($field);
         $content_fields->{$field->getAttribute("content-field")} = ["content" => trim($html),
-            "link"    => $link,
-            "src"     => $src,
-            "tag"     => $field->tagName,
-            "class"   => $field->getAttribute("class"),
-            "alt"     => $field->getAttribute("alt")
+            "link" => $link,
+            "src" => $src,
+            "tag" => $field->tagName,
+            "class" => $field->getAttribute("class"),
+            "alt" => $field->getAttribute("alt")
         ];
       }
     }
@@ -400,7 +399,7 @@ class ContentsRepository implements \ew\CRUDRepository {
     $result = new \ew\Result();
 
     $result->html = $innerHTML;
-    $result->content_fields = (array) $content_fields;
+    $result->content_fields = (array)$content_fields;
 
     return $result;
   }
