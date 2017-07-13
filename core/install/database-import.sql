@@ -23,7 +23,7 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `ew_contents` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `id` bigint(20) NOT NULL,
   `author_id` bigint(20) NOT NULL,
   `type` varchar(100) CHARACTER SET utf8 DEFAULT 'article',
   `title` tinytext CHARACTER SET utf8 COLLATE utf8_bin,
@@ -240,6 +240,15 @@ ALTER TABLE `ew_users_notifications`
   ADD PRIMARY KEY (`id`),
   ADD KEY `buun_user_id_fk_idx` (`user_id`);
 
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `ew_contents`
+--
+ALTER TABLE `ew_contents`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `ew_contents_labels`
 --

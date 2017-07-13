@@ -6,7 +6,7 @@
   margin: 0;
   position: fixed;
   z-index: 100;
-  background-color: #EF4035;
+  background-color: $text-color;
 
   + .block {
     margin-top: 56px;

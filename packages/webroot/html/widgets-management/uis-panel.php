@@ -65,7 +65,7 @@ $container_id = $_REQUEST["containerId"];
     </div>-->
 
     <div class="tab-pane" id="size-layout">
-      <?php include 'layouts/widget-form/size-layout.php'; ?>
+      <?php include 'widget-form/size-layout.php'; ?>
     </div>
   </div>
 </div>

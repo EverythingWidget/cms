@@ -2,16 +2,16 @@
 @import "blocks.scss";
 @import "panels.scss";
 @import "widgets.scss";
-
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800');
 
 html, body {
   font-family: 'Open Sans', sans-serif;
-  color: rgba(72, 72, 72, 0.85);;
+  color: rgba(72, 72, 72, 0.88);
   height: 100%;
   position: relative;
   display: block;
   font-size: 15px;
+  line-height: 24px;
 }
 
 .container {
@@ -26,6 +26,7 @@ html, body {
 h1, h2 {
   font-weight: 300;
   color: $text-color;
+  line-height: 36px;
 }
 
 h1 {
@@ -123,7 +124,7 @@ h2 {
     background-clip: padding-box;
     border-radius: 7px;
     padding: 10px 8px;
-    margin-top: 44px; 
+    margin-top: 44px;
     outline: none;
     position: relative;
   }
