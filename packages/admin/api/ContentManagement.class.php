@@ -160,6 +160,7 @@ class ContentManagement extends \ew\Module {
         'api/albums',
         'api/contents_folders',
         'api/contents_articles',
+        'api/articles_read',
         'api/get_media_list',
         'api/media-audios',
         'api/get-content-by-slug',
@@ -711,7 +712,7 @@ class ContentManagement extends \ew\Module {
     }
   }
 
-  public function contents_folders($_response, $parent_id, $start, $page_size) {
+  public function contents_folders($_response, $parent_id, $start, $page_size, $_language = 'en') {
     $container_id = ew_contents::find($parent_id);
     $up_parent_id = $container_id['parent_id'] ? $container_id['parent_id'] : 0;
 
@@ -746,7 +747,7 @@ class ContentManagement extends \ew\Module {
     return $rows;
   }
 
-  public function contents_articles($_response, $parent_id = null, $start, $page_size, $order_by = null, $_language = 'en') {
+  public function contents_articles($_response, $parent_id = null, $start, $page_size, $order_by = null, $_language) {
     if (!isset($start)) {
       $start = 0;
     }
@@ -777,9 +778,10 @@ class ContentManagement extends \ew\Module {
         $query->where('parent_id', '=', $parent_id)
             ->where('type', 'article')
             ->join('ew_contents_labels', 'ew_contents.id', '=', 'ew_contents_labels.content_id')
-            ->where('ew_contents_labels.key', 'admin_ContentManagement_document')
-//            ->where('ew_contents_labels.value', $_language);
-            ->groupBy('ew_contents_labels.value');
+//            ->where('ew_contents_labels.key', 'admin_ContentManagement_document')
+//            ->groupBy('ew_contents_labels.value');
+            ->where('ew_contents_labels.key', 'admin_ContentManagement_language')
+            ->where('ew_contents_labels.value', $_language);
 
         $_response->properties['total'] = $query->get()->count();
 
@@ -793,13 +795,10 @@ class ContentManagement extends \ew\Module {
         $query->where('parent_id', '=', $parent_id)
             ->where('type', 'article')
             ->join('ew_contents_labels', 'ew_contents.id', '=', 'ew_contents_labels.content_id')
-            ->where('ew_contents_labels.key', 'admin_ContentManagement_document')
-            ->groupBy('ew_contents_labels.value');
-//            ->where('ew_contents_labels.key', 'admin_ContentManagement_language')
-//            ->where('ew_contents_labels.value', $_language);
+            ->where('ew_contents_labels.key', 'admin_ContentManagement_language')
+            ->where('ew_contents_labels.value', $_language);
 
         $_response->properties['total'] = $query->get()->count();
-
         $articles = $query->take($page_size)->skip($start)->get();
       }
 
@@ -1659,4 +1658,86 @@ class ContentManagement extends \ew\Module {
     return \ew\APIResponse::standard_response($_response, $result);
   }
 
+
+  public function articles_read($_response, $parent_id = null, $start, $page_size, $order_by = null, $language) {
+    if (is_null($start)) {
+      $start = 0;
+    }
+
+    if (is_null($page_size)) {
+      $page_size = 100;
+    }
+
+    // if there is no parent_id then select all the articles
+    if (is_null($parent_id) && $parent_id != 0) {
+      $articles = ew_contents::where('type', 'article')->orderBy('title')->get([
+          '*',
+          'ew_contents.id',
+          \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")
+      ]);
+
+      $_response->properties['total'] = $articles->count();
+
+      return $articles->toArray();
+    } else {
+      $container_id = ew_contents::find($parent_id);
+      $up_parent_id = isset($container_id['parent_id']) ? $container_id['parent_id'] : 0;
+      if (isset($order_by)) {
+        $query = ew_contents::select([
+            '*',
+            'ew_contents.id',
+            \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")
+        ]);
+        $query->where('parent_id', '=', $parent_id)
+            ->where('type', 'article')
+            ->join('ew_contents_labels', 'ew_contents.id', '=', 'ew_contents_labels.content_id');
+
+        if (isset($language) && !is_null($language)) {
+          $query->where('ew_contents_labels.key', 'admin_ContentManagement_language')
+              ->where('ew_contents_labels.value', $language);
+        } else {
+          $query->where('ew_contents_labels.key', 'admin_ContentManagement_document')
+              ->groupBy('ew_contents_labels.value');
+        }
+
+        $_response->properties['total'] = $query->get()->count();
+
+        $articles = $query->take($page_size)->skip($start)->orderBy("date_modified", $order_by)->get();
+      } else {
+        $query = ew_contents::select([
+            '*',
+            'ew_contents.id',
+            \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")
+        ]);
+        $query->where('parent_id', '=', $parent_id)
+            ->where('type', 'article')
+            ->join('ew_contents_labels', 'ew_contents.id', '=', 'ew_contents_labels.content_id');
+
+        if (isset($language) && !is_null($language)) {
+          $query->where('ew_contents_labels.key', 'admin_ContentManagement_language')
+              ->where('ew_contents_labels.value', $language);
+        } else {
+          $query->where('ew_contents_labels.key', 'admin_ContentManagement_document')
+              ->groupBy('ew_contents_labels.value');
+        }
+
+        $_response->properties['total'] = $query->get()->count();
+
+        $articles = $query->take($page_size)->skip($start)->get();
+      }
+
+      $data = array_map(function ($e) use ($up_parent_id) {
+        $e['up_parent_id'] = $up_parent_id;
+        return $e;
+      }, $articles->toArray());
+
+      $_response->properties['start'] = intval($start);
+      $_response->properties['page_size'] = intval($page_size);
+      $_response->properties['parent'] = isset($container_id) ? $container_id->toArray() : null;
+
+      return $data;
+    }
+
+    return \EWCore::log_error(400, 'tr{Something went wrong}');
+  }
 }

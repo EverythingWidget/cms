@@ -93,7 +93,7 @@
       if (_this.contentType === "all" || _this.contentType === "content" || _this.contentType === "contentField") {
         _this.articlesListHeader.html("tr{Loading articles}");
 
-        $.post('api/admin/content-management/contents-articles', {
+        $.post('api/admin/content-management/articles', {
           parent_id: parentId
         }, function (data) {
           _this.articlesListHeader.html("tr{Articles}");

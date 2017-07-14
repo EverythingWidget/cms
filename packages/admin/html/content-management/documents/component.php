@@ -444,7 +444,7 @@
 
     var articlesList = {};
 
-    System.addActiveRequest($.get('api/admin/content-management/contents-articles/', {
+    System.addActiveRequest($.get('api/admin/content-management/articles/', {
       parent_id: component.parentId,
       page_size: component.ui.documents_card_vue.articles.page_size
     }, function (response) {

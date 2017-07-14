@@ -165,7 +165,7 @@ class Module {
       }
     }
 
-    $parameters['_input'] = (object)$parameters;
+    $parameters['_input'] = (object) $parameters;
 
     ksort($method_parameters);
 

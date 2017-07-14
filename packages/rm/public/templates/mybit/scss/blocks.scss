@@ -9,12 +9,12 @@
   background-color: $text-color;
 
   + .block {
-    margin-top: 56px;
+    margin-top: 71px;
   }
 }
 
 .block.section {
-  padding: 0 0 30px;
+  padding: 0;
 }
 
 .block.secondry {
@@ -70,4 +70,10 @@
   min-height: 350px;
   background-size: contain;
   background-color: #EAE8EB;
+}
+
+.block.office-building {
+  background: url('/public/rm/templates/mybit/images/office-building.jpg') no-repeat  center center;
+  height: 400px;
+  background-size: cover;
 }
