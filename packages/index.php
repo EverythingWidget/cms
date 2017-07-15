@@ -46,7 +46,7 @@ ob_end_clean();
 //}
 
 $_file = null;
-error_reporting(E_WARNING | E_ERROR);
+error_reporting(E_WARNING | E_ERROR | E_PARSE);
 
 $ew_core = new EWCore();
 $ew_core->init();
@@ -93,8 +93,7 @@ $_REQUEST['_language'] = $language;
 $url_language = ($language == $default_language) ? '' : $language . '/';
 
 // Set protocol to https if detected
-$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') ||
-    $_SERVER['SERVER_PORT'] == 443) ? 'https://' : 'http://';
+$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? 'https://' : 'http://';
 
 // Set the language for the root url
 if ($_SERVER['SERVER_PORT'] !== '80' && $_SERVER['SERVER_PORT'] !== '443') {
@@ -111,9 +110,12 @@ define('EW_CACHE_URL', EW_ROOT_URL . basename(EW_CACHE_PATH));
 define('CURRENT_URL', $host_url . $_SERVER['REQUEST_URI']);
 
 $resource_types = [
-    'html', // All the HTML resources should be hosted here.
-    'api', // All the api resources should be hosted here.
-    'public', // All the publicly available resources should be hosted here.
+    'html',
+  // All the HTML resources should be hosted here.
+    'api',
+  // All the api resources should be hosted here.
+    'public',
+  // All the publicly available resources should be hosted here.
     'develop',
     'test'
 ];
@@ -179,7 +181,7 @@ function translate($match) {
 // show the result
 if ($RESULT_CONTENT) {
   echo preg_replace_callback("/tr(\:\w*)?\{(.*?)\}/", 'translate', $RESULT_CONTENT);
-//  echo $RESULT_CONTENT;
+  //  echo $RESULT_CONTENT;
 } else {
   echo 'RESULT_CONTENT: EMPTY';
 }

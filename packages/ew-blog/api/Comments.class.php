@@ -23,19 +23,19 @@ class Comments extends \ew\Module {
     return "EW Blog comments";
   }
 
-  protected function install_assets() { 
+  protected function install_assets() {
     if (!in_array('ew_blog_comments', \EWCore::$DEFINED_TABLES)) {
       $table_install = DBUtility::create_table('ew_blog_comments', [
-                  'id'           => 'BIGINT AUTO_INCREMENT PRIMARY KEY',
-                  'content_id'   => 'BIGINT NOT NULL',
-                  'parent_id'    => 'BIGINT NOT NULL',
-                  'name'         => 'VARCHAR(300) NULL',
-                  'email'        => 'VARCHAR(300) NULL',
-                  'commenter_id' => 'BIGINT NULL',
-                  'content'      => 'TEXT NULL',
-                  'visibility'   => 'VARCHAR(300) DEFAULT "not confirmed"',
-                  'date_created' => 'DATETIME NULL',
-                  'date_updated' => 'DATETIME NULL'
+          'id' => 'BIGINT AUTO_INCREMENT PRIMARY KEY',
+          'content_id' => 'BIGINT NOT NULL',
+          'parent_id' => 'BIGINT NOT NULL',
+          'name' => 'VARCHAR(300) NULL',
+          'email' => 'VARCHAR(300) NULL',
+          'commenter_id' => 'BIGINT NULL',
+          'content' => 'TEXT NULL',
+          'visibility' => 'VARCHAR(300) DEFAULT "not confirmed"',
+          'date_created' => 'DATETIME NULL',
+          'date_updated' => 'DATETIME NULL'
       ]);
 
       $PDO = \EWCore::get_db_PDO();
@@ -46,9 +46,9 @@ class Comments extends \ew\Module {
     }
 
     \EWCore::register_ui_element('apps/ew-blog/navs', 'comments', [
-        'id'    => 'ew-blog/comments',
+        'id' => 'ew-blog/comments',
         'title' => 'Comments',
-        'url'   => 'html/ew-blog/comments/component.php'
+        'url' => 'html/ew-blog/comments/component.php'
     ]);
 
     require_once EW_PACKAGES_DIR . '/ew-blog/api/models/ew_blog_posts.php';
@@ -108,13 +108,12 @@ class Comments extends \ew\Module {
 
       if ($post->data->content->parent_id === 0) {
         $default_comments_feature = \EWCore::call_api('admin/api/settings/read-settings', [
-                    'app_name' => 'ew-blog/comments-feature'
-                ])['data']['ew-blog/comments-feature'];
+            'app_name' => 'ew-blog/comments-feature'
+        ])['data']['ew-blog/comments-feature'];
 
         if (isset($default_comments_feature)) {
           $post->data->comments = intval($default_comments_feature);
-        }
-        else {
+        } else {
           $post->data->comments = 1;
         }
 
@@ -140,41 +139,37 @@ class Comments extends \ew\Module {
     return \ew\APIResponse::standard_response($_response, $comment);
   }
 
-  public function read(\ew\APIResponse $_response, $_input, $_identifier) {
-    $_input->id = $_identifier;
-
+  public function read(\ew\APIResponse $_response, $_input) {
     $result = (new CommentsRepository())->read($_input);
 
     return \ew\APIResponse::standard_response($_response, $result);
   }
 
-  public function update(\ew\APIResponse $_response, $_input, $_identifier) {
-    $_input->id = $_identifier;
-
+  public function update(\ew\APIResponse $_response, $_input) {
     $result = (new CommentsRepository())->update($_input);
 
     return \ew\APIResponse::standard_response($_response, $result);
   }
 
-  public function delete(\ew\APIResponse $_response, $_input, $_identifier) {
-    $_input->id = $_identifier;
+  public function delete(\ew\APIResponse $_response, $_input) {
+
 
     $result = (new CommentsRepository())->delete($_input);
 
     return \ew\APIResponse::standard_response($_response, $result);
   }
 
-  public function confirm_update($_response, $_identifier) {
-    $result = (new CommentsRepository())->confirm($_identifier);
+  public function confirm_update($_response, $id) {
+    $result = (new CommentsRepository())->confirm($id);
 
     return \ew\APIResponse::standard_response($_response, $result);
   }
 
   public function options() {
     return [
-        'name'        => 'EW Blog - Comments',
+        'name' => 'EW Blog - Comments',
         'description' => 'Add comments feature to the contents',
-        'version'     => '0.5.0'
+        'version' => '0.5.0'
     ];
   }
 
@@ -182,8 +177,8 @@ class Comments extends \ew\Module {
     $url = 'https://www.google.com/recaptcha/api/siteverify';
 
     $secret = \EWCore::call_api('admin/api/settings/read-settings', [
-                'app_name' => 'webroot/google/recaptcha/secret-key'
-            ])['data']['webroot/google/recaptcha/secret-key'];
+        'app_name' => 'webroot/google/recaptcha/secret-key'
+    ])['data']['webroot/google/recaptcha/secret-key'];
 
     $response = file_get_contents("$url?secret=" . $secret . "&response=" . $_input->response . "&remoteip=" . $_SERVER['REMOTE_ADDR']);
 
@@ -205,13 +200,12 @@ class Comments extends \ew\Module {
 
       if (!$post->data || $post->data->content->parent_id === 0) {
         $default_comments_feature = \EWCore::call_api('admin/api/settings/read-settings', [
-                    'app_name' => 'ew-blog/comments-feature'
-                ])['data']['ew-blog/comments-feature'];
+            'app_name' => 'ew-blog/comments-feature'
+        ])['data']['ew-blog/comments-feature'];
 
         if (isset($default_comments_feature)) {
           $comment_status = intval($default_comments_feature);
-        }
-        else {
+        } else {
           $comment_status = 1;
         }
 
@@ -224,8 +218,7 @@ class Comments extends \ew\Module {
 
     if ($comment_status === -1) {
       return ['is_allowed' => false];
-    }
-    else {
+    } else {
       return ['is_allowed' => true];
     }
   }
@@ -253,13 +246,12 @@ class Comments extends \ew\Module {
 
       if ($post->data->content->parent_id === 0) {
         $default_comments_feature = \EWCore::call_api('admin/api/settings/read-settings', [
-                    'app_name' => 'ew-blog/comments-feature'
-                ])['data']['ew-blog/comments-feature'];
+            'app_name' => 'ew-blog/comments-feature'
+        ])['data']['ew-blog/comments-feature'];
 
         if (isset($default_comments_feature)) {
           $comment_status = intval($default_comments_feature);
-        }
-        else {
+        } else {
           $comment_status = 1;
         }
 
@@ -292,9 +284,7 @@ class Comments extends \ew\Module {
 
     $collection_size = $query->get()->count();
 
-    $query->orderBy('date_updated', $order_by)
-            ->take($page_size)
-            ->skip($page);
+    $query->orderBy('date_updated', $order_by)->take($page_size)->skip($page);
 
     $comments = $query->get();
 
@@ -308,23 +298,23 @@ class Comments extends \ew\Module {
 
     foreach ($comments as $comment) {
       $comments_list->add([
-          'id'             => $comment->id,
-          'html'           => $comment->content,
+          'id' => $comment->id,
+          'html' => $comment->content,
           'content_fields' => [
-              'name'    => [
-                  'tag'     => 'p',
+              'name' => [
+                  'tag' => 'p',
                   'content' => $comment->name
               ],
-              'email'   => [
-                  'tag'     => 'p',
+              'email' => [
+                  'tag' => 'p',
                   'content' => $comment->email
               ],
               'content' => [
-                  'tag'     => 'p',
+                  'tag' => 'p',
                   'content' => nl2br($comment->content)
               ],
-              'date'    => [
-                  'tag'     => 'p',
+              'date' => [
+                  'tag' => 'p',
                   'content' => $comment->date_updated->toDateTimeString()
               ]
           ]

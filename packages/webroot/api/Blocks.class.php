@@ -60,24 +60,24 @@ class Blocks extends \ew\Module {
     return \ew\APIResponse::standard_response($_response, $result);
   }
 
-  public function read(\ew\APIResponse $_response, $_input, $_identifier) {
-    $_input->id = $_identifier;
+  public function read(\ew\APIResponse $_response, $_input) {
+
 
     $result = (new LayoutBlocksRepository())->read($_input);
 
     return \ew\APIResponse::standard_response($_response, $result);
   }
 
-  public function update(\ew\APIResponse $_response, $_input, $_identifier) {
-    $_input->id = $_identifier;
+  public function update(\ew\APIResponse $_response, $_input) {
+
 
     $result = (new LayoutBlocksRepository())->update($_input);
 
     return \ew\APIResponse::standard_response($_response, $result);
   }
 
-  public function delete(\ew\APIResponse $_response, $_input, $_identifier) {
-    $_input->id = $_identifier;
+  public function delete(\ew\APIResponse $_response, $_input) {
+
 
     $result = (new LayoutBlocksRepository())->delete($_input);
 

@@ -16,18 +16,18 @@ use EWCore;
  */
 class ContentManagement extends \ew\Module {
 
-  protected $resource = "api";
+  protected $resource = 'api';
   private $file_types = [
-      "jpeg" => "image",
-      "jpg" => "image",
-      "png" => "image",
-      "gif" => "image",
-      "txt" => "text",
-      "mp3" => "sound",
-      "mp4" => "video"
+      'jpeg' => 'image',
+      'jpg' => 'image',
+      'png' => 'image',
+      'gif' => 'image',
+      'txt' => 'text',
+      'mp3' => 'sound',
+      'mp4' => 'video'
   ];
   private $images_resources = [
-      "/is/htdocs/wp1067381_3GN1OJU4CE/www/culturenights/app/webroot/img/logos/"
+      '/is/htdocs/wp1067381_3GN1OJU4CE/www/culturenights/app/webroot/img/logos/'
   ];
 
   protected function install_assets() {
@@ -69,26 +69,26 @@ class ContentManagement extends \ew\Module {
     }
 
     EWCore::register_ui_element('apps', 'content-management', [
-        "title" => $this->get_title(),
-        "id" => 'content-management',
-        "url" => 'html/admin/content-management/index.php',
-        "description" => $this->get_description()
+        'title' => $this->get_title(),
+        'id' => 'content-management',
+        'url' => 'html/admin/content-management/index.php',
+        'description' => $this->get_description()
     ]);
 
-    $this->register_content_component("document", [
-        "title" => 'Document',
-        "description" => 'Main document',
-        "explorer" => 'admin/html/content-management/documents/explorer-document.php',
-        "explorerUrl" => 'html/admin/content-management/documents/explorer-document.php',
-        "form" => 'admin/html/content-management/documents/label-document.php'
+    $this->register_content_component('document', [
+        'title' => 'Document',
+        'description' => 'Main document',
+        'explorer' => 'admin/html/content-management/documents/explorer-document.php',
+        'explorerUrl' => 'html/admin/content-management/documents/explorer-document.php',
+        'form' => 'admin/html/content-management/documents/label-document.php'
     ]);
 
-    $this->register_content_component("language", [
-        "title" => 'Language',
-        "description" => 'Language of the content',
-        "explorer" => 'admin/html/content-management/documents/explorer-language.php',
-        "explorerUrl" => 'html/admin/content-management/documents/explorer-language.php',
-        "form" => 'admin/html/content-management/documents/label-language.php'
+    $this->register_content_component('language', [
+        'title' => 'Language',
+        'description' => 'Language of the content',
+        'explorer' => 'admin/html/content-management/documents/explorer-language.php',
+        'explorerUrl' => 'html/admin/content-management/documents/explorer-language.php',
+        'form' => 'admin/html/content-management/documents/label-language.php'
     ]);
 
     EWCore::register_ui_element('apps/contents/navs', 'documents', [
@@ -141,11 +141,11 @@ class ContentManagement extends \ew\Module {
     $article_feeder->set_title('articles');
     \webroot\WidgetsManagement::register_widget_feeder($article_feeder);
 
-    $folder_feeder = new \ew\WidgetFeeder('folders', $this, 'list', "ew-list-feeder-folders");
+    $folder_feeder = new \ew\WidgetFeeder('folders', $this, 'list', 'ew-list-feeder-folders');
     $folder_feeder->set_title('folders');
     \webroot\WidgetsManagement::register_widget_feeder($folder_feeder);
 
-    $content_feeder = new \ew\WidgetFeeder('pages', $this, 'page,list', "feeder");
+    $content_feeder = new \ew\WidgetFeeder('pages', $this, 'page,list', 'feeder');
     $content_feeder->set_title('Pages');
     \webroot\WidgetsManagement::register_widget_feeder($content_feeder);
   }
@@ -155,12 +155,7 @@ class ContentManagement extends \ew\Module {
         'api/index',
         'api/content_fields',
         'api/contents-labels',
-        'api/get_category',
-        'api/get_article',
-        'api/albums',
-        'api/contents_folders',
-        'api/contents_articles',
-        'api/articles_read',
+        'api/folders_read',
         'api/get_media_list',
         'api/media-audios',
         'api/get-content-by-slug',
@@ -173,23 +168,16 @@ class ContentManagement extends \ew\Module {
 
     $this->register_permission('manipulate-content', 'User can add new, edit, delete contents', [
         'api/index',
-        'api/add_content',
         'api/contents-create',
         'api/contents-update',
         'api/contents-delete',
-        "api/update_content",
-        "api/update_folder",
-        "api/update_article",
-        "api/update_album",
-        "api/delete_content",
-        "api/delete_content_by_id",
-        "api/folder-delete",
-        "api/delete-album",
-        "api/delete-image",
-        "api/upload-file",
-        "api/upload_audio",
-        "api/register-audio",
-        "api/media-audios",
+        'api/update_article',
+        'api/update_album',
+        'api/delete_content',
+        'api/folder-delete',
+        'api/delete-image',
+        'api/upload-file',
+        'api/upload_audio',
         'api/images-create',
       // ------ html resources ------ //
         'html/index.php',
@@ -202,156 +190,11 @@ class ContentManagement extends \ew\Module {
 
     $this->register_public_access([
         'api/contents-read',
+        'api/articles-read',
         'api/ew-page-feeder-articles',
         'api/ew-list-feeder-folders',
         'api/ew-list-feeder-related-contents',
         'api/feeder'
-    ]);
-  }
-
-  private function get_node_link($node) {
-    $link = null;
-    if ($node->tagName === "a") {
-      $link = $node->getAttribute("href");
-    }
-
-    return $link;
-  }
-
-  private function get_node_src($node) {
-    $link = null;
-    if ($node->tagName === "img") {
-      $link = $node->getAttribute("src");
-    }
-
-    return $link;
-  }
-
-  private function get_content_fields($html) {
-    $content_fields = new \stdClass();
-    if (!isset($html) || $html === "") {
-      return $content_fields;
-    }
-    $dom = new \DOMDocument;
-    $dom->loadHTML('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">' . $html);
-    $xpath = new \DOMXpath($dom);
-
-    $fields = $xpath->query('//*[@content-field]');
-
-    foreach ($fields as $field) {
-      $children = $field->childNodes;
-      $html = "";
-      foreach ($children as $child) {
-        $html .= $dom->saveHTML($child);
-      }
-
-      $current_field_value = $content_fields->{$field->getAttribute("content-field")};
-
-      if ($field->getAttribute("content-field-hidden")) {
-
-        $field->parentNode->removeChild($field);
-      }
-
-      if ($current_field_value) {
-        if (is_array($current_field_value["content"])) {
-          $link = $this->get_node_link($field);
-          $field_value = $content_fields->{$field->getAttribute("content-field")};
-          $field_value["content"][] = trim($html);
-
-          $field_value["link"][] = $this->get_node_link($field);
-
-          $field_value["src"][] = $this->get_node_src($field);
-          $field_value["tag"][] = $field->tagName;
-          $field_value["class"][] = $field->getAttribute("class");
-          $field_value["alt"][] = $field->getAttribute("alt");
-
-          $content_fields->{$field->getAttribute("content-field")} = $field_value;
-        } else {
-          $link = $this->get_node_link($field);
-          $content_fields->{$field->getAttribute("content-field")} = [
-              "content" => [
-                  $current_field_value["content"],
-                  trim($html)
-              ],
-              "link" => [
-                  $current_field_value["link"],
-                  $this->get_node_link($field)
-              ],
-              "src" => [
-                  $current_field_value["src"],
-                  $this->get_node_src($field)
-              ],
-              "tag" => [
-                  $current_field_value["tag"],
-                  $field->tagName
-              ],
-              "class" => [
-                  $current_field_value["class"],
-                  $field->getAttribute("class")
-              ]
-          ];
-        }
-      } else {
-        $link = $this->get_node_link($field);
-        $src = $this->get_node_src($field);
-        $content_fields->{$field->getAttribute("content-field")} = [
-            "content" => trim($html),
-            "link" => $link,
-            "src" => $src,
-            "tag" => $field->tagName,
-            "class" => $field->getAttribute("class"),
-            "alt" => $field->getAttribute("alt")
-        ];
-      }
-    }
-
-    $innerHTML = "";
-    $elements = $dom->documentElement->getElementsByTagName('body');
-
-    foreach ($elements as $element) {
-      if ($element->nodeType !== XML_ELEMENT_NODE) {
-        continue;
-      }
-
-      $children = $element->childNodes;
-
-      foreach ($children as $child) {
-        $innerHTML .= $dom->saveHTML($child);
-      }
-    }
-
-    $result = new \stdClass();
-
-    $result->html = $innerHTML;
-    $result->content_fields = (array)$content_fields;
-
-    return $result;
-  }
-
-  public function update_label($content_id, $key, $value) {
-    if (!$content_id)
-      EWCore::log_error(400, 'tr{Content Id is requierd}');
-    $content = ew_contents::find($content_id)->toArray();
-
-    $value = preg_replace_callback('/\$content\.(\w*)/', function ($m) use ($content) {
-      return $content[$m[1]];
-    }, $value);
-
-    $label = \ew_contents_labels::firstOrNew([
-        'content_id' => $content_id,
-        'key' => $key
-    ]);
-
-    if ($value) {
-      $label->value = $value;
-      $label->save();
-    } else if ($label->exists) {
-      $label->delete();
-    }
-
-    return json_encode([
-        "status" => "success",
-        "id" => $label->id
     ]);
   }
 
@@ -399,148 +242,6 @@ class ContentManagement extends \ew\Module {
     return $result->toArray();
   }
 
-  /**
-   *
-   * @param type $type
-   * @param type $title
-   * @param type $parent_id
-   * @param type $keywords
-   * @param type $description
-   * @param type $content
-   * @param type $featured_image
-   * @param string $date_created
-   * @param string $date_modified
-   * @return JSON json object which hold the result, if the opration is succesful get new row id with "id"
-   */
-  public function add_content($type, $title, $parent_id, $keywords, $description, $html_content, $featured_image, $labels, $date_created = null, $date_modified = null) {
-    /* $validator = \SimpleValidator\Validator::validate(compact(['title',
-      'type',
-      'parent_id']), ew_contents::$rules);
-      if (!$validator->isSuccess())
-      return EWCore::log_error("400", "tr{Content has not been added}", $validator->getErrors()); */
-
-    $v = new \Valitron\Validator(compact([
-        'title',
-        'type',
-        'parent_id'
-    ]));
-
-    $v->rules([
-        "required" => [
-            ["title"],
-            ["type"]
-        ],
-        "integer" => "parent_id"
-    ]);
-
-    if (!$v->validate()) {
-      return EWCore::log_error("400", "tr{Content has not been added}", $v->errors());
-    }
-
-
-    $content = new ew_contents;
-    $content->author_id = $_SESSION['EW.USER_ID'];
-    $content->type = $type;
-    $content->title = $title;
-    $content->slug = EWCore::to_slug($title, "ew_contents");
-    $content->keywords = $keywords;
-    $content->description = $description;
-    $content->parent_id = $parent_id;
-    $content->content = $html_content;
-    if (isset($html_content)) {
-      $content_fields = $this->get_content_fields($html_content);
-      $content->content_fields = json_encode($content_fields->content_fields);
-      $content->parsed_content = $content_fields->html;
-    }
-    $content->featured_image = $featured_image;
-    $content->date_created = date('Y-m-d H:i:s');
-    $content->date_modified = date('Y-m-d H:i:s');
-    $content->save();
-
-    if ($content->id) {
-      $id = $content->id;
-      $labels = json_decode($labels, true);
-      if (is_array($labels))
-        foreach ($labels as $key => $value) {
-          $this->update_label($id, $key, $value);
-        }
-    }
-    return $content->toArray();
-  }
-
-  public function update_content($id, $title, $type, $parent_id, $keywords, $description, $html_content, $featured_image, $labels) {
-    $v = new \Valitron\Validator(compact([
-        'title',
-        'type',
-        'parent_id'
-    ]));
-
-    $v->rules([
-        "required" => [
-            ["title"],
-            ["type"]
-        ],
-        "integer" => "parent_id"
-    ]);
-
-    if (!$v->validate()) {
-      return EWCore::log_error("400", "tr{Content has not been updated}", $v->errors());
-    }
-
-    $content = ew_contents::find($id);
-    $content->author_id = $_SESSION['EW.USER_ID'];
-    $content->type = $type;
-    $content->title = $title;
-    $content->slug = EWCore::to_slug($title, "ew_contents", $id);
-    $content->keywords = $keywords;
-    $content->description = $description;
-    $content->parent_id = $parent_id;
-    $content->content = $html_content;
-    if (isset($html_content)) {
-      $content_fields = $this->get_content_fields($html_content);
-      $content->content_fields = json_encode($content_fields->content_fields);
-      $content->parsed_content = $content_fields->html;
-    }
-
-    $content->featured_image = $featured_image;
-    $content->date_modified = date('Y-m-d H:i:s');
-    $content->save();
-
-    if ($content->id) {
-      $id = $content->id;
-      $labels = json_decode($labels, true);
-      foreach ($labels as $key => $value) {
-        $this->update_label($id, $key, $value);
-      }
-      return \ew\APIResourceHandler::to_api_response($content->toArray(), [
-          status => "success",
-          message => "tr{The content has been updated successfully}"
-      ]);
-    }
-    return EWCore::log_error("400", "Something went wrong, content has not been updated");
-  }
-
-  private function create_html_parts($html_string) {
-    $doc = new \DOMDocument();
-    $doc->loadHTML('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">' . $html_string);
-
-    $xpath = new \DOMXpath($doc);
-    $articles = $xpath->query('//body/*');
-    $links = [];
-    foreach ($articles as $container) {
-      $tag_name = $container->tagName;
-      $text = trim($container->nodeValue);
-      $links[] = array(
-          'content-field' => $container->getAttribute('content-field'),
-          'tag' => $tag_name,
-          'text' => $text,
-          'html' => $doc->saveHTML($container),
-      );
-    }
-
-    return $links;
-  }
-
   public function ew_page_feeder_articles($_response, $id, $_language = 'en') {
     if (!is_numeric($id)) {
       $id = EWCore::slug_to_id($id, 'ew_contents');
@@ -575,8 +276,7 @@ class ContentManagement extends \ew\Module {
     if (!$page_size)
       $page_size = 30;
 
-    //$articles_size = $this->contents_articles($_response, $id, null, null, null, $_language);
-    $articles = $this->contents_articles($_response, $id, $token, $page_size, $order_by, $_language);
+    $articles = $this->articles_read($_response, $id, $token, $page_size, $order_by, $_language);
 
     $result = [];
     if (isset($articles)) {
@@ -627,7 +327,6 @@ class ContentManagement extends \ew\Module {
   }
 
   public function ew_menu_feeder_cp_languages($parameters) {
-    //$this->v
   }
 
   public function page_uis_handler_documents($url, $url_parts = []) {
@@ -667,52 +366,7 @@ class ContentManagement extends \ew\Module {
     return null;
   }
 
-  public function get_article($articleId) {
-    if (!$articleId) {
-      return EWCore::log_error(400, 'tr{Article Id is requierd}');
-    }
-    $article = ew_contents::find($articleId, [
-        '*',
-        \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")
-    ]);
-
-    if (!isset($article)) {
-      return \EWCore::log_error(404, "Requested article not found", "article is not exist: $articleId");
-    }
-
-    $article_info = $article;
-    $article_info->labels = $this->get_content_labels($articleId);
-
-    return $article_info->toArray();
-  }
-
-  public function update_article($id, $title, $parent_id, $keywords = null, $description = null, $content = null, $labels = null) {
-    $v = new \Valitron\Validator($this->get_current_command_args());
-
-
-    $v->rule('required', [
-        "title",
-        "parent_id"
-    ])->message(' {field} is required');
-    $v->rule('integer', "parent_id")->message(' {field} should be integer');
-    $v->labels([
-        "title" => 'tr{Title}',
-        "parent_id" => 'Folder ID'
-    ]);
-    if (!$v->validate())
-      return EWCore::log_error("400", "tr{New article has not been added}", $v->errors());
-
-    $result = $this->update_content($id, $title, 'article', $parent_id, $keywords, $description, $content, null, $labels);
-
-    if ($result["statusCode"] === 200) {
-      $result["message"] = "tr{Article has been updated successfully}";
-      return $result;
-    } else {
-      return EWCore::log_error("400", "Article has not been updated");
-    }
-  }
-
-  public function contents_folders($_response, $parent_id, $start, $page_size, $_language = 'en') {
+  public function folders_read($_response, $parent_id, $start, $page_size, $_language = 'en') {
     $container_id = ew_contents::find($parent_id);
     $up_parent_id = $container_id['parent_id'] ? $container_id['parent_id'] : 0;
 
@@ -747,76 +401,6 @@ class ContentManagement extends \ew\Module {
     return $rows;
   }
 
-  public function contents_articles($_response, $parent_id = null, $start, $page_size, $order_by = null, $_language) {
-    if (!isset($start)) {
-      $start = 0;
-    }
-    if (!$page_size) {
-      $page_size = '18446744073709551610';
-    }
-
-    // if there is no parent_id then select all the articles
-    if (is_null($parent_id) && $parent_id != 0) {
-      $articles = ew_contents::where('type', 'article')->orderBy('title')->get([
-          '*',
-          'ew_contents.id',
-          \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")
-      ]);
-
-      $_response->properties['total'] = $articles->count();
-
-      return $articles->toArray();
-    } else {
-      $container_id = ew_contents::find($parent_id);
-      $up_parent_id = isset($container_id['parent_id']) ? $container_id['parent_id'] : 0;
-      if (isset($order_by)) {
-        $query = ew_contents::select([
-            '*',
-            'ew_contents.id',
-            \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")
-        ]);
-        $query->where('parent_id', '=', $parent_id)
-            ->where('type', 'article')
-            ->join('ew_contents_labels', 'ew_contents.id', '=', 'ew_contents_labels.content_id')
-//            ->where('ew_contents_labels.key', 'admin_ContentManagement_document')
-//            ->groupBy('ew_contents_labels.value');
-            ->where('ew_contents_labels.key', 'admin_ContentManagement_language')
-            ->where('ew_contents_labels.value', $_language);
-
-        $_response->properties['total'] = $query->get()->count();
-
-        $articles = $query->take($page_size)->skip($start)->orderBy("date_modified", $order_by)->get();
-      } else {
-        $query = ew_contents::select([
-            '*',
-            'ew_contents.id',
-            \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")
-        ]);
-        $query->where('parent_id', '=', $parent_id)
-            ->where('type', 'article')
-            ->join('ew_contents_labels', 'ew_contents.id', '=', 'ew_contents_labels.content_id')
-            ->where('ew_contents_labels.key', 'admin_ContentManagement_language')
-            ->where('ew_contents_labels.value', $_language);
-
-        $_response->properties['total'] = $query->get()->count();
-        $articles = $query->take($page_size)->skip($start)->get();
-      }
-
-      $data = array_map(function ($e) use ($up_parent_id) {
-        $e["up_parent_id"] = $up_parent_id;
-        return $e;
-      }, $articles->toArray());
-
-      $_response->properties['start'] = intval($start);
-      $_response->properties['page_size'] = intval($page_size);
-      $_response->properties['parent'] = isset($container_id) ? $container_id->toArray() : null;
-
-      return $data;
-    }
-
-    return \EWCore::log_error(400, 'tr{Something went wrong}');
-  }
-
   public function content_fields($_parts__id, $language) {
     $content = $this->get_content_by_id($_parts__id, $language);
 
@@ -834,10 +418,6 @@ class ContentManagement extends \ew\Module {
     ]);
 
     if (isset($content)) {
-      //$cf = $this->get_content_fields($content->content);
-      //$content->content_fields = json_decode($content->content_fields, true);
-      //$content->parsed_content = $cf['html'];
-
       $labels = $this->get_content_labels($id);
       $content->labels = $labels;
       $content->labels = $this->parse_labels($labels, $content);
@@ -882,82 +462,6 @@ class ContentManagement extends \ew\Module {
     return EWCore::log_error(404, "content not found");
   }
 
-  private function get_contents($title_filter = '%', $type = '%', $token = 0, $page_size = 99999999999999) {
-    if (!$token) {
-      $token = 0;
-    }
-
-    if (!$page_size) {
-      $page_size = '18446744073709551610';
-    }
-
-    $contents = ew_contents::where('type', 'LIKE', $type)->where(\Illuminate\Database\Capsule\Manager::raw("`title` COLLATE UTF8_GENERAL_CI"), 'LIKE', $title_filter . '%')->orderBy('title')->take($page_size)->skip($token)->get([
-        '*',
-        \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")
-    ]);
-
-    return \ew\APIResourceHandler::to_api_response($contents->toArray(), ["total" => $contents->count()]);
-  }
-
-  public function get_category($id) {
-    $db = \EWCore::get_db_connection();
-
-    $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents WHERE id = '$id'") or die($db->error);
-
-    if ($rows = $result->fetch_assoc()) {
-      $db->close();
-      return json_encode($rows);
-    }
-  }
-
-  public function update_folder($id = null, $title = null, $parent_id = null, $keywords = null, $description = null, $content = null, $labels = null) {
-    $db = \EWCore::get_db_connection();
-
-    //$createdModified = date('Y-m-d H:i:s');
-    $v = new \Valitron\Validator($this->get_current_command_args());
-    //print_r(json_decode(stripslashes($labels), TRUE));
-    //echo $parent_id;
-    //global $functions_arguments;
-    //print_r($this->get_current_method_args());
-    //$db = \EWCore::get_db_connection();
-    //print_r(func_get_args());     
-    $v->rule('required', [
-        "title",
-        "parent_id"
-    ])->message(' {field} is required');
-    $v->rule('integer', "parent_id")->message(' {field} should be integer');
-    $v->labels([
-        "title" => 'tr{Title}',
-        "parent_id" => 'Folder ID'
-    ]);
-    /* $id = $db->real_escape_string($_REQUEST['id']);
-      $title = $db->real_escape_string($_REQUEST['title']);
-      $parent_id = $db->real_escape_string($_REQUEST['parent_id']);
-      $keywords = $db->real_escape_string($_REQUEST['keywords']);
-      $description = $db->real_escape_string($_REQUEST['description']); */
-    if (!$v->validate())
-      return EWCore::log_error("400", "New folder has not been added", $v->errors());
-
-    /* $content = (stripcslashes($content));
-      $createdModified = date('Y-m-d H:i:s');
-      $stm = $db->prepare("UPDATE ew_contents
-      SET title = ?
-      , keywords = ?
-      , description = ?
-      , parent_id = ?
-      , content = ?
-      , date_modified = ? WHERE id = ?");
-      $stm->bind_param("sssssss", $title, $keywords, $description, $parent_id, $content, $createdModified, $id); */
-    $result = $this->update_content($id, $title, 'folder', $parent_id, $keywords, $description, $content, null, $labels);
-
-    if ($result["statusCode"] === 200) {
-      $result["message"] = "tr{Folder has been updated successfully}";
-      return $result;
-    } else {
-      return EWCore::log_error("400", "New folder has not been added", $db->error_list);
-    }
-  }
-
   private function delete_files($files = []) {
     foreach ($files as $file) {
       if (file_exists($file)) {
@@ -996,105 +500,12 @@ class ContentManagement extends \ew\Module {
     }
   }
 
-  public function delete_content($id) {
-    $db = \EWCore::get_db_connection();
-
-    $items = ew_contents::where("parent_id", $id)->get();
-    if ($items->count() > 0) {
-      //return array(status => "unable", status_code => 2);
-      return \EWCore::log_error(400, "tr{In order to delete this folder, you must delete content of this folder first}");
-    }
-
-    if (ew_contents::destroy($id)) {
-      return \ew\APIResourceHandler::to_api_response([
-          "status" => "success",
-          "status_code" => 1,
-          "message" => "Content has been deleted successfully"
-      ]);
-    } else {
-      return \EWCore::log_error(400, "tr{Something went wrong, please try again}");
-    }
-  }
-
-  public function delete_album($id) {
-    $result = $this->delete_content($id);
-    if (isset($result["status_code"])) {
-      if ($result["status_code"] == 1) {
-        $result["message"] = "The album has been deleted successfuly";
-      } else if ($result["status_code"] == 2) {
-        $result["message"] = "Unable to delete the album";
-      } else {
-        $result["message"] = "Album has NOT been deleted";
-      }
-    }
-    return $result;
-  }
-
-  public function delete_folder($id) {
-    return $this->delete_content($id);
-  }
-
-  public function get_documents_list($parentId, $token = null, $page_size = null) {
-    $db = \EWCore::get_db_connection();
-
-    if (!isset($token)) {
-      $token = 0;
-    }
-    if (!$page_size) {
-      $page_size = 99999999999999;
-    }
-
-    $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM content_categories WHERE parent_id = '$parentId' ORDER BY title") or die("safasfasf");
-    $categories = [];
-    while ($r = $result->fetch_assoc()) {
-      $r["document_type"] = "folder";
-      $categories[] = $r;
-    }
-
-    $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents WHERE category_id = '$parentId' ORDER BY title") or die("safasfasf");
-    $articles = [];
-    while ($r = $result->fetch_assoc()) {
-      $r["document_type"] = "article";
-      $articles[] = $r;
-    }
-    $documents = array_merge($categories, $articles);
-    $db->close();
-    $out = [
-        "total" => count($documents),
-        "result" => $documents
-    ];
-    return json_encode($out);
-  }
-
   public function get_title() {
     return "Contents";
   }
 
   public function get_description() {
     return "Manage the content of your website. Add new artile, Edit or Delete exiting article";
-  }
-
-  public function media_audios($parent_id) {
-    $db = \EWCore::get_db_connection();
-
-    $path = "/";
-
-    $root = EW_MEDIA_DIR;
-    $new_width = 140;
-
-    $include = [
-        "included" => []
-    ];
-    // Folder
-    $audios = ew_contents::where('type', 'audio')/* ->where('parent_id', $parent_id) */
-    ->orderBy('title')->get([
-        '*',
-        \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")
-    ]);
-
-    return \ew\APIResourceHandler::to_api_response($audios->toArray(), [
-        'total' => $audios->count()
-    ]);
   }
 
   public function get_media_list($_response, $parent_id, $token = null, $size = null) {
@@ -1183,85 +594,7 @@ class ContentManagement extends \ew\Module {
     return $files;
   }
 
-  public function albums($_input) {
-    $db = \EWCore::get_db_connection();
-
-    $result = $db->query("SELECT *,DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created FROM ew_contents WHERE id = '$_input->albumId'") or die($db->error);
-
-    if ($rows = $result->fetch_assoc()) {
-      $db->close();
-
-      return $rows;
-    }
-
-    return [];
-  }
-
-  public function update_album() {
-    $db = \EWCore::get_db_connection();
-    $albumId = $db->real_escape_string($_REQUEST['id']);
-    $title = $db->real_escape_string($_REQUEST['title']);
-    $parent_id = $db->real_escape_string($_REQUEST['parent_id']);
-    $keywords = $db->real_escape_string($_REQUEST['keywords']);
-    $description = $db->real_escape_string($_REQUEST['description']);
-    $htmlContent = stripcslashes($_REQUEST['html_content']);
-    $createdModified = date('Y-m-d H:i:s');
-    $stm = $db->prepare("UPDATE ew_contents 
-            SET title = ? 
-            , keywords = ? 
-            , description = ? 
-            , parent_id = ? 
-            , content = ? 
-            , date_modified = ? WHERE id = ?");
-    $stm->bind_param("sssssss", $title, $keywords, $description, $parent_id, $htmlContent, $createdModified, $albumId);
-
-    if ($stm->execute()) {
-      $stm->close();
-      $db->close();
-
-      echo json_encode([
-          status => "success",
-          title => $title
-      ]);
-    } else {
-      echo json_encode([
-          status => "unsuccess"
-      ]);
-    }
-  }
-
-  public function delete_content_by_id($id) {
-    $db = \EWCore::get_db_connection();
-
-    if (!$id)
-      $id = $db->real_escape_string($_REQUEST["id"]);
-    $result = $db->query("SELECT * FROM ew_contents WHERE parent_id = '$id' LIMIT 1");
-    $output = [];
-    if ($result->fetch_assoc()) {
-      return json_encode([
-          status => "unable",
-          status_code => 2
-      ]);
-    }
-    $result = $db->query("DELETE FROM ew_contents WHERE id = '$id'");
-    $db->close();
-    if ($result) {
-      return json_encode([
-          "status" => "success",
-          "status_code" => 1,
-          "message" => ""
-      ]);
-    } else {
-      return json_encode([
-          "status" => "unsuccess",
-          "status_code" => 0,
-          "message" => ""
-      ]);
-    }
-    //return json_encode(array("status" => "success", "status_code" => 1, "message" => ""));
-  }
-
-  public function create_resized_image($image_path, $width = null, $height = null, $same_path = true) {
+  public function create_resize_image($image_path, $width = null, $height = null, $same_path = true) {
     if (!$width && !$height)
       return;
     $src_image = imagecreatefromstring(file_get_contents($image_path));
@@ -1344,78 +677,6 @@ class ContentManagement extends \ew\Module {
     }
   }
 
-  public function upload_file($_response, $path, $parent_id) {
-    $db = \EWCore::get_db_connection();
-    require_once EW_ROOT_DIR . "core/upload.class.php";
-    ini_set("memory_limit", "100M");
-    if (isset($_REQUEST["path"]))
-      $path = $_REQUEST["path"];
-
-    if (!$parent_id)
-      $parent_id = 0;
-    $alt_text = $_REQUEST["alt_text"];
-    //if (!$order)
-    //  $order = 0;
-
-
-    $root = EW_MEDIA_DIR . '/album-' . $parent_id;
-    $succeed = 0;
-    $error = 0;
-    $thegoodstuf = '';
-    $alt_text = "";
-    $files = [];
-    foreach ($_FILES['img'] as $k => $l) {
-      foreach ($l as $i => $v) {
-        if (!array_key_exists($i, $files))
-          $files[$i] = [];
-        $files[$i][$k] = $v;
-      }
-    }
-
-    foreach ($files as $file) {
-      //print_r($file);
-      $foo = new \upload($file);
-      if ($foo->uploaded) {
-
-        // save uploaded image with no changes
-        $foo->Process($root);
-        if ($foo->processed) {
-
-          $result = $this->add_content("image", $foo->file_dst_name_body, $parent_id, "", "", "", "", "");
-
-          if ($result["id"]) {
-            $content_id = $result["id"];
-            $stm = $db->prepare("INSERT INTO ew_images (content_id, source , alt_text) 
-            VALUES (? , ? , ?)") or die($db->error);
-            $image_path = 'album-' . $parent_id . '/' . $foo->file_dst_name;
-            $stm->bind_param("sss", $content_id, $image_path, $alt_text) or die($db->error);
-            if ($stm->execute()) {
-              $res = [
-                  "status" => "success",
-                  "id" => $stm->insert_id
-              ];
-            }
-
-            $this->create_image_thumb($foo->file_dst_pathname, 200);
-            $succeed++;
-          } else {
-            $this->delete_content($result["id"]);
-            $error++;
-          }
-        } else {
-          $error++;
-        }
-      } else {
-        $error += 2;
-      }
-    }
-
-    return [
-        status => "success",
-        message => "Uploaded: " . $succeed . " Error: " . $error . ' ' . $foo->error
-    ];
-  }
-
   public function images_create($_response, $_input) {
     ini_set('memory_limit', '100M');
     ini_set('post_max_size', '64M');
@@ -1487,96 +748,6 @@ class ContentManagement extends \ew\Module {
     return [];
   }
 
-  public function register_audio($path) {
-    $root = EW_MEDIA_DIR . '/audios';
-
-    if (file_exists($root . '/' . $path)) {
-
-      $upload_file = $root . '/' . $path;
-
-      $actual_name = pathinfo($upload_file, PATHINFO_FILENAME);
-
-      $this->add_content("audio", $actual_name, null, "", "", 'audios/' . $path, "", "");
-
-      return \ew\APIResourceHandler::to_api_response([
-          'status' => "success",
-          'message' => "file registered: $path"
-      ]);
-    }
-
-    return EWCore::log_error(400, 'File does not exsit');
-  }
-
-  public function upload_audio($path, $parent_id) {
-    ini_set("memory_limit", "100M");
-
-    $files = [];
-    if (isset($_FILES['audio'])) {
-      foreach ($_FILES['audio'] as $k => $l) {
-
-        foreach ($l as $i => $v) {
-          if (!array_key_exists($i, $files))
-            $files[$i] = [];
-
-          $files[$i][$k] = $v;
-        }
-      }
-    }
-
-    $succeed = 0;
-    $error = 0;
-    $mimes = [
-        'audio/x-mp3',
-        'audio/mp3',
-        'audio/x-mpeg-3',
-        'audio/mpeg3'
-    ];
-    foreach ($files as $file) {
-      if ($file['error'] !== 0) {
-        return \ew\APIResourceHandler::to_api_response([
-            'status' => "error",
-            'message' => 'error number: ' . $file['error']
-        ]);
-      }
-
-      if (is_uploaded_file($file['tmp_name']) && in_array($file['type'], $mimes)) {
-        $root = EW_MEDIA_DIR . '/audios';
-
-        if (!file_exists($root)) {
-          mkdir($root, 0777, true);
-        }
-
-        $actual_name = pathinfo($file['name'], PATHINFO_FILENAME);
-        $original_name = $actual_name;
-        $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
-        $name = $actual_name . "." . $extension;
-
-        $i = 1;
-        while (file_exists($root . '/' . $actual_name . "." . $extension)) {
-          $actual_name = (string)$original_name . '_' . $i;
-          $name = $actual_name . "." . $extension;
-          $i++;
-        }
-
-        $upload_file = $root . '/' . $name;
-
-        if (move_uploaded_file($file['tmp_name'], $upload_file)) {
-          $location = $upload_file;
-          $this->add_content("audio", $actual_name, $parent_id, "", "", 'audios/' . $name, "", "");
-          $succeed++;
-        } else {
-          $location = ':asd:noMp3:asd:';
-          $error++;
-        }
-      }
-    }
-
-    return \ew\APIResourceHandler::to_api_response([
-        'status' => "success",
-        'message' => "Uploaded: " . $succeed . " Error: " . $error
-    ]);
-  }
-
   /**
    *
    * @param array $form_config [optional] <p>An array that contains content form configurations.<br/>
@@ -1624,23 +795,22 @@ class ContentManagement extends \ew\Module {
       $_input->id = EWCore::slug_to_id($_input->id, 'ew_contents');
     }
 
-    //$articles_size = $this->contents_articles($_response, $id, null, null, null, $_language);
-    $articles = $this->contents_articles($_response, $_input->id, $token, $page_size, $order_by, $_language);
+    $articles = $this->articles_read($_response, $_input->id, $token, $page_size, $order_by, $_language);
 
     $result = new \ew\Result;
     $result->data = new \Illuminate\Database\Eloquent\Collection;
     //    $result->data->add($_input);
     if (isset($articles)) {
       foreach ($articles as $article) {
-        $article["content_fields"]['@content/date-created'] = [
+        $article['content_fields']['@content/date-created'] = [
             'tag' => 'p',
             'content' => \DateTime::createFromFormat('Y-m-d H:i:s', $article['date_created'])->format('Y-m-d')
         ];
 
         $result->data->add([
-            "id" => $article["id"],
-            "html" => $article["content"],
-            "content_fields" => $article["content_fields"]
+            'id' => $article['id'],
+            'html' => $article['content'],
+            'content_fields' => $article['content_fields']
         ]);
       }
     }
@@ -1669,7 +839,7 @@ class ContentManagement extends \ew\Module {
     }
 
     // if there is no parent_id then select all the articles
-    if (is_null($parent_id) && $parent_id != 0) {
+    if (is_null($parent_id)) {
       $articles = ew_contents::where('type', 'article')->orderBy('title')->get([
           '*',
           'ew_contents.id',
@@ -1680,60 +850,39 @@ class ContentManagement extends \ew\Module {
 
       return $articles->toArray();
     } else {
-      $container_id = ew_contents::find($parent_id);
-      $up_parent_id = isset($container_id['parent_id']) ? $container_id['parent_id'] : 0;
-      if (isset($order_by)) {
-        $query = ew_contents::select([
-            '*',
-            'ew_contents.id',
-            \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")
-        ]);
-        $query->where('parent_id', '=', $parent_id)
-            ->where('type', 'article')
-            ->join('ew_contents_labels', 'ew_contents.id', '=', 'ew_contents_labels.content_id');
+      $parent_data = ew_contents::find($parent_id);
+      $up_parent_id = isset($parent_data['parent_id']) ? $parent_data['parent_id'] : 0;
 
-        if (isset($language) && !is_null($language)) {
-          $query->where('ew_contents_labels.key', 'admin_ContentManagement_language')
-              ->where('ew_contents_labels.value', $language);
-        } else {
-          $query->where('ew_contents_labels.key', 'admin_ContentManagement_document')
-              ->groupBy('ew_contents_labels.value');
-        }
+      $query = ew_contents::select([
+          '*',
+          'ew_contents.id',
+          \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")
+      ]);
 
-        $_response->properties['total'] = $query->get()->count();
+      $query->where('parent_id', '=', $parent_id)->where('type', 'article')->join('ew_contents_labels', 'ew_contents.id', '=', 'ew_contents_labels.content_id');
 
-        $articles = $query->take($page_size)->skip($start)->orderBy("date_modified", $order_by)->get();
+      if (isset($language) && !is_null($language)) {
+        $query->where('ew_contents_labels.key', 'admin_ContentManagement_language')->where('ew_contents_labels.value', $language);
       } else {
-        $query = ew_contents::select([
-            '*',
-            'ew_contents.id',
-            \Illuminate\Database\Capsule\Manager::raw("DATE_FORMAT(date_created,'%Y-%m-%d') AS round_date_created")
-        ]);
-        $query->where('parent_id', '=', $parent_id)
-            ->where('type', 'article')
-            ->join('ew_contents_labels', 'ew_contents.id', '=', 'ew_contents_labels.content_id');
+        $query->where('ew_contents_labels.key', 'admin_ContentManagement_document')->groupBy('ew_contents_labels.value');
+      }
 
-        if (isset($language) && !is_null($language)) {
-          $query->where('ew_contents_labels.key', 'admin_ContentManagement_language')
-              ->where('ew_contents_labels.value', $language);
-        } else {
-          $query->where('ew_contents_labels.key', 'admin_ContentManagement_document')
-              ->groupBy('ew_contents_labels.value');
-        }
+      $_response->properties['total'] = $query->get()->count();
 
-        $_response->properties['total'] = $query->get()->count();
-
+      if (isset($order_by)) {
+        $articles = $query->take($page_size)->skip($start)->orderBy('date_modified', $order_by)->get();
+      } else {
         $articles = $query->take($page_size)->skip($start)->get();
       }
 
-      $data = array_map(function ($e) use ($up_parent_id) {
-        $e['up_parent_id'] = $up_parent_id;
-        return $e;
+      $data = array_map(function ($article) use ($up_parent_id) {
+        $article['up_parent_id'] = $up_parent_id;
+        return $article;
       }, $articles->toArray());
 
       $_response->properties['start'] = intval($start);
       $_response->properties['page_size'] = intval($page_size);
-      $_response->properties['parent'] = isset($container_id) ? $container_id->toArray() : null;
+      $_response->properties['parent'] = isset($parent_data) ? $parent_data->toArray() : null;
 
       return $data;
     }

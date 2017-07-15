@@ -190,7 +190,7 @@ class SimpleRepository implements CRUDRepository {
 
   /**
    * 
-   * @param type $params
+   * @param {Array} $params
    * @return \Illuminate\Database\Query\Builder
    */
   public function new_select($params) {

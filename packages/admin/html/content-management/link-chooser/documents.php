@@ -72,7 +72,7 @@
       if (_this.contentType === "all" || _this.contentType === "list" || _this.contentType === "content") {
         _this.folderListHeader.html("tr{Loading folders}");
 
-        $.post('api/admin/content-management/contents-folders', {
+        $.get('api/admin/content-management/folders', {
           parent_id: parentId
         }, function (data) {
           _this.folderListHeader.html("tr{Folders}");
@@ -93,7 +93,7 @@
       if (_this.contentType === "all" || _this.contentType === "content" || _this.contentType === "contentField") {
         _this.articlesListHeader.html("tr{Loading articles}");
 
-        $.post('api/admin/content-management/articles', {
+        $.get('api/admin/content-management/articles', {
           parent_id: parentId
         }, function (data) {
           _this.articlesListHeader.html("tr{Articles}");

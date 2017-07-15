@@ -28,7 +28,6 @@ class APIResourceHandler extends ResourceHandler {
   private $cached_modules = [];
 
   protected function handle($app, $package, $resource_type, $module_name, $command, $parameters = null) {
-
     $output_as_array = $this->get_parameter('output_array');
     $api_verb = $this->get_parameter('verb');
 
@@ -107,9 +106,16 @@ class APIResourceHandler extends ResourceHandler {
       ]);
     }
 
-    $parameters['_parts'] = array_slice(explode('/', $parameters["_file"]), 1);
-    $parameters['_identifier'] = is_numeric($parameters['_parts'][0]) ? intval($parameters['_parts'][0]) : null;
-    $parameters['_identifier'] = is_numeric($method_name) ? intval($method_name) : $parameters['_identifier'];
+    // The value after method name will be parsed into an array and passed ass _parts
+    $parameters['_parts'] = array_slice(explode('/', $parameters['_file']), 1);
+
+    // If id exist in header data, then take it as the id
+    if (is_null($parameters['id'])) {
+      // First part would be considered as an id if it's an integer value
+      $parameters['id'] = is_numeric($parameters['_parts'][0]) ? intval($parameters['_parts'][0]) : null;
+      // In the case that method name itself is an integer, then it will be considered as an id
+      $parameters['id'] = is_numeric($method_name) ? intval($method_name) : $parameters['id'];
+    }
 
     $permission_id = \EWCore::does_need_permission($app_name, $module_name, $resource_name . '/' . $api_command_name);
     if (!method_exists($app_section_object, $api_method_name)) {

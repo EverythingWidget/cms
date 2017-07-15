@@ -179,12 +179,12 @@
         parentId: 0,
         card_title: 'tr{Documents}',
         folders: {
-          url: 'api/admin/content-management/contents-folders/',
+          url: 'api/admin/content-management/folders/',
           start: 0,
           page_size: 12
         },
         articles: {
-          url: 'api/admin/content-management/contents-articles/',
+          url: 'api/admin/content-management/articles/',
           page_size: 30
         },
         contentsAPIParams: {
@@ -425,7 +425,7 @@
     var loader = $("<div class='loader top'></div>");
     component.ui.documents_card_vue.contentsAPIParams.parent_id = component.parentId;
     var foldersElements = [];
-    System.addActiveRequest($.get('api/admin/content-management/contents-folders/', {
+    System.addActiveRequest($.get('api/admin/content-management/folders/', {
       parent_id: component.parentId,
       page_size: component.ui.documents_card_vue.folders.page_size,
       start: component.ui.documents_card_vue.folders.start

@@ -83,7 +83,7 @@ class Module {
 
   }
 
-  public function is_unathorized_method_invoke() {
+  public function is_unauthorized_method_invoke() {
     return $this->unauthorized_method_invoke;
   }
 
@@ -94,9 +94,9 @@ class Module {
     return [];
   }
 
-  public function add_pre_processor($pre_rocessor) {
-    if (!in_array($pre_rocessor, $this->pre_processors)) {
-      $this->pre_processors[] = $pre_rocessor;
+  public function add_pre_processor($pre_processor) {
+    if (!in_array($pre_processor, $this->pre_processors)) {
+      $this->pre_processors[] = $pre_processor;
     }
   }
 
@@ -106,19 +106,19 @@ class Module {
       if ($result === true) {
         continue;
       } else {
-        return ($result === false || $result === null) ?
-            \EWCore::log_error(400, "API request is not executed", [
-                "Pre processor has stopped the process: " . get_class($this->pre_processors[$i]),
-                "$verb: $method_name"]) :
-            $result;
+        return ($result === false || $result === null) ? \EWCore::log_error(400, 'API request is not executed', [
+            'Pre processor has stopped the process: ' . get_class($this->pre_processors[$i]),
+            "$verb: $method_name"
+        ]) : $result;
       }
     }
+
     return true;
   }
 
   public function process_request($verb, $method_name, $parameters = null) {
     if (!$verb) {
-      return \EWCore::log_error(400, "Wrong command: Request method is not defined");
+      return \EWCore::log_error(400, 'Wrong command: Request method is not defined');
     }
 
     $parameters['_verb'] = $verb;
@@ -130,11 +130,12 @@ class Module {
     if (preg_match('/(.*)\.(.*)?/', $method_name)) {
       $path = EW_PACKAGES_DIR . '/' . $this->app->get_root() . '/' . $this->current_class->getShortName() . '/' . $method_name;
     } else if (method_exists($this, $method_name)) {
-      //ob_start();
-      return $this->invoke_method($verb, $method_name, $parameters);
-      //return ob_get_clean();
+      try {
+        return $this->invoke_method($verb, $method_name, $parameters);
+      } catch (\Exception $exception) {
+        return \EWCore::log_error(500, $exception->getMessage(), $exception->getTrace());
+      }
     }
-    //}
 
     $this->current_method_args = NULL;
     if ($path && file_exists($path)) {
@@ -143,7 +144,7 @@ class Module {
       return ob_get_clean();
     } else if ($path) {
       $tp = $this->app->get_root() . '/' . $this->current_class->getShortName() . '/' . $method_name;
-      return \EWCore::log_error(404, "<h4>API not found</h4><p>API call: {$tp}</p>");
+      return \EWCore::log_error(404, "API not found: {$tp}");
     } else {
       return \EWCore::log_error(404, "API not found: {$method_name}");
     }
@@ -151,51 +152,62 @@ class Module {
 
   private function invoke_method($verb, $method_name, $parameters) {
     // Run all the pre processors
-    // If an error accures, then error will be returned
+    // If an error occurs, then error will be returned
     $preProcessorsResult = $this->run_pre_processors($verb, $method_name, $parameters);
     if ($preProcessorsResult !== true) {
       return $preProcessorsResult;
     }
-    //$db = \EWCore::get_db_connection();
+
     $method_object = new \ReflectionMethod($this, $method_name);
-    $method_parameters = $method_object->getParameters();
+    $method_args = $method_object->getParameters();
     foreach ($parameters as $key => $value) {
       if ($value === '') {
         $parameters[$key] = NULL;
       }
     }
 
-    $parameters['_input'] = (object) $parameters;
+    $parameters['_input'] = (object)$parameters;
 
-    ksort($method_parameters);
+    ksort($method_args);
 
-    $functions_arguments = array();
+    $final_method_args = array();
     $this->current_method_args = array();
     $part_index = 0;
-    foreach ($method_parameters as $param) {
-      $temp = NULL;
-      if ($param->isDefaultValueAvailable()) {
-        $temp = $param->getDefaultValue();
+    $arg_value = NULL;
+    foreach ($method_args as $argument) {
+      $arg_value = NULL;
+      if ($argument->isDefaultValueAvailable()) {
+        $arg_value = $argument->getDefaultValue();
       }
 
-      $param_name = $param->getName();
+      $arg_name = $argument->getName();
 
-      if (strpos($param_name, '_parts__') === 0) {
-        $temp = $parameters[str_replace('_parts__', '', $param_name)];
-        if (!isset($temp)) {
-          $temp = $parameters['_parts'][$part_index++];
+      // _parts__ will search for parameter both in url and header data.
+      // Priority is with header data
+      if (strpos($arg_name, '_parts__') === 0) {
+        $temp_arg_name = str_replace('_parts__', '', $arg_name);
+
+        if (is_numeric($temp_arg_name)) {
+          $arg_value = $parameters['_parts'][$temp_arg_name];
+        } else if ($parameters[$temp_arg_name]) {
+          $arg_value = $parameters[$temp_arg_name];
+        } else {
+          $arg_value = $parameters['_parts'][$part_index];
         }
-      }
-      if (isset($parameters[$param_name])) {
-        $temp = $parameters[$param_name];
+
+        $part_index++;
       }
 
-      $functions_arguments[] = $temp;
-      $this->current_method_args[$param_name] = $temp;
+      if (isset($parameters[$arg_name])) {
+        $arg_value = $parameters[$arg_name];
+      }
+
+      $final_method_args[] = $arg_value;
+      $this->current_method_args[$arg_name] = $arg_value;
     }
 
     $method_object->setAccessible(true);
-    $command_result = $method_object->invokeArgs($this, $functions_arguments);
+    $command_result = $method_object->invokeArgs($this, $final_method_args);
 
     return $command_result;
   }
@@ -284,26 +296,13 @@ class Module {
     //echo $command . "_listener";
     \EWCore::register_object($command, $this->app->get_root() . "/" . $this->current_class->getShortName() . "/" . $function, array(
         "method" => $function,
-        "object" => $object));
+        "object" => $object
+    ));
   }
 
   public function register_content_component($key, $comp_object) {
     $label_id = $this->app->get_root() . '_' . $this->get_section_name() . '_' . $key;
     \EWCore::register_object(\EWCore::$EW_CONTENT_COMPONENT, $label_id, $comp_object);
-  }
-
-  /**
-   *
-   * @param type $key
-   * @param type $default_value
-   */
-  public function register_content_label($key, $default_value) {
-    //$ro = new ReflectionClass($this);
-    $defaults = ["app" => $this->app->get_root(),
-        "section" => $this->get_section_name(),
-        "command" => 'ew_label_' . $key];
-    $defaults = array_merge($defaults, $default_value);
-    \EWCore::register_object("ew-content-labels", $this->app->get_root() . '_' . $this->get_section_name() . '_' . $key, $defaults);
   }
 
   public function register_content_type($type_name, $get, $get_list) {
@@ -313,7 +312,7 @@ class Module {
   public function register_permission($id, $description, $permissions) {
     \EWCore::register_permission($this->app->get_root(), \EWCore::camelToHyphen($this->current_class->getShortName()), \EWCore::camelToHyphen($id), $this->app->get_name(), $this->get_title(), $description, $permissions);
 
-//    $this->permissions[\EWCore::camelToHyphen($id)] = $permissions;
+    //    $this->permissions[\EWCore::camelToHyphen($id)] = $permissions;
   }
 
   public function get_permissions() {
