@@ -1,6 +1,6 @@
 # EverythingWidget
 
-[![Join the chat at https://gitter.im/Eeliya/EverythingWidget](https://badges.gitter.im/Eeliya/EverythingWidget.svg)](https://gitter.im/Eeliya/EverythingWidget?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Join the chat at https://gitter.im/EverythingWidget/cms](https://badges.gitter.im/EverythingWidget/cms.svg)](https://gitter.im/EverythingWidget/cms?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 A content management system for developers
 
