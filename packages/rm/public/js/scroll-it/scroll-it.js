@@ -10,7 +10,7 @@
   'use strict';
 
   var pluginName = 'ScrollIt',
-          pluginVersion = '1.0.3';
+      pluginVersion = '1.0.3';
 
   /*
    * OPTIONS
@@ -31,8 +31,8 @@
      */
     var $this = this;
     var settings = $.extend(defaults, options),
-            active = 0,
-            lastIndex = $('[data-scroll-index]:last').attr('data-scroll-index'), watcher = true;
+        active = 0,
+        lastIndex = $('[data-scroll-index]:last').attr('data-scroll-index'), watcher = true;
     var $body = $('body');
 
     /*
@@ -86,7 +86,7 @@
      */
     var doScroll = function (e) {
       var target = $(e.target).closest("[data-scroll-nav]").attr('data-scroll-nav') ||
-              $(e.target).closest("[data-scroll-goto]").attr('data-scroll-goto');
+          $(e.target).closest("[data-scroll-goto]").attr('data-scroll-goto');
       navigate(parseInt(target));
 
     };
@@ -136,8 +136,8 @@
         return;
 
       var winTop = $(window).scrollTop(),
-              scrollHeight = window.document.body.scrollHeight,
-              innerHeight = window.innerHeight;
+          scrollHeight = window.document.body.scrollHeight,
+          innerHeight = window.innerHeight;
 
 //      var top = (winTop * scrollHeight) / (scrollHeight - innerHeight);
       var top = winTop + (innerHeight / 2);
@@ -168,6 +168,10 @@
     $(window).on('keydown', keyNavigation);
 
     $(this).on('click', '[data-scroll-nav], [data-scroll-goto]', function (e) {
+      if (e.target && e.target.href.indexOf('#') === -1) {
+        return;
+      }
+
       e.preventDefault();
       doScroll(e);
     });
