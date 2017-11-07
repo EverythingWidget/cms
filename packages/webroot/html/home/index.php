@@ -15,9 +15,9 @@ if (isset($webroot_language)) {
 }
 
 if ($_REQUEST['_url_language']) {
-  define('URL_LANGUAGE' , $_REQUEST['_url_language']);
+  define('URL_LANGUAGE', $_REQUEST['_url_language']);
 } else {
-  define('URL_LANGUAGE' , $_REQUEST['_language']);
+  define('URL_LANGUAGE', $_REQUEST['_language']);
 }
 
 webroot\WidgetsManagement::include_html_link(['rm/public/css/grid.css']);
@@ -32,7 +32,7 @@ webroot\WidgetsManagement::add_html_script(['include' => 'rm/public/js/gsap/easi
 webroot\WidgetsManagement::add_html_script(['include' => 'rm/public/js/gsap/jquery.gsap.min.js']);
 webroot\WidgetsManagement::add_html_script(['include' => 'rm/public/js/gsap/plugins/CSSPlugin.min.js']);
 
-$VIEW = webroot\WidgetsManagement::generate_view($_REQUEST['_uis']);
+$VIEW = webroot\WidgetsManagement::generate_view($_REQUEST['_uis'], URL_LANGUAGE);
 $HTML_BODY = $VIEW['body_html'];
 
 // If template has a 'template.php' then include it
@@ -71,14 +71,14 @@ $page_language = $webroot_config['webroot/language'] ? $webroot_config['webroot/
 
 if ($page_description) {
   \webroot\WidgetsManagement::set_meta_tag([
-      'name'    => 'description',
+      'name' => 'description',
       'content' => $page_description
   ]);
 }
 
 $HTML_KEYWORDS = webroot\WidgetsManagement::get_html_keywords();
 \webroot\WidgetsManagement::set_meta_tag([
-    'name'    => 'keywords',
+    'name' => 'keywords',
     'content' => $HTML_KEYWORDS
 ]);
 
@@ -87,41 +87,41 @@ $HTML_LINKS = webroot\WidgetsManagement::get_html_links();
 $HTML_CSS = webroot\WidgetsManagement::get_html_links_concatinated();
 $HTML_META_TAGS = webroot\WidgetsManagement::get_meta_tags();
 ?>
-<!doctype html> 
+<!doctype html>
 <html lang="<?= $page_language ?>">
-  <head>
-    <base href="<?= EW_ROOT_URL ?>">
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1" />  
+<head>
+  <base href="<?= EW_ROOT_URL ?>">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1"/>
 
-    <?php
-    echo "<title>$website_title</title>";
-    echo $HTML_META_TAGS;
-    echo "<meta name='msapplication-TileColor' content='#FFFFFF' />";
-    echo "<meta name='msapplication-TileImage' content='$favicon' />";
-    echo "<link rel='alternate' href='{$_SERVER['REQUEST_URI']}' hreflang='$page_language' />";
-    echo "<link rel='shortcut icon' href='$favicon' />";
-    echo "<link rel='apple-touch-icon-precomposed' href='$favicon' />";
-    echo $HTML_LINKS['head'];
+  <?php
+  echo "<title>$website_title</title>";
+  echo $HTML_META_TAGS;
+  echo "<meta name='msapplication-TileColor' content='#FFFFFF' />";
+  echo "<meta name='msapplication-TileImage' content='$favicon' />";
+  echo "<link rel='alternate' href='{$_SERVER['REQUEST_URI']}' hreflang='$page_language' />";
+  echo "<link rel='shortcut icon' href='$favicon' />";
+  echo "<link rel='apple-touch-icon-precomposed' href='$favicon' />";
+  echo $HTML_LINKS['head'];
 
-    $js_plugins = EWCore::read_registry_as_array(\webroot\App::$HOME_PAGE_JS_PLUGINS);
-    foreach ($js_plugins as $plugin) {
-      echo EWCore::get_view($plugin['path'], [
-          'configs' => $webroot_config,
-          'view'    => $VIEW
-      ]);
-    }
+  $js_plugins = EWCore::read_registry_as_array(\webroot\App::$HOME_PAGE_JS_PLUGINS);
+  foreach ($js_plugins as $plugin) {
+    echo EWCore::get_view($plugin['path'], [
+        'configs' => $webroot_config,
+        'view' => $VIEW
+    ]);
+  }
 
-    echo $HTML_SCRIPTS;
-    echo $TEMPLATE_SCRIPT;
-    echo $HTML_CSS['tag'];
-    ?>          
-  </head>
-  <body class="<?= EWCore::get_language_dir($_REQUEST['_language']) ?>">
-    <div id="base-content-pane" class="container">
-      <?= $HTML_BODY; ?>
-    </div>
+  echo $HTML_SCRIPTS;
+  echo $TEMPLATE_SCRIPT;
+  echo $HTML_CSS['tag'];
+  ?>
+</head>
+<body class="<?= EWCore::get_language_dir($_REQUEST['_language']) ?>">
+<div id="base-content-pane" class="container">
+  <?= $HTML_BODY; ?>
+</div>
 
-    <?= $HTML_LINKS['body'] ?>    
-  </body>  
+<?= $HTML_LINKS['body'] ?>
+</body>
 </html>

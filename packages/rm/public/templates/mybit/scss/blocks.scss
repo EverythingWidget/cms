@@ -37,7 +37,6 @@
   }
 }
 
-
 .block.footer {
   padding: 15px 0;
   background-color: #545454;
@@ -51,21 +50,23 @@
 
 .block.license {
   padding: 0;
-  border-top: 1px solid #6b6b6b;
-  background-color: #545454;
   text-align: center;
-  color: #fff;
   bottom: 0;
   position: absolute;
   width: 100%;
   height: 60px;
   align-items: center;
   display: flex;
-  font-size: .88em;
+  font-size: .8em;
+  line-height: 1.4em;
+
+  > * {
+    margin: 0;
+  }
 }
 
 .block.career-header {
-  background-image:  url('images/career-header.jpg');
+  background-image: url('images/career-header.jpg');
   background-repeat: no-repeat;
   min-height: 350px;
   background-size: contain;
@@ -73,7 +74,7 @@
 }
 
 .block.office-building {
-  background: url('/public/rm/templates/mybit/images/office-building.jpg') no-repeat  center center;
+  background: url('/public/rm/templates/mybit/images/office-building.jpg') no-repeat center center;
   height: 400px;
   background-size: cover;
 }

@@ -628,13 +628,13 @@ class WidgetsManagement extends \ew\Module {
    * @param string $style_id widget style id
    * @param json $parameters_string widget parameters
    */
-  public static function open_widget($widget_id, $conf) {
+  public static function open_widget($widget_id, $config) {
     // Empty widget style class when creating a widget
-    $widget_type = $conf['widgetType'];
-    $style_id = $conf['id'];
-    $style_class = $conf['class'];
-    $widget_style_class = $conf['widgetClass'];
-    $parameters_string = $conf['widgetParameters'];
+    $widget_type = $config['widgetType'];
+    $style_id = $config['id'];
+    $style_class = $config['class'];
+    $widget_style_class = $config['widgetClass'];
+    $parameters_string = $config['widgetParameters'];
 
     $__widget_html_output = '';
     if ($style_id) {
@@ -875,6 +875,7 @@ class WidgetsManagement extends \ew\Module {
   }
 
   private static function get_widget_data() {
+    $data_string = '';
     foreach (self::$widget_data as $wi => $data) {
       $data = ($data) ? json_encode($data, JSON_UNESCAPED_SLASHES) : "{}";
       $data_string .= "ew_widget_data['$wi'] = $data;\n";
@@ -890,11 +891,25 @@ class WidgetsManagement extends \ew\Module {
     return self::$widget_data[$id];
   }
 
-  public static function generate_view($uisId, $no_data = false, $public_data = []) {
+  public static function generate_view($uisId, $language = 'en', $public_data = [], $no_data = false) {
     $RESULT_HTML = '';
     $db = \EWCore::get_db_PDO();
     if (!$no_data) {
       $no_data = false;
+    }
+
+    if (!isset($language)) {
+      $webroot_language = \webroot\WidgetsManagement::get_page_info()['webroot/language'];
+
+      if (isset($webroot_language)) {
+        $_REQUEST['_language'] = $webroot_language;
+      }
+
+      if ($_REQUEST['_url_language']) {
+        define('URL_LANGUAGE', $_REQUEST['_url_language']);
+      } else {
+        define('URL_LANGUAGE', $_REQUEST['_language']);
+      }
     }
 
     $statement = $db->prepare("SELECT structure FROM ew_ui_structures WHERE id = ? ") or die($db->error);
@@ -1292,9 +1307,9 @@ class WidgetsManagement extends \ew\Module {
   }
 
   public static function get_layout($uisId, $template = null, $template_settings = null, $url = null) {
-
     $public_data = [];
-    $layout = WidgetsManagement::generate_view($uisId, false, $public_data);
+
+    $layout = WidgetsManagement::generate_view($uisId, null, $public_data, false);
     $template_body = $layout["body_html"];
     $widget_data = $layout["widget_data"];
     $settings = json_decode($template_settings, true);

@@ -309,14 +309,14 @@
 }
 
 .widget.main-slider {
-  padding: 150px 0 0;
+  padding: 80px 0 0;
 
   .owl-carousel:after {
     content: ' ';
     position: absolute;
     bottom: 0;
     width: 100%;
-    height: 250px;
+    height: 280px;
     background-color: #e2e7ed;
     z-index: 1;
   }
@@ -326,17 +326,24 @@
   }
 
   .owl-item {
-    min-height: 550px;
+    min-height: 580px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 
+    > .item {
+      position: absolute;
+      width: 100%;
+      bottom: 0;
+      overflow: hidden;
+    }
+
     img {
       display: block;
-      max-width: 860px;
+      max-height: 400px;
       margin: 0 auto;
-      height: auto;
+      width: auto;
     }
 
     h2 {
@@ -359,14 +366,15 @@
     align-items: center;
     justify-content: center;
     z-index: 2;
+    position: relative;
 
     > .owl-dot {
       > span {
-        margin: 5px;
-        width: 20px;
-        height: 20px;
+        margin: 10px 7px;
+        width: 16px;
+        height: 16px;
         display: block;
-        border-radius: 10px;
+        border-radius: 8px;
         background-color: #ccc;
       }
 

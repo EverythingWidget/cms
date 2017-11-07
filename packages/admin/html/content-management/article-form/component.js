@@ -59,7 +59,8 @@ function Article() {
       dialog.trigger('close');
       $(document).trigger('article-list.refresh');
       loader.dispose(true);
-    }}).hide();
+    }
+  }).hide();
 
   this.bUpdate = EW.addActivity({
     verb: 'PUT',
@@ -84,9 +85,11 @@ function Article() {
       ContentForm.setData(response.data);
       $(document).trigger('article-list.refresh');
       loader.dispose();
-    }}).hide();
+    }
+  }).hide();
 
-  this.bDelete = EW.addActivity({title: '<i class=\'icon-trash-empty\'></i>',
+  this.bDelete = EW.addActivity({
+    title: '<i class=\'icon-trash-empty\'></i>',
     defaultClass: 'btn-danger btn-text btn-circle',
     verb: 'DELETE',
     activity: 'admin/api/content-management/contents',
@@ -102,7 +105,8 @@ function Article() {
       EW.setHashParameter('articleId', null, 'document');
       System.ui.components.body.EW().notify(response).show();
       $(document).trigger('article-list.refresh');
-    }}).hide();
+    }
+  }).hide();
 
   ContentForm.uiForm.on('refresh', function (e, article) {
     if (article && article.id) {

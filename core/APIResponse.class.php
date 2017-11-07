@@ -22,7 +22,7 @@ class APIResponse implements \JsonSerializable {
   public function __construct($url) {
     $this->properties = [
         'status_code' => 200,
-        'url'         => $url
+        'url' => $url
     ];
   }
 
@@ -86,7 +86,7 @@ class APIResponse implements \JsonSerializable {
     header("Content-Length: " . strlen($data['data']) . ";");
     header("Content-Disposition: attachment; filename=\"{$data['name']}\"");
     header("Content-Type: {$data['contentType']}");
-    
+
     return $this;
   }
 
@@ -96,8 +96,8 @@ class APIResponse implements \JsonSerializable {
     return $cloned->to_array();
   }
 
-  /** Creates a standard response out of <var>$_response</var> with passed <var>$result</var> 
-   * 
+  /** Creates a standard response out of <var>$_response</var> with passed <var>$result</var>
+   *
    * @param APIResponse $_response The response object
    * @param Result $result The repository result
    * @return array
@@ -105,7 +105,7 @@ class APIResponse implements \JsonSerializable {
   public static function standard_response(APIResponse $_response, $result) {
     $_response->properties['message'] = $result->message;
     $_response->properties['message_code'] = $result->message_code;
-    
+
 
     if ($result->error) {
       $_response->set_status_code($result->error);
@@ -122,6 +122,13 @@ class APIResponse implements \JsonSerializable {
 
       $_response->properties[$key] = $value;
     }
+
+//    if (is_array($_response->data)) {
+//      $_response->properties['response_type'] = 'list';
+//    } else {
+//      $_response->properties['response_type'] = 'object';
+//    }
+//    die($_response->properties['total']);
 
 //    $_response->properties['total'] = $result->total;
 //    $_response->properties['page_size'] = $result->page_size;

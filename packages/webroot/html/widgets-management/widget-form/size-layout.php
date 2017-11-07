@@ -121,15 +121,15 @@
   </div>
 </div>
 <script>
-  $("#custom-template").change(function () {
-    if ($("#custom-template").is(":checked")) {
-      $("#size-and-position-control input, #floats input").prop("disabled", "disabled").parent().addClass("disabled");
-      $("#bootstrap-row").prop("disabled", "").parent().removeClass("disabled");
-      $("#clearfix").prop("disabled", "").parent().removeClass("disabled");
+  $('#custom-template').change(function () {
+    if ($('#custom-template').is(':checked')) {
+      $('#size-and-position-control input, #floats input').prop('disabled', 'disabled').parent().addClass('disabled');
+      $('#bootstrap-row').prop('disabled', '').parent().removeClass('disabled');
+      $('#clearfix').prop('disabled', '').parent().removeClass('disabled');
     } else {
-      $("#size-layout input").prop("disabled", "").parent().removeClass("disabled");
-      $("#bootstrap-row").prop("disabled", "disabled").parent().addClass("disabled");
-      $("#clearfix").prop("disabled", "disabled").parent().addClass("disabled");
+      $('#size-layout input').prop('disabled', '').parent().removeClass('disabled');
+      $('#bootstrap-row').prop('disabled', 'disabled').parent().addClass('disabled');
+      $('#clearfix').prop('disabled', 'disabled').parent().addClass('disabled');
     }
   });
 </script>

@@ -11,7 +11,7 @@
 <div class="col-xs-12">
   <system-spirit animations="liveHeight">
     <ul id="{{comp_id}}_languages" class="list links">
-      <li v-for="item in items" class="zoom-item" v-bind:class="{ 'active': item.id === contentId }" >
+      <li v-for="item in items" class="zoom-item" v-bind:class="{ 'active': item.id === contentId }">
         <a href='#' class='link' v-on:click="select($event,item)">
           <strong>{{ languagesMap[item.value] }}</strong>
           <p>
@@ -64,13 +64,13 @@
     ];
 
     var languagesMap = {
-      en: "English",
-      es: "Spanish",
-      de: "German",
-      ru: "Russian",
-      cmn: "Mandarin",
-      ar: "Arabic",
-      fa: "Persian",
+      en: 'English',
+      es: 'Spanish',
+      de: 'German',
+      ru: 'Russian',
+      cmn: 'Mandarin',
+      ar: 'Arabic',
+      fa: 'Persian',
       nl: 'Dutch'
     };
 
@@ -91,32 +91,32 @@
             return;
           }
 
-          $.get('api/admin/content-management/get-article/', {articleId: item.id}, function (response) {
+          $.get('api/admin/content-management/contents/' + item.id, function (response) {
             ContentForm.setData(response.data);
-            languagesLabelVue.activeLanguage = ContentForm.getLabel("{{comp_id}}");
+            languagesLabelVue.activeLanguage = ContentForm.getLabel('{{comp_id}}');
           });
         }
       }
     });
 
-    $("#$php.form_id").on('refresh', function (e, response) {
+    $('#$php.form_id').on('refresh', function (e, response) {
       var documentId = response.id;
       languagesLabelVue.contentId = documentId;
 
-      if (ContentForm.getLabel("admin_ContentManagement_document") != documentId) {
-        documentId = ContentForm.getLabel("admin_ContentManagement_document");
+      if (ContentForm.getLabel('admin_ContentManagement_document') != documentId) {
+        documentId = ContentForm.getLabel('admin_ContentManagement_document');
       }
 
       // Init
-      if (!ContentForm.getLabel("{{comp_id}}")) {
+      if (!ContentForm.getLabel('{{comp_id}}')) {
         // Active language label as default for the new article
-        ContentForm.activeLabel("{{comp_id}}", true);
-        $("#{{comp_id}}_select").change();
+        ContentForm.activeLabel('{{comp_id}}', true);
+        $('#{{comp_id}}_select').change();
       }
 
-      $.get("api/admin/content-management/contents-labels/", {
+      $.get('api/admin/content-management/contents-labels/', {
         content_id: documentId,
-        key: "{{comp_id}}"
+        key: '{{comp_id}}'
       }, success);
 
       function success(data) {

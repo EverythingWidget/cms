@@ -1,44 +1,44 @@
-/* global System, EW */
+/* global $, System, EW */
 
 function UISForm() {
   clearTimeout(repTimeout);
   System.ui.forms.uis_form = this;
 
   var _this = this;
-  this.currentDialog;
+  this.currentDialog = null;
   this.dpPreference = null;
-  this.uisId;
-  this.uisTemplate = "";
+  this.uisId = null;
+  this.uisTemplate = '';
   this.defaultStructure = null;
   this.inlineEditor = {};
-  this.layoutForm = $("#layout-form");
-  this.editorWindow = $("#editor-container");
+  this.layoutForm = $('#layout-form');
+  this.editorWindow = $('#editor-container');
   this.editorWindow.width($(window).width() - 400);
-  this.uis_editor_tool_pane = $("#uis-editor-tool-pane");
-  this.inspectorEditor = $("#inspector-editor");
-  this.editorIFrame = $(document.getElementById("fr"));
-  this.editorFrame = this.editorIFrame.contents().find("body");
-  this.templateSettingsForm = $("#template_settings_form");
-  this.widgetsList = $("#items-list #items-list-content");
+  this.uis_editor_tool_pane = $('#uis-editor-tool-pane');
+  this.inspectorEditor = $('#inspector-editor');
+  this.editorIFrame = $(document.getElementById('fr'));
+  this.editorFrame = this.editorIFrame.contents().find('body');
+  this.templateSettingsForm = $('#template_settings_form');
+  this.widgetsList = $('#items-list #items-list-content');
   this.bExportLayout = $();
-  this.bSaveChanges = EW.addAction("Save Layout", $.proxy(this.updateUIS, this)).hide().addClass("btn-success");
-  this.bPreview = EW.addAction("Preview Layout", $.proxy(this.previewLayout, this)).hide().addClass("btn-info");
-  this.bDelete = EW.addAction("Delete", $.proxy(this.deleteUIS, this), {
-    display: "none"
+  this.bSaveChanges = EW.addAction('Save Layout', $.proxy(this.updateUIS, this)).hide().addClass('btn-success');
+  this.bPreview = EW.addAction('Preview Layout', $.proxy(this.previewLayout, this)).hide().addClass('btn-info');
+  this.bDelete = EW.addAction('Delete', $.proxy(this.deleteUIS, this), {
+    display: 'none'
   });
-  this.bSaveAndStart = EW.addAction("Save And Start Editing", $.proxy(this.addUIStructure, this), {
-    display: "none"
+  this.bSaveAndStart = EW.addAction('Save And Start Editing', $.proxy(this.addUIStructure, this), {
+    display: 'none'
   });
 
-  this.bSavePref = EW.addAction("Save Changes", $.proxy(this.updateUIS, this, true), {
-    display: "none"
-  }, "layout-form-actions").addClass("btn-success");
+  this.bSavePref = EW.addAction('Save Changes', $.proxy(this.updateUIS, this, true), {
+    display: 'none'
+  }, 'layout-form-actions').addClass('btn-success');
 
   if (EW.getActivity({
-    activity: "webroot/api/widgets-management/export-uis"
-  })) {
-    $("#layout-form-actions").append("<a class='btn btn-text btn-primary pull-right export-btn' href=api/webroot/widgets-management/export-uis?uis_id=" + this.uisId + ">Export Layout</a>");
-    this.bExportLayout = $("#layout-form-actions a.export-btn");
+        activity: 'webroot/api/widgets-management/export-uis'
+      })) {
+    $('#layout-form-actions').append("<a class='btn btn-text btn-primary pull-right export-btn' href=api/webroot/widgets-management/export-uis?uis_id=" + this.uisId + ">Export Layout</a>");
+    this.bExportLayout = $('#layout-form-actions a.export-btn');
     this.bExportLayout.hide();
   }
 
@@ -51,13 +51,13 @@ function UISForm() {
     }
   });
 
-  $("#perview_url").EW().inputButton({
-    title: "Apply",
-    id: "set_url_btn",
+  $('#perview_url').EW().inputButton({
+    title: 'Apply',
+    id: 'set_url_btn',
     onClick: _this.reloadFrame.bind(_this)
   });
 
-  var itemsList = $("#items-list");
+  var itemsList = $('#items-list');
   itemsList[0].close = function () {
     itemsList.animate({
       left: -400
@@ -65,17 +65,17 @@ function UISForm() {
   };
 
   this.inspectorEditor[0].isValidParent = function (item, parent) {
-    //UIUtil.hasCSSClass(item, "block")
+    //UIUtil.hasCSSClass(item, 'block')
     var $parent = $(parent);
-    if (System.ui.utility.hasClass(item, "block") && !$parent.is(".layout-components")) {
+    if (System.ui.utility.hasClass(item, 'block') && !$parent.is('.layout-components')) {
       return false;
     }
 
-    if (System.ui.utility.hasClass(item, "widget") && $parent.is(".layout-components")) {
+    if (System.ui.utility.hasClass(item, 'widget') && $parent.is('.layout-components')) {
       return false;
     }
 
-    if (System.ui.utility.hasClass(item, "panel") && $parent.is(".layout-components")) {
+    if (System.ui.utility.hasClass(item, 'panel') && $parent.is('.layout-components')) {
       return false;
     }
 
@@ -84,7 +84,7 @@ function UISForm() {
 
   this.inspectorEditor[0].onDrop = function (item, parent, index) {
 //console.log(parent,index)
-    var frameBody = $(document.getElementById("fr").contentDocument.body);
+    var frameBody = $(document.getElementById('fr').contentDocument.body);
     if (!parent) {
       return;
     }
@@ -93,36 +93,28 @@ function UISForm() {
     var linkedParentId = parent.parentNode.dataset.linkedPanelId;
     var linkedPanelId = item.dataset.linkedPanelId;
     var linkedWidgetId = item.dataset.linkedWidgetId;
-    //oldContainer.removeClass("highlight");
+    //oldContainer.removeClass('highlight');
     var $parent = frameBody.find("[data-panel-id='" + linkedParentId + "']");
-    var baseContentPane = frameBody.find("#base-content-pane");
+    var baseContentPane = frameBody.find('#base-content-pane');
 
-    if (!$parent.attr("data-block"))
-    {
+    if (!$parent.attr('data-block')) {
       //$parent = $parent.children().eq(0);
     }
 
-    if ($parent.length <= 0)
-    {
-      var panel = frameBody.find("[data-panel-id='" + linkedPanelId + "']").detach();
-      if (baseContentPane.children().length <= index)
-      {
+    var panel = null;
+    if ($parent.length <= 0) {
+      panel = frameBody.find("[data-panel-id='" + linkedPanelId + "']").detach();
+      if (baseContentPane.children().length <= index) {
         baseContentPane.append(panel);
-      } else
-      {
+      } else {
         baseContentPane.children().eq(index).before(panel);
       }
       //_super(item);
       return;
     }
 
-    if (linkedWidgetId)
-    {
-
-      //alert(linkedWidgetId);
+    if (linkedWidgetId) {
       var widget = frameBody.find("[data-widget-id='" + linkedWidgetId + "']").parent().detach();
-
-      //console.log($parent, $parent.children().length, index);
 
       if ($parent.children().length <= index) {
         $parent.append(widget);
@@ -131,22 +123,18 @@ function UISForm() {
         $parent.children().eq(index).before(widget);
       }
     }
-    if (linkedPanelId)
-    {
-      var panel = frameBody.find("[data-panel-id='" + linkedPanelId + "']").detach();
-      if ($parent.length == 0)
-      {
+
+    if (linkedPanelId) {
+      panel = frameBody.find("[data-panel-id='" + linkedPanelId + "']").detach();
+      if ($parent.length == 0) {
         $parent = baseContentPane;
       }
-      if ($parent.children().length <= index)
-      {
+      if ($parent.children().length <= index) {
         $parent.append(panel);
-      } else
-      {
+      } else {
         $parent.children().eq(index).before(panel);
       }
     }
-
   };
 
   //console.log(this.inspectorEditor[0]);
@@ -154,12 +142,12 @@ function UISForm() {
   // Add 'Add Block' button to the inspector-panel
   var addBlockBtn = $("<button type='button' class='btn btn-primary btn-sm'>tr{Add Block}</button>");
   addBlockBtn.css({
-    float: "none",
-    margin: "10px auto",
-    display: "block"
+    float: 'none',
+    margin: '10px auto',
+    display: 'block'
   });
 
-  addBlockBtn.on("click", $.proxy(this.blockForm, this, null));
+  addBlockBtn.on('click', $.proxy(this.blockForm, this, null));
   this.inspectorEditor.append(addBlockBtn);
 
   //Add refresh event to inspector editor
@@ -178,19 +166,17 @@ function UISForm() {
 
   // Load inspector editor when the content of frame has been loaded
   this.editorIFrame.load(function () {
-    $(document.getElementById("fr").contentDocument.head).append("<style id='editor-style'>" + $("#editor-css").html() + "</style>");
-
-    $("#template").off('change').on('change', $.proxy(_this.reloadFrame, _this));
-
+    $(document.getElementById('fr').contentDocument.head).append("<style id='editor-style'>" + $('#editor-css').html() + "</style>");
+    $('#template').off('change').on('change', $.proxy(_this.reloadFrame, _this));
     _this.templateChanged();
   });
 
   // Destroy preference modal on close
-  var parentDialog = $.EW("getParentDialog", $("#ew-uis-editor"));
-  parentDialog.on("close", function () {
+  var parentDialog = $.EW('getParentDialog', $('#ew-uis-editor'));
+  parentDialog.on('close', function () {
     clearTimeout(repTimeout);
     if (_this.dpPreference)
-      _this.dpPreference.trigger("destroy");
+      _this.dpPreference.trigger('destroy');
   });
 
   parentDialog.on('beforeClose', function () {
@@ -199,7 +185,7 @@ function UISForm() {
     }
     //console.log(self.oldStructure, self.createContentHeirarchy(), self.createContentHeirarchy());
     if (_this.defaultStructure !== null && JSON.stringify(_this.defaultStructure) !== JSON.stringify(_this.createContentHeirarchy())) {
-      return confirm("tr{You have unsaved changes. Are you sure you want to close?}");
+      return confirm('tr{You have unsaved changes. Are you sure you want to close?}');
     } else {
       return true;
     }
@@ -209,14 +195,14 @@ function UISForm() {
     if (data.id) {
       $('#form-title').html('<span>tr{Edit}</span>' + data.name);
       _this.uisId = data.id;
-      $("#layout-form-actions .export-btn").attr("href", "api/webroot/widgets-management/export-uis?uis_id=" + _this.uisId);
+      $('#layout-form-actions .export-btn').attr('href', 'api/webroot/widgets-management/export-uis?uis_id=' + _this.uisId);
       _this.uisTemplate = data.template;
 
       if (data.template_settings) {
         _this.templateSettings = data.template_settings;
       } else
         _this.templateSettings = {};
-      EW.setFormData("#template_settings_form", _this.templateSettings);
+      EW.setFormData('#template_settings_form', _this.templateSettings);
       _this.reloadFrame();
       _this.readTemplateClassAndId();
     }
@@ -235,26 +221,25 @@ UISForm.prototype.previewLayout = function () {
 };
 
 UISForm.prototype.clearEditor = function () {
-  var frBody = $(document.getElementById("fr").contentDocument.body);
-  frBody.find("#editor-glass-pane").remove();
-  frBody.find(".panel-overlay").remove();
-  frBody.find(".panel-glass-overlay").remove();
-  frBody.find(".widget-overlay").remove();
-  frBody.find("#base-content-pane .panel").css({
-    paddingBottom: "-=50px"
+  var frBody = $(document.getElementById('fr').contentDocument.body);
+  frBody.find('#editor-glass-pane').remove();
+  frBody.find('.panel-overlay').remove();
+  frBody.find('.panel-glass-overlay').remove();
+  frBody.find('.widget-overlay').remove();
+  frBody.find('#base-content-pane .panel').css({
+    paddingBottom: '-=50px'
   });
 };
 
 
 UISForm.prototype.createInspector = function (element, init) {
   var self = this;
-  var frameBody = $(document.getElementById("fr").contentDocument.body);
+  var frameBody = $(document.getElementById('fr').contentDocument.body);
   //frameBody.children(".widget-glass-pane").remove();
   //var editorGlassPane = frameBody.children("#editor-glass-pane");
 
   var children = $(element).children();
-  if (init)
-  {
+  if (init) {
     children = $(element).find("[data-block]:not([data-not-editable] [data-block])");
   }
   var result = new Array();
@@ -267,29 +252,28 @@ UISForm.prototype.createInspector = function (element, init) {
     uisItem = $(uisItem);
     var liUl = null;
 
-    if (uisItem.hasClass("panel") || uisItem.hasClass("block")) {
-      liUl = $("<li><div href='#' class='item-label'>\n\
-      <span class='handle panel'></span></div><a href='#' class='btn btn-primary btn-text add-item'>+</a><a href='#' class='close-icon' ></a></li>");
+    if (uisItem.hasClass('panel') || uisItem.hasClass('block')) {
+      liUl = $("<li><div href='#' class='item-label'><span class='handle panel'></span></div><a href='#' class='btn btn-primary btn-text add-item'>+</a><a href='#' class='close-icon' ></a></li>");
       itemLabel = liUl.find('.item-label');
 
       var dataPanelId = uisItem.attr('data-panel-id');
-      liUl.attr("data-linked-panel-id", dataPanelId);
+      liUl.attr('data-linked-panel-id', dataPanelId);
 
       skipBoxBlock = false;
 
-      if (uisItem.hasClass("row")) {
-        liUl.find(".handle").attr("class", "handle block");
-        liUl.addClass("block");
+      if (uisItem.hasClass('row')) {
+        liUl.find('.handle').attr('class', 'handle block');
+        liUl.addClass('block');
 
-        itemLabel.append("Block").click(function (e) {
+        itemLabel.append('Block').click(function (e) {
           self.blockForm(dataPanelId);
           e.preventDefault();
         });
-      } else if (uisItem.children(".row:not(.widget-container)").length > 0) {
-        liUl.addClass("panel").attr("data-linked-panel-id", dataPanelId);
+      } else if (uisItem.children('.row:not(.widget-container)').length > 0) {
+        liUl.addClass('panel').attr('data-linked-panel-id', dataPanelId);
         self.lastItem = liUl;
 
-        itemLabel.append("Panel");
+        itemLabel.append('Panel');
         itemLabel.click(function (e) {
           self.editPanel(dataPanelId, uisItem.attr('data-container-id'));
           e.preventDefault();
@@ -298,7 +282,7 @@ UISForm.prototype.createInspector = function (element, init) {
         skipChildren = true;
       } else {
         itemLabel.append('Panel: ' + (uisItem.attr('id') || ''));
-        liUl.addClass("panel");
+        liUl.addClass('panel');
         itemLabel.click(function (e) {
           self.editPanel(dataPanelId, uisItem.attr('data-container-id'));
           e.preventDefault();
@@ -306,16 +290,16 @@ UISForm.prototype.createInspector = function (element, init) {
       }
 
       // Add widget button for panels
-      var addItem = liUl.find(".add-item");
+      var addItem = liUl.find('.add-item');
       addItem.click($.proxy(self.showWidgetsList, self, dataPanelId));
       addItem.hover(function () {
-        liUl.addClass("highlight");
+        liUl.addClass('highlight');
       }, function () {
-        liUl.removeClass("highlight");
+        liUl.removeClass('highlight');
       });
 
       // Remove button
-      liUl.find(".close-icon").click(function (e) {
+      liUl.find('.close-icon').click(function (e) {
         e.preventDefault();
         self.removePanel(uisItem.attr('data-panel-id'));
       });
@@ -328,7 +312,7 @@ UISForm.prototype.createInspector = function (element, init) {
         self.currentElementHighlight.css({
           top: offset.top,
           left: offset.left,
-          position: "absolute",
+          position: 'absolute',
           width: panel.outerWidth(),
           height: panel.outerHeight(),
           margin: 0
@@ -339,12 +323,12 @@ UISForm.prototype.createInspector = function (element, init) {
         self.currentElementHighlight.hide();
       });
 
-      var ul = $("<ul></ul>");
+      var ul = $('<ul></ul>');
       ul.append(self.createInspector(uisItem));
       // Skip adding panel block to the editor
       if (skipBoxBlock) {
         if (self.lastItem) {
-          self.lastItem.find(".add-item").unbind("click").click(function (e) {
+          self.lastItem.find('.add-item').unbind('click').click(function (e) {
             e.preventDefault();
             self.showWidgetsList(dataPanelId);
           });
@@ -365,9 +349,9 @@ UISForm.prototype.createInspector = function (element, init) {
     }
 
     if (uisItem.hasClass('widget-container')) {
-      var widgetGlassPane = $(document.createElement("div"));
-      widgetGlassPane.addClass("widget-glass-pane");
-      widgetGlassPane.data("widget-element", uisItem);
+      var widgetGlassPane = $(document.createElement('div'));
+      widgetGlassPane.addClass('widget-glass-pane');
+      widgetGlassPane.data('widget-element', uisItem);
       frameBody.append(widgetGlassPane);
 
       var widget = uisItem.children().eq(0);
@@ -380,8 +364,8 @@ UISForm.prototype.createInspector = function (element, init) {
       widgetGlassPane.off('click').on('click', editWidget);
 
       var li = $("<li class='widget'><div href='#' class='item-label'><span class='handle widget'></span></div><a href='#' class='close-icon' ></a></li>");
-      li.attr("data-linked-widget-id", widget.attr("data-widget-id"));
-      var widgetTitle = li.find(".item-label");
+      li.attr('data-linked-widget-id', widget.attr('data-widget-id'));
+      var widgetTitle = li.find('.item-label');
 
       widgetGlassPane.on({
         mouseenter: function () {
@@ -393,10 +377,10 @@ UISForm.prototype.createInspector = function (element, init) {
       });
 
 
-      widgetTitle.append(widget.attr("data-widget-title") + ' | ' + (widget.attr('id') || ''));
+      widgetTitle.append(widget.attr('data-widget-title') + ' | ' + (widget.attr('id') || ''));
       widgetTitle.click(editWidget);
 
-      li.find(".close-icon").on('click', function (e) {
+      li.find('.close-icon').on('click', function (e) {
         e.preventDefault();
         self.removeWidget(widget.attr('data-widget-id'));
       });
@@ -405,13 +389,13 @@ UISForm.prototype.createInspector = function (element, init) {
 
       if (inlineEditor) {
         inlineEditor.css({
-          fontSize: "24px",
-          position: "absolute",
+          fontSize: '24px',
+          position: 'absolute',
           top: widget.offset().top,
           left: widget.offset().left,
-          backgroundColor: "rgba(255,255,255,.8)"
+          backgroundColor: 'rgba(255,255,255,.8)'
         });
-        frameBody.find("#editor-glass-pane").append(inlineEditor);
+        frameBody.find('#editor-glass-pane').append(inlineEditor);
       }
       // Show bloack glass on hover for widget
 
@@ -420,13 +404,12 @@ UISForm.prototype.createInspector = function (element, init) {
         self.currentElementHighlight.css({
           top: offset.top,
           left: offset.left,
-          position: "absolute",
+          position: 'absolute',
           width: widget.outerWidth(),
           height: widget.outerHeight()
         });
         self.currentElementHighlight.show();
-      }
-      , function () {
+      }, function () {
         self.currentElementHighlight.hide();
       });
 
@@ -439,38 +422,38 @@ UISForm.prototype.createInspector = function (element, init) {
 
 UISForm.prototype.loadInspectorEditor = function () {
   var self = this;
-  self.editor = document.getElementById("fr").contentWindow;
-  var frameBody = $(document.getElementById("fr").contentDocument.body);
-  var parentNode = frameBody.find("#base-content-pane");
+  self.editor = document.getElementById('fr').contentWindow;
+  var frameBody = $(document.getElementById('fr').contentDocument.body);
+  var parentNode = frameBody.find('#base-content-pane');
   var panelIndex = 1;
   var widgetIndex = 1;
 
   if (parentNode[0]) {
-    $.each(parentNode[0].querySelectorAll(".block, .panel, .widget"), function (i, element) {
+    $.each(parentNode[0].querySelectorAll('.block, .panel, .widget'), function (i, element) {
       element = $(element);
 
-      if (element.hasClass("panel") || element.hasClass("block")) {
-        if (!element.attr("data-panel-id"))
-          element.attr("data-panel-id", "panel-" + panelIndex);
+      if (element.hasClass('panel') || element.hasClass('block')) {
+        if (!element.attr('data-panel-id'))
+          element.attr('data-panel-id', 'panel-' + panelIndex);
         panelIndex++;
       }
 
-      if (element.hasClass("widget")) {
-        if (!element.attr("data-widget-id"))
-          element.attr("data-widget-id", "widget-" + widgetIndex);
+      if (element.hasClass('widget')) {
+        if (!element.attr('data-widget-id'))
+          element.attr('data-widget-id', 'widget-' + widgetIndex);
         widgetIndex++;
       }
     });
   }
 
-  var inspectorEditorList = this.inspectorEditor.children(".layout-components");
+  var inspectorEditorList = this.inspectorEditor.children('.layout-components');
   inspectorEditorList.empty();
 
   // Add div to create glass effect to make the iframe content unselectable
-  frameBody.children(".widget-glass-pane").remove();
+  frameBody.children('.widget-glass-pane').remove();
 
   // Add a div to represent the highlight of current element
-  frameBody.find("div.current-element").remove();
+  frameBody.find('div.current-element').remove();
   this.currentElementHighlight = $("<div class='current-element'></div>");
   frameBody.append(this.currentElementHighlight);
 
@@ -478,26 +461,26 @@ UISForm.prototype.loadInspectorEditor = function () {
 };
 
 /**
- * Relocate all the widget's glasspanes every second to keep them over their corresponding widget   
+ * Relocate all the widget's glasspanes every second to keep them over their corresponding widget
  */
 var repTimeout = repTimeout || null;
 UISForm.prototype.relocateGlassPanes = function () {
   var self = this;
-  var fr = document.getElementById("fr");
+  var fr = document.getElementById('fr');
   if (fr && fr.contentDocument.body) {
-    $.each(fr.contentDocument.body.querySelectorAll(".widget-glass-pane"), function (i, glass) {
+    $.each(fr.contentDocument.body.querySelectorAll('.widget-glass-pane'), function (i, glass) {
       glass = $(glass);
-      var widgetContainer = glass.data("widget-element"),
-              widget = widgetContainer.children().eq(0),
-              widgetoffset = widget.offset(),
-              pos = widgetoffset.top + '' + widgetoffset.left + '' + widget.outerWidth() + '' + widget.outerHeight();
+      var widgetContainer = glass.data('widget-element');
+      var widget = widgetContainer.children().eq(0);
+      var widgetOffset = widget.offset();
+      var pos = widgetOffset.top + '' + widgetOffset.left + '' + widget.outerWidth() + '' + widget.outerHeight();
 
       if (pos === glass[0].dataset.position)
         return;
 
       glass.css({
-        top: widgetoffset.top,
-        left: widgetoffset.left,
+        top: widgetOffset.top,
+        left: widgetOffset.left,
         width: widget.outerWidth(),
         height: widget.outerHeight()
       });
@@ -514,28 +497,27 @@ UISForm.prototype.relocateGlassPanes = function () {
   //}
 };
 
-/** Create a json string from current layout structure heirarchy 
- * 
- 
+/** Create a json string from current layout structure heirarchy
+ *
+
  * @returns {String} */
 UISForm.prototype.createContentHeirarchy = function () {
   var self = this;
   if (!self.editor)
     return {};
-  var panels = $("#fr").contents().find("body #base-content-pane").find("[data-block]:not([data-not-editable] [data-block])");
-  var root = {
-  };
+  var panels = $('#fr').contents().find('body #base-content-pane').find('[data-block]:not([data-not-editable] [data-block])');
+  var root = {};
 
   $.each(panels, function (i, v) {
     v = $(v).clone();
-    v.removeClass("panel").removeClass("block");
-    //alert(v.attr("data-panel-parameters"))
+    v.removeClass('panel').removeClass('block');
+    //alert(v.attr('data-panel-parameters'))
     root[i] = {
-      type: "panel",
-      class: v.prop("class"),
-      id: v.attr("id"),
-      panelParameters: JSON.parse(v.attr("data-panel-parameters") || '{}'),
-      //"blockName": v.attr("data-block-name"),
+      type: 'panel',
+      class: v.prop('class'),
+      id: v.attr('id'),
+      panelParameters: JSON.parse(v.attr('data-panel-parameters') || '{}'),
+      //'blockName': v.attr('data-block-name'),
       children: self.readPanels(v)
     };
   });
@@ -546,35 +528,34 @@ UISForm.prototype.createContentHeirarchy = function () {
 
 UISForm.prototype.readPanels = function (elm) {
   var self = this;
-  var child = {
-  };
+  var child = {};
   var index = 0;
-  $.each(elm.children("[data-panel],[data-widget-container]"), function (i, v) {
+  $.each(elm.children('[data-panel],[data-widget-container]'), function (i, v) {
     v = $(v).clone();
 
-    if (v.attr("data-panel")) {
-      v.removeClass("panel");
+    if (v.attr('data-panel')) {
+      v.removeClass('panel');
       child[index++] = {
-        type: "panel",
-        class: v.prop("class"),
-        id: v.attr("id"),
-        /*"panelParameters": JSON.parse(v.attr("data-panel-parameters") || '{}'),*/
+        type: 'panel',
+        class: v.prop('class'),
+        id: v.attr('id'),
+        /*'panelParameters': JSON.parse(v.attr('data-panel-parameters') || '{}'),*/
         // Read the childeren of the panel
         //children: self.readPanels(v.children().eq(0))
         children: self.readPanels(v)
       };
-    } else if (v.attr("data-widget-container")) {
-      v.removeClass("widget-container");
-      var w = v.children(".widget");
-      w.removeClass("widget");
-      //alert(w.prop("class"));
+    } else if (v.attr('data-widget-container')) {
+      v.removeClass('widget-container');
+      var w = v.children('.widget');
+      w.removeClass('widget');
+      //alert(w.prop('class'));
       child[index++] = {
-        type: "widget",
-        class: v.prop("class"),
-        widgetClass: w.prop("class"),
-        id: w.attr("id"),
-        widgetType: w.attr("data-widget-type"),
-        widgetParameters: self.editor.ew_widget_data[w.attr("data-widget-id")]
+        type: 'widget',
+        class: v.prop('class'),
+        widgetClass: w.prop('class'),
+        id: w.attr('id'),
+        widgetType: w.attr('data-widget-type'),
+        widgetParameters: self.editor.ew_widget_data[w.attr('data-widget-id')]
       };
     }
 
@@ -588,40 +569,38 @@ UISForm.prototype.readPanels = function (elm) {
  * @param {string} id The widget id
  * @returns {jQuery}    */
 UISForm.prototype.getEditorItem = function (id) {
-  var item = $("#fr").contents().find("body").find("div[data-widget-id='" + id + "']");
-  item.data("container", item.parent());
+  var item = $('#fr').contents().find('body').find("div[data-widget-id='" + id + "']");
+  item.data('container', item.parent());
   return item;
 };
 
 UISForm.prototype.getEditor = function () {
-  return $("#fr").contents();
+  return $('#fr').contents();
 };
 
 UISForm.prototype.getLayoutBlocks = function () {
-  var items = $("#fr").contents().find("body [data-block]:not([data-not-editable] [data-block])");
-  //item.data("container", item.parent());
+  var items = $('#fr').contents().find('body [data-block]:not([data-not-editable] [data-block])');
+  //item.data('container', item.parent());
   return items;
 };
 
 UISForm.prototype.getLayoutWidgets = function () {
-  var items = $("#fr").contents().find("body [data-widget]:not([data-not-editable] [data-widget])");
-  //item.data("container", item.parent());
+  var items = $('#fr').contents().find('body [data-widget]:not([data-not-editable] [data-widget])');
+  //item.data('container', item.parent());
   return items;
 };
 
 UISForm.prototype.init = function () {
   var self = this;
   // if uis id exist show the save change button, else show the save and start editing button
-  if (self.uisId && self.uisId !== 0)
-  {
+  if (self.uisId && self.uisId !== 0) {
     $('#ew-uis-editor-tabs a[href="#template-control"]').show();
     $('#ew-uis-editor-tabs a[href="#inspector"]').show();
     self.bSaveAndStart.comeOut(200);
     self.bSaveChanges.comeIn(300);
     self.bPreview.comeIn(300);
     self.bExportLayout.show();
-  } else
-  {
+  } else {
     $('#ew-uis-editor-tabs a[href="#pref"]').tab('show');
     $('#ew-uis-editor-tabs a[href="#template-control"]').hide();
     $('#ew-uis-editor-tabs a[href="#inspector"]').hide();
@@ -634,19 +613,18 @@ UISForm.prototype.init = function () {
 
 UISForm.prototype.templateChanged = function () {
   var _this = this;
-  var template = $("#template").val();
+  var template = $('#template').val();
   _this.templateSettingsForm.empty();
 
   if (template) {
     $.post('api/webroot/widgets-management/get-template-settings-form', {
       path: template
     }, function (response) {
-//      console.log(response);
       _this.frameLoader.dispose();
       _this.uisTemplate = template;
-      _this.templateSettingsForm.off("getData");
+      _this.templateSettingsForm.off('getData');
       _this.templateSettingsForm.html(response.data['html']);
-      EW.setFormData("#template_settings_form", _this.templateSettings);
+      EW.setFormData('#template_settings_form', _this.templateSettings);
       _this.updateTemplateBody();
     });
   } else {
@@ -659,10 +637,9 @@ UISForm.prototype.readTemplateClassAndId = function () {
 
 UISForm.prototype.addUIStructure = function () {
   var self = this;
-  $('#name').removeClass("red");
-  if (!$('#name').val())
-  {
-    $('#name').addClass("red");
+  $('#name').removeClass('red');
+  if (!$('#name').val()) {
+    $('#name').addClass('red');
     return;
   }
   //EW.lock(self.dpPreference, "Saving...");
@@ -695,20 +672,20 @@ UISForm.prototype.addUIStructure = function () {
 
 UISForm.prototype.updateUIS = function (reload) {
   var self = this;
-  $('#name').removeClass("red");
+  $('#name').removeClass('red');
   if (!$('#name').val()) {
-    $('#name').addClass("red");
+    $('#name').addClass('red');
     return;
   }
 
   var lock = System.ui.lock({
-    element: $.EW("getParentDialog", $("#ew-uis-editor"))[0],
-    akcent: "loader center"
+    element: $.EW('getParentDialog', $('#ew-uis-editor'))[0],
+    akcent: 'loader center'
   }, .5);
 
   var structure = (self.createContentHeirarchy());
-  var defaultUIS = $("#uis-default").is(":checked");
-  var homeUIS = $("#uis-home-page").is(":checked");
+  var defaultUIS = $('#uis-default').is(':checked');
+  var homeUIS = $('#uis-home-page').is(':checked');
   self.templateSettings = self.templateSettingsForm.serializeJSON(true);
   self.templateSettingsForm.trigger('getData');
 
@@ -719,16 +696,16 @@ UISForm.prototype.updateUIS = function (reload) {
       name: $('#name').val(),
       template: $('#template').val(),
       template_settings: self.templateSettings,
-      perview_url: $("#perview_url").val(),
+      perview_url: $('#perview_url').val(),
       structure: structure,
 //      id: self.uisId,
       defaultUIS: defaultUIS,
       homeUIS: homeUIS
     },
     success: function (response) {
-      $("body").EW().notify(response).show();
-      $(document).trigger("uis-list.refresh");
-      $('#form-title').html("<span>Edit</span> " + response.data.name);
+      $('body').EW().notify(response).show();
+      $(document).trigger('uis-list.refresh');
+      $('#form-title').html('<span>Edit</span> ' + response.data.name);
       self.defaultStructure = structure;
       if (reload === true) {
         self.reloadFrame();
@@ -749,48 +726,49 @@ UISForm.prototype.updateTemplateBody = function () {
   var lock = System.ui.lock({
     element: this.editorWindow[0]
     ,
-    akcent: "loader center"
+    akcent: 'loader center'
   }, .5);
 
   //var originalTemplateSettings = self.templateSettings;
   // Read template settings from template settings form
-  _this.templateSettingsForm.trigger("getData");
+  _this.templateSettingsForm.trigger('getData');
 
   $.get('api/webroot/widgets-management/get-layout/', {
     uisId: _this.uisId,
     template: _this.uisTemplate,
     template_settings: JSON.stringify(_this.templateSettings),
-    url: $("#perview_url").val() || ''
+    url: $('#perview_url').val() || ''
   }, function (response) {
-    var myIframe = _this.editorIFrame[0],
-            myIframeContent = $(myIframe).contents(),
-            head = myIframeContent.find("head"),
-            body = myIframeContent.find("body");
+    var myIframe = _this.editorIFrame[0];
+    var myIframeContent = $(myIframe).contents();
+    var head = myIframeContent.find('head');
+    var body = myIframeContent.find('body');
+
     body.off();
-    head.find("#template-script").remove();
-    head.find("#widget-data").remove();
+    head.find('#template-script').remove();
+    head.find('#widget-data').remove();
     if ($('#template').val()) {
-      body.find("#template-css").attr("href", "public/rm/" + $('#template').val() + "/template.css");
+      body.find('#template-css').attr('href', 'public/rm/' + $('#template').val() + '/template.css');
     }
 
-    body.find("#base-content-pane").remove();
+    body.find('#base-content-pane').remove();
 
-    var widgetData = myIframe.contentWindow.document.createElement("script");
-    widgetData.id = "widget-data";
-    widgetData.innerHTML = response.data["widget_data"];
+    var widgetData = myIframe.contentWindow.document.createElement('script');
+    widgetData.id = 'widget-data';
+    widgetData.innerHTML = response.data['widget_data'];
     myIframe.contentWindow.document.head.appendChild(widgetData);
-    var templateBody = myIframe.contentWindow.document.createElement("div");
-    templateBody.id = "base-content-pane";
-    templateBody.className = "container";
-    templateBody.innerHTML = response.data["template_body"];
+    var templateBody = myIframe.contentWindow.document.createElement('div');
+    templateBody.id = 'base-content-pane';
+    templateBody.className = 'container';
+    templateBody.innerHTML = response.data['template_body'];
     myIframe.contentWindow.document.body.appendChild(templateBody);
 
     // Adding template script after adding template body
-    if (response.data["template_script"]) {
-      var script = myIframe.contentWindow.document.createElement("script");
-      //script.type = "text/javascript";
-      script.id = "template-script";
-      var templateScript = $('<script>' + response.data["template_script"] + '</script').attr("id", "template-script");
+    if (response.data['template_script']) {
+      var script = myIframe.contentWindow.document.createElement('script');
+      //script.type = 'text/javascript';
+      script.id = 'template-script';
+      var templateScript = $('<script>' + response.data['template_script'] + '</script').attr('id', 'template-script');
       script.innerHTML = templateScript.html();
 
       myIframe.contentWindow.document.head.appendChild(script);
@@ -807,9 +785,9 @@ UISForm.prototype.updateTemplateBody = function () {
 //      evt.initEvent('load', false, false);
 //      myIframe.contentWindow.dispatchEvent(evt);
 
-    _this.inspectorEditor.trigger("refresh");
+    _this.inspectorEditor.trigger('refresh');
     lock.dispose();
-  }, "json");
+  }, 'json');
 };
 
 function findScriptTags(element) {
@@ -849,35 +827,30 @@ function evalScript(elem, frame) {
 }
 
 UISForm.prototype.addWidget = function (html, parentId) {
-  var scripts = [
-  ];
+  var scripts = [];
   var ret = $(html)[0];
   parentId.appendChild(ret);
   findScriptTags(ret, scripts);
-  for (var script in scripts)
-  {
+  for (var script in scripts) {
     evalScript(scripts[script]);
   }
 };
 
 UISForm.prototype.replaceWidget = function (html, parentId) {
-  var scripts = [
-  ];
+  var scripts = [];
   var ret = $(html)[0];
   parentId.parentNode.replaceChild(ret, parentId);
   findScriptTags(ret, scripts);
-  for (var script in scripts)
-  {
+  for (var script in scripts) {
     evalScript(scripts[script]);
   }
 };
 /** Set data for specified widget
- * 
+ *
  * @returns {Boolean} false id data is not a valid json format
  */
 UISForm.prototype.setWidgetData = function (widgetId, data) {
-  try
-  {
+  try {
     //console.log(typeof (data));
     if (typeof (data) != 'object')
       data = $.parseJSON(data);
@@ -894,29 +867,29 @@ UISForm.prototype.dispose = function () {
 };
 
 UISForm.prototype.reloadFrame = function (t) {
-  var url = !($("#perview_url").val) ? "index.php" : $("#perview_url").val();
+  var url = !($('#perview_url').val) ? 'index.php' : $('#perview_url').val();
   this.frameLoader = System.ui.lock({
-    element: $.EW("getParentDialog", $("#ew-uis-editor"))[0],
-    akcent: "loader center"
+    element: $.EW('getParentDialog', $('#ew-uis-editor'))[0],
+    akcent: 'loader center'
   }, .5);
 
-  $("#inspector-editor > .layout-components").empty();
+  $('#inspector-editor > .layout-components').empty();
   $('#fr').attr({
     src: '<?= EW_ROOT_URL ?>' + url + '?_uis=' + this.uisId + '&editMode=true'
   });
 };
 
 UISForm.prototype.showWidgetLayoutManager = function (parameters) {
-  $("#widget-size-and-layout").stop().animate({
-    left: "0px"
+  $('#widget-size-and-layout').stop().animate({
+    left: '0px'
   }, 300);
 };
 
 UISForm.prototype.showWidgetsList = function (parentId) {
   var _this = this;
 
-  $("#items-list").stop().animate({
-    left: "0px"
+  $('#items-list').stop().animate({
+    left: '0px'
   }, 300);
 
   $.post('api/webroot/widgets-management/widgets-types', {
@@ -937,14 +910,14 @@ UISForm.prototype.showWidgetsList = function (parentId) {
     });
 
     _this.widgetsList[0].data = items;
-  }, "json");
+  }, 'json');
   return false;
 };
 
 UISForm.prototype.blockForm = function (id, name) {
   var self = this;
   var d = EW.createModal({
-    class: "left"
+    class: 'left'
   });
 
   self.currentDialog = d;
@@ -960,12 +933,12 @@ UISForm.prototype.blockForm = function (id, name) {
 
 UISForm.prototype.addPanel = function (containerId) {
   var self = this;
-  $("#items-list").stop().animate({
-    left: "-400px"
+  $('#items-list').stop().animate({
+    left: '-400px'
   }, 300);
 
   var panelFormDialog = EW.createModal({
-    class: "left"
+    class: 'left'
   });
 
   $.post('html/webroot/widgets-management/uis-panel.php', {
@@ -980,7 +953,7 @@ UISForm.prototype.addPanel = function (containerId) {
 UISForm.prototype.editPanel = function (pid, containerId) {
   var self = this;
   var panelFormDialog = EW.createModal({
-    class: "left"
+    class: 'left'
   });
 
   $.get('html/webroot/widgets-management/uis-panel.php', {
@@ -996,8 +969,8 @@ UISForm.prototype.editPanel = function (pid, containerId) {
 UISForm.prototype.widgetForm = function (widgetType, parentId, feederType) {
   var self = this;
 
-  $("#items-list").stop().animate({
-    left: "-400px"
+  $('#items-list').stop().animate({
+    left: '-400px'
   }, 300);
 
   var d = EW.createModal({
@@ -1006,7 +979,7 @@ UISForm.prototype.widgetForm = function (widgetType, parentId, feederType) {
 
   self.currentDialog = d;
 
-  $.post("html/webroot/widgets-management/widget-form/component.php", {
+  $.post('html/webroot/widgets-management/widget-form/component.php', {
     template: self.uisTemplate,
     widgetType: widgetType,
     feederType: feederType,
@@ -1020,7 +993,6 @@ UISForm.prototype.widgetForm = function (widgetType, parentId, feederType) {
 };
 
 function scale(full, target, base) {
-  //console.log(target + " " + full + " " + base)
   return ((target / full) * 100) / 100;
 }
 
@@ -1113,30 +1085,26 @@ EW.addURLHandler(function () {
   var left = sidebarWidth;
   var width = $("#uis-editor-preview-pane").width();
   var simWidth = 1920;
-  if (screen === "normal" /*&& windowWidth >= 1100*/)
-  {
+  if (screen === "normal" /*&& windowWidth >= 1100*/) {
     defScreen = "normal";
     //left = ((windowWidth - 1100) / 2) + sidebarWidth;
     width = 1100;
     simWidth = 1100;
   }
-  if (screen === "tablet" /*&& windowWidth >= 800*/)
-  {
+  if (screen === "tablet" /*&& windowWidth >= 800*/) {
     defScreen = "tablet";
     //left = ((windowWidth - 800) / 2) + sidebarWidth;
     width = 800;
     simWidth = 800;
   }
-  if (screen === "mobile" /*&& windowWidth >= 420*/)
-  {
+  if (screen === "mobile" /*&& windowWidth >= 420*/) {
     defScreen = "mobile";
     //left = ((windowWidth - 420) / 2) + sidebarWidth;
     width = 420;
     simWidth = 420;
   }
 
-  if (defScreen === "large")
-  {
+  if (defScreen === "large") {
     screen = "large";
     width -= 10;
     simWidth = 1920;
@@ -1154,8 +1122,7 @@ EW.addURLHandler(function () {
 
   uisForm.oldScreen = screen;
 
-  if (!$("input[value='" + screen + "']").is(":checked"))
-  {
+  if (!$("input[value='" + screen + "']").is(":checked")) {
     $("input[value='" + screen + "']").click();
     $("input[value='" + screen + "']").prop("checked", true);
   }

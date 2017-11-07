@@ -6,12 +6,12 @@
 
 html, body {
   font-family: 'Open Sans', sans-serif;
-  color: rgba(72, 72, 72, 0.88);
+  color: #0f0f0f;
   height: 100%;
   position: relative;
   display: block;
-  font-size: 15px;
-  line-height: 24px;
+  font-size: 16px;
+  line-height: 25px;
 }
 
 .container {
@@ -19,7 +19,7 @@ html, body {
   min-height: 100%;
   position: relative;
   z-index: 1;
-  padding-bottom: 80px;
+  padding-bottom: 60px;
   overflow: hidden;
 }
 
