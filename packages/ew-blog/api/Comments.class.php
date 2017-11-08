@@ -80,8 +80,9 @@ class Comments extends \ew\Module {
     if (!is_numeric($_input->content_id)) {
       $result->error = 400;
       $result->message = 'content_id must be an integer';
+      $_response->set_result($result);
 
-      return \ew\APIResponse::standard_response($_response, $result);
+      return $_response;
     }
 
     $comments_status = 0;
@@ -98,8 +99,9 @@ class Comments extends \ew\Module {
       if (!$post->data) {
         $post->error = 400;
         $post->message = 'commenting is disabled on this post, no parent post';
+        $_response->set_result($post);
 
-        return \ew\APIResponse::standard_response($_response, $post);
+        return $_response;
       }
 
       if (isset($comments) && $comments !== 0) {
@@ -127,8 +129,9 @@ class Comments extends \ew\Module {
     if ($comments_status === -1) {
       $post->error = 400;
       $post->message = 'commenting is disabled on this post';
+      $_response->set_result($post);
 
-      return \ew\APIResponse::standard_response($_response, $post);
+      return $_response;
     }
 
     if (!$_input->visibility) {
@@ -136,33 +139,37 @@ class Comments extends \ew\Module {
     }
 
     $comment = (new CommentsRepository())->create($_input);
-    return \ew\APIResponse::standard_response($_response, $comment);
+    $_response->set_result($comment);
+
+    return $_response;
   }
 
   public function read(\ew\APIResponse $_response, $_input) {
     $result = (new CommentsRepository())->read($_input);
+    $_response->set_result($result);
 
-    return \ew\APIResponse::standard_response($_response, $result);
+    return $_response;
   }
 
   public function update(\ew\APIResponse $_response, $_input) {
     $result = (new CommentsRepository())->update($_input);
+    $_response->set_result($result);
 
-    return \ew\APIResponse::standard_response($_response, $result);
+    return $_response;
   }
 
   public function delete(\ew\APIResponse $_response, $_input) {
-
-
     $result = (new CommentsRepository())->delete($_input);
+    $_response->set_result($result);
 
-    return \ew\APIResponse::standard_response($_response, $result);
+    return $_response;
   }
 
   public function confirm_update($_response, $id) {
     $result = (new CommentsRepository())->confirm($id);
+    $_response->set_result($result);
 
-    return \ew\APIResponse::standard_response($_response, $result);
+    return $_response;
   }
 
   public function options() {
@@ -322,8 +329,9 @@ class Comments extends \ew\Module {
     }
 
     $result->data = $comments_list;
+    $_response->set_result($result);
 
-    return \ew\APIResponse::standard_response($_response, $result);
+    return $_response;
   }
 
 }

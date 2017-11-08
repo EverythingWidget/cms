@@ -2,7 +2,9 @@
 
 namespace admin;
 
+use ew\APIResponse;
 use ew\DBUtility;
+use ew\Result;
 use EWCore;
 
 /**
@@ -761,45 +763,75 @@ class ContentManagement extends \ew\Module {
 
   public function contents_create($_response, $_input) {
     $result = (new ContentsRepository())->create($_input);
+    $_response->set_result($result);
 
-    return \ew\APIResponse::standard_response($_response, $result);
+    return $_response;
   }
 
+  /**
+   * @param $_input
+   * @param $_response \ew\APIResponse
+   * @param $_parts__id
+   * @return mixed
+   */
   public function contents_read($_input, $_response, $_parts__id) {
     $_input->id = $_parts__id;
     $result = (new ContentsRepository())->read($_input);
+    $_response->set_result($result);
 
-    return \ew\APIResponse::standard_response($_response, $result);
+    return $_response;
   }
 
   public function contents_update($_input, $_response) {
     $result = (new ContentsRepository())->update($_input);
+    $_response->set_result($result);
 
-    return \ew\APIResponse::standard_response($_response, $result);
+    return $_response;
   }
 
   public function contents_delete($_input, $_response) {
     $result = (new ContentsRepository())->delete($_input);
+    $_response->set_result($result);
 
-    return \ew\APIResponse::standard_response($_response, $result);
+    return $_response;
   }
 
   public function folder_delete($_input, $_response) {
     $result = (new ContentsRepository())->delete_folder($_input);
+    $_response->set_result($result);
 
-    return \ew\APIResponse::standard_response($_response, $result);
+    return $_response;
   }
 
-  public function feeder($_response, $_input, $order_by = 'ASC', $_language = 'en', $token = 0, $page_size = 30) {
-    if (!is_numeric($_input->id)) {
-      $_input->id = EWCore::slug_to_id($_input->id, 'ew_contents');
+  /**
+   * @param $_response \ew\APIResponse
+   * @param $_input
+   * @param string $order_by
+   * @param $_language
+   * @param int $token
+   * @param int $page_size
+   * @return \ew\APIResponse
+   */
+  public function feeder($_response, $_input, $order_by = 'ASC', $_language, $token = 0, $page_size = 100) {
+    if (!is_numeric($_input->_resource_id)) {
+      $_input->id = EWCore::slug_to_id($_input->_resource_id, 'ew_contents');
     }
+
+    if (!$_input->id) {
+      $not_found = new Result();
+      $not_found->error = 400;
+      $not_found->message = "`id` not found";
+      $_response->set_result($not_found);
+
+      return $_response;
+    }
+
 
     $articles = $this->articles_read($_response, $_input->id, $token, $page_size, $order_by, $_language);
 
     $result = new \ew\Result;
     $result->data = new \Illuminate\Database\Eloquent\Collection;
-    //    $result->data->add($_input);
+
     if (isset($articles)) {
       foreach ($articles as $article) {
         $article['content_fields']['@content/date-created'] = [
@@ -821,15 +853,14 @@ class ContentManagement extends \ew\Module {
       $parent_data = $folder_data->data;
     }
 
-    $result->total = $articles['total'];
-    $result->page_size = $articles['page_size'];
     $result->parent = $parent_data;
+    $_response->set_result($result);
 
-    return \ew\APIResponse::standard_response($_response, $result);
+    return $_response;
   }
 
 
-  public function articles_read($_response, $parent_id = null, $start, $page_size, $order_by = null, $language) {
+  public function articles_read($_response, $parent_id = null, $start = 0, $page_size = 100, $order_by = null, $language) {
     if (is_null($start)) {
       $start = 0;
     }
@@ -847,8 +878,9 @@ class ContentManagement extends \ew\Module {
       ]);
 
       $_response->properties['total'] = $articles->count();
+      $_response->set_data($articles->toArray());
 
-      return $articles->toArray();
+      return $_response;
     } else {
       $parent_data = ew_contents::find($parent_id);
       $up_parent_id = isset($parent_data['parent_id']) ? $parent_data['parent_id'] : 0;
@@ -883,8 +915,9 @@ class ContentManagement extends \ew\Module {
       $_response->properties['start'] = intval($start);
       $_response->properties['page_size'] = intval($page_size);
       $_response->properties['parent'] = isset($parent_data) ? $parent_data->toArray() : null;
+      $_response->set_data($data);
 
-      return $data;
+      return $_response;
     }
 
     return \EWCore::log_error(400, 'tr{Something went wrong}');

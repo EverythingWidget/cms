@@ -9,6 +9,9 @@ namespace ew;
  */
 class Result extends \stdClass {
 
+  /**
+   * @var integer
+   */
   public $error;
 
   /**

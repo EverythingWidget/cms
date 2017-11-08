@@ -117,6 +117,10 @@ class APIResourceHandler extends ResourceHandler {
       $parameters['id'] = is_numeric($method_name) ? intval($method_name) : $parameters['id'];
     }
 
+    $parameters['_resource_id'] = $parameters['_parts'][0] ?
+        rtrim($parameters['_parts'][0], '/') :
+        rtrim($parameters['id'], '/');
+
     $permission_id = \EWCore::does_need_permission($app_name, $module_name, $resource_name . '/' . $api_command_name);
     if (!method_exists($app_section_object, $api_method_name)) {
       return \EWCore::log_error(404, "$app_name-$resource_name: Method not found: `$api_method_name`");
@@ -156,6 +160,11 @@ class APIResourceHandler extends ResourceHandler {
     } catch (Exception $e) {
       echo $e->getTraceAsString();
     }
+
+//    if($response->properties['error_code']) {
+//
+//    }
+
 
     if ($response->downloadable) {
       return $response->to_file();

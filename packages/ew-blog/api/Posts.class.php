@@ -71,45 +71,31 @@ class Posts extends \ew\Module {
 
   public function create(\ew\APIResponse $_response, $_input) {
     $result = (new PostsRepository())->create($_input);
+    $_response->set_result($result);
 
-    return \ew\APIResponse::standard_response($_response, $result);
+    return $_response;
   }
 
   public function read(\ew\APIResponse $_response, $_input) {
-
-
     $result = (new PostsRepository())->read($_input);
+    $_response->set_result($result);
 
-    return \ew\APIResponse::standard_response($_response, $result);
+    return $_response;
   }
 
   public function update(\ew\APIResponse $_response, $_input) {
-
-
     $result = (new PostsRepository())->update($_input);
+    $_response->set_result($result);
 
-    return \ew\APIResponse::standard_response($_response, $result);
+    return $_response;
   }
 
   public function delete(\ew\APIResponse $_response, $_input) {
-
-
     $result = (new PostsRepository())->delete($_input);
+    $_response->set_result($result);
 
-    return \ew\APIResponse::standard_response($_response, $result);
+    return $_response;
   }
-
-//  public function included_contents_read(\ew\APIResponse $_response, $_input) {
-//
-//    $_input->filter = [
-//        'include' => ['content'],
-//        'order'   => ['ew_contents.date_modified']
-//    ];
-//
-//    $result = (new PostsRepository())->read($_input);
-//
-//    return \ew\APIResponse::standard_response($_response, $result);
-//  }
 
   public function included_contents_read(\ew\APIResponse $_response, $_input) {
 
@@ -132,8 +118,9 @@ class Posts extends \ew\Module {
     $result->data = $query->get();
     $result->start = intval($_input->start);
     $result->page_size = intval($_input->page_size);
+    $_response->set_result($result);
 
-    return \ew\APIResponse::standard_response($_response, $result);
+    return $_response;
   }
 
   public function options() {

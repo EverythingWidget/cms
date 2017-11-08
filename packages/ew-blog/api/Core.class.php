@@ -267,8 +267,9 @@ class Core extends \ew\Module {
         'content_fields' => $folder_info['data']['content_fields'],
     ];
 
-    //return $posts; 
-    return \ew\APIResponse::standard_response($_response, $result);
+    $_response->set_result($result);
+
+    return $_response;
   }
 
   public function ew_page_feeder_post($id, $params = [], $_language = 'en') {

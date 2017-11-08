@@ -1,4 +1,4 @@
-/* global Scope, System, $php */
+/* global $, EW, Scope, System, $php, Vue */
 
 System.newStateHandler(Scope, Handler);
 
@@ -17,8 +17,8 @@ function Handler(state, scope) {
     methods: {
       getFeederLayout: function (feederURL) {
         return this.pathLayouts.filter(function (item) {
-              return item.path === feederURL;
-            })[0] || {};
+          return item.path === feederURL;
+        })[0] || {};
       },
       selectLayout: function (url) {
         uisListDialog(url);
@@ -47,7 +47,6 @@ function Handler(state, scope) {
       var exist = vue.pathLayouts.filter(function (item) {
         return item.path === pageLayout.url;
       })[0];
-
       if (pageLayout.layoutId === null) {
         vue.pathLayouts.splice(vue.pathLayouts.indexOf(exist), 1);
         return;

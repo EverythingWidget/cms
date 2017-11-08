@@ -96,8 +96,8 @@ root {
 @media (min-width: 992px) {
   .top-pane.center {
     position: absolute;
-    top: 0px;
-    bottom: 0px;
+    top: 0;
+    bottom: 0;
     right: 0;
     max-width: 990px;
     width: 100%;
@@ -583,7 +583,7 @@ body.Admin {
 }
 
 .top-pane {
-  background-color: #0097a7;
+  background-color: rgba(#0097a7, .96);
   position: absolute;
   top: 41px;
   right: 0;
@@ -598,7 +598,6 @@ body.Admin {
     display: block;
     height: 32px;
     margin: 0;
-    background-color: rgba(0, 0, 0, .28);
   }
 
   .header-pane {
@@ -633,8 +632,8 @@ body.Admin {
       }
 
       h1 {
-        line-height: 32px;
-        font-size: 16px;
+        line-height: 40px;
+        font-size: 20px;
       }
     }
 
@@ -671,7 +670,7 @@ body.Admin {
 }
 
 .header-pane .nav-pills > li > a {
-  line-height: 30px;
+  line-height: 22px;
 }
 
 .form-content.no-footer {

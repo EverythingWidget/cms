@@ -1179,7 +1179,7 @@ class EWCore {
     $statement = $pdo->prepare($query);
     $statement->bindParam(':value', $slug, PDO::PARAM_STR);
 
-    if ($statement->execute()) {
+    if ($statement->execute() && $statement->rowCount()) {
       return intval($statement->fetch(PDO::FETCH_ASSOC)['id']);
     }
 

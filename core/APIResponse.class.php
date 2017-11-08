@@ -15,9 +15,10 @@ namespace ew;
  */
 class APIResponse implements \JsonSerializable {
 
-  public $data = [];
+  public $data = null;
   public $properties = [];
   public $downloadable = false;
+  public $result;
 
   public function __construct($url) {
     $this->properties = [
@@ -37,6 +38,32 @@ class APIResponse implements \JsonSerializable {
 
   public function set_data($data) {
     $this->data = $data;
+  }
+
+  /**
+   * @param $result Result
+   */
+  public function set_result($result) {
+    $this->result = $result;
+    $this->properties['message'] = $result->message;
+    $this->properties['message_code'] = $result->message_code;
+
+    if ($result->has_error()) {
+      $this->set_status_code($result->error);
+    }
+
+    foreach ($result as $key => $value) {
+      // Don't include data and error property of result in response properties
+      if ($key === 'data' || $key === 'error') {
+        continue;
+      }
+
+      $this->properties[$key] = $value;
+    }
+
+    if ($result->data) {
+      $this->set_data($result->data->toArray());
+    }
   }
 
   public function set_meta($meta) {
@@ -60,18 +87,11 @@ class APIResponse implements \JsonSerializable {
   }
 
   public function to_array() {
-    $type = null;
-//    if (!is_null($this->data)) {
-//      $type = array_keys($this->data) === range(0, count($this->data) - 1) ? 'list' : 'item';
-//    }
-//
-//    if (!is_null($this->type)) {
-//      $type = $this->type;
-//    }
-
-    return array_merge(array_filter($this->properties, [$this, 'result_filter']), [
+    $response_data = array_merge(array_filter($this->properties, [$this, 'result_filter']), [
         'data' => $this->data
     ]);
+
+    return $response_data;
   }
 
   public function to_file() {
@@ -107,7 +127,7 @@ class APIResponse implements \JsonSerializable {
     $_response->properties['message_code'] = $result->message_code;
 
 
-    if ($result->error) {
+    if ($result->has_error()) {
       $_response->set_status_code($result->error);
 
       //return $result->data;

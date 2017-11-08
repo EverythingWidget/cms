@@ -271,32 +271,35 @@ class UsersManagement extends \ew\Module {
 
   public function users_create($_input, \ew\APIResponse $_response) {
     $result = (new UsersRepository())->create($_input);
+    $_response->set_result($result);
 
-    return \ew\APIResponse::standard_response($_response, $result);
+    return $_response;
   }
 
   public function users_read($_response, $_input, $_parts__id) {
     $_input->id = $_parts__id;
-
     $result = (new UsersRepository())->read($_input);
+    $_response->set_result($result);
 
-    return \ew\APIResponse::standard_response($_response, $result);
+    return $_response;
   }
 
   public function users_update(\ew\APIResponse $_response, $_input, $_parts__id) {
     $_input->id = $_parts__id;
 
     $result = (new UsersRepository())->update($_input);
+    $_response->set_result($result);
 
-    return \ew\APIResponse::standard_response($_response, $result);
+    return $_response;
   }
 
   public function users_delete(\ew\APIResponse $_response, $_input, $_parts__id) {
     $_input->id = $_parts__id;
 
     $result = (new UsersRepository())->delete($_input);
+    $_response->set_result($result);
 
-    return \ew\APIResponse::standard_response($_response, $result);
+    return $_response;
   }
 
   public static function get_users_groups_list($_response, $page = 0, $page_size = 100) {
@@ -321,8 +324,9 @@ class UsersManagement extends \ew\Module {
 
     $_response->properties['size'] = intval($total_rows_data['COUNT(*)']);
     $_response->properties['page_size'] = $page_size;
+    $_response->set_data($rows);
 
-    return $rows;
+    return $_response;
   }
 
   public function get_user_group_by_id($_response, $groupId) {
@@ -488,32 +492,36 @@ class UsersManagement extends \ew\Module {
 
   public function groups_create(\ew\APIResponse $_response, $_input) {
     $result = (new UsersGroupsRepository())->create($_input);
+    $_response->set_result($result);
 
-    return \ew\APIResponse::standard_response($_response, $result);
+    return $_response;
   }
 
   public function groups_read(\ew\APIResponse $_response, $_input, $_parts__id) {
     $_input->id = $_parts__id;
 
     $result = (new UsersGroupsRepository())->read($_input);
+    $_response->set_result($result);
 
-    return \ew\APIResponse::standard_response($_response, $result);
+    return $_response;
   }
 
   public function groups_update(\ew\APIResponse $_response, $_input, $_parts__id) {
     $_input->id = $_parts__id;
 
     $result = (new UsersGroupsRepository())->update($_input);
+    $_response->set_result($result);
 
-    return \ew\APIResponse::standard_response($_response, $result);
+    return $_response;
   }
 
   public function groups_delete(\ew\APIResponse $_response, $_input, $_parts__id) {
     $_input->id = $_parts__id;
 
     $result = (new UsersGroupsRepository())->delete($_input);
+    $_response->set_result($result);
 
-    return \ew\APIResponse::standard_response($_response, $result);
+    return $_response;
   }
 
   public function read() {

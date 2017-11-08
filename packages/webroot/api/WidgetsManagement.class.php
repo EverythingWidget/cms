@@ -1466,8 +1466,9 @@ class WidgetsManagement extends \ew\Module {
 
     $result = new \ew\Result();
     $result->data = new \Illuminate\Database\Eloquent\Collection($feeders);
+    $_response->set_result($result);
 
-    return \ew\APIResponse::standard_response($_response, $result);
+    return $_response;
   }
 
   public static function parse_html_to_parts($html_string) {
@@ -1506,19 +1507,19 @@ class WidgetsManagement extends \ew\Module {
       }
     }
 
-    return \ew\APIResponse::standard_response($_response, $result);
+    $_response->set_result($result);
+
+    return $_response;
   }
 
   public function layouts_read($_input, $_response) {
-
     $result = (new LayoutsRepository())->read($_input);
+    $_response->set_result($result);
 
-    return \ew\APIResponse::standard_response($_response, $result);
+    return $_response;
   }
 
   public function layouts_update($_input, $_response) {
-
-
     $result = (new LayoutsRepository())->update($_input);
 
     if (!$result->has_error()) {
@@ -1530,8 +1531,9 @@ class WidgetsManagement extends \ew\Module {
         $this->set_uis("@HOME_PAGE", $_input->id);
       }
     }
+    $_response->set_result($result);
 
-    return \ew\APIResponse::standard_response($_response, $result);
+    return $_response;
   }
 
   public function masons_read($_response, $_input) {
@@ -1541,8 +1543,9 @@ class WidgetsManagement extends \ew\Module {
     if (!is_dir($path)) {
       $result->error = 404;
       $result->message = 'masons not found: ' . $path;
+      $_response->set_result($result);
 
-      return \ew\APIResponse::standard_response($_response, $result);
+      return $_response;
     }
 
     $masons_dir = opendir($path);
@@ -1558,9 +1561,9 @@ class WidgetsManagement extends \ew\Module {
       $result->data->add($mason);
     }
 
-    //$result->data->add($_input);
+    $_response->set_result($result);
 
-    return \ew\APIResponse::standard_response($_response, $result);
+    return $_response;
   }
 
   public function layouts_delete($_input, $_response) {

@@ -28,14 +28,14 @@
         showLayoutsDialog: function () {
           var dp = EW.createModal();
           this.table = EW.createTable({
-            name: "uis-list",
+            name: 'uis-list',
             headers: {Name: {}, Template: {}},
-            columns: ["name", "template"],
+            columns: ['name', 'template'],
             rowCount: true,
             url: 'api/webroot/widgets-management/get-uis-list',
             pageSize: 30,
             buttons: {
-              "Select": function (row) {
+              'Select': function (row) {
                 vue.id = row.data('field-id');
                 vue.name = row.data('field-name');
 

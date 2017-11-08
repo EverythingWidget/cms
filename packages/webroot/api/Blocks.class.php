@@ -56,32 +56,30 @@ class Blocks extends \ew\Module {
 
   public function create(\ew\APIResponse $_response, $_input) {
     $result = (new LayoutBlocksRepository())->create($_input);
+    $_response->set_result($result);
 
-    return \ew\APIResponse::standard_response($_response, $result);
+    return $_response;
   }
 
   public function read(\ew\APIResponse $_response, $_input) {
-
-
     $result = (new LayoutBlocksRepository())->read($_input);
+    $_response->set_result($result);
 
-    return \ew\APIResponse::standard_response($_response, $result);
+    return $_response;
   }
 
   public function update(\ew\APIResponse $_response, $_input) {
-
-
     $result = (new LayoutBlocksRepository())->update($_input);
+    $_response->set_result($result);
 
-    return \ew\APIResponse::standard_response($_response, $result);
+    return $_response;
   }
 
   public function delete(\ew\APIResponse $_response, $_input) {
-
-
     $result = (new LayoutBlocksRepository())->delete($_input);
+    $_response->set_result($result);
 
-    return \ew\APIResponse::standard_response($_response, $result);
+    return $_response;
   }
 
   public function options() {
