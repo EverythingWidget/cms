@@ -2,8 +2,7 @@
 
 //Form data to JSOn Object
 $.fn.serializeJSON = function (flag) {
-  var pureObject = {
-  };
+  var pureObject = {};
   var a = this.serializeArray();
   $.each(a, function () {
     if (pureObject[this.name] !== undefined) {
@@ -37,17 +36,15 @@ $.fn.serializeJSON = function (flag) {
 
 
 var customHashes = new Object();
+
 function EverythingWidgets() {
   var self = this;
   this.urlHandlers = new Array();
   this.mainContent = $("#main-content");
   this.currentTab = null;
-  this.widget_data = [
-  ];
-  this.activityCounter = [
-  ];
-  this.originalActivity = [
-  ];
+  this.widget_data = [];
+  this.activityCounter = [];
+  this.originalActivity = [];
 
   var oldSize = "";
   $(document).on('mousedown touchstart', function (event) {
@@ -55,26 +52,23 @@ function EverythingWidgets() {
   });
 
   $(window).resize(function () {
-    if ($(window).width() < 768 && oldSize !== "xs")
-    {
+    if ($(window).width() < 768 && oldSize !== "xs") {
       $(window).trigger("ew.screen.xs");
       oldSize = "xs";
-    } else if ($(window).width() >= 768 && $(window).width() < 992 && oldSize !== "sm")
-    {
+    } else if ($(window).width() >= 768 && $(window).width() < 992 && oldSize !== "sm") {
       $(window).trigger("ew.screen.sm");
       oldSize = "sm";
-    } else if ($(window).width() >= 992 && $(window).width() < 1360 && oldSize !== "md")
-    {
+    } else if ($(window).width() >= 992 && $(window).width() < 1360 && oldSize !== "md") {
       $(window).trigger("ew.screen.md");
       oldSize = "md";
-    } else if ($(window).width() >= 1360 && oldSize !== "lg")
-    {
+    } else if ($(window).width() >= 1360 && oldSize !== "lg") {
       $(window).trigger("ew.screen.lg");
       oldSize = "lg";
     }
   });
 
-  this.customFunction = function () { };
+  this.customFunction = function () {
+  };
 
   this.verbs = {
     get: 'read',
@@ -112,23 +106,19 @@ EverythingWidgets.prototype.addAction = function (text, handler, css, parent) {
   action.html(text);
   //action.attr("data-label", text);
   action.addClass("btn btn-primary");
-  if (typeof css === "string")
-  {
+  if (typeof css === "string") {
     parent = css;
   }
 
   action.attr("type", "button");
   action[0].addEventListener("click", handler);
   var parentElement = $("#" + parent);
-  if (parentElement.length != 0)
-  {
+  if (parentElement.length != 0) {
     parentElement.append(action);
-  } else
-  {
+  } else {
     $(".action-bar-items").last().append(action);
   }
-  if (typeof css !== "string" && css)
-  {
+  if (typeof css !== "string" && css) {
     action.css(css);
     return action;
   }
@@ -139,9 +129,9 @@ EverythingWidgets.prototype.addAction = function (text, handler, css, parent) {
 
 EverythingWidgets.prototype.addActionButton = function (config) {
   var settings = $.extend({
-    class: "btn-primary"
-  },
-          config);
+        class: "btn-primary"
+      },
+      config);
 
   if (settings.activity) {
     throw "Action button does not support `activity` property, Use `addActivity` instead";
@@ -185,15 +175,15 @@ EverythingWidgets.prototype.addNotification = function (css) {
       notification.fadeIn(100);
     } else {
       notification.animate({
-        width: "toggle"
-      },
-              500, function () {
-                notification.attr({
-                  class: ""
-                });
-                notification.text("");
-                li.remove();
-              });
+            width: "toggle"
+          },
+          500, function () {
+            notification.attr({
+              class: ""
+            });
+            notification.text("");
+            li.remove();
+          });
     }
 
     if (time)
@@ -208,7 +198,7 @@ EverythingWidgets.prototype.addNotification = function (css) {
 
 /**
  * Create activity function and return it
- * @param {json} conf <b>activity</b>, <b>defaultClass</b>, <b>title</b>, <b>postData</b>, <b>onDone</b> 
+ * @param {json} conf <b>activity</b>, <b>defaultClass</b>, <b>title</b>, <b>postData</b>, <b>onDone</b>
  * @returns {EverythingWidgets.prototype.getActivity.activityCaller}
  */
 EverythingWidgets.prototype.getActivity = function (conf) {
@@ -318,7 +308,7 @@ EverythingWidgets.prototype.processActivity = function (activityId, activityCont
 };
 /**
  * Create activity button and add it to the <b>action-bar-items</b> as default or to the parent if specified
- * @param {json} conf <b>activity</b>, <b>defaultClass</b>, <b>title</b>, <b>parent</b>, <b>css</b>, <b>postData</b>, <b>onDone</b> 
+ * @param {json} conf <b>activity</b>, <b>defaultClass</b>, <b>title</b>, <b>parent</b>, <b>css</b>, <b>postData</b>, <b>onDone</b>
  * @returns {JQuery}
  */
 EverythingWidgets.prototype.addActivity = function (conf) {
@@ -339,13 +329,13 @@ EverythingWidgets.prototype.addActivity = function (conf) {
   //var li = $(document.createElement("li"));
   var action = $(document.createElement("button"));
   action.html(settings.title);
-  
-  if(settings.icon) {
+
+  if (settings.icon) {
     var icon = document.createElement('i');
     icon.className = settings.icon;
     action.append(icon);
   }
-  
+
   action.addClass("btn " + settings.defaultClass + " " + ((settings.class) ? settings.class : ""));
 
   action.attr("type", "button");
@@ -380,16 +370,13 @@ EverythingWidgets.prototype.getHashParameters = function (hashName) {
   var hashValue = window.location.hash;
 
 
-  if (customHashes[hashName])
-  {
+  if (customHashes[hashName]) {
     hashValue = customHashes[hashName].hash;
-  } else if (hashName)
-  {
+  } else if (hashName) {
     return {};
   }
   //var hashValue = window.location.hash;
-  if (hashValue.indexOf("#") !== -1)
-  {
+  if (hashValue.indexOf("#") !== -1) {
     hashValue = hashValue.substring(1);
   }
   var result = {};
@@ -403,11 +390,10 @@ EverythingWidgets.prototype.getHashParameters = function (hashName) {
 
 EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler) {
   var form = $(formId);
-  if (jsonData && jsonData["statusCode"] != 200 && jsonData["message"])
-  {
-    jsonData["status"] = "error";
-    jsonData["delay"] = "stay";
-    form.trigger("error", [
+  if (jsonData && jsonData["statusCode"] != 200 && jsonData['message']) {
+    jsonData['status'] = 'error';
+    jsonData['delay'] = 'stay';
+    form.trigger('error', [
       jsonData
     ]);
     form.EW().notify(jsonData).show();
@@ -417,14 +403,12 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler) {
 
   var setInputData = function (key, value, form) {
 
-    if ("string" === typeof key)
+    if ('string' === typeof key)
       key = key.replace(/(:|\.|\[|\]|,|\/)/g, "\\$1");
 
-    if (handler)
-    {
+    if (handler) {
       form.find("[id='" + key + "']").val(handler(key, value));
-    } else
-    {
+    } else {
       var elements = [];
       try {
         elements.push(form.find(":input[name='" + key + "'][value='" + value + "']"));
@@ -449,21 +433,19 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler) {
       }
 
       $.each(elements, function (index, element) {
-        if (element.is(":radio") || element.is(":checkbox")) {
-          if (element.val() === (value + '') && !element.is(":checked")) {
+        if (element.is(':radio') || element.is(':checkbox')) {
+          if (element.val() === (value + '') && !element.is(':checked')) {
             element.click();
-            element.prop("checked", true).change();
+            element.prop('checked', true).change();
           }
 
-        } else if (element.is("img")) {
-          element.prop("src", value).attr({
-            "data-file-extension": /[^.]+$/.exec(value),
-            "data-filename": /^[^.]+/.exec(value)
+        } else if (element.is('img')) {
+          element.prop('src', value).attr({
+            'data-file-extension': /[^.]+$/.exec(value),
+            'data-filename': /^[^.]+/.exec(value)
           });
-
-        } else if (element.is(":input")) {
+        } else if (element.is(':input')) {
           element.val(value).change();
-
         } else if (element.is('a')) {
           element.attr('href', value)
 
@@ -475,8 +457,9 @@ EverythingWidgets.prototype.setFormData = function (formId, jsonData, handler) {
         } else {
           if (element[0] && element[0].elementType === 'input') {
             element[0].value = value;
-          } else
+          } else {
             element.text(value).change();
+          }
         }
       });
     }
@@ -548,8 +531,7 @@ EverythingWidgets.prototype.createDropMenu = function (element, config) {
 
   var isVisible = false;
   var action = function () {
-    if (isVisible)
-    {
+    if (isVisible) {
       size.detach();
       isVisible = false;
     }
@@ -569,9 +551,9 @@ EverythingWidgets.prototype.createDropMenu = function (element, config) {
     });
     $("body").append(size);
     size.animate({
-      height: "toggle"
-    },
-            200, "Power3.easeOut");
+          height: "toggle"
+        },
+        200, "Power3.easeOut");
     isVisible = true;
   };
 
@@ -668,18 +650,15 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction) {
 
   var closeAction = function () {
     modalPane.css("transform", "");
-    if (settings.closeAction === "hide")
-    {
+    if (settings.closeAction === "hide") {
       modalPane.hide();
       xButton.detach();
     }
     // if hash is set then detach the modal instead of remove to keep the url listener alive
-    else if (settings.closeAction === "hash")
-    {
+    else if (settings.closeAction === "hash") {
       modalPane.detach();
       xButton.detach();
-    } else
-    {
+    } else {
       modalPane.remove();
       xButton.remove();
     }
@@ -744,8 +723,7 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction) {
   modalPane.on("open", function () {
     basePane = $("#app-content");
     // Open the modal if it is not open
-    if (!modalPane.isOpen)
-    {
+    if (!modalPane.isOpen) {
       if (settings.lockUI || settings.class === "full") {
         self.lock(basePane, ' ', 1);
       }
@@ -805,15 +783,13 @@ EverythingWidgets.prototype.createModal = function (onClose, closeAction) {
           onComplete: function () {
             methods.setCloseButton();
             modalPane.isOpen = true;
-            if (settings.class === "full")
-            {
+            if (settings.class === "full") {
             }
           }
         });
       }
 
-      if (settings.onOpen)
-      {
+      if (settings.onOpen) {
         settings.onOpen.apply(modalPane, null);
       }
     }
@@ -884,8 +860,7 @@ JSON.stringify = JSON.stringify || function (obj) {
     return String(obj);
   } else {
     // recurse array or object
-    var n, v, json = [
-    ], arr = (obj && obj.constructor == Array);
+    var n, v, json = [], arr = (obj && obj.constructor == Array);
     for (n in obj) {
       v = obj[n];
       t = typeof (v);
@@ -938,13 +913,12 @@ function HashListener(name) {
  * @param {String} key Name of parameter
  * @param {String} value value of parameter
  * @param {String} hashName value of parameter
- * @description If key does not exist in URL hash, add key with value to the end of URL hash 
+ * @description If key does not exist in URL hash, add key with value to the end of URL hash
  * else, change the current value of the key to new value
  */
 EverythingWidgets.prototype.setHashParameter = function (key, value, hashName) {
   var data = {};
-  if (key)
-  {
+  if (key) {
     data[key] = value;
     this.setHashParameters(data, hashName);
   }
@@ -953,22 +927,18 @@ EverythingWidgets.prototype.setHashParameter = function (key, value, hashName) {
 EverythingWidgets.prototype.setHashParameters = function (parameters, hashName, clean) {
   this.lastHashParams = parameters;
   var hashValue = window.location.hash;
-  if (hashName)
-  {
+  if (hashName) {
     // create new hash listener if new hash name has been passed
-    if (!customHashes[hashName])
-    {
+    if (!customHashes[hashName]) {
       //alert(hashName);
       customHashes[hashName] = new HashListener(hashName);
       hashValue = customHashes[hashName].hash;
-    } else
-    {
+    } else {
       this.removeURLHandler("", hashName);
       hashValue = customHashes[hashName].hash;
     }
   }
-  if (hashValue.indexOf("#") !== -1)
-  {
+  if (hashValue.indexOf("#") !== -1) {
     hashValue = hashValue.substring(1);
   }
   var pairs = hashValue.split("&");
@@ -989,8 +959,7 @@ EverythingWidgets.prototype.setHashParameters = function (parameters, hashName, 
 
   // New keys
   $.each(parameters, function (key, value) {
-    if (key && value)
-    {
+    if (key && value) {
       /* if (and && !newHash.match(/\/$/))
        {
        newHash += "/";
@@ -1001,8 +970,7 @@ EverythingWidgets.prototype.setHashParameters = function (parameters, hashName, 
   });
 
   // set newHash for corresponding hash name if it has been passed
-  if (hashName)
-  {
+  if (hashName) {
     customHashes[hashName].hash = newHash.replace(/\&$/, '');
     //alert(customHashes[hashName].hash);
   }
@@ -1012,24 +980,19 @@ EverythingWidgets.prototype.setHashParameters = function (parameters, hashName, 
 };
 EverythingWidgets.prototype.getHashParameter = function (key, hashName) {
   var hashValue = window.location.hash;
-  if (customHashes[hashName])
-  {
+  if (customHashes[hashName]) {
     hashValue = customHashes[hashName].hash;
-  } else if (hashName)
-  {
+  } else if (hashName) {
     return null;
   }
-  if (hashValue.indexOf("#") !== -1)
-  {
+  if (hashValue.indexOf("#") !== -1) {
     hashValue = hashValue.substring(1);
   }
   var pairs = hashValue.split("&");
-  for (var test in pairs)
-  {
+  for (var test in pairs) {
     var keyAndValue = pairs[test].match(/([^&]*)=([^&]*)/);
     //console.log(keyAndValue);
-    if (keyAndValue && keyAndValue[1] === key)
-    {
+    if (keyAndValue && keyAndValue[1] === key) {
       return keyAndValue[2];
     }
   }
@@ -1038,10 +1001,8 @@ EverythingWidgets.prototype.getHashParameter = function (key, hashName) {
 
 EverythingWidgets.prototype.Router = {
   baseURL: "#",
-  routers: [
-  ],
-  routes: [
-  ],
+  routers: [],
+  routes: [],
   /*registerRouter: function (baseURL)
    {
    var clonedRouter = $.extend({}, this);
@@ -1062,8 +1023,7 @@ EverythingWidgets.prototype.Router = {
   getInstance: function (baseURL) {
     var clonedRouter = $.extend({}, this);
     clonedRouter.baseURL = this.baseURL + baseURL;
-    clonedRouter.routes = [
-    ];
+    clonedRouter.routes = [];
     /*for (var i = 0; i < this.routers.length; i++)
      {
      if (this.routers[i].baseURL == baseURL)
@@ -1078,10 +1038,8 @@ EverythingWidgets.prototype.Router = {
     this.routers.push(router);
   },
   on: function (url, callback) {
-    for (var i = 0; i < this.routes.length; i++)
-    {
-      if (this.routes[i].url == url)
-      {
+    for (var i = 0; i < this.routes.length; i++) {
+      if (this.routes[i].url == url) {
         this.routes[i].callback = callback;
         EW.newHandler = true;
         return null;
@@ -1099,19 +1057,15 @@ EverythingWidgets.prototype.Router = {
     var url = window.location.hash;
     //url = window.location.hash.replace(this.baseURL, "");
     url = url || "/";
-    for (var i = 0; i < this.routes.length; i++)
-    {
-      if ($.type(this.routes[i].url) === "string")
-      {
+    for (var i = 0; i < this.routes.length; i++) {
+      if ($.type(this.routes[i].url) === "string") {
         //alert(window.location.hash + ">" + this.baseURL + "+" + this.routes[i].url);
         var patt = new RegExp("^" + this.baseURL + this.routes[i].url);
-        if (this.routes[i].url == "/" && window.location.hash == this.baseURL + this.routes[i].url)
-        {
+        if (this.routes[i].url == "/" && window.location.hash == this.baseURL + this.routes[i].url) {
           url.replace(this.routes[i].url, this.routes[i].callback);
           continue;
         }
-        if (this.routes[i].url != "/" && patt.test(url))
-        {
+        if (this.routes[i].url != "/" && patt.test(url)) {
           url.replace(this.routes[i].url, function () {
             arguments = Array.prototype.slice.call(arguments, 1);
             var temp = self.getInstance(self.routes[i].url);
@@ -1119,8 +1073,7 @@ EverythingWidgets.prototype.Router = {
             temp.notifyRoutes();
           });
         }
-      } else if ($.type(this.routes[i].url) === "regexp")
-      {
+      } else if ($.type(this.routes[i].url) === "regexp") {
         url.replace(this.routes[i].url, function (url) {
           arguments = Array.prototype.slice.call(arguments, 1);
           var temp = self.getInstance(url);
@@ -1137,8 +1090,7 @@ EverythingWidgets.prototype.loadMainContent = function (url) {
   });
 };
 EverythingWidgets.prototype.setCurrentTab = function (obj) {
-  if (obj)
-  {
+  if (obj) {
     //alert(obj.parent().parent().html());
     obj.parent().parent().find("a.selected").removeClass("selected");
   }
@@ -1198,18 +1150,18 @@ EverythingWidgets.prototype.unlock = function (obj, dur) {
   ll.addClass("unlock").css("transition", "none").animate({
     opacity: 0
   },
-          dur || 0, function () {
-            $(this).remove();
-          });
+      dur || 0, function () {
+        $(this).remove();
+      });
 };
 
 function EWTable(config) {
   var $base = this;
   this.config = $.extend({
-    pageSize: 10,
-    urlData: {}
-  },
-          config);
+        pageSize: 10,
+        urlData: {}
+      },
+      config);
   this.container = $("<div class='report row'></div>");
   this.tableHeaderDiv = $("<div class='table-header' ></div>");
   this.tableBodyDiv = $("<div class='table-body'></div>");
@@ -1231,14 +1183,13 @@ function EWTable(config) {
   this.container.append(this.controls);
   this.container.append(this.tableContainer);
   this.tableHeaderDiv.css(
-          {
-            position: "absolute",
-            display: "none",
-            zIndex: "2"
-          });
+      {
+        position: "absolute",
+        display: "none",
+        zIndex: "2"
+      });
   this.tableBodyDiv.scroll(function () {
-    if ($(this).scrollTop() > 0 && !$base.tableHeaderDiv.is(":visible"))
-    {
+    if ($(this).scrollTop() > 0 && !$base.tableHeaderDiv.is(":visible")) {
       $base.tableHeaderDiv.css("width", $base.table.outerWidth());
       $.each($base.headers.children(), function (k, v) {
         $(v).css({
@@ -1255,8 +1206,7 @@ function EWTable(config) {
     $base.tableHeaderDiv.css("left", $base.table.position().left);
   });
   // add listener to the windows width in the case of resize, the listener is added only once
-  if (!$.data($base.tableHeaderDiv, "responsive"))
-  {
+  if (!$.data($base.tableHeaderDiv, "responsive")) {
     $base.tableHeaderDiv.data("responsive", true);
     $(window).resize(function () {
       $base.tableHeaderDiv.css("width", $base.table.outerWidth());
@@ -1271,8 +1221,7 @@ function EWTable(config) {
 
 EWTable.prototype.createHeadersRow = function (headers) {
   var tr = $(document.createElement("tr"));
-  var ths = [
-  ];
+  var ths = [];
   $.each(headers, function (k, v) {
     if (v)
       ths.push('<th style=width:', v.width || "auto", v.display ? 'display:' + v.display : '', '>', k, '</th>');
@@ -1297,24 +1246,20 @@ EWTable.prototype.createRow = function (columnValues, rowCounter) {
   tableRow.data("field-id", columnValues.id);
   tableRow.attr("data-field-id", columnValues.id);
   var fieldId = columnValues.id;
-  if (ewTable.config.onClick)
-  {
+  if (ewTable.config.onClick) {
     tableRow.click(function () {
       ewTable.config.onClick(fieldId);
     });
   }
-  if (ewTable.config.ondblClick)
-  {
+  if (ewTable.config.ondblClick) {
     tableRow.dblclick(function () {
       ewTable.config.ondblClick(fieldId);
     });
   }
 
   var actionsCell = $(document.createElement("td"));
-  var actionsCellBtns = [
-  ];
-  if (ewTable.config.onEdit)
-  {
+  var actionsCellBtns = [];
+  if (ewTable.config.onEdit) {
     var edit = $(document.createElement("button"));
     edit.attr("type", "button");
     edit.attr("data-label", "Edit");
@@ -1326,8 +1271,7 @@ EWTable.prototype.createRow = function (columnValues, rowCounter) {
     actionsCellBtns.push(edit);
   }
 
-  if (ewTable.config.onDelete)
-  {
+  if (ewTable.config.onDelete) {
     var del = $(document.createElement("button"));
     del.attr("type", "button");
     del.addClass("btn btn-text delete");
@@ -1437,8 +1381,7 @@ EWTable.prototype.createRow = function (columnValues, rowCounter) {
       index++;
     });
   }
-  if (actionsCellBtns.length > 0)
-  {
+  if (actionsCellBtns.length > 0) {
     actionsCell.html(actionsCellBtns);
     tableRow.append(actionsCell);
   }
@@ -1527,8 +1470,7 @@ EWTable.prototype.read = function (customURLData) {
       error: function (o) {
         //console.log(o);
         _this.data = {
-          result: [
-          ]
+          result: []
         };
         _this.table.empty();
         _this.next.css('visibility', 'hidden');
@@ -1579,12 +1521,10 @@ EverythingWidgets.prototype.createTable = function (conf) {
   ewTable.pageInfo = pageInfo;
   ewTable.previous = previous;
   var hr = ewTable.createHeadersRow(conf.headers);
-  if (conf.rowCount)
-  {
+  if (conf.rowCount) {
     hr.prepend("<th class='no'></th>");
   }
-  if (conf.onDelete || conf.onEdit || conf.buttons)
-  {
+  if (conf.onDelete || conf.onEdit || conf.buttons) {
     hr.append("<th class='actions'></th>");
   }
   var headerTable = $(document.createElement("table"));
@@ -1605,19 +1545,15 @@ EverythingWidgets.prototype.createTable = function (conf) {
 EverythingWidgets.prototype.addHashHandler = EverythingWidgets.prototype.addURLHandler = function (handler, hashName) {
   var handlers = this.urlHandlers;
   //var newAdded = EW.newHandler;
-  if (hashName)
-  {
+  if (hashName) {
     // create new hash listener if new hash name has been passed
     if (!customHashes[hashName])
       customHashes[hashName] = new HashListener(hashName);
 
     customHashes[hashName].addHandler(hashName, handler);
-  } else
-  {
-    for (var i = 0; i < handlers.length; i++)
-    {
-      if (" " + handlers[i] == " " + handler)
-      {
+  } else {
+    for (var i = 0; i < handlers.length; i++) {
+      if (" " + handlers[i] == " " + handler) {
         //console.log(handler.toString());
         handlers[i] = null;
         handlers[i] = handler;
@@ -1628,8 +1564,7 @@ EverythingWidgets.prototype.addHashHandler = EverythingWidgets.prototype.addURLH
     handlers.push(handler);
     this.urlHandlers = handlers;
   }
-  if (hashName)
-  {
+  if (hashName) {
     customHashes[hashName].newHandler = true;
   } else
     this.newHandler = true;
@@ -1640,15 +1575,12 @@ EverythingWidgets.prototype.addHashHandler = EverythingWidgets.prototype.addURLH
 EverythingWidgets.prototype.removeURLHandler = function (handler, hashName) {
   // Get primary URL handlers
   var handlers = this.urlHandlers;
-  if (customHashes[hashName])
-  {
+  if (customHashes[hashName]) {
     // If hashName is specified then get hashname handlers
     handlers = customHashes[hashName].handlers;
   }
-  for (var i = 0; i < handlers.length; i++)
-  {
-    if (' ' + handlers[i] === ' ' + handler)
-    {
+  for (var i = 0; i < handlers.length; i++) {
+    if (' ' + handlers[i] === ' ' + handler) {
       handlers.splice(i, 1);
       i = 0;
     }
@@ -1660,16 +1592,14 @@ function hashHandler() {
   this.oldHash = window.location.hash;
   this.Check;
   var detect = function () {
-    if (this.oldHash !== window.location.hash || EW.newHandler)
-    {
+    if (this.oldHash !== window.location.hash || EW.newHandler) {
       //if (EW.newHandler != true)
       //{
       EW.Router.notifyRoutes();
       //}
       EW.newHandler = false;
       var hashValue = window.location.hash;
-      if (hashValue.indexOf("#") !== -1)
-      {
+      if (hashValue.indexOf("#") !== -1) {
         hashValue = hashValue.substring(1);
       }
       //var pairs = hashValue.split("&");
@@ -1680,8 +1610,7 @@ function hashHandler() {
       hashValue.replace(/([^&]*)=([^&]*)/g, function (m, k, v) {
         data[k] = v;
       });
-      for (var i = 0; i < EW.urlHandlers.length; i++)
-      {
+      for (var i = 0; i < EW.urlHandlers.length; i++) {
         EW.urlHandlers[i].call({}, data);
       }
       this.oldHash = window.location.hash;
@@ -1696,8 +1625,7 @@ EverythingWidgets.prototype.createForm = function (json) {
   var form = $("<form></form>");
   form.addClass("col-xs-12");
   var formStructure = json;
-  if (typeof formStructure == 'object')
-  {
+  if (typeof formStructure == 'object') {
     $.each(formStructure, function (k, v) {
 
       var row = $("<div></div>");
@@ -1705,15 +1633,13 @@ EverythingWidgets.prototype.createForm = function (json) {
       var label;
       var input;
       //create label for input if label string is not empty
-      if (v.type != "hidden")
-      {
+      if (v.type != "hidden") {
         label = $("<label></label>");
         label.text(v.label);
         label.attr("for", k);
       }
       // create select element
-      if (v.type == "select")
-      {
+      if (v.type == "select") {
         var container = $("<div></div>");
         container.addClass("text-field");
         input = $("<select></select>");
@@ -1722,8 +1648,7 @@ EverythingWidgets.prototype.createForm = function (json) {
           name: k
         });
         container.append(input);
-        if (typeof v.defValue == 'object')
-        {
+        if (typeof v.defValue == 'object') {
           $.each(v.defValue, function (v_k, v_v) {
             var opt = $("<option></option>");
             opt.attr("value", v_k);
@@ -1736,8 +1661,7 @@ EverythingWidgets.prototype.createForm = function (json) {
         form.append(row);
       }
       // create textarea element
-      else if (v.type == "text")
-      {
+      else if (v.type == "text") {
         input = $("<textarea></textarea>");
         input.attr({
           id: k,
@@ -1749,8 +1673,7 @@ EverythingWidgets.prototype.createForm = function (json) {
         form.append(row);
       }
       // create label element
-      else if (v.type == "label")
-      {
+      else if (v.type == "label") {
         input = $("<label></label>");
         input.attr({
           id: k
@@ -1761,8 +1684,7 @@ EverythingWidgets.prototype.createForm = function (json) {
         form.append(row);
       }
       // create input element with given type
-      else if (v.type == "hidden")
-      {
+      else if (v.type == "hidden") {
         input = $("<input>");
         input.attr({
           type: v.type,
@@ -1773,8 +1695,7 @@ EverythingWidgets.prototype.createForm = function (json) {
         form.append(input);
       }
       // create input element with given type
-      else if (v.type)
-      {
+      else if (v.type) {
         input = $("<input>");
         input.attr({
           type: v.type,
@@ -1787,8 +1708,7 @@ EverythingWidgets.prototype.createForm = function (json) {
         form.append(row);
       }
       // create input element with default type
-      else
-      {
+      else {
         input = $("<input>");
         input.addClass("text-field");
         input.attr({
@@ -1805,6 +1725,7 @@ EverythingWidgets.prototype.createForm = function (json) {
   }
   return form;
 };
+
 function EWNotification(element, options) {
   var notify_defaults = {
     status: 'success',
@@ -1842,16 +1763,13 @@ function EWNotification(element, options) {
     this.$note.addClass('alert-success');
   if (!this.options.message && this.$element.data("message") !== '') // dom text
     this.$note.html(this.$element.data("message"));
-  else
-  {
-    if (typeof this.options.message === 'object')
-    {
+  else {
+    if (typeof this.options.message === 'object') {
       if (this.options.message.html)
         this.$note.html(this.options.message.html);
       else if (this.options.message.text)
         this.$note.text(this.options.message.text);
-    } else
-    {
+    } else {
       this.$note.html(this.options.message);
     }
 
@@ -1887,22 +1805,18 @@ EWNotification.prototype.show = function () {
   var v = this.$element.find("div[data-alert][data-position='" + this.options.position + "']").last();
   this.$note.css("opacity", "0");
   this.$element.append(this.$note);
-  if (v.length > 0)
-  {
-    if (position == "ne" || position == "nw" || position == "n")
-    {
+  if (v.length > 0) {
+    if (position == "ne" || position == "nw" || position == "n") {
       top = v.outerHeight(true) + v.offset().top;
     }
     if (position == "se" || position == "sw")
       top = v.offset().top - note.outerHeight(true);
   }
-  if (!this.$element.is("body"))
-  {
+  if (!this.$element.is("body")) {
     top = this.$element.offset().top;
     left = ((this.$element.outerWidth() - this.$note.outerWidth()) / 2) + this.$element.offset().left;
   }
-  if (position == "n")
-  {
+  if (position == "n") {
     left = ($(window).width() - this.$note.outerWidth()) / 2;
   }
   this.$note.css({
@@ -1912,13 +1826,13 @@ EWNotification.prototype.show = function () {
   });
   var $this = this;
   this.$note.stop().animate({
-    marginLeft: "-=50",
-    opacity: "1"
-  },
-          300, function () {
-            if ($this.options.delay !== "stay")
-              $this.$note.delay($this.options.delay || 3000).fadeOut('slow', $.proxy($this.closeNotification, $this));
-          });
+        marginLeft: "-=50",
+        opacity: "1"
+      },
+      300, function () {
+        if ($this.options.delay !== "stay")
+          $this.$note.delay($this.options.delay || 3000).fadeOut('slow', $.proxy($this.closeNotification, $this));
+      });
 };
 EWNotification.prototype.hide = function () {
   //if (this.options.fadeOut.enabled)
@@ -1927,6 +1841,7 @@ EWNotification.prototype.hide = function () {
   //else
   //onClose.call(this);
 };
+
 function EWFormValidator(element, options) {
   var self = this;
   var errors = 0;
@@ -1936,36 +1851,29 @@ function EWFormValidator(element, options) {
     var value = element.val();
 //if(rule.indexOf("\\"))
 
-    switch (rule)
-    {
+    switch (rule) {
       case "r":
-        if (!value)
-        {
+        if (!value) {
           errorsPanel.append("<li>This filed is required</li>");
           return false;
         }
         break;
       case "email":
-        if (value)
-        {
+        if (value) {
           var pattern = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-          if (!pattern.test(value))
-          {
+          if (!pattern.test(value)) {
             errorsPanel.append("<li>Invalid email address format</li>");
             return false;
           }
 
-        } else
-        {
+        } else {
           return false;
         }
         break;
       case "url":
-        if (value)
-        {
+        if (value) {
           var pattern = /^(https?:\/\/)?((([a-z\d]([a-z\d-]*[a-z\d])*)\.)+[a-z]{2,}|((\d{1,3}\.){3}\d{1,3}))(\:\d+)?(\/[-a-z\d%_.~+]*)*(\?[;&a-z\d%_.~+=-]*)?(\#[-a-z\d_]*)?$/;
-          if (!pattern.test(value))
-          {
+          if (!pattern.test(value)) {
             errorsPanel.append("<li>Invalid URL address format</li>");
           }
           return false;
@@ -1974,27 +1882,22 @@ function EWFormValidator(element, options) {
     }
     // range validation if exist
     var range = rule.match(/\[(\d*)-?(\d*)\]/);
-    if (range)
-    {
+    if (range) {
       //console.log(range);
 
-      if (range[1] && value.length < range[1])
-      {
+      if (range[1] && value.length < range[1]) {
         errorsPanel.append("<li>At least " + range[1] + " character</li>");
         return false;
       }
-      if (range[2] && value.length > range[2])
-      {
+      if (range[2] && value.length > range[2]) {
         errorsPanel.append("<li>Maximum length is " + range[2] + " character</li>");
         return false;
       }
     }
     var equalTo = rule.match(/eq\[(.*)\]/);
-    if (equalTo)
-    {
+    if (equalTo) {
       var otherElement = $form.find("#" + equalTo[1]);
-      if (value != otherElement.val())
-      {
+      if (value != otherElement.val()) {
         errorsPanel.append("<li>Value should be equal to the value of " + otherElement.data("label") + " field</li>");
         return false;
       }
@@ -2009,8 +1912,7 @@ function EWFormValidator(element, options) {
   var errorPanel = $();
   $.each(inputs, function (i, elm) {
     var $currentElement = $(elm);
-    if ($currentElement.data("validate"))
-    {
+    if ($currentElement.data("validate")) {
       var rules = $currentElement.data("validate").split(",");
       if (!$currentElement.parent().attr("data-element-wrapper")) {
         $currentElement.EW().putInWrapper();
@@ -2030,8 +1932,7 @@ function EWFormValidator(element, options) {
     }
   });
 
-  if (errors > 0)
-  {
+  if (errors > 0) {
     $("body").EW().notify({
       status: "error",
       message: "You have errors in your from, Please check your inputs"
@@ -2047,8 +1948,7 @@ function ExtendableList(element, cSettings) {
   var base = this;
   this.$element = $(element);
   this.settings = $.extend({
-    value: [
-    ]
+    value: []
   }, cSettings);
   //this.$element.find("li:first-child").prepend('<div class="handle"></div>');
 
@@ -2061,9 +1961,9 @@ function ExtendableList(element, cSettings) {
     ni.hide();
     base.$element.append(ni);
     ni.animate({
-      height: "toggle"
-    },
-            200);
+          height: "toggle"
+        },
+        200);
   });
   this.lastRow.append(this.addNewRow);
   base.$element.empty();
@@ -2075,8 +1975,7 @@ function ExtendableList(element, cSettings) {
 
   $.each(this.settings.value, function (key, value) {
     var input = item.find("input[name='" + key + "']");
-    if (input.length > 0)
-    {
+    if (input.length > 0) {
       if ('object' !== typeof value) {
         if (!oneValue) {
           item = base.createItem();
@@ -2122,12 +2021,12 @@ ExtendableList.prototype.createItem = function () {
   var removeBtn = $("<button type='button' class='close-icon' ></button>");
   removeBtn.click(function () {
     originalModelClone.animate({
-      height: "toggle",
-      opacity: 0
-    },
-            300, "Power2.easeOut", function () {
-              originalModelClone.remove();
-            });
+          height: "toggle",
+          opacity: 0
+        },
+        300, "Power2.easeOut", function () {
+          originalModelClone.remove();
+        });
   });
   controlRow.append(removeBtn);
   originalModelClone.prepend(controlRow);
@@ -2143,13 +2042,11 @@ $.EW = function () {
   var method = arguments[0];
   var args = Array.prototype.slice.call(arguments, 1);
   //alert(JSON.stringify(arguments[1]));
-  if (EW[method])
-  {
+  if (EW[method]) {
     return EW[method].apply(EverythingWidgets.prototype, args);
   }
 };
-var globalOptions = {
-};
+var globalOptions = {};
 $.fn.EW = function (methodOrOptions) {
   $.extend(globalOptions, methodOrOptions);
   $.extend(this, ew_plugins);
@@ -2212,16 +2109,15 @@ ew_plugins = {
       class: "btn-primary",
       id: ""
     };
+
     function inputButton(element, options) {
       var base = this;
       //var $element = $(element);
       var $element = $(element);
-      if ($element.prop('tagName').toUpperCase() !== 'INPUT' && $element.prop('tagName').toUpperCase() !== 'TEXTAREA')
-      {
+      if ($element.prop('tagName').toUpperCase() !== 'INPUT' && $element.prop('tagName').toUpperCase() !== 'TEXTAREA') {
         //return;
       }
-      var settings = $.extend({
-      }, defaults, options);
+      var settings = $.extend({}, defaults, options);
       if (!$element.parent().attr("data-element-wrapper"))
         $element.EW().putInWrapper();
       var wrapper = $element.parent();
@@ -2229,15 +2125,13 @@ ew_plugins = {
       var buttonsPanel = wrapper.find(".buttons-panel");
       // if the plugin has been called after again on same element         
       var exist = false;
-      if ($element.attr("data-active-plugin-input-button"))
-      {
+      if ($element.attr("data-active-plugin-input-button")) {
         $.each(buttonsPanel.find("button"), function (i, e) {
           if ($(e).html() == settings.title)
             exist = $(e);
         });
         // if the button is already exist then add the handler and break
-        if (exist)
-        {
+        if (exist) {
           exist.click(function () {
             EW.activeElement = exist;
             settings.onClick($element);
@@ -2253,8 +2147,7 @@ ew_plugins = {
         buttonsPanel.append(inputBtn);
       }
       // If the plugin has been called for the first time
-      else
-      {
+      else {
         buttonsPanel = $("<div class='buttons-panel'>");
         buttonsPanel.css({
           position: "absolute"
@@ -2283,6 +2176,7 @@ ew_plugins = {
         settings.onClick($element);
       });
     }
+
     return this.each(function () {
       //if (!$.data(this, "ew-plugin-input-button")) {
       $.data(this, "ew_plugin_input_button", new inputButton(this, options));
@@ -2291,8 +2185,7 @@ ew_plugins = {
   },
 };
 EverythingWidgets.prototype.initPlugins = function ($element) {
-  if ($element.is("input"))
-  {
+  if ($element.is("input")) {
     $element.attr("dir", "auto");
     if ($element.is("[data-ew-plugin='link-chooser']"))
       $element.EW().linkChooser();
@@ -2302,8 +2195,7 @@ EverythingWidgets.prototype.initPlugins = function ($element) {
       $element.EW().imageChooser();
     if ($element.is("[data-slider]"))
       $element.simpleSlider();
-  } else
-  {
+  } else {
     // set input and textarea dir to auto
     $element.find("input, textarea").attr("dir", "auto");
     // EW Plugins

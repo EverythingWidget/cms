@@ -141,7 +141,7 @@
     }
   });
 
-  Scope.parentScope.html.find('#settings-cards').on('refresh', function (event, response) {
-    vue.activeLanguage = response.data['webroot/language'];
+  Scope.parentScope.html.find('#settings-cards').on('refresh', function (event, data) {
+    vue.activeLanguage = data['webroot/language'];
   });
 </script>

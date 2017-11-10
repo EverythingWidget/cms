@@ -31,7 +31,7 @@ webroot\WidgetsManagement::add_html_script(['include' => 'rm/public/js/gsap/Twee
 webroot\WidgetsManagement::add_html_script(['include' => 'rm/public/js/gsap/easing/EasePack.min.js']);
 webroot\WidgetsManagement::add_html_script(['include' => 'rm/public/js/gsap/jquery.gsap.min.js']);
 webroot\WidgetsManagement::add_html_script(['include' => 'rm/public/js/gsap/plugins/CSSPlugin.min.js']);
-
+//die($_REQUEST['_uis']);
 $VIEW = webroot\WidgetsManagement::generate_view($_REQUEST['_uis'], URL_LANGUAGE);
 $HTML_BODY = $VIEW['body_html'];
 

@@ -891,7 +891,7 @@ class WidgetsManagement extends \ew\Module {
     return self::$widget_data[$id];
   }
 
-  public static function generate_view($uisId, $language = 'en', $public_data = [], $no_data = false) {
+  public static function generate_view($uisId, $language, $public_data = [], $no_data = false) {
     $RESULT_HTML = '';
     $db = \EWCore::get_db_PDO();
     if (!$no_data) {
@@ -900,16 +900,11 @@ class WidgetsManagement extends \ew\Module {
 
     if (!isset($language)) {
       $webroot_language = \webroot\WidgetsManagement::get_page_info()['webroot/language'];
-
       if (isset($webroot_language)) {
         $_REQUEST['_language'] = $webroot_language;
       }
 
-      if ($_REQUEST['_url_language']) {
-        define('URL_LANGUAGE', $_REQUEST['_url_language']);
-      } else {
-        define('URL_LANGUAGE', $_REQUEST['_language']);
-      }
+      define('URL_LANGUAGE', $_REQUEST['_language']);
     }
 
     $statement = $db->prepare("SELECT structure FROM ew_ui_structures WHERE id = ? ") or die($db->error);
@@ -1283,6 +1278,7 @@ class WidgetsManagement extends \ew\Module {
   public static function get_path_uis($path = null) {
     $path = ($path) ? $path : $_REQUEST["path"];
     $db = \EWCore::get_db_PDO();
+//    die($path);
     $result = $db->prepare("SELECT ew_ui_structures.id AS id,name,template, template_settings,path FROM ew_pages_ui_structures,ew_ui_structures" . " WHERE ew_pages_ui_structures.ui_structure_id = ew_ui_structures.id" . " AND path = ?") or die($db->error);
     $result->execute([$path]);
 
@@ -1312,6 +1308,7 @@ class WidgetsManagement extends \ew\Module {
     $layout = WidgetsManagement::generate_view($uisId, null, $public_data, false);
     $template_body = $layout["body_html"];
     $widget_data = $layout["widget_data"];
+
     $settings = json_decode($template_settings, true);
 
     if (!$template) {

@@ -272,7 +272,7 @@ class ContentManagement extends \ew\Module {
     return [];
   }
 
-  public function ew_list_feeder_folders($_response, $id, $token = 0, $page_size, $order_by = null, $_language = 'en') {
+  public function ew_list_feeder_folders($_response, $id, $token = 0, $page_size, $order_by = null, $_language) {
     if (!$token)
       $token = 0;
     if (!$page_size)
@@ -281,8 +281,8 @@ class ContentManagement extends \ew\Module {
     $articles = $this->articles_read($_response, $id, $token, $page_size, $order_by, $_language);
 
     $result = [];
-    if (isset($articles)) {
-      foreach ($articles as $article) {
+    if (isset($articles) && isset($articles->data)) {
+      foreach ($articles->data as $article) {
         $article["content_fields"]['@content/date-created'] = [
             'tag' => 'p',
             'content' => \DateTime::createFromFormat('Y-m-d H:i:s', $article['date_created'])->format('Y-m-d')
@@ -298,16 +298,18 @@ class ContentManagement extends \ew\Module {
     }
 
     $folder_data = (new ContentsRepository)->find_by_id($id);
+
     $parent_data = [];
     if (isset($folder_data->data)) {
       $parent_data = $folder_data->data->toArray();
     }
 
-    $_response->properties['total'] = $articles['total'];
-    $_response->properties['page_size'] = $articles['page_size'];
+    $_response->properties['total'] = $articles->total;
+    $_response->properties['page_size'] = $articles->page_size;
     $_response->properties['parent'] = $parent_data;
+    $_response->set_data($result);
 
-    return $result;
+    return $_response;
   }
 
   public function ew_list_feeder_related_contents($_response, $content_id, $key, $value = '%') {
@@ -332,16 +334,20 @@ class ContentManagement extends \ew\Module {
   }
 
   public function page_uis_handler_documents($url, $url_parts = []) {
-
     if ($url_parts[0] === 'articles') {
       if (is_string($url_parts[1])) {
         $article = $this->get_content_by_slug($url_parts[1]);
         if (isset($article)) {
-          return \webroot\WidgetsManagement::get_path_uis('/articles/' . $article['id']);
+          $uis_data = \webroot\WidgetsManagement::get_path_uis('/articles/' . $article[0]['id']);
+          if (is_null($uis_data)) {
+            $uis_data = \webroot\WidgetsManagement::get_path_uis('/folders/' . $article[0]['parent_id']);
+          }
+
+          return $uis_data;
         }
       }
 
-      $uis = \webroot\WidgetsManagement::get_path_uis("/folders/{$article['parent_id']}/articles");
+      $uis = \webroot\WidgetsManagement::get_path_uis("/folders/{$article[0]['parent_id']}/articles");
       if (isset($uis)) {
         return $uis;
       }
@@ -352,7 +358,7 @@ class ContentManagement extends \ew\Module {
       }
 
       if (is_numeric($url_parts[1])) {
-        $article = $this->read_contents($url_parts[1]);
+        $article = ew_contents::find($url_parts[1])->toArray();
 
         if (isset($article)) {
           return \webroot\WidgetsManagement::get_path_uis('/folders/' . $article['parent_id']);
@@ -832,8 +838,8 @@ class ContentManagement extends \ew\Module {
     $result = new \ew\Result;
     $result->data = new \Illuminate\Database\Eloquent\Collection;
 
-    if (isset($articles)) {
-      foreach ($articles as $article) {
+    if (isset($articles) && isset($articles->data)) {
+      foreach ($articles->data as $article) {
         $article['content_fields']['@content/date-created'] = [
             'tag' => 'p',
             'content' => \DateTime::createFromFormat('Y-m-d H:i:s', $article['date_created'])->format('Y-m-d')

@@ -47,7 +47,7 @@
 
       service.readGeneralSettings().success(success);
 
-      function success(data) {
+      function success(response) {
         for (var app in apps) {
           if (!apps[app].url) {
             continue;
@@ -55,7 +55,7 @@
 
           System.loadModule({url: apps[app].url, scope: Scope}, function (module) {
             settingsCard.append(module.html);
-            EW.setFormData(settingsCard, data);
+            EW.setFormData(settingsCard, response.data);
           });
         }
       }

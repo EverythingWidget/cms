@@ -47,7 +47,7 @@
 
   SystemUI.prototype.utility.hasClass = function (element, className) {
     if (element.classList)
-      return  element.classList.contains(className);
+      return element.classList.contains(className);
     else
       return new RegExp('(^| )' + className + '( |$)', 'gi').test(element.className);
   };
@@ -143,7 +143,7 @@
   };
 
   /**
-   * 
+   *
    * @param {type} behavior The behavior method that should apply on `hostObject`
    * @param {type} hostObject The object that will be passed to the behavior method as the host
    * @returns {mixed} Returned value from behavior method
@@ -165,8 +165,7 @@
   SystemUI.prototype.clone = function (obj) {
     var target = {};
     for (var i in obj) {
-      if (obj.hasOwnProperty(i))
-      {
+      if (obj.hasOwnProperty(i)) {
         target[i] = obj[i];
       }
     }
@@ -175,7 +174,7 @@
 
   SystemUI.prototype.getCenterPoint = function (rect) {
     var pos = document.activeElement.getBoundingClientRect();
-    return         {
+    return {
       left: rect.left + (rect.width / 2),
       top: rect.top + (rect.height / 2)
     };
@@ -240,7 +239,7 @@
     });
   };
   /**
-   * 
+   *
    * @param {object} conf
    * @param {number} t
    * @returns {HTMLElement}
@@ -342,8 +341,8 @@
     },
     slideOut: function (conf) {
       var t = conf.time || System.ui.DEFAULTS.animationDuration,
-              sourceRect = conf.element.getBoundingClientRect(),
-              direction = conf.to;
+          sourceRect = conf.element.getBoundingClientRect(),
+          direction = conf.to;
 
       tween.to(conf.element, t, {
         left: -sourceRect.width,
@@ -359,15 +358,15 @@
     },
     slideIn: function (conf) {
       var t = conf.time || System.ui.DEFAULTS.animationDuration,
-              sourceRect = conf.element.getBoundingClientRect(),
-              direction = conf.from,
-              transformBox = document.createElement("div"),
-              sourceStyle = window.getComputedStyle(conf.element, null);
+          sourceRect = conf.element.getBoundingClientRect(),
+          direction = conf.from,
+          transformBox = document.createElement("div"),
+          sourceStyle = window.getComputedStyle(conf.element, null);
 
       transformBox.style.position = "absolute";
       transformBox.style.textAlign = "center";
       transformBox.style.backgroundColor = (sourceStyle.backgroundColor.indexOf("rgba") !== -1 ||
-              sourceStyle.backgroundColor === "transparent") ? "rgb(190,190,190)" : sourceStyle.backgroundColor;
+          sourceStyle.backgroundColor === "transparent") ? "rgb(190,190,190)" : sourceStyle.backgroundColor;
       transformBox.style.boxShadow = sourceStyle.boxShadow;
       transformBox.style.borderRadius = sourceStyle.borderRadius;
       //transformBox.style.padding = ss.padding;
@@ -441,7 +440,7 @@
 
       blast.style.position = "absolute";
       blast.style.backgroundColor = (ds.backgroundColor.indexOf("rgba") !== -1 ||
-              ds.backgroundColor === "transparent") ? "rgb(190,190,190)" : ds.backgroundColor;
+          ds.backgroundColor === "transparent") ? "rgb(190,190,190)" : ds.backgroundColor;
 
       if (conf.color) {
         blast.style.backgroundColor = conf.color;
@@ -522,7 +521,7 @@
         x: sourceRect.left,
         y: sourceRect.top,
         backgroundColor: (sourceStyle.backgroundColor.indexOf("rgba") !== -1 ||
-                sourceStyle.backgroundColor === "transparent") ? "rgb(190,190,190)" : sourceStyle.backgroundColor,
+            sourceStyle.backgroundColor === "transparent") ? "rgb(190,190,190)" : sourceStyle.backgroundColor,
         boxShadow: sourceStyle.boxShadow,
         borderRadius: sourceStyle.borderRadius,
         zIndex: (ds.zIndex === "0" || ds.zIndex === "auto") ? 1 : ds.zIndex,
@@ -557,7 +556,7 @@
           x: distRect.left,
           y: distRect.top,
           backgroundColor: (ds.backgroundColor.indexOf("rgba") !== -1 ||
-                  ds.backgroundColor === "transparent") ? "rgb(190,190,190)" : ds.backgroundColor,
+              ds.backgroundColor === "transparent") ? "rgb(190,190,190)" : ds.backgroundColor,
           borderRadius: ds.borderRadius,
           ease: options.ease || "Power2.easeInOut",
           delay: options.delay || 0,
@@ -586,7 +585,7 @@
       }
     },
     /**
-     * 
+     *
      * @param {object} conf
      * @returns {undefined}
      */
@@ -618,7 +617,7 @@
         height: sourceRect.height,
         left: sourceRect.left,
         top: sourceRect.top
-                //opacity: 1
+        //opacity: 1
       }, {
         width: distRect.width,
         height: distRect.height,
@@ -646,7 +645,7 @@
       });
     },
     /**
-     * 
+     *
      * @param {object} conf
      * @returns {undefined}
      */
@@ -674,16 +673,16 @@
         System.ui.body.appendChild(transformBox);
       }
       var width = distRect.width > distRect.height ? distRect.width : distRect.height,
-              halfWidth = distRect.width / 2,
-              sourceLeft = sourceRect.left + (sourceRect.width / 2),
-              sourceTop = sourceRect.top + (sourceRect.height / 2);
+          halfWidth = distRect.width / 2,
+          sourceLeft = sourceRect.left + (sourceRect.width / 2),
+          sourceTop = sourceRect.top + (sourceRect.height / 2);
       tween.fromTo(transformBox, t, {
         width: width,
         height: width,
         left: sourceLeft - halfWidth,
         top: sourceTop - halfWidth,
         transform: "scale(0)"
-                //opacity: 1
+        //opacity: 1
       }, {
         transform: "scale(2)",
         ease: conf.ease || "Power2.easeInOut",
@@ -720,7 +719,7 @@
       var distBoxStyle = distBox.style;
       distBoxStyle.position = "absolute";
       distBoxStyle.backgroundColor = (distStyle.backgroundColor.indexOf("rgba") !== -1 ||
-              distStyle.backgroundColor === "transparent") ? "rgb(255,255,255)" : distStyle.backgroundColor;
+          distStyle.backgroundColor === "transparent") ? "rgb(255,255,255)" : distStyle.backgroundColor;
       distBoxStyle.boxShadow = distStyle.boxShadow;
       distBoxStyle.borderRadius = conf.to.style.borderRadius;
       distBoxStyle.padding = distStyle.padding;
@@ -743,7 +742,7 @@
       var originBox = document.createElement("div");
       originBox.style.position = "absolute";
       originBox.style.backgroundColor = (sourceStyle.backgroundColor.indexOf("rgba") !== -1 ||
-              sourceStyle.backgroundColor === "transparent") ? "rgb(255,255,255)" : sourceStyle.backgroundColor;
+          sourceStyle.backgroundColor === "transparent") ? "rgb(255,255,255)" : sourceStyle.backgroundColor;
       originBox.style.boxShadow = 'none';
       //origin.style.borderRadius = conf.from.style.borderRadius;
       originBox.style.padding = sourceStyle.padding;
@@ -821,11 +820,11 @@
       };
       loader.dispose = function () {
         tween.fromTo(el, .15, {
-          opacity: 0
-        },
-                {
-                  opacity: 1
-                });
+              opacity: 0
+            },
+            {
+              opacity: 1
+            });
         el.style.visibility = "";
         this.disposed = true;
         loader.el.parentNode.removeChild(loader.el);
@@ -874,20 +873,20 @@
         loaderElStyle.visibility = "";
         loaderElStyle.borderRadius = elemStyle.borderRadius;
         loaderElStyle.backgroundColor = (elemStyle.backgroundColor.indexOf("rgba") !== -1 ||
-                elemStyle.backgroundColor === "transparent" || elemStyle.backgroundColor === "rgb(255, 255, 255)") ? elemStyle.color : elemStyle.backgroundColor;
+            elemStyle.backgroundColor === "transparent" || elemStyle.backgroundColor === "rgb(255, 255, 255)") ? elemStyle.color : elemStyle.backgroundColor;
         el.style.visibility = "hidden";
         tween.to(loader.el, 5,
-                {
-                  top: elemCent.top - 14,
-                  left: elemCent.left - 14,
-                  width: 28,
-                  height: 28,
-                  borderRadius: 28,
-                  ease: "Power4.easeOut",
-                  onComplete: function () {
-                    loader.el.className = loaderClass;
-                  }
-                });
+            {
+              top: elemCent.top - 14,
+              left: elemCent.left - 14,
+              width: 28,
+              height: 28,
+              borderRadius: 28,
+              ease: "Power4.easeOut",
+              onComplete: function () {
+                loader.el.className = loaderClass;
+              }
+            });
 
         animProperties.delay = 5;
         tween.to(loader.el, .3, animProperties);
